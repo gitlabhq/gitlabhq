@@ -63,30 +63,6 @@ RSpec.describe DeviseEmailValidator do
     end
   end
 
-  context 'when regexp is set as Regexp' do
-    let(:validator) { described_class.new(attributes: [:public_email], regexp: /[0-9]/) }
-
-    it 'allows when value match' do
-      user.public_email = '1'
-
-      validate
-
-      expect(user.errors).to be_empty
-    end
-
-    it 'returns error when value does not match' do
-      validate
-
-      expect(user.errors).to be_present
-    end
-  end
-
-  context 'when regexp is set as String' do
-    it 'raise argument error' do
-      expect { described_class.new({ regexp: 'something' }) }.to raise_error ArgumentError
-    end
-  end
-
   context 'when allow_nil is set to true' do
     let(:validator) { described_class.new(attributes: [:public_email], allow_nil: true) }
 

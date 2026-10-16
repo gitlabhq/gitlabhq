@@ -12,7 +12,6 @@ const aliases = {
   images: path.join(ROOT_PATH, 'app/assets/images'),
   vendor: path.join(ROOT_PATH, 'vendor/assets/javascripts'),
   jquery$: 'jquery/dist/jquery.slim.js',
-  lodash$: 'lodash-es',
 
   // `raphael/raphael.no-deps` declares `eve` as an external dependency
   // (the package was renamed to `eve-raphael` years ago, but Raphael's

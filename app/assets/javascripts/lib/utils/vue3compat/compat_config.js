@@ -14,7 +14,7 @@ export const compatConfig = {
   INSTANCE_SCOPED_SLOTS: 'suppress-warning',
   INSTANCE_LISTENERS: 'suppress-warning',
   INSTANCE_EVENT_EMITTER: 'suppress-warning',
-  INSTANCE_EVENT_HOOKS: 'suppress-warning',
+  INSTANCE_EVENT_HOOKS: false,
   INSTANCE_SET: 'suppress-warning',
   GLOBAL_OBSERVABLE: 'suppress-warning',
   GLOBAL_SET: 'suppress-warning',

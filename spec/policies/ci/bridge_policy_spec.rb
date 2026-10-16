@@ -24,6 +24,35 @@ RSpec.describe Ci::BridgePolicy, feature_category: :continuous_integration do
   end
 
   describe '#play_job' do
+    shared_examples 'a bridge play missing a required permission' do
+      context 'when user can update the downstream branch but not the job' do
+        let(:can_update_branch) { true }
+        let(:can_update_job) { false }
+
+        it 'does not allow' do
+          expect(policy).not_to be_allowed :play_job
+        end
+      end
+
+      context 'when user can update the job but not the downstream branch' do
+        let(:can_update_branch) { false }
+        let(:can_update_job) { true }
+
+        it 'does not allow' do
+          expect(policy).not_to be_allowed :play_job
+        end
+      end
+
+      context 'when user can update neither the job nor the downstream branch' do
+        let(:can_update_branch) { false }
+        let(:can_update_job) { false }
+
+        it 'does not allow' do
+          expect(policy).not_to be_allowed :play_job
+        end
+      end
+    end
+
     context 'when downstream project exists' do
       before do
         project.add_developer(user) if can_update_job
@@ -75,31 +104,36 @@ RSpec.describe Ci::BridgePolicy, feature_category: :continuous_integration do
         end
       end
 
-      context 'when user can update the downstream branch but not the job' do
-        let(:can_update_branch) { true }
-        let(:can_update_job) { false }
+      it_behaves_like 'a bridge play missing a required permission'
 
-        it 'does not allow' do
-          expect(policy).not_to be_allowed :play_job
+      context 'when the pipeline variables file is missing from storage' do
+        before do
+          create(:ci_pipeline_artifact, :with_pipeline_variables, pipeline: pipeline).file.remove!
         end
+
+        context 'when user can update the job and the downstream branch' do
+          let(:can_update_branch) { true }
+          let(:can_update_job) { true }
+
+          it 'does not allow' do
+            # The user can update both, so only the missing variables deny the play
+            expect(policy).not_to be_allowed :play_job
+          end
+        end
+
+        it_behaves_like 'a bridge play missing a required permission'
+      end
+    end
+
+    context 'when a child pipeline bridge has its pipeline variables file missing from storage' do
+      before do
+        project.add_developer(user)
+        stub_ci_job_definition(bridge, options: { trigger: { include: 'child.yml' } })
+        create(:ci_pipeline_artifact, :with_pipeline_variables, pipeline: pipeline).file.remove!
       end
 
-      context 'when user can update the job but not the downstream branch' do
-        let(:can_update_branch) { false }
-        let(:can_update_job) { true }
-
-        it 'does not allow' do
-          expect(policy).not_to be_allowed :play_job
-        end
-      end
-
-      context 'when user can update neither the job nor the downstream branch' do
-        let(:can_update_branch) { false }
-        let(:can_update_job) { false }
-
-        it 'does not allow' do
-          expect(policy).not_to be_allowed :play_job
-        end
+      it 'does not allow' do
+        expect(policy).not_to be_allowed :play_job
       end
     end
 

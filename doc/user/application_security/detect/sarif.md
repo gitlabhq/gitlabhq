@@ -234,7 +234,6 @@ GitLab cannot process a result in any of the following cases:
 - The `ruleId` is missing.
 - The `physicalLocation` is missing.
 - Any of the required components used to generate the finding identifier are nil.
-- A string field exceeds its [character limit](#limits).
 
 The drop rate is calculated across the entire SARIF artifact, not for each `run` in the file. When
 the share of unprocessable results across all runs exceeds the threshold, the
@@ -273,8 +272,10 @@ For the per-file run limit, see [limits](#limits).
 | Supported SARIF versions               | 2.1.0 only                                                    | {{< no >}}   |
 
 When a per-run count exceeds its limit, GitLab processes the first N entries and records a warning.
-When a result has a string field that exceeds its character limit,
-the whole result is skipped and counted toward the [drop rate](#ingestion-behavior).
+When a text field exceeds its character limit, GitLab truncates the text to the limit and records a
+warning. The result is still ingested and does not count toward the [drop rate](#ingestion-behavior).
+GitLab ignores a `helpUri` that exceeds its limit instead of truncating it, because a truncated
+URL is not valid.
 
 For GitLab Self-Managed instances, an administrator can change configurable limits
 through the [instance limits](../../../administration/instance_limits.md).
@@ -346,18 +347,18 @@ On the pipeline's **Security** tab, you might see a **Warning parsing security r
 that contains a message similar to:
 
 ```plaintext
-[Ingestion] 8 of 69 result(s) were skipped during ingestion. Causes: text field exceeded length limit (8) [message]. Check application logs for per-result details.
+[Ingestion] 8 of 69 result(s) were skipped during ingestion. Causes: missing physicalLocation (8). Check application logs for per-result details.
 ```
 
 This issue occurs when results in the SARIF report do not meet the requirements described in
-[Limits](#limits). GitLab skips those results and ingests the remaining results.
+[Ingestion behavior](#ingestion-behavior). GitLab skips those results and ingests the remaining results.
 
 If more than half of the results in the report are skipped, the message is an error instead of a
 warning and ends with `could not be ingested and the scan was aborted`. In this case, GitLab does
 not store any results from the report.
 
 To resolve this issue, update the scanner configuration or the SARIF report so that all results
-meet the documented limits, then run a new pipeline.
+meet the documented requirements, then run a new pipeline.
 
 To investigate the cause:
 
@@ -365,12 +366,12 @@ To investigate the cause:
   [Kibana](https://log.gprd.gitlab.net/) with these filters:
   - `json.meta.feature_category: vulnerability_management`
   - `json.meta.pipeline_id: <pipeline-id>`
-  - `json.message: Result skipped*` or `json.message: SARIF finding skipped*`
+  - `json.message: SARIF finding skipped*`
 - On GitLab Self-Managed, search
   [`application_json.log`](../../../administration/logs/_index.md#application_jsonlog) for
-  `Result skipped:` or `SARIF finding skipped:`.
+  `SARIF finding skipped:`.
 
-The message and the logs identify which field or property caused the skipped results, but do not
+The message and the logs identify which property caused the skipped results, but do not
 identify individual results.
 
 On GitLab Self-Managed, you can also read the stored messages from a
@@ -381,6 +382,23 @@ scan = Security::Scan.find_by!(pipeline_id: <pipeline-id>, project_id: <project-
 scan.processing_warnings
 scan.processing_errors
 ```
+
+### Warning: `Text fields that exceeded their character limit were truncated`
+
+On the pipeline's **Security** tab, you might see a message similar to:
+
+```plaintext
+[Ingestion] Text fields that exceeded their character limit were truncated: `message` (12 results), `full_description` (3 rules).
+```
+
+This message means that GitLab shortened text in the SARIF report to meet the [limits](#limits).
+GitLab still ingests the affected findings. The counts show how many results (for `message`)
+or rules (for the other fields) were truncated.
+
+You might also see a message that a `help_uri` value exceeded the limit and was ignored.
+In that case, GitLab ingests the finding without the rule documentation link.
+
+To avoid these messages, shorten the text in the scanner configuration or output.
 
 ### Fewer findings than the SARIF report contains
 

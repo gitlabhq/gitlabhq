@@ -23,4 +23,4 @@ Upgrade notes for supported GitLab versions. For upgrade notes for older version
 
 - [GitLab release notes](https://docs.gitlab.com/releases/)
 - [Deprecations and removals](../deprecations.md)
-- [GitLab changelog](https://gitlab.com/gitlab-org/gitlab/-/blob/master/CHANGELOG.md)
+- [GitLab changelog](https://gitlab.com/gitlab-org/gitlab/-/raw/master/CHANGELOG.md)

@@ -18,8 +18,8 @@ module Gitlab
 
               if db_diffs.any?
                 build_inconsistency(self.class,
-                  SchemaObjects::Table.new(table_name, db_diffs),
-                  SchemaObjects::Table.new(table_name, structure_diffs))
+                  SchemaObjects::Table.new(table_name, structure_diffs),
+                  SchemaObjects::Table.new(table_name, db_diffs))
               end
             end
           end
@@ -31,7 +31,8 @@ module Gitlab
             structure_diffs = []
 
             columns.each do |column|
-              # Sliding-list partitioning moves the partition key default at run time, so it differs per instance
+              # Only a partition key's default can differ (its type is fixed and the PK keeps NOT NULL),
+              # and sliding-list partitioning moves that default at run time
               next if column.partition_key?
 
               db_column = db_table.fetch_column_by_name(column.name)

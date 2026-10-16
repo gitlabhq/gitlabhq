@@ -31,8 +31,10 @@ The Technical writing team is responsible for creating all other directories and
 To create a feature release note:
 
 1. Identify the directory for the associated release. It should be something similar to `/doc/releases/19/gitlab-19-1-released/`.
-1. In this directory, create a Markdown file for the feature release note. Although the name doesn't matter, it's
-   helpful to name it so it's identifiable later.
+1. In this directory, create a Markdown file for the feature release note.
+   Name the file with a short, hyphenated slug based on the release note title, not the work item title.
+   Keep the name unique in the release directory.
+   When two release notes share the same `weight` value, the filename decides which one appears first.
 1. Paste the [template](#feature-release-note) from below into the Markdown file.
 1. Adjust the [metadata](#feature-release-note-metadata) to match your specific needs.
    - Documentation links must be relative.
@@ -47,6 +49,32 @@ To create a feature release note:
 
 > [!note]
 > All release notes should be merged by 23:59 UTC on the Friday before the release day to be included in the appropriate release.
+
+Release notes use two different link formats. Mixing them up breaks the CI pipeline.
+
+- The `documentation_link` metadata field is a relative link. Omit the `.md` extension and `_index`.
+  From a release directory, the link starts with `../../../`. For example: `../../../user/permissions/#groups`.
+- Links inside the note body are also relative, but they keep the `.md` extension and any anchor.
+  For example: `../../../user/application_security/sast/gitlab_advanced_sast.md`.
+
+The link linter checks body links against the repository. GitLab converts the metadata link into a full
+URL when it publishes the note.
+
+## Write the release note text
+
+Explain the value of the change. Use phrases that start with, "In previous versions of GitLab, you couldn't... Now you can..."
+
+Follow these guidelines:
+
+- Use 125 words or fewer.
+- Keep each sentence under 25 words.
+- Write in the second person and present tense, with a conversational tone.
+- Focus on what the reader can do. Don't use "we".
+- Don't include implementation details, such as syntax, variable names, or API parameters. A brief activation step is fine.
+- If the feature delivers several distinct capabilities, use a bulleted list instead of one paragraph.
+- Give links meaningful text that describes the destination. Don't use vague link text such as "here".
+
+For word choices, see the [word list](styleguide/word_list.md).
 
 ## Edit or remove a feature release note
 
@@ -140,7 +168,7 @@ To update the content for the current release:
    title: GitLab <version> (Upcoming release)
 
    # New
-   title: GitLab <version>
+   title: GitLab <version> release notes
    ```
 
 1. Update the introductory text:
@@ -280,7 +308,7 @@ values unless a note must absolutely appear first.
 
 | Metadata      | Format                                                                                                                         | Description |
 | ------------- | ------------------------------------------------------------------------------------------------------------------------------ | ----------- |
-| `title`       | Pre-release: `GitLab <version> (Upcoming release)`<br>Post-release: `GitLab <version>`                                         | Page title. Uses the first format before release, and the second on release day. |
+| `title`       | Pre-release: `GitLab <version> (Upcoming release)`<br>Post-release: `GitLab <version> release notes`                          | Page title. Uses the first format before release, and the second on release day. |
 | `description` | Pre-release: `Summary of features included in <version>`<br>Post-release: `GitLab <version> released with <top feature title>` | Short summary displayed on cards for the index page. |
 | `group`       | `Monthly Release`, `Patch Release`                                                                                             | Used for analytics and feedback. Always uses `Monthly Release`; patch releases are created through a different process. |
 | `stage`       | `Release Notes`                                                                                                                | Used for analytics and feedback. Always uses `Release Notes`. |
@@ -295,7 +323,7 @@ values unless a note must absolutely appear first.
 | `documentation_link` | relative URL                                                                                           | Link to the feature documentation. Don't use `https://`-style links, and omit `_index.md` or the `.md` extension. |
 | `work_item`          | absolute URL                                                                                           | Link to the related work item. Must not be confidential. |
 | `categories`         | array                                                                                                  | An array with the `Name` value of one or more [categories](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/categories.yml). Values are case-sensitive, separate multiple values with commas. If a related category doesn't exist, make another merge request to add it. |
-| `stage`              | string                                                                                                 | Name of the stage that created the feature. Used to [organize](#organization) the section the release note appears in. |
+| `stage`              | string                                                                                                 | Name of the stage that created the feature. Used to [organize](#organization) the section the release note appears in. The value must match an entry in [`release_post_groupings.yaml`](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/data/release_post_groupings.yaml) in the `docs-gitlab-com` project. A `devops::` label doesn't always map to a valid stage value, so check the list first. An unrecognized value puts the note in the wrong section, with no error. |
 | `level`              | One of: `primary` or `secondary`                                                                       | Optional. Controls placement in the `Primary features` section. If undefined, defaults to `secondary`. |
 | `co_create`          | boolean                                                                                                | Optional. When `true`, the release note appears in the `Co-created contributions` section instead of a stage section, and `level` is ignored. Use for community contributions and features delivered through the [Co-Create program](https://about.gitlab.com/community/co-create/). |
 | `weight`             | number                                                                                                 | Optional. Controls ordering in each [section](#organization). Lower numbers go first. To force a feature release note first in a section, use a lower number such as 10. To avoid sorting issues with other feature release notes, avoid using single-digit numbers unless the note must absolutely appear first. |

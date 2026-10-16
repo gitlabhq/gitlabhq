@@ -207,8 +207,7 @@ func TestWsRoutesRequireWebsocketUpgrade(t *testing.T) {
 }
 
 func TestTerraformStateLockUnlockBodyLimit(t *testing.T) {
-	// The backend answers with the body it received, so that a subtest can
-	// check that Workhorse forwarded all of it.
+	// Echo the body so a subtest can check that Workhorse forwarded all of it.
 	railsServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		body, err := io.ReadAll(r.Body)
 		if err != nil {

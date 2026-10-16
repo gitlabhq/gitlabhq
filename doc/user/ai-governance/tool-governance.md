@@ -203,9 +203,7 @@ Prerequisites:
 To configure tool governance rules for a project:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. In the left sidebar, select **Settings** > **General**.
-1. Expand **GitLab Duo**.
-1. Select **Change governance**.
+1. In the left sidebar, select **AI** > **Governance**.
 1. For each tool, select a mode from the dropdown: **Always Allow**, **Always Ask**, or **Always Deny**.
 1. Select **Save changes**.
 
@@ -290,8 +288,7 @@ Prerequisites:
 To block an MCP server for a project:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. In the left sidebar, select **Settings** > **General** > **GitLab Duo**.
-1. Select **Change governance**.
+1. In the left sidebar, select **AI** > **Governance**.
 1. Select the **MCP Registry** tab.
 1. Find the MCP server you want to block and select **Block**.
 

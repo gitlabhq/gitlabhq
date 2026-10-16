@@ -40,6 +40,9 @@ module Ci
       log_downstream_pipeline_creation(downstream_pipeline)
       log_audit_event(downstream_pipeline)
       update_bridge_status!(@bridge, downstream_pipeline)
+    rescue ::Ci::Pipeline::VariablesFileMissingError
+      @bridge.reset.drop!(:pipeline_variables_file_missing)
+      ServiceResponse.error(message: 'Pipeline variables file is missing')
     rescue StandardError => e
       @bridge.reset.drop!(:data_integrity_failure)
       raise e

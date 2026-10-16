@@ -1466,6 +1466,25 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
     end
   end
 
+  context 'when the pipeline variables file is missing from storage', :aggregate_failures do
+    before do
+      downstream_project.add_developer(user)
+
+      create_or_replace_pipeline_variables(upstream_pipeline, key: 'PIPELINE_VARIABLE', value: 'my-value')
+      upstream_pipeline.pipeline_artifacts_pipeline_variables.file.remove!
+      upstream_pipeline.clear_memoization(:variables)
+    end
+
+    it 'drops the bridge without creating a pipeline' do
+      expect { subject }.not_to change { Ci::Pipeline.count }
+
+      expect(subject).to be_error
+      expect(subject.message).to eq('Pipeline variables file is missing')
+      expect(bridge.reload).to be_failed
+      expect(bridge.failure_reason).to eq('pipeline_variables_file_missing')
+    end
+  end
+
   context 'when bridge is already running but has no downstream pipeline' do
     let(:bridge) do
       create(

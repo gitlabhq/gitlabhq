@@ -1,7 +1,9 @@
 <script>
 import { times, constant, chunk } from 'lodash-es';
 import { GlAlert, GlButton, GlLink, GlEmptyState, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
+import { parseBoolean } from '@gitlab/frontend-utils';
 import { __, n__, s__, sprintf } from '~/locale';
+import { normalizeHeaders } from '~/lib/utils/common_utils';
 import { getMonthNames } from '~/lib/utils/datetime/date_format_utility';
 import { CONTRIB_LEGENDS, FIRST_DAY_OF_WEEK_CHOICES } from '~/contribution_events/constants';
 import AjaxCache from '~/lib/utils/ajax_cache';
@@ -28,6 +30,11 @@ import ContributionEvents from '~/contribution_events/components/contribution_ev
 import { CALENDAR_PERIOD_12_MONTHS } from '../constants';
 import ActivitySkeletonLoader from './activity_skeleton_loader.vue';
 
+// Keep in sync with UsersController::FEED_HAS_MORE_HEADER.
+const HAS_MORE_HEADER = 'X-HAS-MORE';
+// Bounds how far one "Load more" click will chase pages that are entirely
+// hidden from the viewer before handing control back.
+const MAX_LOAD_MORE_REQUESTS = 5;
 const MONTH_NAMES = getMonthNames(true);
 const DAYS_IN_THE_WEEK = 7;
 const FIRST_DAY_OF_WEEK_INDEX = 0;
@@ -547,12 +554,27 @@ export default {
         await this.loadActivities(dateString);
       }
     },
+    loadNextActivitiesPage() {
+      return this.selectedDate
+        ? this.loadActivities(this.selectedDate, true)
+        : this.loadGeneralActivities(true);
+    },
     async loadMoreActivities() {
-      if (this.selectedDate) {
-        await this.loadActivities(this.selectedDate, true);
-      } else {
-        await this.loadGeneralActivities(true);
-      }
+      // A page arrives empty when every event in it is hidden from the viewer.
+      // Keep paging in that case, so a click always has a visible effect.
+      let added = 0;
+      let requests = 0;
+
+      do {
+        // eslint-disable-next-line no-await-in-loop
+        added = await this.loadNextActivitiesPage();
+        requests += 1;
+      } while (
+        added === 0 &&
+        this.hasMoreActivities &&
+        !this.activitiesError &&
+        requests < MAX_LOAD_MORE_REQUESTS
+      );
     },
     async loadActivities(dateString, append = false) {
       if (append) {
@@ -569,7 +591,7 @@ export default {
       const offset = append ? this.activitiesOffset : 0;
 
       try {
-        const { data } = await axios.get(this.userCalendarActivitiesPath, {
+        const { data, headers } = await axios.get(this.userCalendarActivitiesPath, {
           params: { date: dateString, limit, offset },
           headers: { Accept: 'application/json' },
         });
@@ -577,9 +599,13 @@ export default {
         const newEvents = data || [];
         this.activities = append ? [...this.activities, ...newEvents] : newEvents;
         this.activitiesOffset = offset + limit;
-        this.hasMoreActivities = newEvents.length >= limit;
+        this.hasMoreActivities = parseBoolean(normalizeHeaders(headers)[HAS_MORE_HEADER]);
+
+        return newEvents.length;
       } catch {
         this.activitiesError = true;
+
+        return 0;
       } finally {
         this.activitiesLoading = false;
         this.activitiesLoadingMore = false;
@@ -598,7 +624,7 @@ export default {
       const offset = append ? this.activitiesOffset : 0;
 
       try {
-        const { data } = await axios.get(this.userActivityPath, {
+        const { data, headers } = await axios.get(this.userActivityPath, {
           params: { type: 'raw', limit, offset },
           headers: { Accept: 'application/json' },
         });
@@ -606,7 +632,7 @@ export default {
         const newEvents = data || [];
         this.activities = append ? [...this.activities, ...newEvents] : newEvents;
         this.activitiesOffset = offset + limit;
-        this.hasMoreActivities = newEvents.length >= limit;
+        this.hasMoreActivities = parseBoolean(normalizeHeaders(headers)[HAS_MORE_HEADER]);
 
         // The general (no day selected) feed reflects whether the user has any
         // activity at all, so use it to drive the "View all" link.
@@ -614,8 +640,12 @@ export default {
           this.hasActivity = this.activities.length > 0;
           this.activitiesLoaded = true;
         }
+
+        return newEvents.length;
       } catch {
         this.activitiesError = true;
+
+        return 0;
       } finally {
         this.activitiesLoading = false;
         this.activitiesLoadingMore = false;
@@ -712,7 +742,10 @@ export default {
         </template>
       </div>
     </div>
-    <div v-if="!hasError" class="gl-mb-0 gl-mt-2 gl-flex gl-items-start gl-justify-between">
+    <div
+      v-if="!hasError"
+      class="contrib-legend-wrapper gl-mb-0 gl-mt-2 gl-flex gl-items-start gl-justify-between"
+    >
       <!-- Legend -->
       <div class="gl-flex gl-items-center gl-gap-2 gl-text-sm">
         <span class="gl-text-sm gl-text-subtle">{{ $options.i18n.legendLess }}</span>
@@ -754,10 +787,7 @@ export default {
       </h3>
 
       <!-- Initial loading: skeleton entries mimicking the activity list -->
-      <activity-skeleton-loader
-        v-if="activitiesLoading && activities.length === 0"
-        class="-gl-mt-3"
-      />
+      <activity-skeleton-loader v-if="activitiesLoading && activities.length === 0" />
 
       <!-- Error state -->
       <gl-alert

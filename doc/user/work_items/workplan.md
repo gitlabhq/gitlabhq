@@ -280,6 +280,11 @@ In the **Workplan** widget on the work item, the readiness level appears as
 The readiness level appears only after GitLab Duo generates a workplan and
 calculates a score.
 
+To view the score and available feedback, select **Readiness details**
+({{< icon name="information-o" >}}) next to the readiness indicator.
+The details open in a drawer.
+Select **Readiness details** again to close the drawer.
+
 To raise the score, add more detail to the work item description and to the workplan
 steps, such as requirements, acceptance criteria, and constraints.
 

@@ -400,7 +400,7 @@ Fix the flaky spec in issue #1234 and open an MR in gitlab-org/gitlab
 
 Lists your GitLab Duo Agent Platform sessions, excluding Duo Chat sessions.
 Each session includes its individual status, goal preview, flow definition, and creation timestamp.
-Project sessions also include a session URL.
+Project and group sessions also include a session URL.
 The goal preview might be truncated.
 
 | Parameter      | Type    | Required | Description |

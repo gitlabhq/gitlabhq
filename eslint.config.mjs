@@ -630,6 +630,14 @@ export default [
       'vue/no-deprecated-v-bind-sync': 'error',
       'vue/no-deprecated-v-is': 'error',
       'vue/no-deprecated-v-on-native-modifier': 'error',
+      'vue/no-restricted-v-on': [
+        'error',
+        {
+          argument: '/^hook:/',
+          message:
+            'Lifecycle hook events are removed in Vue 3, and INSTANCE_EVENT_HOOKS is disabled in vue3compat/compat_config.js. Emit a regular event from the child instead.',
+        },
+      ],
 
       // Vue 3 components with render()
       'no-restricted-syntax': [

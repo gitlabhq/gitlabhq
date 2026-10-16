@@ -1,5 +1,5 @@
 # Providers of external content that can be embedded in GitLab Flavored Markdown.
-# See lib/gitlab/markdown/iframe_providers.rb.
+# See lib/banzai/iframe_providers.rb.
 #
 # Each provider is keyed by its ID, which administrators use to enable it.
 #
@@ -18,7 +18,7 @@
 #                         replaced with the percent-encoded capture.  Every placeholder must be
 #                         captured by every match (required).
 #   sandbox:              iframe sandbox flags; only flags listed in
-#                         Gitlab::Markdown::IframeProviders::PERMITTED_SANDBOX_FLAGS are
+#                         Banzai::IframeProviders::PERMITTED_SANDBOX_FLAGS are
 #                         accepted (required, may be empty).
 #   additional_csp_hosts: List of hostnames to also be added to the frame CSP when this provider
 #                         is used (optional).

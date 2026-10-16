@@ -18,6 +18,9 @@ Draft notes can start a discussion, or continue an existing discussion as a repl
 
 Before publishing, draft notes are visible only to the author.
 
+When you publish a draft note, GitLab might change its body.
+For more information, see [note body normalization](notes.md#note-body-normalization).
+
 ## List all merge request draft notes
 
 Lists all merge request draft notes.

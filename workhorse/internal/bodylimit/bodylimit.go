@@ -51,8 +51,8 @@ type countingReadCloser struct {
 	count  int64
 	limit  int64
 	mode   Mode
-	// tooLarge is set once the body is known to be over the limit, and is
-	// returned by every later read.
+	// Sticky because the probe consumed a byte: probing again could see EOF
+	// and report an oversized body as complete.
 	tooLarge error
 }
 
@@ -65,8 +65,7 @@ func (crc *countingReadCloser) Read(p []byte) (n int, err error) {
 		currentCount := atomic.LoadInt64(&crc.count)
 		remaining := crc.limit - currentCount
 		if remaining <= 0 {
-			// The limit has been reached. A body of exactly the limit size ends
-			// here, so only fail if the underlying reader has more data.
+			// A body of exactly the limit ends here, so fail only if the reader has more.
 			var probe [1]byte
 			if probed, probeErr := crc.reader.Read(probe[:]); probed == 0 {
 				return 0, probeErr

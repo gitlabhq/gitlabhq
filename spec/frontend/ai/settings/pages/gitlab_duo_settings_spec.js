@@ -97,8 +97,6 @@ describe('GitlabDuoSettings', () => {
     );
   const findAuditEventsStorageCascadingLockIcon = () =>
     wrapper.findByTestId('ai-audit-events-storage-cascading-lock-icon');
-  const findGovernanceCard = () => wrapper.findByTestId('duo-governance-info-card-header');
-  const findGovernanceLink = () => wrapper.findByTestId('duo-governance-link');
 
   beforeEach(() => {
     wrapper = createWrapper();
@@ -1072,23 +1070,6 @@ describe('GitlabDuoSettings', () => {
 
       // Verify that exclusion rules were updated
       expect(wrapper.vm.exclusionRules).toEqual(newRules);
-    });
-  });
-
-  describe('governance card', () => {
-    const governancePath = '/group/project/-/automate/governance';
-
-    it('is hidden when no governancePath is provided', () => {
-      wrapper = createWrapper();
-
-      expect(findGovernanceCard().exists()).toBe(false);
-    });
-
-    it('renders the governance card before the save button when governancePath is set', () => {
-      wrapper = createWrapper({ governancePath });
-
-      expect(findGovernanceCard().exists()).toBe(true);
-      expect(findGovernanceLink().attributes('href')).toBe(governancePath);
     });
   });
 

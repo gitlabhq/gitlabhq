@@ -4070,6 +4070,8 @@ incompatible with personal access tokens.
 | `PATCH` | `/api/scim/:version/application/Groups/:id` | SCIM token |
 | `PUT` | `/api/scim/:version/application/Groups/:id` | SCIM token |
 | `DELETE` | `/api/scim/:version/application/Groups/:id` | SCIM token |
+| `GET` | `/api/scim/:version/application/ResourceTypes` | SCIM token |
+| `GET` | `/api/scim/:version/application/ResourceTypes/:id` | SCIM token |
 | `GET` | `/api/scim/:version/application/Schemas` | SCIM token |
 | `GET` | `/api/scim/:version/application/Schemas/:id` | SCIM token |
 | `GET` | `/api/scim/:version/application/ServiceProviderConfig` | SCIM token |
@@ -4078,6 +4080,8 @@ incompatible with personal access tokens.
 | `GET` | `/api/scim/:version/application/Users/:id` | SCIM token |
 | `PATCH` | `/api/scim/:version/application/Users/:id` | SCIM token |
 | `DELETE` | `/api/scim/:version/application/Users/:id` | SCIM token |
+| `GET` | `/api/scim/:version/groups/:group/ResourceTypes` | SCIM token |
+| `GET` | `/api/scim/:version/groups/:group/ResourceTypes/:id` | SCIM token |
 | `GET` | `/api/scim/:version/groups/:group/Schemas` | SCIM token |
 | `GET` | `/api/scim/:version/groups/:group/Schemas/:id` | SCIM token |
 | `GET` | `/api/scim/:version/groups/:group/ServiceProviderConfig` | SCIM token |

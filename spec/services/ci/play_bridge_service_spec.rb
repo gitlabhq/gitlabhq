@@ -61,6 +61,37 @@ RSpec.describe Ci::PlayBridgeService, '#execute', feature_category: :continuous_
     end
   end
 
+  context 'when the pipeline variables file is missing from storage' do
+    let(:pipeline) { create(:ci_pipeline, project: project) }
+
+    before do
+      create(:ci_pipeline_artifact, :with_pipeline_variables, pipeline: pipeline).file.remove!
+    end
+
+    shared_examples 'denying the play without a downstream pipeline' do
+      it 'raises an error and leaves the bridge manual', :aggregate_failures do
+        # `user` maintains both projects, so only the missing variables deny the play
+        expect { execute_service }
+          .to raise_error(Gitlab::Access::AccessDeniedError)
+          .and not_change { Ci::Pipeline.count }
+
+        expect(bridge.reload).to be_manual
+      end
+    end
+
+    context 'with a multi-project bridge' do
+      it_behaves_like 'denying the play without a downstream pipeline'
+    end
+
+    context 'with a child pipeline bridge' do
+      let(:bridge) do
+        create(:ci_bridge, :playable, pipeline: pipeline, options: { trigger: { include: 'child.yml' } })
+      end
+
+      it_behaves_like 'denying the play without a downstream pipeline'
+    end
+  end
+
   context 'with rate limiting', :clean_gitlab_redis_rate_limiting, :freeze_time do
     let(:other_bridge) { create(:ci_bridge, :playable, pipeline: pipeline, downstream: downstream_project) }
 

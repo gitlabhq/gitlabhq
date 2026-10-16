@@ -5,10 +5,6 @@ module UserHelpers
     generate_user_from_membership(:create, target, membership)
   end
 
-  def build_user_from_membership(target, membership)
-    generate_user_from_membership(:build, target, membership)
-  end
-
   private
 
   # @param method [Symbol] FactoryBot methods :create, :build, :build_stubbed

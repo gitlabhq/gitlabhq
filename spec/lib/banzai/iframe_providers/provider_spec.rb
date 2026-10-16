@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::Markdown::IframeProviders::Provider, feature_category: :markdown do
+RSpec.describe Banzai::IframeProviders::Provider, feature_category: :markdown do
   let(:valid_entry) do
     {
       'name' => 'Example',
@@ -23,7 +23,7 @@ RSpec.describe Gitlab::Markdown::IframeProviders::Provider, feature_category: :m
 
   def expect_config_error(message, id = 'example', **overrides)
     expect { from_config(id, **overrides) }
-      .to raise_error(Gitlab::Markdown::IframeProviders::ConfigError, /provider '#{id}': #{message}/)
+      .to raise_error(Banzai::IframeProviders::ConfigError, /provider '#{id}': #{message}/)
   end
 
   describe '.from_config' do
@@ -39,7 +39,7 @@ RSpec.describe Gitlab::Markdown::IframeProviders::Provider, feature_category: :m
         sandbox: %w[allow-scripts allow-popups],
         require_activation: false
       )
-      expect(provider.matches).to all(be_a(Gitlab::Markdown::IframeProviders::MatchRule))
+      expect(provider.matches).to all(be_a(Banzai::IframeProviders::MatchRule))
       expect(provider.matches.map(&:host)).to eq(%w[www.example.com example.com])
     end
 
@@ -66,7 +66,7 @@ RSpec.describe Gitlab::Markdown::IframeProviders::Provider, feature_category: :m
 
     it 'rejects a non-mapping entry' do
       expect { described_class.from_config('example', []) }
-        .to raise_error(Gitlab::Markdown::IframeProviders::ConfigError, /must be a mapping/)
+        .to raise_error(Banzai::IframeProviders::ConfigError, /must be a mapping/)
     end
 
     it 'rejects unknown keys' do

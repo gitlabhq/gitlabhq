@@ -43,6 +43,30 @@ RSpec.describe Ci::TriggerDownstreamPipelineService, feature_category: :continuo
       end
     end
 
+    context 'when trigger:project reads the pipeline variables and their file is missing from storage' do
+      let_it_be(:pipeline) { create(:ci_pipeline, project: project, user: user) }
+
+      let(:bridge) do
+        create(:ci_bridge, status: :pending, options: bridge_options, pipeline: pipeline, user: user)
+      end
+
+      let(:bridge_options) { { trigger: { project: '$DOWNSTREAM_PROJECT' } } }
+
+      before do
+        artifact = create(:ci_pipeline_artifact, :with_pipeline_variables, pipeline: pipeline)
+        artifact.file.remove!
+      end
+
+      it 'drops the bridge without scheduling the downstream pipeline worker', :aggregate_failures do
+        expect { execute }.not_to change { ::Ci::CreateDownstreamPipelineWorker.jobs.size }
+
+        expect(bridge.reload).to be_failed
+        expect(bridge.failure_reason).to eq('pipeline_variables_file_missing')
+        expect(execute).to be_error
+        expect(execute.message).to eq('Pipeline variables file is missing')
+      end
+    end
+
     # In these tests, we execute the service twice in succession
     describe 'rate limiting', :freeze_time, :clean_gitlab_redis_rate_limiting do
       shared_examples 'creates a log entry' do |downstream_type = 'multi-project'|

@@ -5,6 +5,8 @@ module Projects
     extend ::Ci::BuildsHelper
 
     def js_pipeline_tabs_data(project, pipeline, _user)
+      manual_variables_count = pipeline_manual_variables_count(pipeline)
+
       {
         failed_jobs_count: pipeline.failed_builds.count,
         project_path: project.full_path,
@@ -23,7 +25,8 @@ module Projects
         blob_path: project_blob_path(project, pipeline.sha),
         has_test_report: pipeline.has_test_reports?,
         tests_count: pipeline.accessible_test_report_summary(current_user).total[:count],
-        manual_variables_count: pipeline.variables.count,
+        manual_variables_count: manual_variables_count,
+        manual_variables_unavailable: manual_variables_count.nil?.to_s,
         can_read_variables: can?(current_user, :read_pipeline_variable, pipeline).to_s,
         display_pipeline_variables: pipeline.project.ci_display_pipeline_variables?.to_s
       }
@@ -36,6 +39,14 @@ module Projects
         pipeline_iid: pipeline.iid,
         pipelines_path: project_pipelines_path(project)
       }
+    end
+
+    private
+
+    def pipeline_manual_variables_count(pipeline)
+      pipeline.variables.count
+    rescue ::Ci::Pipeline::VariablesFileMissingError
+      nil
     end
   end
 end

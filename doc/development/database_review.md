@@ -103,6 +103,31 @@ make sure you have applied the `~database` label and rerun the
 `danger-review` CI job, or pick someone from the
 [`@gl-database` team](https://gitlab.com/groups/gl-database/-/group_members).
 
+#### When to request a database review
+
+If the merge request also needs a backend review, request the database review after the backend
+reviewer approves.
+You don't need to wait for the backend maintainer.
+Backend feedback can change the code, which may then need another database review round, and
+database review capacity is limited.
+
+Request the database review immediately if:
+
+- The merge request doesn't need a backend review.
+- The merge request skips the backend reviewer and goes straight to a backend maintainer.
+- The merge request is time-sensitive, such as a security fix, an incident follow-up, or a release
+  blocker.
+
+If your backend reviewer is also a database reviewer, they can review both in one pass.
+
+If the merge request adds a table, changes the schema, or introduces a new query pattern, you can
+get early design feedback.
+Ask a database reviewer or maintainer, or ask in `#database`.
+This doesn't replace the database review.
+
+If the suggested database reviewer is no longer available when you request the review, rerun the
+`danger-review` job to get a new suggestion.
+
 ### How to prepare the merge request for a database review
 
 To make reviewing easier and therefore faster, take

@@ -138,8 +138,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
     - `response_from_llm: response_body`
     - `latency_seconds: latency_seconds`
     - `user_id: user.id`
-    - `input_tokens: integer` (when present in response)
-    - `output_tokens: integer` (when present in response)
+    - `token_usage: [{ model_name, input_tokens, output_tokens }]` (one entry for each model, when a non-streamed response reports usage)
   - Part of the system: abstraction_layer
   - Expanded logging?: yes
   - Rails: no
@@ -319,6 +318,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
     - `prompt: prompt[:prompt]`
     - `response_from_llm: response`
     - `unit_primitive: unit_primitive`
+    - `token_usage: [{ model_name, input_tokens, output_tokens }]` (one entry for each model, when the streamed response reports usage)
   - Part of the system: duo_chat
   - Expanded logging?: yes
   - Rails: no

@@ -34,7 +34,8 @@ When using the GitLab PyPI package registry, package requests that cannot be fou
 For maximum security when working with private packages:
 
 - Turn off package forwarding in your group settings.
-- Use both [`--index-url` and `--no-index`](#security-implications) flags when installing packages.
+- Set the GitLab registry URL with `--index-url` instead of `--extra-index-url`. With `--extra-index-url`, `pip` keeps pypi.org as its own index and queries the URL directly.
+- Do not use the `--no-index` flag. The flag forces `pip` to ignore every package index, including the GitLab registry set with `--index-url`.
 
 Prerequisites:
 
@@ -281,9 +282,7 @@ the three characters, such as `my-package`, `my_package`, and `my....package`.
 The security implications of using `--extra-index-url` versus `--index-url` when installing PyPI
 packages are significant and worth understanding in detail:
 
-- `--index-url`: This option replaces the default PyPI index URL with the specified URL. The GitLab package forwarding setting, which is turned on by default, might still download packages not found in the package registry from PyPI. To ensure packages are only installed from GitLab, either:
-  - Disable package forwarding in group settings
-  - Use both `--index-url` and `--no-index` flags together
+- `--index-url`: This option replaces the default PyPI index URL with the specified URL. The GitLab package forwarding setting, which is turned on by default, might still download packages not found in the package registry from PyPI. To ensure packages are only installed from GitLab, turn off package forwarding.
 - `--extra-index-url`: This option adds an additional index to search, alongside the default PyPI index.
   It's less secure and more open to dependency confusion attacks, because it checks both the default PyPI
   and the additional index for packages.
@@ -291,7 +290,7 @@ packages are significant and worth understanding in detail:
 When using private packages, keep in mind the following best practices:
 
 - Check your group's package forwarding settings.
-- Use `--no-index` and `--index-url` flags together when installing private packages.
+- Use `--index-url` instead of `--extra-index-url` when installing private packages.
 - Regularly audit your package sources using `pip debug`.
 
 ## Delete a PyPI package
@@ -518,5 +517,6 @@ scope `read_package_registry` from a common parent group for all projects or gro
 If packages are being installed from PyPI when you intended to use only the GitLab registry:
 
 - Check your group's package forwarding settings.
-- Use `--no-index` and `--index-url` flags together to prevent PyPI fallback.
+- Turn off package forwarding to prevent PyPI fallback.
+- Use `--index-url` instead of `--extra-index-url`, so that `pip` does not query PyPI directly.
 - Regularly audit your package sources using `pip debug`.

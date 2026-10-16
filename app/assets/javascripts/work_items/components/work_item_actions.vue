@@ -217,6 +217,11 @@ export default {
       required: false,
       default: () => [],
     },
+    features: {
+      type: Object,
+      required: false,
+      default: null,
+    },
     allowedChildTypes: {
       type: Array,
       required: false,
@@ -864,6 +869,7 @@ export default {
       :has-children="hasChildren"
       :has-parent="hasParent"
       :widgets="widgets"
+      :features="features"
       :allowed-child-types="allowedChildTypes"
       :namespace-full-name="namespaceFullName"
       @work-item-type-changed="$emit('work-item-type-changed')"

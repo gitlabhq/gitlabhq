@@ -1048,16 +1048,20 @@ variables in the translation that aren't in the message with ID `1 pipeline`.
 
 ## Adding a new language
 
-A new language should only be added as an option in User Preferences once at least 10% of the
-strings have been translated and approved. Even though a larger number of strings may have been
-translated, only the approved translations display in the GitLab UI.
+A language is available in user preferences when:
 
-> [!note]
-> Languages with less than 2% of translations are not available in the UI.
+- The language is listed in `AVAILABLE_LANGUAGES` in `lib/gitlab/i18n.rb`.
+- The language has a value in `TRANSLATION_LEVELS` in the same file that is at least
+  `MINIMUM_TRANSLATION_LEVEL`. The minimum is 2%.
+
+Even though a larger number of strings might have been translated, only the approved translations
+display in the GitLab UI.
+The Localization team updates the values in `TRANSLATION_LEVELS` manually.
 
 Suppose you want to add translations for a new language, for example, French:
 
-1. Register the new language in `lib/gitlab/i18n.rb`:
+1. Register the new language in `lib/gitlab/i18n.rb`, in both `AVAILABLE_LANGUAGES` and
+   `TRANSLATION_LEVELS`:
 
    ```ruby
    ...
@@ -1066,7 +1070,15 @@ Suppose you want to add translations for a new language, for example, French:
      'fr' => 'Français'
    }.freeze
    ...
+   TRANSLATION_LEVELS = {
+     ...,
+     'fr' => 2
+   }.freeze
+   ...
    ```
+
+   If the language has no value in `TRANSLATION_LEVELS`, its level is 0 and the language is not
+   available in user preferences.
 
 1. Add the language:
 
@@ -1090,14 +1102,21 @@ Suppose you want to add translations for a new language, for example, French:
    bin/rake gettext:compile
    ```
 
-1. To see the translated content, you must change your preferred language. You can find this under
-   the user's **Settings** (`/profile`).
+1. To see the translated content, change your preferred language:
+   1. In the upper-right corner, select your avatar.
+   1. Select **Preferences**.
+   1. Go to the **Localization** section.
+   1. Under **Language**, select the language.
+   1. Select **Save changes**.
 1. After checking that the changes are ok, commit the new files. For example:
 
    ```shell
-   git add locale/fr/ app/assets/javascripts/locale/fr/
+   git add locale/fr/
    git commit -m "Add French translations for Value Stream Analytics page"
    ```
+
+   The `gettext:compile` task also writes `app/assets/javascripts/locale/fr/app.js`.
+   Git ignores this file, so you do not commit it.
 
 ## Manually test translations from the UI
 

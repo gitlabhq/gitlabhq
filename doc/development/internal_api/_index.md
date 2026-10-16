@@ -1056,11 +1056,12 @@ This group SCIM API is different to the [SCIM API](../../api/scim.md). The SCIM 
 > The availability of this feature is controlled by a feature flag.
 > For more information, see the history.
 
-Use the discovery endpoints to let a SCIM identity provider find out which SCIM features and schemas GitLab supports.
+Use the discovery endpoints to let a SCIM identity provider find out which SCIM features,
+resource types, and schemas GitLab supports.
 For more information, see [the RFC7644 service provider configuration section](https://www.rfc-editor.org/rfc/rfc7644#section-4).
 These endpoints only describe what GitLab supports. They do not change how users are provisioned.
 
-The group SCIM API supports only the `User` schema.
+The group SCIM API supports only the `User` resource type and schema.
 
 #### Get the service provider configuration
 
@@ -1101,6 +1102,45 @@ Example response:
   "meta": {
     "resourceType": "ServiceProviderConfig",
     "location": "https://gitlab.example.com/api/scim/v2/groups/test_group/ServiceProviderConfig"
+  }
+}
+```
+
+#### Get the resource types
+
+Returns the SCIM resource types that GitLab supports: `User`.
+
+```plaintext
+GET /api/scim/v2/groups/:group_path/ResourceTypes
+GET /api/scim/v2/groups/:group_path/ResourceTypes/:id
+```
+
+| Attribute | Type   | Required | Description |
+|:----------|:-------|:---------|:------------|
+| `id`      | string | no       | ID of the resource type, for example `User`. |
+| `filter`  | string | no       | Not supported. If present, `GET /ResourceTypes` returns `403 Forbidden`. |
+
+Example request:
+
+```shell
+curl "https://gitlab.example.com/api/scim/v2/groups/test_group/ResourceTypes/User" \
+     --header "Authorization: Bearer <your_scim_token>" \
+     --header "Content-Type: application/scim+json"
+```
+
+Example response:
+
+```json
+{
+  "schemas": ["urn:ietf:params:scim:schemas:core:2.0:ResourceType"],
+  "id": "User",
+  "name": "User",
+  "endpoint": "/Users",
+  "description": "User Account",
+  "schema": "urn:ietf:params:scim:schemas:core:2.0:User",
+  "meta": {
+    "resourceType": "ResourceType",
+    "location": "https://gitlab.example.com/api/scim/v2/groups/test_group/ResourceTypes/User"
   }
 }
 ```
@@ -1918,11 +1958,12 @@ Returns an empty response with a `204` status code if successful.
 > The availability of this feature is controlled by a feature flag.
 > For more information, see the history.
 
-Use the discovery endpoints to let a SCIM identity provider find out which SCIM features and schemas GitLab supports.
+Use the discovery endpoints to let a SCIM identity provider find out which SCIM features,
+resource types, and schemas GitLab supports.
 For more information, see [the RFC7644 service provider configuration section](https://www.rfc-editor.org/rfc/rfc7644#section-4).
 These endpoints only describe what GitLab supports. They do not change how users are provisioned.
 
-The instance SCIM API supports the `User` and `Group` schemas.
+The instance SCIM API supports the `User` and `Group` resource types and schemas.
 
 #### Get the service provider configuration
 
@@ -1963,6 +2004,45 @@ Example response:
   "meta": {
     "resourceType": "ServiceProviderConfig",
     "location": "https://gitlab.example.com/api/scim/v2/application/ServiceProviderConfig"
+  }
+}
+```
+
+#### Get the resource types
+
+Returns the SCIM resource types that GitLab supports: `User`, `Group`.
+
+```plaintext
+GET /api/scim/v2/application/ResourceTypes
+GET /api/scim/v2/application/ResourceTypes/:id
+```
+
+| Attribute | Type   | Required | Description |
+|:----------|:-------|:---------|:------------|
+| `id`      | string | no       | ID of the resource type, for example `User`. |
+| `filter`  | string | no       | Not supported. If present, `GET /ResourceTypes` returns `403 Forbidden`. |
+
+Example request:
+
+```shell
+curl "https://gitlab.example.com/api/scim/v2/application/ResourceTypes/User" \
+     --header "Authorization: Bearer <your_scim_token>" \
+     --header "Content-Type: application/scim+json"
+```
+
+Example response:
+
+```json
+{
+  "schemas": ["urn:ietf:params:scim:schemas:core:2.0:ResourceType"],
+  "id": "User",
+  "name": "User",
+  "endpoint": "/Users",
+  "description": "User Account",
+  "schema": "urn:ietf:params:scim:schemas:core:2.0:User",
+  "meta": {
+    "resourceType": "ResourceType",
+    "location": "https://gitlab.example.com/api/scim/v2/application/ResourceTypes/User"
   }
 }
 ```

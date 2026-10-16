@@ -82,8 +82,8 @@ RSpec.describe Gitlab::BackgroundMigration::StripWhitespaceFromMembersInviteEmai
   # mistyped, or if the validator later changes, so any divergence is surfaced rather than silent.
   describe 'email validation constants' do
     it 'match the model DeviseEmailValidator rules' do
-      expect(described_class::EMAIL_REGEXP).to eq(DeviseEmailValidator::DEFAULT_OPTIONS[:regexp])
-      expect(described_class::ENCODED_WORD_REGEXP).to eq(DeviseEmailValidator::DEFAULT_OPTIONS[:encoded_word_regexp])
+      expect(described_class::EMAIL_REGEXP).to eq(Gitlab::Utils::Email.email_validation_regexp)
+      expect(described_class::ENCODED_WORD_REGEXP).to eq(Gitlab::Utils::Email::ENCODED_WORD_REGEXP)
     end
   end
 end

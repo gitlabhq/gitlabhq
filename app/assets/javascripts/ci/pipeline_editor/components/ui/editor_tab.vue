@@ -41,6 +41,19 @@ import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
  * </gl-tabs>
  */
 
+// Use a small renderless component to know when the tab content mounts because:
+// - gl-tab always gets mounted, even if lazy is `true`. See:
+// https://github.com/bootstrap-vue/bootstrap-vue/blob/dev/src/components/tabs/tab.js#L180
+// - we cannot listen to events on <slot />
+const MountSpy = {
+  name: 'MountSpy',
+  emits: ['mounted'],
+  mounted() {
+    this.$emit('mounted');
+  },
+  render: () => null,
+};
+
 export default {
   name: 'EditorTab',
   i18n: {
@@ -54,13 +67,7 @@ export default {
   components: {
     GlAlert,
     GlTab,
-    // Use a small renderless component to know when the tab content mounts because:
-    // - gl-tab always gets mounted, even if lazy is `true`. See:
-    // https://github.com/bootstrap-vue/bootstrap-vue/blob/dev/src/components/tabs/tab.js#L180
-    // - we cannot listen to events on <slot />
-    MountSpy: {
-      render: () => null,
-    },
+    MountSpy,
   },
   mixins: [glListenersMixin, glSlotsMixin],
   inheritAttrs: false,
@@ -131,7 +138,7 @@ export default {
     <gl-alert v-else-if="isInvalid" variant="danger">{{ $options.i18n.invalid }}</gl-alert>
     <template v-else>
       <slot v-for="slot in Object.keys(glSlots())" :name="slot"></slot>
-      <mount-spy @hook:mounted="onContentMounted" />
+      <mount-spy @mounted="onContentMounted" />
     </template>
   </gl-tab>
 </template>

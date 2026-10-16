@@ -1,5 +1,5 @@
 <script>
-import { GlToggle, GlButton, GlCard } from '@gitlab/ui';
+import { GlToggle, GlButton } from '@gitlab/ui';
 import DuoDependencyBumpProfileModal from 'ee_component/ai/settings/components/duo_dependency_bump_profile_modal.vue';
 import projectAutoRemediationProfileQuery from 'ee_else_ce/ai/settings/graphql/queries/project_auto_remediation_profile.query.graphql';
 import attachProfileMutation from 'ee_else_ce/ai/settings/graphql/mutations/auto_remediation_profile_attach.mutation.graphql';
@@ -27,7 +27,6 @@ export default {
   components: {
     GlToggle,
     GlButton,
-    GlCard,
     ProjectSettingRow,
     CascadingLockIcon,
     ExclusionSettings,
@@ -35,11 +34,6 @@ export default {
     DuoReadinessCard,
   },
   props: {
-    governancePath: {
-      type: String,
-      required: false,
-      default: '',
-    },
     duoAvailabilityCascadingSettings: {
       type: Object,
       required: false,
@@ -385,9 +379,6 @@ export default {
     otherSettingsSubtitle: s__('DuoAgentPlatform|Additional options for your project.'),
     saveChanges: __('Save changes'),
     saveChangesAriaLabel: __('Save changes for GitLab Duo'),
-    governanceTitle: s__('AiPowered|Governance'),
-    governanceDescription: s__('AiPowered|Control how your AI-powered features are used.'),
-    governanceAction: s__('AiPowered|Change governance'),
     duoAutoModeHelpText: s__(
       'AiPowered|Control whether users can relax governance "Always Ask" rules to "Always Allow" in the IDE and CLI. "Always Deny" rules always hold, regardless of mode.',
     ),
@@ -738,35 +729,6 @@ export default {
         :value="null"
       />
     </div>
-
-    <gl-card
-      v-if="governancePath"
-      class="gl-mt-5"
-      header-class="gl-heading-scale-300"
-      footer-class="gl-bg-transparent gl-border-none gl-flex gl-justify-end"
-      data-testid="duo-governance-info-card"
-    >
-      <template #header>
-        <h3 class="gl-m-0" data-testid="duo-governance-info-card-header">
-          {{ $options.i18n.governanceTitle }}
-        </h3>
-      </template>
-      <template #default>
-        <p class="gl-mb-0" data-testid="duo-governance-info-card-description">
-          {{ $options.i18n.governanceDescription }}
-        </p>
-      </template>
-      <template #footer>
-        <gl-button
-          category="primary"
-          variant="default"
-          :href="governancePath"
-          data-testid="duo-governance-link"
-        >
-          {{ $options.i18n.governanceAction }}
-        </gl-button>
-      </template>
-    </gl-card>
 
     <gl-button
       variant="confirm"

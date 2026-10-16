@@ -1307,7 +1307,7 @@ class ApplicationSetting < ApplicationRecord
 
   validates_each :iframe_rendering_allowlist,
     on: :update, if: :iframe_rendering_allowlist_changed? do |record, attr, value|
-    known_ids = Gitlab::Markdown::IframeProviders.known_providers.map(&:id)
+    known_ids = Banzai::IframeProviders.known_providers.map(&:id)
 
     (value - known_ids).each do |entry|
       record.errors.add(attr, format(_("'%{entry}' is not a known embed provider"), entry:))

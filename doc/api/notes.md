@@ -54,6 +54,22 @@ Read more on [pagination](rest/_index.md#pagination).
 To help avoid abuse, you can limit your users to a specific number of `Create` requests per minute.
 For more information, see [content creation rate limits](../rate_limits/content_creation.md).
 
+## Note body normalization
+
+When you create or update a note on an issue, merge request, epic, or commit, GitLab normalizes
+the body before saving it.
+This applies to notes sent through any API, including the
+[Discussions API](discussions.md), [Draft notes API](draft_notes.md), and [Commits API](commits.md).
+
+To normalize the body, GitLab does the following:
+
+- Runs and then removes any [quick actions](../user/project/quick_actions.md)
+- Removes carriage return characters (`\r`)
+- Removes trailing whitespace, including trailing newlines
+
+As a result, the `body` returned by later requests might not match the `body` you sent.
+Notes on snippets and wiki pages are saved as sent.
+
 ## Issues
 
 ### List all issue notes

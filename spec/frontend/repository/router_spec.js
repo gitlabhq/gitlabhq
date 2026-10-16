@@ -88,6 +88,21 @@ describe('Repository router spec', () => {
 
       expect(setTitle).toHaveBeenCalledWith(expectedPathParam, branch, projectName);
     });
+
+    it.each`
+      baseRef               | expectedTitleRef
+      ${'feature/%23123'}   | ${'feature/#123'}
+      ${'feat%2520special'} | ${'feat%20special'}
+    `(
+      'sets title with the decoded ref for base ref $baseRef',
+      async ({ baseRef, expectedTitleRef }) => {
+        const router = createRouter(projectPath, baseRef, projectName);
+
+        await router.push(`/-/tree/${baseRef}/app`);
+
+        expect(setTitle).toHaveBeenCalledWith('app', expectedTitleRef, projectName);
+      },
+    );
   });
 
   describe('Branch names with special characters', () => {

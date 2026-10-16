@@ -6448,6 +6448,21 @@
     "acceptsFormat": true
   },
   {
+    "template": "/admin/license/billable_usage_export",
+    "example": "/admin/license/billable_usage_export",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/admin/license/billable_usage_export/download",
+    "example": "/admin/license/billable_usage_export/download",
+    "acceptsFormat": true
+  },
+  {
+    "template": "/admin/license/billable_usage_export/terms",
+    "example": "/admin/license/billable_usage_export/terms",
+    "acceptsFormat": true
+  },
+  {
     "template": "/admin/license/download",
     "example": "/admin/license/download",
     "acceptsFormat": true
@@ -16265,6 +16280,18 @@
     "dottedExample": "/api/scim/john.doe/application/Groups/john.doe"
   },
   {
+    "template": "/api/scim/:version/application/ResourceTypes",
+    "example": "/api/scim/foo/application/ResourceTypes",
+    "acceptsFormat": true,
+    "dottedExample": "/api/scim/john.doe/application/ResourceTypes"
+  },
+  {
+    "template": "/api/scim/:version/application/ResourceTypes/:id",
+    "example": "/api/scim/foo/application/ResourceTypes/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/scim/john.doe/application/ResourceTypes/john.doe"
+  },
+  {
     "template": "/api/scim/:version/application/Schemas",
     "example": "/api/scim/foo/application/Schemas",
     "acceptsFormat": true,
@@ -16293,6 +16320,18 @@
     "example": "/api/scim/foo/application/Users/foo",
     "acceptsFormat": true,
     "dottedExample": "/api/scim/john.doe/application/Users/john.doe"
+  },
+  {
+    "template": "/api/scim/:version/groups/:group/ResourceTypes",
+    "example": "/api/scim/foo/groups/foo/ResourceTypes",
+    "acceptsFormat": true,
+    "dottedExample": "/api/scim/john.doe/groups/john.doe/ResourceTypes"
+  },
+  {
+    "template": "/api/scim/:version/groups/:group/ResourceTypes/:id",
+    "example": "/api/scim/foo/groups/foo/ResourceTypes/foo",
+    "acceptsFormat": true,
+    "dottedExample": "/api/scim/john.doe/groups/john.doe/ResourceTypes/john.doe"
   },
   {
     "template": "/api/scim/:version/groups/:group/Schemas",
@@ -16832,6 +16871,11 @@
     "template": "/groups/*group_id/-/automate(/*vueroute)",
     "example": "/groups/foo/bar/-/automate/foo/bar",
     "dottedExample": "/groups/john.doe/bar/-/automate/john.doe/bar"
+  },
+  {
+    "template": "/groups/*group_id/-/automate/agent-sessions/:id",
+    "example": "/groups/foo/bar/-/automate/agent-sessions/foo",
+    "dottedExample": "/groups/john.doe/bar/-/automate/agent-sessions/john.doe"
   },
   {
     "template": "/groups/*group_id/-/automate/agents",
@@ -25488,6 +25532,11 @@
     "template": "/o/:organization_path/groups/*group_id/-/automate(/*vueroute)",
     "example": "/o/foo/groups/foo/bar/-/automate/foo/bar",
     "dottedExample": "/o/john.doe/groups/john.doe/bar/-/automate/john.doe/bar"
+  },
+  {
+    "template": "/o/:organization_path/groups/*group_id/-/automate/agent-sessions/:id",
+    "example": "/o/foo/groups/foo/bar/-/automate/agent-sessions/foo",
+    "dottedExample": "/o/john.doe/groups/john.doe/bar/-/automate/agent-sessions/john.doe"
   },
   {
     "template": "/o/:organization_path/groups/*group_id/-/automate/agents",

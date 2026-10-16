@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Markdown::IframeProviders, feature_category: :markdown do
+RSpec.describe Banzai::IframeProviders, feature_category: :markdown do
   after do
     described_class.reset!
   end

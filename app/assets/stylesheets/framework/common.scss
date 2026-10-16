@@ -40,20 +40,6 @@
 }
 
 /** COLORS **/
-.text-secondary {
-  @apply gl-text-subtle;
-}
-
-.text-warning,
-.text-warning:hover {
-  color: $brand-warning;
-}
-
-.text-info,
-.text-info:hover {
-  color: $brand-info;
-}
-
 .text-underline,
 .text-underline:hover {
   text-decoration: underline;
@@ -172,10 +158,6 @@ li.note {
   @include message($orange-50, $orange-200, $gray-900);
 }
 
-.danger_message {
-  @include message($red-100, $red-200, $red-900);
-}
-
 .gitlab-promo {
   a {
     @apply gl-text-disabled;
@@ -253,10 +235,6 @@ li.note {
   opacity: 0.5;
 }
 
-.break-word {
-  word-wrap: break-word;
-}
-
 /** COMMON CLASSES **/
 /**
   🚨 Do not use these classes — they are deprecated and being removed. 🚨
@@ -266,7 +244,6 @@ li.note {
 .block { display: block; }
 .vertical-align-text-top { vertical-align: text-top; }
 .vertical-align-middle { vertical-align: middle; }
-.overflow-auto { overflow: auto; }
 
 /** COMMON SIZING CLASSES **/
 .w-0 { width: 0; }

@@ -186,7 +186,7 @@ module ApplicationSettingsHelper
   end
 
   def iframe_providers_checkboxes(form)
-    Gitlab::Markdown::IframeProviders.known_providers.map do |provider|
+    Banzai::IframeProviders.known_providers.map do |provider|
       checked = @application_setting.iframe_rendering_allowlist.include?(provider.id)
 
       form.gitlab_ui_checkbox_component(

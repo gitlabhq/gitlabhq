@@ -139,7 +139,9 @@ export default function createRouter(projectFullPath, baseRef, fullName) {
 
     const titlePath = Array.isArray(path) ? joinPaths(...path) : path; // Vue 3 returns an array of strings for the path
 
-    setTitle(titlePath || '', baseRef, fullName);
+    // The base ref is pre-encoded for route matching; the tab title should
+    // show the human-readable ref.
+    setTitle(titlePath || '', baseRef && decodeURIComponent(baseRef), fullName);
 
     if (containerEl) {
       const wideRoute = name.startsWith('treePath') || name.startsWith('blobPath');

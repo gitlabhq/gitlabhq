@@ -34,12 +34,6 @@ input[type='file'] {
   }
 }
 
-.text-secondary {
-  // Override Bootstrap's light secondary color
-  // We have to use !important because bootstrap has that set as well
-  @apply gl-text-subtle #{!important};
-}
-
 // Polyfill deprecated selectors
 
 .hidden {

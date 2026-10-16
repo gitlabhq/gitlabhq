@@ -1,0 +1,8 @@
+---
+name: billable_usage_export
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/257491
+rollout_issue_url:
+milestone: '19.5'
+type: wip
+group: group::cost management
+default_enabled: false

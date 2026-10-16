@@ -7,6 +7,7 @@
 # See https://docs.gitlab.com/ee/development/pipelines/internals.html#using-the-gitlab-ruby-gem-in-the-canonical-project.
 require 'gitlab'
 require 'optparse'
+require 'time'
 
 module Packages
   class AutomatedCleanup

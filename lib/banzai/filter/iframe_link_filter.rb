@@ -26,7 +26,7 @@ module Banzai
           group&.allow_iframes_in_markdown_feature_flag_enabled?
 
         doc.xpath(XPATH).each do |img|
-          match = ::Gitlab::Markdown::IframeProviders.match(img['src'])
+          match = IframeProviders.match(img['src'])
           next unless match
 
           img.replace(embed_node(img, match))
@@ -40,7 +40,7 @@ module Banzai
       # Builds the embed <span> for the frontend to evaluate.
       #
       # @param img [Nokogiri::XML::Element] the <img> element that matched a provider
-      # @param match [Gitlab::Markdown::IframeProviders::Match] the match data from ::Gitlab::Markdown::IframeProviders.match
+      # @param match [Banzai::IframeProviders::Match] the match data from IframeProviders.match
       # @return [Nokogiri::XML::Element] a <span class="js-render-iframe">, containing a fallback link
       def embed_node(img, match)
         canonical_src = img['src']

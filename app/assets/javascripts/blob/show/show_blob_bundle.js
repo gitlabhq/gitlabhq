@@ -2,17 +2,10 @@ import { BlobViewer, initAuxiliaryViewer } from '~/blob/viewer/index';
 import initBlob from '~/pages/projects/init_blob';
 import { initWebIdeLink } from '~/pages/projects/shared/web_ide_link/init_web_ide_link';
 import '~/sourcegraph/load';
-import HighlightWorker from '~/highlight_js/workers/highlight_worker?worker';
 import initAmbiguousRefModal from '~/vue_shared/components/ref/init_ambiguous_ref_modal';
-import initHeaderApp from '~/repository/init_header_app';
-import createRouter from '~/repository/router';
-import initFileTreeBrowser from '~/repository/file_tree_browser';
+import initRepositoryPage from '~/repository/init_repository_page';
 import apolloProvider from '~/repository/graphql';
-import projectPathQuery from '~/repository/queries/project_path.query.graphql';
-import refsQuery from '~/repository/queries/ref.query.graphql';
 import { showAlertFromLocalStorage } from '~/lib/utils/local_storage_alert';
-import initLastCommitApp from '~/repository/init_last_commit_app';
-import initRepositoryApp from '~/repository/init_repository_app';
 import initForkInfoApp from '~/repository/init_fork_info_app';
 import initTableOfContentsApp from '~/blob/init_table_of_contents_app';
 import initPerformancePlugin from '~/performance/init_performance_plugin';
@@ -20,7 +13,7 @@ import initPerformancePlugin from '~/performance/init_performance_plugin';
 export default function initBlobShow() {
   // eslint-disable-next-line @gitlab/require-i18n-strings
   const performancePluginComponents = ['SourceViewer', 'Chunk'];
-  const viewBlobEl = document.querySelector('#js-view-blob-app');
+  const viewBlobEl = document.getElementById('js-view-blob-app');
   const webIdeLinkEl = document.getElementById('js-blob-web-ide-link');
   const codeNavEl = document.getElementById('js-code-navigation');
 
@@ -33,60 +26,15 @@ export default function initBlobShow() {
   showAlertFromLocalStorage();
 
   if (viewBlobEl) {
-    const {
-      blobPath,
-      projectPath,
-      originalBranch,
-      resourceId,
-      explainCodeAvailable,
-      refType,
-      escapedRef,
-      canDownloadCode,
-      fullName,
-      hasRevsFile,
-    } = viewBlobEl.dataset;
-
-    // Initialize Apollo cache with critical GraphQL queries
-    // These must be set before calling init functions that depend on them
-    apolloProvider.clients.defaultClient.cache.writeQuery({
-      query: projectPathQuery,
-      data: {
-        projectPath,
-      },
-    });
-
-    apolloProvider.clients.defaultClient.cache.writeQuery({
-      query: refsQuery,
-      data: { ref: originalBranch, escapedRef },
-    });
-
-    const repositoryAppOptions = {
-      blobPath,
-      projectPath,
-      refType,
-      originalBranch,
-      resourceId,
-      explainCodeAvailable,
-      canDownloadCode,
-      hasRevsFile,
-      highlightWorker: new HighlightWorker(),
-    };
-
-    router = createRouter(projectPath, originalBranch, fullName);
-
-    initFileTreeBrowser(router, { projectPath, ref: originalBranch, refType });
-    initLastCommitApp(router);
-    initHeaderApp({ router });
-    initRepositoryApp(router, repositoryAppOptions);
-
+    ({ router } = initRepositoryPage());
     initAuxiliaryViewer();
     initBlob();
   } else {
     new BlobViewer(); // eslint-disable-line no-new
     initBlob();
+    initForkInfoApp();
   }
 
-  initForkInfoApp();
   initWebIdeLink({ el: webIdeLinkEl });
 
   if (codeNavEl && !viewBlobEl) {

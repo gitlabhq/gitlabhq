@@ -864,25 +864,136 @@ describe('ActivityCalendar', () => {
     });
 
     describe('load more', () => {
-      beforeEach(async () => {
-        // A full page signals more pages are available.
-        mock.onGet(ACTIVITY_PATH).reply(200, new Array(15).fill({ id: 1 }));
+      const generalRequests = () => mock.history.get.filter((req) => req.url === ACTIVITY_PATH);
+
+      const createComponentWithFeed = async ({ received, hasMore }) => {
+        mock
+          .onGet(ACTIVITY_PATH)
+          .reply(200, new Array(received).fill({ id: 1 }), { 'x-has-more': hasMore });
         createComponent();
         await waitForPromises();
+      };
+
+      describe('when the server reports more activities', () => {
+        beforeEach(() => createComponentWithFeed({ received: 15, hasMore: 'true' }));
+
+        it('renders a load more button', () => {
+          expect(findLoadMore().exists()).toBe(true);
+        });
+
+        it('requests the next page with the larger page size', async () => {
+          await findLoadMore().vm.$emit('click');
+          await waitForPromises();
+
+          expect(generalRequests()).toHaveLength(2);
+          expect(generalRequests()[1].params).toMatchObject({ offset: 15, limit: 50 });
+        });
       });
 
-      it('renders a load more button when more activities are available', () => {
-        expect(findLoadMore().exists()).toBe(true);
+      describe('when the server reports no more activities', () => {
+        beforeEach(() => createComponentWithFeed({ received: 15, hasMore: 'false' }));
+
+        it('hides the load more button even though the page was full', () => {
+          expect(findLoadMore().exists()).toBe(false);
+        });
       });
 
-      it('requests the next page when clicked', async () => {
-        await findLoadMore().vm.$emit('click');
-        await waitForPromises();
+      describe('when the server sends no header', () => {
+        beforeEach(async () => {
+          mock.onGet(ACTIVITY_PATH).reply(200, new Array(15).fill({ id: 1 }));
+          createComponent();
+          await waitForPromises();
+        });
 
-        const generalRequests = mock.history.get.filter((req) => req.url === ACTIVITY_PATH);
+        it('hides the load more button rather than paging forever', () => {
+          expect(findLoadMore().exists()).toBe(false);
+        });
+      });
 
-        expect(generalRequests).toHaveLength(2);
-        expect(generalRequests[1].params).toMatchObject({ offset: 15, limit: 50 });
+      describe('when the server filters events out of a full page', () => {
+        beforeEach(() => createComponentWithFeed({ received: 9, hasMore: 'true' }));
+
+        it('keeps the load more button for the short page', () => {
+          expect(findLoadMore().exists()).toBe(true);
+        });
+
+        it('pages by the requested size rather than the number received', async () => {
+          await findLoadMore().vm.$emit('click');
+          await waitForPromises();
+
+          expect(generalRequests()[1].params).toMatchObject({ offset: 15, limit: 50 });
+        });
+      });
+
+      describe('when a whole page is hidden from the viewer', () => {
+        beforeEach(async () => {
+          await createComponentWithFeed({ received: 15, hasMore: 'true' });
+
+          // The server pages in SQL and filters afterwards, so the middle page
+          // can come back empty while later pages still hold visible events.
+          mock.resetHandlers();
+          mock
+            .onGet(CALENDAR_ACTIVITIES_PATH)
+            .replyOnce(200, new Array(50).fill({ id: 1 }), { 'x-has-more': 'true' })
+            .onGet(CALENDAR_ACTIVITIES_PATH)
+            .replyOnce(200, [], { 'x-has-more': 'true' })
+            .onGet(CALENDAR_ACTIVITIES_PATH)
+            .replyOnce(200, new Array(20).fill({ id: 1 }), { 'x-has-more': 'false' });
+
+          await firstDateCell().trigger('click');
+          await waitForPromises();
+        });
+
+        it('keeps paging so a single click still adds activities', async () => {
+          await findLoadMore().vm.$emit('click');
+          await waitForPromises();
+
+          const dayRequests = mock.history.get.filter(
+            (req) => req.url === CALENDAR_ACTIVITIES_PATH,
+          );
+
+          expect(dayRequests).toHaveLength(3);
+          expect(dayRequests[1].params).toMatchObject({ offset: 50 });
+          expect(dayRequests[2].params).toMatchObject({ offset: 100 });
+          expect(findEvents().props('events')).toHaveLength(70);
+          expect(findLoadMore().exists()).toBe(false);
+        });
+      });
+
+      describe('when a day is selected', () => {
+        beforeEach(async () => {
+          await createComponentWithFeed({ received: 15, hasMore: 'true' });
+
+          mock
+            .onGet(CALENDAR_ACTIVITIES_PATH)
+            .reply(200, new Array(10).fill({ id: 1 }), { 'x-has-more': 'true' });
+
+          await firstDateCell().trigger('click');
+          await waitForPromises();
+        });
+
+        it('pages the day feed by its own page size', async () => {
+          await findLoadMore().vm.$emit('click');
+          await waitForPromises();
+
+          const dayRequests = mock.history.get.filter(
+            (req) => req.url === CALENDAR_ACTIVITIES_PATH,
+          );
+
+          expect(dayRequests).toHaveLength(2);
+          expect(dayRequests[1].params).toMatchObject({ offset: 50, limit: 50 });
+        });
+
+        it('hides the load more button once the day feed reports no more', async () => {
+          mock
+            .onGet(CALENDAR_ACTIVITIES_PATH)
+            .reply(200, new Array(10).fill({ id: 1 }), { 'x-has-more': 'false' });
+
+          await findLoadMore().vm.$emit('click');
+          await waitForPromises();
+
+          expect(findLoadMore().exists()).toBe(false);
+        });
       });
     });
 

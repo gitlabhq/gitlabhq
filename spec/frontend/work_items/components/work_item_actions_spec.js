@@ -158,6 +158,8 @@ describe('WorkItemActions component', () => {
     namespaceFullName = 'GitLab.org / GitLab Test',
     updateInProgress = false,
     notificationsQueryHandler = notificationOnQueryHandler,
+    widgets = [],
+    features = null,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemActions, {
       isLoggedIn: isLoggedIn(),
@@ -198,6 +200,8 @@ describe('WorkItemActions component', () => {
         showSidebar: true,
         truncationEnabled: true,
         updateInProgress,
+        widgets,
+        features,
       },
       mocks: {
         $toast,
@@ -816,6 +820,20 @@ describe('WorkItemActions component', () => {
       findChangeTypeButton().vm.$emit('action');
 
       expect(findWorkItemChangeTypeModal().exists()).toBe(true);
+    });
+
+    it('passes `widgets` and `features` to the change type modal', async () => {
+      const widgets = [{ type: 'MILESTONE' }];
+      const features = { milestone: { milestone: { id: 'gid://gitlab/Milestone/1' } } };
+
+      createComponent({ workItemType: WORK_ITEM_TYPE_NAME_TASK, widgets, features });
+
+      await waitForPromises();
+
+      findChangeTypeButton().vm.$emit('action');
+      await nextTick();
+
+      expect(findWorkItemChangeTypeModal().props()).toMatchObject({ widgets, features });
     });
 
     it('hides the action when work item type has no supported conversion types', async () => {

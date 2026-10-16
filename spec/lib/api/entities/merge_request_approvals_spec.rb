@@ -2,7 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Entities::MergeRequestApprovals, feature_category: :source_code_management do
+# In EE this entity presents the merge request's approval state instead, as
+# ee/spec/lib/ee/api/entities/merge_request_approvals_spec.rb describes.
+# Since the CE test also runs in EE, we need to skip it there.
+RSpec.describe API::Entities::MergeRequestApprovals, feature_category: :source_code_management, unless: Gitlab.ee? do
   let(:merge_request) { create(:merge_request) }
   let(:project) { merge_request.project }
   let(:user) { create(:user, developer_of: project) }

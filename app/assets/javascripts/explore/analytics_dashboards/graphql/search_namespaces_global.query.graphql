@@ -1,5 +1,8 @@
 # @feature_category: custom_dashboards_foundation
 
+#import "ee_else_ce/explore/analytics_dashboards/graphql/fragments/scope_group_permissions.fragment.graphql"
+#import "ee_else_ce/explore/analytics_dashboards/graphql/fragments/scope_project_permissions.fragment.graphql"
+
 # Both connections are limited to what the user belongs to.
 #
 # The projects connection excludes archived results via `archived: EXCLUDE`. `Query.groups` has
@@ -30,9 +33,7 @@ query searchAnalyticsDashboardNamespacesGlobal(
       name
       fullName
       fullPath
-      userPermissions {
-        readProAiAnalytics @gl_introduced(version: "19.5.0")
-      }
+      ...AnalyticsDashboardScopeGroupPermissions
       # Aliased so both result types expose their parent under the same key.
       namespace: parent {
         id
@@ -58,9 +59,7 @@ query searchAnalyticsDashboardNamespacesGlobal(
       name
       fullName: nameWithNamespace
       fullPath
-      userPermissions {
-        readProAiAnalytics @gl_introduced(version: "19.5.0")
-      }
+      ...AnalyticsDashboardScopeProjectPermissions
       namespace {
         id
         name

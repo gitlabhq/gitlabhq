@@ -67588,6 +67588,18 @@
               "deprecationReason": null
             },
             {
+              "name": "webPath",
+              "description": "Web path of the session.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "webUrl",
               "description": "URL of the session.",
               "args": [],

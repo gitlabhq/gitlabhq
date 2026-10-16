@@ -113,6 +113,9 @@ RSpec.describe 'Database schema',
       deploy_keys_projects: %w[deploy_key_id],
       deployments: %w[deployable_id user_id],
       draft_notes: %w[discussion_id commit_id],
+      # No FK as a cascade would delete rows and leave their object storage files undeleted.
+      # Rows are removed by a cleanup worker once the workflow delete nullifies workflow_id.
+      duo_workflows_session_files: %w[namespace_id project_id],
       # No FK to preserve attribution when the trigger/schedule is deleted
       duo_workflows_workflows: %w[trigger_flow_trigger_id trigger_flow_schedule_id],
       epics: %w[updated_by_id last_edited_by_id state_id],

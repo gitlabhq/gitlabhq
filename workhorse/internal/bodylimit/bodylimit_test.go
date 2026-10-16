@@ -179,8 +179,6 @@ func TestCountingReadCloser_ReadErrorAtLimit(t *testing.T) {
 			}
 			require.Equal(t, int64(5), counter.Count())
 
-			// The body fails right after the limit: the read error is returned, not
-			// an end of body and not RequestBodyTooLargeError.
 			n, err := counter.Read(make([]byte, 10))
 			require.Zero(t, n)
 			require.ErrorIs(t, err, readErr)
@@ -228,7 +226,6 @@ func TestCountingReadCloser_ReadsAgainAfterLimit(t *testing.T) {
 				require.ErrorIs(t, firstErr, io.EOF)
 			}
 
-			// Every later read returns the same error value, not an equal copy.
 			for range 2 {
 				n, err = counter.Read(buf)
 				require.Zero(t, n)

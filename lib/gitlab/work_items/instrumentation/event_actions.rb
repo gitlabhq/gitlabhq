@@ -45,6 +45,8 @@ module Gitlab
         CREATE_GLOBAL_NAV = 'work_item_create_global_nav'
         CREATE_VULNERABILITY = 'work_item_create_vulnerability'
         CREATE_WORK_ITEM_LIST = 'work_item_create_work_item_list'
+        DECISION_CREATE = 'work_item_decision_create'
+        DECISION_RESOLVE = 'work_item_decision_resolve'
         DESCRIPTION_UPDATE = 'work_item_description_update'
         DESIGN_CREATE = 'work_item_design_create'
         DESIGN_DESTROY = 'work_item_design_destroy'
@@ -98,6 +100,8 @@ module Gitlab
           CREATE_GLOBAL_NAV,
           CREATE_VULNERABILITY,
           CREATE_WORK_ITEM_LIST,
+          DECISION_CREATE,
+          DECISION_RESOLVE,
           DESCRIPTION_UPDATE,
           DESIGN_CREATE,
           DESIGN_DESTROY,

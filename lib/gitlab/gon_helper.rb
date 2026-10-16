@@ -21,7 +21,7 @@ module Gitlab
       gon.markdown_maintain_indentation = current_user&.markdown_maintain_indentation
       gon.math_rendering_limits_enabled = Gitlab::CurrentSettings.math_rendering_limits_enabled
       if Gitlab::CurrentSettings.iframe_rendering_enabled?
-        gon.iframe_rendering_providers = Gitlab::Markdown::IframeProviders.frontend_config
+        gon.iframe_rendering_providers = Banzai::IframeProviders.frontend_config
       end
 
       # Sentry configurations for the browser client are done

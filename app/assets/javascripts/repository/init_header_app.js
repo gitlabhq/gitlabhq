@@ -101,7 +101,9 @@ export default function initHeaderApp({ router, isReadmeView = false }) {
       userProfileEnableGitpodPath,
     } = convertObjectPropsToCamelCase(webIdeButtonOptions ? JSON.parse(webIdeButtonOptions) : {});
 
-    initClientQueries({ projectPath, projectShortPath, ref, escapedRef });
+    // Repository pages seed these once through initRepositoryPage(); a
+    // standalone header mount (readme view) owns its own seeding.
+    if (!router) initClientQueries({ projectPath, projectShortPath, ref, escapedRef });
 
     initVueApp({
       el: headerEl,

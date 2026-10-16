@@ -792,6 +792,9 @@ following cases is valid:
 In any of the previous cases, the response of `line`, `line_type`, and `path` is
 set to `null`.
 
+GitLab might change the comment body before saving it.
+For more information, see [note body normalization](notes.md#note-body-normalization).
+
 For other approaches to commenting on a merge request, see
 [create a merge request note](notes.md#create-a-merge-request-note) in the notes API,
 and [create a new thread in the merge request diff](discussions.md#create-a-new-thread-in-the-merge-request-diff)

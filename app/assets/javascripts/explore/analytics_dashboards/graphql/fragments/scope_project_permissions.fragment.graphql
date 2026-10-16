@@ -1,0 +1,5 @@
+# Intentionally minimal: `userPermissions.readProAiAnalytics` is EE-only, so the EE fragment of
+# the same name selects it. A fragment needs at least one field, hence `id`.
+fragment AnalyticsDashboardScopeProjectPermissions on Project {
+  id
+}

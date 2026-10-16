@@ -326,6 +326,29 @@ RSpec.describe UsersController, feature_category: :user_management do
           expect(response.media_type).to eq('application/json')
           expect(Gitlab::Json.parse(response.body).count).to eq(0)
         end
+
+        it 'reports whether another page follows', :aggregate_failures do
+          create(:event, :for_issue, project: project, author: user)
+
+          get user_activity_url user.username, format: :json, type: 'raw', limit: 1
+          expect(response.headers['X-Has-More']).to eq('true')
+
+          # The page holds every remaining event, so there is nothing after it
+          # even though the page itself is full.
+          get user_activity_url user.username, format: :json, type: 'raw', limit: 2
+          expect(response.headers['X-Has-More']).to eq('false')
+        end
+
+        it 'still reports another page when the page is filtered down to nothing', :aggregate_failures do
+          filtered_user = create(:user, include_private_contributions: true)
+          create_list(:event, 2, :for_issue, author: filtered_user, target: nil,
+            target_id: non_existing_record_id)
+
+          get user_activity_url filtered_user.username, format: :json, type: 'raw', limit: 1
+
+          expect(Gitlab::Json.parse(response.body)).to be_empty
+          expect(response.headers['X-Has-More']).to eq('true')
+        end
       end
 
       context 'when the request originates from the personal homepage' do
@@ -750,7 +773,7 @@ RSpec.describe UsersController, feature_category: :user_management do
       end
 
       it 'clamps a limit above the maximum' do
-        stub_const("#{described_class}::MAX_CALENDAR_ACTIVITIES_LIMIT", 2)
+        stub_const("#{described_class}::MAX_FEED_LIMIT", 2)
 
         get_calendar_activities(limit: 50, offset: 0)
 
@@ -762,6 +785,21 @@ RSpec.describe UsersController, feature_category: :user_management do
 
         expect(json_response).to eq([])
       end
+
+      it 'reports whether another page follows', :aggregate_failures do
+        get_calendar_activities(limit: 2, offset: 0)
+        expect(response.headers['X-Has-More']).to eq('true')
+
+        get_calendar_activities(limit: 2, offset: 2)
+        expect(response.headers['X-Has-More']).to eq('false')
+      end
+
+      it 'reports no further page when nothing was asked for', :aggregate_failures do
+        get_calendar_activities(limit: 0, offset: 0)
+
+        expect(json_response).to eq([])
+        expect(response.headers['X-Has-More']).to eq('false')
+      end
     end
 
     context 'with JSON visibility filtering' do
@@ -771,9 +809,9 @@ RSpec.describe UsersController, feature_category: :user_management do
       let(:public_project) { create(:project, :public) }
       let(:viewer) { create(:user) }
 
-      def get_calendar_activities(target_user)
+      def get_calendar_activities(target_user, params = {})
         get user_calendar_activities_url(target_user.username, format: :json),
-          params: { date: date.iso8601 }
+          params: { date: date.iso8601 }.merge(params)
       end
 
       def create_event(target)
@@ -792,6 +830,29 @@ RSpec.describe UsersController, feature_category: :user_management do
 
         # The public issue event is returned, the confidential one is filtered.
         expect(json_response.size).to eq(1)
+      end
+
+      it 'still reports another page when a full page is filtered down', :aggregate_failures do
+        create_event(create(:issue, project: public_project))
+        create_event(create(:issue, :confidential, project: public_project))
+        create_event(create(:issue, project: public_project))
+
+        sign_in(viewer)
+        get_calendar_activities(public_user, limit: 2)
+
+        expect(json_response.size).to be <= 2
+        expect(response.headers['X-Has-More']).to eq('true')
+      end
+
+      it 'reports no further page once the last events are filtered', :aggregate_failures do
+        create_event(create(:issue, project: public_project))
+        create_event(create(:issue, :confidential, project: public_project))
+
+        sign_in(viewer)
+        get_calendar_activities(public_user, limit: 2)
+
+        expect(json_response.size).to eq(1)
+        expect(response.headers['X-Has-More']).to eq('false')
       end
 
       context 'when the user shows private contributions' do

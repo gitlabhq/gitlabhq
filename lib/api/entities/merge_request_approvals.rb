@@ -21,3 +21,5 @@ module API
     end
   end
 end
+
+API::Entities::MergeRequestApprovals.prepend_mod_with('API::Entities::MergeRequestApprovals')

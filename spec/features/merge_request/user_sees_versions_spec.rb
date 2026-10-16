@@ -25,7 +25,7 @@ RSpec.describe 'Merge request > User sees versions', :js, feature_category: :cod
   end
 
   shared_examples 'allows commenting' do |file_name:, line_text:, comment:|
-    it do
+    it 'shows a new diff line comment in the commented file' do
       wait_for_requests
       file = diff_file(file_name)
       line_holder = file.find('[data-hunk-lines]', text: line_text, match: :first)

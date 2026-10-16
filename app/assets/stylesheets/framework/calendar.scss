@@ -3,8 +3,10 @@
   min-height: 240px;
 }
 
-.contrib-calendar-wrapper {
+.contrib-calendar-wrapper,
+.contrib-legend-wrapper {
   max-width: $fixed-layout-width;
+  @apply gl-mx-auto;
 }
 
 .contrib-calendar {

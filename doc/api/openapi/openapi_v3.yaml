@@ -98582,14 +98582,81 @@ components:
     APIEntitiesMergeRequestApprovals:
       type: object
       properties:
+        id:
+          type: integer
+          format: int64
+          example: 84
+        iid:
+          type: integer
+          example: 14
+        project_id:
+          type: integer
+          format: int64
+          example: 4
+        title:
+          type: string
+          example: Impedit et ut et dolores vero provident ullam est
+        description:
+          type: string
+          example: Repellendus impedit et vel velit dignissimos.
+        state:
+          type: string
+          example: closed
+        created_at:
+          type: string
+          format: date-time
+          example: '2022-08-17T12:46:35.053Z'
+        updated_at:
+          type: string
+          format: date-time
+          example: '2022-11-14T17:22:01.470Z'
+        merge_status:
+          type: string
+          example: can_be_merged
+        approved:
+          type: boolean
+        approvals_required:
+          type: integer
+          example: 2
+        approvals_left:
+          type: integer
+          example: 2
+        require_password_to_approve:
+          type: boolean
+        approved_by:
+          type: array
+          items:
+            "$ref": "#/components/schemas/APIEntitiesApprovals"
+        suggested_approvers:
+          type: array
+          items:
+            "$ref": "#/components/schemas/APIEntitiesUserBasic"
+        approvers:
+          type: array
+          items:
+            type: object
+        approver_groups:
+          type: array
+          items:
+            type: object
         user_has_approved:
           type: boolean
         user_can_approve:
           type: boolean
-        approved:
+        approval_rules_left:
+          type: array
+          items:
+            "$ref": "#/components/schemas/APIEntitiesApprovalRuleShort"
+        has_approval_rules:
           type: boolean
-        approved_by:
-          "$ref": "#/components/schemas/APIEntitiesApprovals"
+        merge_request_approvers_available:
+          type: boolean
+        multiple_approval_rules_available:
+          type: boolean
+        invalid_approvers_rules:
+          type: array
+          items:
+            "$ref": "#/components/schemas/APIEntitiesApprovalRuleShort"
     APIEntitiesMergeRequestApprovalStateRule:
       type: object
       properties:

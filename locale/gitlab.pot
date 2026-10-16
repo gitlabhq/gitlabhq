@@ -8445,7 +8445,13 @@ msgstr ""
 msgid "AgentPlan|Generation failed"
 msgstr ""
 
+msgid "AgentPlan|GitLab Duo reviewed this work item and suggests these changes:"
+msgstr ""
+
 msgid "AgentPlan|High"
+msgstr ""
+
+msgid "AgentPlan|How to improve readiness?"
 msgstr ""
 
 msgid "AgentPlan|Low"
@@ -8478,6 +8484,9 @@ msgstr ""
 msgid "AgentPlan|Readiness"
 msgstr ""
 
+msgid "AgentPlan|Readiness details"
+msgstr ""
+
 msgid "AgentPlan|Readiness: %{level}"
 msgstr ""
 
@@ -8490,10 +8499,7 @@ msgstr ""
 msgid "AgentPlan|Reviewing work item..."
 msgstr ""
 
-msgid "AgentPlan|Score: %{score} / 100"
-msgstr ""
-
-msgid "AgentPlan|Shows how ready this work item is for an agent to run. To raise the score, add more detail to the work item description and to the workplan steps. %{linkStart}Learn more%{linkEnd}."
+msgid "AgentPlan|Shows how ready this work item is for GitLab Duo to implement. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "AgentPlan|Something went wrong while resuming workplan generation."
@@ -8508,7 +8514,7 @@ msgstr ""
 msgid "AgentPlan|What is a workplan?"
 msgstr ""
 
-msgid "AgentPlan|What is the readiness score?"
+msgid "AgentPlan|What is readiness?"
 msgstr ""
 
 msgid "AgentPlan|Workplan"
@@ -8854,6 +8860,9 @@ msgid "AiGovernance|MCP servers"
 msgstr ""
 
 msgid "AiGovernance|Monitor and control AI agent activity across your group"
+msgstr ""
+
+msgid "AiGovernance|Monitor and control AI agent activity in your project"
 msgstr ""
 
 msgid "AiGovernance|Most active developers using agents"
@@ -15527,6 +15536,9 @@ msgid "BillableUsageExport|No license is installed"
 msgstr ""
 
 msgid "BillableUsageExport|Summed quantity for %{event_type} on %{date} exceeds the export ceiling"
+msgstr ""
+
+msgid "BillableUsageExport|There is no completed day to export yet"
 msgstr ""
 
 msgid "Billing"
@@ -84651,6 +84663,9 @@ msgstr ""
 msgid "SuggestedReviewers|Generate"
 msgstr ""
 
+msgid "SuggestedReviewers|Generated %{timeAgo}"
+msgstr ""
+
 msgid "SuggestedReviewers|Get suggestions for reviewers based on GitLab's machine learning tool."
 msgstr ""
 
@@ -89602,6 +89617,9 @@ msgid "Trial|Last name"
 msgstr ""
 
 msgid "Trial|Note: You must have an internet connection."
+msgstr ""
+
+msgid "Trial|Please enter a valid email address."
 msgstr ""
 
 msgid "Trial|Please reach out to %{support_link_start}GitLab Support%{support_link_end} for assistance."

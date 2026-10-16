@@ -15,7 +15,6 @@ import { createAlert } from '~/alert';
 import { followUser, unfollowUser } from '~/rest_api';
 import { isUserBusy } from '~/set_status_modal/utils';
 import Tracking from '~/tracking';
-import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import {
   I18N_ERROR_FOLLOW,
@@ -47,7 +46,6 @@ export default {
     GlButton,
     GlAvatarLabeled,
     HelpIcon,
-    TimeAgoTooltip,
   },
   directives: {
     SafeHtml,
@@ -107,9 +105,6 @@ export default {
     },
     recommendationReason() {
       return this.target.dataset.recommendationReason;
-    },
-    recommendationCreatedAt() {
-      return this.target.dataset.recommendationCreatedAt;
     },
     recommendationReasonIconVariant() {
       return this.isBusy ? 'subtle' : 'info';
@@ -254,20 +249,7 @@ export default {
           class="gl-mr-2 gl-mt-1 gl-shrink-0"
           :variant="recommendationReasonIconVariant"
         />
-        <span>
-          {{ recommendationReason }}
-          <span
-            v-if="recommendationCreatedAt"
-            class="gl-mt-2 gl-block gl-text-sm gl-text-subtle"
-            data-testid="user-popover-recommendation-created-at"
-          >
-            <gl-sprintf :message="__('Created %{timeAgo}')">
-              <template #timeAgo>
-                <time-ago-tooltip :time="recommendationCreatedAt" />
-              </template>
-            </gl-sprintf>
-          </span>
-        </span>
+        <span>{{ recommendationReason }}</span>
       </div>
     </template>
     <div class="gl-mb-3">

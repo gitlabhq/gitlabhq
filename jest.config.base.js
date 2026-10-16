@@ -162,8 +162,6 @@ module.exports = (path, options = {}) => {
     '^jest/(.*)$': '<rootDir>/spec/frontend/$1',
     '^ee_else_ce_jest/(.*)$': '<rootDir>/spec/frontend/$1',
     '^jquery$': '<rootDir>/node_modules/jquery/dist/jquery.slim.js',
-    '^lodash$': '<rootDir>/node_modules/lodash-es/lodash.js',
-    '^lodash/(.*)$': '<rootDir>/node_modules/lodash-es/$1',
     '^dexie$': '<rootDir>/node_modules/dexie/dist/dexie.min.js',
     '^remend$': '<rootDir>/node_modules/remend/dist/index.js',
     // The ESM build the bundler loads; patches/@tiptap+vue-2+*.patch only patches this one.

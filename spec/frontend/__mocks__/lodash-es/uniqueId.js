@@ -1,6 +1,6 @@
 /* eslint-disable unicorn/filename-case */
 // Filename must be camelCase so it can mock imports
-// with syntax `import uniqueId from 'lodash/uniqueId';`
+// with syntax `import uniqueId from 'lodash-es/uniqueId';`
 
 let counter = 0;
 

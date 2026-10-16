@@ -20,7 +20,9 @@ changes are reviewed, take the following steps:
    If the merge request modifies database files, Danger will do this for you.
 1. Prepare your MR for database review according to the
    [docs](https://docs.gitlab.com/development/database_review/#how-to-prepare-the-merge-request-for-a-database-review).
-1. Assign and mention the suggested database reviewer below.
+1. Assign and mention the suggested database reviewer below. If this merge request also needs a
+   backend review, request the database review after the backend reviewer approves. See
+   [when to request a database review](https://docs.gitlab.com/development/database_review/#when-to-request-a-database-review).
 MSG
 
 DB_SUGGESTION_MESSAGE = <<~MSG

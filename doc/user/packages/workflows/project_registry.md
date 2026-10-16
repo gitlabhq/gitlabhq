@@ -431,10 +431,10 @@ Configure `pip` to use the group registry:
 extra-index-url = https://deploy-token-username:deploy-token-password@gitlab.example.com/api/v4/groups/artifact-management/-/packages/pypi/simple/
 ```
 
-Or use environment variables:
+Or pass the index URL to `pip install`:
 
 ```shell
-pip install --index-url https://deploy-token-username:deploy-token-password@gitlab.example.com/api/v4/groups/artifact-management/-/packages/pypi/simple/ --no-index my-package
+pip install --index-url https://deploy-token-username:deploy-token-password@gitlab.example.com/api/v4/groups/artifact-management/-/packages/pypi/simple/ my-package
 ```
 
 {{< /tab >}}

@@ -138,6 +138,12 @@ CREATE TABLE sliding_list_table (
   partition bigint DEFAULT 1 NOT NULL
 ) PARTITION BY LIST (partition);
 
+CREATE TABLE wrong_partitioned_table (
+  id bigint NOT NULL,
+  partition bigint DEFAULT 1 NOT NULL,
+  name character varying(255) NOT NULL
+) PARTITION BY LIST (partition);
+
 CREATE TABLE operations_user_lists (
   id bigint NOT NULL,
   project_id bigint NOT NULL,

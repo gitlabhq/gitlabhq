@@ -10,7 +10,8 @@ class UsersController < ApplicationController
   include SafeFormatHelper
 
   FOLLOWERS_FOLLOWING_USERS_PER_PAGE = 21
-  MAX_CALENDAR_ACTIVITIES_LIMIT = 100
+  MAX_FEED_LIMIT = UserRecentEventsFinder::MAX_LIMIT
+  FEED_HAS_MORE_HEADER = 'X-Has-More'
 
   requires_cross_project_access show: false,
     groups: false,
@@ -77,16 +78,15 @@ class UsersController < ApplicationController
       format.html { render 'show' }
 
       format.json do
-        load_events
+        raw_feed = permitted_params[:type] == 'raw'
+        load_events(limit: raw_feed ? probe_limit : nil)
 
         @is_personal_homepage = permitted_params[:is_personal_homepage].present?
 
-        if permitted_params[:type] == 'raw'
-          @events = if user.include_private_contributions?
-                      @events.reject(&:target_deleted?)
-                    else
-                      @events.select { |event| event.visible_to_user?(current_user) }
-                    end
+        if raw_feed
+          events = @events.to_a
+          set_feed_has_more_header(events)
+          @events = events_visible_to_viewer(events.first(feed_limit))
 
           render json: ::Profile::EventSerializer.new(current_user: current_user, target_user: user)
                                                  .represent(@events)
@@ -206,16 +206,9 @@ class UsersController < ApplicationController
     if permitted_params[:format] == 'json'
       # The Vue feed pages through a day's events, so honor limit/offset here
       # (events_by_date otherwise returns every event for the date).
-      @events = events.paginate_by_created_at(calendar_activities_limit, calendar_activities_offset)
-                      .map(&:present)
-
-      # Drop events the viewer cannot see, mirroring the #activity action, so
-      # the feed does not render empty rows for hidden events.
-      @events = if user.include_private_contributions?
-                  @events.reject(&:target_deleted?)
-                else
-                  @events.select { |event| event.visible_to_user?(current_user) }
-                end
+      events = events.paginate_by_created_at(probe_limit, calendar_activities_offset).map(&:present)
+      set_feed_has_more_header(events)
+      @events = events_visible_to_viewer(events.first(feed_limit))
 
       Events::RenderService.new(current_user).execute(@events)
 
@@ -272,13 +265,39 @@ class UsersController < ApplicationController
     )
   end
 
-  def calendar_activities_limit
+  # Both feeds apply limit/offset in SQL and only then drop events the viewer
+  # may not see, so the client cannot tell a filtered page from the last one.
+  # Fetching one row beyond the page answers that exactly.
+  def set_feed_has_more_header(events)
+    response.set_header(FEED_HAS_MORE_HEADER, more_events_after_page?(events).to_s)
+  end
+
+  def more_events_after_page?(events)
+    return false unless feed_limit > 0
+    return events.size > feed_limit if probe_limit > feed_limit
+
+    # The caller asked for the largest page we serve, so there is no room for
+    # the probe row and a full page is the best signal available.
+    events.size == feed_limit
+  end
+
+  def probe_limit
+    [feed_limit + 1, MAX_FEED_LIMIT].min
+  end
+
+  def events_visible_to_viewer(events)
+    return events.reject(&:target_deleted?) if user.include_private_contributions?
+
+    events.select { |event| event.visible_to_user?(current_user) }
+  end
+
+  def feed_limit
     limit = permitted_params[:limit]
     # Match UserRecentEventsFinder: fall back to the default when the param is
     # blank or negative, otherwise cap at the maximum.
     return UserRecentEventsFinder::DEFAULT_LIMIT unless limit.present? && limit.to_i >= 0
 
-    [limit.to_i, MAX_CALENDAR_ACTIVITIES_LIMIT].min
+    [limit.to_i, MAX_FEED_LIMIT].min
   end
 
   def calendar_activities_offset
@@ -307,9 +326,10 @@ class UsersController < ApplicationController
     @contributions_calendar ||= Gitlab::ContributionsCalendar.new(user, current_user)
   end
 
-  def load_events
+  def load_events(limit: nil)
     event_filter = EventFilter.new(permitted_params[:event_filter]) if permitted_params[:event_filter].present?
-    @events = UserRecentEventsFinder.new(current_user, user, event_filter, permitted_params).execute
+    finder_params = limit ? permitted_params.merge(limit: limit) : permitted_params
+    @events = UserRecentEventsFinder.new(current_user, user, event_filter, finder_params).execute
 
     Events::RenderService.new(current_user).execute(@events, atom_request: request.format.atom?)
   end

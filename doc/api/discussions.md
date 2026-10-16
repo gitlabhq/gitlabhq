@@ -30,6 +30,9 @@ Not all discussion types are equally available in the API:
   commit, or snippet. Items of type `DiscussionNote` are not returned as part of the Note API.
   Not available in the [Events API](events.md).
 
+GitLab might change a note body before saving it.
+For more information, see [note body normalization](notes.md#note-body-normalization).
+
 ## Discussions pagination
 
 By default, `GET` requests return 20 results at a time because the API results are paginated.

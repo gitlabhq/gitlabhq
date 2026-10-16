@@ -72,6 +72,26 @@ RSpec.describe Gitlab::Utils::Email, feature_category: :service_desk do
     end
   end
 
+  describe '.valid_email?' do
+    where(:email, :valid) do
+      'john@example.com'             | true
+      'john+trial@example.com'       | true
+      'John.Doe@mail.example.co.uk'  | true
+      nil                            | false
+      ''                             | false
+      'john'                         | false
+      'john@'                        | false
+      '@example.com'                 | false
+      'john@@example.com'            | false
+      'john doe@example.com'         | false
+      '=?utf-8?q?john?=@example.com' | false
+    end
+
+    with_them do
+      it { expect(described_class.valid_email?(email)).to be(valid) }
+    end
+  end
+
   describe '#normalize_email' do
     subject { described_class.normalize_email(raw_email) }
 

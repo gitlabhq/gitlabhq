@@ -52,6 +52,17 @@ module Gitlab
           SOURCE_API
         end
 
+        def self.track_decision_event(event:, decision:, current_user:, extra_properties: {})
+          work_item = decision.work_item
+
+          new(
+            work_item: work_item,
+            current_user: current_user,
+            event: event,
+            extra_properties: plan_event_properties(work_item).merge(decision_id: decision.id, **extra_properties)
+          ).execute
+        end
+
         def self.plan_event_properties(work_item)
           properties = { source: current_source, work_item_id: work_item.id }
           workflow_id = context_workflow_id

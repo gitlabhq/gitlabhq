@@ -1,0 +1,14 @@
+---
+table_name: duo_workflows_session_files
+classes:
+- Ai::DuoWorkflows::SessionFile
+feature_categories:
+- duo_agent_platform
+description: Files a user attached to a Duo Agent Platform session.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/261463
+milestone: '19.6'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  project_id: projects
+  namespace_id: namespaces
+table_size: small

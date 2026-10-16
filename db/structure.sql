@@ -20836,6 +20836,31 @@ CREATE SEQUENCE duo_workflows_events_id_seq
 
 ALTER SEQUENCE duo_workflows_events_id_seq OWNED BY duo_workflows_events.id;
 
+CREATE TABLE duo_workflows_session_files (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    workflow_id bigint,
+    project_id bigint,
+    namespace_id bigint,
+    size bigint NOT NULL,
+    file_store smallint DEFAULT 1 NOT NULL,
+    file text NOT NULL,
+    content_type text NOT NULL,
+    CONSTRAINT check_667443b25a CHECK ((char_length(content_type) <= 255)),
+    CONSTRAINT check_duo_workflows_session_files_sharding_key CHECK ((num_nonnulls(namespace_id, project_id) = 1)),
+    CONSTRAINT check_fcb20f18ac CHECK ((char_length(file) <= 255))
+);
+
+CREATE SEQUENCE duo_workflows_session_files_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE duo_workflows_session_files_id_seq OWNED BY duo_workflows_session_files.id;
+
 CREATE TABLE duo_workflows_workflow_merge_requests (
     id bigint NOT NULL,
     workflow_id bigint NOT NULL,
@@ -37811,6 +37836,8 @@ ALTER TABLE ONLY duo_workflows_checkpoint_writes ALTER COLUMN id SET DEFAULT nex
 
 ALTER TABLE ONLY duo_workflows_events ALTER COLUMN id SET DEFAULT nextval('duo_workflows_events_id_seq'::regclass);
 
+ALTER TABLE ONLY duo_workflows_session_files ALTER COLUMN id SET DEFAULT nextval('duo_workflows_session_files_id_seq'::regclass);
+
 ALTER TABLE ONLY duo_workflows_workflow_merge_requests ALTER COLUMN id SET DEFAULT nextval('duo_workflows_workflow_merge_requests_id_seq'::regclass);
 
 ALTER TABLE ONLY duo_workflows_workflow_notes ALTER COLUMN id SET DEFAULT nextval('duo_workflows_workflow_notes_id_seq'::regclass);
@@ -41326,6 +41353,9 @@ ALTER TABLE ONLY duo_workflows_checkpoint_writes
 
 ALTER TABLE ONLY duo_workflows_events
     ADD CONSTRAINT duo_workflows_events_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY duo_workflows_session_files
+    ADD CONSTRAINT duo_workflows_session_files_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY duo_workflows_workflow_merge_requests
     ADD CONSTRAINT duo_workflows_workflow_merge_requests_pkey PRIMARY KEY (id);
@@ -48973,6 +49003,12 @@ CREATE INDEX index_duo_workflows_events_on_project_id ON duo_workflows_events US
 CREATE INDEX index_duo_workflows_events_on_workflow_id ON duo_workflows_events USING btree (workflow_id);
 
 CREATE INDEX index_duo_workflows_on_user_id_and_updated_at ON duo_workflows_workflows USING btree (user_id, updated_at DESC) WHERE (workflow_definition <> 'chat'::text);
+
+CREATE INDEX index_duo_workflows_session_files_on_namespace_id ON duo_workflows_session_files USING btree (namespace_id);
+
+CREATE INDEX index_duo_workflows_session_files_on_project_id ON duo_workflows_session_files USING btree (project_id);
+
+CREATE INDEX index_duo_workflows_session_files_on_workflow_id ON duo_workflows_session_files USING btree (workflow_id);
 
 CREATE INDEX index_duo_workflows_workflows_on_agent_identity_id ON duo_workflows_workflows USING btree (agent_identity_id) WHERE (agent_identity_id IS NOT NULL);
 
@@ -59490,6 +59526,9 @@ ALTER TABLE ONLY notes
 
 ALTER TABLE ONLY oauth_openid_requests
     ADD CONSTRAINT fk_77114b3b09 FOREIGN KEY (access_grant_id) REFERENCES oauth_access_grants(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY duo_workflows_session_files
+    ADD CONSTRAINT fk_771bb0d16f FOREIGN KEY (workflow_id) REFERENCES duo_workflows_workflows(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY scan_result_policy_violations
     ADD CONSTRAINT fk_77251168f1 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

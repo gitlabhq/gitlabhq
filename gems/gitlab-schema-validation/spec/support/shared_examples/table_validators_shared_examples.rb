@@ -100,6 +100,28 @@ RSpec.shared_examples "table validators" do |validator, expected_result|
         'data_type' => 'bigint',
         'column_default' => '2',
         'partition_key' => true
+      },
+      {
+        'table_name' => 'wrong_partitioned_table',
+        'column_name' => 'id',
+        'not_null' => true,
+        'data_type' => 'bigint',
+        'column_default' => nil
+      },
+      {
+        'table_name' => 'wrong_partitioned_table',
+        'column_name' => 'partition',
+        'not_null' => true,
+        'data_type' => 'bigint',
+        'column_default' => '2',
+        'partition_key' => true
+      },
+      {
+        'table_name' => 'wrong_partitioned_table',
+        'column_name' => 'name',
+        'not_null' => true,
+        'data_type' => 'text',
+        'column_default' => nil
       }
     ]
   end

@@ -2346,7 +2346,8 @@ describe('ScopePicker', () => {
     });
   });
 
-  describe('required permissions', () => {
+  // `readProAiAnalytics` is EE-only, so only the EE fragments select `userPermissions`.
+  (IS_EE ? describe : describe.skip)('required permissions', () => {
     const requirePermissions = ['readProAiAnalytics'];
 
     const lockedGroup = { ...mockCapsuleCorp, userPermissions: groupPermissions(false) };

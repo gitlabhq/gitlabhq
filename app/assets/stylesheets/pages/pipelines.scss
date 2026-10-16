@@ -34,10 +34,7 @@
       height: 14px;
       width: 14px;
       vertical-align: middle;
-
-      &:not(.text-warning) {
-        @apply gl-fill-icon-subtle;
-      }
+      @apply gl-fill-icon-subtle;
     }
 
     .sprite {

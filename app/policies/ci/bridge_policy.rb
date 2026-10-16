@@ -12,6 +12,9 @@ module Ci
       @subject.downstream_project.present? &&
         ::Gitlab::UserAccess.new(@user, container: @subject.downstream_project)
                             .can_update_branch?(@subject.target_revision_ref)
+    rescue ::Ci::Pipeline::VariablesFileMissingError
+      # Without the variables we can't resolve the downstream branch, so we deny the play
+      false
     end
 
     rule { ~can_update_downstream_branch }.prevent :play_job

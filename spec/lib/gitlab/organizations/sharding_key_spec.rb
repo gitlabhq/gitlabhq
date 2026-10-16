@@ -102,6 +102,10 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       'merge_request_commits_metadata.project_id',
       'sbom_vulnerability_scans.project_id',
       'sbom_vulnerability_scan_results.project_id',
+      # The table contains references in the object storage and thus can't have cascading delete
+      # nor being NULL by the definition of a sharding key.
+      'duo_workflows_session_files.namespace_id',
+      'duo_workflows_session_files.project_id',
       'p_duo_workflows_checkpoints.project_id',
       'p_duo_workflows_checkpoints.namespace_id',
       # No LFK needed: daily partitions are dropped after 30 days via retain_for

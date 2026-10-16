@@ -8,6 +8,7 @@ module Gitlab
       EMAIL_REGEXP = %r{(?>[a-zA-Z0-9]+|[-._!#$%&'*+/=?^{|}~]+){1,255}@[\w\-.]{1,253}\.{1}[a-zA-Z]{2,63}}
       EMAIL_REGEXP_WITH_CAPTURING_GROUP = /(#{EMAIL_REGEXP})/
       DEFAULT_EMAIL_VALIDATION_REGEXP = /\A[^@\s]+@[^@\s]+\z/
+      ENCODED_WORD_REGEXP = /=[?].*[?]=/
 
       class << self
         attr_writer :email_validation_regexp
@@ -33,6 +34,10 @@ module Gitlab
         text.gsub(EMAIL_REGEXP_WITH_CAPTURING_GROUP) do |email|
           obfuscated_email(email, deform: true)
         end
+      end
+
+      def valid_email?(email)
+        Email.email_validation_regexp.match?(email) && !ENCODED_WORD_REGEXP.match?(email)
       end
 
       def normalize_email(email)

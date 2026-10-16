@@ -40,7 +40,7 @@ module Gitlab
     # https://gitlab.com/gitlab-org/gitlab/-/issues/221012
     MINIMUM_TRANSLATION_LEVEL = 2
 
-    # Currently monthly updated manually by ~group::import PM.
+    # Updated manually by the Localization team.
     # https://gitlab.com/gitlab-org/gitlab/-/issues/18923
     TRANSLATION_LEVELS = {
       'bg' => 0,

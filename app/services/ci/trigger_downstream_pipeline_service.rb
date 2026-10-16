@@ -29,6 +29,9 @@ module Ci
       CreateDownstreamPipelineWorker.perform_async(bridge.id)
 
       ServiceResponse.success(message: 'Downstream pipeline enqueued')
+    rescue ::Ci::Pipeline::VariablesFileMissingError
+      bridge.drop!(:pipeline_variables_file_missing)
+      ServiceResponse.error(message: 'Pipeline variables file is missing')
     end
 
     private

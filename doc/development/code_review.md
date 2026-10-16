@@ -32,7 +32,9 @@ to a maintainer. For security assistance, include `@gitlab-com/gl-security/appse
 
 After the reviewer approves, a maintainer reviews and merges. The last required approver merges.
 
-For CODEOWNERS-required approvals, seek domain-specific approvals before generic ones.
+For CODEOWNERS-required approvals, seek domain-specific approvals before generic ones. The
+exception is database review: request it after the backend reviewer approves. For details, see
+[when to request a database review](database_review.md#when-to-request-a-database-review).
 Domain-specific approvers who are also maintainers should review both aspects and approve once.
 
 ### Approval guidelines

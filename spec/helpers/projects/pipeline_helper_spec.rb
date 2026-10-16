@@ -35,8 +35,21 @@ RSpec.describe Projects::PipelineHelper do
         tests_count: pipeline.test_report_summary.total[:count],
         can_read_variables: true.to_s,
         manual_variables_count: pipeline.variables.count,
+        manual_variables_unavailable: 'false',
         display_pipeline_variables: pipeline.project.ci_display_pipeline_variables?.to_s
       })
+    end
+
+    context 'when the pipeline variables file is missing from storage' do
+      let(:raw_pipeline) { create(:ci_pipeline, project: project) }
+
+      before do
+        create(:ci_pipeline_artifact, :with_pipeline_variables, pipeline: raw_pipeline).file.remove!
+      end
+
+      it 'returns the variables as unavailable' do
+        expect(pipeline_tabs_data).to include(manual_variables_count: nil, manual_variables_unavailable: 'true')
+      end
     end
   end
 

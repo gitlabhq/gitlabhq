@@ -37,7 +37,6 @@ import {
   WORK_ITEM_REFERENCE_CHAR,
   WORK_ITEM_TYPE_NAME_EPIC,
   STATE_OPEN,
-  WIDGET_TYPE_MILESTONE,
   WORK_ITEM_TYPE_NAME_INCIDENT,
   VIEW_CONTEXT,
   WORK_ITEM_DETAIL_PANEL,
@@ -60,6 +59,7 @@ import {
   findLinkedItemsWidget,
   findLinkedResourcesWidget,
   findHierarchyWidgetDefinition,
+  findMilestoneWidget,
   findNotesWidget,
   activeWorkItemIds,
 } from '../utils';
@@ -458,7 +458,7 @@ export default {
       return findIterationWidget(this.workItem)?.iteration;
     },
     workItemMilestone() {
-      return this.findWidget(WIDGET_TYPE_MILESTONE)?.milestone;
+      return findMilestoneWidget(this.workItem)?.milestone;
     },
     flashNoticeMessage() {
       const numberOfDiscussionsResolved = getParameterByName('resolves_discussion');
@@ -575,6 +575,7 @@ export default {
         canCreateRelatedItem: this.workItemLinkedItems !== undefined,
         isGroup: this.isGroup,
         widgets: this.widgets,
+        features: this.workItem.features,
         allowedChildTypes: this.allowedChildTypes,
         namespaceFullName: this.namespaceFullName,
         showSidebar: this.showSidebar,
