@@ -110,6 +110,23 @@ module API
           end
       end
 
+      # Scopes the insufficient_scope 403 names in its body and its challenge.
+      #
+      # @param scopes [Array<Symbol>] the scopes that can authorize the request
+      # @return [Array<Symbol>]
+      def bearer_challenge_scopes(scopes)
+        scopes
+      end
+
+      # WWW-Authenticate challenge for an RFC 6750 error, on an endpoint that has one of its own.
+      #
+      # @param error [Symbol] the RFC 6750 error code
+      # @param error_description [String]
+      # @param scope [String, nil] the scopes the 403's body names, nil on a 401
+      # @return [String, nil] the challenge, or nil to keep the guard's
+      # @see API::Helpers::Mcp::AuthChallenge
+      def bearer_challenge(error:, error_description:, scope: nil); end
+
       def api_access_allowed?(user)
         user_allowed_or_deploy_token?(user) && user.can?(:access_api)
       end
@@ -235,7 +252,7 @@ module API
               InsufficientScopeForbidden.new(
                 :insufficient_scope,
                 Rack::OAuth2::Server::Resource::ErrorMethods::DEFAULT_DESCRIPTION[:insufficient_scope],
-                { scope: e.scopes })
+                { scope: bearer_challenge_scopes(e.scopes) })
 
             when Gitlab::Auth::DpopValidationError
               Rack::OAuth2::Server::Resource::Bearer::Unauthorized.new(
@@ -254,6 +271,12 @@ module API
             end
 
           status, headers, body = response.finish
+
+          # GitLab's own errors, such as DPoP's, keep the guard's challenge.
+          if Rack::OAuth2::Server::Resource::ErrorMethods::DEFAULT_DESCRIPTION.key?(response.error)
+            challenge = bearer_challenge(**response.protocol_params.slice(:error, :error_description, :scope))
+            headers['WWW-Authenticate'] = challenge if challenge
+          end
 
           # Grape expects a Rack::Response
           # (https://github.com/ruby-grape/grape/commit/c117bff7d22971675f4b34367d3a98bc31c8fc02),

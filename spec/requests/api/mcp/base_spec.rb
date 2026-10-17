@@ -72,6 +72,139 @@ RSpec.describe API::Mcp::Base, feature_category: :mcp_server do
         end
       end
 
+      context 'when signed in through the session, with no token' do
+        before do
+          sign_in(user)
+          # sign_in's one-shot login skips /api/v4/mcp (ee/spec/spec_helper.rb), so another request starts the session.
+          get api('/version')
+        end
+
+        it 'refuses the request as insufficient_scope', :aggregate_failures do
+          post api('/mcp'),
+            params: { jsonrpc: '2.0', method: 'initialize', id: '1', params: { protocolVersion: '2025-06-18' } }
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(json_response['error']).to eq('insufficient_scope')
+        end
+      end
+
+      context 'when the token is refused' do
+        let(:initialize_params) do
+          { jsonrpc: '2.0', method: 'initialize', id: '1', params: { protocolVersion: '2025-06-18' } }
+        end
+
+        let(:metadata_url) { "#{Gitlab.config.gitlab.url}/.well-known/oauth-protected-resource/api/v4/mcp" }
+
+        def challenge(error, error_description, scope: 'mcp')
+          %(Bearer realm="GitLab", error="#{error}", error_description="#{error_description}", ) +
+            %(scope="#{scope}", resource_metadata="#{metadata_url}")
+        end
+
+        context 'with a token whose scopes do not cover the request' do
+          let(:read_user_token) { create(:oauth_access_token, user: user, scopes: [:read_user]) }
+
+          it 'answers with the challenge of the 401, naming the mcp scope in it and the body', :aggregate_failures do
+            post api('/mcp', oauth_access_token: read_user_token), params: initialize_params
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+            expect(json_response['error']).to eq('insufficient_scope')
+            expect(json_response['scope']).to eq('mcp')
+            expect(response.headers['WWW-Authenticate']).to eq(
+              challenge('insufficient_scope',
+                'The request requires higher privileges than provided by the access token.')
+            )
+          end
+        end
+
+        context 'with a token that has api and not mcp' do
+          let(:api_token) { create(:oauth_access_token, user: user, scopes: [:api]) }
+
+          it 'answers with the challenge of the 401, naming the mcp scope in it and the body', :aggregate_failures do
+            post api('/mcp', oauth_access_token: api_token), params: initialize_params
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+            expect(json_response['error']).to eq('insufficient_scope')
+            expect(json_response['scope']).to eq('mcp')
+            expect(response.headers['WWW-Authenticate']).to eq(
+              challenge('insufficient_scope',
+                'The request requires higher privileges than provided by the access token.')
+            )
+          end
+
+          it 'logs the refusal as insufficient_scope, as the API guard does' do
+            expect(API::API::LOG_FORMATTER).to receive(:call) do |_severity, _datetime, _, data|
+              expect(data.stringify_keys).to include(
+                'meta.auth_fail_reason' => 'insufficient_scope',
+                'meta.auth_fail_token_id' => "OauthAccessToken/#{api_token.id}",
+                'meta.auth_fail_requested_scopes' => 'mcp',
+                'route' => '/api/:version/mcp'
+              )
+            end
+
+            post api('/mcp', oauth_access_token: api_token), params: initialize_params
+          end
+        end
+
+        context 'with a token that sudo needs another scope for' do
+          let_it_be(:admin) { create(:admin) }
+          let_it_be(:mcp_pat) { create(:personal_access_token, user: admin, scopes: [:mcp]) }
+
+          it 'names the sudo scope in the challenge and the body', :enable_admin_mode, :aggregate_failures do
+            post api('/mcp', personal_access_token: mcp_pat), params: initialize_params,
+              headers: { 'Sudo' => user.username }
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+            expect(json_response['scope']).to eq('sudo')
+            expect(response.headers['WWW-Authenticate']).to eq(
+              challenge('insufficient_scope',
+                'The request requires higher privileges than provided by the access token.', scope: 'sudo')
+            )
+          end
+        end
+
+        context 'with a revoked token' do
+          let(:revoked_pat) { create(:personal_access_token, :revoked, user: user, scopes: [:mcp]) }
+
+          it 'answers with the challenge of the 401, adding the error', :aggregate_failures do
+            post api('/mcp', personal_access_token: revoked_pat), params: initialize_params
+
+            expect(response).to have_gitlab_http_status(:unauthorized)
+            expect(json_response['error']).to eq('invalid_token')
+            expect(response.headers['WWW-Authenticate']).to eq(
+              challenge('invalid_token', 'Token was revoked. You have to re-authorize from the user.')
+            )
+          end
+        end
+
+        context 'with an expired token' do
+          let(:expired_pat) { create(:personal_access_token, :expired, user: user, scopes: [:mcp]) }
+
+          it 'answers with the challenge of the 401, adding the error' do
+            post api('/mcp', personal_access_token: expired_pat), params: initialize_params
+
+            expect(response.headers['WWW-Authenticate']).to eq(
+              challenge('invalid_token', 'Token is expired. You can either do re-authorization or token refresh.')
+            )
+          end
+        end
+
+        context 'with an impersonation token while impersonation is disabled' do
+          let(:impersonation_pat) { create(:personal_access_token, :impersonation, user: user, scopes: [:mcp]) }
+
+          before do
+            stub_config_setting(impersonation_enabled: false)
+          end
+
+          it 'answers with the challenge of the 401, adding the error' do
+            post api('/mcp', personal_access_token: impersonation_pat), params: initialize_params
+
+            expect(response.headers['WWW-Authenticate']).to eq(
+              challenge('invalid_token', 'Token is an impersonation token but impersonation was disabled.')
+            )
+          end
+        end
+      end
+
       context 'when access token OAuth token has multiple scopes' do
         let(:insufficient_access_token) { create(:oauth_access_token, user: user, scopes: [:api, :mcp]) }
 

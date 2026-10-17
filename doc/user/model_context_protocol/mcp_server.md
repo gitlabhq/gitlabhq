@@ -78,7 +78,8 @@ These tokens cannot have the `mcp` scope, so the GitLab MCP server rejects them,
 - Project access tokens
 - Group access tokens
 
-If you use one of these tokens, the GitLab MCP server returns `403 Forbidden`.
+If you use one of these tokens, the GitLab MCP server returns `403 Forbidden` with the `insufficient_scope` error.
+The response names the `mcp` scope, which you can't add to these tokens.
 Support for these authentication methods is proposed in [issue 586184](https://gitlab.com/gitlab-org/gitlab/-/work_items/586184).
 
 ## Connect a client to the GitLab MCP server

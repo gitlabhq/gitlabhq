@@ -69,11 +69,20 @@ module API
           forbidden!(mcp_denial_message)
         end
 
-        forbidden! unless AccessTokenValidationService.new(access_token)
+        # API::API registers `api` for every route, so the API guard lets a token without `mcp` through.
+        unless AccessTokenValidationService.new(access_token)
           .include_any_scope?([Gitlab::Auth::MCP_SCOPE, Gitlab::Auth::GRANULAR_SCOPE])
+
+          if access_token
+            save_auth_failure_in_application_context(access_token, :insufficient_scope, [Gitlab::Auth::MCP_SCOPE])
+          end
+
+          raise Gitlab::Auth::InsufficientScopeError, [Gitlab::Auth::MCP_SCOPE]
+        end
       end
 
       helpers do
+        extend ::Gitlab::Utils::Override
         include ::Gitlab::Utils::StrongMemoize
 
         def logger
@@ -95,6 +104,12 @@ module API
 
         def mcp_denial_message
           'MCP server disabled for this instance'
+        end
+
+        # Of the guard's scopes, only `mcp` gets past the check in `before`; a list without it, such as sudo's, is kept.
+        override :bearer_challenge_scopes
+        def bearer_challenge_scopes(scopes)
+          scopes.include?(Gitlab::Auth::MCP_SCOPE) ? [Gitlab::Auth::MCP_SCOPE] : scopes
         end
 
         # Allowed MCP tool names, as set by the Duo Workflow executor.

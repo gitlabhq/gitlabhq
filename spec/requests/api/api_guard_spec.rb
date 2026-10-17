@@ -89,6 +89,74 @@ RSpec.describe API::APIGuard, feature_category: :system_access do
       expect(response).to have_gitlab_http_status(:forbidden)
       expect(response.headers['WWW-Authenticate']).to be_nil
     end
+
+    context 'when the endpoint has a challenge of its own' do
+      before do
+        app.helpers do
+          def bearer_challenge(error:, error_description:, scope: nil)
+            %(Bearer realm="Endpoint", error="#{error}", error_description="#{error_description}", ) +
+              %(scope="#{scope || 'own'}")
+          end
+
+          def bearer_challenge_scopes(_scopes)
+            [:own]
+          end
+        end
+      end
+
+      it 'answers an invalid_token error with it', :aggregate_failures do
+        app.get 'willfail' do
+          raise Gitlab::Auth::ExpiredError
+        end
+
+        get api('/willfail')
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+        expect(json_response['error']).to eq('invalid_token')
+        expect(response.headers['WWW-Authenticate']).to eq(
+          'Bearer realm="Endpoint", error="invalid_token", ' \
+            'error_description="Token is expired. You can either do re-authorization or token refresh.", ' \
+            'scope="own"'
+        )
+      end
+
+      it 'answers an insufficient_scope error with it, naming its scopes in the body too', :aggregate_failures do
+        app.get 'willfail' do
+          raise Gitlab::Auth::InsufficientScopeError, [:api, :read_api]
+        end
+
+        get api('/willfail')
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(json_response['scope']).to eq('own')
+        expect(response.headers['WWW-Authenticate']).to eq(
+          'Bearer realm="Endpoint", error="insufficient_scope", ' \
+            'error_description="The request requires higher privileges than provided by the access token.", ' \
+            'scope="own"'
+        )
+      end
+
+      it 'keeps the challenge of an error RFC 6750 does not define', :aggregate_failures do
+        app.get 'willfail' do
+          raise Gitlab::Auth::DpopValidationError, 'message'
+        end
+
+        get api('/willfail')
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+        expect(response.headers['WWW-Authenticate']).to eq('Bearer realm="Protected by OAuth 2.0"')
+      end
+
+      it 'adds none to an insufficient_granular_scope error' do
+        app.get 'willfail' do
+          raise Gitlab::Auth::GranularPermissionsError, ['message']
+        end
+
+        get api('/willfail')
+
+        expect(response.headers['WWW-Authenticate']).to be_nil
+      end
+    end
   end
 
   describe '#find_user_from_sources' do

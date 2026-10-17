@@ -75,4 +75,40 @@ RSpec.describe API::Helpers::Mcp::AuthChallenge, feature_category: :mcp_server d
       expect(challenge).to eq(%(Bearer realm="GitLab", scope="mcp", resource_metadata="#{metadata_url}"))
     end
   end
+
+  describe '#bearer_challenge' do
+    let(:request_path) { '/api/v4/mcp' }
+
+    before do
+      stub_config_setting(url: 'https://gitlab.example.com', relative_url_root: '')
+    end
+
+    it 'adds the error and its description, and names the resource scope on a 401' do
+      expect(instance.send(:bearer_challenge, error: :invalid_token, error_description: 'Token was revoked.')).to eq(
+        'Bearer realm="GitLab", error="invalid_token", error_description="Token was revoked.", scope="mcp", ' \
+          'resource_metadata="https://gitlab.example.com/.well-known/oauth-protected-resource/api/v4/mcp"'
+      )
+    end
+
+    it 'names the scopes the insufficient_scope 403 names in its body' do
+      challenge = instance.send(:bearer_challenge,
+        error: :insufficient_scope, error_description: 'Higher privileges.', scope: 'mcp_orbit read_api')
+
+      expect(challenge).to eq(
+        'Bearer realm="GitLab", error="insufficient_scope", error_description="Higher privileges.", ' \
+          'scope="mcp_orbit read_api", ' \
+          'resource_metadata="https://gitlab.example.com/.well-known/oauth-protected-resource/api/v4/mcp"'
+      )
+    end
+
+    it 'leaves the scope out when the insufficient_scope 403 names none' do
+      challenge = instance.send(:bearer_challenge,
+        error: :insufficient_scope, error_description: 'Higher privileges.', scope: '')
+
+      expect(challenge).to eq(
+        'Bearer realm="GitLab", error="insufficient_scope", error_description="Higher privileges.", ' \
+          'resource_metadata="https://gitlab.example.com/.well-known/oauth-protected-resource/api/v4/mcp"'
+      )
+    end
+  end
 end
