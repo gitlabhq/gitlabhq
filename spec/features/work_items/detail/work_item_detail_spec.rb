@@ -163,7 +163,7 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
     it_behaves_like 'work items change type', 'Issue', '[data-testid="work-item-issue-icon"]'
   end
 
-  context 'for signed in admin' do
+  context 'for signed in admin', :enable_admin_mode do
     let_it_be_with_refind(:admin) { create(:admin) }
 
     context 'with akismet integration' do

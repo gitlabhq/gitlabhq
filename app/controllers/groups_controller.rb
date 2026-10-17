@@ -374,7 +374,7 @@ class GroupsController < Groups::ApplicationController
       :with_security_reports, :include_hidden, :duo_licensed_feature,
       :filter_expired_saml_session_projects,
       :name, :minimum_search_length, :search_namespaces, :updated_before, :updated_after,
-      full_paths: [], plans: [], feature_available: [], custom_attributes: {}
+      full_paths: [], plans: [], custom_attributes: {}
     )
     finder_params[:sort] ||= 'latest_activity_desc'
     finder_params

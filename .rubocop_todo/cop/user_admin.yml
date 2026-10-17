@@ -7,7 +7,6 @@ Cop/UserAdmin:
     - 'app/graphql/mutations/admin/sidekiq_queues/delete_jobs.rb'
     - 'app/graphql/resolvers/admin/analytics/usage_trends/measurements_resolver.rb'
     - 'app/models/concerns/protected_ref_access.rb'
-    - 'app/models/concerns/spammable.rb'
     - 'app/models/merge_request_issue.rb'
     - 'app/models/protected_branch.rb'
     - 'app/models/user.rb'

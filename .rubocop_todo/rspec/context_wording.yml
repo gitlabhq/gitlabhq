@@ -950,7 +950,6 @@ RSpec/ContextWording:
     - 'spec/features/projects/infrastructure_registry_spec.rb'
     - 'spec/features/projects/integrations/disable_triggers_spec.rb'
     - 'spec/features/projects/integrations/user_activates_mattermost_slash_command_spec.rb'
-    - 'spec/features/projects/jobs/user_browses_job_spec.rb'
     - 'spec/features/projects/jobs/user_browses_jobs_spec.rb'
     - 'spec/features/projects/jobs_spec.rb'
     - 'spec/features/projects/labels/search_labels_spec.rb'

@@ -2835,7 +2835,6 @@
 - './spec/features/projects/integrations/user_views_services_spec.rb'
 - './spec/features/projects/jobs/permissions_spec.rb'
 - './spec/features/projects/jobs_spec.rb'
-- './spec/features/projects/jobs/user_browses_job_spec.rb'
 - './spec/features/projects/jobs/user_browses_jobs_spec.rb'
 - './spec/features/projects/jobs/user_triggers_manual_job_with_variables_spec.rb'
 - './spec/features/projects/labels/issues_sorted_by_priority_spec.rb'

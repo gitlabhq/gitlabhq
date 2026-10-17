@@ -384,6 +384,29 @@ RSpec.describe Ci::RetryPipelineService, '#execute', feature_category: :continuo
       end
     end
 
+    context 'when the pipeline is processed concurrently during the retry', :sidekiq_inline do
+      # Re-queueing the skipped job enqueues PipelineProcessWorker, which in production can
+      # set the pipeline running (bumping its lock_version) before this request reaches the
+      # finished_at reset. Inline Sidekiq reproduces that ordering.
+      before do
+        create_build('build 1', :success, build_stage)
+        create_build('test 2', :failed, test_stage)
+        create_build('report 3', :skipped, deploy_stage)
+        pipeline.update!(finished_at: 1.hour.ago)
+      end
+
+      it 'reloads the stale pipeline and clears finished_at', :aggregate_failures do
+        expect(pipeline).to receive(:reset).once.and_call_original
+
+        expect(service.execute(pipeline)).to be_success
+
+        expect(pipeline.reload.finished_at).to be_nil
+        expect(pipeline).to be_running
+        expect(build('test 2')).to be_pending
+        expect(build('report 3')).to be_created
+      end
+    end
+
     context 'when the pipeline is locked for the duration of the retry' do
       let(:lock_key) { "ci:retry_pipeline_service:lock:#{pipeline.id}" }
 

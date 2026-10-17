@@ -224,7 +224,7 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
           updated_before: '2026-02-01', updated_after: '2026-01-01'
         }
         array_filters = {
-          full_paths: ['g/p'], plans: ['ultimate'], feature_available: ['x'],
+          full_paths: ['g/p'], plans: ['ultimate'],
           custom_attributes: { 'k' => 'v' }
         }
 

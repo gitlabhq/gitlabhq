@@ -123,7 +123,7 @@ module API
             event_name: 'tool_call',
             ai_component: 'mcp_server',
             tool_name: tool_name,
-            **canonical_tool_name_field(tool_name),
+            **alias_fields(tool_name),
             request_id: request_id,
             tool_status: tool_status(error),
             ::Labkit::Fields::DURATION_S => duration_s,
@@ -151,7 +151,7 @@ module API
           client_info.to_h
         end
 
-        def canonical_tool_name_field(tool_name)
+        def alias_fields(tool_name)
           canonical_name = manager.resolve_alias(tool_name)
           return {} if canonical_name == tool_name
 

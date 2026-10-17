@@ -306,7 +306,6 @@ RSpec/AvoidWaitForRequests:
     - 'spec/features/projects/files/user_replaces_files_spec.rb'
     - 'spec/features/projects/files/user_uploads_files_spec.rb'
     - 'spec/features/projects/fork_spec.rb'
-    - 'spec/features/projects/jobs/user_browses_job_spec.rb'
     - 'spec/features/projects/jobs/user_browses_jobs_spec.rb'
     - 'spec/features/projects/jobs/user_triggers_manual_job_with_variables_spec.rb'
     - 'spec/features/projects/jobs_spec.rb'

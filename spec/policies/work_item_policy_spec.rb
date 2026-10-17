@@ -67,7 +67,7 @@ RSpec.describe WorkItemPolicy, :aggregate_failures, feature_category: :team_plan
         expect(permissions(non_member_user, project_work_item)).to be_disallowed(:report_spam)
       end
 
-      it 'checks admin abilities for spam reporting' do
+      it 'checks admin abilities for spam reporting', :enable_admin_mode do
         expect(permissions(admin, project_work_item)).to be_allowed(:report_spam)
         expect(permissions(admin, project_confidential_work_item)).to be_allowed(:report_spam)
       end
@@ -113,7 +113,7 @@ RSpec.describe WorkItemPolicy, :aggregate_failures, feature_category: :team_plan
         )
       end
 
-      it 'checks admin abilities for spam reporting' do
+      it 'checks admin abilities for spam reporting', :enable_admin_mode do
         expect(permissions(admin, project_work_item)).to be_allowed(:report_spam)
         expect(permissions(admin, project_confidential_work_item)).to be_allowed(:report_spam)
       end

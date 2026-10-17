@@ -79,7 +79,12 @@ module Ci
         .new(project: project, current_user: current_user)
         .close_all(pipeline)
 
-      pipeline.update(finished_at: nil)
+      # The job transitions above enqueue PipelineProcessWorker, which may update the
+      # pipeline, and so its lock_version, before this request gets here. Reload and
+      # retry rather than failing a retry whose jobs have already been re-run.
+      Gitlab::OptimisticLocking.retry_lock(pipeline, name: 'ci_retry_pipeline_finished_at') do |subject|
+        subject.update!(finished_at: nil)
+      end
 
       start_pipeline(pipeline)
 

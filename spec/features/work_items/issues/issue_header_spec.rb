@@ -92,7 +92,7 @@ RSpec.describe 'issue header', :js, feature_category: :team_planning do
     end
   end
 
-  context 'when user is admin and the project is set up for spam' do
+  context 'when user is admin and the project is set up for spam', :enable_admin_mode do
     let_it_be(:admin) { create(:admin) }
     let_it_be(:user_agent_detail) { create(:user_agent_detail, subject: issue) }
 

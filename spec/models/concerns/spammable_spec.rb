@@ -271,9 +271,23 @@ RSpec.describe Spammable, feature_category: :instance_resiliency do
         allow(issue).to receive(:submittable_as_spam?).and_return(true)
       end
 
-      it 'tests if the user can submit spam' do
-        expect(issue.submittable_as_spam_by?(admin)).to be(true)
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it 'allows an admin' do
+          expect(issue.submittable_as_spam_by?(admin)).to be(true)
+        end
+      end
+
+      context 'when admin mode is disabled' do
+        it 'does not allow an admin' do
+          expect(issue.submittable_as_spam_by?(admin)).to be(false)
+        end
+      end
+
+      it 'does not allow a regular user' do
         expect(issue.submittable_as_spam_by?(user)).to be(false)
+      end
+
+      it 'does not allow an anonymous user' do
         expect(issue.submittable_as_spam_by?(nil)).to be_nil
       end
     end

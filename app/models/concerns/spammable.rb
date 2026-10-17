@@ -35,7 +35,7 @@ module Spammable
   end
 
   def submittable_as_spam_by?(current_user)
-    current_user && current_user.admin? && submittable_as_spam?
+    current_user&.can_admin_all_resources? && submittable_as_spam?
   end
 
   def submittable_as_spam?
