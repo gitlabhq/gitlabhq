@@ -566,6 +566,22 @@ RSpec.describe Mcp::Tools::WorkItems::SaveWorkItemService, feature_category: :mc
       expect(resolved.named).to eq(1)
     end
 
+    it 'reads an Issue Global ID, which the WorkItemID type accepts' do
+      resolved = service.governed_containers({ parent_id: "gid://gitlab/Issue/#{work_item.id}" }
+        .with_indifferent_access)
+
+      expect(resolved.containers).to contain_exactly(project)
+    end
+
+    it 'does not read the id out of a Global ID naming another model, so the call is refused',
+      :aggregate_failures do
+      resolved = service.governed_containers({ parent_id: "gid://gitlab/Project/#{work_item.id}" }
+        .with_indifferent_access)
+
+      expect(resolved.containers).to be_empty
+      expect(resolved.named).to eq(1)
+    end
+
     it 'counts an unknown parent as named so the call is refused', :aggregate_failures do
       resolved = service.governed_containers({ parent_id: non_existing_record_id.to_s }.with_indifferent_access)
 

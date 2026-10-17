@@ -9,7 +9,7 @@ RSpec.describe Mcp::Tools::Repositories::Tags::ListTagsService, feature_category
   let(:service) { described_class.new(name: 'list_tags') }
 
   before do
-    service.set_cred(current_user: user)
+    service.set_cred(current_user: user, access_token: build_stubbed(:personal_access_token, user: user))
   end
 
   def execute(arguments)
@@ -337,8 +337,10 @@ RSpec.describe Mcp::Tools::Repositories::Tags::ListTagsService, feature_category
       # A fresh service per call: the real server builds one per request, and reusing a
       # single instance would compare its memoized project lookup against itself.
       def execute_isolated(arguments)
+        access_token = build_stubbed(:personal_access_token, user: other_user)
+
         described_class.new(name: 'list_tags')
-          .tap { |svc| svc.set_cred(current_user: other_user) }
+          .tap { |svc| svc.set_cred(current_user: other_user, access_token: access_token) }
           .execute(params: { name: 'list_tags', arguments: arguments })
       end
 
@@ -365,5 +367,13 @@ RSpec.describe Mcp::Tools::Repositories::Tags::ListTagsService, feature_category
         expect(execute({ project_id: project.full_path })[:isError]).to be true
       end
     end
+  end
+
+  describe 'granular token authorization' do
+    let(:current_user) { user }
+    let(:boundary_resource) { project }
+    let(:tool_params) { { name: 'list_tags', arguments: { project_id: project.full_path } } }
+
+    it_behaves_like 'an MCP custom tool authorizing granular tokens', :read_repository_tag
   end
 end

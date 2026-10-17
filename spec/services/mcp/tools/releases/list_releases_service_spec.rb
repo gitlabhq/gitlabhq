@@ -15,7 +15,7 @@ RSpec.describe Mcp::Tools::Releases::ListReleasesService, feature_category: :mcp
   let(:service) { described_class.new(name: 'list_releases') }
 
   before do
-    service.set_cred(current_user: user)
+    service.set_cred(current_user: user, access_token: build_stubbed(:personal_access_token, user: user))
   end
 
   def execute(arguments)
@@ -261,8 +261,10 @@ RSpec.describe Mcp::Tools::Releases::ListReleasesService, feature_category: :mcp
       # A fresh service per call: the real server builds one per request, and reusing a
       # single instance would compare its memoized project lookup against itself.
       def execute_isolated(arguments)
+        access_token = build_stubbed(:personal_access_token, user: other_user)
+
         described_class.new(name: 'list_releases')
-          .tap { |svc| svc.set_cred(current_user: other_user) }
+          .tap { |svc| svc.set_cred(current_user: other_user, access_token: access_token) }
           .execute(params: { name: 'list_releases', arguments: arguments })
       end
 
@@ -291,5 +293,13 @@ RSpec.describe Mcp::Tools::Releases::ListReleasesService, feature_category: :mcp
         expect(result[:isError]).to be true
       end
     end
+  end
+
+  describe 'granular token authorization' do
+    let(:current_user) { user }
+    let(:boundary_resource) { project }
+    let(:tool_params) { { name: 'list_releases', arguments: { project_id: project.full_path } } }
+
+    it_behaves_like 'an MCP custom tool authorizing granular tokens', :read_release
   end
 end

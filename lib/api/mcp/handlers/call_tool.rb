@@ -15,6 +15,17 @@ module API
 
         DISPATCH_KEY = ::Mcp::Tools::Base::AggregatedService::DISPATCH_KEY
 
+        class ToolDeniedError < StandardError
+          attr_reader :tool_name, :denied_by
+
+          def initialize(tool_name, denied_by = nil)
+            @tool_name = tool_name
+            @denied_by = denied_by
+
+            super(format("Tool '%{tool_name}' is denied by tool rules", tool_name: tool_name))
+          end
+        end
+
         def initialize(manager)
           @manager = manager
         end
@@ -31,6 +42,7 @@ module API
           # Tracked after fetch_tool so the tool's own argument declaration can name the namespace.
           track_start_event(tool_name, request_id, current_user, tool: tool, params: params)
           configure_tool_credentials(tool, current_user)
+          enforce_tool_governance!(tool, tool_name, request_id, current_user, params)
           execute_tool_with_tracking(tool, request, params, tool_name, request_id, current_user)
         end
 
@@ -48,9 +60,21 @@ module API
           raise ArgumentError, e.message
         end
 
+        def enforce_tool_governance!(tool, tool_name, request_id, current_user, params)
+          start = current_monotonic_time
+          check_tool_governance!(tool, tool_name, current_user, params)
+        rescue ToolDeniedError, ArgumentError => error
+          track_finish_event(tool_name, request_id, current_user,
+            success: false, error: error, tool: tool, params: params)
+          log_tool_call(tool_name, request_id, current_user, params,
+            tool: tool, error: error, duration_s: duration_since(start))
+          raise
+        end
+
         def configure_tool_credentials(tool, current_user)
-          tool.set_cred(current_user: current_user) if tool.is_a?(::Mcp::Tools::Base::CustomService)
-          tool.set_cred(current_user: current_user) if tool.is_a?(::Mcp::Tools::Base::GraphqlService)
+          return unless tool.is_a?(::Mcp::Tools::Base::CustomService) || tool.is_a?(::Mcp::Tools::Base::GraphqlService)
+
+          tool.set_cred(current_user: current_user, access_token: context&.access_token)
         end
 
         def execute_tool_with_tracking(tool, request, params, tool_name, request_id, current_user)
@@ -139,6 +163,8 @@ module API
           when nil then 'ok'
           when ToolResponseError then ::Mcp::Tools::Base::Response.error_reason(error.result).to_s
           when ::Mcp::Tools::Manager::ToolNotFoundError then 'not_found'
+          when ToolDeniedError then 'unauthorized'
+          when ::Mcp::Tools::Concerns::GovernanceContainerResolver::TooManyContainersError then 'bad_request'
           else 'error'
           end
         end
@@ -173,6 +199,8 @@ module API
         def tool_call_namespace(_tool, _params)
           # Tool-call telemetry and expanded logging are EE-only, so CE never resolves a namespace.
         end
+
+        def check_tool_governance!(_tool, _tool_name, _current_user, _params); end
       end
     end
   end

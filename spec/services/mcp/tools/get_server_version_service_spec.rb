@@ -125,6 +125,16 @@ RSpec.describe Mcp::Tools::GetServerVersionService, feature_category: :mcp_serve
       end
     end
 
+    context 'without an access token' do
+      let(:oauth_token) { nil }
+
+      it 'skips the granular token check' do
+        expect(::Authz::Tokens::AuthorizeGranularScopesService).not_to receive(:new)
+
+        expect(service.execute(params: { arguments: {} })[:isError]).to be(false)
+      end
+    end
+
     context 'when current_user is not set' do
       it 'returns an error' do
         service_without_user = described_class.new(name: service_name, version: '0.1.0')

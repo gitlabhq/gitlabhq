@@ -47,8 +47,8 @@ To start a free trial:
 
 1. In the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Orbit**.
-1. Select **Start free trial**.
-1. On the confirmation dialog, select **Start free trial**.
+1. Turn on the **Turn on Orbit** toggle.
+1. On the confirmation dialog, select **Turn on Orbit**.
 
 After you start the trial, Orbit turns on for the group and indexes the group, its subgroups,
 and its projects.
@@ -57,7 +57,55 @@ Indexing can take up to a few hours.
 The trial applies to that one group only.
 Only Orbit can use the trial credits.
 When the trial ends or the credits run out, Orbit pauses.
-To keep using Orbit, add GitLab credits from the group usage quotas page.
+To keep using Orbit, contact sales.
+
+## Start a free trial for the instance
+
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/261678) in GitLab 19.6 behind feature flags named `orbit_trial` and `orbit_promo_access_gate`, disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by feature flags.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
+
+When your instance is not in the Orbit beta and has not purchased Orbit, an administrator
+can start a free trial for the instance.
+The trial gives the instance free GitLab credits for Orbit, and all top-level groups share them.
+
+Prerequisites:
+
+- You must have administrator access.
+- Your instance must have an online cloud license.
+- The instance must meet the trial criteria.
+
+To start a free trial for the instance:
+
+1. In the left sidebar, at the bottom, select **Admin**.
+1. Select **Orbit**.
+1. Select **Start free trial**.
+1. On the confirmation dialog, select **Start free trial**.
+
+You can also start the trial from the **Overview** tab of the Orbit dashboard: select
+**Start free trial** on the card over the map, then follow the steps on the **Admin** Orbit page.
+
+You and the Owners of top-level groups can turn on Orbit for groups before and during the trial.
+The trial credits pay for Orbit queries.
+
+When the trial ends or the credits run out, Orbit turns off for all groups, except groups in the Orbit beta.
+Orbit turns off within one hour after the trial ends.
+To keep using Orbit, contact sales.
 
 ## Turn Orbit on or off for your groups
 
@@ -93,11 +141,16 @@ To turn Orbit on or off for your groups:
 
 On GitLab.com, turning on Orbit for an eligible group starts the free trial of that group.
 The confirmation dialog shows the trial that each group gets.
+On GitLab Self-Managed and GitLab Dedicated, during a free trial for the instance, the confirmation
+dialog shows the end date of the trial.
 
 On GitLab Self-Managed and GitLab Dedicated, you can turn on Orbit for a group without a free trial
 or a purchase. Orbit indexes the group, and the **Group status** tab shows the index status.
 When the `orbit_promo_access_gate` feature flag is enabled, the instance needs a free trial or
-a purchase to run Orbit queries. After the free trial of the instance ends, you need a purchase
+a purchase to run Orbit queries. Until then, the **Overview** tab shows the item counts of your groups,
+and a card over the map says how the instance gets Orbit queries. An administrator of an instance
+that can start its free trial sees **Start free trial** on the card. The **Query editor** tab says that
+queries start with a trial or a purchase. After the free trial of the instance ends, you need a purchase
 to turn on Orbit for more groups.
 
 ## Orbit in GitLab Duo default

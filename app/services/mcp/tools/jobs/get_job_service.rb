@@ -81,6 +81,10 @@ module Mcp
           include_log? ? :read_build_trace : :read_build
         end
 
+        def granular_permissions
+          [:read_job]
+        end
+
         def auth_target(params)
           @arguments = params[:arguments] || {}
           @invoked_as = params[:name]

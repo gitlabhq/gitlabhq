@@ -51,9 +51,12 @@ end
 
 ### Role grants
 
-`ee/spec/lib/authz/role_definitions_spec.rb` checks that each role in `config/authz/roles/`
-gets exactly the permissions its YAML lists.
-Do not repeat this check role by role in policy specs.
+Permissions listed in the role YAML files in `config/authz/roles/` are tested automatically.
+`ee/spec/lib/authz/role_definitions_spec.rb` checks that each role gets exactly the permissions
+its YAML lists.
+
+Because of this, policy specs do not need role tables, such as a `where` table of guest through
+owner, to test what each role is granted.
 
 Instead, test what the policy adds:
 
@@ -63,14 +66,43 @@ Instead, test what the policy adds:
 
 Pair each prevent with one allowed example, so the test fails if no one holds the permission.
 
+### Test each rule in the policy that defines it
+
+Define a rule as close as possible to the policy that enables the permission.
+If the rule depends only on that policy's subject, put it in that policy.
+If it depends on a more specific subject, put it in the policy that delegates.
+
+For example, `GroupPolicy` enables `update_widget`, and `WidgetPolicy` delegates to `GroupPolicy`.
+A feature flag scoped to the group depends only on the group, so it belongs in `GroupPolicy`.
+A check on the widget itself, such as whether it is locked, belongs in `WidgetPolicy`.
+
+Test each rule in the spec for the policy that defines it.
+A policy's spec should not re-test logic from the policies it delegates to.
+
 ### Delegating policies
 
-If a policy only delegates to another policy, check the delegation with `delegate_to`
+If a policy delegates to another policy, check the delegation with `delegate_to`
 and test only the rules the policy adds.
 
 ```ruby
 it { is_expected.to delegate_to(ProjectPolicy) }
 ```
+
+If the delegate depends on the subject, such as `delegate { @subject.container }`,
+check each possible delegate:
+
+```ruby
+it { expect(described_class.new(user, project_trigger)).to delegate_to(ProjectPolicy) }
+it { expect(described_class.new(user, group_trigger)).to delegate_to(GroupPolicy) }
+```
+
+### Create only what the rules need
+
+Most policy specs need one user and one subject.
+Do not create extra users, projects, or memberships to fill out a role table.
+
+- Use `let_it_be` for records.
+- Reuse the users and projects from the shared policy contexts instead of creating new ones.
 
 ### Specify the subject in every block
 
@@ -106,27 +138,14 @@ rather than a generic `project`.
 RSpec.describe ProjectPolicy do
   describe 'write_example_feature' do
     let_it_be(:project) { private_project }
+    let(:current_user) { reporter }
 
     before do
       stub_feature_flags(example_feature: true)
       stub_licensed_features(example_feature: true)
     end
 
-    where(:current_user, :allowed) do
-      ref(:owner)      | true
-      ref(:reporter)   | true
-      ref(:planner)    | false
-      ref(:guest)      | false
-      ref(:non_member) | false
-    end
-
-    with_them do
-      if params[:allowed]
-        it { expect_allowed(:write_example_feature) }
-      else
-        it { expect_disallowed(:write_example_feature) }
-      end
-    end
+    it { expect_allowed(:write_example_feature) }
 
     context 'with admin mode enabled', :enable_admin_mode do
       let(:current_user) { admin }

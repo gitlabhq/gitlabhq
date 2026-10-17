@@ -239,7 +239,7 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestConflictsService, featu
         let(:arguments) { { 'project_id' => project.id.to_s, 'merge_request_iid' => merge_request.iid } }
 
         before do
-          service.set_cred(current_user: reporter)
+          service.set_cred(current_user: reporter, access_token: build_stubbed(:personal_access_token, user: reporter))
         end
 
         it 'reports unauthorized' do
@@ -567,5 +567,20 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestConflictsService, featu
         expect(result[:content].first[:text]).to include('not found or access denied')
       end
     end
+  end
+
+  describe 'granular token authorization' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project, :repository, developers: user) }
+    let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+
+    let(:service) { described_class.new(name: service_name, version: '0.1.0') }
+    let(:current_user) { user }
+    let(:boundary_resource) { project }
+    let(:tool_params) do
+      { arguments: { 'project_id' => project.id.to_s, 'merge_request_iid' => merge_request.iid } }
+    end
+
+    it_behaves_like 'an MCP custom tool authorizing granular tokens', :read_merge_request
   end
 end

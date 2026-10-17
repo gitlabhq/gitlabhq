@@ -376,4 +376,28 @@ RSpec.describe Mcp::Tools::Labels::SearchTool, feature_category: :mcp_server do
       end
     end
   end
+
+  describe 'resolving the container before GraphQL' do
+    let_it_be(:hidden_project) { create(:project, :public, :hidden) }
+
+    let(:params) { { full_path: hidden_project.full_path, is_project: true, search: 'label' } }
+
+    it 'answers not found for a project the governance lookup skips, without asking GraphQL', :aggregate_failures do
+      expect(GitlabSchema).not_to receive(:execute)
+
+      result = tool.execute
+
+      expect(result[:isError]).to be(true)
+      expect(result[:content].first[:text])
+        .to include("Project '#{hidden_project.full_path}' not found or inaccessible")
+    end
+
+    context 'with a group' do
+      let(:params) { { full_path: group.full_path.upcase, is_project: false, search: 'label' } }
+
+      it 'queries the canonical path of the resolved group' do
+        expect(tool.build_variables[:fullPath]).to eq(group.full_path)
+      end
+    end
+  end
 end

@@ -1,0 +1,10 @@
+---
+name: restrict_global_issues_scope_all
+description: Reject `scope=all` on the root issues and issues_statistics REST API endpoints (which would otherwise run an unbounded query across all visible projects and time out).
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/478744
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240709
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/634324
+milestone: '19.6'
+group: group::work items
+type: gitlab_com_derisk
+default_enabled: false

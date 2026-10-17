@@ -2,6 +2,8 @@
 
 module AuthorizedProjectUpdate
   class ProjectRecalculatePerUserWorker < ProjectRecalculateWorker
+    include Authz::UserRefreshLock
+
     data_consistency :sticky
 
     feature_category :permissions
@@ -16,7 +18,11 @@ module AuthorizedProjectUpdate
 
       return unless project && user
 
-      AuthorizedProjectUpdate::ProjectRecalculatePerUserService.new(project, user).execute
+      service = AuthorizedProjectUpdate::ProjectRecalculatePerUserService.new(project, user)
+
+      with_user_refresh_lock(user) { service.execute }
+    rescue Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError
+      reschedule_on_lock_contention(project_id, user_id)
     end
   end
 end

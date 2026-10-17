@@ -87,6 +87,10 @@ module Mcp
           :read_job_artifacts
         end
 
+        def granular_permissions
+          [:download_job_artifact]
+        end
+
         def auth_target(params)
           @arguments = params[:arguments] || {}
 

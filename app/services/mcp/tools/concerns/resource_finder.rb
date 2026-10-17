@@ -28,13 +28,17 @@ module Mcp
         end
 
         def find_group!(group_id, ability: :read_group)
-          group = lookup_group(decode_identifier(group_id))
+          group = find_group(group_id)
           message = "Group '#{group_id}' not found or inaccessible"
 
           raise ResourceNotFoundError, message unless group
           raise ResourceForbiddenError, message unless Ability.allowed?(current_user, ability, group)
 
           group
+        end
+
+        def find_group(group_id)
+          lookup_group(decode_identifier(group_id))
         end
 
         def decode_identifier(value)

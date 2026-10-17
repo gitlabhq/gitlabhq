@@ -193464,7 +193464,7 @@
             },
             {
               "name": "orbitTrial",
-              "description": "Orbit trial state of the top-level group. Returns null when the CustomersDot request fails. This field can be resolved for at most 10 groups in any single request. Introduced in GitLab 19.5: Status: Experiment.",
+              "description": "Orbit trial state of the top-level group, or of the instance on GitLab Self-Managed and GitLab Dedicated. Returns null when the CustomersDot request fails. This field can be resolved for at most 10 groups in any single request. Introduced in GitLab 19.5: Status: Experiment.",
               "args": [],
               "type": {
                 "kind": "OBJECT",
@@ -306734,7 +306734,7 @@
             },
             {
               "name": "trial",
-              "description": "Orbit trial of the top-level group. Null for subgroups, projects, when the user cannot read the trial, and when the CustomersDot request fails. This field can be resolved for at most 10 groups in any single request. Introduced in GitLab 19.6: Status: Experiment.",
+              "description": "Orbit trial of the top-level group, or of the instance on GitLab Self-Managed and GitLab Dedicated. Null for subgroups, projects, when the user cannot read the trial, and when the CustomersDot request fails. This field can be resolved for at most 10 groups in any single request. Introduced in GitLab 19.6: Status: Experiment.",
               "args": [],
               "type": {
                 "kind": "OBJECT",
@@ -306855,7 +306855,7 @@
           "fields": [
             {
               "name": "credits",
-              "description": "Credits of the trial. Introduced in GitLab 19.5: Status: Experiment.",
+              "description": "Credits of the trial. On GitLab Self-Managed and GitLab Dedicated, null unless the current user is an administrator. Introduced in GitLab 19.5: Status: Experiment.",
               "args": [],
               "type": {
                 "kind": "OBJECT",

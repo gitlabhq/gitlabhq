@@ -118,133 +118,72 @@ RSpec.describe Members::DestroyService, feature_category: :groups_and_projects d
     end
   end
 
-  context 'With ExclusiveLeaseHelpers' do
+  describe 'serializing owner removals with the delete_members lock' do
     include ExclusiveLeaseHelpers
 
-    let(:lock_key) do
-      "delete_members:#{member_to_delete.source.class}:#{member_to_delete.source.id}"
+    let(:lock_key) { "delete_members:#{member_to_delete.source.class}:#{member_to_delete.source.id}" }
+    let(:lock_timeout) { 1.minute }
+
+    subject(:destroy_member) { described_class.new(member_to_delete, current_user: current_user, **opts).execute }
+
+    shared_examples 'removes the member without taking the delete_members lock' do
+      it 'removes the member without taking the delete_members lock' do
+        allow(Gitlab::ExclusiveLease).to receive(:new).and_call_original
+        expect(Gitlab::ExclusiveLease).not_to receive(:new).with(lock_key, timeout: lock_timeout)
+
+        expect { destroy_member }.to change { member_to_delete.source.members.count }.by(-1)
+      end
     end
 
-    let(:timeout) { 1.minute }
-    let(:service_object) { described_class.new(member_to_delete, current_user: current_user, **opts) }
-
-    subject(:destroy_member) { service_object.execute }
-
-    context 'for group members' do
+    context 'when removing a group owner' do
       before_all do
         group.add_owner(current_user)
       end
 
-      context 'deleting group owners' do
-        let!(:member_to_delete) { group.add_owner(member_user) }
+      let_it_be(:member_to_delete) { group.add_owner(member_user) }
 
-        context 'locking to avoid race conditions' do
-          it 'tries to perform the delete within a lock' do
-            expect_to_obtain_exclusive_lease(lock_key, timeout: timeout)
+      it 'checks for the last owner and removes the owner while holding the lock' do
+        expect_to_obtain_exclusive_lease(lock_key, timeout: lock_timeout)
 
-            destroy_member
-          end
-
-          context 'based on status of the lock' do
-            context 'when lock is obtained' do
-              it 'destroys the membership' do
-                expect_to_obtain_exclusive_lease(lock_key, timeout: timeout)
-
-                expect { destroy_member }.to change { group.members.count }.by(-1)
-              end
-            end
-
-            context 'when the lock cannot be obtained' do
-              before do
-                stub_exclusive_lease_taken(lock_key, timeout: timeout)
-              end
-
-              it 'raises error' do
-                expect { destroy_member }.to raise_error(Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError)
-              end
-            end
-          end
-        end
+        expect { destroy_member }.to change { group.members.count }.by(-1)
       end
 
-      context 'deleting group members that are not owners' do
-        let!(:member_to_delete) { group.add_developer(member_user) }
-
-        it 'does not try to perform the deletion of the member within a lock' do
-          # We need to account for other places involved in the Member deletion process that
-          # uses ExclusiveLease.
-
-          # `UpdateHighestRole` concern uses locks to peform work
-          # whenever a Member is committed, so that needs to be accounted for.
-          lock_key_for_update_highest_role = "update_highest_role:#{member_to_delete.user_id}"
-
-          expect(Gitlab::ExclusiveLease)
-            .to receive(:new).with(lock_key_for_update_highest_role, timeout: 10.minutes.to_i).and_call_original
-
-          # We do not use any locks for the member deletion process, from within this service.
-          expect(Gitlab::ExclusiveLease)
-            .not_to receive(:new).with(lock_key, timeout: timeout)
-
-          destroy_member
+      context 'when a concurrent owner removal holds the lock' do
+        before do
+          stub_exclusive_lease_taken(lock_key, timeout: lock_timeout)
         end
 
-        it 'destroys the membership' do
-          expect { destroy_member }.to change { group.members.count }.by(-1)
+        it 'raises instead of risking the removal of the last owner' do
+          expect { destroy_member }.to raise_error(Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError)
         end
       end
     end
 
-    context 'for project members' do
-      shared_examples_for 'deletes the project member without using a lock' do
-        let(:lock_key_for_update_highest_role) { "update_highest_role:#{member_to_delete.user_id}" }
-        let(:lock_key_for_authorizations_refresh) { "authorized_project_update/project_recalculate_worker/projects/#{member_to_delete.project.id}" }
-
-        it 'does not try to perform the deletion of a project member within a lock', :aggregate_failures do
-          # We need to account for other places involved in the Member deletion process that
-          # uses ExclusiveLease.
-
-          # 1. `UpdateHighestRole` concern uses locks to peform work
-          # whenever a Member is committed, so that needs to be accounted for.
-          expect(Gitlab::ExclusiveLease)
-            .to receive(:new).with(lock_key_for_update_highest_role, timeout: 10.minutes.to_i).and_call_original
-
-          # 2. `AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker` does not use a lock to refresh
-          # a user's authorizations has to be refreshed
-          expect(Gitlab::ExclusiveLease)
-            .not_to receive(:new).with(lock_key_for_authorizations_refresh, timeout: 10.seconds)
-
-          # We do not use any locks for the member deletion process, from within this service.
-          expect(Gitlab::ExclusiveLease)
-            .not_to receive(:new).with(lock_key, timeout: timeout)
-
-          destroy_member
-        end
-
-        it 'destroys the membership' do
-          expect { destroy_member }.to change { entity.members.count }.by(-1)
-        end
+    context 'when removing a group member who is not an owner' do
+      before_all do
+        group.add_owner(current_user)
       end
 
+      let_it_be(:member_to_delete) { group.add_developer(member_user) }
+
+      it_behaves_like 'removes the member without taking the delete_members lock'
+    end
+
+    context 'when removing a project member' do
       before_all do
         group_project.add_owner(current_user)
       end
 
-      context 'deleting project owners' do
-        context 'deleting project owners' do
-          let!(:member_to_delete) { entity.add_owner(member_user) }
+      context 'when the member is an owner' do
+        let_it_be(:member_to_delete) { group_project.add_owner(member_user) }
 
-          it_behaves_like 'deletes the project member without using a lock' do
-            let(:entity) { group_project }
-          end
-        end
+        it_behaves_like 'removes the member without taking the delete_members lock'
       end
 
-      context 'deleting project members that are not owners' do
-        let!(:member_to_delete) { group_project.add_developer(member_user) }
+      context 'when the member is not an owner' do
+        let_it_be(:member_to_delete) { group_project.add_developer(member_user) }
 
-        it_behaves_like 'deletes the project member without using a lock' do
-          let(:entity) { group_project }
-        end
+        it_behaves_like 'removes the member without taking the delete_members lock'
       end
     end
   end

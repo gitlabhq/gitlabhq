@@ -4,6 +4,8 @@ module Mcp
   module Tools
     module Labels
       class SearchTool < Mcp::Tools::Base::GraphqlTool
+        include Mcp::Tools::Concerns::ResourceFinder
+
         register_version VERSIONS[:v0_1_0], {
           graphql_operation: load_graphql('labels/search.v0_1_0.query.graphql')
         }
@@ -13,6 +15,7 @@ module Mcp
         }
 
         def execute
+          return resource_not_found_error unless target
           return super if version == VERSIONS[:v0_1_0] || !params[:search].is_a?(Array)
 
           labels = []
@@ -41,7 +44,7 @@ module Mcp
         def build_variables
           {
             isProject: params[:is_project],
-            fullPath: params[:full_path],
+            fullPath: target.full_path,
             search: params[:search]
           }.compact
         end
@@ -57,6 +60,10 @@ module Mcp
         end
 
         private
+
+        def target
+          @target ||= params[:is_project] ? find_project(params[:full_path].to_s) : find_group(params[:full_path])
+        end
 
         def process_result(result)
           processed_result = super

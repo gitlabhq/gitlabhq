@@ -29,7 +29,7 @@ RSpec.describe Resolvers::Users::GroupCountResolver do
       context 'when current_user is an admin', :enable_admin_mode do
         let_it_be(:admin) { create(:admin) }
 
-        it do
+        it 'resolves the group count for every user' do
           result = batch_sync do
             [user1, user2].map { |user| resolve_group_count(user, admin) }
           end
@@ -39,7 +39,7 @@ RSpec.describe Resolvers::Users::GroupCountResolver do
       end
 
       context 'when current_user does not have access to the requested resource' do
-        it do
+        it 'returns nil instead of the group count' do
           result = batch_sync { resolve_group_count(user1, user2) }
 
           expect(result).to be_nil
@@ -47,7 +47,7 @@ RSpec.describe Resolvers::Users::GroupCountResolver do
       end
 
       context 'when current_user does not exist' do
-        it do
+        it 'returns nil instead of the group count' do
           result = batch_sync { resolve_group_count(user1, nil) }
 
           expect(result).to be_nil

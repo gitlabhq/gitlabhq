@@ -41,6 +41,10 @@ module Mcp
           :read_merge_request
         end
 
+        def granular_permissions
+          [:read_merge_request]
+        end
+
         def auth_target(params)
           strong_memoize_with(:auth_target, params[:arguments]) do
             mr = merge_request(params[:arguments])

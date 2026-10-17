@@ -214,6 +214,44 @@ RSpec.describe Authz::ReverifyProjectAuthorizationsCronWorker, feature_category:
       end
     end
 
+    context 'when another job holds the per-user refresh lock', :clean_gitlab_redis_shared_state do
+      include ExclusiveLeaseHelpers
+
+      let_it_be(:reverification) do
+        create(:project_authorization_reverification, :to_be_processed, user: user)
+      end
+
+      before do
+        stub_exclusive_lease_taken("project_authorizations:user_refresh:#{user.id}", timeout: 5.minutes)
+      end
+
+      context 'when feature flag `lock_auth_refresh_jobs_per_user` is disabled' do
+        before do
+          stub_feature_flags(lock_auth_refresh_jobs_per_user: false)
+        end
+
+        it 'refreshes the user and removes the record' do
+          expect { perform }
+            .to change { authorized? }.from(false).to(true)
+            .and change { queued? }.from(true).to(false)
+        end
+      end
+
+      context 'when feature flag `lock_auth_refresh_jobs_per_user` is enabled' do
+        before do
+          stub_feature_flags(lock_auth_refresh_jobs_per_user: user)
+        end
+
+        it 'requeues the record without refreshing the user' do
+          expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
+
+          expect { perform }
+            .to not_change { authorized? }.from(false)
+            .and change { reverification.reload.status }.from('pending').to('requeued')
+        end
+      end
+    end
+
     def authorized?
       ProjectAuthorization.exists?(user_id: user.id, project_id: project.id)
     end

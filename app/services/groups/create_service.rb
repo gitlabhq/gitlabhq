@@ -131,6 +131,7 @@ module Groups
     end
 
     def can_create_group_in_organization?
+      return true if @group.subgroup?
       return true if can?(current_user, :create_group, @group.organization)
 
       message = s_("CreateGroup|You don't have permission to create a group in the provided organization.")

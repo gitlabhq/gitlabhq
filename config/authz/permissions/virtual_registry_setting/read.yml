@@ -1,0 +1,3 @@
+---
+name: read_virtual_registry_setting
+description: Grants the ability to read the virtual registries setting of a top-level group, which shows whether virtual registries are turned on for the group.

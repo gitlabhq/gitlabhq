@@ -48320,7 +48320,7 @@ Fields:
 | <a id="group-namespacesettings"></a>`namespaceSettings` | [`NamespaceSettings`](#namespacesettings) | Namespace settings for the namespace. |
 | <a id="group-orbit"></a>`orbit` {{< icon name="warning-solid" >}} | [`OrbitNamespace`](#orbitnamespace) | Introduced in GitLab 19.5. Status: Experiment. Orbit data of the group. |
 | <a id="group-orbitaccess"></a>`orbitAccess` {{< icon name="warning-solid" >}} | [`OrbitAccess`](#orbitaccess) | Introduced in GitLab 19.5. Status: Experiment. Orbit access state of the top-level group. Returns null when the user cannot read the Orbit setting of the group. This field can be resolved for at most 10 groups in any single request. |
-| <a id="group-orbittrial"></a>`orbitTrial` {{< icon name="warning-solid" >}} | [`OrbitTrial`](#orbittrial) | Introduced in GitLab 19.5. Status: Experiment. Orbit trial state of the top-level group. Returns null when the CustomersDot request fails. This field can be resolved for at most 10 groups in any single request. |
+| <a id="group-orbittrial"></a>`orbitTrial` {{< icon name="warning-solid" >}} | [`OrbitTrial`](#orbittrial) | Introduced in GitLab 19.5. Status: Experiment. Orbit trial state of the top-level group, or of the instance on GitLab Self-Managed and GitLab Dedicated. Returns null when the CustomersDot request fails. This field can be resolved for at most 10 groups in any single request. |
 | <a id="group-organizationeditpath"></a>`organizationEditPath` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 17.1. Status: Experiment. Path for editing group at the organization level. |
 | <a id="group-packagesettings"></a>`packageSettings` | [`PackageSettings`](#packagesettings) | Package settings for the namespace. |
 | <a id="group-parent"></a>`parent` | [`Group`](#group) | Parent group. |
@@ -56953,7 +56953,7 @@ Fields:
 | <a id="orbitnamespace-indexing"></a>`indexing` {{< icon name="warning-solid" >}} | [`OrbitIndexing`](#orbitindexing) | Introduced in GitLab 19.6. Status: Experiment. Indexing state of the group or project. Null when Orbit is not available to the current user. |
 | <a id="orbitnamespace-indexingstatus"></a>`indexingStatus` | [`OrbitIndexingStatus`](#orbitindexingstatus) | Indexing status of the group or project. Null when Orbit is not available to the current user. |
 | <a id="orbitnamespace-itemcounts"></a>`itemCounts` | [`OrbitItemCounts`](#orbititemcounts) | Number of indexed items in the group or project. Null when Orbit is not available to the current user. This field can be resolved for only one group or project in any single request. |
-| <a id="orbitnamespace-trial"></a>`trial` {{< icon name="warning-solid" >}} | [`OrbitTrial`](#orbittrial) | Introduced in GitLab 19.6. Status: Experiment. Orbit trial of the top-level group. Null for subgroups, projects, when the user cannot read the trial, and when the CustomersDot request fails. This field can be resolved for at most 10 groups in any single request. |
+| <a id="orbitnamespace-trial"></a>`trial` {{< icon name="warning-solid" >}} | [`OrbitTrial`](#orbittrial) | Introduced in GitLab 19.6. Status: Experiment. Orbit trial of the top-level group, or of the instance on GitLab Self-Managed and GitLab Dedicated. Null for subgroups, projects, when the user cannot read the trial, and when the CustomersDot request fails. This field can be resolved for at most 10 groups in any single request. |
 
 ### `OrbitTrial`
 
@@ -56963,7 +56963,7 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="orbittrial-credits"></a>`credits` {{< icon name="warning-solid" >}} | [`OrbitTrialCredits`](#orbittrialcredits) | Introduced in GitLab 19.5. Status: Experiment. Credits of the trial. |
+| <a id="orbittrial-credits"></a>`credits` {{< icon name="warning-solid" >}} | [`OrbitTrialCredits`](#orbittrialcredits) | Introduced in GitLab 19.5. Status: Experiment. Credits of the trial. On GitLab Self-Managed and GitLab Dedicated, null unless the current user is an administrator. |
 | <a id="orbittrial-expireson"></a>`expiresOn` {{< icon name="warning-solid" >}} | [`Date`](#date) | Introduced in GitLab 19.5. Status: Experiment. Last day of the trial, in UTC. Null before a trial starts. |
 | <a id="orbittrial-offer"></a>`offer` {{< icon name="warning-solid" >}} | [`OrbitTrialOffer`](#orbittrialoffer) | Introduced in GitLab 19.6. Status: Experiment. Terms of a new trial. Null unless the current user can start the trial and CustomersDot sends valid terms. |
 | <a id="orbittrial-state"></a>`state` {{< icon name="warning-solid" >}} | [`OrbitTrialState!`](#orbittrialstate) | Introduced in GitLab 19.5. Status: Experiment. State of the trial. |

@@ -77,7 +77,7 @@ module Mcp
               match = ::MergeRequest.link_reference_pattern.match(params[:url])
               raise ArgumentError, "Invalid merge request URL: #{params[:url]}" unless match
 
-              ["#{match[:namespace]}/#{match[:project]}", match[:merge_request]]
+              [find_project!("#{match[:namespace]}/#{match[:project]}").full_path, match[:merge_request]]
             else
               iid = params[:merge_request_iid]
               project_id = params[:project_id]

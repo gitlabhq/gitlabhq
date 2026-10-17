@@ -1,0 +1,9 @@
+---
+name: lock_auth_refresh_jobs_per_user
+description: Run project authorization refresh jobs for the same user one at a time, using a per-user Redis lock
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/258857
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/632783
+milestone: '19.6'
+type: gitlab_com_derisk
+group: group::authorization
+default_enabled: false

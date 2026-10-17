@@ -25,6 +25,13 @@ Retrieves statistics for issues accessible by the current user. By default,
 it returns only issues created by the current user. To get all issues,
 set the `scope` attribute to `all`.
 
+> [!note]
+> On GitLab.com, when the `restrict_global_issues_scope_all` feature flag is enabled, `scope=all`
+> is not supported on this endpoint and returns `400 Bad Request`. To get statistics for all issues
+> in a group or project, use the [group](#retrieve-issues-statistics-for-a-group) or
+> [project](#retrieve-issues-statistics-for-a-project) issues statistics endpoint.
+> This restriction does not apply to GitLab Self-Managed or GitLab Dedicated.
+
 ```plaintext
 GET /issues_statistics
 GET /issues_statistics?labels=foo
@@ -44,7 +51,7 @@ GET /issues_statistics?confidential=true
 | ------------------- | ---------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `labels`            | string           | no         | Comma-separated list of label names, issues must have all labels to be returned. `None` lists all issues with no labels. `Any` lists all issues with at least one label. |
 | `milestone`         | string           | no         | The milestone title. `None` lists all issues with no milestone. `Any` lists all issues that have an assigned milestone.                             |
-| `scope`             | string           | no         | Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`. Defaults to `created_by_me` |
+| `scope`             | string           | no         | Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`. Defaults to `created_by_me`. On GitLab.com, when the `restrict_global_issues_scope_all` feature flag is enabled, `scope=all` returns `400 Bad Request`. |
 | `author_id`         | integer          | no         | Return issues created by the given user `id`. Mutually exclusive with `author_username`. Combine with `scope=all` or `scope=assigned_to_me`. |
 | `author_username`   | string           | no         | Return issues created by the given `username`. Similar to `author_id` and mutually exclusive with `author_id`. |
 | `assignee_id`       | integer          | no         | Return issues assigned to the given user `id`. Mutually exclusive with `assignee_username`. `None` returns unassigned issues. `Any` returns issues with an assignee. |

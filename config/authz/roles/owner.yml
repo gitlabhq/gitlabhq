@@ -112,6 +112,7 @@ group:
   - create_secrets_manager_enrollment
   - create_security_policy
   - create_service_account
+  - create_virtual_registry_cleanup_policy
   - delete_approval_rule
   - delete_enterprise_user
   - delete_govern_policy
@@ -121,6 +122,7 @@ group:
   - delete_secrets_permission
   - delete_service_account
   - delete_subgroup
+  - delete_virtual_registry_cleanup_policy
   - deprovision_secrets_manager
   - destroy_deploy_token
   - destroy_epic
@@ -171,6 +173,8 @@ group:
   - read_subscription_usage
   - read_two_factor_member
   - read_usage_quotas
+  - read_virtual_registry_cleanup_policy
+  - read_virtual_registry_setting
   - read_web_hook
   - register_group_runners
   - remove_group
@@ -203,5 +207,7 @@ group:
   - update_security_orchestration_policy_project
   - update_storage_ai_audit_events
   - update_subscription_usage_cap
+  - update_virtual_registry_cleanup_policy
+  - update_virtual_registry_setting
   - update_work_item_setting
   - view_member_roles

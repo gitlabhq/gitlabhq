@@ -1002,20 +1002,6 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
             end
           end
         end
-
-        context 'when the ci_job_trace_api_archived_log_via_workhorse feature flag is disabled' do
-          before do
-            stub_feature_flags(ci_job_trace_api_archived_log_via_workhorse: false)
-          end
-
-          it 'returns specific job logs' do
-            get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user)
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(response.headers).not_to include(Gitlab::Workhorse::SEND_DATA_HEADER)
-            expect(response.body).to eq(job.trace.raw)
-          end
-        end
       end
 
       context 'when log is artifact', :skip_before_request do
@@ -1036,20 +1022,6 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
           expect(response).to have_gitlab_http_status(:ok)
           expect(response.headers).not_to include(Gitlab::Workhorse::SEND_DATA_HEADER)
           expect(response.body).to eq(job.trace.raw.byteslice(0, 5))
-        end
-
-        context 'when the ci_job_trace_api_archived_log_via_workhorse feature flag is disabled' do
-          before do
-            stub_feature_flags(ci_job_trace_api_archived_log_via_workhorse: false)
-          end
-
-          it 'returns specific job log' do
-            get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user)
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(response.headers).not_to include('X-Sendfile')
-            expect(response.body).to eq(job.trace.raw)
-          end
         end
       end
 

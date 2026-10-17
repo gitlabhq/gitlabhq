@@ -64,6 +64,10 @@ module Mcp
           :read_release
         end
 
+        def granular_permissions
+          [:read_release]
+        end
+
         def auth_target(params)
           @arguments = params[:arguments] || {}
 

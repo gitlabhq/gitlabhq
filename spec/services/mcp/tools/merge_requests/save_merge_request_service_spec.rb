@@ -456,13 +456,19 @@ RSpec.describe Mcp::Tools::MergeRequests::SaveMergeRequestService, feature_categ
         .to contain_exactly(source_project, target_project)
     end
 
-    it 'names the target even when it resolves to nothing', :aggregate_failures do
+    it 'governs by the source alone when the target resolves to nothing' do
       arguments = { project_id: source_project.full_path, target_project_id: non_existing_record_id }
         .with_indifferent_access
-      resolved = service.governed_containers(arguments)
 
-      expect(resolved.named).to eq(2)
-      expect(resolved.containers).to eq([source_project])
+      expect(service.governed_containers(arguments).containers).to eq([source_project])
+    end
+
+    it 'governs a hidden target project, which the merge request build service still finds' do
+      hidden_target = create(:project, :hidden)
+      arguments = { project_id: source_project.full_path, target_project_id: hidden_target.id }
+        .with_indifferent_access
+
+      expect(service.governed_containers(arguments).containers).to contain_exactly(source_project, hidden_target)
     end
 
     it 'governs by the source project alone when no target is given' do

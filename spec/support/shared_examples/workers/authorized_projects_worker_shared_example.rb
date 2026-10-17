@@ -29,6 +29,11 @@ RSpec.shared_examples "refreshes user's project authorizations" do
       end
     end
 
+    it_behaves_like 'refreshes authorizations under the per-user lock' do
+      let_it_be(:project) { create(:project) }
+      let(:job_args) { [user.id] }
+    end
+
     it_behaves_like 'an idempotent worker' do
       let(:job_args) { user.id }
 

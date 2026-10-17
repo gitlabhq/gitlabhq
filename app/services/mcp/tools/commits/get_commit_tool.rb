@@ -47,7 +47,7 @@ module Mcp
             match = ::Commit.link_reference_pattern.match(params[:url])
             raise ArgumentError, "Invalid commit URL: #{params[:url]}" unless match && match[:commit].present?
 
-            ["#{match[:namespace]}/#{match[:project]}", match[:commit]]
+            [find_project!("#{match[:namespace]}/#{match[:project]}").full_path, match[:commit]]
           else
             sha = params[:commit_sha]
             project_id = params[:project_id]

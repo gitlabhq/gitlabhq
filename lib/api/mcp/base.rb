@@ -32,6 +32,10 @@ module API
         version_mismatch: {
           code: -32001,
           message: 'Version not supported'
+        },
+        tool_denied: {
+          code: -32002,
+          message: 'Tool denied'
         }
         # NOTE: Parse error	code -32700	is unsupported due to 400 Bad Request returned by Workhorse
       }.freeze
@@ -210,6 +214,14 @@ module API
             error: JSONRPC_ERRORS[:invalid_request].merge({ data: { validations: e.full_messages } }),
             id: jsonrpc_request_id
           }, 400)
+        end
+
+        rescue_from Handlers::CallTool::ToolDeniedError do |e|
+          render_structured_api_error!({
+            jsonrpc: JSONRPC_VERSION,
+            error: JSONRPC_ERRORS[:tool_denied].merge({ data: { tool: e.tool_name, denied_by: e.denied_by }.compact }),
+            id: params[:id]
+          }, 403)
         end
 
         rescue_from ArgumentError do |e|

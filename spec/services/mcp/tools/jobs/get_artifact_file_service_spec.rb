@@ -18,7 +18,8 @@ RSpec.describe Mcp::Tools::Jobs::GetArtifactFileService, feature_category: :mcp_
 
   def execute(arguments)
     service = described_class.new(name: 'get_artifact_file', version: '0.1.0')
-    service.set_cred(current_user: current_user)
+    access_token = build_stubbed(:personal_access_token, user: current_user)
+    service.set_cred(current_user: current_user, access_token: access_token)
     service.execute(params: { name: 'get_artifact_file', arguments: arguments })
   end
 
@@ -681,5 +682,16 @@ RSpec.describe Mcp::Tools::Jobs::GetArtifactFileService, feature_category: :mcp_
         end
       end
     end
+  end
+
+  describe 'granular token authorization' do
+    let(:service) { described_class.new(name: 'get_artifact_file', version: '0.1.0') }
+    let(:boundary_resource) { project }
+    let(:tool_params) do
+      { name: 'get_artifact_file',
+        arguments: { project_id: project.full_path, job_id: job.id, artifact_path: text_file } }
+    end
+
+    it_behaves_like 'an MCP custom tool authorizing granular tokens', :download_job_artifact
   end
 end

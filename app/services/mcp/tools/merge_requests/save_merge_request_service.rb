@@ -138,7 +138,8 @@ module Mcp
           'save_merge_request'
         end
 
-        container_arguments project: %i[project_id target_project_id]
+        container_arguments project: :project_id,
+          record: { target_project_id: ->(id) { ::Project.find_by_id(id) } }
 
         override :tool_aliases
         def self.tool_aliases

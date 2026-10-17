@@ -91,4 +91,28 @@ RSpec.describe Mcp::Tools::Repositories::AddCommitTool, feature_category: :mcp_s
       end
     end
   end
+
+  describe 'start_project' do
+    let_it_be(:start_project) { create(:project, :public, :repository) }
+
+    let(:tool) { described_class.new(current_user: user, params: params.merge(start_project: start_project_path)) }
+
+    context 'with a project the governance lookup resolves' do
+      let(:start_project_path) { start_project.full_path }
+
+      it 'starts from that project' do
+        expect(tool.build_variables.dig(:input, :startProjectPath)).to eq(start_project.full_path)
+      end
+    end
+
+    context 'with a project the governance lookup skips' do
+      let_it_be(:hidden_project) { create(:project, :public, :repository, :hidden) }
+
+      let(:start_project_path) { hidden_project.full_path }
+
+      it 'refuses it' do
+        expect { tool.build_variables }.to raise_error(Mcp::Tools::Concerns::ResourceFinder::ResourceNotFoundError)
+      end
+    end
+  end
 end

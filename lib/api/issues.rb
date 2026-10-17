@@ -26,6 +26,17 @@ module API
     urgency :low
 
     helpers do
+      # Without a project or group, scope=all scans every visible project's issues and times out.
+      def reject_global_scope_all!
+        return unless params[:scope] == 'all'
+        return unless Gitlab.com? && Feature.enabled?(:restrict_global_issues_scope_all, current_user) # rubocop:disable Gitlab/AvoidGitlabInstanceChecks -- temporary .com-only guard, removed with the flag
+
+        bad_request!(
+          '`scope=all` is not supported on this endpoint. ' \
+            'Use `created_by_me` or `assigned_to_me`, or query a specific group or project.'
+        )
+      end
+
       params :negatable_issue_filter_params do
         optional :labels, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated list of label names.'
         optional :milestone, type: String, desc: 'Milestone title.'
@@ -139,6 +150,7 @@ module API
     end
     route_setting :authorization, permissions: :read_issue_statistic, boundary_type: :user
     get '/issues_statistics' do
+      reject_global_scope_all!
       authenticate! unless params[:scope] == 'all'
       validate_search_rate_limit! if declared_params[:search].present?
 
@@ -161,6 +173,7 @@ module API
       end
       route_setting :authorization, permissions: :read_issue, boundary_type: :user
       get do
+        reject_global_scope_all!
         authenticate! unless params[:scope] == 'all'
         validate_search_rate_limit! if declared_params[:search].present?
         issues = paginate(find_issues)

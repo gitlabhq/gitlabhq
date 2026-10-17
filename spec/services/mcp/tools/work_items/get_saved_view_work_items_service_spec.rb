@@ -1192,6 +1192,15 @@ RSpec.describe Mcp::Tools::WorkItems::GetSavedViewWorkItemsService, feature_cate
       expect(resolved.named).to eq(1)
     end
 
+    it 'does not read the id out of a Global ID naming another model, so the call is refused',
+      :aggregate_failures do
+      arguments = { saved_view_id: "gid://gitlab/Project/#{saved_view.id}" }.with_indifferent_access
+      resolved = service.governed_containers(arguments)
+
+      expect(resolved.containers).to be_empty
+      expect(resolved.named).to eq(1)
+    end
+
     it 'counts an unknown saved view as named so the call is refused', :aggregate_failures do
       resolved = service.governed_containers({ saved_view_id: non_existing_record_id.to_s }
         .with_indifferent_access)

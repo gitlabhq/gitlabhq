@@ -141,6 +141,10 @@ RSpec.describe API::Issues, feature_category: :team_planning do
   end
 
   describe 'GET /issues' do
+    before do
+      stub_feature_flags(restrict_global_issues_scope_all: false)
+    end
+
     it_behaves_like 'issuable API rate-limited search' do
       let(:url) { '/issues' }
       let(:issuable) { issue }
@@ -149,6 +153,71 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     it_behaves_like 'authorizing granular token permissions', :read_issue do
       let(:boundary_object) { :user }
       let(:request) { get api('/issues', personal_access_token: pat), params: { scope: 'all' } }
+    end
+
+    context 'when on GitLab.com with restrict_global_issues_scope_all feature flag enabled' do
+      before do
+        allow(Gitlab).to receive(:com?).and_return(true)
+        stub_feature_flags(restrict_global_issues_scope_all: true)
+      end
+
+      it 'rejects scope=all for an unauthenticated request', :aggregate_failures do
+        get api('/issues'), params: { scope: 'all' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to include('`scope=all` is not supported')
+      end
+
+      it 'rejects scope=all for an authenticated request', :aggregate_failures do
+        get api('/issues', user), params: { scope: 'all' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to include('`scope=all` is not supported')
+      end
+
+      it 'rejects scope=all on the issues_statistics endpoint', :aggregate_failures do
+        get api('/issues_statistics', user), params: { scope: 'all' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to include('`scope=all` is not supported')
+      end
+
+      it 'still allows scope=assigned_to_me', :aggregate_failures do
+        get api('/issues', user), params: { scope: 'assigned_to_me' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to be_an Array
+      end
+
+      it 'still returns an authentication error without any scope' do
+        get api('/issues')
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'when on GitLab.com with restrict_global_issues_scope_all feature flag disabled' do
+      before do
+        allow(Gitlab).to receive(:com?).and_return(true)
+      end
+
+      it 'allows scope=all' do
+        get api('/issues', user), params: { scope: 'all' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
+    context 'when not on GitLab.com with restrict_global_issues_scope_all feature flag enabled' do
+      before do
+        stub_feature_flags(restrict_global_issues_scope_all: true)
+      end
+
+      it 'allows scope=all' do
+        get api('/issues', user), params: { scope: 'all' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
     end
 
     context 'when unauthenticated' do

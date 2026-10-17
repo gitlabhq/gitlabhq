@@ -136,10 +136,79 @@ tool. You don't need to find and set the MCP server tool separately.
 If you don't set a mode, behavior is unchanged. Read-only MCP tools remain
 pre-approved. Write and delete MCP tools still prompt for approval.
 
+#### Always Deny enforcement
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/258209) in GitLab 19.6 with [feature flags](../../administration/feature_flags/_index.md) named `duo_mcp_server_governance_rule_enforcement` and `duo_workflow_local_tool_governance`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by feature flags.
+> For more information, see the history.
+
+**Always Deny** is enforced by the GitLab MCP server, not by the client
+that connects to it. A third-party client such as Claude Code or Cursor might
+call a denied tool. The server rejects the request before the tool runs, and
+returns a JSON-RPC error with code `-32002`. The server uses the mode set for
+[local access](#access-types), the same mode that applies to the IDE extensions.
+
+The check happens on the server, so client configuration can't bypass the mode,
+and calling a denied tool directly still fails.
+
+Rules are enforced against the group or project the call names in its
+arguments, so the tool must identify one. A tool that does not act on a project or
+group, such as `get_mcp_server_version`, cannot be governed this way and always
+runs. If the call names a project or group that does not exist or that you
+cannot access, its rules are not checked, and the tool returns its own error.
+
+Tools that act on multiple projects or groups are checked against the rules of each one,
+and a deny in any of them blocks the call.
+For example, `save_merge_request` checks both the project in `project_id` and
+the one in `target_project_id`, so a deny rule on either project blocks the
+call. The most restrictive rule wins, so naming several containers cannot be
+used to route around a deny rule. You must treat deny rules as one layer alongside
+standard GitLab permissions, not as an absolute block.
+
+A call that names a group is also checked against the rules of the projects in that group.
+A deny rule on one of those projects blocks the call, even if you cannot access that project.
+
+Denied tools are also not included in the tool list the server advertises, so a
+client does not offer them. A list request does not name any project
+or group. Those rules therefore resolve against your default GitLab Duo
+namespace, and if you don't have a default namespace, the list is unfiltered. Only rules set
+on that namespace apply. A rule set on one of its projects does not hide a tool from the list. Enforcement is
+unaffected either way: a denied tool is refused when it is called, even if it
+was listed.
+
+#### Always Ask
+
+**Always Ask** is not enforced by the GitLab MCP server. Tools set to **Always Ask**
+are listed with an annotation that asks the client to confirm with you first.
+The client's implementation determines if the rule is applied.
+Only tools you set to **Always Ask** get the annotation. Tools left on **Default**
+are not annotated, even when the UI shows "Default (uses Always Ask)".
+
+This applies only to clients connecting to the GitLab MCP server. In GitLab Duo
+Agent Platform, Always Ask pauses the agent and asks you to approve. For more
+information, see [Approval prompt (Always Ask)](#approval-prompt-always-ask).
+
+| Client | Always Deny | Always Ask |
+|---|---|---|
+| Claude Code 2.1.199 and later | Enforced | Prompts for confirmation |
+| Claude Code earlier than 2.1.199 | Enforced | Runs without prompting |
+| Cursor, Windsurf, other MCP clients | Enforced | Runs without prompting |
+
+Always Deny is enforced for every client because the server refuses the call.
+Use Always Deny rather than Always Ask when you need stronger enforcement
+across all clients.
+
 ### Approval prompt (Always Ask)
 
-When an agent calls a tool configured as **Always Ask**, execution pauses
-and an inline approval card is displayed. The card shows:
+When a GitLab Duo Agent Platform agent calls a tool configured as
+`Always Ask`, execution pauses and an inline approval card is displayed.
+The card shows:
 
 - The name of the tool being invoked.
 - A description of the action the tool will perform.

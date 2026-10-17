@@ -3,16 +3,14 @@
 class AddWorkflowFkToDuoCodeReviewFindings < Gitlab::Database::Migration[2.4]
   milestone '19.6'
 
-  disable_ddl_transaction!
-
   def up
-    add_concurrent_foreign_key :duo_code_review_findings, :duo_workflows_workflows,
-      column: :workflow_id, on_delete: :nullify
+    # no-op
+    #
+    # Disabled as part of reverting https://gitlab.com/gitlab-org/gitlab/-/merge_requests/262175.
+    # See https://docs.gitlab.com/development/database/deleting_migrations/#how-to-disable-a-data-migration
   end
 
   def down
-    with_lock_retries do
-      remove_foreign_key_if_exists :duo_code_review_findings, column: :workflow_id
-    end
+    # no-op
   end
 end

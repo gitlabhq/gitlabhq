@@ -63,6 +63,10 @@ module Mcp
             :read_code
           end
 
+          def granular_permissions
+            [:read_repository_tag]
+          end
+
           def auth_target(params)
             project(arguments_from(params))
           end

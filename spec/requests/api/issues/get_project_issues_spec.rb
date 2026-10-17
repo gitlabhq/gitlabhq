@@ -91,6 +91,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
   before do
     stub_licensed_features(multiple_issue_assignees: false, issue_weights: false)
+    stub_feature_flags(restrict_global_issues_scope_all: false)
   end
 
   shared_examples 'project issues statistics' do
@@ -127,6 +128,15 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     context 'when unauthenticated' do
       it 'returns public project issues' do
         get api("/projects/#{project.id}/issues")
+
+        expect_paginated_array_response([issue.id, closed_issue.id])
+      end
+
+      it 'returns public project issues with scope=all even when restrict_global_issues_scope_all is enabled' do
+        allow(Gitlab).to receive(:com?).and_return(true)
+        stub_feature_flags(restrict_global_issues_scope_all: true)
+
+        get api("/projects/#{project.id}/issues"), params: { scope: 'all' }
 
         expect_paginated_array_response([issue.id, closed_issue.id])
       end

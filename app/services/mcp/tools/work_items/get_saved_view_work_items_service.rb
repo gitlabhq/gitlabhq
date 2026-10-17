@@ -82,7 +82,7 @@ module Mcp
         private
 
         def container_from_saved_view(id)
-          view = ::WorkItems::SavedViews::SavedView.find_by_id(record_id_from(id))
+          view = ::WorkItems::SavedViews::SavedView.find_by_id(record_id_from(id, [::WorkItems::SavedViews::SavedView]))
 
           container_from_namespace(view&.namespace)
         end

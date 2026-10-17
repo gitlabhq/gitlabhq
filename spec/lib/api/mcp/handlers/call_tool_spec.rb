@@ -286,6 +286,9 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
     end
 
     context 'when tool is a custom service' do
+      let(:access_token) { instance_double(PersonalAccessToken) }
+      let(:request_context) { Mcp::Tools::RequestContext.new(current_user: current_user, access_token: access_token) }
+      let(:tool_lookup) { { name: tool_name, context: request_context } }
       let(:custom_tool) { instance_double(Mcp::Tools::Base::CustomService, governed_containers: no_containers) }
 
       before do
@@ -297,15 +300,18 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
       end
 
       it 'sets credentials before executing' do
-        result = handler.invoke(request, params, current_user)
+        result = handler.invoke(request, params, current_user, context: request_context)
 
-        expect(custom_tool).to have_received(:set_cred).with(current_user: current_user)
+        expect(custom_tool).to have_received(:set_cred).with(current_user: current_user, access_token: access_token)
         expect(custom_tool).to have_received(:execute).with(request: request, params: params)
         expect(result).to eq({ content: [{ type: 'text', text: 'Success' }] })
       end
     end
 
     context 'when tool is a graphql service' do
+      let(:access_token) { instance_double(PersonalAccessToken) }
+      let(:request_context) { Mcp::Tools::RequestContext.new(current_user: current_user, access_token: access_token) }
+      let(:tool_lookup) { { name: tool_name, context: request_context } }
       let(:graphql_tool) { instance_double(Mcp::Tools::Base::GraphqlService, governed_containers: no_containers) }
 
       before do
@@ -317,9 +323,9 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
       end
 
       it 'sets credentials before executing' do
-        result = handler.invoke(request, params, current_user)
+        result = handler.invoke(request, params, current_user, context: request_context)
 
-        expect(graphql_tool).to have_received(:set_cred).with(current_user: current_user)
+        expect(graphql_tool).to have_received(:set_cred).with(current_user: current_user, access_token: access_token)
         expect(graphql_tool).to have_received(:execute).with(request: request, params: params)
         expect(result).to eq({ content: [{ type: 'text', text: 'Success' }] })
       end

@@ -5,6 +5,7 @@ module Authz
     include ApplicationWorker
     include LoopWithRuntimeLimit
     include CronjobQueue
+    include Authz::UserRefreshLock
 
     data_consistency :sticky
     feature_category :permissions
@@ -60,6 +61,10 @@ module Authz
       reverification.processed
 
       true
+    rescue Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError
+      Authz::ProjectAuthorizationReverification.queue_users([reverification.user_id])
+
+      false
     rescue StandardError => e
       Gitlab::ErrorTracking.track_exception(e, user_id: reverification.user_id)
 
@@ -73,7 +78,9 @@ module Authz
         authorized_projects_refresh_purpose: UserProjectAccessChangedService::SAFETY_NET_REFRESH_PURPOSE
       ) do
         with_context(user: user, related_class: self.class.name) do
-          Users::RefreshAuthorizedProjectsService.new(user, source: self.class.name).execute
+          service = Users::RefreshAuthorizedProjectsService.new(user, source: self.class.name)
+
+          with_user_refresh_lock(user) { service.execute }
         end
       end
     end

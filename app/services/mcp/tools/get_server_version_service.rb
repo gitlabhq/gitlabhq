@@ -26,6 +26,11 @@ module Mcp
         true
       end
 
+      override :skip_granular_token_authorization?
+      def skip_granular_token_authorization?
+        true
+      end
+
       protected
 
       # Version 0.1.0 implementation

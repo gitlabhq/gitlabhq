@@ -246,6 +246,61 @@
               "string",
               "null"
             ]
+          },
+          "agent_presence": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "session_id": {
+                "type": "integer"
+              },
+              "agent_name": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "agent_catalog_web_path": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "source_type": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "source_link": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "trigger_source": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "user": {
+                "type": [
+                  "object",
+                  "null"
+                ]
+              },
+              "user_permissions": {
+                "type": "object",
+                "properties": {
+                  "read_duo_workflow": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
           }
         },
         "required": [

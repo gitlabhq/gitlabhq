@@ -100,7 +100,8 @@ RSpec.describe Mcp::Tools::Base::CustomService, :aggregate_failures, feature_cat
       let(:arguments) { { arguments: { project_id: project.id.to_s, name: 'Alice' } } }
 
       before do
-        service.set_cred(access_token: nil, current_user: current_user)
+        service.set_cred(access_token: build_stubbed(:personal_access_token, user: current_user),
+          current_user: current_user)
         project.add_developer(current_user)
       end
 
@@ -117,7 +118,8 @@ RSpec.describe Mcp::Tools::Base::CustomService, :aggregate_failures, feature_cat
 
     context 'when custom tool perform with error' do
       before do
-        service.set_cred(access_token: nil, current_user: current_user)
+        service.set_cred(access_token: build_stubbed(:personal_access_token, user: current_user),
+          current_user: current_user)
         project.add_developer(current_user)
 
         allow(service).to receive(:perform).and_raise(StandardError, 'Something went wrong')
@@ -309,6 +311,133 @@ RSpec.describe Mcp::Tools::Base::CustomService, :aggregate_failures, feature_cat
           end
         end
       end
+    end
+
+    context 'with an access token' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:project) { create(:project, group: group) }
+      let_it_be(:current_user) { create(:user, developer_of: project) }
+
+      let(:declares_granular_permissions) { true }
+      let(:service) { test_service_class.new(name: service_name, version: '1.0.0') }
+      let(:arguments) { { arguments: { project_id: project.id.to_s, name: 'Alice' } } }
+      let(:boundary) { ::Authz::Boundary.for(project) }
+      let(:denial_prefix) do
+        'Tool execution failed: Access denied: This operation requires a fine-grained personal access token'
+      end
+
+      subject(:result) { service.execute(request: nil, params: arguments) }
+
+      before do
+        test_service_class.define_method(:granular_permissions) { [:read_code] } if declares_granular_permissions
+        service.set_cred(current_user: current_user, access_token: token)
+      end
+
+      context 'with a granular token that has the permission' do
+        let(:token) { create(:granular_pat, user: current_user, boundary: boundary, permissions: :read_code) }
+
+        it 'runs the tool' do
+          expect(result[:isError]).to be(false)
+        end
+
+        it 'looks up the target once' do
+          expect(service).to receive(:auth_target).once.and_call_original
+
+          result
+        end
+      end
+
+      context 'with a granular token that lacks the permission' do
+        let(:token) { create(:granular_pat, user: current_user, boundary: boundary, permissions: :read_release) }
+
+        it 'returns an unauthorized error and records the denied permission' do
+          expect(::Gitlab::ErrorTracking).not_to receive(:track_exception)
+
+          expect(result[:isError]).to be(true)
+          expect(result[:reason]).to eq(:unauthorized)
+          expect(result[:content].first[:text]).to start_with(denial_prefix)
+          expect(::Current.granular_denied_permissions).to eq([:read_code])
+        end
+      end
+
+      context 'when the tool declares no granular permissions' do
+        let(:declares_granular_permissions) { false }
+        let(:token) { create(:granular_pat, user: current_user, boundary: boundary, permissions: :read_code) }
+
+        it 'denies the granular token' do
+          expect(result[:reason]).to eq(:unauthorized)
+          expect(result[:content].first[:text])
+            .to eq("Tool execution failed: Access denied: This operation doesn't support " \
+              "fine-grained personal access tokens.")
+        end
+      end
+
+      context 'when the boundary cannot be resolved' do
+        let(:token) { create(:granular_pat, user: current_user, boundary: boundary, permissions: :read_code) }
+
+        before do
+          allow(service).to receive(:granular_boundary).and_return(nil)
+        end
+
+        it 'returns not found' do
+          expect(result[:reason]).to eq(:not_found)
+          expect(result[:content].first[:text])
+            .to eq("Tool execution failed: #{service_name}: not found or access denied")
+        end
+      end
+
+      context 'without a token' do
+        let(:token) { nil }
+
+        it 'denies the call' do
+          expect(result[:reason]).to eq(:unauthorized)
+          expect(result[:content].first[:text])
+            .to eq("Tool execution failed: #{service_name}: not found or access denied")
+        end
+      end
+
+      context 'with a legacy token' do
+        let(:token) { create(:personal_access_token, user: current_user, scopes: [:mcp]) }
+
+        it 'runs the tool' do
+          expect(result[:isError]).to be(false)
+        end
+
+        context 'when the namespace enforces granular tokens' do
+          before do
+            stub_feature_flags(granular_personal_access_tokens_enforcement_saas: group)
+            ::NamespaceSetting.find_by!(namespace_id: group.id)
+              .update!(enforce_granular_tokens: true, granular_tokens_enforced_after: Date.current)
+          end
+
+          it 'denies the token' do
+            expect(result[:reason]).to eq(:unauthorized)
+            expect(result[:content].first[:text]).to start_with(denial_prefix)
+          end
+        end
+      end
+    end
+  end
+
+  describe '#granular_boundary' do
+    let(:service) { test_service_class.new(name: service_name) }
+
+    it 'returns a project or group target as is' do
+      group = build_stubbed(:group)
+
+      expect(service.granular_boundary(project)).to eq(project)
+      expect(service.granular_boundary(group)).to eq(group)
+    end
+
+    it 'returns the project of any other target' do
+      merge_request = build_stubbed(:merge_request, project: project)
+
+      expect(service.granular_boundary(merge_request)).to eq(project)
+    end
+
+    it 'raises for a target without a project' do
+      expect { service.granular_boundary(build_stubbed(:user)) }
+        .to raise_error(NoMethodError, /#granular_boundary should be implemented for User/)
     end
   end
 end

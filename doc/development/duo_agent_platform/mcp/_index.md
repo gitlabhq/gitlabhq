@@ -562,8 +562,8 @@ end
 
 The lookup can return a project, a group, or a namespace. The resolver turns a project
 namespace into its project. A personal namespace is not counted, because no tool rules apply
-to it. A lookup that returns `nil` still counts the argument, so a call that names a record
-that doesn't exist is refused instead of served ungoverned.
+to it. A lookup that returns `nil` adds no container, so the call is not governed by that
+argument and the tool returns its own error.
 
 **The guardrail.** `ee/spec/lib/ai/tool_rules/governable_tools_container_spec.rb` asserts, for
 every governed tool:

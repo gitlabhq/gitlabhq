@@ -2,6 +2,7 @@
 
 class AuthorizedProjectsWorker
   include ApplicationWorker
+  include Authz::UserRefreshLock
 
   data_consistency :sticky
 
@@ -29,6 +30,10 @@ class AuthorizedProjectsWorker
 
     return unless user
 
-    Users::RefreshAuthorizedProjectsService.new(user, source: self.class.name).execute
+    service = Users::RefreshAuthorizedProjectsService.new(user, source: self.class.name)
+
+    with_user_refresh_lock(user) { service.execute }
+  rescue Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError
+    reschedule_on_lock_contention(user_id)
   end
 end

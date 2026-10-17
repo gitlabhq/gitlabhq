@@ -420,11 +420,23 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestTool, :request_store, f
         { url: Gitlab::UrlBuilder.build(merge_request).sub(project.full_path, 'no-such-group/no-such-project') }
       end
 
-      it 'returns a project-not-found error', :aggregate_failures do
-        result = tool.execute
+      it 'raises before executing GraphQL' do
+        expect(GitlabSchema).not_to receive(:execute)
 
-        expect(result[:isError]).to be(true)
-        expect(result[:content].first[:text]).to include('Project not found')
+        expect { tool.execute }.to raise_error(StandardError, /not found or inaccessible/)
+      end
+    end
+
+    context 'when the project in the URL is hidden' do
+      let_it_be(:hidden_project) { create(:project, :public, :hidden) }
+      let_it_be(:hidden_merge_request) { create(:merge_request, source_project: hidden_project) }
+
+      let(:params) { { url: Gitlab::UrlBuilder.build(hidden_merge_request) } }
+
+      it 'refuses it the same way governance does, without asking GraphQL' do
+        expect(GitlabSchema).not_to receive(:execute)
+
+        expect { tool.execute }.to raise_error(StandardError, /not found or inaccessible/)
       end
     end
 

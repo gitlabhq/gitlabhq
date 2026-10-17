@@ -169,6 +169,24 @@ RSpec.describe Mcp::Tools::Concerns::ResourceFinder, feature_category: :mcp_serv
     end
   end
 
+  describe '#find_group' do
+    let(:test_class_with_group) do
+      Class.new(test_class) do
+        def test_find_group_without_bang(group_id)
+          find_group(group_id)
+        end
+      end
+    end
+
+    it 'returns the group without checking access' do
+      expect(test_class_with_group.new(user).test_find_group_without_bang(private_group.full_path)).to eq(private_group)
+    end
+
+    it 'returns nil when the group does not exist' do
+      expect(test_class_with_group.new(user).test_find_group_without_bang('does-not/exist')).to be_nil
+    end
+  end
+
   describe '#find_group!' do
     subject(:find_group) { service.test_find_group(group_full_path) }
 

@@ -61,5 +61,9 @@ RSpec.describe AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker, feature
 
       worker.perform(project.id, user.id)
     end
+
+    it_behaves_like 'refreshes authorizations under the per-user lock' do
+      let(:job_args) { [project.id, user.id] }
+    end
   end
 end

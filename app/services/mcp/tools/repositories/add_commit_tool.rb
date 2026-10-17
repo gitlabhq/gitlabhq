@@ -19,7 +19,7 @@ module Mcp
               branch: params[:branch],
               startBranch: params[:start_branch],
               startSha: params[:start_sha],
-              startProjectPath: params[:start_project],
+              startProjectPath: params[:start_project].presence && find_project!(params[:start_project]).full_path,
               message: params[:commit_message],
               actions: params[:actions].map { |action| build_action(action) }
             }.compact

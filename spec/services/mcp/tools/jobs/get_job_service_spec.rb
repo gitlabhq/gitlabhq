@@ -67,7 +67,8 @@ RSpec.describe Mcp::Tools::Jobs::GetJobService, feature_category: :mcp_server do
     # A fresh instance per call, because the service memoizes the job it authorized.
     def execute(arguments, name: 'get_job')
       service = described_class.new(name: 'get_job', version: '0.1.0')
-      service.set_cred(current_user: current_user)
+      access_token = build_stubbed(:personal_access_token, user: current_user)
+      service.set_cred(current_user: current_user, access_token: access_token)
       service.execute(params: { name: name, arguments: arguments })
     end
 
@@ -314,5 +315,16 @@ RSpec.describe Mcp::Tools::Jobs::GetJobService, feature_category: :mcp_server do
         expect(result[:structuredContent][:log][:content]).to eq('BUILD TRACE')
       end
     end
+  end
+
+  describe 'granular token authorization' do
+    let_it_be(:job) { create(:ci_build, pipeline: pipeline) }
+
+    let(:service) { described_class.new(name: 'get_job', version: '0.1.0') }
+    let(:current_user) { user }
+    let(:boundary_resource) { project }
+    let(:tool_params) { { name: 'get_job', arguments: { id: project.full_path, job_id: job.id } } }
+
+    it_behaves_like 'an MCP custom tool authorizing granular tokens', :read_job
   end
 end

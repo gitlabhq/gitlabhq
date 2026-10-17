@@ -20,6 +20,8 @@ module Mcp
 
         URL_VALUE = %r{\Ahttps?://}i
 
+        TooManyContainersError = Class.new(ArgumentError)
+
         class GovernanceContainerResolutionResult
           attr_reader :containers, :named
 
@@ -108,11 +110,11 @@ module Mcp
         def also_governed_by(result, identifier)
           return result if identifier.blank?
 
-          record = yield(identifier)
-          return result if record.is_a?(::Namespaces::UserNamespace)
+          containers = Array(yield(identifier)).map { |record| container_from_record(record) }
+          return result if containers.any? && containers.all?(::Namespaces::UserNamespace)
 
           GovernanceContainerResolutionResult.new(
-            result.containers + Array(record).map { |r| container_from_record(r) },
+            result.containers + containers.grep_v(::Namespaces::UserNamespace),
             named: result.named + 1
           )
         end
@@ -131,8 +133,11 @@ module Mcp
           )
         end
 
-        def record_id_from(value)
-          ::GlobalID.parse(value)&.model_id || value.presence
+        def record_id_from(value, expected)
+          global_id = ::GlobalID.parse(value)
+          return value.presence unless global_id
+
+          global_id.model_id if global_id_matches?(global_id, expected)
         end
 
         def container_from_record(record)
@@ -142,9 +147,10 @@ module Mcp
         end
 
         def container_from_namespace(namespace)
-          return namespace.project if namespace.is_a?(::Namespaces::ProjectNamespace)
-
-          namespace if namespace.is_a?(::Group)
+          case namespace
+          when ::Namespaces::ProjectNamespace then namespace.project
+          when ::Group, ::Namespaces::UserNamespace then namespace
+          end
         end
 
         def global_work_item_id?(value)
@@ -152,7 +158,7 @@ module Mcp
         end
 
         def work_item_containers(ids)
-          model_ids = Array(ids).filter_map { |id| ::GlobalID.parse(id)&.model_id || id.presence }
+          model_ids = Array(ids).filter_map { |id| record_id_from(id, [::WorkItem, ::Issue]) }
 
           ::WorkItem.id_in(model_ids).map { |item| item.project || item.namespace }
         end
@@ -184,9 +190,12 @@ module Mcp
             value = value.presence&.to_s
             next [] unless value
 
+            url_paths = url_identifiers(value)
+            next url_paths if url_paths
+
             value = UrlParser.unescape_and_scrub_uri(value)
             global_id = ::GlobalID.parse(value)
-            next container_identifiers_from(value) unless global_id
+            next [value] unless global_id
             next [] unless global_id_matches?(global_id, expected)
 
             [global_id.model_id]
@@ -196,21 +205,18 @@ module Mcp
         def reject_oversized_argument!(key, values)
           return if values.size <= MAX_IDENTIFIERS_PER_ARGUMENT
 
-          raise ArgumentError,
+          raise TooManyContainersError,
             format('%{key} cannot name more than %{max} projects or groups',
               key: key, max: MAX_IDENTIFIERS_PER_ARGUMENT)
         end
 
-        def container_identifiers_from(value)
-          return [value] unless URL_VALUE.match?(value)
+        def url_identifiers(value)
+          url = URL_VALUE.match?(value)
+          paths = reference_pattern_paths(value)
+          paths << generic_url_path(value) if url
+          return if paths.empty? && !url
 
-          governance_url_identifiers(value)
-        end
-
-        def governance_url_identifiers(url)
-          paths = reference_pattern_paths(url) + [generic_url_path(url)]
-
-          paths.compact.uniq.presence || [url]
+          paths.compact.uniq.map { |path| UrlParser.unescape_and_scrub_uri(path) }
         end
 
         def reference_pattern_paths(url)

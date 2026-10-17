@@ -177,11 +177,10 @@ RSpec.describe Mcp::Tools::Commits::GetCommitTool, feature_category: :mcp_server
     context 'when the project in the URL does not exist' do
       let(:params) { { url: "#{Gitlab.config.gitlab.url}/no-such-group/no-such-project/-/commit/#{commit.sha}" } }
 
-      it 'returns a project-not-found error', :aggregate_failures do
-        result = tool.execute
+      it 'raises before executing GraphQL, the same way governance finds nothing' do
+        expect(GitlabSchema).not_to receive(:execute)
 
-        expect(result[:isError]).to be(true)
-        expect(result[:content].first[:text]).to include('Project not found')
+        expect { tool.execute }.to raise_error(StandardError, /not found or inaccessible/)
       end
     end
 

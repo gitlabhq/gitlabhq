@@ -33,7 +33,9 @@ module API
             next nil unless tool.available?(current_user)
             next nil if tool.unlisted? && !(include_named_unlisted && Array(allowed_tools).include?(name))
 
-            build_tool_data(name, tool, tool_name_prefix)
+            tool_data = build_tool_data(name, tool, tool_name_prefix)
+
+            governed_tool_data(tool_data, name, current_user)
           end
 
           track_internal_event('list_mcp_tools', user: current_user)
@@ -89,6 +91,10 @@ module API
           tool_data
         end
 
+        def governed_tool_data(tool_data, _tool_name, _current_user)
+          tool_data
+        end
+
         def logger
           @logger ||= ::Gitlab::Mcp::Logger.build
         end
@@ -98,3 +104,5 @@ module API
     end
   end
 end
+
+API::Mcp::Handlers::ListTools.prepend_mod

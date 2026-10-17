@@ -391,7 +391,7 @@ module API
 
         # Only archived logs qualify: live logs are assembled from chunks in Rails.
         def send_archived_trace_via_workhorse?(build)
-          Feature.enabled?(:ci_job_trace_api_archived_log_via_workhorse, build.project, type: :beta) && build.trace.archived?
+          build.trace.archived?
         end
 
         # Not present_disk_file!/present_carrierwave_file!: both replace the

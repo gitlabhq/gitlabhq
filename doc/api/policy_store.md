@@ -126,7 +126,8 @@ Example response:
 [
   { "id": "block", "name": "Block" },
   { "id": "require_approval", "name": "Require approval" },
-  { "id": "set_setting", "name": "Set project setting" }
+  { "id": "set_setting", "name": "Set project setting" },
+  { "id": "log_audit_trail", "name": "Log audit trail" }
 ]
 ```
 

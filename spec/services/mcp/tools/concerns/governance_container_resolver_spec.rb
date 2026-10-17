@@ -249,11 +249,36 @@ RSpec.describe Mcp::Tools::Concerns::GovernanceContainerResolver, feature_catego
     end
 
     context 'when a url resolves to no container' do
-      it 'still counts the url as a named identifier' do
+      it 'governs nothing, so the tool answers for itself' do
         arguments = { url: 'https://%%%' }.with_indifferent_access
 
-        expect(tool_class.new.governed_containers(arguments).named).to eq(1)
         expect(tool_class.new.governed_containers(arguments).containers).to be_empty
+      end
+    end
+
+    context 'when a url parses differently once decoded' do
+      def resolved(url)
+        tool_class.new.resolve_governance_containers({ url: url }.with_indifferent_access)
+      end
+
+      it 'reads a url with an encoded space the way the tools do' do
+        expect(resolved("#{base_url}/#{project.full_path}/-/blob/main/a%20b.txt")).to eq([project])
+      end
+
+      it 'reads a url with an encoded space in the fragment the way the tools do' do
+        expect(resolved("#{base_url}/#{project.full_path}#%20")).to eq([project])
+      end
+
+      it 'reads a merge request url after leading text the way the tools do' do
+        expect(resolved(" #{base_url}/#{project.full_path}/-/merge_requests/1")).to eq([project])
+      end
+
+      it 'does not read a merge request url that only appears once the value is decoded' do
+        other = create(:project)
+        url = "#{ERB::Util.url_encode("#{base_url}/#{other.full_path}/-/merge_requests/5")} " \
+          "#{base_url}/#{project.full_path}/-/merge_requests/1"
+
+        expect(resolved(url)).to eq([project])
       end
     end
 
@@ -349,6 +374,81 @@ RSpec.describe Mcp::Tools::Concerns::GovernanceContainerResolver, feature_catego
 
       it 'counts a namespace that does not exist, so the call is refused', :aggregate_failures do
         arguments = { namespace_id: non_existing_record_id.to_s }.with_indifferent_access
+        resolved = tool_class.new.governed_containers(arguments)
+
+        expect(resolved.containers).to be_empty
+        expect(resolved.named).to eq(1)
+      end
+    end
+
+    context 'when a record resolver maps the namespace before returning it' do
+      let(:declared) do
+        { record: { namespace_id: ->(id) { container_from_namespace(::Namespace.find_by_id(id)) } } }
+      end
+
+      it 'does not count a personal namespace, since no rules apply to it', :aggregate_failures do
+        arguments = { namespace_id: create(:user, :with_namespace).namespace.id.to_s }.with_indifferent_access
+        resolved = tool_class.new.governed_containers(arguments)
+
+        expect(resolved.containers).to be_empty
+        expect(resolved.named).to eq(0)
+      end
+    end
+
+    context 'when a record resolver returns a list' do
+      let_it_be(:personal_namespace) { create(:user, :with_namespace).namespace }
+
+      let(:declared) do
+        { record: { namespace_ids: ->(ids) { ::Namespace.id_in(ids.split(',')).to_a } } }
+      end
+
+      it 'does not count a list holding only a personal namespace', :aggregate_failures do
+        resolved = tool_class.new.governed_containers({ namespace_ids: personal_namespace.id.to_s }
+          .with_indifferent_access)
+
+        expect(resolved.containers).to be_empty
+        expect(resolved.named).to eq(0)
+      end
+
+      it 'governs the rest of a list that also holds a personal namespace', :aggregate_failures do
+        arguments = { namespace_ids: "#{personal_namespace.id},#{subgroup.id}" }.with_indifferent_access
+        resolved = tool_class.new.governed_containers(arguments)
+
+        expect(resolved.containers).to eq([subgroup])
+        expect(resolved.named).to eq(1)
+      end
+
+      it 'counts an empty list, so the call is refused', :aggregate_failures do
+        arguments = { namespace_ids: non_existing_record_id.to_s }.with_indifferent_access
+        resolved = tool_class.new.governed_containers(arguments)
+
+        expect(resolved.containers).to be_empty
+        expect(resolved.named).to eq(1)
+      end
+    end
+
+    context 'when a record resolver reads a Global ID' do
+      let(:declared) do
+        { record: { project_ref: ->(id) { ::Project.find_by_id(record_id_from(id, [::Project])) } } }
+      end
+
+      it 'reads a Global ID of the expected class', :aggregate_failures do
+        resolved = tool_class.new.governed_containers({ project_ref: project.to_global_id.to_s }
+          .with_indifferent_access)
+
+        expect(resolved.containers).to eq([project])
+        expect(resolved.named).to eq(1)
+      end
+
+      it 'reads a numeric id' do
+        resolved = tool_class.new.governed_containers({ project_ref: project.id.to_s }.with_indifferent_access)
+
+        expect(resolved.containers).to eq([project])
+      end
+
+      it 'does not read the id out of a Global ID naming another class, so the call is refused',
+        :aggregate_failures do
+        arguments = { project_ref: "gid://gitlab/Group/#{project.id}" }.with_indifferent_access
         resolved = tool_class.new.governed_containers(arguments)
 
         expect(resolved.containers).to be_empty
