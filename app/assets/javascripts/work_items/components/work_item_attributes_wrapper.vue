@@ -21,6 +21,7 @@ import {
   findMilestoneWidget,
   findParticipantsWidget,
   findProgressWidget,
+  findRequesterWidget,
   findStartAndDueDateWidget,
   findStatusWidget,
   findTimeTrackingWidget,
@@ -32,6 +33,7 @@ import WorkItemAssignees from './work_item_assignees.vue';
 import WorkItemLabels from './work_item_labels.vue';
 import WorkItemMilestone from './work_item_milestone.vue';
 import WorkItemParent from './work_item_parent.vue';
+import WorkItemRequester from './work_item_requester.vue';
 import WorkItemTimeTracking from './work_item_time_tracking.vue';
 import WorkItemCrmContacts from './work_item_crm_contacts.vue';
 
@@ -44,6 +46,7 @@ export default {
     WorkItemMilestone,
     WorkItemAssignees,
     WorkItemParent,
+    WorkItemRequester,
     WorkItemTimeTracking,
     WorkItemCrmContacts,
     WorkItemDates,
@@ -163,6 +166,9 @@ export default {
     workItemLabels() {
       return findLabelsWidget(this.workItem);
     },
+    workItemRequester() {
+      return findRequesterWidget(this.workItem);
+    },
     workItemStatus() {
       return findStatusWidget(this.workItem);
     },
@@ -253,6 +259,12 @@ export default {
       @assignees-updated="
         $emit('attributes-updated', { type: $options.ListType.assignee, ids: $event })
       "
+    />
+    <work-item-requester
+      v-if="workItemRequester"
+      class="work-item-attributes-item"
+      :full-path="fullPath"
+      :work-item-iid="workItem.iid"
     />
     <work-item-labels
       v-if="workItemLabels"

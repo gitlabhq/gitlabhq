@@ -1,0 +1,15 @@
+# @feature_category: team_planning
+query workItemRequester($fullPath: ID!, $iid: String!) {
+  namespace(fullPath: $fullPath) {
+    id
+    workItem(iid: $iid) {
+      id
+      features {
+        requester {
+          type
+          email
+        }
+      }
+    }
+  }
+}

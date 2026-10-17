@@ -362,6 +362,30 @@ RSpec.describe Ci::PipelineCreation::CancelRedundantPipelinesService, feature_ca
             expect(job_statuses(pipeline)).to contain_exactly('pending')
           end
         end
+
+        context 'when ci_redundant_pipeline_candidates_cache is disabled' do
+          before do
+            stub_feature_flags(ci_redundant_pipeline_candidates_cache: false)
+          end
+
+          it 'cancels only interruptible jobs' do
+            execute
+
+            expect(job_statuses(prev_pipeline)).to contain_exactly('canceled', 'success', 'created')
+          end
+        end
+      end
+
+      context 'when auto_cancel_on_new_commit is unknown' do
+        before do
+          allow_next_found_instance_of(Ci::Pipeline) do |cancelable|
+            allow(cancelable).to receive(:auto_cancel_on_new_commit).and_return('unknown')
+          end
+        end
+
+        it 'raises an error' do
+          expect { execute }.to raise_error(ArgumentError, 'Unknown auto_cancel_on_new_commit value: unknown')
+        end
       end
 
       context 'when auto_cancel_on_new_commit is `none`' do
@@ -458,6 +482,16 @@ RSpec.describe Ci::PipelineCreation::CancelRedundantPipelinesService, feature_ca
           execute
 
           expect_outcomes_logged_with(cache_would_cancel_count: 1, cache_would_cancel_ids: [prev_pipeline.id])
+        end
+
+        it 'reports an interruptible canceled pipeline that the cache does not hold' do
+          prev_pipeline.create_pipeline_metadata!(
+            project: prev_pipeline.project, auto_cancel_on_new_commit: 'interruptible'
+          )
+
+          execute
+
+          expect_outcomes_logged_with(cache_missed_count: 1, cache_missed_ids: [prev_pipeline.id])
         end
 
         it 'cancels the same jobs as without the comparison' do

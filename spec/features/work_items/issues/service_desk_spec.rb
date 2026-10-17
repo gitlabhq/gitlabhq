@@ -41,7 +41,10 @@ RSpec.describe 'Service Desk Ticket Tracker', :js, feature_category: :service_de
     it 'shows service_desk_reply_to in header' do
       visit project_issue_path(project, ticket)
 
-      expect(page).to have_text('by service.desk@example.com via GitLab Support Bot')
+      expect(page).to have_testid('work-item-created', text: 'via email')
+      within_testid('work-item-requester') do
+        expect(page).to have_link('service.desk@example.com', href: 'mailto:service.desk@example.com')
+      end
     end
   end
 

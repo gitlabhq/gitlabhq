@@ -98163,6 +98163,9 @@ msgstr ""
 msgid "WorkItem|Reopening %{workItemType}"
 msgstr ""
 
+msgid "WorkItem|Requester"
+msgstr ""
+
 msgid "WorkItem|Reset template"
 msgstr ""
 
@@ -98755,6 +98758,9 @@ msgid "WorkItem|blocks"
 msgstr ""
 
 msgid "WorkItem|could not be found or is not accessible."
+msgstr ""
+
+msgid "WorkItem|created %{timeAgo} via email"
 msgstr ""
 
 msgid "WorkItem|is blocked by"

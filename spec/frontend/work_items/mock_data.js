@@ -2112,6 +2112,7 @@ export const mockWorkItemFeaturesData = ({ discussionLocked = false } = {}) => (
   decisionLog: null,
   customFields: null,
   participants: null,
+  requester: null,
 });
 
 export const workItemResponseFactory = ({
@@ -2645,6 +2646,27 @@ export const workItemLinkedResourcesResponseFactory = ({
     },
   };
 };
+
+export const workItemRequesterResponseFactory = ({ email = 'requester@example.com' } = {}) => ({
+  data: {
+    namespace: {
+      __typename: 'Project',
+      id: 'gid://gitlab/Project/1',
+      workItem: {
+        __typename: 'WorkItem',
+        id: 'gid://gitlab/WorkItem/1',
+        features: {
+          __typename: 'WorkItemFeatures',
+          requester: {
+            __typename: 'WorkItemWidgetRequester',
+            type: 'REQUESTER',
+            email,
+          },
+        },
+      },
+    },
+  },
+});
 
 export const workItemCrmContactsResponseFactory = ({
   canUpdate = true,

@@ -225,5 +225,19 @@ describe('work-item-createdUpdated component', () => {
       );
       expect(findLockedBadge().exists()).toBe(true);
     });
+
+    it('shows "via email" when features.requester is present', async () => {
+      await createComponent({
+        provide: { glFeatures: { workItemFeaturesField: true } },
+        features: {
+          requester: {
+            type: 'REQUESTER',
+            email: 'requester@example.com',
+          },
+        },
+      });
+
+      expect(findCreatedAtText()).toBe('created via email');
+    });
   });
 });

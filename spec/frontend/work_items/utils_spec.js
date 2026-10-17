@@ -70,6 +70,7 @@ import {
   findLabelsWidget,
   findParticipantsWidget,
   findProgressWidget,
+  findRequesterWidget,
   findWeightWidget,
   findWidgetByType,
   findStatusWidget,
@@ -1978,6 +1979,22 @@ describe('findProgressWidget', () => {
 
   it('returns undefined when neither exists', () => {
     expect(findProgressWidget({ widgets: [] })).toBeUndefined();
+  });
+});
+
+describe('findRequesterWidget', () => {
+  const featuresRequester = {
+    email: 'features-requester@example.com',
+  };
+
+  it('returns features.requester when present', () => {
+    const workItem = { features: { requester: featuresRequester } };
+
+    expect(findRequesterWidget(workItem)).toBe(featuresRequester);
+  });
+
+  it('returns undefined when it does not exist', () => {
+    expect(findRequesterWidget({ widgets: [] })).toBeUndefined();
   });
 });
 

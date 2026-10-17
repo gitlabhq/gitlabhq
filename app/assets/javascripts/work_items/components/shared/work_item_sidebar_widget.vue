@@ -78,7 +78,7 @@ export default {
 <template>
   <section>
     <div class="gl-flex gl-items-center gl-gap-3">
-      <h3 class="gl-heading-5 gl-mb-0">
+      <h3 class="gl-heading-5 gl-mb-0 gl-leading-24">
         <slot name="title"></slot>
       </h3>
       <gl-loading-icon v-if="isUpdating" />

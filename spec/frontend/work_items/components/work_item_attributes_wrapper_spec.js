@@ -7,6 +7,7 @@ import WorkItemDates from 'ee_else_ce/work_items/components/work_item_dates.vue'
 import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
 import WorkItemMilestone from '~/work_items/components/work_item_milestone.vue';
 import WorkItemParent from '~/work_items/components/work_item_parent.vue';
+import WorkItemRequester from '~/work_items/components/work_item_requester.vue';
 import WorkItemTimeTracking from '~/work_items/components/work_item_time_tracking.vue';
 import WorkItemCrmContacts from '~/work_items/components/work_item_crm_contacts.vue';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -60,6 +61,7 @@ describe('WorkItemAttributesWrapper component', () => {
   const findWorkItemLabels = () => wrapper.findComponent(WorkItemLabels);
   const findWorkItemMilestone = () => wrapper.findComponent(WorkItemMilestone);
   const findWorkItemParent = () => wrapper.findComponent(WorkItemParent);
+  const findWorkItemRequester = () => wrapper.findComponent(WorkItemRequester);
   const findWorkItemTimeTracking = () => wrapper.findComponent(WorkItemTimeTracking);
   const findWorkItemParticipants = () => wrapper.findComponent(Participants);
   const findWorkItemCrmContacts = () => wrapper.findComponent(WorkItemCrmContacts);
@@ -342,6 +344,33 @@ describe('WorkItemAttributesWrapper component', () => {
       });
 
       expect(findWorkItemCrmContacts().exists()).toBe(true);
+    });
+  });
+
+  describe('requester widget', () => {
+    it('renders when features.requester is present', () => {
+      createComponent({
+        workItem: {
+          ...workItemResponseFactory().data.workItem,
+          features: {
+            requester: {
+              type: 'REQUESTER',
+              email: 'ticket-requester@example.com',
+            },
+          },
+        },
+      });
+
+      expect(findWorkItemRequester().props()).toMatchObject({
+        fullPath: 'group/project',
+        workItemIid: '1',
+      });
+    });
+
+    it('does not render when features.requester is not present', () => {
+      createComponent();
+
+      expect(findWorkItemRequester().exists()).toBe(false);
     });
   });
 

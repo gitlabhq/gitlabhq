@@ -28,6 +28,7 @@ import {
   WIDGET_TYPE_LINKED_RESOURCES,
   STATE_CLOSED,
   WIDGET_TYPE_CUSTOM_FIELDS,
+  WIDGET_TYPE_REQUESTER,
   WIDGET_TYPE_STATUS,
   WIDGET_TYPE_CURRENT_USER_TODOS,
   WIDGET_TYPE_ERROR_TRACKING,
@@ -572,6 +573,12 @@ export const getNewWorkItemSharedCache = ({
       customFieldValues: [],
       __typename: 'WorkItemWidgetCustomFields',
     },
+    requester: {
+      ...widgetDefinitionsHash[WIDGET_TYPE_REQUESTER],
+      type: WIDGET_TYPE_REQUESTER,
+      email: null,
+      __typename: 'WorkItemWidgetRequester',
+    },
   };
 
   const cachedParent = draftWorkItemCache[WIDGET_TYPE_HIERARCHY]?.parent || null;
@@ -972,6 +979,7 @@ export const setNewWorkItemCache = ({
   const workItemAttributesWrapperOrder = [
     WIDGET_TYPE_STATUS,
     WIDGET_TYPE_ASSIGNEES,
+    WIDGET_TYPE_REQUESTER,
     WIDGET_TYPE_LABELS,
     WIDGET_TYPE_WEIGHT,
     WIDGET_TYPE_MILESTONE,

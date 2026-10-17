@@ -4,13 +4,13 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import HiddenBadge from '~/issuable/components/hidden_badge.vue';
 import LockedBadge from '~/issuable/components/locked_badge.vue';
 import { NAMESPACE_PROJECT } from '~/issues/constants';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
-import { findNotesWidget } from '../utils';
+import { findNotesWidget, findRequesterWidget } from '../utils';
 import WorkItemStateBadge from './work_item_state_badge.vue';
 import WorkItemTypeIcon from './work_item_type_icon.vue';
 
@@ -56,6 +56,9 @@ export default {
       return this.workItem?.createdAt || '';
     },
     createdMessage() {
+      if (findRequesterWidget(this.workItem)) {
+        return s__('WorkItem|created %{timeAgo} via email');
+      }
       if (this.workItem.externalAuthor && this.author.name) {
         return __('created %{timeAgo} by %{email} via %{author}');
       }

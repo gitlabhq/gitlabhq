@@ -85,4 +85,7 @@ fragment BaseWorkItemFeatures on WorkItemFeatures {
       }
     }
   }
+  requester {
+    type
+  }
 }
