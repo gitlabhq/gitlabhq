@@ -421,6 +421,63 @@ RSpec.describe Ci::PipelineCreation::CancelRedundantPipelinesService, feature_ca
       end
 
       it_behaves_like 'time limits pipeline cancellation'
+
+      context 'when comparing the decisions with the cache', :clean_gitlab_redis_shared_state do
+        let(:cache) do
+          Gitlab::Ci::RedundantPipelines::CandidateCache.for(project_id: project.id, ref: prev_pipeline.ref)
+        end
+
+        before do
+          allow(Gitlab::AppLogger).to receive(:info)
+        end
+
+        def expect_outcomes_logged_with(fields)
+          expect(Gitlab::AppLogger).to have_received(:info)
+            .with(hash_including(message: 'Canceling redundant pipelines', **fields))
+        end
+
+        it 'reports a canceled pipeline that the cache does not hold' do
+          execute
+
+          expect_outcomes_logged_with(cache_missed_count: 1, cache_missed_ids: [prev_pipeline.id])
+        end
+
+        it 'reports no difference for a canceled pipeline that the cache holds' do
+          cache.register(Gitlab::Ci::RedundantPipelines::PipelineKey.of(prev_pipeline))
+
+          execute
+
+          expect_outcomes_logged_with(
+            cache_missed_count: 0, cache_would_cancel_count: 0, cache_would_keep_count: 0
+          )
+        end
+
+        it 'reports a protected pipeline that the cache path would cancel' do
+          create(:ci_build, :success, pipeline: prev_pipeline)
+
+          execute
+
+          expect_outcomes_logged_with(cache_would_cancel_count: 1, cache_would_cancel_ids: [prev_pipeline.id])
+        end
+
+        it 'cancels the same jobs as without the comparison' do
+          execute
+
+          expect(build_statuses(prev_pipeline)).to contain_exactly('canceled', 'success', 'canceled')
+        end
+
+        context 'when the cache is not filled' do
+          before do
+            stub_feature_flags(ci_redundant_pipeline_candidates_cache: false)
+          end
+
+          it 'does not compare' do
+            execute
+
+            expect(Gitlab::AppLogger).not_to have_received(:info).with(hash_including(:cache_missed_count))
+          end
+        end
+      end
     end
 
     context 'when auto-cancel is disabled' do

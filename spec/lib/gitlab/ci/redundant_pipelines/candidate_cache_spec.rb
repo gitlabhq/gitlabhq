@@ -174,6 +174,48 @@ RSpec.describe Gitlab::Ci::RedundantPipelines::CandidateCache, :clean_gitlab_red
     end
   end
 
+  describe '#registered_among' do
+    it 'returns the pipelines the cache holds' do
+      cache.register(key(10))
+      cache.register(key(30))
+
+      expect(cache.registered_among([key(10), key(20), key(30)])).to contain_exactly(key(10), key(30))
+    end
+
+    it 'leaves the cache unchanged' do
+      cache.register(key(10))
+
+      cache.registered_among([key(10)])
+
+      expect(cache).to be_registered(key(10))
+    end
+
+    it 'returns nothing for no pipelines without calling redis' do
+      recorder = RedisCommands::Recorder.new { expect(cache.registered_among([])).to be_empty }
+
+      expect(recorder.count).to eq(0)
+    end
+
+    it 'uses a single redis call' do
+      recorder = RedisCommands::Recorder.new { cache.registered_among([key(10), key(20)]) }
+
+      expect(recorder.count).to eq(1)
+    end
+  end
+
+  describe '#protected_among' do
+    it 'returns the pipelines the cache protects' do
+      cache.protect(key(10))
+      cache.register(key(20))
+
+      expect(cache.protected_among([key(10), key(20)])).to contain_exactly(key(10))
+    end
+
+    it 'returns nothing for no pipelines' do
+      expect(cache.protected_among([])).to be_empty
+    end
+  end
+
   describe '#claim_before' do
     it 'returns nothing for the first pipeline on a ref' do
       expect(cache.claim_before(key(10))).to be_empty

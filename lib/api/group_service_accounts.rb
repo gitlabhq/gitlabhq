@@ -235,9 +235,12 @@ module API
 
             merged_params = declared(params, include_missing: false).merge({ user: user, impersonation: false })
             service_account_pats = ::PersonalAccessTokensFinder.new(merged_params, user).execute
+              .preload_users
               .preload_last_used_ips
+            paginated_tokens = paginate_with_strategies(service_account_pats)
 
-            present paginate_with_strategies(service_account_pats), with: Entities::PersonalAccessToken
+            present paginated_tokens, with: Entities::PersonalAccessToken,
+              **granular_scopes_options_for(paginated_tokens)
           end
 
           desc 'Create a personal access token for a group service account' do

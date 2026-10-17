@@ -956,12 +956,14 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       end
     end
 
-    describe '.created_on_or_after', :freeze_time do
+    describe '.created_on_or_after' do
       let_it_be(:new_pipeline_1) { create(:ci_pipeline, created_at: 1.day.ago) }
 
-      subject { described_class.created_on_or_after(1.day.ago) }
+      # Use the record's own timestamp as the boundary so the result does not
+      # depend on the clock moving between `let_it_be` and the example.
+      subject { described_class.created_on_or_after(new_pipeline_1.created_at) }
 
-      it 'returns the newer pipeline', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/17341' do
+      it 'returns the newer pipelines, including one created exactly at the given time' do
         is_expected.to contain_exactly(new_pipeline, new_pipeline_1)
       end
     end

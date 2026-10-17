@@ -18,11 +18,6 @@ class BasePolicy < DeclarativePolicy::Base
   # This condition is overridden in EE
   condition(:auditor, score: 0) { false }
 
-  desc "The current instance is a GitLab Dedicated instance"
-  condition :gitlab_dedicated do
-    Gitlab::CurrentSettings.gitlab_dedicated_instance?
-  end
-
   desc "User is blocked"
   with_options scope: :user, score: 0
   condition(:blocked) { @user&.blocked? }
@@ -108,12 +103,6 @@ class BasePolicy < DeclarativePolicy::Base
     # rubocop:enable Gitlab/Authz/EnableInBasePolicy
     # rubocop:disable Gitlab/Authz/EnableInBasePolicy -- As of Feb 2026, we do not allow enable in base policy
     enable :change_repository_storage
-    # rubocop:enable Gitlab/Authz/EnableInBasePolicy
-  end
-
-  rule { gitlab_dedicated & admin }.policy do
-    # rubocop:disable Gitlab/Authz/EnableInBasePolicy -- As of Feb 2026, we do not allow enable in base policy
-    enable :read_dedicated_hosted_runner_usage
     # rubocop:enable Gitlab/Authz/EnableInBasePolicy
   end
 

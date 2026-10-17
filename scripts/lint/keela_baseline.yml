@@ -270,7 +270,6 @@ methods:
   - request_access_project_members_path
   - leave_project_members_path
   - approve_access_request_project_member_path
-  - resend_invite_project_member_path
   app/models/alert_management/alert.rb:
   - prometheus?
   app/models/app_config/kas_metadata.rb:

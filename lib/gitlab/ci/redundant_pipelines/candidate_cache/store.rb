@@ -73,6 +73,14 @@ module Gitlab
             scored?(protected_key, key)
           end
 
+          def registered_among(keys)
+            scored_among(candidates_key, keys)
+          end
+
+          def protected_among(keys)
+            scored_among(protected_key, keys)
+          end
+
           def count
             with_redis { |redis| redis.zcard(candidates_key) }.to_i
           end
@@ -95,6 +103,15 @@ module Gitlab
 
           def scored?(set, key)
             with_redis { |redis| redis.zscore(set, key.to_s) }.present?
+          end
+
+          def scored_among(set, keys)
+            return [] if keys.empty?
+
+            members = keys.map(&:to_s)
+            scores = with_redis { |redis| redis.zmscore(set, *members) }
+
+            pipeline_keys(members.zip(scores).filter_map { |member, score| member if score })
           end
 
           def eval_script(script, set, argv)

@@ -460,6 +460,10 @@ RSpec.describe API::ProjectServiceAccounts, :with_current_organization, :aggrega
         expect(json_response).to be_an(Array)
         expect(json_response.pluck('id')).to include(existing_token.id)
       end
+
+      it_behaves_like 'service account token list presenting granular scopes' do
+        let_it_be(:other_project) { create(:project) }
+      end
     end
 
     describe 'DELETE /projects/:id/service_accounts/:user_id/personal_access_tokens/:token_id' do

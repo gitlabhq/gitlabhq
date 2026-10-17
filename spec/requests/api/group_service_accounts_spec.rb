@@ -527,6 +527,11 @@ RSpec.describe API::GroupServiceAccounts, :with_current_organization, :aggregate
         expect(json_response).to be_an(Array)
         expect(json_response.pluck('id')).to include(existing_token.id)
       end
+
+      it_behaves_like 'service account token list presenting granular scopes' do
+        let_it_be(:project) { create(:project, group: group) }
+        let_it_be(:other_project) { create(:project, group: group) }
+      end
     end
 
     describe 'DELETE /groups/:id/service_accounts/:user_id/personal_access_tokens/:token_id' do

@@ -52,6 +52,14 @@ module Gitlab
           store.registered?(key)
         end
 
+        def registered_among(keys)
+          store.registered_among(keys)
+        end
+
+        def protected_among(keys)
+          store.protected_among(keys)
+        end
+
         def size
           store.count
         end

@@ -103,14 +103,19 @@ module Ci
 
           @configured_to_not_cancel += 1
         when 'conservative'
-          return unless conservative_cancelable_pipeline_pks.include?(cancelable.id)
+          unless conservative_cancelable_pipeline_pks.include?(cancelable.id)
+            cache_comparison&.kept_as_protected(cancelable)
+            return
+          end
 
           @conservatively_cancelled += 1
+          cache_comparison&.canceled_conservatively(cancelable)
 
           cancel_pipeline(cancelable, safe_cancellation: false)
         when 'interruptible'
 
           @aggressively_cancelled += 1
+          cache_comparison&.canceled(cancelable)
 
           cancel_pipeline(cancelable, safe_cancellation: true)
         else
@@ -159,9 +164,19 @@ module Ci
           canceled_by_pipeline_id: pipeline.id,
           project_id: pipeline.project_id,
           ref: pipeline.ref,
-          sha: pipeline.sha
+          sha: pipeline.sha,
+          **cache_comparison&.log_fields.to_h
         )
       end
+
+      # Runs while the cache fills and cancellation still searches, so the cache
+      # can be checked before cancellation reads from it.
+      def cache_comparison
+        return unless Feature.enabled?(:ci_redundant_pipeline_candidates_cache, project)
+
+        Gitlab::Ci::RedundantPipelines::CacheComparison.for(pipeline)
+      end
+      strong_memoize_attr :cache_comparison
 
       def pipelines_created_after
         7.days.ago

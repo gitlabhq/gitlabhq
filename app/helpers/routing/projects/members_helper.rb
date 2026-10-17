@@ -22,10 +22,6 @@ module Routing
       def approve_access_request_project_member_path(project_member, *args)
         approve_access_request_project_project_member_path(project_member.source, project_member)
       end
-
-      def resend_invite_project_member_path(project_member, *args)
-        resend_invite_project_project_member_path(project_member.source, project_member)
-      end
     end
   end
 end

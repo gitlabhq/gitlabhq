@@ -461,6 +461,7 @@ curl --request DELETE \
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/526924) in GitLab 17.11.
 - `last_used_ips` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250307) in GitLab 19.4.
 - `all` value for the `state` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/260698) in GitLab 19.6.
+- `granular_scopes` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/633317) in GitLab 19.6.
 
 {{< /history >}}
 
@@ -516,6 +517,11 @@ Example response:
     }
 ]
 ```
+
+> [!note]
+> For tokens created with granular scopes, the response also includes a
+> `granular_scopes` attribute. For more information, see
+> [List all personal access tokens](personal_access_tokens.md#list-all-personal-access-tokens).
 
 Example of unsuccessful responses:
 
@@ -892,6 +898,7 @@ curl --request DELETE \
 
 - `last_used_ips` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250307) in GitLab 19.4.
 - `all` value for the `state` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/260698) in GitLab 19.6.
+- `granular_scopes` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/633317) in GitLab 19.6.
 
 {{< /history >}}
 
@@ -947,6 +954,11 @@ Example response:
     }
 ]
 ```
+
+> [!note]
+> For tokens created with granular scopes, the response also includes a
+> `granular_scopes` attribute. For more information, see
+> [List all personal access tokens](personal_access_tokens.md#list-all-personal-access-tokens).
 
 Example of unsuccessful responses:
 

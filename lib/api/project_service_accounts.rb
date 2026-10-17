@@ -231,9 +231,11 @@ module API
             validate_service_account
 
             service_account_pats = ::PersonalAccessTokensFinder.new(finder_params(service_account),
-              service_account).execute.preload_last_used_ips
+              service_account).execute.preload_users.preload_last_used_ips
+            paginated_tokens = paginate_with_strategies(service_account_pats)
 
-            present paginate_with_strategies(service_account_pats), with: Entities::PersonalAccessToken
+            present paginated_tokens, with: Entities::PersonalAccessToken,
+              **granular_scopes_options_for(paginated_tokens)
           end
 
           desc 'Create a personal access token for a project service account' do

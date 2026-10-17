@@ -24,10 +24,6 @@ RSpec.describe GitlabRoutingHelper do
     describe '#approve_access_request_project_member_path' do
       it { expect(approve_access_request_project_member_path(project_member)).to eq approve_access_request_project_project_member_path(project_member.source, project_member) }
     end
-
-    describe '#resend_invite_project_member_path' do
-      it { expect(resend_invite_project_member_path(project_member)).to eq resend_invite_project_project_member_path(project_member.source, project_member) }
-    end
   end
 
   describe 'Group URL helpers' do
