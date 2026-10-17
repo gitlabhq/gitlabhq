@@ -1,5 +1,3 @@
-= render_if_exists 'profiles/preferences/code_suggestions_settings_self_assignment'
-
 = render preferences_section(s_('Preferences|Default views'), id: 'default-views') do |c|
   - c.with_description do
     = s_('Preferences|Choose what content you see by default on your homepage, groups, and projects.')
@@ -16,11 +14,6 @@
       = f.select :project_view, project_view_choices, {}, class: 'gl-form-select custom-select gl-form-input-xl gl-block'
       .form-text.gl-text-subtle
         = s_('Preferences|Choose what content you want to see on a project’s overview page.')
-
-    = render_if_exists 'profiles/preferences/default_duo_group', f: f # EE-specific
-    = render_if_exists 'profiles/preferences/orbit_settings', f: f # EE-specific
-    = render_if_exists 'profiles/preferences/knowledge_graph_governing_group', f: f # EE-specific
-
     .form-group
       = f.gitlab_ui_checkbox_component :project_shortcut_buttons, s_('Preferences|Show shortcut buttons above files on project overview')
 

@@ -34346,9 +34346,6 @@ msgstr ""
 msgid "DuoChat|Display tool details"
 msgstr ""
 
-msgid "DuoChat|Duo Agentic Chat is not available at the moment in this page. To work with Duo Agentic Chat in pages outside the scope of a project please select a %{strong_start}Default GitLab Duo namespace%{strong_end} in your %{preferences_link_start}User Profile Preferences%{preferences_link_end}."
-msgstr ""
-
 msgid "DuoChat|Duo wants to execute %{count} tools."
 msgstr ""
 
@@ -34377,6 +34374,9 @@ msgid "DuoChat|For example, %{linkStart}what is a fork%{linkEnd}?"
 msgstr ""
 
 msgid "DuoChat|Foundational agents"
+msgstr ""
+
+msgid "DuoChat|GitLab Duo Agentic Chat is not available on this page. To use GitLab Duo Agentic Chat outside a project, select a %{strong_start}default group for GitLab Duo%{strong_end} in your %{preferences_link_start}preferences%{preferences_link_end}."
 msgstr ""
 
 msgid "DuoChat|GitLab Duo Agentic Chat wants to execute a tool. Do you want to proceed?"
@@ -65650,6 +65650,9 @@ msgstr ""
 msgid "Preferences|%{link_start}List of keyboard shortcuts%{link_end}"
 msgstr ""
 
+msgid "Preferences|AI assistance"
+msgstr ""
+
 msgid "Preferences|Agentic Chat"
 msgstr ""
 
@@ -65660,9 +65663,6 @@ msgid "Preferences|Automatically add new list items"
 msgstr ""
 
 msgid "Preferences|Behavior"
-msgstr ""
-
-msgid "Preferences|Billable Orbit namespace"
 msgstr ""
 
 msgid "Preferences|Choose a color mode."
@@ -65731,7 +65731,7 @@ msgstr ""
 msgid "Preferences|Dark color scheme"
 msgstr ""
 
-msgid "Preferences|Default GitLab Duo group"
+msgid "Preferences|Default group"
 msgstr ""
 
 msgid "Preferences|Default views"
@@ -65779,6 +65779,12 @@ msgstr ""
 msgid "Preferences|For example: 30 minutes ago."
 msgstr ""
 
+msgid "Preferences|GitLab Duo"
+msgstr ""
+
+msgid "Preferences|GitLab Orbit"
+msgstr ""
+
 msgid "Preferences|Homepage"
 msgstr ""
 
@@ -65801,9 +65807,6 @@ msgid "Preferences|Layout width"
 msgstr ""
 
 msgid "Preferences|Light color scheme"
-msgstr ""
-
-msgid "Preferences|MCP and API calls to Orbit require a namespace to assign usage to."
 msgstr ""
 
 msgid "Preferences|Maintain indentation"
@@ -65833,9 +65836,6 @@ msgstr ""
 msgid "Preferences|Orbit Agent"
 msgstr ""
 
-msgid "Preferences|Orbit in GitLab Duo"
-msgstr ""
-
 msgid "Preferences|Orbit powers GitLab Duo chat and agents across your projects. Choose which Orbit-powered features to use."
 msgstr ""
 
@@ -65849,9 +65849,6 @@ msgid "Preferences|Project overview content"
 msgstr ""
 
 msgid "Preferences|Render whitespace characters in the Web IDE"
-msgstr ""
-
-msgid "Preferences|Select a billable Orbit namespace..."
 msgstr ""
 
 msgid "Preferences|Select a group"
@@ -65887,9 +65884,6 @@ msgstr ""
 msgid "Preferences|Theme"
 msgstr ""
 
-msgid "Preferences|This determines where your GitLab Duo usage is tracked."
-msgstr ""
-
 msgid "Preferences|This feature is experimental and translations are not yet complete."
 msgstr ""
 
@@ -65908,6 +65902,9 @@ msgstr ""
 msgid "Preferences|Type in rich text, as you see it."
 msgstr ""
 
+msgid "Preferences|Usage from MCP and API calls to Orbit is assigned to this group."
+msgstr ""
+
 msgid "Preferences|Use relative times"
 msgstr ""
 
@@ -65915,6 +65912,9 @@ msgid "Preferences|Web IDE"
 msgstr ""
 
 msgid "Preferences|Web IDE and Workspaces"
+msgstr ""
+
+msgid "Preferences|When GitLab can't determine a group from your work, this group sets which GitLab Duo features and models you can use and where your usage is tracked."
 msgstr ""
 
 msgid "Preferences|When you type a colon (:) in a description or comment box, matching emoji are suggested."
@@ -66584,9 +66584,6 @@ msgid "Profiles|No designated account manager assigned."
 msgstr ""
 
 msgid "Profiles|No designated account successor assigned."
-msgstr ""
-
-msgid "Profiles|No eligible groups available"
 msgstr ""
 
 msgid "Profiles|No file chosen."

@@ -31,6 +31,8 @@ The preferences page is organized into tabs:
 - **Behavior**: Default views, keyboard shortcuts, diffs, and following users.
 - **Editing**: The text editor, Markdown behavior, and code display.
 - **Localization**: Language, calendar, and time preferences.
+- **AI assistance**: Your default group for GitLab Duo and your GitLab Orbit settings.
+  This tab is shown only when these settings are available to you.
 - **Integrations**: Third-party services enabled by your administrator.
   This tab is shown only when an integration is available.
 
@@ -128,7 +130,6 @@ To change back to the default colors, clear the **Color for removed lines** and 
 ## Behavior
 
 Use the **Behavior** tab to choose the default content for your homepage, group, and project overview pages, and to customize keyboard shortcuts, diffs, and following users.
-You can also use this tab to set a default namespace for GitLab Duo.
 
 ### Choose your homepage
 
@@ -176,74 +177,6 @@ Your project overview page is the page you view when you select **Project overvi
 1. Select **Preferences**.
 1. On the **Behavior** tab, in the **Default views** section, from the **Project overview content** dropdown list, select an option.
 1. Select **Save changes**.
-
-### Set a default GitLab Duo namespace
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/552081) in GitLab 18.3 with a [flag](../../administration/feature_flags/_index.md) named `ai_user_default_duo_namespace`. Disabled by default.
-- [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/560319) in GitLab 18.4.
-- [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/569140) `ai_user_default_duo_namespace` feature flag in GitLab 18.7.
-
-{{< /history >}}
-
-Set a default GitLab Duo namespace to ensure GitLab Duo is available to use with your project.
-Your default GitLab Duo namespace determines your available [AI models](../gitlab_duo/model_selection.md)
-and GitLab Duo features, and your consumption of [GitLab Credits](../../subscriptions/gitlab_credits.md).
-
-Your default GitLab Duo namespace determines feature availability and credit consumption in the following scenarios:
-
-- You're not a member of the project you're working in.
-- You belong to multiple GitLab Duo namespaces.
-- You work in your IDE with a project that does not have a GitLab remote configured.
-- You use GitLab Duo in the CLI.
-
-When you work in a project or group where you're a direct or inherited member, the top-level group
-of that project or group is used instead for feature availability and credit consumption:
-
-- If you use GitLab Duo features in a project you're a member of,
-  usage is billed to the top-level group of that project.
-- If you use GitLab Duo features outside a project (for example, in your IDE without
-  an open project or in the CLI), usage is billed to your default namespace.
-- If you use GitLab Duo features in a project you're not a member of,
-  usage is billed to your default namespace.
-
-If you do not set a default namespace, GitLab Duo Agentic Chat and the GitLab Duo Agent Platform are disabled.
-
-To set a default GitLab Duo namespace:
-
-1. In the upper-right corner, select your avatar.
-1. Select **Preferences**.
-1. On the **Behavior** tab, in the **Default views** section, from the **Default GitLab Duo group** dropdown list, select the group you want to set as your default.
-1. Select **Save changes**.
-
-#### Namespace resolution in your local environment
-
-{{< history >}}
-
-- Access to user default namespaces for IDEs [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/work_items/2043) in GitLab 18.10.
-- Access to user default namespaces introduced in GitLab for VS Code 6.71.7.
-- Access to user default namespaces introduced in GitLab Duo CLI 8.76.0.
-- Default namespace setting in editor extensions [removed](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/work_items/2369) in GitLab 19.4.
-  - [Removed](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/releases/v3.46.0) in GitLab Duo plugin for JetBrains IDEs 3.46.0.
-  - [Removed](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/releases/v6.90.0) in GitLab for VS Code 6.90.0.
-
-{{< /history >}}
-
-When you use GitLab Duo in an IDE or the CLI, the first available namespace determines feature
-availability and credit consumption. Along with the other Agent Platform requirements, the project
-you work on must be in a [group namespace](../namespace/_index.md).
-
-GitLab Duo checks for a namespace in this order:
-
-1. The project namespace, if your project is linked to a remote repository in GitLab.
-1. The default namespace set in your user preferences.
-
-If the first namespace identified does not have access to the requested feature or available credits,
-the feature is not available. GitLab Duo does not fall back to the next namespace in the list.
-
-If your project is not linked to a remote repository in GitLab, you must
-[set a default GitLab Duo namespace](#set-a-default-gitlab-duo-namespace) in your user preferences.
 
 ### Hide shortcut buttons
 
@@ -475,6 +408,101 @@ To customize the time format:
 1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
 1. On the **Localization** tab, in the **Time preferences** section, under **Time format**, select either the **System**, **12-hour**, or **24-hour** option.
+1. Select **Save changes**.
+
+## AI assistance
+
+Use the **AI assistance** tab to configure GitLab Duo and GitLab Orbit for your account.
+
+### Set a default GitLab Duo namespace
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/552081) in GitLab 18.3 with a [flag](../../administration/feature_flags/_index.md) named `ai_user_default_duo_namespace`. Disabled by default.
+- [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/560319) in GitLab 18.4.
+- [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/569140) `ai_user_default_duo_namespace` feature flag in GitLab 18.7.
+
+{{< /history >}}
+
+Set a default GitLab Duo namespace to ensure GitLab Duo is available to use with your project.
+Your default GitLab Duo namespace determines your available [AI models](../gitlab_duo/model_selection.md)
+and GitLab Duo features, and your consumption of [GitLab Credits](../../subscriptions/gitlab_credits.md).
+
+Your default GitLab Duo namespace determines feature availability and credit consumption in the following scenarios:
+
+- You're not a member of the project you're working in.
+- You belong to multiple GitLab Duo namespaces.
+- You work in your IDE with a project that does not have a GitLab remote configured.
+- You use GitLab Duo in the CLI.
+
+When you work in a project or group where you're a direct or inherited member, the top-level group
+of that project or group is used instead for feature availability and credit consumption:
+
+- If you use GitLab Duo features in a project you're a member of,
+  usage is billed to the top-level group of that project.
+- If you use GitLab Duo features outside a project (for example, in your IDE without
+  an open project or in the CLI), usage is billed to your default namespace.
+- If you use GitLab Duo features in a project you're not a member of,
+  usage is billed to your default namespace.
+
+If you do not set a default namespace, GitLab Duo Agentic Chat and the GitLab Duo Agent Platform are disabled.
+
+To set a default GitLab Duo namespace:
+
+1. In the upper-right corner, select your avatar.
+1. Select **Preferences**.
+1. On the **AI assistance** tab, in the **GitLab Duo** section, from the **Default group** dropdown list, select the group you want to set as your default.
+1. Select **Save changes**.
+
+#### Namespace resolution in your local environment
+
+{{< history >}}
+
+- Access to user default namespaces for IDEs [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/work_items/2043) in GitLab 18.10.
+- Access to user default namespaces introduced in GitLab for VS Code 6.71.7.
+- Access to user default namespaces introduced in GitLab Duo CLI 8.76.0.
+- Default namespace setting in editor extensions [removed](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/work_items/2369) in GitLab 19.4.
+  - [Removed](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/releases/v3.46.0) in GitLab Duo plugin for JetBrains IDEs 3.46.0.
+  - [Removed](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/releases/v6.90.0) in GitLab for VS Code 6.90.0.
+
+{{< /history >}}
+
+When you use GitLab Duo in an IDE or the CLI, the first available namespace determines feature
+availability and credit consumption. Along with the other Agent Platform requirements, the project
+you work on must be in a [group namespace](../namespace/_index.md).
+
+GitLab Duo checks for a namespace in this order:
+
+1. The project namespace, if your project is linked to a remote repository in GitLab.
+1. The default namespace set in your user preferences.
+
+If the first namespace identified does not have access to the requested feature or available credits,
+the feature is not available. GitLab Duo does not fall back to the next namespace in the list.
+
+If your project is not linked to a remote repository in GitLab, you must
+[set a default GitLab Duo namespace](#set-a-default-gitlab-duo-namespace) in your user preferences.
+
+### Choose which GitLab Duo features use Orbit
+
+{{< details >}}
+
+- Status: Beta
+
+{{< /details >}}
+
+When Orbit in GitLab Duo is on for you, you can choose which GitLab Duo features use Orbit.
+Orbit in GitLab Duo is on for members of a top-level group with Orbit on, or when an administrator turns it on for the instance.
+
+To choose which features use Orbit:
+
+1. In the upper-right corner, select your avatar.
+1. Select **Preferences**.
+1. On the **AI assistance** tab, in the **GitLab Orbit** section, select or clear the checkboxes:
+   - **Agentic Chat**
+   - **Orbit Agent**
+   - **Other Foundational Agents**
+   - **Custom Agents**
+1. Optional. If you belong to more than one top-level group with GitLab Orbit, from the **Default group** dropdown list, select the group to assign usage from MCP and API calls to.
 1. Select **Save changes**.
 
 ## Integrate your GitLab instance with third-party services

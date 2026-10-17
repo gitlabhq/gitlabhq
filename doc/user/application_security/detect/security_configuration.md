@@ -202,9 +202,58 @@ variables:
 
 ### Use a custom scanning stage
 
-Security scanner templates use the predefined `test` stage by default. To have them instead run in
-a different stage, add the custom stage's name to the `stages:` section of the `.gitlab-ci.yml`
-file.
+Each security scanner template assigns its jobs to a stage. To run a scanner in a stage of your
+own:
+
+1. Add the stage to the `stages:` section of your `.gitlab-ci.yml` file.
+1. Set the stage of the scanner's jobs, as shown in the following table.
+
+Adding the stage to `stages:` does not move any job into it. The jobs stay in their default stage,
+and if that stage is not in `stages:`, the pipeline fails with an error like
+[`chosen stage test does not exist`](#error-chosen-stage-test-does-not-exist).
+
+| Scanner                         | Default stage | Where to set the stage |
+|---------------------------------|---------------|------------------------|
+| SAST                            | `test`        | The `sast` job. The SAST analyzer jobs extend it. |
+| Infrastructure as Code (IaC) scanning | `test`        | The `iac-sast` job. The `kics-iac-sast` job extends it. |
+| Pipeline secret detection       | `test`        | The `secret_detection` job. |
+| Dependency scanning             | `test`        | The `stage` input of the `Jobs/Dependency-Scanning.v2.gitlab-ci.yml` template. With the `Jobs/Dependency-Scanning.gitlab-ci.yml` template or its `latest` edition, the `dependency_scanning` job. The analyzer jobs take their stage from it. |
+| Container scanning              | `test`        | The `container_scanning` job. |
+| DAST                            | `dast`        | The `dast` job. |
+| API security testing            | `dast`        | The `api_security` job. |
+| Web API fuzz testing            | `fuzz`        | The `apifuzzer_fuzz` job. |
+
+For example, to run SAST, pipeline secret detection, dependency scanning, and container scanning in
+a stage named `security-scan`:
+
+```yaml
+stages:
+  - build
+  - security-scan
+  - deploy
+
+include:
+  - template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
+    inputs:
+      stage: security-scan
+  - template: Jobs/SAST.gitlab-ci.yml
+  - template: Jobs/Secret-Detection.gitlab-ci.yml
+  - template: Jobs/Container-Scanning.gitlab-ci.yml
+
+sast:
+  stage: security-scan
+
+secret_detection:
+  stage: security-scan
+
+container_scanning:
+  stage: security-scan
+```
+
+The dependency resolution jobs of the `Jobs/Dependency-Scanning.v2.gitlab-ci.yml` template run in the
+`.pre` stage, which is always available, so the example does not change them. To move them, set the
+template's `resolution_jobs_stage` input to a stage that comes before the stage of the
+`dependency-scanning` job. That job scans the files they generate.
 
 For more information about overriding security jobs, see:
 
