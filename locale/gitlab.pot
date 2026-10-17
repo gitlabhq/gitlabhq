@@ -59569,11 +59569,6 @@ msgstr ""
 msgid "Options must include an attribute to update"
 msgstr ""
 
-msgid "Orbit|%d entity"
-msgid_plural "Orbit|%d entities"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "Orbit|%d group is excluded from automatic indexing"
 msgid_plural "Orbit|%d groups are excluded from automatic indexing"
 msgstr[0] ""
@@ -59589,18 +59584,13 @@ msgid_plural "Orbit|%d groups selected"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Orbit|%d property"
-msgid_plural "Orbit|%d properties"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "Orbit|%d relationship"
-msgid_plural "Orbit|%d relationships"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "Orbit|%{action}: %{done} of %{total} done"
 msgstr ""
+
+msgid "Orbit|%{area} · %{count} relationship"
+msgid_plural "Orbit|%{area} · %{count} relationships"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Orbit|%{count} %{labelStart}item%{labelEnd}"
 msgid_plural "Orbit|%{count} %{labelStart}items%{labelEnd}"
@@ -59614,6 +59604,11 @@ msgstr[1] ""
 
 msgid "Orbit|%{count} day"
 msgid_plural "Orbit|%{count} days"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Orbit|%{count} entity type belongs to it"
+msgid_plural "Orbit|%{count} entity types belong to it"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -59648,11 +59643,6 @@ msgstr[1] ""
 msgid "Orbit|%{days}-day free trial, %{credits}"
 msgstr ""
 
-msgid "Orbit|%{entity} connects to %{count} entity. Select it to move to it."
-msgid_plural "Orbit|%{entity} connects to %{count} entities. Select one to move to it."
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "Orbit|%{failed} of %{total} groups was not updated"
 msgid_plural "Orbit|%{failed} of %{total} groups were not updated"
 msgstr[0] ""
@@ -59686,10 +59676,21 @@ msgstr[1] ""
 msgid "Orbit|%{referenceStart}Full GQL reference%{referenceEnd} · based on %{cypherStart}openCypher 9%{cypherEnd}"
 msgstr ""
 
+msgid "Orbit|%{relationship} · %{count} entity type"
+msgid_plural "Orbit|%{relationship} · %{count} entity types"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Orbit|%{selected} of %{total} groups selected"
 msgstr ""
 
+msgid "Orbit|%{source} points to %{target}"
+msgstr ""
+
 msgid "Orbit|A group is indexed when Core, Planning, Code review, CI/CD, Source code, and Security are all indexed."
+msgstr ""
+
+msgid "Orbit|AI agents"
 msgstr ""
 
 msgid "Orbit|Actions"
@@ -59717,6 +59718,9 @@ msgid "Orbit|And %d more group"
 msgid_plural "Orbit|And %d more groups"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Orbit|Areas"
+msgstr ""
 
 msgid "Orbit|Ask Duo to fix this query"
 msgstr ""
@@ -59843,6 +59847,14 @@ msgstr ""
 msgid "Orbit|Connect your AI coding agents to Orbit and query Orbit from your terminal, with one command."
 msgstr ""
 
+msgid "Orbit|Connected entities (%{count})"
+msgstr ""
+
+msgid "Orbit|Connects %{count} pair"
+msgid_plural "Orbit|Connects %{count} pairs"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Orbit|Contact sales"
 msgstr ""
 
@@ -59874,6 +59886,9 @@ msgid "Orbit|Copy command"
 msgstr ""
 
 msgid "Orbit|Copy example"
+msgstr ""
+
+msgid "Orbit|Copy query"
 msgstr ""
 
 msgid "Orbit|Core"
@@ -59933,13 +59948,7 @@ msgstr ""
 msgid "Orbit|Double-click to explore connections"
 msgstr ""
 
-msgid "Orbit|Entities"
-msgstr ""
-
 msgid "Orbit|Entity details"
-msgstr ""
-
-msgid "Orbit|Everything in Orbit belongs to a project. Select an entity to see how it connects."
 msgstr ""
 
 msgid "Orbit|Examples"
@@ -60061,9 +60070,6 @@ msgstr ""
 msgid "Orbit|From"
 msgstr ""
 
-msgid "Orbit|From %{entity}"
-msgstr ""
-
 msgid "Orbit|GQL syntax"
 msgstr ""
 
@@ -60107,6 +60113,9 @@ msgid "Orbit|Group status"
 msgstr ""
 
 msgid "Orbit|Groups"
+msgstr ""
+
+msgid "Orbit|Hover or select an entity to see its links."
 msgstr ""
 
 msgid "Orbit|How your data connects"
@@ -60243,9 +60252,6 @@ msgstr ""
 msgid "Orbit|No eligible groups are available for GitLab Orbit."
 msgstr ""
 
-msgid "Orbit|No entities match your search."
-msgstr ""
-
 msgid "Orbit|No groups are excluded"
 msgstr ""
 
@@ -60322,6 +60328,9 @@ msgid "Orbit|Only top-level groups can be excluded"
 msgstr ""
 
 msgid "Orbit|Only top-level groups can be indexed"
+msgstr ""
+
+msgid "Orbit|Open in Query editor"
 msgstr ""
 
 msgid "Orbit|Or describe what you want, and GitLab Duo writes the query"
@@ -60498,7 +60507,7 @@ msgstr ""
 msgid "Orbit|Properties"
 msgstr ""
 
-msgid "Orbit|Property"
+msgid "Orbit|Properties (%{count})"
 msgstr ""
 
 msgid "Orbit|Purchase GitLab Orbit to turn it on for this group."
@@ -60537,6 +60546,12 @@ msgstr ""
 msgid "Orbit|References"
 msgstr ""
 
+msgid "Orbit|Relationship"
+msgstr ""
+
+msgid "Orbit|Relationship details"
+msgstr ""
+
 msgid "Orbit|Relationships"
 msgstr ""
 
@@ -60547,6 +60562,9 @@ msgid "Orbit|Removing exclusions"
 msgstr ""
 
 msgid "Orbit|Required to use Orbit. Indexes this group, its subgroups, and projects. Can take up to a few hours."
+msgstr ""
+
+msgid "Orbit|Reset view"
 msgstr ""
 
 msgid "Orbit|Results"
@@ -60562,6 +60580,9 @@ msgid "Orbit|Run query"
 msgstr ""
 
 msgid "Orbit|Schema"
+msgstr ""
+
+msgid "Orbit|Schema graph"
 msgstr ""
 
 msgid "Orbit|Schema migration"
@@ -60609,7 +60630,7 @@ msgstr ""
 msgid "Orbit|Select all groups on this page"
 msgstr ""
 
-msgid "Orbit|Select an entity"
+msgid "Orbit|Select an entity to see its properties, its relationships, and a query to start from."
 msgstr ""
 
 msgid "Orbit|Select groups to turn Orbit off, or to exclude them from automatic indexing."
@@ -60649,6 +60670,9 @@ msgid "Orbit|Start a free trial of Orbit?"
 msgstr ""
 
 msgid "Orbit|Start a free trial to turn on Orbit for this group."
+msgstr ""
+
+msgid "Orbit|Start a query"
 msgstr ""
 
 msgid "Orbit|Start free trial"
@@ -60767,9 +60791,6 @@ msgstr ""
 msgid "Orbit|To"
 msgstr ""
 
-msgid "Orbit|To %{entity}"
-msgstr ""
-
 msgid "Orbit|To find part of a group name, enter at least %{count} characters."
 msgstr ""
 
@@ -60846,9 +60867,6 @@ msgstr ""
 msgid "Orbit|Turning on Orbit"
 msgstr ""
 
-msgid "Orbit|Type"
-msgstr ""
-
 msgid "Orbit|Unable to load Orbit schema. Please try again."
 msgstr ""
 
@@ -60868,9 +60886,6 @@ msgid "Orbit|Use the default query"
 msgstr ""
 
 msgid "Orbit|User"
-msgstr ""
-
-msgid "Orbit|Values"
 msgstr ""
 
 msgid "Orbit|Version %{version}"
@@ -61018,6 +61033,12 @@ msgid "Orbit|Your free Orbit trials have ended"
 msgstr ""
 
 msgid "Orbit|Your groups are not eligible for a free trial. Contact sales to get Orbit for your groups."
+msgstr ""
+
+msgid "Orbit|Zoom in"
+msgstr ""
+
+msgid "Orbit|Zoom out"
 msgstr ""
 
 msgid "Orbit|callers"
