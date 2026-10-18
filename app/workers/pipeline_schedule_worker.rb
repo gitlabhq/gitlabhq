@@ -23,7 +23,9 @@ class PipelineScheduleWorker # rubocop:disable Scalability/IdempotentWorker
         .runnable_schedules
         .preloaded
         .find_in_batches(batch_size: BATCH_SIZE).with_index do |schedules, index| # rubocop: disable CodeReuse/ActiveRecord -- activates because of batch_size
-          enqueue_run_pipeline_schedule_worker(schedules, index)
+          active_schedules = schedules_for_active_projects(schedules)
+
+          enqueue_run_pipeline_schedule_worker(active_schedules, index)
         end
     end
   end
@@ -39,6 +41,13 @@ class PipelineScheduleWorker # rubocop:disable Scalability/IdempotentWorker
       ttl: LOCK_TTL,
       retries: LOCK_RETRY
     }
+  end
+
+  # Can't join across databases, so look up active project ids instead.
+  def schedules_for_active_projects(schedules)
+    active_project_ids = Project.id_in(schedules.pluck(:project_id).uniq).non_archived.ids.to_set # rubocop:disable CodeReuse/ActiveRecord -- schedules is a plain array, not a model
+
+    schedules.select { |schedule| active_project_ids.include?(schedule.project_id) }
   end
 
   def enqueue_run_pipeline_schedule_worker(schedules, index)

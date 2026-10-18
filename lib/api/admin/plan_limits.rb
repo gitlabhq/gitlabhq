@@ -12,9 +12,7 @@ module API
         def current_plan(name)
           plan = ::GitlabSubscriptions::SystemDefined::Plan.find_by(name: name) # rubocop:disable CodeReuse/ActiveRecord -- fixed items model, no query
 
-          # Saving limits needs a plans row to fill plan_limits.plan_id, which is NOT NULL.
-          # Remove this check once https://gitlab.com/gitlab-org/gitlab/-/work_items/600314 relaxes that.
-          not_found!('Plan') unless plan && ::Plan.by_plan_name_uid(plan.id).exists?
+          not_found!('Plan') unless ::GitlabSubscriptions::SystemDefined::Plan.instance_plans.include?(plan)
           plan
         end
       end

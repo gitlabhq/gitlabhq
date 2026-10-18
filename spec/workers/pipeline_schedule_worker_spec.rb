@@ -7,7 +7,7 @@ RSpec.describe PipelineScheduleWorker, :sidekiq_inline, feature_category: :conti
 
   subject { described_class.new.perform }
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 
   let!(:pipeline_schedule) do
@@ -113,6 +113,27 @@ RSpec.describe PipelineScheduleWorker, :sidekiq_inline, feature_category: :conti
 
     it 'does not raise an exception' do
       expect { subject }.not_to raise_error
+    end
+  end
+
+  context 'when the project is archived' do
+    before_all do
+      project.update!(archived: true)
+    end
+
+    it 'does not create a pipeline' do
+      expect { subject }.not_to change { project.ci_pipelines.count }
+    end
+
+    it 'does not enqueue RunPipelineScheduleWorker for the archived schedule' do
+      allow(RunPipelineScheduleWorker).to receive(:bulk_perform_in_with_contexts).and_call_original
+
+      subject
+
+      expect(RunPipelineScheduleWorker)
+        .to have_received(:bulk_perform_in_with_contexts) do |_delay, schedules, **_kwargs|
+          expect(schedules).not_to include(pipeline_schedule)
+        end
     end
   end
 

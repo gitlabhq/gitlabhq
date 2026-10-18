@@ -90,11 +90,37 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
           Plan.by_name(Plan::DEFAULT).delete_all
         end
 
+        it 'returns the default limits without creating the plans row', :aggregate_failures do
+          expect do
+            get api(path, admin, admin_mode: true), params: { plan_name: 'default' }
+          end.not_to change { Plan.count }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['maven_max_file_size']).to eq(PlanLimits.new.maven_max_file_size)
+        end
+      end
+
+      context 'when the plan is not one of the instance plans', if: Gitlab.ee? do
         it 'returns not found', :aggregate_failures do
-          get api(path, admin, admin_mode: true), params: { plan_name: 'default' }
+          get api(path, admin, admin_mode: true), params: { plan_name: 'premium' }
 
           expect(response).to have_gitlab_http_status(:not_found)
           expect(json_response['message']).to eq('404 Plan Not Found')
+        end
+      end
+
+      context 'when a paid plan is one of the instance plans', if: Gitlab.ee? do
+        before do
+          stub_saas_features(gitlab_com_subscriptions: true)
+        end
+
+        it 'returns the default limits without creating the plans row', :aggregate_failures do
+          expect do
+            get api(path, admin, admin_mode: true), params: { plan_name: 'premium' }
+          end.not_to change { Plan.count }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['maven_max_file_size']).to eq(PlanLimits.new.maven_max_file_size)
         end
       end
 
@@ -233,13 +259,13 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
           Plan.by_name(Plan::DEFAULT).delete_all
         end
 
-        it 'returns not found without creating a plan limits row', :aggregate_failures do
+        it 'creates the plans row and saves the plan limits', :aggregate_failures do
           expect do
             put api(path, admin, admin_mode: true), params: { plan_name: 'default', maven_max_file_size: 100 }
-          end.not_to change { PlanLimits.count }
+          end.to change { Plan.by_name(Plan::DEFAULT).count }.from(0).to(1)
 
-          expect(response).to have_gitlab_http_status(:not_found)
-          expect(json_response['message']).to eq('404 Plan Not Found')
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['maven_max_file_size']).to eq(100)
         end
       end
 

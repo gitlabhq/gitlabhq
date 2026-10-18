@@ -668,12 +668,26 @@ module Gitlab
         limit_name_quoted = quote_column_name(limit_name)
         plan_name_quoted = quote(plan_name)
         limit_value_quoted = quote(limit_value)
-        plan_name_uid = Plan::PLAN_NAME_UID_LIST.fetch(plan_name.to_sym) do
-          raise ArgumentError, "Unknown plan_name #{plan_name.inspect}; expected one of #{Plan::PLAN_NAME_UID_LIST.keys}"
+        plan = ::GitlabSubscriptions::SystemDefined::Plan.find_by(name: plan_name.to_s)
+        unless plan
+          known_names = ::GitlabSubscriptions::SystemDefined::Plan.all.map(&:name)
+          raise ArgumentError, "Unknown plan_name #{plan_name.inspect}; expected one of #{known_names}"
         end
+
+        plan_name_uid = plan.id
         plan_name_uid_quoted = quote(plan_name_uid)
 
         ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/519892') do
+          # plan_limits.plan_id is NOT NULL, so create a missing plans row for an instance plan from its fixed item,
+          # as PlanLimits#sync_plan_id does. Remove with https://gitlab.com/gitlab-org/gitlab/-/work_items/600314.
+          if ::GitlabSubscriptions::SystemDefined::Plan.instance_plans.include?(plan)
+            execute <<~SQL
+              INSERT INTO plans (name, title, plan_name_uid, created_at, updated_at)
+              VALUES (#{plan_name_quoted}, #{quote(plan.title)}, #{plan_name_uid_quoted}, NOW(), NOW())
+              ON CONFLICT DO NOTHING;
+            SQL
+          end
+
           execute <<~SQL
             INSERT INTO plan_limits (plan_id, plan_name_uid, #{limit_name_quoted})
             SELECT id, #{plan_name_uid_quoted}, #{limit_value_quoted} FROM plans WHERE name = #{plan_name_quoted} LIMIT 1

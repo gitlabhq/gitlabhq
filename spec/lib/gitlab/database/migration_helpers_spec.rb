@@ -1099,7 +1099,6 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
     before do
       stub_const('Plan', Class.new(ActiveRecord::Base))
       stub_const('PlanLimits', Class.new(ActiveRecord::Base))
-      stub_const('Plan::PLAN_NAME_UID_LIST', { free: 2, premium: 5 }.freeze)
 
       Plan.class_eval do
         self.table_name = 'plans'
@@ -1124,6 +1123,40 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
       it 'does not create any plan limits' do
         expect { model.create_or_update_plan_limit('project_hooks', 'premium', 10) }
           .not_to change { PlanLimits.count }
+      end
+    end
+
+    context 'when plan name is unknown' do
+      it 'raises an error' do
+        expect { model.create_or_update_plan_limit('project_hooks', 'unknown', 10) }
+          .to raise_error(ArgumentError, /Unknown plan_name "unknown"/)
+      end
+    end
+
+    context 'when plan name is nil' do
+      it 'raises an error' do
+        expect { model.create_or_update_plan_limit('project_hooks', nil, 10) }
+          .to raise_error(ArgumentError, /Unknown plan_name nil/)
+      end
+    end
+
+    context 'when an instance plan has no plans row' do
+      it 'creates the plans row from the fixed item and its plan limits', :aggregate_failures do
+        expect { model.create_or_update_plan_limit('project_hooks', 'default', 10) }
+          .to change { Plan.where(name: 'default', title: 'Default', plan_name_uid: 1).count }.from(0).to(1)
+
+        expect(PlanLimits.pluck(:project_hooks, :plan_name_uid)).to contain_exactly([10, 1])
+      end
+    end
+
+    context 'when an instance plan already has a plans row' do
+      let!(:plan) { Plan.create!(name: 'default', title: 'Default', plan_name_uid: 1) }
+
+      it 'keeps the row and upserts its plan limits', :aggregate_failures do
+        expect { model.create_or_update_plan_limit('project_hooks', 'default', 10) }
+          .not_to change { Plan.count }
+
+        expect(PlanLimits.pluck(:plan_id, :project_hooks)).to contain_exactly([plan.id, 10])
       end
     end
 
