@@ -11,7 +11,9 @@ import {
   GlTooltipDirective as GlTooltip,
 } from '@gitlab/ui';
 import { getMarkType, getMarkRange } from '@tiptap/core';
+import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
 import { joinPaths } from '~/lib/utils/url_utility';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import Link from '../../extensions/link';
 import EditorStateObserver from '../editor_state_observer.vue';
 import BubbleMenu from './bubble_menu.vue';
@@ -179,13 +181,16 @@ export default {
       }
     },
 
-    copyLinkHref() {
+    async copyLinkHref() {
       const fullUrl = this.linkCanonicalSrc.startsWith('http')
         ? this.linkCanonicalSrc
         : joinPaths(gon.gitlab_url, this.linkHref);
 
-      // eslint-disable-next-line no-restricted-properties
-      navigator.clipboard.writeText(fullUrl);
+      try {
+        await copyToClipboard(fullUrl);
+      } catch (error) {
+        Sentry.captureException(error);
+      }
     },
 
     removeLink() {

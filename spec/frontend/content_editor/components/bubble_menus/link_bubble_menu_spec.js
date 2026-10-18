@@ -2,6 +2,9 @@ import { GlLink, GlForm } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { createGon } from 'helpers/gon_helper';
+import waitForPromises from 'helpers/wait_for_promises';
+import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import LinkBubbleMenu from '~/content_editor/components/bubble_menus/link_bubble_menu.vue';
 import EditorStateObserver from '~/content_editor/components/editor_state_observer.vue';
 import eventHubFactory from '~/helpers/event_hub_factory';
@@ -9,6 +12,9 @@ import BubbleMenu from '~/content_editor/components/bubble_menus/bubble_menu.vue
 import { stubComponent } from 'helpers/stub_component';
 import Link from '~/content_editor/extensions/link';
 import { createTestEditor, emitEditorEvent, createTransactionWithMeta } from '../../test_utils';
+
+jest.mock('~/lib/utils/copy_to_clipboard');
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 const createFakeEvent = () => ({ preventDefault: jest.fn(), stopPropagation: jest.fn() });
 
@@ -199,12 +205,10 @@ describe('content_editor/components/bubble_menus/link_bubble_menu', () => {
 
       await buildWrapperAndDisplayMenu();
 
-      jest.spyOn(navigator.clipboard, 'writeText');
-
       await wrapper.findComponentByTestId('copy-link-url').vm.$emit('click');
 
       const expectedUrl = `${window.gon.gitlab_url}/path/to/project/-/wikis/uploads/my_file.pdf`;
-      expect(navigator.clipboard.writeText).toHaveBeenCalledWith(expectedUrl);
+      expect(copyToClipboard).toHaveBeenCalledWith(expectedUrl);
     });
 
     it('copies the contextualized link to clipboard for group uploads', async () => {
@@ -213,12 +217,22 @@ describe('content_editor/components/bubble_menus/link_bubble_menu', () => {
 
       await buildWrapperAndDisplayMenu();
 
-      jest.spyOn(navigator.clipboard, 'writeText');
-
       await wrapper.findComponentByTestId('copy-link-url').vm.$emit('click');
 
       const expectedUrl = `${window.gon.gitlab_url}/path/to/project/-/wikis/uploads/my_file.pdf`;
-      expect(navigator.clipboard.writeText).toHaveBeenCalledWith(expectedUrl);
+      expect(copyToClipboard).toHaveBeenCalledWith(expectedUrl);
+    });
+
+    it('logs the error in Sentry when copying fails', async () => {
+      const error = new Error('Copy command failed');
+      copyToClipboard.mockRejectedValueOnce(error);
+
+      await buildWrapperAndDisplayMenu();
+
+      await wrapper.findComponentByTestId('copy-link-url').vm.$emit('click');
+      await waitForPromises();
+
+      expect(Sentry.captureException).toHaveBeenCalledWith(error);
     });
   });
 
