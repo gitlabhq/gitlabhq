@@ -63,6 +63,7 @@ describe('BoardColumnCount', () => {
         fullPath: 'full/path',
         state: 'opened',
         status: { name: mockStatus.name },
+        countLimit: 1000,
       }),
     );
     expect(countQueryHandler.mock.calls[0][0]).not.toHaveProperty('sort');

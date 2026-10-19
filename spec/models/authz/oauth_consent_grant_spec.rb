@@ -33,6 +33,43 @@ RSpec.describe ::Authz::OauthConsentGrant, feature_category: :permissions do
     it { is_expected.to validate_presence_of(:source) }
   end
 
+  describe '.for_user_and_application' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:application) { create(:oauth_application) }
+    let_it_be(:authorized_grant) { create(:oauth_consent_grant, user: user, application: application) }
+    let_it_be(:revoked_grant) { create(:oauth_consent_grant, :revoked, user: user, application: application) }
+
+    before_all do
+      create(:oauth_consent_grant, user: user)
+      create(:oauth_consent_grant, application: application)
+    end
+
+    it 'returns the grants of the user and application regardless of status' do
+      expect(described_class.for_user_and_application(user.id, application.id))
+        .to contain_exactly(authorized_grant, revoked_grant)
+    end
+  end
+
+  describe '.active_for_user_and_application' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:application) { create(:oauth_application) }
+
+    before_all do
+      create(:oauth_consent_grant, :revoked, user: user, application: application)
+      create(:oauth_consent_grant, user: user, application: application, source: :duo_session)
+    end
+
+    subject(:active_grant) { described_class.active_for_user_and_application(user.id, application.id) }
+
+    it { is_expected.to be_nil }
+
+    context 'with an authorized grant' do
+      let_it_be(:authorized_grant) { create(:oauth_consent_grant, user: user, application: application) }
+
+      it { is_expected.to eq(authorized_grant) }
+    end
+  end
+
   describe 'active grant uniqueness' do
     let_it_be(:user) { create(:user) }
     let_it_be(:application) { create(:oauth_application) }

@@ -5,6 +5,8 @@ module Types
     class PipelineType < BaseObject
       graphql_name 'Pipeline'
 
+      include Gitlab::Graphql::Authorize::AuthorizeResource
+
       implements PipelineInterface
 
       connection_type_class Types::CountableConnectionType
@@ -236,7 +238,7 @@ module Types
 
       field :trigger, GraphQL::Types::Boolean, method: :trigger?, null: false, description: "If the pipeline was created by a Trigger request."
 
-      field :manual_variables, PipelineManualVariableType.connection_type, null: true, method: :variables, description: 'CI/CD variables added to a manual pipeline.'
+      field :manual_variables, PipelineManualVariableType.connection_type, null: true, description: 'CI/CD variables added to a manual pipeline.'
 
       field :has_manual_actions, GraphQL::Types::Boolean,
         null: false,
@@ -322,6 +324,12 @@ module Types
         return pipeline.short_sha if format == Types::ShaFormatEnum.enum[:short]
 
         pipeline.sha
+      end
+
+      def manual_variables
+        object.variables
+      rescue ::Ci::Pipeline::VariablesFileMissingError
+        raise_resource_not_available_error! 'Pipeline variables file is missing.'
       end
 
       def has_manual_actions?

@@ -47,7 +47,7 @@ RSpec.describe Gitlab::SidekiqSharding::Validator, feature_category: :scalabilit
         stub_rails_env(env)
       end
 
-      it do
+      it 'tracks the unrouted Sidekiq call and raises the expected error, if any' do
         expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).and_call_original
 
         if expected_error

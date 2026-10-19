@@ -1480,10 +1480,10 @@
     vue-runtime-helpers "^1.1.2"
     zod "^4.4.3"
 
-"@gitlab/eslint-plugin@^24.3.0":
-  version "24.3.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/eslint-plugin/-/eslint-plugin-24.3.0.tgz#8734814b021cb1df6d6258a1c028fb62c0e8bde9"
-  integrity sha512-2KFxkgxCv6Progk83zZb85+xPV7mmAHP7g98hg7Xb6bDW2qG5u2li6HSDLYrSVSz8lhYf1/7rSdX4jhr+zNgMA==
+"@gitlab/eslint-plugin@^24.4.0":
+  version "24.4.2"
+  resolved "https://registry.yarnpkg.com/@gitlab/eslint-plugin/-/eslint-plugin-24.4.2.tgz#80cb41e4799441ce0dd550ebf818a9d2553acd88"
+  integrity sha512-f/Qcw92gFt6JXxsmlqvE2IzC9h35DfZBSwaf4mxRVPaZNxOQwziy9vvyk2T+QAAEjyAMHTUhUzbPjRWOrO4Dyg==
   dependencies:
     "@eslint/js" "^10.0.1"
     eslint-config-prettier "^10.0.0"
@@ -1492,7 +1492,7 @@
     eslint-plugin-promise "^7.3.0"
     eslint-plugin-tailwindcss "^3.18.3"
     eslint-plugin-unicorn "^55.0.0"
-    eslint-plugin-vue "^10.0.0"
+    eslint-plugin-vue "^10.7.0"
     globals "^17.0.0"
     lodash "^4.18.1"
     semver "^7.0.0"
@@ -8797,10 +8797,10 @@ eslint-plugin-unicorn@^55.0.0:
     semver "^7.6.1"
     strip-indent "^3.0.0"
 
-eslint-plugin-vue@^10.0.0:
-  version "10.11.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-vue/-/eslint-plugin-vue-10.11.0.tgz#c2f72845a56a87dcac0c973c89a3f23c09b40c43"
-  integrity sha512-fGt38SsaPCZ2FmA3bX/3vOW2qdsPNx0/9x+7Aab6NMX++PhynMtK4LWC4vzXgfQBCqpUAler18H38GA+NBAd0Q==
+eslint-plugin-vue@^10.7.0:
+  version "10.11.1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-vue/-/eslint-plugin-vue-10.11.1.tgz#2cd8190d5163daf2e0e367d255390c79aabc8c89"
+  integrity sha512-pasVXhl7wUmIvhujoqs/m0mJ9r59QW1IR9XXYKGR0FETzSM+Hhlf4qKIYgWiDDP+9YKv4YfbwskD7LqIdVcgQw==
   dependencies:
     "@eslint-community/eslint-utils" "^4.9.1"
     natural-compare "^1.4.0"

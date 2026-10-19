@@ -158,6 +158,61 @@ RSpec.describe Authz::PermissionGroups::Assignable, feature_category: :permissio
         end
       end
     end
+
+    describe '.preferred_for_permission' do
+      # A renamed assignable stays defined, marked deprecated, until its file is removed.
+      let(:renamed_assignable) do
+        described_class.new({
+          name: 'remove_other_resource',
+          description: 'Renamed to modify_resource',
+          permissions: %w[delete_other_resource],
+          deprecated: true
+        }, 'path/to/other_resource/remove.yml')
+      end
+
+      it 'returns the assignable that includes the given permission' do
+        expect(described_class.preferred_for_permission(:delete_other_resource)).to eq(another_assignable)
+      end
+
+      context 'with a string permission name' do
+        it 'returns the assignable that includes the given permission' do
+          expect(described_class.preferred_for_permission('delete_other_resource')).to eq(another_assignable)
+        end
+      end
+
+      context 'when a deprecated assignable that includes the permission is defined first' do
+        before do
+          allow(::Authz::PermissionGroups::Assignable).to receive(:all).and_return({
+            renamed_assignable.name => renamed_assignable,
+            assignable.name => assignable,
+            another_assignable.name => another_assignable
+          })
+        end
+
+        it 'returns the non-deprecated assignable' do
+          expect(described_class.preferred_for_permission(:delete_other_resource)).to eq(another_assignable)
+        end
+      end
+
+      context 'when only a deprecated assignable includes the permission' do
+        before do
+          allow(::Authz::PermissionGroups::Assignable).to receive(:all).and_return({
+            assignable.name => assignable,
+            renamed_assignable.name => renamed_assignable
+          })
+        end
+
+        it 'returns the deprecated assignable' do
+          expect(described_class.preferred_for_permission(:delete_other_resource)).to eq(renamed_assignable)
+        end
+      end
+
+      context 'when no assignable includes the permission' do
+        it 'returns nil' do
+          expect(described_class.preferred_for_permission(:unknown_permission)).to be_nil
+        end
+      end
+    end
   end
 
   describe 'instance methods' do

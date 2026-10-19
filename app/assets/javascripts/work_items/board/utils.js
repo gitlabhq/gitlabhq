@@ -1,7 +1,7 @@
 import { omit } from 'lodash-es';
 import getBoardWorkItemsQuery from 'ee_else_ce/work_items/board/graphql/get_board_work_items.query.graphql';
 import getWorkItemsRestQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_rest.query.graphql';
-import { DEFAULT_PAGE_SIZE_BOARD_COLUMN } from '~/work_items/constants';
+import { BOARD_COLUMN_COUNT_LIMIT, DEFAULT_PAGE_SIZE_BOARD_COLUMN } from '~/work_items/constants';
 
 const LIST_PAGINATION_VARIABLES = ['afterCursor', 'beforeCursor', 'lastPageSize'];
 
@@ -31,9 +31,11 @@ export const boardColumnQueryVariables = ({
 // strip that out. board_view uses these same variables to key its count updates.
 // `sort` is dropped too unless searching: on root groups the board's relative position sort
 // forces a much slower count query, but it also picks which search matching the backend uses.
+// The count is capped: an exact count of a dense column in a large group is slow even when indexed.
 export const boardColumnCountVariables = (params) => {
   const { firstPageSize, sort, ...countVariables } = boardColumnQueryVariables(params);
-  return countVariables.search ? { ...countVariables, sort } : countVariables;
+  const variables = { ...countVariables, countLimit: BOARD_COLUMN_COUNT_LIMIT };
+  return variables.search ? { ...variables, sort } : variables;
 };
 
 // Works out the moveBeforeId/moveAfterId for a card move, based on the target

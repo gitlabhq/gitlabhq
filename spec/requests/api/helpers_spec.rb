@@ -423,7 +423,7 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
         with_them do
           context 'when the granular token scopes are insufficient' do
             let(:granular_pat) { create(:granular_pat, user: user) }
-            let(:assignable) { Authz::PermissionGroups::Assignable.for_permission(permissions).first }
+            let(:assignable) { Authz::PermissionGroups::Assignable.preferred_for_permission(permissions) }
             let(:perm_label) { "#{assignable.resource_name}: #{assignable.action.titleize}" }
             let(:message) do
               "Access denied: This operation requires a fine-grained personal access token " \

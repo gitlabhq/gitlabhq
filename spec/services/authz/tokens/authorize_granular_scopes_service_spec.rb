@@ -308,6 +308,42 @@ RSpec.describe ::Authz::Tokens::AuthorizeGranularScopesService, feature_category
       end
     end
 
+    # A renamed assignable permission stays defined, marked deprecated, until its file is
+    # removed after the rename migration is finalized. The token form offers only the live one.
+    context 'when a deprecated assignable permission holds the missing permission' do
+      let(:permissions) { :read_member_role }
+      let(:live_assignable) { Authz::PermissionGroups::Assignable.get(:read_member_role) }
+      let(:deprecated_assignable) do
+        Authz::PermissionGroups::Assignable.new(
+          { name: 'view_member_role', deprecated: true, permissions: [:read_member_role] },
+          live_assignable.source_file.sub(/read\.yml\z/, 'view.yml')
+        )
+      end
+
+      context 'when it is defined before the live one' do
+        before do
+          allow(Authz::PermissionGroups::Assignable).to receive(:definitions)
+            .and_wrap_original { |original| [deprecated_assignable, *original.call] }
+        end
+
+        it_behaves_like 'error response',
+          'Access denied: This operation requires a fine-grained personal access token ' \
+            'with the following instance permissions: [Member Role: Read].'
+      end
+
+      context 'when no live one holds it' do
+        before do
+          allow(Authz::PermissionGroups::Assignable).to receive(:definitions).and_wrap_original do |original|
+            [deprecated_assignable, *original.call.reject { |a| a.permissions.include?(:read_member_role) }]
+          end
+        end
+
+        it_behaves_like 'error response',
+          'Access denied: This operation requires a fine-grained personal access token ' \
+            'with the following instance permissions: [Member Role: View].'
+      end
+    end
+
     context 'when the boundary is not visible to the user' do
       let_it_be(:private_project, freeze: false) { create(:project, :private) }
       let_it_be(:boundary, freeze: false) { Authz::Boundary.for(private_project) }

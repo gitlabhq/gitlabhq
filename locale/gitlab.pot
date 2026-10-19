@@ -11150,6 +11150,9 @@ msgstr ""
 msgid "An account already exists with the email address for your %{label} account. Sign in with your existing credentials to connect your %{label} account."
 msgstr ""
 
+msgid "An active consent grant for this application already exists."
+msgstr ""
+
 msgid "An administrator added this OAuth application "
 msgstr ""
 
@@ -13237,6 +13240,9 @@ msgstr ""
 msgid "ArtifactRegistry|Caching period"
 msgstr ""
 
+msgid "ArtifactRegistry|Cannot look up role assignments by assignee in a namespace with more than %{limit} repositories."
+msgstr ""
+
 msgid "ArtifactRegistry|Clear cache"
 msgstr ""
 
@@ -14016,6 +14022,9 @@ msgstr ""
 msgid "ArtifactRegistry|Testing upstream connection"
 msgstr ""
 
+msgid "ArtifactRegistry|The Artifact Registry repositories could not be listed."
+msgstr ""
+
 msgid "ArtifactRegistry|The Artifact Registry service did not respond in time."
 msgstr ""
 
@@ -14131,6 +14140,9 @@ msgid "ArtifactRegistry|To use this repository in place of Maven Central, add th
 msgstr ""
 
 msgid "ArtifactRegistry|Token or password"
+msgstr ""
+
+msgid "ArtifactRegistry|Too many role assignments to look up by assignee."
 msgstr ""
 
 msgid "ArtifactRegistry|Type"
@@ -33849,6 +33861,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Inactive sessions are archived after 30 days."
 msgstr ""
 
+msgid "DuoAgentsPlatform|Interest recorded"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Learn more about GitLab Duo"
 msgstr ""
 
@@ -33949,9 +33964,6 @@ msgid "DuoAgentsPlatform|Remove schedule"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Request GitLab Duo"
-msgstr ""
-
-msgid "DuoAgentsPlatform|Requested"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Review a merge request"
@@ -34116,7 +34128,7 @@ msgstr ""
 msgid "DuoAgentsPlatform|Tell the agent what to change and it will generate an updated plan for your review."
 msgstr ""
 
-msgid "DuoAgentsPlatform|Thank you for your interest in this feature, we've recorded your request. If you need access to GitLab Credits sooner, ask your group Owner."
+msgid "DuoAgentsPlatform|Thank you for your interest. Your group Owner isn't notified, so ask them directly if you need GitLab Credits."
 msgstr ""
 
 msgid "DuoAgentsPlatform|The automation could not be created. Try again."
@@ -37948,6 +37960,9 @@ msgstr ""
 msgid "ExplorePremium|GitLab Duo Agent Platform"
 msgstr ""
 
+msgid "ExplorePremium|Interest recorded"
+msgstr ""
+
 msgid "ExplorePremium|Premium adds more control over reviews, planning, and delivery. Explore what it has to offer for your group."
 msgstr ""
 
@@ -37957,13 +37972,10 @@ msgstr ""
 msgid "ExplorePremium|Request Premium features"
 msgstr ""
 
-msgid "ExplorePremium|Requested"
-msgstr ""
-
 msgid "ExplorePremium|Source Code Management & CI/CD"
 msgstr ""
 
-msgid "ExplorePremium|Thank you for your interest in this feature, we've recorded your request. If you need access to Premium features, ask your group Owner to upgrade."
+msgid "ExplorePremium|Thank you for your interest. Your group Owner isn't notified, so ask them directly to upgrade."
 msgstr ""
 
 msgid "Export"
@@ -63001,6 +63013,9 @@ msgstr ""
 msgid "People"
 msgstr ""
 
+msgid "Per-session consent grants are not supported."
+msgstr ""
+
 msgid "Percent rollout must be an integer number between 0 and 100"
 msgstr ""
 
@@ -84932,7 +84947,34 @@ msgstr ""
 msgid "Sunday"
 msgstr ""
 
+msgid "SuperSonics|%{count} daily record"
+msgid_plural "SuperSonics|%{count} daily records"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "SuperSonics|%{count} day has no recorded data"
+msgid_plural "SuperSonics|%{count} days have no recorded data"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "SuperSonics|%{count} total billable event"
+msgid_plural "SuperSonics|%{count} total billable events"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "SuperSonics|%{plan} with GitLab Credits"
+msgstr ""
+
+msgid "SuperSonics|%{start} to %{end}"
+msgstr ""
+
+msgid "SuperSonics|%{start} to %{end} (current)"
+msgstr ""
+
+msgid "SuperSonics|AI Catalog based Agent or Flow"
+msgstr ""
+
+msgid "SuperSonics|AI Gateway Proxy"
 msgstr ""
 
 msgid "SuperSonics|Activate subscription"
@@ -84950,31 +84992,148 @@ msgstr ""
 msgid "SuperSonics|Add activation code"
 msgstr ""
 
+msgid "SuperSonics|Agentic Chat"
+msgstr ""
+
+msgid "SuperSonics|Ambient Flow"
+msgstr ""
+
 msgid "SuperSonics|An error occurred during activation"
+msgstr ""
+
+msgid "SuperSonics|Analytics Agent"
+msgstr ""
+
+msgid "SuperSonics|Artifact Registry"
+msgstr ""
+
+msgid "SuperSonics|Artifact Registry Components"
+msgstr ""
+
+msgid "SuperSonics|Artifact Registry Egress"
+msgstr ""
+
+msgid "SuperSonics|Artifact Registry Storage"
+msgstr ""
+
+msgid "SuperSonics|Billable users on the last day"
+msgstr ""
+
+msgid "SuperSonics|Business Context Security Guidelines"
+msgstr ""
+
+msgid "SuperSonics|CI Expert Agent"
 msgstr ""
 
 msgid "SuperSonics|Cannot activate instance due to a connectivity issue"
 msgstr ""
 
+msgid "SuperSonics|Capability"
+msgstr ""
+
+msgid "SuperSonics|Capability consumption"
+msgstr ""
+
+msgid "SuperSonics|Code Intelligence"
+msgstr ""
+
+msgid "SuperSonics|Code Review Flow"
+msgstr ""
+
+msgid "SuperSonics|Code Suggestions"
+msgstr ""
+
+msgid "SuperSonics|Convert to GitLab CI/CD Flow"
+msgstr ""
+
+msgid "SuperSonics|Core"
+msgstr ""
+
 msgid "SuperSonics|Could not activate subscription"
+msgstr ""
+
+msgid "SuperSonics|Could not download the usage report. Try again."
+msgstr ""
+
+msgid "SuperSonics|Could not load the usage report. Refresh the page to try again."
+msgstr ""
+
+msgid "SuperSonics|Custom Flows"
+msgstr ""
+
+msgid "SuperSonics|DAP Feature (Legacy)"
+msgstr ""
+
+msgid "SuperSonics|Dependency Bump Resolution Flow"
+msgstr ""
+
+msgid "SuperSonics|Developer Flow"
+msgstr ""
+
+msgid "SuperSonics|Duo Agent Platform"
+msgstr ""
+
+msgid "SuperSonics|Duo Chat (Classic)"
+msgstr ""
+
+msgid "SuperSonics|Duo Permissions Assistant"
+msgstr ""
+
+msgid "SuperSonics|Duo Planner"
+msgstr ""
+
+msgid "SuperSonics|Each report covers one subscription term, from its start up to the last completed day. Upload it to the Customers Portal within three days of month end."
 msgstr ""
 
 msgid "SuperSonics|Enter activation code"
 msgstr ""
 
+msgid "SuperSonics|Excluded from the total (month-end counts, not billable events): %{capabilities}"
+msgstr ""
+
 msgid "SuperSonics|Explore pricing"
+msgstr ""
+
+msgid "SuperSonics|Export JSON"
 msgstr ""
 
 msgid "SuperSonics|Export license usage file"
 msgstr ""
 
+msgid "SuperSonics|Export usage report"
+msgstr ""
+
+msgid "SuperSonics|Fix Pipeline Flow"
+msgstr ""
+
+msgid "SuperSonics|Frontend"
+msgstr ""
+
 msgid "SuperSonics|GitLab Credits"
+msgstr ""
+
+msgid "SuperSonics|GitLab Duo Interactions in Merge Requests"
+msgstr ""
+
+msgid "SuperSonics|GitLab records each day once, so a day you have already sent is ignored rather than counted twice."
+msgstr ""
+
+msgid "SuperSonics|Highest billable users"
+msgstr ""
+
+msgid "SuperSonics|Hosted Runners"
 msgstr ""
 
 msgid "SuperSonics|I agree that my use of the GitLab Software is subject to the Subscription Agreement located at the %{linkStart}Terms of Service%{linkEnd}, unless otherwise agreed to in writing with GitLab."
 msgstr ""
 
 msgid "SuperSonics|If your new subscription is not future-dated, it immediately replaces your current one. To complete your remaining term, activate the new one on or after the renewal date."
+msgstr ""
+
+msgid "SuperSonics|Intelligent Reviewer Assignment"
+msgstr ""
+
+msgid "SuperSonics|Issue to Merge Request Flow"
 msgstr ""
 
 msgid "SuperSonics|Learn how to %{linkStart}activate your subscription%{linkEnd}."
@@ -84986,16 +85145,43 @@ msgstr ""
 msgid "SuperSonics|Learn more about %{activationLinkStart}activating your subscription%{activationLinkEnd}. If you need further assistance, %{supportLinkStart}contact GitLab Support%{supportLinkEnd}."
 msgstr ""
 
+msgid "SuperSonics|Licensed seats"
+msgstr ""
+
 msgid "SuperSonics|Licensed to"
+msgstr ""
+
+msgid "SuperSonics|MCP"
 msgstr ""
 
 msgid "SuperSonics|Manage subscription"
 msgstr ""
 
+msgid "SuperSonics|Metering unit"
+msgstr ""
+
+msgid "SuperSonics|No per user data"
+msgstr ""
+
+msgid "SuperSonics|No report has been exported for this term yet."
+msgstr ""
+
 msgid "SuperSonics|Offline license"
 msgstr ""
 
+msgid "SuperSonics|Onboarding Guide"
+msgstr ""
+
+msgid "SuperSonics|One record per day, the same series the license usage CSV has always carried."
+msgstr ""
+
 msgid "SuperSonics|Online license"
+msgstr ""
+
+msgid "SuperSonics|Orbit"
+msgstr ""
+
+msgid "SuperSonics|Orbit Agent"
 msgstr ""
 
 msgid "SuperSonics|Purchase credits"
@@ -85004,10 +85190,67 @@ msgstr ""
 msgid "SuperSonics|Purchase monthly credits for your instance and unlock AI capabilities. Volume discounts available."
 msgstr ""
 
+msgid "SuperSonics|Quantity"
+msgstr ""
+
+msgid "SuperSonics|REST"
+msgstr ""
+
 msgid "SuperSonics|Received a license key? %{linkStart}Go to license settings%{linkEnd} to add it to your GitLab instance."
 msgstr ""
 
+msgid "SuperSonics|Report contents"
+msgstr ""
+
+msgid "SuperSonics|Report downloaded"
+msgstr ""
+
+msgid "SuperSonics|Report end"
+msgstr ""
+
+msgid "SuperSonics|Report start"
+msgstr ""
+
+msgid "SuperSonics|Runner Compute Usage"
+msgstr ""
+
+msgid "SuperSonics|SAST FP Detection Flow"
+msgstr ""
+
+msgid "SuperSonics|SAST Vulnerability Resolution Flow"
+msgstr ""
+
+msgid "SuperSonics|Seat link"
+msgstr ""
+
+msgid "SuperSonics|Seats"
+msgstr ""
+
+msgid "SuperSonics|Secrets FP Detection"
+msgstr ""
+
+msgid "SuperSonics|Secrets Manager"
+msgstr ""
+
+msgid "SuperSonics|Secrets Read"
+msgstr ""
+
+msgid "SuperSonics|Secrets Stored"
+msgstr ""
+
+msgid "SuperSonics|Security Analyst Agent"
+msgstr ""
+
+msgid "SuperSonics|Security Review Flow"
+msgstr ""
+
 msgid "SuperSonics|Select that you agree before activating the subscription."
+msgstr ""
+
+msgid "SuperSonics|Slack Assistant"
+msgstr ""
+
+msgid "SuperSonics|Software Development Flow"
 msgstr ""
 
 msgid "SuperSonics|Subscription"
@@ -85028,7 +85271,13 @@ msgstr ""
 msgid "SuperSonics|Subscription name"
 msgstr ""
 
+msgid "SuperSonics|Subscription term"
+msgstr ""
+
 msgid "SuperSonics|Subscription unavailable"
+msgstr ""
+
+msgid "SuperSonics|Support Assistant"
 msgstr ""
 
 msgid "SuperSonics|Sync subscription details"
@@ -85043,10 +85292,25 @@ msgstr ""
 msgid "SuperSonics|The activation code should be a 24-character alphanumeric string"
 msgstr ""
 
+msgid "SuperSonics|The report contains daily totals only. It does not attribute usage to any user and contains no usernames, email addresses or user IDs."
+msgstr ""
+
 msgid "SuperSonics|There is a connectivity issue"
 msgstr ""
 
+msgid "SuperSonics|This instance recorded no data on %{dates}. The report marks these days as unknown rather than as zero usage. You can still export it."
+msgstr ""
+
+msgid "SuperSonics|This instance recorded no data on %{missing} of the %{total} days in this period. The report marks these days as unknown rather than as zero usage. You can still export it."
+msgstr ""
+
 msgid "SuperSonics|To activate your subscription, your instance needs to connect to GitLab. %{learnMoreLinkStart}Learn more%{learnMoreLinkEnd}."
+msgstr ""
+
+msgid "SuperSonics|Upload %{fileName} to the Customers Portal so this usage is billed. Every report carries your whole license term, so if this one does not arrive, the next one reports the same usage again."
+msgstr ""
+
+msgid "SuperSonics|Usage totals for each meter this instance records. GitLab converts them to credits after upload."
 msgstr ""
 
 msgid "SuperSonics|You can %{purchaseSubscriptionLinkStart}purchase a new subscription%{purchaseSubscriptionLinkEnd} and try again. If you need further assistance, please %{supportLinkStart}contact GitLab Support%{supportLinkEnd}."
@@ -85067,6 +85331,9 @@ msgstr ""
 msgid "SuperSonics|You have successfully added a license that activates on %{date}. Please see the subscription history table below for more details."
 msgstr ""
 
+msgid "SuperSonics|You last exported on %{date}."
+msgstr ""
+
 msgid "SuperSonics|You may have entered an expired or ineligible activation code. To request a new activation code, %{purchaseSubscriptionLinkStart}purchase a new subscription%{purchaseSubscriptionLinkEnd} or %{supportLinkStart}contact GitLab Support%{supportLinkEnd} for further assistance."
 msgstr ""
 
@@ -85083,6 +85350,9 @@ msgid "SuperSonics|Your subscription cannot be located"
 msgstr ""
 
 msgid "SuperSonics|Your subscription is expired"
+msgstr ""
+
+msgid "SuperSonics|Your subscription renewed on %{date}. If the last month of your previous term was never uploaded, export that term too."
 msgstr ""
 
 msgid "SuperSonics|Your subscription was successfully activated. You can see the details below."
@@ -86112,6 +86382,9 @@ msgstr ""
 msgid "The allow foundational flows setting is enabled."
 msgstr ""
 
+msgid "The application does not declare any granular scopes."
+msgstr ""
+
 msgid "The application will be used where the client secret can be kept confidential. Native mobile apps and Single Page Apps are considered non-confidential."
 msgstr ""
 
@@ -86182,6 +86455,9 @@ msgid "The current issue"
 msgstr ""
 
 msgid "The current ticket"
+msgstr ""
+
+msgid "The current time is outside of the scheduled merge time."
 msgstr ""
 
 msgid "The current user is not authorized to access the job log."
@@ -86580,6 +86856,9 @@ msgstr ""
 msgid "The pipeline must succeed."
 msgstr ""
 
+msgid "The pipeline variables file for this job is missing. You must have developer or higher permissions to view this job log."
+msgstr ""
+
 msgid "The policy is associated with a non-existing pipeline configuration file."
 msgstr ""
 
@@ -86659,9 +86938,6 @@ msgid "The response from Gitaly is too large to load. Maybe, the repository or m
 msgstr ""
 
 msgid "The scan has been created."
-msgstr ""
-
-msgid "The scheduled merge time must have passed."
 msgstr ""
 
 msgid "The secret is only available when you create the application or renew the secret."
@@ -96751,6 +97027,9 @@ msgstr ""
 msgid "Work items with this label were imported with a work item type name that could not be resolved in this namespace. They were assigned the default issue type instead."
 msgstr ""
 
+msgid "WorkItemBoard|%{limit}+"
+msgstr ""
+
 msgid "WorkItemBoard|All groups are hidden"
 msgstr ""
 
@@ -97168,6 +97447,21 @@ msgid_plural "WorkItem|%d more..."
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "WorkItem|%{boldStart}%{count}%{boldEnd} item at risk"
+msgid_plural "WorkItem|%{boldStart}%{count}%{boldEnd} items at risk"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "WorkItem|%{boldStart}%{count}%{boldEnd} item needs attention"
+msgid_plural "WorkItem|%{boldStart}%{count}%{boldEnd} items need attention"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "WorkItem|%{boldStart}%{count}%{boldEnd} item on track"
+msgid_plural "WorkItem|%{boldStart}%{count}%{boldEnd} items on track"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "WorkItem|%{count} more assignees"
 msgstr ""
 
@@ -97234,6 +97528,9 @@ msgid "WorkItem|+%d more item"
 msgid_plural "WorkItem|+%d more items"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "WorkItem|A new experience for Tickets"
+msgstr ""
 
 msgid "WorkItem|A non-confidential %{workItemType} cannot be assigned to a confidential parent %{parentWorkItemType}."
 msgstr ""
@@ -98813,6 +99110,9 @@ msgstr ""
 msgid "WorkItem|You're only seeing %{boldStart}other activity%{boldEnd} in the feed. To add a comment, switch to one of the following options."
 msgstr ""
 
+msgid "WorkItem|Your Service Desk items are now Tickets, complete with %{boldStart}status%{boldEnd}, %{boldStart}custom fields%{boldEnd}, and an %{boldStart}enhanced UI%{boldEnd}. As a separate type, you can filter to just Ticket items, or define statuses and custom fields just for tickets."
+msgstr ""
+
 msgid "WorkItem|Your data might be out of date. Refresh to see the latest information."
 msgstr ""
 
@@ -98820,12 +99120,6 @@ msgid "WorkItem|Your work items will be imported in the background. Once finishe
 msgstr ""
 
 msgid "WorkItem|Zoom link"
-msgstr ""
-
-msgid "WorkItem|at risk"
-msgstr ""
-
-msgid "WorkItem|attention"
 msgstr ""
 
 msgid "WorkItem|blocks"
@@ -98838,21 +99132,6 @@ msgid "WorkItem|created %{timeAgo} via email"
 msgstr ""
 
 msgid "WorkItem|is blocked by"
-msgstr ""
-
-msgid "WorkItem|item"
-msgstr ""
-
-msgid "WorkItem|items"
-msgstr ""
-
-msgid "WorkItem|need"
-msgstr ""
-
-msgid "WorkItem|needs"
-msgstr ""
-
-msgid "WorkItem|on track"
 msgstr ""
 
 msgid "WorkItem|relates to"
@@ -102619,6 +102898,9 @@ msgid "must be a value between 0 and 1"
 msgstr ""
 
 msgid "must be after start"
+msgstr ""
+
+msgid "must be after the start time"
 msgstr ""
 
 msgid "must be an array"

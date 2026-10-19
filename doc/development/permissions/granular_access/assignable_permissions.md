@@ -277,6 +277,10 @@ This requires a three-step process:
    The task deletes every deprecated permission file whose rename migration was finalized in a
    previous milestone. It prints each deleted path and exits silently if nothing is ready.
 
+While the deprecated file exists, a raw permission can belong to both the old and the new
+assignable permission. The token creation form lists only the new one. When a fine-grained token
+lacks the raw permission, the access denied error also names the new one, as the form does.
+
 <details><summary>Creating the rename migration</summary>
 
 Generate the migration scaffold with a descriptive name:

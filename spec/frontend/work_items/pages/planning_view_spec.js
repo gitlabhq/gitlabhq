@@ -111,7 +111,6 @@ import TicketEmptyState from '~/work_items/list/components/ticket_empty_state.vu
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import EmptyState from '~/work_items/list/components/empty_state.vue';
 import FilterEmptyState from '~/work_items/list/components/filter_empty_state.vue';
-import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 import WorkItemDetailPanel from '~/work_items/components/work_item_detail_panel.vue';
 
 import {
@@ -304,7 +303,6 @@ const findTicketEmptyState = () => wrapper.findComponent(TicketEmptyState);
 const findCreateWorkItemModal = () => wrapper.findComponent(CreateWorkItemModal);
 const findEmptyState = () => wrapper.findComponent(EmptyState);
 const findFilterEmptyState = () => wrapper.findComponent(FilterEmptyState);
-const findNewResourceDropdown = () => wrapper.findComponent(NewResourceDropdown);
 
 const getCache = () => apolloProvider.defaultClient.cache;
 
@@ -358,12 +356,10 @@ const mountComponent = async ({
       },
       metadataLoading: false,
       isGroup: true,
-      isGroupIssuesList: false,
       isServiceDeskSupported: true,
       hasEpicsFeature: false,
       workItemType: null,
       isIssueRepositioningDisabled: false,
-      groupId: 'gid://gitlab/Group/1',
       subscribedSavedViewLimit: 5,
       canCreateSavedView: true,
       newWorkItemEmailAddress: null,
@@ -1168,16 +1164,6 @@ describe('planning-view', () => {
           message: 'Sort order rebalancing in progress. Reordering is temporarily disabled.',
           variant: VARIANT_INFO,
         });
-      });
-    });
-  });
-
-  describe('when isGroupIssuesList is true', () => {
-    it('passes excludeGroupWorkItems: true to list-view queryVariables', async () => {
-      await mountComponent({ provide: { isGroupIssuesList: true } });
-
-      expect(findListView().props('queryVariables')).toMatchObject({
-        excludeGroupWorkItems: true,
       });
     });
   });
@@ -2788,10 +2774,8 @@ describe('planning-view', () => {
         await mountComponent({
           hasWorkItemsHandler: emptyHasWorkItemsHandler,
           provide: {
-            isGroupIssuesList: true,
+            isGroup: true,
             hasProjects: true,
-            hasEpicsFeature: true,
-            showNewWorkItem: false,
           },
         });
       });
@@ -2800,15 +2784,8 @@ describe('planning-view', () => {
         expect(findEmptyState().exists()).toBe(true);
       });
 
-      it('passes correct props to empty state component for groups', () => {
-        expect(findEmptyState().props()).toMatchObject({
-          showNewIssueDropdown: true,
-        });
-      });
-
-      it('renders the new resource dropdown when group has projects', () => {
-        expect(findNewResourceDropdown().exists()).toBe(true);
-        expect(findCreateWorkItemModal().exists()).toBe(false);
+      it('renders the "work item create" modal', () => {
+        expect(findCreateWorkItemModal().exists()).toBe(true);
       });
 
       describe('when group has no projects', () => {
@@ -2818,14 +2795,14 @@ describe('planning-view', () => {
               ...getEmptyPropValues(),
             },
             provide: {
-              isGroupIssuesList: true,
+              isGroup: true,
               hasProjects: false,
             },
           });
         });
 
-        it('does not render the new resource dropdown when group has projects', () => {
-          expect(findNewResourceDropdown().exists()).toBe(false);
+        it('renders the "work item create" modal', () => {
+          expect(findCreateWorkItemModal().exists()).toBe(true);
         });
       });
     });
@@ -2845,7 +2822,7 @@ describe('planning-view', () => {
         },
       };
 
-      it('passes correct props to empty state component for projects', async () => {
+      it('renders empty state', async () => {
         await mountComponent({
           ...emptyStateConfig,
           hasWorkItemsHandler: emptyHasWorkItemsHandler,
@@ -2853,15 +2830,13 @@ describe('planning-view', () => {
           stubs: {},
         });
 
-        expect(findEmptyState().props()).toMatchObject({
-          showNewIssueDropdown: false,
-        });
+        expect(findEmptyState().props('hasProjects')).toBe(true);
       });
     });
 
     describe('when there are work items', () => {
       describe('in group context', () => {
-        it('renders the with issues empty state and the new resource dropdown', async () => {
+        it('renders the with issues empty state', async () => {
           await mountComponent({
             props: {
               ...getEmptyPropValues({
@@ -2869,11 +2844,12 @@ describe('planning-view', () => {
               }),
             },
             provide: {
-              isGroupIssuesList: true,
+              isGroup: true,
             },
           });
 
           expect(findFilterEmptyState().exists()).toBe(true);
+          expect(findCreateWorkItemModal().exists()).toBe(true);
         });
       });
 
@@ -2886,7 +2862,7 @@ describe('planning-view', () => {
               }),
             },
             provide: {
-              isGroupIssuesList: false,
+              isGroup: false,
             },
           });
 
@@ -3245,10 +3221,7 @@ describe('planning-view', () => {
 
         it('fills the board empty state with the list empty state', () => {
           expect(findBoardView().props('hasWorkItems')).toBe(false);
-          expect(findEmptyState().props()).toMatchObject({
-            hasProjects: true,
-            showNewIssueDropdown: false,
-          });
+          expect(findEmptyState().props('hasProjects')).toBe(true);
         });
 
         it('offers the list create modal with the board create source', () => {

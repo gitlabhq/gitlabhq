@@ -76,6 +76,18 @@ describe('ColumnHeader', () => {
       expect(findCount().text()).toBe('42');
       expect(findIconByName('work-items')).not.toBeUndefined();
     });
+
+    it('renders the limit with a plus when the count exceeds it', () => {
+      createComponent({ props: { count: 1001 } });
+
+      expect(findCount().text()).toBe('1,000+');
+    });
+
+    it('renders the exact count at the limit', () => {
+      createComponent({ props: { count: 1000 } });
+
+      expect(findCount().text()).toBe('1,000');
+    });
   });
 
   describe('collapse toggle', () => {

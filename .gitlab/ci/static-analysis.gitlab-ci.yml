@@ -31,7 +31,6 @@ static-analysis:
     OPENAPI_CHECK_DEBUG: "true"
   script:
     - yarn_install_script
-    - scripts/install_frontend_islands
     - fail_on_warnings scripts/static-analysis
 
 static-verification-with-database:
@@ -72,8 +71,6 @@ generate-apollo-graphql-schema:
     - !reference [.lint-base, needs]
     - job: generate-apollo-graphql-schema
       optional: true
-    - job: compile-fe-islands
-      optional: true
   variables:
     USE_BUNDLE_INSTALL: "false"
     ESLINT_CODE_QUALITY_REPORT: "gl-code-quality-report.json"
@@ -96,30 +93,6 @@ eslint:
     - .frontend:rules:eslint-default
   script:
     - yarn run lint:eslint:all --format gitlab
-  artifacts:
-    reports:
-      codequality: gl-code-quality-report.json
-
-.eslint:fe-islands:
-  extends:
-    - .eslint-base
-    - .frontend:rules:fe-islands:test
-    - .fe-islands-parallel
-  needs:
-    - cache:fe-islands-hash
-    - job: validate-fe-islands-ci
-      optional: true
-    - job: compile-fe-islands
-      optional: true
-  cache:
-    - !reference [.yarn-cache, cache]
-    - !reference [.fe-islands-yarn-cache, cache]
-  before_script:
-    - !reference [.default-before_script, before_script]
-    - yarn_install_script
-  script:
-    - cd ee/frontend_islands/apps/${FE_APP_DIR}
-    - yarn run lint --format gitlab
   artifacts:
     reports:
       codequality: gl-code-quality-report.json

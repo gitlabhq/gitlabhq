@@ -38,6 +38,7 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 import workItemsReorderMutation from '~/work_items/graphql/work_items_reorder.mutation.graphql';
 import { getParameterByName, removeParams, updateHistory } from '~/lib/utils/url_utility';
+import WorkItemTicketModal from '../components/work_item_ticket_modal.vue';
 import {
   STATE_CLOSED,
   WORK_ITEM_TYPE_NAME_TICKET,
@@ -78,6 +79,7 @@ export default {
     GlSkeletonLoader,
     GlAlert,
     UserCalloutDismisser,
+    WorkItemTicketModal,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -235,6 +237,9 @@ export default {
     },
     shouldLoad() {
       return !this.isInitialLoadComplete || (!this.isSortKeyInitialized && !this.error);
+    },
+    showTicketModal() {
+      return this.glFeatures.workItemTicketMigration && this.isServiceDeskList;
     },
   },
   watch: {
@@ -480,6 +485,12 @@ export default {
     :class="{ 'work-item-list-container': !isServiceDeskList }"
     class="issuable-list-container"
   >
+    <user-callout-dismisser v-if="showTicketModal" feature-name="work_item_ticket_migration">
+      <template #default="{ dismiss, shouldShowCallout }">
+        <work-item-ticket-modal v-if="shouldShowCallout" @hide="dismiss" />
+      </template>
+    </user-callout-dismisser>
+
     <issuable-bulk-edit-sidebar :expanded="showBulkEditSidebar">
       <template #bulk-edit-actions>
         <gl-button

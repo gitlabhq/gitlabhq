@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"maps"
 	"net"
 	"net/http"
 	"reflect"
@@ -29,6 +30,19 @@ import (
 
 const gitlabServerName = "gitlab"
 const orbitServerName = "orbit"
+
+const (
+	externalMcpMaxIdleConns        = 100
+	externalMcpMaxIdleConnsPerHost = 10
+)
+
+// externalMcpTransport is shared by all sessions so idle connections to external
+// MCP servers can be reused across sessions. The restricted transport's default of 2
+// idle connections in total is sized for a single caller, not a shared pool.
+var externalMcpTransport = transport.NewRestrictedTransport(func(t *http.Transport) {
+	t.MaxIdleConns = externalMcpMaxIdleConns
+	t.MaxIdleConnsPerHost = externalMcpMaxIdleConnsPerHost
+})
 
 type workflowState struct {
 	mu         sync.RWMutex
@@ -188,30 +202,72 @@ func newMcpManager(rails *api.API, r *http.Request, servers map[string]api.McpSe
 	}
 
 	state := &workflowState{}
-	var errs []error
-	var sessions []*serverSession
 
-	for serverName, serverCfg := range servers {
-		session, err := buildSession(rails, r, serverName, serverCfg, state)
-		if err != nil {
-			errs = append(errs, fmt.Errorf("failed to initialize MCP session %s: %v", serverName, err))
-			continue
-		}
+	// Servers are set up concurrently, so the session starts after the slowest
+	// server rather than after all of them in turn. Results are merged in name
+	// order to keep the tool list deterministic.
+	serverNames := slices.Sorted(maps.Keys(servers))
+	setups := make([]serverSetup, len(serverNames))
 
-		sessions = append(sessions, session)
+	var wg sync.WaitGroup
+	for i, serverName := range serverNames {
+		wg.Go(func() {
+			// Outside the request goroutine net/http no longer recovers a
+			// panic, so one would take down the whole process.
+			defer func() {
+				if p := recover(); p != nil {
+					setups[i] = serverSetup{err: fmt.Errorf("failed to initialize MCP session %s: panic: %v", serverName, p)}
+				}
+			}()
+
+			setups[i] = setupServer(rails, r, serverName, servers[serverName], state)
+		})
 	}
+	wg.Wait()
 
 	manager := &manager{
 		toolSessionsByName: make(map[string]*toolSession),
-		serverSessions:     sessions,
 		workflow:           state,
 	}
 
-	if err := manager.buildTools(r.Context()); err != nil {
-		errs = append(errs, err)
+	var errs []error
+	for _, setup := range setups {
+		if setup.session != nil {
+			manager.serverSessions = append(manager.serverSessions, setup.session)
+		}
+
+		if setup.err != nil {
+			errs = append(errs, setup.err)
+			continue
+		}
+
+		errs = append(errs, manager.addTools(setup.session, setup.tools))
 	}
 
 	return manager, errors.Join(errs...)
+}
+
+// serverSetup is the outcome of connecting to one MCP server and listing its
+// tools. session is set whenever the connection succeeded, so it is closed with
+// the manager even if listing the tools failed.
+type serverSetup struct {
+	session *serverSession
+	tools   *mcp.ListToolsResult
+	err     error
+}
+
+func setupServer(rails *api.API, r *http.Request, serverName string, serverCfg api.McpServerConfig, state *workflowState) serverSetup {
+	session, err := buildSession(rails, r, serverName, serverCfg, state)
+	if err != nil {
+		return serverSetup{err: fmt.Errorf("failed to initialize MCP session %s: %v", serverName, err)}
+	}
+
+	tools, err := session.session.ListTools(r.Context(), &mcp.ListToolsParams{})
+	if err != nil {
+		return serverSetup{session: session, err: fmt.Errorf("failed to list tools %s: %v", serverName, err)}
+	}
+
+	return serverSetup{session: session, tools: tools}
 }
 
 func buildSession(rails *api.API, r *http.Request, serverName string, serverCfg api.McpServerConfig, state *workflowState) (*serverSession, error) {
@@ -233,7 +289,7 @@ func buildSession(rails *api.API, r *http.Request, serverName string, serverCfg 
 		nextTransport = secret.NewRoundTripper(rails.Client.Transport, rails.Version)
 	} else {
 		endpoint = serverCfg.URL
-		nextTransport = transport.NewRestrictedTransport()
+		nextTransport = externalMcpTransport
 	}
 
 	rt := &roundTripper{
@@ -266,57 +322,49 @@ func buildSession(rails *api.API, r *http.Request, serverName string, serverCfg 
 	return &serverSession{name: serverName, cfg: serverCfg, session: session}, err
 }
 
-func (m *manager) buildTools(ctx context.Context) error {
+func (m *manager) addTools(s *serverSession, toolsResult *mcp.ListToolsResult) error {
 	var errs []error
 
-	for _, s := range m.serverSessions {
-		toolsResult, err := s.session.ListTools(ctx, &mcp.ListToolsParams{})
+	// If s.cfg.Tools is missing (nil), then all tools are available
+	// Otherwise, we filter the list of tools based on the provided value
+	allToolsAvailable := true
+	var configuredTools []string
+	if s.cfg.Tools != nil {
+		allToolsAvailable = false
+		configuredTools = *s.cfg.Tools
+	}
+
+	var preApprovedTools []string
+	if s.cfg.PreApprovedTools != nil {
+		preApprovedTools = *s.cfg.PreApprovedTools
+	}
+
+	for _, tool := range toolsResult.Tools {
+		schemaBytes, err := json.Marshal(tool.InputSchema)
 		if err != nil {
-			errs = append(errs, fmt.Errorf("failed to list tools %s: %v", s.name, err))
+			errs = append(errs, fmt.Errorf("failed to marshal input schema, server: %s, tool: %s, error: %v", s.name, tool.Name, err))
 			continue
 		}
 
-		// If s.cfg.Tools is missing (nil), then all tools are available
-		// Otherwise, we filter the list of tools based on the provided value
-		allToolsAvailable := true
-		var configuredTools []string
-		if s.cfg.Tools != nil {
-			allToolsAvailable = false
-			configuredTools = *s.cfg.Tools
-		}
+		if allToolsAvailable || slices.Contains(configuredTools, tool.Name) {
+			prefixedName := s.name + "_" + tool.Name
 
-		var preApprovedTools []string
-		if s.cfg.PreApprovedTools != nil {
-			preApprovedTools = *s.cfg.PreApprovedTools
-		}
-
-		for _, tool := range toolsResult.Tools {
-			schemaBytes, err := json.Marshal(tool.InputSchema)
-			if err != nil {
-				errs = append(errs, fmt.Errorf("failed to marshal input schema, server: %s, tool: %s, error: %v", s.name, tool.Name, err))
-				continue
+			mcpTool := &pb.McpTool{
+				Name:        prefixedName,
+				Description: tool.Description,
+				InputSchema: string(schemaBytes),
+				Trusted:     proto.Bool(s.cfg.Trusted),
 			}
 
-			if allToolsAvailable || slices.Contains(configuredTools, tool.Name) {
-				prefixedName := s.name + "_" + tool.Name
+			m.tools = append(m.tools, mcpTool)
 
-				mcpTool := &pb.McpTool{
-					Name:        prefixedName,
-					Description: tool.Description,
-					InputSchema: string(schemaBytes),
-					Trusted:     proto.Bool(s.cfg.Trusted),
-				}
+			m.toolSessionsByName[prefixedName] = &toolSession{
+				originalName: tool.Name,
+				session:      s.session,
+			}
 
-				m.tools = append(m.tools, mcpTool)
-
-				m.toolSessionsByName[prefixedName] = &toolSession{
-					originalName: tool.Name,
-					session:      s.session,
-				}
-
-				if slices.Contains(preApprovedTools, tool.Name) {
-					m.preApprovedTools = append(m.preApprovedTools, prefixedName)
-				}
+			if slices.Contains(preApprovedTools, tool.Name) {
+				m.preApprovedTools = append(m.preApprovedTools, prefixedName)
 			}
 		}
 	}

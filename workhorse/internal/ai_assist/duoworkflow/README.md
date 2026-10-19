@@ -275,8 +275,9 @@ type mcpManager interface {
 
 **Features:**
 
-- Initializes connections to configured MCP servers
-- Discovers available tools from each server
+- Initializes connections to configured MCP servers concurrently
+- Shares one transport for external MCP servers, so idle connections can be reused across sessions
+- Discovers available tools from each server, ordered by server name
 - Filters tools by name and pre-approved status
 - Executes tool calls and returns results
 - Handles tool execution errors gracefully

@@ -13,6 +13,7 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- existing module
       class SiphonFinishedBuildsFinder
         include ActiveRecord::Sanitization::ClassMethods
         include Concerns::FinishedBuildsAggregations
+        include Concerns::SiphonQueryHelpers
 
         TABLE_NAME = 'siphon_p_ci_builds'
         SUBQUERY_ALIAS = 'finished_builds'
@@ -50,7 +51,7 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- existing module
         end
 
         def for_container(container)
-          with_inner_query(inner_query.where(container_condition(container)))
+          with_inner_query(inner_query.where(container_condition(inner_query, container)))
         end
 
         # Applies conditions to the raw pre-dedup rows (before the argMax over
@@ -136,16 +137,6 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- existing module
 
         attr_reader :inner_query, :outer_query, :selected_fields
 
-        def container_condition(container)
-          if container.is_a?(Project)
-            path = container.project_namespace.traversal_path(with_organization: true)
-            inner_query[:traversal_path].eq(path)
-          else
-            path = container.traversal_path(with_organization: true)
-            inner_query.func('startsWith', [inner_query[:traversal_path], inner_query.quote(path)])
-          end
-        end
-
         def base_inner_query
           ClickHouse::Client::QueryBuilder.new(TABLE_NAME)
             .select(:id, :partition_id)
@@ -208,18 +199,11 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- existing module
         # after #with_stages. Guard here so misuse fails loudly at build time
         # instead of emitting SQL against a non-existent alias at execution.
         def stage_name_expr
-          unless stages_joined?
+          unless joined_alias?(outer_query, STAGES_SUBQUERY_ALIAS)
             raise ArgumentError, 'call #with_stages(container) before selecting, grouping or ordering by :stage_name'
           end
 
           Arel.sql("`#{STAGES_SUBQUERY_ALIAS}`.`name`")
-        end
-
-        def stages_joined?
-          outer_query.manager.join_sources.any? do |join|
-            source = join.left
-            source.is_a?(Arel::Nodes::TableAlias) && source.right.to_s == STAGES_SUBQUERY_ALIAS
-          end
         end
 
         def pipelines_filtered?

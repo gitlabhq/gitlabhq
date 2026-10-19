@@ -3307,7 +3307,6 @@
     },
     "tags": {
       "type": "array",
-      "minItems": 1,
       "markdownDescription": "Used to select runners from the list of available runners. A runner must have all tags listed here to run the job. [Learn More](https://docs.gitlab.com/ci/yaml/#tags).",
       "items": {
         "anyOf": [

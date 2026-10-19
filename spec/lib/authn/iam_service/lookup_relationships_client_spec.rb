@@ -151,6 +151,74 @@ RSpec.describe Authn::IamService::LookupRelationshipsClient, feature_category: :
     end
   end
 
+  describe '#lookup_resources' do
+    let(:organization_uuid) { Gitlab::Utils.uuid_v7 }
+    let(:resources_response) { ::Gitlab::Iam::Lookup::V1::LookupResourcesResponse.new }
+
+    before do
+      allow(lookup_stub).to receive(:lookup_resources).and_return(resources_response)
+    end
+
+    def lookup_resources(**overrides)
+      client.lookup_resources(**{
+        subject_id: 42,
+        organization_uuid: organization_uuid,
+        kinds: [:KIND_ASSIGNMENT],
+        role_ids: [role_id],
+        page_size: 50,
+        page_token: 'cursor',
+        token: user_token
+      }.merge(overrides))
+    end
+
+    it 'builds the request from the subject, filter, and pagination and sends the bearer token', :aggregate_failures do
+      expect(lookup_stub).to receive(:lookup_resources) do |request, metadata:|
+        expect(metadata).to eq('authorization' => "Bearer #{user_token}")
+
+        identity = request.subject.identity
+        expect(identity.origin).to eq(:ORIGIN_ORGANIZATION)
+        expect(identity.origin_id).to eq(organization_uuid)
+        expect(identity.local_id).to eq('42')
+        expect(request.filter.kinds).to eq([:KIND_ASSIGNMENT])
+        expect(request.filter.roles.map(&:id)).to eq([role_id])
+        expect(request.page_size).to eq(50)
+        expect(request.page_token).to eq('cursor')
+
+        resources_response
+      end
+
+      expect(lookup_resources).to eq(resources_response)
+    end
+
+    it 'defaults page_size and page_token when not given', :aggregate_failures do
+      expect(lookup_stub).to receive(:lookup_resources) do |request, _metadata|
+        expect(request.page_size).to eq(0)
+        expect(request.page_token).to eq('')
+
+        resources_response
+      end
+
+      lookup_resources(page_size: nil, page_token: nil)
+    end
+
+    it 'raises a RequestError with the mapped reason when IAM fails' do
+      allow(lookup_stub).to receive(:lookup_resources).and_raise(GRPC::PermissionDenied.new)
+
+      expect { lookup_resources }
+        .to raise_error(described_class::RequestError, /lookup resources failed/) { |e|
+          expect(e.reason).to eq(:permission_denied)
+        }
+    end
+
+    it 'raises a RequestError with the :unavailable reason when the service is misconfigured' do
+      allow(Authn::IamDataAccessService).to receive(:grpc_address)
+        .and_raise(Authn::IamDataAccessService::ConfigurationError)
+
+      expect { lookup_resources }
+        .to raise_error(described_class::RequestError) { |e| expect(e.reason).to eq(:unavailable) }
+    end
+  end
+
   describe 'channel transport' do
     let(:tls_credentials) { instance_double(GRPC::Core::ChannelCredentials) }
     let(:insecure_log) { a_hash_including(message: 'Using an insecure IAM gRPC channel', address: 'iam.test:5005') }

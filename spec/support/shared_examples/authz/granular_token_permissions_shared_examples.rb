@@ -4,7 +4,7 @@ RSpec.shared_examples 'authorizing granular token permissions' do |permissions, 
     context_type: :rest, legacy_token_scopes: nil|
   granular_permissions = Array(permissions)
   individual_permission_labels = granular_permissions.map do |permission|
-    assignable = Authz::PermissionGroups::Assignable.for_permission(permission).first
+    assignable = Authz::PermissionGroups::Assignable.preferred_for_permission(permission)
     "#{assignable.resource_name}: #{assignable.action.titleize}"
   end.uniq.sort
 
@@ -88,7 +88,7 @@ RSpec.shared_examples 'authorizing granular token permissions' do |permissions, 
   context 'when authenticating with a granular personal access token' do
     let(:assignables) do
       granular_permissions.map do |permission|
-        ::Authz::PermissionGroups::Assignable.for_permission(permission).first.name
+        ::Authz::PermissionGroups::Assignable.preferred_for_permission(permission).name
       end.uniq
     end
 

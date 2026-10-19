@@ -1550,6 +1550,39 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
           end
         end
       end
+
+      context 'when the pipeline variables file is missing from storage' do
+        let(:pipeline) { create(:ci_pipeline, project: project) }
+
+        render_views
+
+        before do
+          create_or_replace_pipeline_variables(pipeline, { key: 'SOME_VARIABLE', value: 'value' })
+          pipeline.pipeline_artifacts_pipeline_variables.file.remove!
+          sign_in(user)
+        end
+
+        context 'with proper permissions for debug logging on a project' do
+          let(:user) { developer }
+
+          it 'returns response ok' do
+            response = subject
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
+
+        context 'without proper permissions for debug logging on a project' do
+          let(:user) { reporter }
+
+          it 'returns response forbidden with the reason', :aggregate_failures do
+            response = subject
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+            expect(response.body).to include('The pipeline variables file for this job is missing.')
+          end
+        end
+      end
     end
 
     context 'when job has a live trace' do

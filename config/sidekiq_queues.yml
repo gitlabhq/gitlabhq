@@ -175,6 +175,8 @@
   - 1
 - - authn_oauth_applications_cleanup_dynamic_applications
   - 1
+- - authn_oauth_applications_revoke_non_granular_tokens
+  - 1
 - - authn_sync_group_scim_identity_record
   - 1
 - - authn_sync_group_scim_token_record

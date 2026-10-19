@@ -27,6 +27,7 @@ module MergeRequests
         diff_stats_summary: [:metrics],
         approved_by: [:approved_by_users],
         merge_after: [:merge_schedule],
+        merge_before: [:merge_schedule],
         mergeable: [:merge_schedule],
         detailed_merge_status: [:merge_schedule, :latest_merge_request_diff],
         mergeability_checks: [

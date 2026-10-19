@@ -2,12 +2,13 @@
 import { GlLink, GlIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 
 // @deprecated This component should only be used when there is no GraphQL API.
 // In most cases you should use
 // `app/assets/javascripts/sidebar/components/labels/labels_select_widget/label_item.vue` instead.
 export default normalizeRender({
-  functional: true,
+  mixins: [glListenersMixin],
   props: {
     label: {
       type: Object,
@@ -28,8 +29,8 @@ export default normalizeRender({
       default: false,
     },
   },
-  render(h, { props, listeners }) {
-    const { label, highlight, isLabelSet, isLabelIndeterminate } = props;
+  render(h) {
+    const { label, highlight, isLabelSet, isLabelIndeterminate } = this;
 
     const labelColorBox = h('span', {
       class: 'dropdown-label-box gl-mr-2',
@@ -87,7 +88,7 @@ export default normalizeRender({
         class: 'gl-flex gl-items-center label-item gl-text-default',
         on: {
           click: () => {
-            listeners['click-label'](label);
+            this.glListener('click-label')(label);
           },
         },
       },

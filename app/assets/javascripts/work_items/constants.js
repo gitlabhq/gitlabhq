@@ -95,9 +95,6 @@ export const WORK_ITEM_TYPE_NAME_TASK = 'Task';
 export const WORK_ITEM_TYPE_NAME_TEST_CASE = 'Test Case';
 export const WORK_ITEM_TYPE_NAME_TICKET = 'Ticket';
 
-export const RSS_FILTER_EXCLUDE_EPIC = { 'not[type][]': 'epic' };
-export const RSS_FILTER_EPIC_ONLY = { 'type[]': 'epic' };
-
 export const WORK_ITEM_TREE_COLLAPSE_TRACKING_ACTION_COLLAPSED = 'hierarchy_widget_collapsed';
 export const WORK_ITEM_TREE_COLLAPSE_TRACKING_ACTION_EXPANDED = 'hierarchy_widget_expanded';
 export const WORK_ITEM_RELATIONSHIPS_COLLAPSE_TRACKING_ACTION_COLLAPSED =
@@ -140,6 +137,8 @@ export const DEFAULT_PAGE_SIZE_NOTES = 15; // Reduced from 20 to lower query com
 export const DEFAULT_PAGE_SIZE_EMOJIS = 100;
 export const DEFAULT_PAGE_SIZE_CHILD_ITEMS = 50;
 export const DEFAULT_PAGE_SIZE_BOARD_COLUMN = 20;
+// Board column counts stop here; anything above renders as "1,000+".
+export const BOARD_COLUMN_COUNT_LIMIT = 1000;
 export const DEFAULT_PAGE_SIZE_BOARD_COLUMN_SUBSEQUENT = 100;
 
 export const WORK_ITEM_NOTES_SORT_ORDER_KEY = 'sort_direction_work_item';

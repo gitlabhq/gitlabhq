@@ -165,6 +165,25 @@ module ClickHouseHelpers
     expect(result).to be(true)
   end
 
+  def insert_ci_pipeline_metadata_to_siphon(entries, replicated_at: Time.current, deleted: false)
+    result = clickhouse_fixture(:siphon_ci_pipeline_metadata, entries.map do |entry|
+      pipeline = entry.fetch(:pipeline)
+      project = pipeline.project
+
+      {
+        pipeline_id: pipeline.id,
+        partition_id: entry.fetch(:partition_id) { pipeline.try(:partition_id) || 100 },
+        project_id: project&.id || 0,
+        name: entry.fetch(:name),
+        traversal_path: project&.project_namespace&.traversal_path(with_organization: true) || '0/',
+        _siphon_replicated_at: replicated_at,
+        _siphon_deleted: deleted
+      }
+    end)
+
+    expect(result).to be(true)
+  end
+
   def insert_ci_stages_to_siphon(stages, replicated_at: Time.current, deleted: false)
     result = clickhouse_fixture(:siphon_p_ci_stages, stages.map do |stage|
       project = stage.project

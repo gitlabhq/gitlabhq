@@ -275,5 +275,23 @@ describe('board cache_updates', () => {
 
       expect(cache.getStored().namespace.workItems.count).toBeUndefined();
     });
+
+    it('leaves a capped count alone', () => {
+      const cache = createCache(buildCountData(1001));
+      const cappedVariables = { ...variables, countLimit: 1000 };
+
+      adjustWorkItemCountInColumn({ cache, query, variables: cappedVariables, delta: -1 });
+
+      expect(cache.getStored().namespace.workItems.count).toBe(1001);
+    });
+
+    it('adjusts a count at the limit, so the header can tip over to the capped label', () => {
+      const cache = createCache(buildCountData(1000));
+      const cappedVariables = { ...variables, countLimit: 1000 };
+
+      adjustWorkItemCountInColumn({ cache, query, variables: cappedVariables, delta: 1 });
+
+      expect(cache.getStored().namespace.workItems.count).toBe(1001);
+    });
   });
 });

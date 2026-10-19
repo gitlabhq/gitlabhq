@@ -29,16 +29,9 @@ include:
   stage: prepare
   needs:
     - cache:assets-hash
-    - job: compile-fe-islands
-      optional: true
   script:
     - scripts/compile_assets
     - scripts/build_assets_image
-
-.fe-islands-parallel:
-  parallel:
-    matrix:
-      - FE_APP_DIR: ["duo_next"]
 
 compile-production-assets:
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/ci/${BUILD_OS}-${OS_VERSION}-slim-ruby-${RUBY_VERSION}-node-${NODE_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-${GIT_VERSION}-lfs-${LFS_VERSION}-yarn-${YARN_VERSION}-graphicsmagick-${GRAPHICSMAGICK_VERSION}-docker-${DOCKER_VERSION}
@@ -190,8 +183,6 @@ compile-test-assets:
     - $GITLAB_LARGE_RUNNER_OPTIONAL
   needs:
     - cache:assets-hash-rspack
-    - job: compile-fe-islands
-      optional: true
   variables:
     ENABLE_RSPACK: "true"
     GLCI_ASSETS_BUNDLER: "rspack"
@@ -207,23 +198,6 @@ compile-test-assets vue3:
   extends:
     - compile-test-assets
     - .vue3
-
-compile-fe-islands:
-  extends:
-    - .default-retry
-    - .with-ci-node-image
-    - .fe-islands-compile-cache
-    - .frontend:rules:update-fe-islands
-  needs: ["cache:fe-islands-hash"]
-  stage: prepare
-  variables:
-    USE_BUNDLE_INSTALL: "false"
-    GIT_DEPTH: "1"
-  script:
-    - scripts/build_frontend_islands
-  artifacts:
-    paths:
-      - ee/frontend_islands/apps/*/dist/main.js
 
 .frontend-fixtures-base:
   extends:
@@ -373,7 +347,6 @@ jest-build-cache:
     - .frontend:rules:jest
   needs:
     - !reference [.frontend-test-base, needs]
-    # it's ok to wait for the repo artifact as we're waiting for compile-fe-islands which finishes around the same time as clone-gitlab-repo
     - !reference [.repo-from-artifacts, needs]
   artifacts:
     name: jest-cache
@@ -397,30 +370,6 @@ jest-build-cache:
 .vue3:
   variables:
     VUE_VERSION: 3
-
-test-fe-islands:
-  stage: test-frontend
-  extends:
-    - .frontend-test-base
-    - .frontend:rules:fe-islands:test
-    - .fe-islands-parallel
-  needs:
-    - job: validate-fe-islands-ci
-      optional: true
-  script:
-    - cd ee/frontend_islands/apps/${FE_APP_DIR} && yarn run test
-  cache:
-    - !reference [.frontend-test-base, cache]
-    - !reference [.fe-islands-yarn-cache, cache]
-  artifacts:
-    name: coverage-frontend
-    expire_in: 31d
-    when: always
-    paths:
-      - ee/frontend_islands/apps/${FE_APP_DIR}/coverage/
-      - ee/frontend_islands/apps/${FE_APP_DIR}/junit_jest.xml
-    reports:
-      junit: junit_jest.xml
 
 .with-jest-build-cache-vue3-ensure-compilable-sfcs-needs:
   needs:
@@ -792,8 +741,6 @@ bundle-size-review:
   tags:
     - $GLCI_MEDIUM_RUNNER_REQUIRED
   needs:
-    - job: compile-fe-islands
-      optional: true
     - job: compile-production-assets
       optional: true
   variables:
@@ -803,26 +750,12 @@ bundle-size-review:
     - scripts/bundle_size_review
   cache:
     - !reference [.yarn-cache, cache]
-    - !reference [.fe-islands-yarn-cache, cache]
   artifacts:
     when: always
     name: bundle-size-review
     expire_in: 31d
     paths:
       - bundle-size-review/
-
-untamper-fe-islands-lockfile:
-  extends: untamper-my-lockfile
-  rules:
-    - !reference ['.ai-principles-schedule:rules:skip', rules]
-    - if: $CI_MERGE_REQUEST_IID
-      changes:
-        - ee/frontend_islands/yarn.lock
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-      changes:
-        - ee/frontend_islands/yarn.lock
-  after_script:
-    - untamper-my-lockfile --lockfile ee/frontend_islands/yarn.lock
 
 compile-production-assets-rspack:
   extends:
@@ -834,8 +767,6 @@ compile-production-assets-rspack:
     - $GLCI_PRODUCTION_ASSETS_RUNNER_OPTIONAL
   needs:
     - cache:assets-hash-rspack
-    - job: compile-fe-islands
-      optional: true
   variables:
     ENABLE_RSPACK: "true"
     GLCI_ASSETS_BUNDLER: "rspack"

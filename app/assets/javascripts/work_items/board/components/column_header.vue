@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlIcon, GlDisclosureDropdown, GlTooltipDirective } from '@gitlab/ui';
-import { __, s__ } from '~/locale';
+import { __, s__, sprintf, formatNumber } from '~/locale';
+import { BOARD_COLUMN_COUNT_LIMIT } from '~/work_items/constants';
 import { hasDecorationIcon, decorationIconStyle } from '~/work_items/board/grouping';
 import { BOARD_COLUMN_DRAG_HANDLE_CLASS, BOARD_COLUMN_NO_DRAG_CLASS } from '../constants';
 
@@ -17,6 +18,7 @@ export default {
     moveLeft: s__('WorkItemBoard|Move left'),
     moveRight: s__('WorkItemBoard|Move right'),
     createItem: __('Create new item'),
+    cappedCount: s__('WorkItemBoard|%{limit}+'),
   },
   components: {
     GlButton,
@@ -87,6 +89,15 @@ export default {
     },
     toggleLabel() {
       return this.collapsed ? this.$options.i18n.expand : this.$options.i18n.collapse;
+    },
+    countLabel() {
+      if (this.count <= BOARD_COLUMN_COUNT_LIMIT) {
+        return formatNumber(this.count);
+      }
+
+      return sprintf(this.$options.i18n.cappedCount, {
+        limit: formatNumber(BOARD_COLUMN_COUNT_LIMIT),
+      });
     },
     showActionsMenu() {
       return (this.canHide || this.reorderable) && !this.collapsed;
@@ -185,7 +196,7 @@ export default {
       :style="collapsed ? $options.collapsedVerticalTextStyle : null"
     >
       <gl-icon name="work-items" :size="16" :class="{ 'gl-rotate-90': collapsed }" />
-      {{ count }}
+      {{ countLabel }}
     </span>
     <div v-if="showActions" class="gl-ml-auto gl-flex gl-shrink-0 gl-items-center gl-gap-3">
       <gl-disclosure-dropdown

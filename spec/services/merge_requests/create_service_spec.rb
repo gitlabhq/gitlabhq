@@ -714,6 +714,50 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, f
 
     it_behaves_like 'when source and target projects are different'
 
+    context 'with merge schedule params' do
+      let(:base_opts) do
+        {
+          title: 'Awesome merge_request',
+          source_branch: 'feature',
+          target_branch: 'master'
+        }
+      end
+
+      before_all do
+        project.add_maintainer(user)
+      end
+
+      context 'when merge_after is before merge_before' do
+        it 'creates the merge request and persists the schedule' do
+          merge_after = 1.hour.from_now
+          merge_before = 2.hours.from_now
+
+          merge_request = described_class.new(
+            project: project,
+            current_user: user,
+            params: base_opts.merge(merge_after: merge_after, merge_before: merge_before)
+          ).execute
+
+          expect(merge_request).to be_persisted
+          expect(merge_request.merge_schedule.merge_after).to be_within(1.second).of(merge_after)
+          expect(merge_request.merge_schedule.merge_before).to be_within(1.second).of(merge_before)
+        end
+      end
+
+      context 'when merge_after is after merge_before' do
+        it 'does not create the merge request and adds an error' do
+          merge_request = described_class.new(
+            project: project,
+            current_user: user,
+            params: base_opts.merge(merge_after: 2.hours.from_now, merge_before: 1.hour.from_now)
+          ).execute
+
+          expect(merge_request).not_to be_persisted
+          expect(merge_request.errors['merge_schedule.merge_before']).to include(_('must be after the start time'))
+        end
+      end
+    end
+
     context 'when user sets source project id' do
       let(:another_project) { create(:project) }
 

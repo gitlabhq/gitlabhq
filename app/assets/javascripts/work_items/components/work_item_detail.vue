@@ -13,6 +13,7 @@ import DuoWorkItemToMrAction from 'ee_component/ai/shared/widgets/duo_work_item_
 import DesignDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import DetailLayout from '~/vue_shared/components/detail_layout.vue';
 import PanelActionsPortal from '~/vue_shared/components/panel_actions_portal.vue';
+import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__, __ } from '~/locale';
 import { InternalEvents } from '~/tracking';
@@ -40,6 +41,7 @@ import {
   WORK_ITEM_TYPE_NAME_INCIDENT,
   VIEW_CONTEXT,
   WORK_ITEM_DETAIL_PANEL,
+  WORK_ITEM_TYPE_NAME_TICKET,
 } from '../constants';
 
 import workItemUpdatedSubscription from '../graphql/work_item_updated.subscription.graphql';
@@ -98,6 +100,7 @@ import DesignUploadButton from './design_management/upload_button.vue';
 import WorkItemDevelopment from './work_item_development/work_item_development.vue';
 import WorkItemCreateBranchMergeRequestSplitButton from './work_item_development/work_item_create_branch_merge_request_split_button.vue';
 import WorkItemMetadataProvider from './work_item_metadata_provider.vue';
+import WorkItemTicketModal from './work_item_ticket_modal.vue';
 
 const defaultWorkspacePermissions = {
   createDesign: false,
@@ -127,6 +130,8 @@ export default {
     GlIntersectionObserver,
     LocalStorageSync,
     PanelActionsPortal,
+    UserCalloutDismisser,
+    WorkItemTicketModal,
     WorkItemActions,
     WorkItemTodosWidget,
     WorkItemNotificationsWidget,
@@ -406,6 +411,11 @@ export default {
       }
 
       return Boolean(parentWorkItem);
+    },
+    showTicketModal() {
+      return (
+        this.glFeatures.workItemTicketMigration && this.workItemType === WORK_ITEM_TYPE_NAME_TICKET
+      );
     },
     shouldShowAncestors() {
       // Checks whether current work item has parent
@@ -994,6 +1004,12 @@ export default {
       @dragleave.prevent.stop="onDragLeaveMain"
       @drop.prevent.stop="onDrop"
     >
+      <user-callout-dismisser v-if="showTicketModal" feature-name="work_item_ticket_migration">
+        <template #default="{ dismiss, shouldShowCallout }">
+          <work-item-ticket-modal v-if="shouldShowCallout" @hide="dismiss" />
+        </template>
+      </user-callout-dismisser>
+
       <!-- Do not remove the element below, it allows for scrolling to top on click of sticky header -->
       <div id="top"></div>
       <detail-layout :loading="workItemLoading" :show-sidebar="showSidebar">

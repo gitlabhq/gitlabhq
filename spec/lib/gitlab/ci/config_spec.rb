@@ -647,6 +647,58 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
       end
     end
 
+    context 'when building predefined variables fails on Gitaly' do
+      using RSpec::Parameterized::TableSyntax
+
+      # Mirrors Gitlab::Git::WrapsGitalyErrors, which raises the Gitlab::Git error with the gRPC error as cause.
+      let(:gitaly_error) do
+        raise grpc_error
+      rescue GRPC::BadStatus
+        begin
+          raise error_class, grpc_error.message
+        rescue error_class => e
+          e
+        end
+      end
+
+      before do
+        allow_next_instance_of(Gitlab::Ci::Variables::Builder) do |builder|
+          allow(builder).to receive(:config_variables).and_raise(gitaly_error)
+        end
+      end
+
+      where(:error_class, :grpc_error) do
+        [
+          [Gitlab::Git::CommandTimedOut, GRPC::DeadlineExceeded.new('Deadline Exceeded')],
+          [Gitlab::Git::ResourceExhaustedError, GRPC::ResourceExhausted.new('maximum queue size reached')],
+          [Gitlab::Git::CommandError, GRPC::Unavailable.new('connections to all backends failing')]
+        ]
+      end
+
+      with_them do
+        it 'tracks a Context::TimeoutError and raises TimeoutError', :aggregate_failures do
+          expect(Gitlab::ErrorTracking).to receive(:track_exception) do |exception|
+            expect(exception).to be_a(Gitlab::Ci::Config::External::Context::TimeoutError)
+            expect(exception.message).to eq(described_class::GITALY_TIMEOUT_MESSAGE)
+            expect(exception.cause).to eq(gitaly_error)
+          end
+
+          expect { config }.to raise_error(described_class::TimeoutError, described_class::GITALY_TIMEOUT_MESSAGE)
+        end
+      end
+
+      context 'when the CommandError is not caused by Unavailable' do
+        let(:error_class) { Gitlab::Git::CommandError }
+        let(:grpc_error) { GRPC::Internal.new('internal error') }
+
+        it 're-raises the original error' do
+          expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
+
+          expect { config }.to raise_error(gitaly_error)
+        end
+      end
+    end
+
     context 'when fetching a remote include times out' do
       before do
         stub_full_request(remote_location).to_timeout

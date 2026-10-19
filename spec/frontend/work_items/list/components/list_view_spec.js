@@ -2,6 +2,7 @@ import { GlLoadingIcon, GlAlert, GlKeysetPagination } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
+import { makeMockUserCalloutDismisser } from 'helpers/mock_user_callout_dismisser';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import IssueCardStatistics from 'ee_else_ce/work_items/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/work_items/list/components/issue_card_time_info.vue';
@@ -23,7 +24,9 @@ import IssuableBulkEditSidebar from '~/vue_shared/issuable/list/components/issua
 import PageSizeSelector from '~/vue_shared/components/page_size_selector.vue';
 import IssuableItem from '~/vue_shared/issuable/list/components/issuable_item.vue';
 import ResourceListsLoadingStateList from '~/vue_shared/components/resource_lists/loading_state_list.vue';
+import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
+import WorkItemTicketModal from '~/work_items/components/work_item_ticket_modal.vue';
 import ListView from '~/work_items/list/list_view.vue';
 import { WORK_ITEM_TYPE_NAME_TICKET } from '~/work_items/constants';
 import { CREATED_DESC, UPDATED_DESC } from '~/work_items/list/constants';
@@ -110,6 +113,8 @@ const findChildItem2 = () => findIssuableItems().at(1);
 const findSubChildIndicator = (item) => item.find('[data-testid="sub-child-work-item-indicator"]');
 const findGlAlert = () => wrapper.findComponent(GlAlert);
 const findLoadingStateList = () => wrapper.findComponent(ResourceListsLoadingStateList);
+const findUserCalloutDismisser = () => wrapper.findComponent(UserCalloutDismisser);
+const findWorkItemTicketModal = () => wrapper.findComponent(WorkItemTicketModal);
 
 const defaultQueryVariables = {
   fullPath: 'full/path',
@@ -188,7 +193,6 @@ const mountComponent = ({
       email: '',
       hasAnyWorkItems: false,
       projectImportJiraPath: '/project/import/jira',
-      isGroupIssuesList: false,
       groupId: 'gid://gitlab/Group/1',
       isProject: false,
       exportCsvPath: '/export/csv',
@@ -546,6 +550,74 @@ describe('when service desk list', () => {
       expect(findBulkEditStartButton().exists()).toBe(false);
       expect(findCreateWorkItemModal().exists()).toBe(false);
     });
+  });
+
+  describe('ticket migration callout', () => {
+    const ticketMigrationEnabledProvide = {
+      isServiceDeskSupported: true,
+      workItemType: WORK_ITEM_TYPE_NAME_TICKET,
+      glFeatures: { workItemTicketMigration: true },
+    };
+
+    it('does not render the callout when the workItemTicketMigration feature flag is disabled', async () => {
+      mountComponent({
+        provide: { isServiceDeskSupported: true, workItemType: WORK_ITEM_TYPE_NAME_TICKET },
+      });
+      await waitForPromises();
+
+      expect(findUserCalloutDismisser().exists()).toBe(false);
+    });
+
+    it('renders the callout with the correct feature name', async () => {
+      mountComponent({ provide: ticketMigrationEnabledProvide });
+      await waitForPromises();
+
+      expect(findUserCalloutDismisser().props('featureName')).toBe('work_item_ticket_migration');
+    });
+
+    it('renders the ticket modal when the callout should be shown', async () => {
+      mountComponent({
+        provide: ticketMigrationEnabledProvide,
+        stubs: { UserCalloutDismisser: makeMockUserCalloutDismisser({ shouldShowCallout: true }) },
+      });
+      await waitForPromises();
+
+      expect(findWorkItemTicketModal().exists()).toBe(true);
+    });
+
+    it('does not render the ticket modal when the callout has already been dismissed', async () => {
+      mountComponent({
+        provide: ticketMigrationEnabledProvide,
+        stubs: {
+          UserCalloutDismisser: makeMockUserCalloutDismisser({ shouldShowCallout: false }),
+        },
+      });
+      await waitForPromises();
+
+      expect(findWorkItemTicketModal().exists()).toBe(false);
+    });
+
+    it('dismisses the callout when the modal emits `hide`', async () => {
+      const dismiss = jest.fn();
+      mountComponent({
+        provide: ticketMigrationEnabledProvide,
+        stubs: {
+          UserCalloutDismisser: makeMockUserCalloutDismisser({ dismiss, shouldShowCallout: true }),
+        },
+      });
+      await waitForPromises();
+
+      findWorkItemTicketModal().vm.$emit('hide');
+
+      expect(dismiss).toHaveBeenCalled();
+    });
+  });
+
+  it('does not render the ticket migration callout for non-ticket lists', async () => {
+    mountComponent();
+    await waitForPromises();
+
+    expect(findUserCalloutDismisser().exists()).toBe(false);
   });
 });
 

@@ -21,9 +21,9 @@ module Ci
       if can_read_pipeline_in_target_project? && can_read_pipeline_in_source_project?
         all
       elsif can_read_pipeline_in_source_project?
-        all.for_project(merge_request.source_project)
+        pipelines_readable_in(source_project)
       elsif can_read_pipeline_in_target_project?
-        all.for_project(merge_request.target_project)
+        pipelines_readable_in(target_project)
       else
         Ci::Pipeline.none
       end
@@ -60,6 +60,44 @@ module Ci
       pipelines_for_branch = triggered_for_branch.for_sha(recent_diff_head_shas(COMMITS_LIMIT))
 
       Ci::Pipeline.from_union([pipelines_for_merge_request, pipelines_for_branch])
+    end
+
+    def pipelines_readable_in(project)
+      # Behind a flag so the query-shape change can be validated on GitLab.com and reverted instantly.
+      # Disabled reproduces the previous query: scope the full union by project after building it.
+      return all.for_project(project) unless single_project_scope_enabled?
+
+      return Ci::Pipeline.none unless source_project
+
+      pipelines =
+        if merge_request.persisted?
+          scoped_pipelines_for_merge_request(project)
+        elsif project == source_project
+          triggered_for_branch.for_sha(commit_shas)
+        else
+          # Branch pipelines only ever belong to the source project.
+          Ci::Pipeline.none
+        end
+
+      sort(pipelines)
+    end
+
+    def scoped_pipelines_for_merge_request(project)
+      # Scope to the single authorized project so the predicate is `project_id = <project>`,
+      # not the redundant `IN (source, target) AND = <project>` pair that makes the planner
+      # scan the whole project instead of the selective merge_request_id index (the timeout).
+      pipelines_for_merge_request = Ci::Pipeline.triggered_by_merge_request(merge_request, project)
+
+      # Branch pipelines only ever belong to the source project, so skip that arm
+      # (and the union) when scoping to the target project.
+      return pipelines_for_merge_request unless project == source_project
+
+      pipelines_for_branch = triggered_for_branch.for_sha(recent_diff_head_shas(COMMITS_LIMIT))
+      Ci::Pipeline.from_union([pipelines_for_merge_request, pipelines_for_branch])
+    end
+
+    def single_project_scope_enabled?
+      Feature.enabled?(:ci_pipelines_for_mr_single_project_scope, target_project)
     end
 
     # NOTE: this method returns only parent merge request pipelines.

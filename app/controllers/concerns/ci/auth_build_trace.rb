@@ -17,6 +17,12 @@ module Ci
       else
         access_denied!(_('The current user is not authorized to access the job log.'))
       end
+    rescue ::Ci::Pipeline::VariablesFileMissingError
+      # The missing variables might have enabled debug trace, so the policy keeps the log restricted
+      access_denied!(
+        _('The pipeline variables file for this job is missing. ' \
+          'You must have developer or higher permissions to view this job log.')
+      )
     end
   end
 end

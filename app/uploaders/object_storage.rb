@@ -227,8 +227,9 @@ module ObjectStorage
             hash[:TempPath] = workhorse_local_upload_path
           end
 
-          # If UploadHashFunctions is not specified, all available functions
-          # will be used: md5, sha1, sha256, sha512.
+          # Rails sets no default here. When UploadHashFunctions is omitted,
+          # Workhorse computes all four (md5, sha1, sha256, sha512); see
+          # workhorse/internal/upload/destination/multi_hash.go.
           if upload_hash_functions.present?
             validate_hash_functions!(upload_hash_functions)
 

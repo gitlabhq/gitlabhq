@@ -156,8 +156,6 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', :unlimited_max_formatted_output
         '.test_license_encryption_key.pub',
         '.vscode/extensions.json',
         '.vscode/tasks.json',
-        'ee/frontend_islands/apps/duo_next/.vscode/extensions.json',
-        'ee/frontend_islands/apps/duo_next/.prettierignore',
         'ee/lib/ee/gitlab/background_migration/.rubocop.yml',
         'ee/LICENSE',
         'gems/error_tracking_open_api/.openapi-generator/FILES',
@@ -208,7 +206,6 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', :unlimited_max_formatted_output
       Dir.glob('{auto_explain,crystalball,knapsack,rspec}/**/*') +
       Dir.glob('coverage/**/*', File::FNM_DOTMATCH) +
       Dir.glob('coverage-frontend/**/*', File::FNM_DOTMATCH) +
-      Dir.glob('ee/frontend_islands/apps/**/coverage/**/*', File::FNM_DOTMATCH) +
       Dir.glob('vendor/ruby/**/*', File::FNM_DOTMATCH) +
       Dir.glob('builds/**/*', File::FNM_DOTMATCH)
     ).freeze

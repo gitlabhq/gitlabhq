@@ -84,6 +84,11 @@ export const adjustWorkItemCountInColumn = ({ cache, query, variables, delta }) 
       return sourceData;
     }
 
+    // A capped count (limit + 1) stays capped; the next refetch settles it.
+    if (variables?.countLimit && connection.count > variables.countLimit) {
+      return sourceData;
+    }
+
     return produce(sourceData, (draftData) => {
       const draft = draftData.namespace.workItems;
       draft.count = Math.max(0, draft.count + delta);

@@ -35,7 +35,7 @@ RSpec.describe Database::CiNamespaceMirrorsConsistencyCheckWorker, feature_categ
           mismatches_details: [{
             id: missing_namespace.id,
             source_table: nil,
-            target_table: [missing_namespace.traversal_ids]
+            target_table: [missing_namespace.traversal_ids, missing_namespace.organization_id]
           }],
           start_id: first_namespace.id,
           next_start_id: first_namespace.id # The batch size > number of namespaces
@@ -51,6 +51,48 @@ RSpec.describe Database::CiNamespaceMirrorsConsistencyCheckWorker, feature_categ
           ).and_call_original
         end
         worker.perform
+      end
+    end
+
+    context 'when a mirror column has drifted from the namespace' do
+      using RSpec::Parameterized::TableSyntax
+
+      let_it_be(:namespace) { create(:namespace) }
+      let_it_be(:other_organization) { create(:organization) }
+
+      let(:synced_columns) { %w[traversal_ids organization_id] }
+
+      where(:column, :stale_value) do
+        :traversal_ids   | []
+        :organization_id | lazy { other_organization.id }
+        :organization_id | nil
+      end
+
+      with_them do
+        before do
+          redis_shared_state_cleanup!
+          Ci::NamespaceMirror.by_namespace_id(namespace.id).update_all(column => stale_value)
+
+          allow_next_instance_of(Database::ConsistencyCheckService) do |instance|
+            allow(instance).to receive(:random_start_id).and_return(namespace.id)
+          end
+        end
+
+        it 'reports the mismatch and schedules a resync' do
+          expect(worker).to receive(:log_extra_metadata_on_done).with(
+            :results,
+            a_hash_including(
+              mismatches: 1,
+              mismatches_details: [{
+                id: namespace.id,
+                source_table: namespace.attributes.values_at(*synced_columns),
+                target_table: namespace.attributes.merge(column.to_s => stale_value).values_at(*synced_columns)
+              }]
+            )
+          )
+
+          expect { worker.perform }.to change { Namespaces::SyncEvent.where(namespace_id: namespace.id).count }.by(1)
+        end
       end
     end
   end

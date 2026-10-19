@@ -23,6 +23,8 @@ const httpKeepaliveInterval = 20 * time.Second
 // line. Empty lines are keepalives and carry no action.
 const ndjsonContentType = "application/x-ndjson"
 
+var ndjsonKeepaliveLine = []byte("\n")
+
 // errClientGone is returned by ReadClientEvent once the request context is
 // canceled, which is how net/http reports that the caller went away.
 var errClientGone = errors.New("ndjsonTransport: client is gone")
@@ -61,7 +63,6 @@ type ndjsonTransport struct {
 	// committed. Until it has, a failure can still be reported as an HTTP
 	// status code instead of an empty 200 response.
 	headerWritten bool
-	buf           []byte
 	// done seals the transport once the handler is unwinding. After it is set
 	// no goroutine may touch the response, so net/http can finish it without a
 	// concurrent write from a runner goroutine that has not yet stopped.
@@ -106,9 +107,7 @@ func (t *ndjsonTransport) Keepalive() error {
 	t.writeMu.Lock()
 	defer t.writeMu.Unlock()
 
-	t.buf = t.buf[:0]
-
-	return t.flushLineLocked()
+	return t.flushLineLocked(ndjsonKeepaliveLine)
 }
 
 // ReadClientEvent reports the StartWorkflowRequest the handler built from the
@@ -151,15 +150,22 @@ func (t *ndjsonTransport) WriteAction(_ context.Context, action *pb.Action) erro
 		return fmt.Errorf("%w: %T", errActionUnsupported, action.Action)
 	}
 
+	// Pooled for the same reason as in wsManager.WriteAction: a buffer per
+	// transport would keep its largest size for the whole run.
+	bufp := marshalBufPool.Get().(*[]byte)
+	defer releaseMarshalBuf(bufp)
+
+	buf, err := marshaler.MarshalAppend((*bufp)[:0], action)
+	if err != nil {
+		return fmt.Errorf("WriteAction: failed to marshal action: %w", err)
+	}
+	buf = append(buf, '\n')
+	*bufp = buf
+
 	t.writeMu.Lock()
 	defer t.writeMu.Unlock()
 
-	var err error
-	if t.buf, err = marshaler.MarshalAppend(t.buf[:0], action); err != nil {
-		return fmt.Errorf("WriteAction: failed to marshal action: %w", err)
-	}
-
-	return t.flushLineLocked()
+	return t.flushLineLocked(buf)
 }
 
 // SendGoingAway has nothing to send: the response carries actions only, so a
@@ -219,9 +225,9 @@ func (t *ndjsonTransport) finish() {
 	t.done = true
 }
 
-// flushLineLocked terminates buf with a newline, writes it and flushes,
-// committing the response header on the first call.
-func (t *ndjsonTransport) flushLineLocked() error {
+// flushLineLocked writes a newline-terminated line and flushes it, committing
+// the response header on the first call.
+func (t *ndjsonTransport) flushLineLocked(line []byte) error {
 	if t.done {
 		return nil
 	}
@@ -234,10 +240,8 @@ func (t *ndjsonTransport) flushLineLocked() error {
 		log.WithRequest(t.req).Info("ndjsonTransport: streaming actions to the caller")
 	}
 
-	t.buf = append(t.buf, '\n')
-
 	//nolint:gosec // G705: the payload is protojson workhorse marshaled itself, served as application/x-ndjson
-	if _, err := t.w.Write(t.buf); err != nil {
+	if _, err := t.w.Write(line); err != nil {
 		return fmt.Errorf("ndjsonTransport: failed to write to response: %w", err)
 	}
 

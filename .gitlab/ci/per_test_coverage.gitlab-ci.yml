@@ -104,8 +104,6 @@ per-test-coverage:trigger:
     - job: "compile-test-assets"
       artifacts: false
     # Missing these needs 404s the fixture download and breaks jest specs.
-    - job: "compile-fe-islands"
-      artifacts: false
     - job: "rspec-all frontend_fixture"
       artifacts: false
     - job: "rspec-all frontend_fixture clickhouse"

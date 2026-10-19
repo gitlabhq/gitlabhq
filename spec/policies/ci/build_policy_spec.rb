@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
+  include Ci::PipelineVariableHelpers
+
   let(:user) { create(:user) }
   let(:build) { create(:ci_build, pipeline: pipeline) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
@@ -224,6 +226,29 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
 
       it 'allows developers to read the log of a duo_workflow job' do
         expect_allowed(:read_build_trace)
+      end
+    end
+
+    context 'when the pipeline variables file is missing from storage' do
+      let_it_be(:pipeline) { create(:ci_pipeline, project: public_project) }
+      let_it_be(:build) { create(:ci_build, pipeline: pipeline) }
+
+      before_all do
+        create_or_replace_pipeline_variables(pipeline, { key: 'SOME_VARIABLE', value: 'value' })
+        pipeline.pipeline_artifacts_pipeline_variables.file.remove!
+        pipeline.association(:pipeline_artifacts_pipeline_variables).reset
+      end
+
+      context 'when the user is a reporter' do
+        let(:user) { reporter }
+
+        it { expect_disallowed(:read_build_trace) }
+      end
+
+      context 'when the user is a developer' do
+        let(:user) { developer }
+
+        it { expect_allowed(:read_build_trace) }
       end
     end
   end

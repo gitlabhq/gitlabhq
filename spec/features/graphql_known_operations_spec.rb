@@ -22,7 +22,7 @@ RSpec.describe 'Graphql known operations', :js, feature_category: :api do
     # Check that we include some arbitrary operation name we expect
     known_operations = Gitlab::Graphql::KnownOperations.default.operations.map(&:name)
 
-    expect(known_operations).to include("searchProjects")
+    expect(known_operations).to include("yourWorkGroups")
     expect(known_operations.length).to be > 20
     expect(known_operations).to all(match(%r{^[a-z]+}i))
   end

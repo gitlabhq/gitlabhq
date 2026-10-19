@@ -13,6 +13,8 @@ module Gitlab
       TIMEOUT_SECONDS = ENV.fetch('GITLAB_CI_CONFIG_FETCH_TIMEOUT_SECONDS', 30).to_i.clamp(0, 60).seconds
       OVERRIDE_TIMEOUT_SECONDS = 90.seconds
       TIMEOUT_MESSAGE = 'Request timed out when fetching configuration files.'
+      GITALY_TIMEOUT_MESSAGE = 'CI configuration fetch from Gitaly timed out. ' \
+        'This may indicate Gitaly service slowness or an outage.'
       GITALY_TIMEOUT_SECONDS = ENV.fetch('GITLAB_CI_CONFIG_GITALY_TIMEOUT_SECONDS', 10).to_i.clamp(1, 60)
       HTTP_OPEN_TIMEOUT_SECONDS = ENV.fetch('GITLAB_CI_CONFIG_HTTP_OPEN_TIMEOUT_SECONDS', 10).to_i.clamp(1, 60)
       HTTP_READ_TIMEOUT_SECONDS = ENV.fetch('GITLAB_CI_CONFIG_HTTP_READ_TIMEOUT_SECONDS', 30).to_i.clamp(1, 60)
@@ -69,6 +71,9 @@ module Gitlab
             @root.compose!
           end
         end
+      rescue External::Context::TimeoutError => e
+        Gitlab::ErrorTracking.track_exception(e)
+        raise TimeoutError, e.message
       rescue *rescue_errors => e
         raise ConfigError, e.message
       end
@@ -269,6 +274,15 @@ module Gitlab
             .variables_builder
             .config_variables
         end
+      rescue Gitlab::Git::CommandTimedOut, Gitlab::Git::ResourceExhaustedError
+        # Predefined variables can call Gitaly (e.g. `default_branch`). Treat it like an include fetch timeout.
+        raise External::Context::TimeoutError, GITALY_TIMEOUT_MESSAGE
+      rescue Gitlab::Git::CommandError => e
+        # CommandError wraps most gRPC codes. Only Unavailable means Gitaly is down; the others
+        # (Internal, FailedPrecondition, ...) may be real bugs, so keep them out of the timeout Sentry group.
+        raise unless e.cause.is_a?(GRPC::Unavailable)
+
+        raise External::Context::TimeoutError, GITALY_TIMEOUT_MESSAGE
       end
 
       def normalizer

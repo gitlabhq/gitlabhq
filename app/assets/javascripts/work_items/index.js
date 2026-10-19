@@ -27,8 +27,6 @@ export const initWorkItemsRoot = ({ workItemType } = {}) => {
     fullPath,
     defaultBranch,
     routerPath,
-    // group work items list
-    isGroupIssuesList,
     // service desk list
     isServiceDeskEnabled,
     isServiceDeskSupported,
@@ -61,8 +59,6 @@ export const initWorkItemsRoot = ({ workItemType } = {}) => {
     provide: {
       fullPath,
       workItemType,
-      // group work items list
-      isGroupIssuesList: parseBoolean(isGroupIssuesList),
       // service desk list
       isServiceDeskEnabled: parseBoolean(isServiceDeskEnabled),
       isServiceDeskSupported: parseBoolean(isServiceDeskSupported),

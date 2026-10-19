@@ -65,7 +65,7 @@ module Types
         description: 'Merge request includes locked LFS files.'
       value 'MERGE_TIME',
         value: :merge_time,
-        description: 'Merge request may not be merged until after the specified time.'
+        description: 'Merge request may not be merged outside the specified time frame.'
       value 'SECURITY_POLICIES_VIOLATIONS',
         value: :security_policy_violations,
         description: 'All policy rules must be satisfied.'

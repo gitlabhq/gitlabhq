@@ -598,11 +598,11 @@ module Ci
     # Returns the pipelines that associated with the given merge request.
     # In general, please use `Ci::PipelinesForMergeRequestFinder` instead,
     # for checking permission of the actor.
-    scope :triggered_by_merge_request, ->(merge_request) do
+    scope :triggered_by_merge_request, ->(merge_request, projects = [merge_request.source_project, merge_request.target_project]) do
       where(
         source: :merge_request_event,
         merge_request: merge_request,
-        project: [merge_request.source_project, merge_request.target_project]
+        project: projects
       )
     end
 

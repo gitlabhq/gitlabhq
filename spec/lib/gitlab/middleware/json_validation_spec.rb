@@ -725,6 +725,47 @@ RSpec.describe Gitlab::Middleware::JsonValidation, feature_category: :api do
         end
       end
 
+      context 'for AI agent audit events endpoint' do
+        let(:path_info) { '/api/v4/projects/123/ai_agent/audit_events' }
+        let(:event) do
+          {
+            event_name: 'ai_tool_invoked',
+            cloud_event_id: SecureRandom.uuid,
+            occurred_at: Time.current.iso8601,
+            details: {
+              tool_name: 'Edit',
+              agent_initiated: true,
+              outcome: 'pending',
+              tool_call_id: 'toolu_01',
+              agent_name: 'claude_code',
+              arguments: { file_path: 'app/models/user.rb', old_string: 'a', new_string: 'b', replace_all: false }
+            }
+          }
+        end
+
+        context 'with a batch of 500 events' do
+          let(:body) { { session_id: 1, events: Array.new(500) { event } }.to_json }
+
+          it 'accepts the payload' do
+            expect(::Gitlab::Json::StreamValidator).to receive(:new).and_call_original
+            expect(app).to receive(:call).with(env)
+
+            expect(middleware.call(env)).to eq([200, {}, ['OK']])
+          end
+        end
+
+        context 'for a body exceeding 50,000 elements' do
+          let(:details) { Array.new(60) { |i| ["key_#{i}", i] }.to_h }
+          let(:body) { { session_id: 1, events: Array.new(500) { event.merge(details: details) } }.to_json }
+
+          it 'rejects the payload' do
+            expect(middleware.call(env)).to eq(
+              [400, { "Content-Type" => "application/json" }, ['{"error":"Too many total parameters"}']]
+            )
+          end
+        end
+      end
+
       context 'for protected_branches endpoint' do
         where(:request_method, :description, :path_info) do
           [

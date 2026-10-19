@@ -47,7 +47,7 @@ class OauthAccessToken < Doorkeeper::AccessToken
   end
 
   def consent_grant
-    Authz::OauthConsentGrant.authorized.not_duo_session.find_by(user_id: resource_owner_id, application_id: application_id)
+    Authz::OauthConsentGrant.active_for_user_and_application(resource_owner_id, application_id)
   end
   strong_memoize_attr :consent_grant
 end

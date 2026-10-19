@@ -75,6 +75,7 @@ describe('work item board utils', () => {
         fullPath: 'full/path',
         state: 'opened',
         status: { name: 'To do' },
+        countLimit: 1000,
       });
     });
 
@@ -91,6 +92,7 @@ describe('work item board utils', () => {
         search: 'bug',
         sort: 'RELATIVE_POSITION_ASC',
         status: { name: 'To do' },
+        countLimit: 1000,
       });
     });
   });

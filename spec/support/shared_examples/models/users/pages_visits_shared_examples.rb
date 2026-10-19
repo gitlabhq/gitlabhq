@@ -109,6 +109,17 @@ RSpec.shared_examples 'namespace visits model' do
             [3, 3]  # Entity 3 gets a score of 1 * 3 = 3
           ])
       end
+
+      # Restricting the entities also drops the weeks only the excluded entities
+      # were visited in, which compresses the dense rank. Scores are therefore
+      # comparable within one call, not across calls with different `entity_ids`.
+      it 'scores only the given entities when `entity_ids` is passed' do
+        expect(frecent_visits_scores_to_array(described_class.frecent_visits_scores(user_id: user.id,
+          limit: 5, entity_ids: [2, 3]))).to eq([
+            [2, 3], # Entity 2 gets a score of (1 * 2) + (1 * 1) = 3
+            [3, 2]  # Entity 3 gets a score of 1 * 2 = 2
+          ])
+      end
     end
   end
 

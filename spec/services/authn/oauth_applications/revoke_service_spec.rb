@@ -42,6 +42,41 @@ RSpec.describe ::Authn::OauthApplications::RevokeService, feature_category: :sys
       service.execute
     end
 
+    context 'with an active consent grant' do
+      let_it_be_with_reload(:consent_grant) { create(:oauth_consent_grant, user: user, application: application) }
+
+      it 'revokes the granular consent grant of the current user' do
+        expect_next_instance_of(Authz::OauthConsentGrants::RevokeService,
+          user: user, application_id: application.id.to_s) do |grant_service|
+          expect(grant_service).to receive(:execute)
+        end
+
+        service.execute
+      end
+
+      it 'revokes the granular consent grant when the granular_oauth_tokens flag is disabled' do
+        stub_feature_flags(granular_oauth_tokens: false)
+
+        expect_next_instance_of(Authz::OauthConsentGrants::RevokeService) do |grant_service|
+          expect(grant_service).to receive(:execute)
+        end
+
+        service.execute
+      end
+
+      it 'rolls back token and grant revocation when the consent grant revocation fails', :aggregate_failures do
+        allow_next_instance_of(Authz::OauthConsentGrants::RevokeService) do |grant_service|
+          allow(grant_service).to receive(:execute).and_raise(StandardError, 'boom')
+        end
+
+        expect { service.execute }.to raise_error(StandardError, 'boom')
+
+        expect(access_token.reload).not_to be_revoked
+        expect(grant.reload).not_to be_revoked
+        expect(consent_grant.reload).to be_authorized
+      end
+    end
+
     context 'when iam_svc_oauth is enabled' do
       let_it_be_with_reload(:consent) { create(:oauth_consent, user: user, application: application) }
       let_it_be_with_reload(:other_user_consent) { create(:oauth_consent, application: application) }

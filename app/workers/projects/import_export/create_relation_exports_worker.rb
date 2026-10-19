@@ -24,6 +24,8 @@ module Projects
       # StuckExportJobsWorker's next hourly run finally fails it.
       QUEUED_JOBS_EXPIRATION = RE_ENQUEUE_DELAY * 6
 
+      GITLAB_COM_CONCURRENT_RELATION_EXPORT_LIMIT = 250
+
       def perform(user_id, project_id, after_export_strategy = {}, params = {})
         project = Project.find_by_id(project_id)
         return unless project
@@ -33,8 +35,12 @@ module Projects
         project_export_job = find_or_create_project_export_job(project, user_id, params)
         return if project_export_job.started?
 
-        if throttle_exports? && !next_in_queue?(project_export_job)
-          return re_enqueue_job(user_id, project_id, after_export_strategy, params, project_export_job)
+        if throttle_exports?
+          unless next_in_queue?(project_export_job)
+            return re_enqueue_job(user_id, project_id, after_export_strategy, params, project_export_job)
+          end
+
+          log_queued_duration(project_export_job)
         end
 
         relation_exports = project_export_job.find_or_create_relation_exports!(
@@ -73,9 +79,17 @@ module Projects
         ProjectExportJob.find_or_create_for(project, user_id, jid: jid, exported_by_admin: exported_by_admin)
       end
 
+      # rubocop:disable Gitlab/AvoidGitlabInstanceChecks -- overrides the stored setting on GitLab.com only
+      def concurrent_relation_export_limit
+        return GITLAB_COM_CONCURRENT_RELATION_EXPORT_LIMIT if ::Gitlab.com?
+
+        ::Gitlab::CurrentSettings.concurrent_relation_export_limit
+      end
+      # rubocop:enable Gitlab/AvoidGitlabInstanceChecks
+
       def next_in_queue?(project_export_job)
         project_export_job.next_in_queue?(
-          limit: ::Gitlab::CurrentSettings.concurrent_relation_export_limit,
+          limit: concurrent_relation_export_limit,
           timeout: QUEUED_JOBS_EXPIRATION
         )
       end
@@ -95,13 +109,18 @@ module Projects
         project_export_job.update!(jid: new_jid)
       end
 
+      def log_queued_duration(project_export_job)
+        log_extra_metadata_on_done(:queued_duration_s, (Time.current - project_export_job.created_at).round(2))
+        log_extra_metadata_on_done(:concurrent_relation_export_limit, concurrent_relation_export_limit)
+      end
+
       def log_re_enqueue(project_export_job)
         Gitlab::Export::Logger.info(
           message: 'Throttled project export was re-enqueued',
           project_export_job_id: project_export_job.id,
           Labkit::Fields::GL_PROJECT_ID => project_export_job.project_id,
           queue_size: ProjectExportJob.queued_and_not_timed_out(QUEUED_JOBS_EXPIRATION).count,
-          concurrent_relation_export_limit: ::Gitlab::CurrentSettings.concurrent_relation_export_limit
+          concurrent_relation_export_limit: concurrent_relation_export_limit
         )
       end
 

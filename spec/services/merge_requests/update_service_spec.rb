@@ -1667,6 +1667,67 @@ RSpec.describe MergeRequests::UpdateService, :mailer, :request_store, feature_ca
       let(:updated_issuable) { described_class.new(project: project, current_user: user, params: params).execute(existing_merge_request) }
     end
 
+    context 'updating merge schedule' do
+      context 'when no schedule exists' do
+        it 'creates a schedule when merge_after is provided' do
+          merge_after = 1.hour.from_now
+
+          update_merge_request(merge_after: merge_after)
+
+          expect(merge_request.reload.merge_schedule.merge_after).to be_within(1.second).of(merge_after)
+          expect(merge_request.merge_schedule.merge_before).to be_nil
+        end
+
+        it 'creates a schedule with both fields when merge_after and merge_before are provided' do
+          merge_after = 1.hour.from_now
+          merge_before = 2.hours.from_now
+
+          update_merge_request(merge_after: merge_after, merge_before: merge_before)
+
+          expect(merge_request.reload.merge_schedule.merge_after).to be_within(1.second).of(merge_after)
+          expect(merge_request.merge_schedule.merge_before).to be_within(1.second).of(merge_before)
+        end
+
+        it 'adds an error when merge_before is before merge_after' do
+          update_merge_request(merge_after: 2.hours.from_now, merge_before: 1.hour.from_now)
+
+          expect(merge_request.errors['merge_schedule.merge_before']).to include(_('must be after the start time'))
+        end
+      end
+
+      context 'when a schedule already exists' do
+        let(:merge_before) { 2.hours.from_now }
+
+        before do
+          merge_request.create_merge_schedule(
+            merge_after: 1.hour.from_now,
+            merge_before: merge_before
+          )
+        end
+
+        it 'updates merge_after and preserves merge_before' do
+          new_merge_after = 30.minutes.from_now
+
+          update_merge_request(merge_after: new_merge_after)
+
+          expect(merge_request.reload.merge_schedule.merge_after).to be_within(1.second).of(new_merge_after)
+          expect(merge_request.merge_schedule.merge_before).to be_within(1.second).of(merge_before)
+        end
+
+        it 'clears merge_before when set to nil' do
+          update_merge_request(merge_after: 1.hour.from_now, merge_before: nil)
+
+          expect(merge_request.reload.merge_schedule.merge_before).to be_nil
+        end
+
+        it 'destroys the schedule when both are set to nil' do
+          update_merge_request(merge_after: nil, merge_before: nil)
+
+          expect(merge_request.reload.merge_schedule).to be_nil
+        end
+      end
+    end
+
     context 'updating labels' do
       context 'when merge request is not merged' do
         let(:label_a) { label }

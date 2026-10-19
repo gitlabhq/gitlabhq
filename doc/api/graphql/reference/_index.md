@@ -833,6 +833,7 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="query-artifactregistryroleassignments-assigneeids"></a>`assigneeIds` | [`[UserID!]`](#userid) | Global IDs of users to read direct role assignments on repositories for, at most 20. Cannot be combined with `resourceIds`. The organization owner and admins of the Artifact Registry namespace may use it. |
 | <a id="query-artifactregistryroleassignments-resourceids"></a>`resourceIds` | [`[String!]`](#string) | UUIDs of the Artifact Registry resources to read role assignments for. Empty reads the whole organization, which only the organization owner may do. |
 | <a id="query-artifactregistryroleassignments-roles"></a>`roles` | [`[ArtifactRegistryRole!]`](#artifactregistryrole) | Only return assignments for these roles. |
 
@@ -1432,6 +1433,12 @@ Arguments:
 A user's frecently visited groups.
 
 Returns [`[Group!]`](#group).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="query-frecentgroups-scopetoorganization"></a>`scopeToOrganization` | [`Boolean`](#boolean) | Limits results to groups in the current organization. |
 
 ### `Query.frecentProjects`
 
@@ -13865,7 +13872,8 @@ Arguments:
 | <a id="mutation-mergerequestcreate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-mergerequestcreate-description"></a>`description` | [`String`](#string) | Description of the merge request (Markdown rendered as HTML for caching). |
 | <a id="mutation-mergerequestcreate-labels"></a>`labels` | [`[String!]`](#string) | Labels of the merge request. |
-| <a id="mutation-mergerequestcreate-mergeafter"></a>`mergeAfter` | [`Time`](#time) | Date after which the merge request can be merged. |
+| <a id="mutation-mergerequestcreate-mergeafter"></a>`mergeAfter` | [`Time`](#time) | Date and time after which the merge request can be merged. |
+| <a id="mutation-mergerequestcreate-mergebefore"></a>`mergeBefore` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.6. Status: Experiment. Date and time before which the merge request can be merged. |
 | <a id="mutation-mergerequestcreate-projectpath"></a>`projectPath` | [`ID!`](#id) | Project full path the merge request is associated with. |
 | <a id="mutation-mergerequestcreate-removesourcebranch"></a>`removeSourceBranch` | [`Boolean`](#boolean) | Indicates if the source branch of the merge request will be deleted after merge. |
 | <a id="mutation-mergerequestcreate-sourcebranch"></a>`sourceBranch` | [`String!`](#string) | Source branch of the merge request. |
@@ -14290,7 +14298,8 @@ Arguments:
 | <a id="mutation-mergerequestupdate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-mergerequestupdate-description"></a>`description` | [`String`](#string) | Description of the merge request (Markdown rendered as HTML for caching). |
 | <a id="mutation-mergerequestupdate-iid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
-| <a id="mutation-mergerequestupdate-mergeafter"></a>`mergeAfter` | [`Time`](#time) | Date after which the merge request can be merged. |
+| <a id="mutation-mergerequestupdate-mergeafter"></a>`mergeAfter` | [`Time`](#time) | Date and time after which the merge request can be merged. |
+| <a id="mutation-mergerequestupdate-mergebefore"></a>`mergeBefore` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.6. Status: Experiment. Date and time before which the merge request can be merged. |
 | <a id="mutation-mergerequestupdate-overriderequestedchanges"></a>`overrideRequestedChanges` | [`Boolean`](#boolean) | Override all requested changes. Can only be set by users who have permissionto merge this merge request. |
 | <a id="mutation-mergerequestupdate-projectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
 | <a id="mutation-mergerequestupdate-removesourcebranch"></a>`removeSourceBranch` | [`Boolean`](#boolean) | Indicates if the source branch of the merge request will be deleted after merge. |
@@ -52837,7 +52846,8 @@ Fields:
 | <a id="mergerequest-iid"></a>`iid` | [`String!`](#string) | Internal ID of the merge request. |
 | <a id="mergerequest-inprogressmergecommitsha"></a>`inProgressMergeCommitSha` | [`String`](#string) | Commit SHA of the merge request if merge is in progress. |
 | <a id="mergerequest-labels"></a>`labels` | [`LabelConnection`](#labelconnection) | Labels of the merge request. (see [Connections](#connections)) |
-| <a id="mergerequest-mergeafter"></a>`mergeAfter` | [`Time`](#time) | Date after which the merge request can be merged. |
+| <a id="mergerequest-mergeafter"></a>`mergeAfter` | [`Time`](#time) | Date and time after which the merge request can be merged. |
+| <a id="mergerequest-mergebefore"></a>`mergeBefore` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.6. Status: Experiment. Date and time before which the merge request can be merged. |
 | <a id="mergerequest-mergecommitsha"></a>`mergeCommitSha` | [`String`](#string) | SHA of the merge request commit (set once merged). |
 | <a id="mergerequest-mergeerror"></a>`mergeError` | [`String`](#string) | Error message due to a merge error. |
 | <a id="mergerequest-mergeongoing"></a>`mergeOngoing` | [`Boolean!`](#boolean) | Indicates if a merge is currently occurring. |
@@ -72652,7 +72662,7 @@ Detailed representation of whether a GitLab merge request can be merged.
 | <a id="detailedmergestatus-locked_lfs_files"></a>`LOCKED_LFS_FILES` | Merge request includes locked LFS files. |
 | <a id="detailedmergestatus-locked_paths"></a>`LOCKED_PATHS` | Merge request includes locked paths. |
 | <a id="detailedmergestatus-mergeable"></a>`MERGEABLE` | Branch can be merged. |
-| <a id="detailedmergestatus-merge_time"></a>`MERGE_TIME` | Merge request may not be merged until after the specified time. |
+| <a id="detailedmergestatus-merge_time"></a>`MERGE_TIME` | Merge request may not be merged outside the specified time frame. |
 | <a id="detailedmergestatus-need_rebase"></a>`NEED_REBASE` | Merge request needs to be rebased. |
 | <a id="detailedmergestatus-not_approved"></a>`NOT_APPROVED` | Merge request must be approved before merging. |
 | <a id="detailedmergestatus-not_open"></a>`NOT_OPEN` | Merge request must be open before merging. |
@@ -76083,6 +76093,7 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenum-web_ide_ci_environments_guidance"></a>`WEB_IDE_CI_ENVIRONMENTS_GUIDANCE` | Callout feature name for web_ide_ci_environments_guidance. |
 | <a id="usercalloutfeaturenameenum-work_item_decision_log_popover"></a>`WORK_ITEM_DECISION_LOG_POPOVER` | Callout feature name for work_item_decision_log_popover. |
 | <a id="usercalloutfeaturenameenum-work_item_epic_feedback"></a>`WORK_ITEM_EPIC_FEEDBACK` | Callout feature name for work_item_epic_feedback. |
+| <a id="usercalloutfeaturenameenum-work_item_ticket_migration"></a>`WORK_ITEM_TICKET_MIGRATION` | Callout feature name for work_item_ticket_migration. |
 
 ### `UserEventFilter`
 

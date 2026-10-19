@@ -34,7 +34,7 @@ module MergeRequests
         ])
 
         scope = MergeRequests::MergeSchedule
-          .where(merge_after: ..Time.zone.now)
+          .where(merge_after: ..Time.zone.now, merge_before: [nil, Time.zone.now..])
           .order(order)
           .select(:merge_after, :merge_request_id)
 

@@ -23,6 +23,8 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- existing module
 
       # rubocop: disable CodeReuse/ActiveRecord -- Clickhouse finder
       class SiphonStagesFinder < ::ClickHouse::Client::QueryLike
+        include Concerns::SiphonQueryHelpers
+
         TABLE_NAME = 'siphon_p_ci_stages'
         SUBQUERY_ALIAS = 'stages'
 
@@ -47,14 +49,7 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- existing module
         end
 
         def for_container(container)
-          if container.is_a?(Project)
-            path = container.project_namespace.traversal_path(with_organization: true)
-            with_inner(inner_query.where(traversal_path: path))
-          else
-            path = container.traversal_path(with_organization: true)
-            condition = inner_query.func('startsWith', [inner_query[:traversal_path], inner_query.quote(path)])
-            with_inner(inner_query.where(condition))
-          end
+          with_inner(inner_query.where(container_condition(inner_query, container)))
         end
 
         # pipeline_id is immutable per stage row, so filtering the raw pre-dedup

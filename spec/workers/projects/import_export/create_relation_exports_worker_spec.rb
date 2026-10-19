@@ -10,6 +10,7 @@ RSpec.describe Projects::ImportExport::CreateRelationExportsWorker, feature_cate
   let(:params) { {} }
   let(:jid) { SecureRandom.hex(8) }
   let(:job_args) { [user.id, project.id, after_export_strategy, params] }
+  let(:extra_key_prefix) { 'extra.projects_import_export_create_relation_exports_worker' }
 
   before do
     allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(200)
@@ -175,6 +176,37 @@ RSpec.describe Projects::ImportExport::CreateRelationExportsWorker, feature_cate
   end
 
   describe 'concurrency and FIFO gate' do
+    describe 'effective concurrency limit' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:com, :expected_limit) do
+        true  | 250
+        false | 10
+      end
+
+      with_them do
+        before do
+          stub_application_setting(concurrent_relation_export_limit: 10)
+          allow(Gitlab).to receive(:com?).and_return(com)
+        end
+
+        it 'gates and logs with the effective limit' do
+          expect_next_instance_of(ProjectExportJob) do |export_job|
+            expect(export_job).to receive(:next_in_queue?)
+              .with(limit: expected_limit, timeout: described_class::QUEUED_JOBS_EXPIRATION)
+              .and_call_original
+          end
+
+          worker = described_class.new
+          worker.perform(*job_args)
+
+          expect(worker.logging_extras).to include(
+            "#{extra_key_prefix}.concurrent_relation_export_limit" => expected_limit
+          )
+        end
+      end
+    end
+
     context 'when under the concurrency limit' do
       before do
         stub_application_setting(concurrent_relation_export_limit: 5)
@@ -184,6 +216,18 @@ RSpec.describe Projects::ImportExport::CreateRelationExportsWorker, feature_cate
         perform
 
         expect(project.export_jobs.last.started?).to be(true)
+      end
+
+      it 'logs how long the export was queued and the limit in force' do
+        create(:project_export_job, :queued, project: project, user: user, created_at: 10.minutes.ago)
+        worker = described_class.new
+
+        worker.perform(*job_args)
+
+        expect(worker.logging_extras).to include(
+          "#{extra_key_prefix}.concurrent_relation_export_limit" => 5,
+          "#{extra_key_prefix}.queued_duration_s" => be_within(5).of(10.minutes.to_i)
+        )
       end
     end
 
@@ -203,6 +247,15 @@ RSpec.describe Projects::ImportExport::CreateRelationExportsWorker, feature_cate
 
         export_job = project.export_jobs.last
         expect(export_job.queued?).to be(true)
+      end
+
+      it 'does not log a queued duration' do
+        worker = described_class.new
+
+        worker.perform(*job_args)
+
+        expect(worker.logging_extras).to include("#{extra_key_prefix}.re_enqueue" => true)
+        expect(worker.logging_extras).not_to have_key("#{extra_key_prefix}.queued_duration_s")
       end
 
       it 'logs the queue size and configured limit alongside the re-enqueue' do
@@ -325,6 +378,17 @@ RSpec.describe Projects::ImportExport::CreateRelationExportsWorker, feature_cate
         perform
 
         expect(project.export_jobs.last.started?).to be(true)
+      end
+
+      it 'does not log the queued duration or the limit' do
+        worker = described_class.new
+
+        worker.perform(*job_args)
+
+        expect(worker.logging_extras.keys).not_to include(
+          "#{extra_key_prefix}.queued_duration_s",
+          "#{extra_key_prefix}.concurrent_relation_export_limit"
+        )
       end
 
       it 'looks the export job up by jid' do

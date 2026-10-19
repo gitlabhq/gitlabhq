@@ -5,7 +5,7 @@
     "deps:check": "depcruise --config config/dependency_cruiser.mjs --no-ignore-known",
     "deps:check:all": "yarn run deps:check .",
     "clean": "rm -rf public/assets tmp/cache/webpack tmp/cache/rspack tmp/cache/vite",
-    "dev-server": "scripts/build_frontend_islands && NODE_OPTIONS=\"${NODE_OPTIONS:=--max-old-space-size=10240}\" node scripts/frontend/webpack_dev_server.js",
+    "dev-server": "NODE_OPTIONS=\"${NODE_OPTIONS:=--max-old-space-size=10240}\" node scripts/frontend/webpack_dev_server.js",
     "file-coverage": "scripts/frontend/file_test_coverage.js",
     "lint-docs": "scripts/lint-doc.sh",
     "internal:eslint": "eslint --cache --concurrency auto --max-warnings 0 --report-unused-disable-directives",
@@ -49,13 +49,13 @@
     "storybook:start": "./scripts/frontend/start_storybook.sh",
     "storybook:start:skip-fixtures-update": "./scripts/frontend/start_storybook.sh --skip-fixtures-update",
     "swagger:validate": "swagger-cli validate",
-    "webpack": "scripts/build_frontend_islands && NODE_OPTIONS=\"${NODE_OPTIONS:=--max-old-space-size=10240}\" webpack --config config/webpack.config.js",
+    "webpack": "NODE_OPTIONS=\"${NODE_OPTIONS:=--max-old-space-size=10240}\" webpack --config config/webpack.config.js",
     "webpack-vendor": "NODE_OPTIONS=\"${NODE_OPTIONS:=--max-old-space-size=10240}\" webpack --config config/webpack.vendor.config.js",
-    "webpack-prod": "scripts/build_frontend_islands && NODE_OPTIONS=\"${NODE_OPTIONS:=--max-old-space-size=10240}\" NODE_ENV=production webpack --config config/webpack.config.js",
-    "rspack": "scripts/build_frontend_islands && NODE_OPTIONS=\"${NODE_OPTIONS:=--max-old-space-size=10240}\" rspack build --config config/rspack.config.mjs",
-    "rspack-prod": "scripts/build_frontend_islands && NODE_OPTIONS=\"${NODE_OPTIONS:=--max-old-space-size=10240}\" NODE_ENV=production rspack build --config config/rspack.config.mjs",
+    "webpack-prod": "NODE_OPTIONS=\"${NODE_OPTIONS:=--max-old-space-size=10240}\" NODE_ENV=production webpack --config config/webpack.config.js",
+    "rspack": "NODE_OPTIONS=\"${NODE_OPTIONS:=--max-old-space-size=10240}\" rspack build --config config/rspack.config.mjs",
+    "rspack-prod": "NODE_OPTIONS=\"${NODE_OPTIONS:=--max-old-space-size=10240}\" NODE_ENV=production rspack build --config config/rspack.config.mjs",
     "build": "if [ \"$ENABLE_RSPACK\" = \"true\" ]; then yarn run rspack; else yarn run webpack; fi",
-    "vite-prod": "scripts/build_frontend_islands && yarn run tailwindcss:build && NODE_ENV=production vite build"
+    "vite-prod": "yarn run tailwindcss:build && NODE_ENV=production vite build"
   },
   "dependencies": {
     "@apollo/client": "^3.5.10",
@@ -273,7 +273,7 @@
     "yjs": "^13.6.30"
   },
   "devDependencies": {
-    "@gitlab/eslint-plugin": "^24.3.0",
+    "@gitlab/eslint-plugin": "^24.4.0",
     "@gitlab/frontend-tests": "0.1.2",
     "@gitlab/jest-metrics-exporter": "^0.2.0",
     "@gitlab/noop": "^1.0.1",

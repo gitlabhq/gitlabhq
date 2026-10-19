@@ -1,0 +1,10 @@
+---
+name: oauth_consent_grant_created
+description: User granted consent to an OAuth application that declares granular scopes
+introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/work_items/608636
+introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/260051
+feature_category: permissions
+milestone: '19.6'
+saved_to_database: true
+streamed: true
+scope: [User]

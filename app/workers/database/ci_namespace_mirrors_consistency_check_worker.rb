@@ -16,8 +16,8 @@ module Database
       results = ConsistencyCheckService.new(
         source_model: Namespace,
         target_model: Ci::NamespaceMirror,
-        source_columns: %w[id traversal_ids],
-        target_columns: %w[namespace_id traversal_ids]
+        source_columns: %w[id traversal_ids organization_id],
+        target_columns: %w[namespace_id traversal_ids organization_id]
       ).execute
 
       if results[:mismatches_details].any?

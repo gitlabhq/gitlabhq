@@ -260,7 +260,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project, feature_category: :p
 
     subject(:metadata) { project_file.metadata }
 
-    it do
+    it 'returns the file location with blob and raw URLs at the project sha' do
       is_expected.to eq(
         context_project: context_project.full_path,
         context_sha: project_sha,
@@ -289,7 +289,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project, feature_category: :p
 
       let(:params) { { project: project.full_path, ref: branch_name, file: '/file.yml' } }
 
-      it do
+      it 'masks the project name and ref in the returned metadata' do
         is_expected.to eq(
           context_project: context_project.full_path,
           context_sha: project_sha,

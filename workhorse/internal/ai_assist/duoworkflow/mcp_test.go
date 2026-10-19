@@ -1,14 +1,18 @@
 package duoworkflow
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"io"
+	"net"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"strings"
+	"sync/atomic"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -957,7 +961,7 @@ func TestBuildSession(t *testing.T) {
 	})
 }
 
-func TestManager_buildTools(t *testing.T) {
+func TestManager_addTools(t *testing.T) {
 	t.Run("successfully builds tools from server", func(t *testing.T) {
 		mcpServer := setupMockMcpServer(t, "", []mcpTool{
 			{Name: "tool1", Description: "Tool 1"},
@@ -1291,7 +1295,7 @@ func TestRoundTripper_serverNameGatesSendData(t *testing.T) {
 	})
 }
 
-func TestManager_buildTools_propagatesTrustedFlag(t *testing.T) {
+func TestManager_addTools_propagatesTrustedFlag(t *testing.T) {
 	t.Run("sets Trusted on tools from trusted server", func(t *testing.T) {
 		mcpServer := setupMockMcpServer(t, "", []mcpTool{
 			{Name: "tool1", Description: "Tool 1"},
@@ -1380,4 +1384,109 @@ func TestManager_buildTools_propagatesTrustedFlag(t *testing.T) {
 		require.NotNil(t, toolsByName["external_ext_tool"].Trusted)
 		assert.False(t, *toolsByName["external_ext_tool"].Trusted)
 	})
+}
+
+func TestNewMcpManager_SetsUpServersConcurrently(t *testing.T) {
+	const serverCount = 2
+
+	// Each server holds its initialize request until every server has
+	// received one, which only happens when they are set up concurrently.
+	arrived := make(chan struct{}, serverCount)
+	allArrived := make(chan struct{})
+	go func() {
+		for range serverCount {
+			select {
+			case <-arrived:
+			case <-t.Context().Done():
+				return
+			}
+		}
+		close(allArrived)
+	}()
+
+	newServer := func(tool string) *httptest.Server {
+		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			body, err := io.ReadAll(r.Body)
+			if !assert.NoError(t, err) {
+				return
+			}
+			r.Body = io.NopCloser(bytes.NewReader(body))
+
+			if bytes.Contains(body, []byte(`"method":"initialize"`)) {
+				select {
+				case arrived <- struct{}{}:
+				default:
+				}
+
+				select {
+				case <-allArrived:
+				case <-time.After(5 * time.Second):
+					w.WriteHeader(http.StatusServiceUnavailable)
+					return
+				}
+			}
+
+			handleMcpRequest(t, w, r, "", []mcpTool{{Name: tool}}, nil)
+		}))
+		t.Cleanup(server.Close)
+		return server
+	}
+
+	servers := map[string]api.McpServerConfig{
+		"server1": {URL: newServer("tool1").URL},
+		"server2": {URL: newServer("tool2").URL},
+	}
+
+	mgr, err := newMcpManager(nil, httptest.NewRequest("GET", "/test", nil), servers)
+
+	require.NoError(t, err)
+	require.Len(t, mgr.tools, serverCount)
+	require.NoError(t, mgr.Close())
+}
+
+func TestNewMcpManager_OrdersToolsByServerName(t *testing.T) {
+	servers := map[string]api.McpServerConfig{
+		"b-server": {URL: setupMockMcpServer(t, "", []mcpTool{{Name: "tool"}}).URL},
+		"a-server": {URL: setupMockMcpServer(t, "", []mcpTool{{Name: "tool"}}).URL},
+		"c-server": {URL: setupMockMcpServer(t, "", []mcpTool{{Name: "tool"}}).URL},
+	}
+
+	// Map iteration order is random, so repeat to catch an order that
+	// depends on it.
+	for range 5 {
+		mgr, err := newMcpManager(nil, httptest.NewRequest("GET", "/test", nil), servers)
+		require.NoError(t, err)
+
+		var names []string
+		for _, tool := range mgr.Tools() {
+			names = append(names, tool.Name)
+		}
+		require.Equal(t, []string{"a-server_tool", "b-server_tool", "c-server_tool"}, names)
+		require.NoError(t, mgr.Close())
+	}
+}
+
+func TestNewMcpManager_ReusesConnectionsToExternalServers(t *testing.T) {
+	var connections atomic.Int32
+
+	server := httptest.NewUnstartedServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		handleMcpRequest(t, w, r, "", []mcpTool{{Name: "tool"}}, nil)
+	}))
+	server.Config.ConnState = func(_ net.Conn, state http.ConnState) {
+		if state == http.StateNew {
+			connections.Add(1)
+		}
+	}
+	server.Start()
+	t.Cleanup(server.Close)
+
+	servers := map[string]api.McpServerConfig{"external": {URL: server.URL}}
+
+	for range 2 {
+		mgr, err := newMcpManager(nil, httptest.NewRequest("GET", "/test", nil), servers)
+		require.NoError(t, err)
+		require.NoError(t, mgr.Close())
+	}
+
+	require.Equal(t, int32(1), connections.Load(), "the second session should reuse the first session's connection")
 }

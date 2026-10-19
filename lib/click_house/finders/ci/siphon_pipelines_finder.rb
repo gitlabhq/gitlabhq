@@ -18,8 +18,12 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- existing module
 
       # rubocop: disable CodeReuse/ActiveRecord -- Clickhouse finder
       class SiphonPipelinesFinder < ::ClickHouse::Client::QueryLike
+        include ActiveRecord::Sanitization::ClassMethods
+        include Concerns::SiphonQueryHelpers
+
         TABLE_NAME = 'siphon_p_ci_pipelines'
         SUBQUERY_ALIAS = 'pipelines'
+        METADATA_SUBQUERY_ALIAS = SiphonPipelineMetadataFinder::SUBQUERY_ALIAS
 
         # Columns surfaced from the dedup subquery to the outer query.
         DEDUP_COLUMNS = %i[
@@ -161,6 +165,41 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- existing module
           with_outer(outer_query.select(*fields))
         end
 
+        # Required before #filter_by_name. Call it after the inner filters
+        # (container, dates, subgroups): the metadata side is bounded by the
+        # pipeline ids those filters select at call time.
+        def with_metadata(container)
+          return self if joined_alias?(outer_query, METADATA_SUBQUERY_ALIAS)
+
+          metadata = SiphonPipelineMetadataFinder
+            .for_container(container)
+            .for_pipeline_ids(pipeline_ids_reference)
+            .select(:pipeline_id, :name)
+          metadata_alias = metadata.final_query.to_arel.as(METADATA_SUBQUERY_ALIAS)
+          metadata_table = Arel::Table.new(METADATA_SUBQUERY_ALIAS)
+
+          with_outer(
+            outer_query.joins(
+              metadata_alias,
+              { id: metadata_table[:pipeline_id] },
+              type: :inner
+            )
+          )
+        end
+
+        # ILIKE already folds case. Downcasing in Ruby can produce forms it does
+        # not match back (for example, the Turkish dotted I).
+        def filter_by_name(term)
+          unless joined_alias?(outer_query, METADATA_SUBQUERY_ALIAS)
+            raise ArgumentError, 'call #with_metadata(container) before #filter_by_name'
+          end
+
+          metadata_table = Arel::Table.new(METADATA_SUBQUERY_ALIAS)
+          condition = metadata_table[:name].matches("%#{sanitize_sql_like(term.strip)}%")
+
+          with_outer(outer_query.where(condition))
+        end
+
         # Required by ClickHouse::Client.select - accepts QueryLike objects.
         def final_query
           # Always exclude rows whose latest version was soft-deleted.
@@ -193,6 +232,15 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- existing module
 
         def with_outer(new_outer)
           self.class.new(inner_query: inner_query, outer_query: new_outer)
+        end
+
+        # The raw rows under the inner query's WHERE yield the same id set as the
+        # dedup inner query, without running its argMax aggregation a second time.
+        # Soft-deleted ids are included; the outer query filters them.
+        def pipeline_ids_reference
+          raw_ids = ClickHouse::Client::QueryBuilder.new(TABLE_NAME).select(:id)
+
+          inner_query.manager.constraints.reduce(raw_ids) { |query, constraint| query.where(constraint) }
         end
 
         def format_time(date)

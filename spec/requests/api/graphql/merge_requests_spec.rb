@@ -171,8 +171,12 @@ RSpec.describe 'getting a merge request list at root level', feature_category: :
   describe 'N+1 queries' do
     let(:fields) do
       <<~QUERY
-        nodes { id reference(full: true) author { username } project { fullPath } }
+        nodes { id reference(full: true) author { username } project { fullPath } mergeAfter mergeBefore }
       QUERY
+    end
+
+    before do
+      create(:merge_request_merge_schedule, merge_request: mr_a, merge_after: 1.hour.ago, merge_before: 1.hour.from_now)
     end
 
     it 'avoids N+1 queries', :use_sql_query_cache do
@@ -183,7 +187,8 @@ RSpec.describe 'getting a merge request list at root level', feature_category: :
 
       3.times do
         project = create(:project, :repository, :public, group: create(:group, developers: current_user))
-        create(:merge_request, :unique_branches, source_project: project)
+        mr = create(:merge_request, :unique_branches, source_project: project)
+        create(:merge_request_merge_schedule, merge_request: mr, merge_after: 1.hour.ago, merge_before: 1.hour.from_now)
       end
 
       expect { post_query }.not_to exceed_all_query_limit(control).with_threshold(0)

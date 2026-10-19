@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -942,5 +943,42 @@ func TestHeaderParsing(t *testing.T) {
 
 		// X-Forwarded-For should contain only the client IP
 		require.Equal(t, "192.0.2.1", capturedHeaders.Get("X-Forwarded-For"))
+	})
+}
+
+func TestRunHttpActionHandler_buildRequest_Body(t *testing.T) {
+	testhelper.ConfigureSecret()
+
+	handler := &runHTTPActionHandler{originalReq: httptest.NewRequest("GET", "/ws", nil)}
+
+	buildRequest := func(body *string) *http.Request {
+		action := &pb.Action{
+			Action: &pb.Action_RunHTTPRequest{
+				RunHTTPRequest: &pb.RunHTTPRequest{Method: "POST", Path: "/api/v4/projects", Body: body},
+			},
+		}
+
+		req, err := handler.buildRequest(context.Background(), action)
+		require.NoError(t, err)
+
+		return req
+	}
+
+	t.Run("forwards the body", func(t *testing.T) {
+		body := `{"name": "test-project"}`
+
+		req := buildRequest(&body)
+
+		require.Equal(t, int64(len(body)), req.ContentLength)
+		got, err := io.ReadAll(req.Body)
+		require.NoError(t, err)
+		require.Equal(t, body, string(got))
+	})
+
+	t.Run("sends no body when the action has none", func(t *testing.T) {
+		req := buildRequest(nil)
+
+		require.Zero(t, req.ContentLength)
+		require.Equal(t, http.NoBody, req.Body)
 	})
 }

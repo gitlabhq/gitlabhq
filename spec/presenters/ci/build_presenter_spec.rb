@@ -137,6 +137,18 @@ RSpec.describe Ci::BuildPresenter, feature_category: :continuous_integration do
           expect(presenter.trigger_variables).to eq([pipeline.variables.last.to_hash_variable])
           pipeline.clear_memoization(:variables)
         end
+
+        context 'when the pipeline variables file is missing from storage' do
+          before do
+            pipeline.pipeline_artifacts_pipeline_variables.file.remove!
+            pipeline.association(:pipeline_artifacts_pipeline_variables).reset
+            pipeline.clear_memoization(:variables)
+          end
+
+          it 'returns empty array' do
+            expect(presenter.trigger_variables).to eq([])
+          end
+        end
       end
     end
   end

@@ -67,6 +67,7 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:hide_incident_management_features, project)
     push_force_frontend_feature_flag(:work_item_features_field,
       Feature.enabled?(:work_item_features_field, current_user))
+    push_frontend_feature_flag(:work_item_ticket_migration, project&.root_ancestor)
   end
 
   after_action :log_issue_show, only: :show

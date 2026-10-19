@@ -138,7 +138,11 @@ module Types
 
     field :merge_after, ::Types::TimeType,
       null: true,
-      description: 'Date after which the merge request can be merged.'
+      description: 'Date and time after which the merge request can be merged.'
+    field :merge_before, ::Types::TimeType,
+      null: true,
+      description: 'Date and time before which the merge request can be merged.',
+      experiment: { milestone: '19.6' }
 
     field :detailed_merge_status, ::Types::MergeRequests::DetailedMergeStatusEnum, null: true,
       calls_gitaly: true,
@@ -454,6 +458,10 @@ module Types
 
     def merge_after
       object.merge_schedule&.merge_after
+    end
+
+    def merge_before
+      object.merge_schedule&.merge_before
     end
 
     def mergeability_checks

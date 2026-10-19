@@ -64,6 +64,15 @@ RSpec.describe Ci::PipelinesForMergeRequestFinder, feature_category: :continuous
       it 'returns pipelines in parent' do
         is_expected.to match_array([pipeline_in_parent])
       end
+
+      it 'scopes to the target project by equality, with no fork id, IN list, or union' do
+        sql = subject.to_sql
+
+        expect(sql).to include(%("project_id" = #{parent_project.id}))
+        expect(sql).not_to include(%("project_id" = #{forked_project.id}))
+        expect(sql).not_to match(/"project_id" IN/)
+        expect(sql).not_to include('UNION')
+      end
     end
 
     context 'when actor has permission to read pipelines in the forked project only' do
@@ -71,6 +80,15 @@ RSpec.describe Ci::PipelinesForMergeRequestFinder, feature_category: :continuous
 
       it 'returns pipelines in fork' do
         is_expected.to match_array([pipeline_in_fork])
+      end
+
+      it 'keeps the union and scopes each arm to the source project by equality' do
+        sql = subject.to_sql
+
+        expect(sql).to include('UNION')
+        expect(sql).not_to match(/"project_id" IN/)
+        # The merge-request-event arm itself is equality-scoped to the fork, not just the branch arm.
+        expect(sql).to match(/"merge_request_id" = \d+ AND [^()]*"project_id" = #{forked_project.id}/)
       end
     end
 
@@ -87,6 +105,63 @@ RSpec.describe Ci::PipelinesForMergeRequestFinder, feature_category: :continuous
 
       it 'returns nothing' do
         is_expected.to be_empty
+      end
+    end
+
+    context 'when the ci_pipelines_for_mr_single_project_scope flag is disabled' do
+      before do
+        stub_feature_flags(ci_pipelines_for_mr_single_project_scope: false)
+      end
+
+      context 'with a parent-only viewer' do
+        let(:actor) { developer_in_parent }
+
+        it 'returns the same pipelines' do
+          is_expected.to match_array([pipeline_in_parent])
+        end
+      end
+
+      context 'with a fork-only viewer' do
+        let(:actor) { developer_in_fork }
+
+        it 'returns the same pipelines' do
+          is_expected.to match_array([pipeline_in_fork])
+        end
+      end
+    end
+
+    context 'with an unsaved fork merge request' do
+      let_it_be(:unsaved_target_project) { create(:project, :repository, :private) }
+      let_it_be(:unsaved_source_project) { fork_project(unsaved_target_project, nil, repository: true) }
+
+      let(:merge_request) do
+        build(
+          :merge_request, source_project: unsaved_source_project, source_branch: 'feature',
+          target_project: unsaved_target_project, target_branch: 'master'
+        )
+      end
+
+      let!(:branch_pipeline) do
+        create(
+          :ci_pipeline, source: :push, project: unsaved_source_project,
+          ref: 'feature', sha: merge_request.diff_head_sha
+        )
+      end
+
+      context 'when actor can read pipelines in the forked project only' do
+        let(:actor) { create(:user, developer_of: unsaved_source_project) }
+
+        it 'returns the source branch pipeline' do
+          is_expected.to contain_exactly(branch_pipeline)
+        end
+      end
+
+      context 'when actor can read pipelines in the parent project only' do
+        let(:actor) { create(:user, developer_of: unsaved_target_project) }
+
+        it 'returns nothing, since branch pipelines are source-only' do
+          is_expected.to be_empty
+        end
       end
     end
   end

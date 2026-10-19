@@ -144,7 +144,7 @@ module Authz
       def access_denied_error
         boundary = denied_boundary
         perms = boundary_evaluations[boundary][:missing].map do |permission|
-          assignable = Authz::PermissionGroups::Assignable.for_permission(permission).first
+          assignable = Authz::PermissionGroups::Assignable.preferred_for_permission(permission)
           "#{assignable.resource_name}: #{assignable.action.titleize}"
         end.uniq.sort.join(', ')
         ::ServiceResponse.error(

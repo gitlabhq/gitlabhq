@@ -64149,7 +64149,7 @@
             },
             {
               "name": "MERGE_TIME",
-              "description": "Merge request may not be merged until after the specified time.",
+              "description": "Merge request may not be merged outside the specified time frame.",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -109309,7 +109309,7 @@
             },
             {
               "name": "mergeAfter",
-              "description": "Date after which the merge request can be merged.",
+              "description": "Date and time after which the merge request can be merged.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -118254,7 +118254,7 @@
             },
             {
               "name": "mergeAfter",
-              "description": "Date after which the merge request can be merged.",
+              "description": "Date and time after which the merge request can be merged.",
               "type": {
                 "kind": "SCALAR",
                 "name": "Time",
@@ -128545,7 +128545,7 @@
             },
             {
               "name": "mergeAfter",
-              "description": "Date after which the merge request can be merged.",
+              "description": "Date and time after which the merge request can be merged.",
               "type": {
                 "kind": "SCALAR",
                 "name": "Time",
@@ -181869,7 +181869,18 @@
             {
               "name": "frecentGroups",
               "description": "A user's frecently visited groups",
-              "args": [],
+              "args": [
+                {
+                  "name": "scopeToOrganization",
+                  "description": "Limits results to groups in the current organization.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": "false"
+                }
+              ],
               "type": {
                 "kind": "LIST",
                 "name": null,
@@ -221184,6 +221195,12 @@
             {
               "name": "ANALYTICS_DASHBOARDS_EXPLORE_INTRO_BANNER",
               "description": "Callout feature name for analytics_dashboards_explore_intro_banner.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "WORK_ITEM_TICKET_MIGRATION",
+              "description": "Callout feature name for work_item_ticket_migration.",
               "isDeprecated": false,
               "deprecationReason": null
             }

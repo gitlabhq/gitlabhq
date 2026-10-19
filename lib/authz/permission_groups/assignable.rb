@@ -22,6 +22,13 @@ module Authz
           available_definitions.filter { |a| a.permissions.include?(permission.to_sym) }
         end
 
+        # The definition the token form offers for a permission, or a deprecated one when
+        # no live definition holds it. A renamed definition stays defined, deprecated, until
+        # its cleanup, and can sort before the live one.
+        def preferred_for_permission(permission)
+          available_for_permission(permission).first || for_permission(permission).first
+        end
+
         def config_path
           Rails.root.join(BASE_PATH, '**/[a-z]?*.yml')
         end

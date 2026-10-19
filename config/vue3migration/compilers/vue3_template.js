@@ -2,7 +2,7 @@ const { parse, compile: compilerDomCompile } = require('@vue/compiler-dom');
 
 // Custom elements that should not be resolved as Vue components
 // Defined here because webpack 4 cannot serialize functions in loader options
-const CUSTOM_ELEMENTS = ['gl-emoji', 'fe-island-duo-next', 'fe-island-visual-ci-editor'];
+const CUSTOM_ELEMENTS = ['gl-emoji'];
 const isCustomElement = (tag) => CUSTOM_ELEMENTS.includes(tag);
 
 const COMMENT_NODE_TYPE = 3;

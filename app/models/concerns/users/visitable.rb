@@ -21,9 +21,11 @@ module Users
           .where('visited_at <= ?', Time.current)
       end
 
-      def self.grouped_by_week_start_and_entity_for_user(user_id:)
-        recently_visited
-          .for_user(user_id)
+      def self.grouped_by_week_start_and_entity_for_user(user_id:, entity_ids: nil)
+        scope = recently_visited.for_user(user_id)
+        scope = scope.where(entity_id: entity_ids) if entity_ids
+
+        scope
           .group(:week_start, :entity_id)
           .select(
             :entity_id,
@@ -33,8 +35,10 @@ module Users
           )
       end
 
-      def self.frecent_visits_scores(user_id:, limit:)
-        ranked_entity_visits_query = grouped_by_week_start_and_entity_for_user(user_id: user_id).to_sql
+      # `entity_ids` restricts scoring to a subset of entities before the limit is applied.
+      def self.frecent_visits_scores(user_id:, limit:, entity_ids: nil)
+        ranked_entity_visits_query =
+          grouped_by_week_start_and_entity_for_user(user_id: user_id, entity_ids: entity_ids).to_sql
         sql = <<~SQL
           SELECT
             entity_id,

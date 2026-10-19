@@ -371,6 +371,11 @@ module MergeRequests
     def close_service
       MergeRequests::CloseService
     end
+
+    override :available_callbacks
+    def available_callbacks
+      super + [MergeRequests::Callbacks::MergeSchedule]
+    end
   end
 end
 

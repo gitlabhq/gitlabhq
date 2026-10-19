@@ -35,6 +35,11 @@ module Mutations
         required: false,
         description: copy_field_description(Types::MergeRequestType, :merge_after)
 
+      argument :merge_before, ::Types::TimeType,
+        required: false,
+        description: copy_field_description(Types::MergeRequestType, :merge_before),
+        experiment: { milestone: '19.6' }
+
       argument :remove_source_branch, GraphQL::Types::Boolean,
         required: false,
         description: copy_field_description(Types::MergeRequestType, :should_remove_source_branch)

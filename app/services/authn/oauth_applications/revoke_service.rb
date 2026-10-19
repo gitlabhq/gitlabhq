@@ -14,6 +14,7 @@ module Authn
         ApplicationRecord.transaction do
           Authn::OauthApplication.revoke_tokens_and_grants_for(application_id, current_user)
           revoke_consents if Feature.enabled?(:iam_svc_oauth, current_user)
+          revoke_granular_consent_grant
         end
 
         log_event
@@ -22,6 +23,10 @@ module Authn
       end
 
       private
+
+      def revoke_granular_consent_grant
+        Authz::OauthConsentGrants::RevokeService.new(user: current_user, application_id: application_id).execute
+      end
 
       def revoke_consents
         client_id = Authn::OauthApplication.uid_for(application_id)

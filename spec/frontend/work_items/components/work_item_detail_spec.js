@@ -6,11 +6,13 @@ import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import toast from '~/vue_shared/plugins/global_toast';
 import { createControlledMockApollo } from 'helpers/mock_apollo_helper';
+import { makeMockUserCalloutDismisser } from 'helpers/mock_user_callout_dismisser';
 import waitForPromises from 'helpers/wait_for_promises';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { useRealDate } from 'helpers/fake_date';
 import BaseLayout from '~/vue_shared/components/base_layout.vue';
 import DetailLayout from '~/vue_shared/components/detail_layout.vue';
+import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 import WorkItemLoading from '~/work_items/components/work_item_loading.vue';
 import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
 import WorkItemActions from '~/work_items/components/work_item_actions.vue';
@@ -24,6 +26,7 @@ import WorkItemTree from '~/work_items/components/work_item_links/work_item_tree
 import WorkItemRelationships from '~/work_items/components/work_item_relationships/work_item_relationships.vue';
 import WorkItemNotes from '~/work_items/components/work_item_notes.vue';
 import WorkItemStickyHeader from '~/work_items/components/work_item_sticky_header.vue';
+import WorkItemTicketModal from '~/work_items/components/work_item_ticket_modal.vue';
 import WorkItemTitle from '~/work_items/components/work_item_title.vue';
 import WorkItemAbuseModal from '~/work_items/components/work_item_abuse_modal.vue';
 import WorkItemDetailPanel from '~/work_items/components/work_item_detail_panel.vue';
@@ -58,6 +61,7 @@ import {
   objectiveType,
   epicType,
   mockBlockingLinkedItem,
+  ticketType,
   allowedChildrenTypesResponse,
   mockProjectPermissionsQueryResponse,
   mockUploadDesignMutationResponse,
@@ -157,6 +161,8 @@ describe('WorkItemDetail component', () => {
   const findDetailLayoutContainer = () => wrapper.findByTestId('detail-layout-container');
   const findRootNode = () => wrapper.findByTestId('work-item-detail');
   const findRefetchAlert = () => wrapper.findByTestId('work-item-refetch-alert');
+  const findUserCalloutDismisser = () => wrapper.findComponent(UserCalloutDismisser);
+  const findWorkItemTicketModal = () => wrapper.findComponent(WorkItemTicketModal);
 
   const mockDragEvent = ({ types = ['Files'], files = [], items = [] }) => {
     return { dataTransfer: { types, files, items } };
@@ -182,6 +188,7 @@ describe('WorkItemDetail component', () => {
     showSidebar = true,
     lastRealtimeUpdatedAt = new Date('2023-01-01T12:00:00.000Z'),
     scopedSlots = {},
+    stubs = {},
   } = {}) => {
     mockApollo = createControlledMockApollo([
       [workItemByIidQuery, handler],
@@ -228,6 +235,7 @@ describe('WorkItemDetail component', () => {
         WorkItemIteration: true,
         WorkItemHealthStatus: true,
         WorkItemErrorTracking,
+        ...stubs,
       },
       scopedSlots,
       mocks: {
@@ -385,6 +393,78 @@ describe('WorkItemDetail component', () => {
         fullPath: 'group/project',
         iid: '1',
       });
+    });
+  });
+
+  describe('ticket migration callout', () => {
+    const ticketHandler = jest.fn().mockReturnValue(
+      workItemByIidResponseFactory({
+        workItemType: ticketType,
+        canUpdate: true,
+        canDelete: true,
+      }),
+    );
+    const ticketMigrationEnabledProvide = { glFeatures: { workItemTicketMigration: true } };
+
+    it('does not render the callout when the work item type is not Ticket', async () => {
+      createComponent({ provide: ticketMigrationEnabledProvide });
+      await mockApollo.resolveAll();
+
+      expect(findUserCalloutDismisser().exists()).toBe(false);
+    });
+
+    it('does not render the callout when the workItemTicketMigration feature flag is disabled', async () => {
+      createComponent({ handler: ticketHandler });
+      await mockApollo.resolveAll();
+
+      expect(findUserCalloutDismisser().exists()).toBe(false);
+    });
+
+    it('renders the callout with the correct feature name when the work item type is Ticket and the feature flag is enabled', async () => {
+      createComponent({ handler: ticketHandler, provide: ticketMigrationEnabledProvide });
+      await mockApollo.resolveAll();
+
+      expect(findUserCalloutDismisser().props('featureName')).toBe('work_item_ticket_migration');
+    });
+
+    it('renders the ticket modal when the callout should be shown', async () => {
+      createComponent({
+        handler: ticketHandler,
+        provide: ticketMigrationEnabledProvide,
+        stubs: { UserCalloutDismisser: makeMockUserCalloutDismisser({ shouldShowCallout: true }) },
+      });
+      await mockApollo.resolveAll();
+
+      expect(findWorkItemTicketModal().exists()).toBe(true);
+    });
+
+    it('does not render the ticket modal when the callout has already been dismissed', async () => {
+      createComponent({
+        handler: ticketHandler,
+        provide: ticketMigrationEnabledProvide,
+        stubs: {
+          UserCalloutDismisser: makeMockUserCalloutDismisser({ shouldShowCallout: false }),
+        },
+      });
+      await mockApollo.resolveAll();
+
+      expect(findWorkItemTicketModal().exists()).toBe(false);
+    });
+
+    it('dismisses the callout when the modal emits `hide`', async () => {
+      const dismiss = jest.fn();
+      createComponent({
+        handler: ticketHandler,
+        provide: ticketMigrationEnabledProvide,
+        stubs: {
+          UserCalloutDismisser: makeMockUserCalloutDismisser({ dismiss, shouldShowCallout: true }),
+        },
+      });
+      await mockApollo.resolveAll();
+
+      findWorkItemTicketModal().vm.$emit('hide');
+
+      expect(dismiss).toHaveBeenCalled();
     });
   });
 

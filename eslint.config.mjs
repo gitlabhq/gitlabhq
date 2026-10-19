@@ -242,7 +242,6 @@ export default [
       'fixtures/**/*.graphql',
       'storybook/public',
       'spec/fixtures/**/*.graphql',
-      'ee/frontend_islands/',
       '{,ee/}app/assets/javascripts/lib/utils/path_helpers/*.js',
       'spec/frontend/scripts/infection_scanner/fixtures/**',
 
@@ -340,7 +339,7 @@ export default [
       'import-x/no-unresolved': [
         'error',
         {
-          ignore: ['^(ee|jh)_component/', '^jh_else_ee/', '^fe_islands/'],
+          ignore: ['^(ee|jh)_component/', '^jh_else_ee/'],
         },
       ],
 
@@ -600,7 +599,7 @@ export default [
       'vue/no-undef-components': [
         'error',
         {
-          ignorePatterns: ['^router-link$', '^router-view$', '^gl-emoji$', 'fe-island-duo-next'],
+          ignorePatterns: ['^router-link$', '^router-view$', '^gl-emoji$'],
         },
       ],
       // Under Vue 3, apps share no global directive registrations, so an

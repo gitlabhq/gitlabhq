@@ -19,6 +19,8 @@ module Ci
         else
           pipeline.variables.map(&:to_hash_variable)
         end
+    rescue ::Ci::Pipeline::VariablesFileMissingError
+      []
     end
 
     def execute_in

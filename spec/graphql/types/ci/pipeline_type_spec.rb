@@ -7,6 +7,8 @@ RSpec.describe Types::Ci::PipelineType, feature_category: :continuous_integratio
 
   specify { expect(described_class.graphql_name).to eq('Pipeline') }
 
+  specify { expect(described_class).to require_graphql_authorizations(:read_pipeline) }
+
   specify { expect(described_class.interfaces).to include(::Types::Ci::PipelineInterface) }
 
   specify { expect(described_class).to expose_permissions_using(Types::PermissionTypes::Ci::Pipeline) }
@@ -250,6 +252,24 @@ RSpec.describe Types::Ci::PipelineType, feature_category: :continuous_integratio
         expect(manual_variables.first['key']).to eq('KEY_1')
         expect(manual_variables.first['value']).to be_nil
         expect(manual_variables.first.keys).to match_array(%w[id key value])
+      end
+    end
+
+    context 'when the pipeline variables file is missing from storage' do
+      let(:user_access_level) { :owner }
+
+      before do
+        pipeline.pipeline_artifacts_pipeline_variables.file.remove!
+      end
+
+      it 'returns an error for the manual variables and resolves the other fields', :aggregate_failures do
+        expect(data.dig('data', 'project', 'pipeline')).to include('iid' => pipeline.iid.to_s, 'manualVariables' => nil)
+        expect(data['errors']).to contain_exactly(
+          a_hash_including(
+            'message' => 'Pipeline variables file is missing.',
+            'path' => %w[project pipeline manualVariables]
+          )
+        )
       end
     end
   end

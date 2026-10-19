@@ -475,6 +475,14 @@ describe('Incidents List', () => {
         expect(columnHeader().attributes('aria-sort')).toBe(nextSort);
       },
     );
+
+    it('passes the new sort direction back to the table', async () => {
+      const [[attr, value]] = Object.entries(TH_CREATED_AT_TEST_ID);
+      wrapper.find(`[${attr}="${value}"]`).trigger('click');
+      await waitForPromises();
+
+      expect(findTable().props('sortDesc')).toBe(false);
+    });
   });
 
   describe('Snowplow tracking', () => {

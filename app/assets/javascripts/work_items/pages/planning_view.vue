@@ -91,7 +91,6 @@ import namespaceSavedViewQuery from '~/work_items/list/graphql/namespace_saved_v
 import getNamespaceSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
 
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
-import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 
 import {
   convertLegacyTypeFormat,
@@ -146,7 +145,6 @@ import {
 import { persistSortPreference } from '~/work_items/list/display_settings_preferences';
 import { buildInitialViewState } from '~/work_items/list/saved_view_config';
 
-import searchProjectsQuery from '../list/graphql/search_projects.query.graphql';
 import namespaceWorkItemChangesSubscription from '../list/graphql/namespace_work_item_changes.subscription.graphql';
 import workItemSavedViewUpdatedSubscription from '../list/graphql/work_item_saved_view_updated.subscription.graphql';
 import {
@@ -224,12 +222,6 @@ const REALTIME_DEBOUNCE_MS = 500;
 export default {
   WORK_ITEM_CREATE_SOURCES,
   CREATION_CONTEXT_LIST_ROUTE,
-  VIEW_CONTEXT,
-  VIEW_MODE_LIST,
-  searchProjectsQuery,
-  i18n: {
-    boardFeedbackLinkText: s__('WorkItemPlanningView|Share feedback on the Board view'),
-  },
   BOARD_FEEDBACK_INTERNAL_ISSUE_URL: 'https://gitlab.com/gitlab-org/gitlab/-/work_items/607858',
   BOARD_FEEDBACK_PUBLIC_ISSUE_URL: 'https://gitlab.com/gitlab-org/gitlab/-/work_items/632391',
   name: 'PlanningView',
@@ -250,7 +242,6 @@ export default {
     FilterEmptyState,
     EmptyState,
     TicketEmptyState,
-    NewResourceDropdown,
     NewSavedViewModal,
     ListView,
     BoardView,
@@ -260,7 +251,6 @@ export default {
   mixins: [glFeatureFlagMixin(), InternalEvents.mixin(), GlToastMixin],
   inject: [
     'isIssueRepositioningDisabled',
-    'groupId',
     'subscribedSavedViewLimit',
     'canCreateSavedView',
     'newWorkItemEmailAddress',
@@ -278,7 +268,6 @@ export default {
     'metadataLoading',
     'canAdminIssue',
     'isGroup',
-    'isGroupIssuesList',
     'isServiceDeskSupported',
     'workItemType',
     'hasEpicsFeature',
@@ -716,7 +705,6 @@ export default {
         excludeProjects: hasGroupFilter,
         includeDescendants: !hasGroupFilter,
         isGroup: this.isGroup,
-        excludeGroupWorkItems: this.isGroupIssuesList,
         useWorkItemFeatures: Boolean(this.glFeatures.workItemFeaturesField),
       };
     },
@@ -819,7 +807,7 @@ export default {
         },
       ];
 
-      if (this.isGroup && !this.isGroupIssuesList) {
+      if (this.isGroup) {
         tokens.push({
           order: 17,
           type: TOKEN_TYPE_GROUP,
@@ -1117,11 +1105,6 @@ export default {
     canExport() {
       return !this.isGroup && this.isLoggedIn && this.currentWorkItemsCount > 0;
     },
-    newIssueDropdownQueryVariables() {
-      return {
-        fullPath: this.rootPageFullPath,
-      };
-    },
     showLimitWarningModal() {
       return Boolean(this.$route.query.sv_limit_id && !this.$route.query.sv_source_modal);
     },
@@ -1129,9 +1112,6 @@ export default {
       // In CE, groups cannot enable create_work_items, so showNewWorkItem is always false (only enabled in EE).
       // However, we need to show the button for CE groups with projects (!hasEpicsFeature indicates CE).
       return (this.isGroup && this.hasProjects && !this.hasEpicsFeature) || this.showNewWorkItem;
-    },
-    showGroupNewWorkItem() {
-      return this.isGroupIssuesList && this.hasProjects;
     },
     isServiceDeskList() {
       return this.workItemType === WORK_ITEM_TYPE_NAME_TICKET;
@@ -2041,9 +2021,6 @@ export default {
       }
       this.handleEvictCache();
     },
-    extractProjects(data) {
-      return data?.group?.projects?.nodes;
-    },
     resetToDefaultView() {
       this.filterTokens = [
         {
@@ -2298,7 +2275,6 @@ export default {
               :query-variables="csvExportQueryVariables"
               :full-path="rootPageFullPath"
               :url-params="urlParams"
-              :is-group-issues-list="isGroupIssuesList"
             />
             <create-work-item-modal
               v-if="showProjectNewWorkItem"
@@ -2430,7 +2406,7 @@ export default {
             rel="noopener noreferrer"
             data-testid="board-feedback-link"
           >
-            {{ $options.i18n.boardFeedbackLinkText }}
+            {{ s__('WorkItemPlanningView|Share feedback on the Board view') }}
           </gl-button>
         </div>
 
@@ -2526,12 +2502,7 @@ export default {
         </template>
 
         <filter-empty-state v-else-if="hasWorkItems" />
-        <empty-state
-          v-else
-          :show-new-issue-dropdown="showGroupNewWorkItem"
-          :has-projects="hasProjects"
-          :has-epics-feature="hasEpicsFeature"
-        >
+        <empty-state v-else :has-projects="hasProjects" :has-epics-feature="hasEpicsFeature">
           <template #new-issue-button>
             <create-work-item-modal
               v-if="showProjectNewWorkItem"
@@ -2541,13 +2512,6 @@ export default {
               :is-group="isGroup"
               :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_LIST"
               @work-item-created="handleWorkItemCreated"
-            />
-            <new-resource-dropdown
-              v-if="showGroupNewWorkItem"
-              :query="$options.searchProjectsQuery"
-              :query-variables="newIssueDropdownQueryVariables"
-              :extract-projects="extractProjects"
-              :group-id="groupId"
             />
           </template>
         </empty-state>
@@ -2584,12 +2548,7 @@ export default {
     >
       <template #empty-state>
         <filter-empty-state v-if="hasWorkItems || hasWorkItemsFailed" />
-        <empty-state
-          v-else
-          :show-new-issue-dropdown="showGroupNewWorkItem"
-          :has-projects="hasProjects"
-          :has-epics-feature="hasEpicsFeature"
-        >
+        <empty-state v-else :has-projects="hasProjects" :has-epics-feature="hasEpicsFeature">
           <template #new-issue-button>
             <create-work-item-modal
               v-if="showProjectNewWorkItem"
@@ -2599,13 +2558,6 @@ export default {
               :is-group="isGroup"
               :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_BOARD"
               @work-item-created="handleWorkItemCreated"
-            />
-            <new-resource-dropdown
-              v-if="showGroupNewWorkItem"
-              :query="$options.searchProjectsQuery"
-              :query-variables="newIssueDropdownQueryVariables"
-              :extract-projects="extractProjects"
-              :group-id="groupId"
             />
           </template>
         </empty-state>

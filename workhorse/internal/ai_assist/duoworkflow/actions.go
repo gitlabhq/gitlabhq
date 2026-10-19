@@ -1,7 +1,6 @@
 package duoworkflow
 
 import (
-	"bytes"
 	"context"
 	"errors"
 	"fmt"
@@ -78,9 +77,11 @@ func (a *runHTTPActionHandler) applyRelativeURLRoot(path string) string {
 }
 
 type nullResponseWriter struct {
-	header       http.Header
-	status       int
-	body         bytes.Buffer
+	header http.Header
+	status int
+	// A strings.Builder rather than a bytes.Buffer: the body ends up in a
+	// proto string field, and Builder.String does not copy it.
+	body         strings.Builder
 	logger       *log.Builder
 	sizeLimitHit bool
 }
@@ -252,15 +253,10 @@ func (a *runHTTPActionHandler) buildClientEvent(nrw *nullResponseWriter, err err
 func (a *runHTTPActionHandler) buildRequest(ctx context.Context, action *pb.Action) (*http.Request, error) {
 	actionRequest := action.GetRunHTTPRequest()
 
-	var bodyBuffer bytes.Buffer
-	if actionRequest.Body != nil {
-		bodyBuffer.WriteString(*actionRequest.Body)
-	}
-
 	// #nosec G704 -- The request is dispatched in-process to the upstream
 	// GitLab router (serveHTTPSafe), not sent to an attacker-chosen network
 	// host, so the DWS-supplied path cannot cause SSRF.
-	req, err := http.NewRequestWithContext(ctx, actionRequest.Method, a.applyRelativeURLRoot(actionRequest.Path), &bodyBuffer)
+	req, err := http.NewRequestWithContext(ctx, actionRequest.Method, a.applyRelativeURLRoot(actionRequest.Path), strings.NewReader(actionRequest.GetBody()))
 	if err != nil {
 		return nil, err
 	}

@@ -111,7 +111,6 @@ yarn.lock @gitlab-org/maintainers/frontend
 # Overrides above BE directory assignments
 /app/assets/ @gitlab-org/maintainers/frontend
 /ee/app/assets/ @gitlab-org/maintainers/frontend
-/ee/frontend_islands/ @gitlab-org/maintainers/frontend
 # @gitlab-bot is an owner here for the same reason as in `/spec/` above.
 /spec/frontend/ @gitlab-org/maintainers/frontend @gitlab-bot
 /ee/spec/frontend/ @gitlab-org/maintainers/frontend @gitlab-bot

@@ -6,6 +6,10 @@ FactoryBot.define do
     application
     source { :doorkeeper }
 
+    trait :revoked do
+      status { :revoked }
+    end
+
     transient do
       boundary { nil }
       permissions { nil }

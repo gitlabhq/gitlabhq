@@ -104,13 +104,14 @@ module Gitlab
             max_json_size_bytes: 10.megabytes
           })
         },
-        # Stricter limits for AI agent audit events endpoint
+        # Stricter limits for AI agent audit events endpoint. max_total_elements allows
+        # about 100 elements for each of the 500 events in a batch.
         {
           regex: AI_AGENTS_AUDIT_EVENT_PATH,
           methods: %i[post],
           limits: DEFAULT_LIMITS.merge({
             max_array_size: 500,
-            max_total_elements: 5000,
+            max_total_elements: 50_000,
             max_json_size_bytes: 5.megabytes
           })
         },

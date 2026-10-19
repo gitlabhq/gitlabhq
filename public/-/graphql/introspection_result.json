@@ -148358,7 +148358,7 @@
             },
             {
               "name": "MERGE_TIME",
-              "description": "Merge request may not be merged until after the specified time.",
+              "description": "Merge request may not be merged outside the specified time frame.",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -239981,7 +239981,7 @@
             },
             {
               "name": "mergeAfter",
-              "description": "Date after which the merge request can be merged.",
+              "description": "Date and time after which the merge request can be merged.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -239990,6 +239990,18 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "mergeBefore",
+              "description": "Date and time before which the merge request can be merged. Introduced in GitLab 19.6: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Time",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.6."
             },
             {
               "name": "mergeCommitSha",
@@ -251500,7 +251512,7 @@
             },
             {
               "name": "mergeAfter",
-              "description": "Date after which the merge request can be merged.",
+              "description": "Date and time after which the merge request can be merged.",
               "type": {
                 "kind": "SCALAR",
                 "name": "Time",
@@ -251509,6 +251521,18 @@
               "defaultValue": null,
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "mergeBefore",
+              "description": "Date and time before which the merge request can be merged. Introduced in GitLab 19.6: Status: Experiment.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Time",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.6."
             },
             {
               "name": "removeSourceBranch",
@@ -265757,7 +265781,7 @@
             },
             {
               "name": "mergeAfter",
-              "description": "Date after which the merge request can be merged.",
+              "description": "Date and time after which the merge request can be merged.",
               "type": {
                 "kind": "SCALAR",
                 "name": "Time",
@@ -265766,6 +265790,18 @@
               "defaultValue": null,
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "mergeBefore",
+              "description": "Date and time before which the merge request can be merged. Introduced in GitLab 19.6: Status: Experiment.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Time",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.6."
             },
             {
               "name": "removeSourceBranch",
@@ -372240,6 +372276,26 @@
                   "deprecationReason": null
                 },
                 {
+                  "name": "assigneeIds",
+                  "description": "Global IDs of users to read direct role assignments on repositories for, at most 20. Cannot be combined with `resourceIds`. The organization owner and admins of the Artifact Registry namespace may use it.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "UserID",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": "[]",
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
                   "type": {
@@ -374477,7 +374533,20 @@
             {
               "name": "frecentGroups",
               "description": "A user's frecently visited groups",
-              "args": [],
+              "args": [
+                {
+                  "name": "scopeToOrganization",
+                  "description": "Limits results to groups in the current organization.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": "false",
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
               "type": {
                 "kind": "LIST",
                 "name": null,
@@ -437467,6 +437536,12 @@
             {
               "name": "ANALYTICS_DASHBOARDS_EXPLORE_INTRO_BANNER",
               "description": "Callout feature name for analytics_dashboards_explore_intro_banner.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "WORK_ITEM_TICKET_MIGRATION",
+              "description": "Callout feature name for work_item_ticket_migration.",
               "isDeprecated": false,
               "deprecationReason": null
             }

@@ -320,6 +320,39 @@ RSpec.describe Authn::OauthApplication, feature_category: :system_access do
     end
   end
 
+  describe '.revoke_non_granular_tokens_and_grants_for' do
+    let_it_be(:user) { create(:user) }
+
+    let!(:legacy_token) { create(:oauth_access_token, resource_owner: user, application: application, scopes: 'api') }
+    let!(:unscoped_token) { create(:oauth_access_token, resource_owner: user, application: application, scopes: nil) }
+    let!(:granular_token) { create(:oauth_access_token, :granular, resource_owner: user, application: application) }
+    let!(:other_user_token) { create(:oauth_access_token, application: application, scopes: 'api') }
+    let!(:other_application_token) { create(:oauth_access_token, resource_owner: user, scopes: 'api') }
+    let!(:legacy_code) { create_code(scopes: 'api') }
+    let!(:granular_code) { create_code(scopes: 'api granular') }
+
+    def create_code(scopes:)
+      create(:oauth_access_grant, resource_owner_id: user.id, application: application,
+        organization: user.organization, scopes: scopes)
+    end
+
+    before do
+      stub_const("#{described_class}::REVOKE_BATCH_SIZE", 1)
+    end
+
+    it 'revokes the non-granular tokens and codes of the user and application only', :aggregate_failures do
+      described_class.revoke_non_granular_tokens_and_grants_for(application.id, user)
+
+      expect(legacy_token.reload).to be_revoked
+      expect(unscoped_token.reload).to be_revoked
+      expect(legacy_code.reload).to be_revoked
+      expect(granular_token.reload).not_to be_revoked
+      expect(granular_code.reload).not_to be_revoked
+      expect(other_user_token.reload).not_to be_revoked
+      expect(other_application_token.reload).not_to be_revoked
+    end
+  end
+
   describe '.encode' do
     let(:raw_token) { 'my_secret_token_123' }
 

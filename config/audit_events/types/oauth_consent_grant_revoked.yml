@@ -1,0 +1,10 @@
+---
+name: oauth_consent_grant_revoked
+description: Consent grant for an OAuth application was revoked and its outstanding tokens invalidated
+introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/work_items/608636
+introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/260051
+feature_category: permissions
+milestone: '19.6'
+saved_to_database: true
+streamed: true
+scope: [User]

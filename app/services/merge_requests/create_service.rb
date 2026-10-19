@@ -11,13 +11,7 @@ module MergeRequests
       merge_request.source_project = @source_project
       merge_request.source_branch = params[:source_branch]
 
-      merge_after = params.delete(:merge_after)
-
-      created_merge_request = create(merge_request)
-
-      UpdateMergeScheduleService.new(created_merge_request, merge_after: merge_after).execute
-
-      created_merge_request
+      create(merge_request)
     end
 
     def after_create(issuable)

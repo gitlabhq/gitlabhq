@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class ArchiveTracesCronWorker # rubocop:disable Scalability/IdempotentWorker
+  class ArchiveTracesCronWorker
     include ApplicationWorker
 
     data_consistency :always
@@ -9,7 +9,8 @@ module Ci
     include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
 
     feature_category :continuous_integration
-    deduplicate :until_executed, including_scheduled: true
+    deduplicate :none
+    idempotent!
 
     def perform
       # Archive stale live traces which still resides in redis or database

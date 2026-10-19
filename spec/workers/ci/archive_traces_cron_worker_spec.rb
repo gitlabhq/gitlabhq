@@ -35,6 +35,14 @@ RSpec.describe Ci::ArchiveTracesCronWorker, feature_category: :continuous_integr
 
     it_behaves_like 'archives trace'
 
+    it_behaves_like 'an idempotent worker' do
+      it 'archives the trace' do
+        perform_idempotent_work
+
+        expect(build.reload.job_artifacts_trace).to be_exist
+      end
+    end
+
     it 'batch_execute service' do
       expect_next_instance_of(Ci::ArchiveTraceService) do |instance|
         expect(instance).to receive(:batch_execute).with(worker_name: "Ci::ArchiveTracesCronWorker")

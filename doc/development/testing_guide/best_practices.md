@@ -40,6 +40,11 @@ bin/rspec
 
 ```
 
+Controller, request, feature, mailer, and view specs need the application CSS to
+have been built once in your checkout, because with Vite off (the default) rendering
+HTML resolves a stylesheet through Sprockets. Build it with `yarn build:css`. Without
+it, RSpec stops at startup with a message naming this command.
+
 Use [Guard](https://github.com/guard/guard) to continuously monitor for changes and only run matching tests:
 
 ```shell

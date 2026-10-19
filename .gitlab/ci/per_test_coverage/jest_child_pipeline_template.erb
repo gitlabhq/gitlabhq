@@ -58,10 +58,8 @@ jest per-test-coverage:
       job: clone-gitlab-repo
   <% end %>
     # Required (not optional): the maintenance schedule pipeline always runs
-    # these, and GitLab rejects `optional` on cross-pipeline needs. The jest run
-    # needs the generated JS routes and fe-islands assets to pass.
-    - pipeline: $PARENT_PIPELINE_ID
-      job: compile-fe-islands
+    # per-test-coverage:pipeline-generate, and GitLab rejects `optional` on
+    # cross-pipeline needs. The jest run needs the queue file it publishes.
     - pipeline: $PARENT_PIPELINE_ID
       job: per-test-coverage:pipeline-generate
   parallel: <%= parallelism %>
@@ -79,8 +77,6 @@ jest-with-fixtures per-test-coverage:
     - pipeline: $PARENT_PIPELINE_ID
       job: clone-gitlab-repo
   <% end %>
-    - pipeline: $PARENT_PIPELINE_ID
-      job: compile-fe-islands
     - pipeline: $PARENT_PIPELINE_ID
       job: per-test-coverage:pipeline-generate
   parallel: <%= fixture_parallelism %>

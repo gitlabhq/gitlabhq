@@ -136,27 +136,3 @@ cache:assets-hash-rspack:
     reports:
       dotenv: build.env
   allow_failure: false
-
-# =================================
-# FE Island
-# =================================
-cache:fe-islands-hash:
-  extends:
-    - .cache-pull-push-base
-    - .with-alpine-ruby-image
-    - .caching:rules:frontend-asset-hash
-  script:
-    - echo "GLCI_FE_ISLAND_HASH=$(ruby scripts/lib/frontend_islands_sha.rb)" > build.env
-    - echo "Calculated assets checksum - $(cat build.env)"
-  artifacts:
-    reports:
-      dotenv: build.env
-  allow_failure: false
-
-cache:fe-islands-node-modules:
-  extends:
-    - .cache-pull-push-base
-    - .with-ci-node-image
-    - .fe-islands-yarn-pull-push-cache
-  script:
-    - scripts/install_frontend_islands

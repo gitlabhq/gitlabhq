@@ -6747,6 +6747,11 @@
     "acceptsFormat": true
   },
   {
+    "template": "/admin/subscription/billable_usage",
+    "example": "/admin/subscription/billable_usage",
+    "acceptsFormat": true
+  },
+  {
     "template": "/admin/system_info",
     "example": "/admin/system_info",
     "acceptsFormat": true

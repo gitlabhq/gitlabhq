@@ -5,5 +5,5 @@ feature_category: source_code_management
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/247294
 milestone: '19.3'
 queued_migration_version: 20260727141402
-finalized_by: # in a later milestone
+finalized_by: '20261014120610'
 gitlab_schema: gitlab_main_org

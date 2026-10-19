@@ -3,11 +3,9 @@ import emptyStateSvg from '@gitlab/svgs/dist/illustrations/empty-state/empty-iss
 import jiraCloudAppLogo from '@gitlab/svgs/dist/illustrations/third-party-logos/integrations-logos/jira_cloud_app.svg?raw';
 import { GlButton, GlEmptyState, GlLink } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { s__ } from '~/locale';
 import { isLoggedIn } from '~/lib/utils/common_utils';
-import searchProjectsQuery from '../graphql/search_projects.query.graphql';
 
 export default {
   name: 'EmptyState',
@@ -27,27 +25,19 @@ export default {
     GlButton,
     GlEmptyState,
     GlLink,
-    NewResourceDropdown,
   },
   directives: {
     SafeHtml,
   },
   inject: [
     'canCreateProjects',
-    'fullPath',
     'newIssuePath',
     'newProjectPath',
     'showNewIssueLink',
     'signInPath',
-    'groupId',
     'isGroup',
   ],
   props: {
-    showNewIssueDropdown: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     hasProjects: {
       type: Boolean,
       required: false,
@@ -65,11 +55,6 @@ export default {
     };
   },
   computed: {
-    newIssueDropdownQueryVariables() {
-      return {
-        fullPath: this.fullPath,
-      };
-    },
     showNewProjectButton() {
       return this.canCreateProjects && this.isGroup && !this.hasProjects;
     },
@@ -83,13 +68,7 @@ export default {
       return this.hasEpicsFeature ? 'default' : 'confirm';
     },
   },
-  methods: {
-    extractProjects(data) {
-      return data?.group?.projects?.nodes;
-    },
-  },
   jiraCloudAppLogo,
-  searchProjectsQuery,
 };
 </script>
 
@@ -109,16 +88,7 @@ export default {
       >
         <template #actions>
           <div class="gl-flex gl-justify-center gl-gap-3">
-            <slot name="actions"></slot>
-            <new-resource-dropdown
-              v-if="showNewIssueDropdown"
-              class="gl-self-center"
-              :query="$options.searchProjectsQuery"
-              :query-variables="newIssueDropdownQueryVariables"
-              :extract-projects="extractProjects"
-              :group-id="groupId"
-            />
-            <slot v-else name="new-issue-button">
+            <slot name="new-issue-button">
               <gl-button
                 v-if="showNewIssueLink"
                 :href="newIssuePath"

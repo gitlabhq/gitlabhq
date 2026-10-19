@@ -257,8 +257,7 @@ module Gitlab
             def log_and_raise_timeout_error
               log_gitaly_timeout
 
-              raise Context::TimeoutError, 'CI configuration fetch from Gitaly timed out. ' \
-                'This may indicate Gitaly service slowness or an outage.'
+              raise Context::TimeoutError, Gitlab::Ci::Config::GITALY_TIMEOUT_MESSAGE
             end
 
             def log_gitaly_timeout

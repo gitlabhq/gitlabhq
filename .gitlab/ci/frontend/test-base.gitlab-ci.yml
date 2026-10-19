@@ -24,6 +24,4 @@
   stage: test-frontend
   cache:
     - !reference [.yarn-cache, cache]
-  needs:
-    - job: compile-fe-islands
-      optional: true
+  needs: []

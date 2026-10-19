@@ -354,6 +354,99 @@ RSpec.describe ClickHouse::Finders::Ci::SiphonPipelinesFinder, :click_house, :fr
     end
   end
 
+  describe '#with_metadata' do
+    let(:from_time) { Time.utc(2024, 1, 1, 0, 0, 0) }
+    let(:to_time) { Time.utc(2024, 2, 1, 0, 0, 0) }
+    let(:ids_bound) do
+      '`siphon_ci_pipeline_metadata`.`pipeline_id` IN (SELECT `siphon_p_ci_pipelines`.`id` ' \
+        'FROM `siphon_p_ci_pipelines` ' \
+        "WHERE `siphon_p_ci_pipelines`.`traversal_path` = '#{project_path}' " \
+        "AND `siphon_p_ci_pipelines`.`started_at` >= toDateTime64('2024-01-01 00:00:00', 6, 'UTC') " \
+        "AND `siphon_p_ci_pipelines`.`started_at` < toDateTime64('2024-02-01 00:00:00', 6, 'UTC'))"
+    end
+
+    subject(:sql) do
+      described_class.for_container(project).within_dates(from_time, to_time).for_ref('master')
+        .with_metadata(project).to_sql
+    end
+
+    it 'inner-joins only pipeline_id and name from the deduplicated metadata', :aggregate_failures do
+      is_expected.to include(
+        'INNER JOIN (SELECT `pipeline_metadata`.`pipeline_id`, `pipeline_metadata`.`name` FROM (SELECT'
+      )
+      is_expected.to include('ON `pipelines`.`id` = `pipeline_metadata`.`pipeline_id`')
+    end
+
+    it 'scopes the metadata subquery to the container traversal_path' do
+      is_expected.to include("`siphon_ci_pipeline_metadata`.`traversal_path` = '#{project_path}'")
+    end
+
+    it 'bounds the metadata subquery by raw pipeline ids under the inner WHERE only' do
+      is_expected.to include(ids_bound)
+    end
+
+    it 'runs the pipelines argMax dedup only once' do
+      expect(sql.scan('argMax(`siphon_p_ci_pipelines`').size).to eq(described_class::DEDUP_COLUMNS.size)
+    end
+
+    context 'when called before an inner filter' do
+      subject(:sql) do
+        described_class.for_container(project).with_metadata(project).within_dates(from_time, to_time).to_sql
+      end
+
+      it 'keeps the looser id bound captured at call time' do
+        is_expected.to include(
+          '`siphon_ci_pipeline_metadata`.`pipeline_id` IN (SELECT `siphon_p_ci_pipelines`.`id` ' \
+            "FROM `siphon_p_ci_pipelines` WHERE `siphon_p_ci_pipelines`.`traversal_path` = '#{project_path}')"
+        )
+      end
+    end
+  end
+
+  describe '#filter_by_name' do
+    context 'when #with_metadata was called' do
+      subject(:sql) { described_class.for_container(project).with_metadata(project).filter_by_name('Tier-1').to_sql }
+
+      it 'applies an ILIKE partial match without downcasing the term' do
+        is_expected.to include("`pipeline_metadata`.`name` ILIKE '%Tier-1%'")
+      end
+    end
+
+    context 'with surrounding whitespace' do
+      subject(:sql) { described_class.for_container(project).with_metadata(project).filter_by_name(' tier-1 ').to_sql }
+
+      it 'strips the term to match names that are stripped on write' do
+        is_expected.to include("`pipeline_metadata`.`name` ILIKE '%tier-1%'")
+      end
+    end
+
+    context 'when redacting the SQL' do
+      subject(:redacted_sql) do
+        described_class.for_container(project).with_metadata(project).filter_by_name('tier-1').to_redacted_sql
+      end
+
+      it 'does not leak the search term', :aggregate_failures do
+        expect(redacted_sql).to include('ILIKE ?')
+        expect(redacted_sql).not_to include('tier-1')
+      end
+    end
+
+    context 'without #with_metadata' do
+      it 'raises to fail loudly at build time' do
+        expect { described_class.for_container(project).filter_by_name('tier-1') }
+          .to raise_error(ArgumentError, /call #with_metadata/)
+      end
+    end
+
+    context 'with a term containing LIKE wildcards' do
+      subject(:sql) { described_class.for_container(project).with_metadata(project).filter_by_name('50%_off').to_sql }
+
+      it 'escapes the wildcards so they are matched literally' do
+        is_expected.to include('50\\\\%\\\\_off')
+      end
+    end
+  end
+
   describe '#final_query' do
     subject(:sql) { instance.final_query.to_sql }
 
@@ -481,6 +574,74 @@ RSpec.describe ClickHouse::Finders::Ci::SiphonPipelinesFinder, :click_house, :fr
       end
 
       it { is_expected.to eq(1) }
+    end
+
+    context 'when filtering by pipeline name' do
+      let(:tier1_pipeline) do
+        build_stubbed(:ci_pipeline, :success,
+          project: project, ref: 'master', source: :push,
+          created_at: started_at, started_at: started_at, finished_at: started_at + 5.minutes, duration: 300)
+      end
+
+      let(:tier2_pipeline) do
+        build_stubbed(:ci_pipeline, :success,
+          project: project, ref: 'master', source: :push,
+          created_at: started_at, started_at: started_at, finished_at: started_at + 5.minutes, duration: 300)
+      end
+
+      let(:unnamed_pipeline) do
+        build_stubbed(:ci_pipeline, :success,
+          project: project, ref: 'master', source: :push,
+          created_at: started_at, started_at: started_at, finished_at: started_at + 5.minutes, duration: 300)
+      end
+
+      let(:scoped_finder) { described_class.for_container(project).within_dates(from_time, to_time) }
+
+      before do
+        insert_ci_pipelines_to_siphon([tier1_pipeline, tier2_pipeline, unnamed_pipeline])
+        insert_ci_pipeline_metadata_to_siphon([
+          { pipeline: tier1_pipeline, name: 'tier-1' },
+          { pipeline: tier2_pipeline, name: 'tier-2' }
+        ])
+      end
+
+      def count_for(term)
+        execute(scoped_finder.with_metadata(project).filter_by_name(term))
+      end
+
+      it 'returns only pipelines whose name matches' do
+        expect(count_for('tier-1')).to eq(1)
+      end
+
+      it 'matches partially' do
+        expect(count_for('tier')).to eq(2)
+      end
+
+      it 'matches case-insensitively without downcasing the term' do
+        expect(count_for('TIER-2')).to eq(1)
+      end
+
+      it 'excludes pipelines that have no metadata row via the inner join', :aggregate_failures do
+        expect(execute(scoped_finder)).to eq(3)
+        expect(count_for('r')).to eq(2)
+      end
+
+      it 'returns nothing when the term matches no name' do
+        expect(count_for('nonexistent')).to eq(0)
+      end
+
+      it 'returns the same count when #with_metadata is called twice' do
+        double_joined = scoped_finder.with_metadata(project).with_metadata(project).filter_by_name('tier')
+
+        expect(execute(double_joined)).to eq(count_for('tier'))
+      end
+
+      it 'returns the same count when #with_metadata is called before the date filter' do
+        joined_first = described_class.for_container(project).with_metadata(project)
+          .within_dates(from_time, to_time).filter_by_name('tier')
+
+        expect(execute(joined_first)).to eq(count_for('tier'))
+      end
     end
   end
 end

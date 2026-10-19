@@ -658,6 +658,9 @@ Audit event types belong to the following product categories.
 | [`member_role_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141630) | A custom role is deleted | {{< yes >}} | GitLab [16.9](https://gitlab.com/gitlab-org/gitlab/-/issues/437672) | Group, Instance |
 | [`member_role_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141630) | A custom role is updated | {{< yes >}} | GitLab [16.9](https://gitlab.com/gitlab-org/gitlab/-/issues/437672) | Group, Instance |
 | [`member_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109711) | A member's default or custom role or expiration date is updated | {{< yes >}} | GitLab [15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/374112) | Group, Project |
+| [`oauth_consent_grant_amended`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/260051) | User consented again to an OAuth application, replacing the previously active consent grant | {{< yes >}} | GitLab [19.6](https://gitlab.com/gitlab-org/gitlab/-/work_items/608636) | User |
+| [`oauth_consent_grant_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/260051) | User granted consent to an OAuth application that declares granular scopes | {{< yes >}} | GitLab [19.6](https://gitlab.com/gitlab-org/gitlab/-/work_items/608636) | User |
+| [`oauth_consent_grant_revoked`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/260051) | Consent grant for an OAuth application was revoked and its outstanding tokens invalidated | {{< yes >}} | GitLab [19.6](https://gitlab.com/gitlab-org/gitlab/-/work_items/608636) | User |
 
 ### Portfolio management
 

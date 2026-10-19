@@ -321,6 +321,7 @@ export default {
       const field = this.availableFields.find(({ key }) => key === sortBy);
       const sortingDirection = sortDesc ? 'DESC' : 'ASC';
 
+      this.sortDesc = sortDesc;
       this.pagination = initialPaginationState;
 
       // BootstapVue natively supports a `sortKey` parameter, but using it results in the sorting
@@ -416,7 +417,7 @@ export default {
           stacked="md"
           :tbody-tr-class="tbodyTrClass"
           sort-direction="desc"
-          :sort-desc.sync="sortDesc"
+          :sort-desc="sortDesc"
           sort-by="createdAt"
           show-empty
           no-local-sorting

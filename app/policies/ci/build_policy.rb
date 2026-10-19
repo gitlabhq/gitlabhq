@@ -75,6 +75,9 @@ module Ci
 
     condition(:debug_mode, scope: :subject, score: 32) do
       @subject.debug_mode?
+    rescue ::Ci::Pipeline::VariablesFileMissingError
+      # The missing variables might have enabled debug mode, so we keep the job log restricted
+      true
     end
 
     condition(:duo_workflow_job, scope: :subject) do

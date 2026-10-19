@@ -1,0 +1,8 @@
+job_with_empty_tag_name:
+  script: exit 0
+  tags:
+    - ''
+
+job_with_non_array_tags:
+  script: exit 0
+  tags: docker

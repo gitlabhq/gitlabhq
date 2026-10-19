@@ -316,7 +316,7 @@ export default {
       return this.pipeline?.refText;
     },
     isMergeTrainPipeline() {
-      return this.pipeline.mergeRequestEventType === MERGE_TRAIN_EVENT_TYPE;
+      return this.pipeline?.mergeRequestEventType === MERGE_TRAIN_EVENT_TYPE;
     },
     isFailed() {
       return this.status === 'FAILED';
@@ -327,7 +327,7 @@ export default {
         : null;
     },
     sourceBranch() {
-      return this.pipeline.mergeRequest?.sourceBranch || this.pipeline.ref || null;
+      return this.pipeline?.mergeRequest?.sourceBranch || this.pipeline?.ref || null;
     },
     showFixPipelineButton() {
       return this.isFailed && this.pipelinePath && this.sourceBranch;
@@ -505,7 +505,7 @@ export default {
           data-testid="pipeline-ref-text"
         ></div>
         <div>
-          <header-badges v-if="pipeline.id" :pipeline="pipeline" />
+          <header-badges v-if="pipeline?.id" :pipeline="pipeline" />
 
           <div class="gl-inline-block">
             <button
@@ -560,7 +560,7 @@ export default {
             {{ __('Fix pipeline with Duo') }}
           </duo-workflow-action>
           <header-actions
-            v-if="pipeline.id"
+            v-if="pipeline?.id"
             :pipeline="pipeline"
             :is-retrying="isRetrying"
             :is-canceling="isCanceling"

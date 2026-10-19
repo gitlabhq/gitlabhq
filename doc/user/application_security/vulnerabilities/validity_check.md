@@ -159,6 +159,9 @@ Beamer API tokens are verified with requests that count against the key owner's 
 quota, which is 1,000 requests on free plans. When the quota is used up, Beamer rate limits the check
 and the token shows as possibly active until the quota resets.
 
+HashiCorp Terraform tokens are verified against [HCP Terraform](https://app.terraform.io) only.
+A token that HCP Terraform rejects shows as possibly active, because it might belong to a self-hosted Terraform Enterprise instance.
+
 ### Configure outbound network access
 
 Validity checks are not supported in offline environments. This feature requires outbound

@@ -7,8 +7,8 @@
 #
 # .frontend-test-base is shared verbatim with the main frontend pipeline
 # through .gitlab/ci/frontend/test-base.gitlab-ci.yml, so the two no longer
-# drift. Its `needs` are harmless in the child: the jest per-test-coverage job
-# sets its own needs, and the base's only need is optional.
+# drift. Its empty `needs` are harmless in the child: the jest per-test-coverage
+# job sets its own needs.
 include:
   - local: .gitlab/ci/global.gitlab-ci.yml
   - local: .gitlab/ci/ci-images.gitlab-ci.yml

@@ -3,14 +3,6 @@
 Gitlab/Authz/UsePolicyHelpers:
   Exclude:
     - 'ee/spec/policies/ai/duo_workflows/workflow_policy_spec.rb'
-    - 'ee/spec/policies/app_sec/fuzzing/coverage/corpus_policy_spec.rb'
-    - 'ee/spec/policies/audit_events/group/namespace_filter_policy_spec.rb'
-    - 'ee/spec/policies/ci/build_policy_spec.rb'
-    - 'ee/spec/policies/ci/minutes/gitlab_hosted_runner_monthly_usage_policy_spec.rb'
-    - 'ee/spec/policies/ci/minutes/namespace_monthly_usage_policy_spec.rb'
-    - 'ee/spec/policies/ci/subscriptions/project_policy_spec.rb'
-    - 'ee/spec/policies/clusters/agents/url_configuration_policy_spec.rb'
-    - 'ee/spec/policies/clusters/instance_policy_spec.rb'
     - 'ee/spec/policies/compliance_management/compliance_framework/project_control_compliance_status_policy_spec.rb'
     - 'ee/spec/policies/compliance_management/compliance_framework/project_requirement_compliance_status_policy_spec.rb'
     - 'ee/spec/policies/compliance_management/framework_policy_spec.rb'

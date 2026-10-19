@@ -50,7 +50,7 @@ RSpec.describe Gitlab::Metrics::Samplers::ThreadsSampler do
         end
 
         with_them do
-          it do
+          it 'reports running threads labelled with the normalized thread name' do
             allow(Thread).to receive(:list).and_return(thread_names.map { |name| fake_thread(name) })
 
             expected_names.each do |expected_name|

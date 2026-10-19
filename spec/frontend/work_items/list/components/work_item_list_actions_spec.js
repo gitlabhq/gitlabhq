@@ -36,7 +36,6 @@ describe('WorkItemsListActions component', () => {
         calendarPath: null,
         canImportWorkItems: false,
         canAdminProject: false,
-        isGroupIssuesList: false,
         ...injectedProperties,
       },
       propsData: {
@@ -207,46 +206,6 @@ describe('WorkItemsListActions component', () => {
       wrapper = createComponent({ rssPath: null }, { urlParams: { state: 'opened' } });
 
       expect(findRssLink().exists()).toBe(false);
-    });
-
-    describe('default type parameters', () => {
-      it('excludes epics for group issues page using negative filter', () => {
-        wrapper = createComponent(
-          { rssPath: baseRssPath },
-          { urlParams: {}, isGroupIssuesList: true },
-        );
-
-        const rssLink = findRssLink();
-        const href = rssLink.attributes('href');
-
-        // Check that epic is excluded using negative filter
-        expect(href).toContain('not%5Btype%5D%5B%5D=epic');
-      });
-
-      it('does not add default type for project work items page', () => {
-        wrapper = createComponent(
-          { rssPath: baseRssPath },
-          { urlParams: {}, isGroupIssuesList: false },
-        );
-
-        const rssLink = findRssLink();
-        expect(rssLink.attributes('href')).toBe(baseRssPath);
-      });
-
-      it('merges default type exclusion with user-provided urlParams', () => {
-        const urlParams = {
-          assignee_username: 'john-doe',
-        };
-
-        wrapper = createComponent({ rssPath: baseRssPath }, { urlParams, isGroupIssuesList: true });
-
-        const rssLink = findRssLink();
-        const href = rssLink.attributes('href');
-
-        // Check that both default type exclusion and user params are present
-        expect(href).toContain('assignee_username=john-doe');
-        expect(href).toContain('not%5Btype%5D%5B%5D=epic');
-      });
     });
 
     describe('error handling', () => {

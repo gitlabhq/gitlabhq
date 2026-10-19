@@ -16,17 +16,19 @@ RSpec.describe MergeRequests::Mergeability::CheckMergeTimeService, feature_categ
   describe '#execute' do
     let(:result) { check_merge_time.execute }
 
+    let(:merge_after) { nil }
+    let(:merge_before) { nil }
+
     before do
       merge_request.merge_schedule = build(
         :merge_request_merge_schedule,
         merge_request: merge_request,
-        merge_after: merge_after
+        merge_after: merge_after,
+        merge_before: merge_before
       )
     end
 
-    context 'when merge_after is not set' do
-      let(:merge_after) { nil }
-
+    context 'when neither merge_after nor merge_before is set' do
       it 'returns a check result with status inactive' do
         expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::INACTIVE_STATUS
         expect(result.payload[:identifier]).to eq(:merge_time)
@@ -47,6 +49,67 @@ RSpec.describe MergeRequests::Mergeability::CheckMergeTimeService, feature_categ
 
       it 'returns a check result with status success' do
         expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::SUCCESS_STATUS
+        expect(result.payload[:identifier]).to eq(:merge_time)
+      end
+    end
+
+    context 'when only merge_before is set' do
+      context 'and merge_before is in the future' do
+        let(:merge_before) { 1.hour.from_now }
+
+        it 'returns success' do
+          expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::SUCCESS_STATUS
+        end
+      end
+
+      context 'and merge_before is in the past' do
+        let(:merge_before) { 1.hour.ago }
+
+        it 'returns failed' do
+          expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::FAILED_STATUS
+          expect(result.payload[:identifier]).to eq(:merge_time)
+        end
+      end
+    end
+
+    context 'when both merge_after and merge_before are set' do
+      context 'and we are within the window' do
+        let(:merge_after) { 1.hour.ago }
+        let(:merge_before) { 1.hour.from_now }
+
+        it 'returns success' do
+          expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::SUCCESS_STATUS
+        end
+      end
+
+      context 'and merge_after is still in the future' do
+        let(:merge_after) { 1.hour.from_now }
+        let(:merge_before) { 2.hours.from_now }
+
+        it 'returns failed' do
+          expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::FAILED_STATUS
+          expect(result.payload[:identifier]).to eq(:merge_time)
+        end
+      end
+
+      context 'and merge_before is in the past' do
+        let(:merge_after) { 2.hours.ago }
+        let(:merge_before) { 1.hour.ago }
+
+        it 'returns failed' do
+          expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::FAILED_STATUS
+          expect(result.payload[:identifier]).to eq(:merge_time)
+        end
+      end
+    end
+
+    context 'when merge_schedule is not set' do
+      before do
+        merge_request.merge_schedule = nil
+      end
+
+      it 'returns a check result with status inactive' do
+        expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::INACTIVE_STATUS
         expect(result.payload[:identifier]).to eq(:merge_time)
       end
     end

@@ -30,6 +30,8 @@ module Authn
     # applications should have device_code_enabled set to false.
     attribute :device_code_enabled, default: -> { false }
 
+    REVOKE_BATCH_SIZE = 100
+
     # Authorization and refresh need granular while a set is declared, and no other application may carry it.
     before_validation :sync_granular_scope
 
@@ -44,6 +46,15 @@ module Authn
 
     def self.exists_for_uid?(uid)
       exists?(uid: uid)
+    end
+
+    def self.revoke_non_granular_tokens_and_grants_for(id, resource_owner)
+      [OauthAccessToken, OauthAccessGrant].each do |model|
+        model.by_resource_owner(resource_owner)
+          .where(application_id: id, revoked_at: nil)
+          .where.not("string_to_array(COALESCE(scopes, ''), ' ') @> ARRAY[?]", ::Gitlab::Auth::GRANULAR_SCOPE.to_s)
+          .each_batch(of: REVOKE_BATCH_SIZE) { |batch| batch.update_all(revoked_at: Time.current) }
+      end
     end
 
     # Check whether the given plain text secret matches our stored secret

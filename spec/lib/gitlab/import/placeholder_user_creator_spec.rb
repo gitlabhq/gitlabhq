@@ -143,7 +143,7 @@ RSpec.describe Gitlab::Import::PlaceholderUserCreator, feature_category: :import
         with_them do
           let(:source_username) { input_username }
 
-          it do
+          it 'removes the invalid characters when generating the username' do
             placeholder_user = service.execute
 
             expect(placeholder_user.username).to match(expected_output)

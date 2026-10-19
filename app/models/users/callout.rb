@@ -136,7 +136,8 @@ module Users
       feature_library_shimmer_seen: 132,
       work_item_decision_log_popover: 133, # EE-only
       # 134 removed in https://gitlab.com/gitlab-org/gitlab/-/work_items/631979
-      analytics_dashboards_explore_intro_banner: 135 # EE-only
+      analytics_dashboards_explore_intro_banner: 135, # EE-only
+      work_item_ticket_migration: 136
     }
 
     validates :feature_name,

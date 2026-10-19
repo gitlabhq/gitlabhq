@@ -32,7 +32,7 @@ require (
 	github.com/sony/gobreaker/v2 v2.4.0
 	github.com/stretchr/testify v1.12.1
 	gitlab.com/gitlab-org/gitaly/v19 v19.5.0-rc2
-	gitlab.com/gitlab-org/labkit v1.65.0
+	gitlab.com/gitlab-org/labkit v1.65.4
 	gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb v0.0.0-20261015141704-0fd3a377d067
 	gitlab.com/gitlab-org/orbit/knowledge-graph/clients/orbitpb v0.137.0
 	go.uber.org/goleak v1.3.0
@@ -221,7 +221,7 @@ require (
 	golang.org/x/time v0.15.0 // indirect
 	golang.org/x/tools v0.48.0 // indirect
 	golang.org/x/xerrors v0.0.0-20240903120638-7835f813f4da // indirect
-	google.golang.org/api v0.295.0 // indirect
+	google.golang.org/api v0.298.0 // indirect
 	google.golang.org/genproto v0.0.0-20260715232425-e75dac1f907d // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20260715232425-e75dac1f907d // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20260825221802-da73d73af1c5

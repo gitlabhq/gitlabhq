@@ -16,11 +16,6 @@ module MergeRequests
         merge_request.title = merge_request.draft_title
       end
 
-      if params.key?(:merge_after)
-        merge_after = params.delete(:merge_after)
-        UpdateMergeScheduleService.new(merge_request, merge_after: merge_after).execute
-      end
-
       update_merge_request_with_specialized_service(merge_request) || general_fallback(merge_request)
     end
 

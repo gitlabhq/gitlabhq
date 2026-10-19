@@ -37,6 +37,26 @@ experiment(:example2) do |e|
 end
 ```
 
+### Test control and candidate variants
+
+For an experiment class that defines only `control` and `candidate` behaviors,
+use the `defines control and candidate variants` shared example:
+
+```ruby
+RSpec.describe ExampleExperiment do
+  it_behaves_like 'defines control and candidate variants'
+end
+```
+
+The shared example checks that:
+
+- `context_keys` returns symbols.
+- The `control` and `candidate` behaviors return `nil` and run without errors.
+
+The `ExperimentsTestCoverage` RuboCop cop accepts the shared example as test coverage for the experiment class.
+For other variants, or behaviors that return a value, write your own examples with the
+[behavior matchers](#exclusion-segmentation-and-behavior-matchers).
+
 ### Exclusion, segmentation, and behavior matchers
 
 You can also test things like the registered behaviors, the exclusions, and

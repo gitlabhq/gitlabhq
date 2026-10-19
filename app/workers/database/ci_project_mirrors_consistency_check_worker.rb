@@ -16,8 +16,8 @@ module Database
       results = ConsistencyCheckService.new(
         source_model: Project,
         target_model: Ci::ProjectMirror,
-        source_columns: %w[id namespace_id],
-        target_columns: %w[project_id namespace_id]
+        source_columns: %w[id namespace_id organization_id],
+        target_columns: %w[project_id namespace_id organization_id]
       ).execute
 
       if results[:mismatches_details].any?

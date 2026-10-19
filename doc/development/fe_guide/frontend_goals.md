@@ -15,7 +15,7 @@ Keeping up with the latest version of Vue ensures that the GitLab frontend lever
 
 **Current Status**
 
-- **As of November 2025**: The GitLab Monolith is using Vue 2.x with [frontend islands](https://gitlab.com/gitlab-org/gitlab/-/issues/577797) that use Vue 3.x
+- **As of November 2025**: The GitLab Monolith is using Vue 2.x
 - **Progress**: [See Epic](https://gitlab.com/groups/gitlab-org/-/work_items/6252)
 
 **Responsible Team**

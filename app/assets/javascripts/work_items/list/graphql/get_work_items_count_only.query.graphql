@@ -38,6 +38,7 @@ query getWorkItemsCountOnly(
   $beforeCursor: String
   $firstPageSize: Int
   $lastPageSize: Int
+  $countLimit: Int
 ) {
   namespace(fullPath: $fullPath) {
     id
@@ -81,7 +82,7 @@ query getWorkItemsCountOnly(
       first: $firstPageSize
       last: $lastPageSize
     ) {
-      count
+      count(limit: $countLimit)
     }
   }
 }

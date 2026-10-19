@@ -52,6 +52,7 @@ import StagesYaml from './yaml_tests/positive_tests/stages.yml';
 import RetryYaml from './yaml_tests/positive_tests/retry.yml';
 import ParallelYaml from './yaml_tests/positive_tests/parallel.yml';
 import TriggerYaml from './yaml_tests/positive_tests/trigger.yml';
+import TagsYaml from './yaml_tests/positive_tests/tags.yml';
 
 // YAML NEGATIVE TEST
 import ArtifactsNegativeYaml from './yaml_tests/negative_tests/artifacts.yml';
@@ -100,6 +101,7 @@ import WorkflowRulesAutoCancelOnNewCommitNegativeYaml from './yaml_tests/negativ
 import StagesNegativeYaml from './yaml_tests/negative_tests/stages.yml';
 import RetryNegativeYaml from './yaml_tests/negative_tests/retry.yml';
 import ParallelNegativeYaml from './yaml_tests/negative_tests/parallel.yml';
+import TagsNegativeYaml from './yaml_tests/negative_tests/tags.yml';
 
 const ajv = new Ajv({
   strictTypes: false,
@@ -151,6 +153,7 @@ describe('positive tests', () => {
       ServicesYaml,
       SpecInputsYaml,
       StagesYaml,
+      TagsYaml,
       TriggerYaml,
       VariablesYaml,
       WorkflowRulesAutoCancelOnJobFailureYaml,
@@ -237,6 +240,7 @@ describe('negative tests', () => {
       SpecInputsRulesWithoutDefaultYaml,
       SpecUnknownKeywordYaml,
       StagesNegativeYaml,
+      TagsNegativeYaml,
       TriggerNegativeYaml,
       VariablesInvalidOptionsYaml,
       VariablesInvalidSyntaxDescYaml,

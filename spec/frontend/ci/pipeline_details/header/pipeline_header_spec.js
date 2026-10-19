@@ -14,6 +14,7 @@ import deletePipelineMutation from '~/ci/pipeline_details/graphql/mutations/dele
 import retryPipelineMutation from '~/ci/pipeline_details/graphql/mutations/retry_pipeline.mutation.graphql';
 import HeaderActions from '~/ci/pipeline_details/header/components/header_actions.vue';
 import HeaderBadges from '~/ci/pipeline_details/header/components/header_badges.vue';
+import PageHeading from '~/vue_shared/components/page_heading.vue';
 import getPipelineDetailsQuery from '~/ci/pipeline_details/header/graphql/queries/get_pipeline_header_data.query.graphql';
 import pipelineHeaderStatusUpdatedSubscription from '~/ci/pipeline_details/header/graphql/subscriptions/pipeline_header_status_updated.subscription.graphql';
 
@@ -97,7 +98,7 @@ describe('Pipeline header', () => {
     [pipelineHeaderStatusUpdatedSubscription, subscriptionNullHandler],
   ];
 
-  const createComponent = ({ handlers = defaultHandlers, provide = {} } = {}) => {
+  const createComponent = ({ handlers = defaultHandlers, provide = {}, stubs = {} } = {}) => {
     apolloProvider = createMockApollo(handlers);
 
     wrapper = shallowMountExtended(PipelineHeader, {
@@ -119,6 +120,7 @@ describe('Pipeline header', () => {
           props: ['time'],
           template: '<span>{{time}}</span>',
         },
+        ...stubs,
       },
       apolloProvider,
     });
@@ -660,8 +662,7 @@ describe('Pipeline header', () => {
   });
 
   describe('missing pipelineIid', () => {
-    it('skips the query when pipelineIid is missing', async () => {
-      // Simulate missing pipelineIid
+    beforeEach(async () => {
       await createComponent({
         handlers: [
           [getPipelineDetailsQuery, successHandler],
@@ -670,11 +671,19 @@ describe('Pipeline header', () => {
         provide: {
           pipelineIid: '',
         },
+        // Render the heading slots, which read the pipeline.
+        stubs: { PageHeading },
       });
+    });
 
-      await waitForPromises();
-
+    it('skips the query', () => {
       expect(successHandler).not.toHaveBeenCalled();
+    });
+
+    it('renders the heading without a pipeline', () => {
+      expect(wrapper.findComponent(PageHeading).exists()).toBe(true);
+      expect(wrapper.findComponent(HeaderBadges).exists()).toBe(false);
+      expect(wrapper.findComponent(HeaderActions).exists()).toBe(false);
     });
   });
 });

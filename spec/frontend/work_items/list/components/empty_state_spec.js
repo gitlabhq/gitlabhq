@@ -1,7 +1,6 @@
 import { GlEmptyState } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import EmptyState from '~/work_items/list/components/empty_state.vue';
-import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 
 jest.mock('~/lib/utils/common_utils');
@@ -11,18 +10,15 @@ describe('EmptyState component', () => {
 
   const defaultProvide = {
     canCreateProjects: false,
-    fullPath: 'full/path',
     newIssuePath: 'new/issue/path',
     newProjectPath: 'new/project/path',
     showNewIssueLink: false,
     signInPath: 'sign/in/path',
-    groupId: '',
     isGroup: true,
   };
 
   const findGlEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findJiraDocsLink = () => wrapper.findByRole('link', { name: 'See integration options' });
-  const findNewResourceDropdown = () => wrapper.findComponent(NewResourceDropdown);
   const findCreateIssueLink = () => wrapper.findByRole('link', { name: 'Create issue' });
   const findNewProjectLink = () => wrapper.findByRole('link', { name: 'New project' });
 
@@ -40,9 +36,6 @@ describe('EmptyState component', () => {
       provide: {
         ...defaultProvide,
         ...provide,
-      },
-      stubs: {
-        NewResourceDropdown: true,
       },
       slots: {
         ...slots,
@@ -155,40 +148,11 @@ describe('EmptyState component', () => {
             });
           });
 
-          describe('when can show new issue dropdown', () => {
-            it('does not render', () => {
-              mountComponent({
-                props: { showNewIssueDropdown: true },
-                provide: { showNewIssueLink: true },
-              });
-
-              expect(findCreateIssueLink().exists()).toBe(false);
-            });
-          });
-
           describe('when cannot show new issue link', () => {
             it('does not render', () => {
               mountComponent({ provide: { showNewIssueLink: false } });
 
               expect(findCreateIssueLink().exists()).toBe(false);
-            });
-          });
-        });
-
-        describe('new issue dropdown', () => {
-          describe('when can show new issue dropdown', () => {
-            it('renders', () => {
-              mountComponent({ props: { showNewIssueDropdown: true } });
-
-              expect(findNewResourceDropdown().exists()).toBe(true);
-            });
-          });
-
-          describe('when cannot show new issue dropdown', () => {
-            it('does not render', () => {
-              mountComponent({ props: { showNewIssueDropdown: false } });
-
-              expect(findNewResourceDropdown().exists()).toBe(false);
             });
           });
         });

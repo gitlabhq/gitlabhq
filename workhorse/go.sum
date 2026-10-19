@@ -238,8 +238,8 @@ github.com/fsnotify/fsnotify v1.4.7/go.mod h1:jwhsz4b93w/PPRr/qN1Yymfu8t87LnFCMo
 github.com/garyburd/redigo v1.1.1-0.20170914051019-70e1b1943d4f/go.mod h1:NR3MbYisc3/PwhQ00EMzDiPmrwpPxAn5GI05/YaO1SY=
 github.com/getsentry/raven-go v0.2.0 h1:no+xWJRb5ZI7eE8TWgIq1jLulQiIoLG0IfYxv5JYMGs=
 github.com/getsentry/raven-go v0.2.0/go.mod h1:KungGk8q33+aIAZUIVWZDr2OfAEBsO49PX4NzFV5kcQ=
-github.com/getsentry/sentry-go v0.49.0 h1:Ehejknu1l023Ub7QoRBVLAI7g3Jnhqku4oWx4B4Sh5s=
-github.com/getsentry/sentry-go v0.49.0/go.mod h1:nuMJAoCfe1u0Bts2ocyNI+TW8HT84vRMqwA5Qq/SKUI=
+github.com/getsentry/sentry-go v0.50.0 h1:gkO59rn/i0RCAXUUTflC5QVbTQGPXbaFabs2olVzc9g=
+github.com/getsentry/sentry-go v0.50.0/go.mod h1:+xsDuN+SoRN/xfs1hdq78wnrE3omIZf+FCuh9FOW1C8=
 github.com/go-enry/go-license-detector/v4 v4.3.0 h1:OFlQAVNw5FlKUjX4OuW8JOabu8MQHjTKDb9pdeNYMUw=
 github.com/go-enry/go-license-detector/v4 v4.3.0/go.mod h1:HaM4wdNxSlz/9Gw0uVOKSQS5JVFqf2Pk8xUPEn6bldI=
 github.com/go-git/gcfg v1.5.1-0.20230307220236-3a3c6141e376 h1:+zs/tPmkDkHx3U66DAb0lQFJrpS6731Oaa12ikc+DiI=
@@ -614,8 +614,8 @@ gitlab.com/gitlab-org/gitaly/v19 v19.5.0-rc2 h1:15HoURI2piT8i+hQlLPj+ZXHO2O0lm0D
 gitlab.com/gitlab-org/gitaly/v19 v19.5.0-rc2/go.mod h1:n5lG7mxIihsw49TUvhA5/TdHXK+IXoUc+IPgk6vAkPg=
 gitlab.com/gitlab-org/go/reopen v1.0.0 h1:6BujZ0lkkjGIejTUJdNO1w56mN1SI10qcVQyQlOPM+8=
 gitlab.com/gitlab-org/go/reopen v1.0.0/go.mod h1:D6OID8YJDzEVZNYW02R/Pkj0v8gYFSIhXFTArAsBQw8=
-gitlab.com/gitlab-org/labkit v1.65.0 h1:pOQDwsrkwFKHgrbXSztxIdDYPIUkc9JwDIFuu5aK2eM=
-gitlab.com/gitlab-org/labkit v1.65.0/go.mod h1:eSMj/Rottsz60b9O0rK9KPxmGlDKm4weeFUoL1kqJ8E=
+gitlab.com/gitlab-org/labkit v1.65.4 h1:/Xh1jcNzeagPccozYpR0YM6N0YNNOtRDvYFPcl1fMYI=
+gitlab.com/gitlab-org/labkit v1.65.4/go.mod h1:qbodOBZd9rMQmqmfwoiovNHH3uB0v9XSMOqJ9yQW/cs=
 gitlab.com/gitlab-org/labkit/v2 v2.38.4 h1:v27cXufMhm8vH+5ki2aJB1CcSwPxOy+LT4t7hjDMAsw=
 gitlab.com/gitlab-org/labkit/v2 v2.38.4/go.mod h1:ziV2X+C+RU0A6qC9Qq02aHUkUd7/ZX7sp17xGXzpzck=
 gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb v0.0.0-20261015141704-0fd3a377d067 h1:TGwSR5Ew/zOP3bs2zTdI9N8Z355LUbPV6pLVFhDhd4E=
@@ -838,8 +838,8 @@ gonum.org/v1/gonum v0.17.0/go.mod h1:El3tOrEuMpv2UdMrbNlKEh9vd86bmQ6vqIcDwxEOc1E
 gonum.org/v1/netlib v0.0.0-20190313105609-8cb42192e0e0/go.mod h1:wa6Ws7BG/ESfp6dHfk7C6KdzKA7wR7u/rKwOGE66zvw=
 gonum.org/v1/plot v0.0.0-20190515093506-e2840ee46a6b/go.mod h1:Wt8AAjI+ypCyYX3nZBvf6cAIx93T+c/OS2HFAYskSZc=
 google.golang.org/api v0.0.0-20170921000349-586095a6e407/go.mod h1:4mhQ8q/RsB7i+udVvVy5NUi08OU8ZlA0gRVgrF7VFY0=
-google.golang.org/api v0.295.0 h1:SSqFeEVjnK5SKo6t7D0E0M7EfX8SP7K0+OJd2Ly5FzU=
-google.golang.org/api v0.295.0/go.mod h1:02qB8+Ox1ZFzcaKFMguy1nQLJmSIyvV6Ff4txJEXtl4=
+google.golang.org/api v0.298.0 h1:YW18RkHBMZBA1ergX0m4biagzgbiPTb2uTsRsDPWNRY=
+google.golang.org/api v0.298.0/go.mod h1:02qB8+Ox1ZFzcaKFMguy1nQLJmSIyvV6Ff4txJEXtl4=
 google.golang.org/appengine v1.1.0/go.mod h1:EbEs0AVv82hx2wNQdGPgUI5lhzA/G0D9YwlJXL52JkM=
 google.golang.org/appengine v1.4.0/go.mod h1:xpcJRLb0r/rnEns0DIKYYv+WjYCduHsrkT7/EB5XEv4=
 google.golang.org/appengine v1.6.5/go.mod h1:8WjMMxjGQR8xUklV/ARdw2HLXBOI7O7uCIDZVag1xfc=

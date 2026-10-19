@@ -1,0 +1,12 @@
+default:
+  tags: []
+
+job_with_tags:
+  script: echo 'hello'
+  tags:
+    - docker
+    - linux
+
+job_with_empty_tags:
+  script: echo 'hello'
+  tags: []

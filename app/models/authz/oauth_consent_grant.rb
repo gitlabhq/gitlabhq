@@ -15,5 +15,13 @@ module Authz
     enum :source, { doorkeeper: 0, iam_consent: 1, trusted_auto_grant: 2, duo_session: 3 }
 
     validates :status, :source, presence: true
+
+    scope :for_user_and_application, ->(user_id, application_id) do
+      where(user_id: user_id, application_id: application_id)
+    end
+
+    def self.active_for_user_and_application(user_id, application_id)
+      authorized.not_duo_session.for_user_and_application(user_id, application_id).first
+    end
   end
 end

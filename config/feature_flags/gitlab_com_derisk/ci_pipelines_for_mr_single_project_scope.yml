@@ -1,0 +1,10 @@
+---
+name: ci_pipelines_for_mr_single_project_scope
+description: Scope merge request pipeline count to a single authorized project by equality for partial-permission fork MR viewers
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/629269
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/260777
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/634103
+milestone: '19.6'
+group: group::pipeline execution
+type: gitlab_com_derisk
+default_enabled: false
