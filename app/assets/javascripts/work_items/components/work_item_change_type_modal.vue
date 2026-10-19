@@ -6,8 +6,10 @@ import { visitUrl } from '~/lib/utils/url_utility';
 import { __, n__, s__, sprintf } from '~/locale';
 import {
   findDesignsWidget,
+  findHierarchyWidget,
+  findMilestoneWidget,
+  findWidgetByType,
   getParentGroupName,
-  isMilestoneWidget,
   lowercaseWorkItemType,
 } from '~/work_items/utils';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -73,6 +75,11 @@ export default {
       type: Array,
       required: false,
       default: () => [],
+    },
+    features: {
+      type: Object,
+      required: false,
+      default: null,
     },
     allowedChildTypes: {
       type: Array,
@@ -168,8 +175,11 @@ export default {
     isSelectedWorkItemTypeEpic() {
       return this.selectedWorkItemType?.name === WORK_ITEM_TYPE_NAME_EPIC;
     },
+    workItemWidgetData() {
+      return { features: this.features, widgets: this.widgets };
+    },
     milestoneWidget() {
-      return this.widgets.find(isMilestoneWidget)?.milestone;
+      return findMilestoneWidget(this.workItemWidgetData)?.milestone;
     },
     selectedWorkItemTypeWidgetDefinitions() {
       return this.isSelectedWorkItemTypeEpic
@@ -189,8 +199,7 @@ export default {
     widgetsWithExistingDataList() {
       // Filter the widgets based on the presence or absence of data
       const widgetsWithExistingDataList = this.widgetDifference.filter((item) => {
-        // Find the widget object
-        const widgetObject = this.widgets?.find((widget) => widget.type === item.type);
+        const widgetObject = findWidgetByType(this.workItemWidgetData, item.type);
 
         // return false if the widget data is not found
         if (!widgetObject) {
@@ -263,7 +272,7 @@ export default {
       return this.widgetsWithExistingData.length > 0;
     },
     hierarchyWidget() {
-      return this.widgets?.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY);
+      return findHierarchyWidget(this.workItemWidgetData);
     },
     parentWorkItem() {
       return this.hierarchyWidget?.parent;

@@ -1,4 +1,4 @@
-import { escapeRegExp, kebabCase, snakeCase, isEmpty, unionBy, union } from 'lodash-es';
+import { camelCase, escapeRegExp, kebabCase, snakeCase, isEmpty, unionBy, union } from 'lodash-es';
 import { ref } from 'vue';
 import { parseBoolean } from '@gitlab/frontend-utils';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -183,6 +183,18 @@ export const findVulnerabilitiesWidget = (workItem) =>
 export const findWeightWidget = (workItem) =>
   workItem?.features?.weight ||
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_WEIGHT);
+
+/**
+ * Finds a widget by its type, for callers that look widgets up generically.
+ * `features` keys are the camelCased widget type, e.g. `START_AND_DUE_DATE` is `startAndDueDate`.
+ *
+ * @param {Object} workItem - Work item, or any object with `features` and/or `widgets`
+ * @param {String} type - Widget type, e.g. `MILESTONE`
+ * @returns {Object|undefined} The widget, or `undefined` when the work item doesn't have it
+ */
+export const findWidgetByType = (workItem, type) =>
+  workItem?.features?.[camelCase(type)] ||
+  workItem?.widgets?.find((widget) => widget.type === type);
 
 // Builds a widget-type-keyed metadata map from a work item, overlaying migrated `features`
 // over the `widgets[]`-derived map (falls back to `widgets[]` when `features` is absent).

@@ -71,6 +71,7 @@ import {
   findParticipantsWidget,
   findProgressWidget,
   findWeightWidget,
+  findWidgetByType,
   findStatusWidget,
   findLinkedItemsWidget,
   findLinkedResourcesWidget,
@@ -1706,6 +1707,63 @@ describe('findWeightWidget', () => {
 
   it('returns undefined when neither exists', () => {
     expect(findWeightWidget({ widgets: [] })).toBeUndefined();
+  });
+});
+
+describe('findWidgetByType', () => {
+  const datesWidget = { type: 'START_AND_DUE_DATE', dueDate: '2026-10-01' };
+  const featuresDates = { dueDate: '2026-11-01', startDate: null };
+
+  it.each`
+    type                    | featureKey
+    ${'MILESTONE'}          | ${'milestone'}
+    ${'START_AND_DUE_DATE'} | ${'startAndDueDate'}
+    ${'AGENT_PLAN'}         | ${'agentPlan'}
+  `('reads $type from features.$featureKey', ({ type, featureKey }) => {
+    const feature = { __typename: 'WorkItemWidget' };
+
+    expect(findWidgetByType({ features: { [featureKey]: feature }, widgets: [] }, type)).toBe(
+      feature,
+    );
+  });
+
+  describe('when both features and widgets are present', () => {
+    let workItem;
+
+    beforeEach(() => {
+      workItem = {
+        features: { startAndDueDate: featuresDates },
+        widgets: [datesWidget],
+      };
+    });
+
+    it('returns the widget from features', () => {
+      expect(findWidgetByType(workItem, 'START_AND_DUE_DATE')).toBe(featuresDates);
+    });
+  });
+
+  describe('when features is not present', () => {
+    let workItem;
+
+    beforeEach(() => {
+      workItem = { widgets: [datesWidget] };
+    });
+
+    it('returns the widget from widgets', () => {
+      expect(findWidgetByType(workItem, 'START_AND_DUE_DATE')).toBe(datesWidget);
+    });
+  });
+
+  describe('when neither features nor widgets has the widget', () => {
+    let workItem;
+
+    beforeEach(() => {
+      workItem = { features: {}, widgets: [] };
+    });
+
+    it('returns undefined', () => {
+      expect(findWidgetByType(workItem, 'MILESTONE')).toBeUndefined();
+    });
   });
 });
 

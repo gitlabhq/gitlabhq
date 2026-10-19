@@ -305,6 +305,7 @@ export const WORK_ITEM_WIDGETS_NAME_MAP = {
   [WIDGET_TYPE_HEALTH_STATUS]: s__('WorkItem|Health status'),
   [WIDGET_TYPE_LINKED_ITEMS]: s__('WorkItem|Linked items'),
   [WIDGET_TYPE_COLOR]: s__('WorkItem|Color'),
+  [WIDGET_TYPE_CUSTOM_FIELDS]: s__('WorkItem|Custom fields'),
   [WIDGET_TYPE_DESIGNS]: s__('WorkItem|Designs'),
   [WIDGET_TYPE_DEVELOPMENT]: s__('WorkItem|Development'),
   [WIDGET_TYPE_CRM_CONTACTS]: s__('WorkItem|Contacts'),

@@ -1,4 +1,5 @@
 import { GlFormSelect, GlModal } from '@gitlab/ui';
+import { camelCase, cloneDeep } from 'lodash-es';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 
@@ -76,6 +77,7 @@ describe('WorkItemChangeTypeModal component', () => {
     hasParent = false,
     hasChildren = false,
     widgets = [],
+    features = null,
     workItemType = WORK_ITEM_TYPE_NAME_TASK,
     namespaceQueryHandler = typesQuerySuccessHandler,
     convertWorkItemMutationHandler = convertWorkItemMutationSuccessHandler,
@@ -96,6 +98,7 @@ describe('WorkItemChangeTypeModal component', () => {
         hasParent,
         hasChildren,
         widgets,
+        features,
         workItemType,
         allowedChildTypes: [{ name: WORK_ITEM_TYPE_NAME_TASK }],
       },
@@ -365,58 +368,129 @@ describe('WorkItemChangeTypeModal component', () => {
       expect(findChangeTypeModal().props('actionPrimary').attributes.disabled).toBe(false);
     });
 
-    it('shows warning message in case of Contacts widget', async () => {
-      createComponent({
-        workItemType: WORK_ITEM_TYPE_NAME_ISSUE,
-        widgets: [workItemChangeTypeWidgets.CRM_CONTACTS],
-      });
-
-      await waitForPromises();
-
-      findGlFormSelect().vm.$emit('change', taskTypeId);
-
-      await nextTick();
-
-      expect(findWarningAlert().text()).toContain('Contacts');
-      expect(findChangeTypeModal().props('actionPrimary').attributes.disabled).toBe(false);
+    const widgetsProps = (widget) => ({ widgets: [widget] });
+    // With `features`, the detail page still passes `widgets[]`, but each entry only carries `type`.
+    const featuresProps = (widget) => ({
+      widgets: [{ type: widget.type }],
+      features: { [camelCase(widget.type)]: widget },
     });
 
-    it.each`
-      widgetType                              | widgetData                             | workItemType                 | typeTobeConverted | expectedString
-      ${WORK_ITEM_WIDGETS_NAME_MAP.ITERATION} | ${workItemChangeTypeWidgets.ITERATION} | ${WORK_ITEM_TYPE_NAME_ISSUE} | ${epicTypeId}     | ${'Iteration'}
-      ${WORK_ITEM_WIDGETS_NAME_MAP.WEIGHT}    | ${workItemChangeTypeWidgets.WEIGHT}    | ${WORK_ITEM_TYPE_NAME_ISSUE} | ${epicTypeId}     | ${'Weight'}
-    `(
-      'shows warning message in case of $widgetType widget',
-      async ({ workItemType, widgetData, typeTobeConverted, expectedString }) => {
+    describe.each`
+      source        | widgetDataProps
+      ${'widgets'}  | ${widgetsProps}
+      ${'features'} | ${featuresProps}
+    `('when widget data comes from $source', ({ widgetDataProps }) => {
+      // The detail query only selects `contactsAvailable` for contacts.
+      describe.each`
+        contactsAvailable | warns
+        ${true}           | ${true}
+        ${false}          | ${false}
+      `('when contactsAvailable is $contactsAvailable', ({ contactsAvailable, warns }) => {
+        beforeEach(async () => {
+          createComponent({
+            workItemType: WORK_ITEM_TYPE_NAME_ISSUE,
+            ...widgetDataProps({
+              type: 'CRM_CONTACTS',
+              contactsAvailable,
+              __typename: 'WorkItemWidgetCrmContacts',
+            }),
+          });
+
+          await waitForPromises();
+        });
+
+        it(`shows warning message for Contacts is ${warns}`, async () => {
+          expect(findWarningAlert().exists()).toBe(false);
+
+          findGlFormSelect().vm.$emit('change', taskTypeId);
+
+          await nextTick();
+
+          expect(findWarningAlert().exists()).toBe(warns);
+        });
+      });
+
+      describe('when the current type has custom fields and the target type does not', () => {
+        const typesWithIssueCustomFields = cloneDeep(namespaceWorkItemTypesQueryResponse);
+        typesWithIssueCustomFields.data.namespace.workItemTypes.nodes
+          .find((type) => type.name === WORK_ITEM_TYPE_NAME_ISSUE)
+          .widgetDefinitions.push({
+            type: 'CUSTOM_FIELDS',
+            __typename: 'WorkItemWidgetDefinitionGeneric',
+          });
+        const customFieldsWidget = (selectedOptions) => ({
+          type: 'CUSTOM_FIELDS',
+          customFieldValues: [
+            {
+              customField: { id: 'gid://gitlab/Issuables::CustomField/1', name: 'Tier' },
+              selectedOptions,
+              __typename: 'WorkItemSelectFieldValue',
+            },
+          ],
+          __typename: 'WorkItemWidgetCustomFields',
+        });
+
+        it('shows warning message naming Custom fields', async () => {
+          createComponent({
+            workItemType: WORK_ITEM_TYPE_NAME_ISSUE,
+            namespaceQueryHandler: jest.fn().mockResolvedValue(typesWithIssueCustomFields),
+            ...widgetDataProps(customFieldsWidget([{ id: '1', value: 'Premium' }])),
+          });
+
+          await waitForPromises();
+
+          expect(findWarningAlert().exists()).toBe(false);
+
+          findGlFormSelect().vm.$emit('change', taskTypeId);
+
+          await nextTick();
+
+          expect(findWarningAlert().text()).toContain('Custom fields');
+        });
+      });
+
+      it.each`
+        widgetType                              | widgetData                             | workItemType                 | typeTobeConverted | expectedString
+        ${WORK_ITEM_WIDGETS_NAME_MAP.ITERATION} | ${workItemChangeTypeWidgets.ITERATION} | ${WORK_ITEM_TYPE_NAME_ISSUE} | ${epicTypeId}     | ${'Iteration'}
+        ${WORK_ITEM_WIDGETS_NAME_MAP.WEIGHT}    | ${workItemChangeTypeWidgets.WEIGHT}    | ${WORK_ITEM_TYPE_NAME_ISSUE} | ${epicTypeId}     | ${'Weight'}
+      `(
+        'shows warning message in case of $widgetType widget',
+        async ({ workItemType, widgetData, typeTobeConverted, expectedString }) => {
+          createComponent({
+            workItemType,
+            ...widgetDataProps(widgetData),
+          });
+
+          await waitForPromises();
+
+          expect(findWarningAlert().exists()).toBe(false);
+          expect(findChangeTypeModal().props('actionPrimary').attributes.disabled).toBe(true);
+
+          findGlFormSelect().vm.$emit('change', typeTobeConverted);
+
+          await nextTick();
+
+          expect(findWarningAlert().text()).toContain(expectedString);
+          expect(findChangeTypeModal().props('actionPrimary').attributes.disabled).toBe(false);
+        },
+      );
+
+      it('shows no value present message if value of the widget is not present on conversion', async () => {
         createComponent({
-          workItemType,
-          widgets: [widgetData],
+          workItemType: WORK_ITEM_TYPE_NAME_ISSUE,
+          ...widgetDataProps(workItemChangeTypeWidgets.MILESTONE),
         });
 
         await waitForPromises();
 
-        findGlFormSelect().vm.$emit('change', typeTobeConverted);
+        expect(findNoValuePresentAlert().exists()).toBe(false);
+
+        findGlFormSelect().vm.$emit('change', epicTypeId);
 
         await nextTick();
 
-        expect(findWarningAlert().text()).toContain(expectedString);
-        expect(findChangeTypeModal().props('actionPrimary').attributes.disabled).toBe(false);
-      },
-    );
-
-    it('shows no value present message if value of the widget is not present on conversion', async () => {
-      createComponent({
-        workItemType: WORK_ITEM_TYPE_NAME_ISSUE,
-        widgets: [workItemChangeTypeWidgets.MILESTONE],
+        expect(findNoValuePresentAlert().text()).toContain('Milestone: v4.0');
       });
-
-      await waitForPromises();
-
-      findGlFormSelect().vm.$emit('change', epicTypeId);
-
-      await nextTick();
-
-      expect(findNoValuePresentAlert().text()).toContain('Milestone: v4.0');
     });
   });
 

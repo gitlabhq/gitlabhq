@@ -351,6 +351,35 @@ describe('WorkItemDetail component', () => {
       expect(findHierarchyTree().props('parentMilestone')).toEqual(milestone);
     });
 
+    describe('when `features` has a milestone', () => {
+      const featuresMilestone = {
+        __typename: 'Milestone',
+        id: 'gid://gitlab/Milestone/45',
+        title: 'v5.0',
+        expired: false,
+        state: 'active',
+        startDate: '2025-01-01',
+        dueDate: '2025-06-30',
+        webPath: '/milestones/45',
+        projectMilestone: true,
+      };
+
+      beforeEach(async () => {
+        const handler = jest.fn().mockReturnValue(
+          workItemByIidResponseFactory({
+            features: { milestone: { milestone: featuresMilestone } },
+          }),
+        );
+
+        createComponent({ handler, provide: { glFeatures: { workItemFeaturesField: true } } });
+        await mockApollo.resolveAll();
+      });
+
+      it('passes `parentMilestone` prop from `features` to work item tree', () => {
+        expect(findHierarchyTree().props('parentMilestone')).toEqual(featuresMilestone);
+      });
+    });
+
     it('renders error tracking widget', () => {
       expect(findErrorTrackingWidget().props()).toEqual({
         fullPath: 'group/project',
