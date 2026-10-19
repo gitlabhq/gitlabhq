@@ -95,7 +95,7 @@ RSpec.describe Environments::AutoStopService, :clean_gitlab_redis_shared_state, 
         stub_const("#{described_class}::LOOP_TIMEOUT", 0.seconds)
         stub_const("#{described_class}::LOOP_LIMIT", 100_000)
         allow_next_instance_of(described_class) do |service|
-          allow(service).to receive(:stop_in_batch) { true }
+          allow(service).to receive(:stop_in_batch).and_return(true)
         end
       end
 

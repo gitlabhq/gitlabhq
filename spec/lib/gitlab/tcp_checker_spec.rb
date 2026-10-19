@@ -28,7 +28,8 @@ RSpec.describe Gitlab::TcpChecker, :permit_dns do
 
       is_expected.to be_falsy
 
-      expect(checker.error).to be_a(Errno::ECONNREFUSED)
+      # macOS raises EINVAL from getpeername on a closed port; Linux raises ECONNREFUSED
+      expect(checker.error).to be_a(Errno::ECONNREFUSED).or be_a(Errno::EINVAL)
     end
   end
 end

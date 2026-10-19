@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Pipeline::Chain::Build::Associations, feature_category: :continuous_integration do
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be_with_reload(:project) { create(:project, :small_repo) }
   let_it_be(:user) { create(:user, developer_of: project) }
 
@@ -358,6 +360,52 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Build::Associations, feature_categor
       )
     end
 
+    it 'observes the largest value bytesize per variable type, counting an untyped variable as env_var' do
+      expect(observations).to include('pipeline_variables_max_env_var_value_bytesize' => 12)
+      expect(observations).not_to have_key('pipeline_variables_max_file_value_bytesize')
+    end
+
+    context 'with both variable types' do
+      let(:variables_attributes) do
+        [
+          { key: 'env', value: 'a' * 3 },
+          { key: 'env_bigger', value: 'a' * 7 },
+          { key: 'a_file', value: 'a' * 9, variable_type: 'file' }
+        ]
+      end
+
+      it 'observes each type separately and the overall maximum' do
+        expect(observations).to include(
+          'pipeline_variables_max_value_bytesize' => 9,
+          'pipeline_variables_max_env_var_value_bytesize' => 7,
+          'pipeline_variables_max_file_value_bytesize' => 9
+        )
+      end
+    end
+
+    describe 'variable_type forms' do
+      where(:variable_type, :observed_as) do
+        'env_var' | 'env_var'
+        :env_var  | 'env_var'
+        1         | 'env_var'
+        'file'    | 'file'
+        :file     | 'file'
+        2         | 'file'
+        nil       | 'env_var'
+        ''        | 'env_var'
+        3         | 'env_var'
+        'bogus'   | 'env_var'
+      end
+
+      with_them do
+        let(:variables_attributes) { [{ key: 'first', value: 'ab', variable_type: variable_type }] }
+
+        it 'observes the value under the limit it falls under' do
+          expect(observations).to include("pipeline_variables_max_#{observed_as}_value_bytesize" => 2)
+        end
+      end
+    end
+
     context 'with a multibyte value' do
       let(:variables_attributes) { [{ key: 'first', value: 'áé' }] }
 
@@ -372,11 +420,14 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Build::Associations, feature_categor
     context 'when variables_attributes is nil' do
       let(:variables_attributes) { nil }
 
-      it 'observes zeroes' do
+      it 'observes zeroes and no per-type sizes' do
         expect(observations).to include(
           'pipeline_variables_count' => 0,
           'pipeline_variables_max_value_bytesize' => 0,
           'pipeline_variables_total_bytesize' => 0
+        )
+        expect(observations.keys).not_to include(
+          'pipeline_variables_max_env_var_value_bytesize', 'pipeline_variables_max_file_value_bytesize'
         )
       end
     end

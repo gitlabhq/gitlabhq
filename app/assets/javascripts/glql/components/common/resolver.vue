@@ -96,6 +96,7 @@ export default {
 
       data: undefined,
       comparisonData: undefined,
+      comparisonPending: false,
       query: undefined,
       config: undefined,
       variables: undefined,
@@ -154,6 +155,7 @@ export default {
     resetData() {
       this.data = undefined;
       this.comparisonData = undefined;
+      this.comparisonPending = false;
       this.query = undefined;
       this.config = undefined;
       this.variables = undefined;
@@ -233,15 +235,20 @@ export default {
           tag: this.glqlQuery,
         });
         const comparisonRequest = this.fetchComparison();
+        this.comparisonPending = Boolean(this.comparison?.query);
         const executionResult = await mainRequest;
 
         this.data = await transform(executionResult, { fields, mode, source });
+        // A result wider than one page drops its comparison, so release the reserved column now
+        // rather than when loading clears.
+        if (this.data?.count > this.aggregatedPageSize) this.comparisonPending = false;
 
         if (this.pagination === PAGINATION_AUTO) await this.autoPaginate();
 
         const comparisonData = await comparisonRequest;
         this.comparisonData =
           this.data?.count > this.aggregatedPageSize ? undefined : comparisonData;
+        this.comparisonPending = false;
 
         this.trackRender();
       } catch (error) {
@@ -254,6 +261,7 @@ export default {
         this.error = error;
       } finally {
         this.loading = false;
+        this.comparisonPending = false;
         this.emitChange();
       }
     },
@@ -390,6 +398,8 @@ export default {
       v-if="hasDisplayType && (data || !error)"
       :data="data"
       :comparison-data="comparisonData"
+      :comparison-pending="comparisonPending"
+      :comparison-metric="comparison?.metric ?? null"
       :fields="fields"
       :display-type="config.display"
       :display-config="config.displayConfig"

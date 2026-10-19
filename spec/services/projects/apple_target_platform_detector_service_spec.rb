@@ -38,7 +38,7 @@ RSpec.describe Projects::AppleTargetPlatformDetectorService, feature_category: :
 
       with_them do
         before do
-          allow(finder).to receive(:find).with(anything) { [] }
+          allow(finder).to receive(:find).with(anything).and_return([])
           allow(finder).to receive(:find).with(search_query(sdk, filename)) { [instance_double(Gitlab::Search::FoundBlob)] }
         end
 
@@ -50,7 +50,7 @@ RSpec.describe Projects::AppleTargetPlatformDetectorService, feature_category: :
 
     context 'when setting string is not found' do
       before do
-        allow(finder).to receive(:find).with(anything) { [] }
+        allow(finder).to receive(:find).with(anything).and_return([])
       end
 
       it 'returns an empty array' do

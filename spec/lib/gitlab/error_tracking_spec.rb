@@ -473,6 +473,18 @@ RSpec.describe Gitlab::ErrorTracking, feature_category: :observability do
       end
     end
 
+    context 'when the error is an oversized YAML config' do
+      let(:exception) { Gitlab::Config::Loader::Yaml::DataTooLargeError.new('The parsed YAML is too big') }
+
+      it 'groups by class and message instead of the stack trace' do
+        track_exception
+
+        expect(sentry_event.fingerprint).to eq(
+          ['Gitlab::Config::Loader::Yaml::DataTooLargeError', 'The parsed YAML is too big']
+        )
+      end
+    end
+
     context 'when exception is excluded' do
       before do
         stub_const('SubclassRetryError', Class.new(Gitlab::SidekiqMiddleware::RetryError))

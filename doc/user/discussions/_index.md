@@ -358,7 +358,7 @@ You can create a thread without replying to a standard comment.
 Prerequisites:
 
 - You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role.
-- You must be in an issue, merge request, commit, or snippet.
+- You must be in a merge request, commit, or snippet.
 
 To create a thread:
 

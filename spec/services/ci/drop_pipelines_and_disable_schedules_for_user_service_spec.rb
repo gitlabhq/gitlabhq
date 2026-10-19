@@ -97,7 +97,7 @@ RSpec.describe Ci::DropPipelinesAndDisableSchedulesForUserService, feature_categ
       context 'when user owns blocked (manual/scheduled) pipelines' do
         let_it_be(:user_blocked_pipelines) do
           user_personal_projects.flat_map do |project|
-            create_list(:ci_pipeline, 2, :manual, project: project, user: user)
+            create_list(:ci_pipeline, 2, :blocked, project: project, user: user)
           end
         end
 

@@ -382,6 +382,7 @@ export default {
       variables() {
         return {
           fullPath: this.rootPageFullPath,
+          includeDescendants: true,
           ...this.apiTypesArgument,
         };
       },

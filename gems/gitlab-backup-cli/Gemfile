@@ -14,4 +14,8 @@ group :development, :test do
   gem 'pry'
 end
 
-gem 'activesupport', '~> 7.2.3'
+if next?
+  gem 'activesupport', '~> 8.0.0'
+else
+  gem 'activesupport', '~> 7.2.3'
+end

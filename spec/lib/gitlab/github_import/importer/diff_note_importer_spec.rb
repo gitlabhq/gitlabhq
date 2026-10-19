@@ -89,6 +89,12 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
           )
         end
 
+        it 'exposes the id of the imported legacy diff note' do
+          subject.execute
+
+          expect(importer.imported_note_id).to eq(project.notes.diff_notes.take.id)
+        end
+
         it 'imports the note as legacy diff note' do
           expect { subject.execute }
             .to change { LegacyDiffNote.count }
@@ -142,6 +148,12 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
             expect(cached_references).to contain_exactly(
               ['DiffNote', instance_of(Integer), 'author_id', source_user.id]
             )
+          end
+
+          it 'exposes the id of the imported diff note' do
+            subject.execute
+
+            expect(importer.imported_note_id).to eq(DiffNote.last.id)
           end
 
           it 'imports the note as diff note' do
@@ -329,6 +341,36 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
           end
         end
       end
+    end
+  end
+
+  describe '#import_attributes', :clean_gitlab_redis_shared_state do
+    let!(:source_user) { generate_source_user(project, user.id) }
+    let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+
+    before do
+      allow_next_instance_of(Gitlab::GithubImport::IssuableFinder) do |finder|
+        allow(finder).to receive(:database_id).and_return(merge_request.id)
+      end
+    end
+
+    it 'returns the attributes shared by both diff note types' do
+      expect(importer.import_attributes).to eq(
+        noteable_type: 'MergeRequest',
+        noteable_id: merge_request.id,
+        project_id: project.id,
+        author_id: source_user.mapped_user_id,
+        note: 'Hello',
+        discussion_id: discussion_id,
+        system: false,
+        created_at: created_at,
+        updated_at: updated_at,
+        imported_from: Import::HasImportSource::IMPORT_SOURCES[:github]
+      )
+    end
+
+    it 'returns the merge request id as the noteable id' do
+      expect(importer.find_noteable_id).to eq(merge_request.id)
     end
   end
 end

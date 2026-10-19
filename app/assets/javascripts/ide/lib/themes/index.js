@@ -1,4 +1,5 @@
 import dark from './dark';
+import { dracula } from './dracula';
 import monokai from './monokai';
 import none from './none';
 import solarizedDark from './solarized_dark';
@@ -25,6 +26,10 @@ export const themes = [
   {
     name: 'monokai',
     data: monokai,
+  },
+  {
+    name: 'dracula',
+    data: dracula,
   },
   {
     name: 'none',

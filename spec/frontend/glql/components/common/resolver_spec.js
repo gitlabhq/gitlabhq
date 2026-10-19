@@ -527,6 +527,10 @@ describe('Resolver', () => {
         expectEmittedChanges([{ loading: true }]);
       });
 
+      it('tells the presenter a comparison is pending', () => {
+        expect(findPresenter().props()).toMatchObject({ comparisonPending: true });
+      });
+
       describe('when the main query resolves', () => {
         beforeEach(async () => {
           resolveCurrent(CURRENT);
@@ -538,12 +542,72 @@ describe('Resolver', () => {
             loading: false,
             data: CURRENT,
             comparisonData: PREVIOUS,
+            comparisonPending: false,
           });
           expectEmittedChanges([
             { loading: true },
             { loading: false, data: CURRENT, comparisonData: PREVIOUS },
           ]);
         });
+      });
+    });
+
+    // The main result renders as soon as it lands, so the presenter needs to know a trend is
+    // still on the way to keep room for it.
+    describe('while the comparison is still running after the main result arrived', () => {
+      let resolvePrevious;
+
+      beforeEach(async () => {
+        mockParse();
+        execute.mockImplementation((query) =>
+          isComparison(query)
+            ? new Promise((resolve) => {
+                resolvePrevious = resolve;
+              })
+            : Promise.resolve(CURRENT),
+        );
+        transform.mockImplementation(identity);
+
+        createWrapper({
+          glqlQuery: GLQL_QUERY,
+          comparison: { query: COMPARISON_QUERY, metric: 'usersCount' },
+        });
+        await waitForPromises();
+      });
+
+      it('renders the main result with the comparison marked pending', () => {
+        expect(findPresenter().props()).toMatchObject({
+          loading: true,
+          data: CURRENT,
+          comparisonData: null,
+          comparisonPending: true,
+          comparisonMetric: 'usersCount',
+        });
+      });
+
+      it('clears the pending state when the comparison resolves', async () => {
+        resolvePrevious(PREVIOUS);
+        await waitForPromises();
+
+        expect(findPresenter().props()).toMatchObject({
+          loading: false,
+          comparisonData: PREVIOUS,
+          comparisonPending: false,
+        });
+      });
+    });
+
+    it('does not mark a comparison pending when none was asked for', async () => {
+      mockParse();
+      execute.mockResolvedValue(CURRENT);
+      transform.mockImplementation(identity);
+
+      createWrapper({ glqlQuery: GLQL_QUERY });
+      await waitForPromises();
+
+      expect(findPresenter().props()).toMatchObject({
+        comparisonPending: false,
+        comparisonMetric: null,
       });
     });
 
@@ -560,7 +624,23 @@ describe('Resolver', () => {
       expect(findPresenter().props()).toMatchObject({
         data: { ...CURRENT, count: 101 },
         comparisonData: null,
+        comparisonPending: false,
       });
+    });
+
+    // The column is released as soon as the page count is known, while the rows are still
+    // loading, instead of flashing a reserved column that vanishes when loading clears.
+    it('releases the pending comparison as soon as the main result outgrows a single page', async () => {
+      mockParse();
+      execute.mockImplementation((query) =>
+        isComparison(query) ? new Promise(() => {}) : Promise.resolve({ ...CURRENT, count: 101 }),
+      );
+      transform.mockImplementation(identity);
+
+      createWrapper({ glqlQuery: GLQL_QUERY, comparison: { query: COMPARISON_QUERY } });
+      await waitForPromises();
+
+      expect(findPresenter().props()).toMatchObject({ loading: true, comparisonPending: false });
     });
 
     it('keeps the comparison when the main result fills exactly one page', async () => {
@@ -710,7 +790,11 @@ describe('Resolver', () => {
       });
 
       it('renders the main result without the comparison', () => {
-        expect(findPresenter().props()).toMatchObject({ data: CURRENT, comparisonData: null });
+        expect(findPresenter().props()).toMatchObject({
+          data: CURRENT,
+          comparisonData: null,
+          comparisonPending: false,
+        });
       });
 
       it('does not report an error', () => {

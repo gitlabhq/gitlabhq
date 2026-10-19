@@ -15,10 +15,18 @@ module Gitlab
               review_id: issue_event.id
             )
 
-            PullRequests::ReviewImporter.new(review, project, client).execute({ add_reviewer: false })
+            import_review(issue_event, PullRequests::ReviewImporter.new(review, project, client))
+          end
+
+          private
+
+          def import_review(_issue_event, importer)
+            importer.execute({ add_reviewer: false })
           end
         end
       end
     end
   end
 end
+
+Gitlab::GithubImport::Importer::Events::Reviewed.prepend_mod

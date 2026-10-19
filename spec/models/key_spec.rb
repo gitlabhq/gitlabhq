@@ -23,8 +23,8 @@ RSpec.describe Key, :mailer, feature_category: :system_access do
 
   describe 'factory' do
     context 'when key has a user' do
-      let(:user) { create(:user) }
-      let(:key) { create(:personal_key, user: user) }
+      let(:user) { build_stubbed(:user, organization: build_stubbed(:organization)) }
+      let(:key) { build_stubbed(:personal_key, user: user) }
 
       it 'sets organization_id from the user' do
         expect(key.organization_id).to eq(user.organization_id)
@@ -32,7 +32,7 @@ RSpec.describe Key, :mailer, feature_category: :system_access do
     end
 
     context 'when key has no user' do
-      let(:key) { create(:key) }
+      let(:key) { build_stubbed(:key) }
 
       it 'sets organization_id to the default organization' do
         expect(key.organization_id).to be_present

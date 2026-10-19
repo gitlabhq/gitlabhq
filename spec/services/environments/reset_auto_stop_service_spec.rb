@@ -24,7 +24,7 @@ RSpec.describe Environments::ResetAutoStopService, feature_category: :continuous
 
       context 'when failed to reset auto stop' do
         before do
-          expect(environment).to receive(:reset_auto_stop) { false }
+          expect(environment).to receive(:reset_auto_stop).and_return(false)
         end
 
         it 'returns error' do

@@ -123,21 +123,17 @@ RSpec.describe Resolvers::Repositories::CommitsResolver, feature_category: :sour
       describe 'follow' do
         using RSpec::Parameterized::TableSyntax
 
-        where(:list_commits_follow, :remove_following, :path, :expected) do
-          true  | false | 'files/ruby/popen.rb' | true
-          true  | true  | 'files/ruby/popen.rb' | false
-          true  | false | nil                   | false
-          false | false | 'files/ruby/popen.rb' | false
+        where(:remove_following, :path, :expected) do
+          false | 'files/ruby/popen.rb' | true
+          true  | 'files/ruby/popen.rb' | false
+          false | nil                   | false
         end
 
         with_them do
           let(:arguments) { { ref: ref, path: path } }
 
           before do
-            stub_feature_flags(
-              list_commits_follow: list_commits_follow,
-              remove_file_commit_history_following: remove_following
-            )
+            stub_feature_flags(remove_file_commit_history_following: remove_following)
           end
 
           it 'passes the expected follow value to list_commits' do

@@ -481,7 +481,7 @@ RSpec.describe Observability::GroupO11ySetting, feature_category: :observability
     end
 
     it 'associates with a group' do
-      setting = create(:observability_group_o11y_setting)
+      setting = build_stubbed(:observability_group_o11y_setting)
       expect(setting.group).to be_present
     end
   end
@@ -534,7 +534,7 @@ RSpec.describe Observability::GroupO11ySetting, feature_category: :observability
     end
 
     context 'when ancestor_ids is empty' do
-      let(:group) { create(:group) }
+      let(:group) { build_stubbed(:group) }
 
       it 'returns nil when ancestor_ids is empty' do
         allow(group).to receive(:traversal_ids).and_return([])

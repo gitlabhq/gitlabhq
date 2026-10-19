@@ -54,7 +54,7 @@ RSpec.describe Environments::CanaryIngress::UpdateService, :clean_gitlab_redis_c
 
     context 'when environment has a running deployment' do
       before do
-        allow(environment).to receive(:has_running_deployments?) { true }
+        allow(environment).to receive(:has_running_deployments?).and_return(true)
       end
 
       it_behaves_like 'failed request' do
@@ -64,7 +64,7 @@ RSpec.describe Environments::CanaryIngress::UpdateService, :clean_gitlab_redis_c
 
     context 'when canary ingress was updated recently' do
       before do
-        allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?) { true }
+        allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
       end
 
       it_behaves_like 'failed request' do
@@ -97,7 +97,7 @@ RSpec.describe Environments::CanaryIngress::UpdateService, :clean_gitlab_redis_c
         end
 
         before do
-          allow(environment).to receive(:patch_ingress).with(canary_ingress, patch_data) { true }
+          allow(environment).to receive(:patch_ingress).with(canary_ingress, patch_data).and_return(true)
         end
 
         it 'returns success' do
@@ -114,7 +114,7 @@ RSpec.describe Environments::CanaryIngress::UpdateService, :clean_gitlab_redis_c
 
       context 'when patch request does not succeed' do
         before do
-          allow(environment).to receive(:patch_ingress) { false }
+          allow(environment).to receive(:patch_ingress).and_return(false)
         end
 
         it_behaves_like 'failed request' do

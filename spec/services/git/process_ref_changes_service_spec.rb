@@ -102,15 +102,15 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
             .and_return(project.commit)
 
           if changes_method == :branch_changes
-            allow_any_instance_of(Repository).to receive(:branch_exists?) { true }
+            allow_any_instance_of(Repository).to receive(:branch_exists?).and_return(true)
           end
 
           if changes_method == :tag_changes
-            allow_any_instance_of(Repository).to receive(:tag_exists?) { true }
+            allow_any_instance_of(Repository).to receive(:tag_exists?).and_return(true)
           end
 
-          allow_any_instance_of(Repository).to receive(:ref_exists?) { true }
-          allow(Gitlab::Git::Commit).to receive(:between) { [] }
+          allow_any_instance_of(Repository).to receive(:ref_exists?).and_return(true)
+          allow(Gitlab::Git::Commit).to receive(:between).and_return([])
         end
 
         context 'with a git_push_pipeline_limit value that has not reached the limit' do
@@ -174,8 +174,8 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
             .to receive(:commit)
             .and_return(project.commit)
 
-          allow_any_instance_of(Repository).to receive(:ref_exists?) { true }
-          allow(Gitlab::Git::Commit).to receive(:between) { [] }
+          allow_any_instance_of(Repository).to receive(:ref_exists?).and_return(true)
+          allow(Gitlab::Git::Commit).to receive(:between).and_return([])
         end
 
         it 'does not create a pipeline' do

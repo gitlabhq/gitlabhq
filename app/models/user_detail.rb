@@ -92,8 +92,22 @@ class UserDetail < ApplicationRecord
   validates :github, length: { maximum: DEFAULT_FIELD_LENGTH }, allow_blank: true
 
   # Use Sanitizable concern when feature flag is enabled
-  sanitizes! :bluesky, :discord, :linkedin, :mastodon, :orcid, :twitter, :website_url, :github,
-    if: -> { Feature.enabled?(:validate_sanitizable_user_details, user) }
+  sanitizes! :bluesky,
+    if: -> { Feature.enabled?(:validate_sanitizable_user_details, user) && bluesky_changed? }
+  sanitizes! :discord,
+    if: -> { Feature.enabled?(:validate_sanitizable_user_details, user) && discord_changed? }
+  sanitizes! :linkedin,
+    if: -> { Feature.enabled?(:validate_sanitizable_user_details, user) && linkedin_changed? }
+  sanitizes! :mastodon,
+    if: -> { Feature.enabled?(:validate_sanitizable_user_details, user) && mastodon_changed? }
+  sanitizes! :orcid,
+    if: -> { Feature.enabled?(:validate_sanitizable_user_details, user) && orcid_changed? }
+  sanitizes! :twitter,
+    if: -> { Feature.enabled?(:validate_sanitizable_user_details, user) && twitter_changed? }
+  sanitizes! :website_url,
+    if: -> { Feature.enabled?(:validate_sanitizable_user_details, user) && website_url_changed? }
+  sanitizes! :github,
+    if: -> { Feature.enabled?(:validate_sanitizable_user_details, user) && github_changed? }
 
   # New sanitization for location/company (when feature flag is enabled)
   before_validation :sanitize_location_and_company, if: -> { Feature.enabled?(:validate_sanitizable_user_details, user) }
@@ -122,11 +136,25 @@ class UserDetail < ApplicationRecord
   private
 
   def sanitize_attrs
+    unvalidated_attrs = %i[location company]
+
     # Preserve & because Sanitize.clean encodes it as &amp;, which Sanitizable validation rejects
     %i[bluesky discord linkedin mastodon orcid twitter github location company website_url].each do |attr|
       value = self[attr]
-      self[attr] = Sanitize.clean(value).gsub('&amp;', '&') if value.present?
+      next if value.blank?
+
+      cleaned = Sanitize.clean(value).gsub('&amp;', '&')
+      self[attr] = unvalidated_attrs.include?(attr) ? cleaned : preserve_angle_brackets(value, cleaned)
     end
+  end
+
+  # Store what Sanitizable.sanitize would, so < and > stay valid once the flag is on.
+  # Keep `cleaned` if a second pass changes the result, e.g. <<b>script> would become a raw tag.
+  def preserve_angle_brackets(value, cleaned)
+    return cleaned unless value == CGI.unescapeHTML(value)
+
+    sanitized = CGI.unescapeHTML(Sanitize.fragment(value))
+    sanitized == CGI.unescapeHTML(Sanitize.fragment(sanitized)) ? sanitized : cleaned
   end
 
   def sanitize_location_and_company

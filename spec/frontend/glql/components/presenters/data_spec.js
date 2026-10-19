@@ -221,6 +221,18 @@ describe('DataPresenter', () => {
       expect(wrapper.findComponent(TablePresenter).props('comparisonData')).toBe(comparisonData);
     });
 
+    it('forwards the pending comparison and its metric to the table presenter', () => {
+      const wrapper = createTableWrapper({
+        comparisonPending: true,
+        comparisonMetric: 'totalCount',
+      });
+
+      expect(wrapper.findComponent(TablePresenter).props()).toMatchObject({
+        comparisonPending: true,
+        comparisonMetric: 'totalCount',
+      });
+    });
+
     it('forwards the query data source to the table presenter', () => {
       const wrapper = createTableWrapper({ source: 'CodeSuggestions' });
 

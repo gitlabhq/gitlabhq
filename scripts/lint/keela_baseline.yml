@@ -687,8 +687,6 @@ scopes:
   - incremental_scans
   ee/app/models/security/finding.rb:
   - by_scan
-  - left_joins_vulnerability_finding
-  - except_scanners
   ee/app/models/security/finding_enrichment.rb:
   - by_cve_enrichment_id
   ee/app/models/security/inventory_filter.rb:

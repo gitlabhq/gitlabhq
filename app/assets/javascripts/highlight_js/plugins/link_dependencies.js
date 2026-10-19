@@ -6,6 +6,7 @@ import podspecJsonLinker from './utils/podspec_json_linker';
 import composerJsonLinker from './utils/composer_json_linker';
 import goSumLinker from './utils/go_sum_linker';
 import cartfileLinker from './utils/cartfile_linker';
+import goModLinker from './utils/go_mod_linker';
 
 const DEPENDENCY_LINKERS = {
   package_json: packageJsonLinker,
@@ -16,6 +17,7 @@ const DEPENDENCY_LINKERS = {
   composer_json: composerJsonLinker,
   go_sum: goSumLinker,
   cartfile: cartfileLinker,
+  go_mod: goModLinker,
 };
 
 /**

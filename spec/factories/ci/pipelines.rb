@@ -97,10 +97,6 @@ FactoryBot.define do
       status { :success }
     end
 
-    trait :manual do
-      status { :manual }
-    end
-
     trait :running do
       started_at { Time.current }
       status { :running }

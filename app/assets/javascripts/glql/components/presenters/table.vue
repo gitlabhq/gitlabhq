@@ -92,6 +92,16 @@ export default {
       type: Object,
       default: null,
     },
+    comparisonPending: {
+      required: false,
+      type: Boolean,
+      default: false,
+    },
+    comparisonMetric: {
+      required: false,
+      type: String,
+      default: null,
+    },
     fields: {
       required: false,
       type: Array,
@@ -133,10 +143,14 @@ export default {
     metrics() {
       return metricsOf(this.fields);
     },
-    // Set by the resolver on the comparison result. Matched against a field's alias or its
-    // base key, and optional when the table selects a single metric.
+    // Set by the resolver on the comparison result, or named up front while that result is
+    // pending. Matched against a field's alias or its base key, and optional when the table
+    // selects a single metric.
     trendMetric() {
-      return this.comparisonData?.metric ?? '';
+      return this.comparisonData?.metric ?? this.comparisonMetric ?? '';
+    },
+    trendRequested() {
+      return this.comparisonPending || Boolean(this.comparisonData?.nodes?.length);
     },
     trendField() {
       if (!this.trendMetric) return this.metrics.length === 1 ? this.metrics[0] : null;
@@ -178,7 +192,7 @@ export default {
       return null;
     },
     trendColumn() {
-      if (!this.trendField || !this.comparisonData?.nodes?.length) return null;
+      if (!this.trendField || !this.trendRequested) return null;
       if (hasTemporalDimension(this.dimensions)) return null;
 
       return {
@@ -188,7 +202,7 @@ export default {
       };
     },
     rows() {
-      if (!this.trendColumn) return this.data.nodes;
+      if (!this.trendColumn || this.comparisonPending) return this.data.nodes;
 
       return withTrendValues(this.data.nodes, {
         comparisonNodes: this.comparisonData.nodes,
@@ -253,6 +267,8 @@ export default {
       return item[TREND_CELL_KEY] ?? null;
     },
     sortBy(fieldName) {
+      if (fieldName === TREND_CHANGE_KEY && this.comparisonPending) return;
+
       const { options, items } = sortBy(this.items, fieldName, this.sortOptions);
       this.items = items;
       this.sortOptions = options;
@@ -308,8 +324,11 @@ export default {
               class="!gl-border-l-0 !gl-border-r-0 gl-bg-default !gl-px-5 !gl-py-3"
             >
               <template v-if="isTrendColumn(field)">
+                <div v-if="comparisonPending" data-testid="trend-pending">
+                  <gl-skeleton-loader :width="60" :lines="1" :equal-width-lines="true" />
+                </div>
                 <gl-badge
-                  v-if="trendCellIn(item)"
+                  v-else-if="trendCellIn(item)"
                   v-gl-tooltip
                   :title="trendCellIn(item).metaTooltip"
                   :variant="trendCellIn(item).variant"

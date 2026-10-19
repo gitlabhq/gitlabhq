@@ -8,6 +8,8 @@ module Gitlab
           include ::Gitlab::Import::MergeRequestHelpers
           include ::Import::PlaceholderReferences::Pusher
 
+          attr_reader :imported_note
+
           # review - An instance of `Gitlab::GithubImport::Representation::PullRequestReview`
           # project - An instance of `Project`
           # client - An instance of `Gitlab::GithubImport::Client`
@@ -20,13 +22,13 @@ module Gitlab
           end
 
           def execute(options = {})
-            options = { add_reviewer: true }.merge(options)
+            options = { add_reviewer: true, add_review_note: true }.merge(options)
 
             user_finder = GithubImport::UserFinder.new(project, client)
 
             gitlab_user_id = user_finder.user_id_for(review.author)
 
-            add_review_note!(gitlab_user_id)
+            add_review_note!(gitlab_user_id) if options[:add_review_note]
             add_approval!(gitlab_user_id)
             add_reviewer!(gitlab_user_id) if options[:add_reviewer]
           end
@@ -55,6 +57,7 @@ module Gitlab
             note = Note.new(note_attributes(author_id, note))
 
             note.save!
+            @imported_note = note
 
             push_reference(project, note, :author_id, review.author&.id)
           end
@@ -81,6 +84,7 @@ module Gitlab
 
             return unless approval
 
+            @imported_note ||= approval_system_note
             push_reference(project, approval, :user_id, review.author&.id)
             push_reference(project, approval_system_note, :author_id, review.author&.id)
           end

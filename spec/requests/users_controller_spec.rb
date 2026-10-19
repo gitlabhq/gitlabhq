@@ -237,7 +237,7 @@ RSpec.describe UsersController, feature_category: :user_management do
 
         it 'hides events if the user cannot read cross project' do
           allow(Ability).to receive(:allowed?).and_call_original
-          expect(Ability).to receive(:allowed?).with(user, :read_cross_project) { false }
+          expect(Ability).to receive(:allowed?).with(user, :read_cross_project).and_return(false)
 
           get user_activity_url user.username, format: :json
 
@@ -283,7 +283,7 @@ RSpec.describe UsersController, feature_category: :user_management do
 
         it 'hides events if the user cannot read cross project' do
           allow(Ability).to receive(:allowed?).and_call_original
-          expect(Ability).to receive(:allowed?).with(user, :read_cross_project) { false }
+          expect(Ability).to receive(:allowed?).with(user, :read_cross_project).and_return(false)
 
           get user_activity_url user.username, format: :json, type: 'raw'
 

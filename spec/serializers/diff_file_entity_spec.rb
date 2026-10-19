@@ -46,7 +46,7 @@ RSpec.describe DiffFileEntity, feature_category: :code_review_workflow do
     end
 
     it 'exposes load_collapsed_diff_url if the file viewer is collapsed' do
-      allow(diff_file.viewer).to receive(:collapsed?) { true }
+      allow(diff_file.viewer).to receive(:collapsed?).and_return(true)
 
       expect(subject).to include(:load_collapsed_diff_url)
     end

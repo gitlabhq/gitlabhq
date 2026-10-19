@@ -46,6 +46,23 @@ export default {
       type: Object,
       default: null,
     },
+    /**
+     * True while the comparison query is still running, so a presenter can reserve
+     * room for the trend instead of adding it late.
+     */
+    comparisonPending: {
+      required: false,
+      type: Boolean,
+      default: false,
+    },
+    /**
+     * Metric the pending comparison will describe, known before its result is.
+     */
+    comparisonMetric: {
+      required: false,
+      type: String,
+      default: null,
+    },
     fields: {
       required: false,
       type: Array,
@@ -107,6 +124,8 @@ export default {
     v-if="displayType === $options.DISPLAY_TYPES.TABLE"
     :data="data"
     :comparison-data="comparisonData"
+    :comparison-pending="comparisonPending"
+    :comparison-metric="comparisonMetric"
     :fields="fields"
     :loading="loading"
     :display-config="displayConfig"

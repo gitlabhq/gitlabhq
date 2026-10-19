@@ -703,7 +703,7 @@ RSpec.describe MergeRequests::MergeService, feature_category: :code_review_workf
 
       context 'when source is missing' do
         it 'logs and saves error' do
-          allow(merge_request).to receive(:diff_head_sha) { nil }
+          allow(merge_request).to receive(:diff_head_sha).and_return(nil)
 
           error_message = 'No source for merge'
 
@@ -932,7 +932,7 @@ RSpec.describe MergeRequests::MergeService, feature_category: :code_review_workf
 
         context 'with failing CI' do
           before do
-            allow(merge_request.project).to receive(:only_allow_merge_if_pipeline_succeeds) { true }
+            allow(merge_request.project).to receive(:only_allow_merge_if_pipeline_succeeds).and_return(true)
             allow_next_instance_of(MergeRequests::Mergeability::CheckCiStatusService) do |check|
               allow(check).to receive(:mergeable_ci_state?).and_return(false)
             end
@@ -952,8 +952,8 @@ RSpec.describe MergeRequests::MergeService, feature_category: :code_review_workf
 
         context 'with unresolved discussions' do
           before do
-            allow(merge_request.project).to receive(:only_allow_merge_if_all_discussions_are_resolved) { true }
-            allow(merge_request).to receive(:mergeable_discussions_state?) { false }
+            allow(merge_request.project).to receive(:only_allow_merge_if_all_discussions_are_resolved).and_return(true)
+            allow(merge_request).to receive(:mergeable_discussions_state?).and_return(false)
           end
 
           it 'logs and saves error' do

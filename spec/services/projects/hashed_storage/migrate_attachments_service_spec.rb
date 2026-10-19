@@ -96,7 +96,7 @@ RSpec.describe Projects::HashedStorage::MigrateAttachmentsService, feature_categ
     end
 
     it 'works even when project validation fails' do
-      allow(project).to receive(:valid?) { false }
+      allow(project).to receive(:valid?).and_return(false)
 
       expect { service.execute }.to change { project.hashed_storage?(:attachments) }.to(true)
     end

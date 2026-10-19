@@ -222,7 +222,7 @@ RSpec.describe MergeRequests::MergeToRefService, feature_category: :code_review_
 
     context 'when source is missing' do
       it 'returns error' do
-        allow(merge_request).to receive(:diff_head_sha) { nil }
+        allow(merge_request).to receive(:diff_head_sha).and_return(nil)
 
         error_message = 'No source for merge'
 

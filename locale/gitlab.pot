@@ -64977,6 +64977,12 @@ msgstr ""
 msgid "PolicyRuleMultiSelect|Select all"
 msgstr ""
 
+msgid "PolicyStore|%{action} is not available with %{trigger}, which runs after the change: there is nothing left to stop."
+msgstr ""
+
+msgid "PolicyStore|%{action} needs the %{rule} rule to supply its configuration."
+msgstr ""
+
 msgid "PolicyStore|%{count}+"
 msgstr ""
 
@@ -65310,9 +65316,6 @@ msgstr ""
 msgid "PolicyStore|Project created"
 msgstr ""
 
-msgid "PolicyStore|Project creation requested"
-msgstr ""
-
 msgid "PolicyStore|Project setting"
 msgstr ""
 
@@ -65404,6 +65407,9 @@ msgid "PolicyStore|Select scope"
 msgstr ""
 
 msgid "PolicyStore|Select..."
+msgstr ""
+
+msgid "PolicyStore|Set project setting"
 msgstr ""
 
 msgid "PolicyStore|Setting validation"
@@ -65520,9 +65526,6 @@ msgstr ""
 msgid "PolicyStore|When a new project has been created"
 msgstr ""
 
-msgid "PolicyStore|When a project is about to be created, before it exists"
-msgstr ""
-
 msgid "PolicyStore|When a project moves to a different namespace"
 msgstr ""
 
@@ -65542,6 +65545,9 @@ msgid "PolicyStore|Which projects should this policy govern?"
 msgstr ""
 
 msgid "PolicyStore|Window name"
+msgstr ""
+
+msgid "PolicyStore|Write the required value onto the project on arrival"
 msgstr ""
 
 msgid "PolicyStore|You"

@@ -161,7 +161,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
           allow(helper).to receive(:display_whats_new?).and_return(true)
         end
 
-        it do
+        it 'includes the release items count, version digest, and read articles' do
           is_expected.to include({
             whats_new_most_recent_release_items_count: helper.whats_new_most_recent_release_items_count,
             whats_new_version_digest: helper.whats_new_version_digest,
@@ -175,7 +175,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
           allow(helper).to receive(:display_whats_new?).and_return(false)
         end
 
-        it do
+        it 'omits the release items count and version digest' do
           is_expected.not_to have_key(:whats_new_most_recent_release_items_count)
           is_expected.not_to have_key(:whats_new_version_digest)
         end
@@ -188,7 +188,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
           allow(helper).to receive(:show_version_check?).and_return(true)
         end
 
-        it do
+        it 'includes the GitLab version and version check' do
           is_expected.to include({
             gitlab_version: Gitlab.version_info,
             gitlab_version_check: helper.gitlab_version_check
@@ -201,7 +201,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
           allow(helper).to receive(:show_version_check?).and_return(false)
         end
 
-        it do
+        it 'omits the GitLab version and version check' do
           is_expected.not_to have_key(:gitlab_version)
           is_expected.not_to have_key(:gitlab_version_check)
         end

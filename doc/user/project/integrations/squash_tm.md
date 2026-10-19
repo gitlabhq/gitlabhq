@@ -8,7 +8,7 @@ title: Squash TM
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed, GitLab Dedicated
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -34,6 +34,12 @@ see [Leverage Requirements and Test management in your SDLC](https://www.youtube
       - **Secret token** if your Squash TM system administrator configured one at step 1.
 
 ## Configure GitLab
+
+Prerequisites:
+
+- The Squash TM webhook URL must be publicly accessible.
+  On GitLab Self-Managed, an administrator can instead
+  [allow requests to the local network](../../../security/webhooks.md#allow-requests-to-the-local-network-from-webhooks-and-integrations).
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Settings** > **Integrations**.

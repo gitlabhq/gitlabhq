@@ -111,7 +111,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :continuous_integrat
 
         it 'creates a log entry' do
           allow_next_instance_of(Ci::Pipeline) do |pipeline|
-            expect(pipeline).to receive(:save!).and_raise { RuntimeError }
+            expect(pipeline).to receive(:save!).and_raise(RuntimeError)
           end
 
           expect(Gitlab::AppJsonLogger)

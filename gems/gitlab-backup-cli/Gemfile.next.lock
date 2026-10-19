@@ -2,8 +2,8 @@ PATH
   remote: ../gitlab-rspec
   specs:
     gitlab-rspec (0.1.0)
-      activerecord (>= 7, < 9)
-      activesupport (>= 7, < 9)
+      activerecord (>= 7.2, < 9)
+      activesupport (>= 7.2, < 9)
       gitlab_quality-test_tooling (>= 3.13, < 4)
       rspec (~> 3.0)
       test-prof (~> 1.5)
@@ -12,8 +12,8 @@ PATH
   remote: .
   specs:
     gitlab-backup-cli (0.0.1)
-      activerecord (>= 7)
-      activesupport (>= 7)
+      activerecord (>= 7.2)
+      activesupport (>= 7.2)
       addressable (~> 2.8)
       bigdecimal (~> 3.1)
       concurrent-ruby (~> 1.1)
@@ -37,13 +37,13 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    activemodel (7.2.3.1)
-      activesupport (= 7.2.3.1)
-    activerecord (7.2.3.1)
-      activemodel (= 7.2.3.1)
-      activesupport (= 7.2.3.1)
+    activemodel (8.0.5.1)
+      activesupport (= 8.0.5.1)
+    activerecord (8.0.5.1)
+      activemodel (= 8.0.5.1)
+      activesupport (= 8.0.5.1)
       timeout (>= 0.4.0)
-    activesupport (7.2.3.1)
+    activesupport (8.0.5.1)
       base64
       benchmark (>= 0.3)
       bigdecimal
@@ -52,9 +52,10 @@ GEM
       drb
       i18n (>= 1.6, < 2)
       logger (>= 1.4.2)
-      minitest (>= 5.1, < 6)
+      minitest (>= 5.1)
       securerandom (>= 0.3)
       tzinfo (~> 2.0, >= 2.0.5)
+      uri (>= 0.13.1)
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
     amatch (0.4.2)
@@ -403,7 +404,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  activesupport (~> 7.2.3)
+  activesupport (~> 8.0.0)
   factory_bot (~> 6.4.6)
   gitlab-backup-cli!
   gitlab-rspec!
@@ -416,9 +417,9 @@ DEPENDENCIES
   rubocop-rspec (~> 2.27.1)
 
 CHECKSUMS
-  activemodel (7.2.3.1) sha256=39e1869b85e7a0b64a8ccddf19f3fb0c44261b329785384bb88f878eab51c0d0
-  activerecord (7.2.3.1) sha256=b89513e275da5b34183c5f2a497c154b02dcc7c811d399ab557e67e36170a05d
-  activesupport (7.2.3.1) sha256=11ebed516a43a0bb47346227a35ebae4d9427465a7c9eb197a03d5c8d283cb34
+  activemodel (8.0.5.1) sha256=559be32aa9c40db7a3ee0aef926d4508a9ebd22f96f7276c11326d21a7dff4a4
+  activerecord (8.0.5.1) sha256=9252968fce404d75eb17092498a440d472167f2f8deee32b4658d6552b1eeea7
+  activesupport (8.0.5.1) sha256=329a4280c4fbcfcf338ae2cb9df28b0b14527929dba105e10b3604516d998710
   addressable (2.8.7) sha256=462986537cf3735ab5f3c0f557f14155d778f4b43ea4f485a9deb9c8f7c58232
   amatch (0.4.2) sha256=5a7c8c08882864621b81bf3bbc0447bb638afe6066ceeead6b9d11f34cf0d911
   ast (2.4.2) sha256=1e280232e6a33754cde542bc5ef85520b74db2aac73ec14acef453784447cc12

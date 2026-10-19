@@ -746,6 +746,89 @@ describe('TablePresenter', () => {
       });
     });
 
+    describe('while the comparison is still running', () => {
+      const pendingProps = { ...trendProps, comparisonData: null, comparisonPending: true };
+
+      it('reserves the column so it does not pop in later', async () => {
+        await createWrapper(pendingProps, mountExtended);
+
+        expect(headerLabels()).toEqual(['Language', 'Total count', 'vs previous period']);
+      });
+
+      // An em dash would read as "no counterpart in the previous period", which is not known yet.
+      it('shows a skeleton in each trend cell rather than an unknown change', async () => {
+        await createWrapper(pendingProps, mountExtended);
+
+        expect(wrapper.findAllByTestId('trend-pending')).toHaveLength(3);
+        expect(badges()).toHaveLength(0);
+        expect(wrapper.findAllByTestId('trend-unknown')).toHaveLength(0);
+      });
+
+      it('resolves the metric from the name given up front when several are selected', async () => {
+        await createWrapper(
+          {
+            ...pendingProps,
+            fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_TWO_METRICS,
+            comparisonMetric: 'acceptanceRate',
+          },
+          mountExtended,
+        );
+
+        expect(wrapper.emitted('error')).toBeUndefined();
+        expect(headerLabels()).toContain('vs previous period');
+      });
+
+      it('reserves the column from the first paint, before any rows arrive', async () => {
+        await createWrapper({ ...pendingProps, data: { nodes: [] }, loading: 2 }, mountExtended);
+
+        expect(headerLabels()).toEqual(['Language', 'Total count', 'vs previous period']);
+        expect(wrapper.findAll('tbody tr').at(0).findAll('td')).toHaveLength(3);
+      });
+
+      // A comparison that fails or is dropped never lands, so reporting while pending would
+      // flash an error that then disappears; the check waits for the result as it always has.
+      it('waits for the comparison before reporting a missing trendMetric', async () => {
+        await createWrapper(
+          { ...pendingProps, fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_TWO_METRICS },
+          mountExtended,
+        );
+
+        expect(wrapper.emitted('error')).toBeUndefined();
+
+        await wrapper.setProps({
+          comparisonPending: false,
+          comparisonData: trendProps.comparisonData,
+        });
+
+        expect(wrapper.emitted('error')[0][0].message).toBe(
+          'table display type requires `trendMetric` when several metrics are selected',
+        );
+      });
+
+      it('fills the cells once the comparison arrives', async () => {
+        await createWrapper(pendingProps, mountExtended);
+        await wrapper.setProps({
+          comparisonPending: false,
+          comparisonData: trendProps.comparisonData,
+        });
+
+        expect(wrapper.findAllByTestId('trend-pending')).toHaveLength(0);
+        expect(badges().wrappers.map((badge) => badge.text())).toEqual(['5%', '0%']);
+      });
+
+      it('ignores a click on the reserved column header', async () => {
+        await createWrapper(pendingProps, mountExtended);
+        const firstCells = () =>
+          wrapper.findAll('tbody tr td:first-child').wrappers.map((cell) => cell.text());
+        const before = firstCells();
+
+        await wrapper.findByTestId('column-2').trigger('click');
+
+        expect(wrapper.findByTestId('column-2').findComponent(GlIcon).exists()).toBe(false);
+        expect(firstCells()).toEqual(before);
+      });
+    });
+
     describe('when a dimension buckets by date', () => {
       it('does not add the column, because the buckets differ between periods', async () => {
         const mockWeeklyFields = [

@@ -76,12 +76,12 @@ RSpec.describe MergeRequestPollCachedWidgetEntity, feature_category: :code_revie
 
   describe 'diff_head_sha' do
     before do
-      allow(resource).to receive(:diff_head_sha) { 'sha' }
+      allow(resource).to receive(:diff_head_sha).and_return('sha')
     end
 
     context 'when diff head commit is empty' do
       it 'returns nil' do
-        allow(resource).to receive(:diff_head_sha) { '' }
+        allow(resource).to receive(:diff_head_sha).and_return('')
 
         expect(subject[:diff_head_sha]).to be_nil
       end

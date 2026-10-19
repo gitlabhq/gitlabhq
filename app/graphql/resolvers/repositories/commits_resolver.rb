@@ -89,7 +89,6 @@ module Resolvers
 
       def follow?(path)
         path.present? &&
-          Feature.enabled?(:list_commits_follow, repository.project) &&
           Feature.disabled?(:remove_file_commit_history_following, type: :ops) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- Instance-level
       end
 

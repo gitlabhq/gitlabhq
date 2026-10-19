@@ -299,8 +299,7 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
           end
 
           before do
-            allow_any_instance_of(Gitlab::Diff::Position)
-              .to receive(:unfolded_diff?) { true }
+            allow_any_instance_of(Gitlab::Diff::Position).to receive(:unfolded_diff?).and_return(true)
           end
 
           it 'does not track issue comment usage data' do

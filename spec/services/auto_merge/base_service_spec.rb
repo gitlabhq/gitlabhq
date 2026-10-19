@@ -13,7 +13,7 @@ RSpec.describe AutoMerge::BaseService, feature_category: :code_review_workflow d
     subject { service.execute(merge_request) }
 
     before do
-      allow(AutoMergeProcessWorker).to receive(:perform_async) {}
+      allow(AutoMergeProcessWorker).to receive(:perform_async).and_return(nil)
     end
 
     it 'sets properies to the merge request' do

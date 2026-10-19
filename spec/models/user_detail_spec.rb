@@ -511,7 +511,7 @@ RSpec.describe UserDetail, feature_category: :system_access do
 
         # HTML entities NOT encoded - location, company preserve &
         :location     | 'test&attr'                                  | 'test&attr'
-        :company | 'test&attr' | 'test&attr'
+        :company      | 'test&attr'                                  | 'test&attr'
 
         # Legitimate edge cases
         :website_url  | 'https://example.com/search?q=hello%20world' | 'https://example.com/search?q=hello%20world'
@@ -590,11 +590,80 @@ RSpec.describe UserDetail, feature_category: :system_access do
         # Strips tags when the input also contains HTML entities
         :twitter      | '<script>alert(1)</script>&amp;'            | '&'
         :linkedin     | '<b>test</b>&lt;'                           | 'test&lt;'
+
+        # Keeps < and > like Sanitizable.sanitize
+        :linkedin     | 'a > b'                                     | 'a > b'
+        :twitter      | 'a <3 b'                                    | 'a <3 b'
+        :github       | '<b>a</b> > b'                              | 'a > b'
+
+        # Keeps < and > encoded when a second pass would change the value
+        :linkedin     | '<<b>script>alert(1)<</b>/script>'          | '&lt;script&gt;alert(1)&lt;/script&gt;'
+
+        # location and company still encode < and >
+        :location     | 'a > b'                                     | 'a &gt; b'
+        :company      | 'a > b'                                     | 'a &gt; b'
       end
 
       with_them do
         it { is_expected.to be_valid }
         it { is_expected.to have_attributes field => expected }
+      end
+
+      context 'when the feature flag is enabled after saving' do
+        where(:field, :input, :expected) do
+          :linkedin | 'a > b'        | 'a > b'
+          :twitter  | 'a <3 b'       | 'a <3 b'
+          :github   | '<b>a</b> > b' | 'a > b'
+        end
+
+        with_them do
+          it 'keeps the saved value valid' do
+            user_detail = create(:user).user_detail
+            user_detail.update!(field => input)
+
+            stub_feature_flags(validate_sanitizable_user_details: true)
+            user_detail.reload
+
+            expect(user_detail).to be_valid
+            expect(user_detail).to have_attributes field => expected
+          end
+        end
+      end
+    end
+
+    describe 'sanitization optimization' do
+      context 'when a social link changes' do
+        it 'sanitizes the changed social link' do
+          user_detail = build(:user_detail, twitter: '<script>alert(1)</script>')
+
+          user_detail.valid?
+
+          expect(user_detail.twitter).to eq('')
+        end
+
+        it 'leaves unchanged social links untouched', :aggregate_failures do
+          user_detail = build(:user_detail, github: '<script>evil</script>')
+          user_detail.clear_changes_information
+
+          user_detail.twitter = '<script>alert(1)</script>'
+          user_detail.valid?
+
+          expect(user_detail.twitter).to eq('')
+          expect(user_detail.github).to eq('<script>evil</script>')
+        end
+      end
+
+      context 'when only a non-social field changes' do
+        it 'leaves social links untouched', :aggregate_failures do
+          user_detail = build(:user_detail, github: '<script>evil</script>')
+          user_detail.clear_changes_information
+
+          user_detail.location = '<script>evil</script>'
+          user_detail.valid?
+
+          expect(user_detail.location).to eq('')
+          expect(user_detail.github).to eq('<script>evil</script>')
+        end
       end
     end
   end

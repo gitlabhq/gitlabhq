@@ -28,6 +28,12 @@ All workers should include `ApplicationWorker` instead of `Sidekiq::Worker`,
 which adds some convenience methods and automatically sets the queue based on
 the [routing rules](../../administration/sidekiq/processing_specific_job_classes.md#routing-rules).
 
+## Business logic
+
+Keep business logic out of workers.
+A worker loads records from the job arguments, calls a service, and adds job-specific data to the job log.
+For more information, see [reusing abstractions](../reusing_abstractions.md#worker).
+
 ## Cells compatibility
 
 GitLab.com is moving to a [Cells architecture](../cells/_index.md), where different organizations

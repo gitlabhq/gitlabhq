@@ -10,6 +10,7 @@ import confusingBrowserGlobals from 'confusing-browser-globals';
 import { conditionalIgnores } from './tooling/eslint-config/conditional_ignores.js';
 import * as todoLists from './.eslint_todo/index.mjs';
 import { eslintLocalRules } from './tooling/eslint-config/eslint-local-rules/index.mjs';
+import vue3MigrationAliases from './config/vue3migration/aliases.js';
 
 // Follows the legacy `extends` chain, since no-jquery doesn't ship flat configs.
 function resolveNoJQueryConfigRules(configName) {
@@ -394,6 +395,11 @@ export default [
           groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
 
           pathGroups: [
+            // With VUE_VERSION=3, the webpack resolver maps these packages to files in the repo.
+            {
+              pattern: `{${Object.keys(vue3MigrationAliases.CONTEXT_ALIASES).join(',')}}`,
+              group: 'external',
+            },
             {
               pattern: '~/**',
               group: 'internal',

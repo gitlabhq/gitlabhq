@@ -1260,7 +1260,7 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
 
     it 'does not save the project with an error if the service denies access' do
       expect(::Gitlab::ExternalAuthorization)
-        .to receive(:access_allowed?).with(user, 'new-label', any_args) { false }
+        .to receive(:access_allowed?).with(user, 'new-label', any_args).and_return(false)
 
       project = create_project(user, opts.merge({ external_authorization_classification_label: 'new-label' }))
 
@@ -1270,7 +1270,7 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
 
     it 'saves the project when the user has access to the label' do
       expect(::Gitlab::ExternalAuthorization)
-        .to receive(:access_allowed?).with(user, 'new-label', any_args) { true }.at_least(1).time
+        .to receive(:access_allowed?).with(user, 'new-label', any_args).and_return(true).at_least(1).time
 
       project = create_project(user, opts.merge({ external_authorization_classification_label: 'new-label' }))
 
@@ -1280,7 +1280,7 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
 
     it 'does not save the project when the user has no access to the default label and no label is provided' do
       expect(::Gitlab::ExternalAuthorization)
-        .to receive(:access_allowed?).with(user, 'default_label', any_args) { false }
+        .to receive(:access_allowed?).with(user, 'default_label', any_args).and_return(false)
 
       project = create_project(user, opts)
 

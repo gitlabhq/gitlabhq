@@ -594,7 +594,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, :request_store, feature_ca
 
           expect(AutoMerge::MergeWhenChecksPassService).to receive(:new).with(project, user, { sha: merge_request.diff_head_sha })
             .and_return(service_mock)
-          allow(service_mock).to receive(:available_for?) { true }
+          allow(service_mock).to receive(:available_for?).and_return(true)
           expect(service_mock).to receive(:execute).with(merge_request)
         end
 

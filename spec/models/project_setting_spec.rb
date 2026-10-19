@@ -259,8 +259,8 @@ RSpec.describe ProjectSetting, feature_category: :groups_and_projects do
 
   describe '#show_diff_preview_in_email?' do
     context 'when a project has no parent group' do
-      let(:project_settings) { create(:project_setting, show_diff_preview_in_email: false) }
-      let(:project) { create(:project, project_setting: project_settings) }
+      let(:project_settings) { build_stubbed(:project_setting, show_diff_preview_in_email: false) }
+      let(:project) { build_stubbed(:project, project_setting: project_settings) }
 
       context 'when show_diff_preview_in_email is disabled' do
         it 'returns false' do
@@ -269,12 +269,9 @@ RSpec.describe ProjectSetting, feature_category: :groups_and_projects do
       end
 
       context 'when show_diff_preview_in_email is enabled' do
-        let(:project_settings) { create(:project_setting, show_diff_preview_in_email: true) }
+        let(:project_settings) { build_stubbed(:project_setting, show_diff_preview_in_email: true) }
 
         it 'returns true' do
-          settings = create(:project_setting, show_diff_preview_in_email: true)
-          project = create(:project, project_setting: settings)
-
           expect(project).to be_show_diff_preview_in_email
         end
       end

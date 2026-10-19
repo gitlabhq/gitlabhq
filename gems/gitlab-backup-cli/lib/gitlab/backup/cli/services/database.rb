@@ -98,7 +98,7 @@ module Gitlab
           #
           # @return [ActiveRecord::ConnectionAdapters::PostgreSQLAdapter] connection
           def connection
-            @connection ||= connection_pool.connection
+            @connection ||= connection_pool.lease_connection
           end
 
           # @return [ActiveRecord::ConnectionAdapters::ConnectionPool] connection

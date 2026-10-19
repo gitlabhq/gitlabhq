@@ -2,8 +2,10 @@
 
 require 'fast_spec_helper'
 require_relative '../../scripts/minify-simplecov-resultsets'
+require_relative '../support/helpers/file_read_helpers'
 
 RSpec.describe MinifySimplecovResultsets, feature_category: :tooling do
+  include FileReadHelpers
   let(:root_dir) { described_class::ROOT_DIR }
   let(:resultset_path) { root_dir.join('coverage', 'rspec-job-1', '.resultset.json') }
 

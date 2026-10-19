@@ -1,7 +1,9 @@
 ---
 migration_job_name: BackfillConvertedWorkItemStatusIds
-description: Rewrite legacy system_defined_status_id rows in namespaces that converted to a custom lifecycle, so they point at the converted custom_status_id
+description: Rewrite legacy system_defined_status_id rows in namespaces that converted
+  to a custom lifecycle, so they point at the converted custom_status_id
 feature_category: team_planning
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255857
 milestone: '19.5'
 queued_migration_version: 20261008131538
+finalized_by: '20261018232612'

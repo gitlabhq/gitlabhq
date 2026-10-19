@@ -36,11 +36,31 @@ module Gitlab
 
               logger.observe(:pipeline_variables_count, variables.size, once: true)
 
-              max_value_bytesize = variables.map { |var| var[:value].to_s.bytesize }.max.to_i
-              logger.observe(:pipeline_variables_max_value_bytesize, max_value_bytesize, once: true)
+              logger.observe(:pipeline_variables_max_value_bytesize, max_value_bytesize(variables), once: true)
+
+              file_variables, env_variables = variables.partition { |var| file_variable?(var) }
+              if env_variables.any?
+                logger.observe(:pipeline_variables_max_env_var_value_bytesize, max_value_bytesize(env_variables),
+                  once: true)
+              end
+
+              if file_variables.any?
+                logger.observe(:pipeline_variables_max_file_value_bytesize, max_value_bytesize(file_variables),
+                  once: true)
+              end
 
               total_bytesize = variables.sum { |var| var[:key].to_s.bytesize + var[:value].to_s.bytesize }
               logger.observe(:pipeline_variables_total_bytesize, total_bytesize, once: true)
+            end
+
+            def max_value_bytesize(variables)
+              variables.map { |var| var[:value].to_s.bytesize }.max.to_i
+            end
+
+            # Only file type values are written to a file, so anything else counts as env_var.
+            def file_variable?(var)
+              type = var[:variable_type]
+              type.to_s == 'file' || type == ::Enums::Ci::Variable::TYPES[:file]
             end
 
             def assign_source_pipeline

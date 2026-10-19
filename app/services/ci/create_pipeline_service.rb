@@ -8,7 +8,7 @@ module Ci
     LOG_MAX_PIPELINE_SIZE = 2_000
     LOG_MAX_CREATION_THRESHOLD = 20.seconds
     LOG_MAX_PIPELINE_VARIABLES = 500
-    LOG_MAX_PIPELINE_VARIABLE_VALUE_BYTESIZE = 200.kilobytes
+    LOG_MAX_PIPELINE_VARIABLE_VALUE_BYTESIZE = 120.kilobytes
     LOG_MAX_PIPELINE_VARIABLES_TOTAL_BYTESIZE = 1.megabyte
     SEQUENCE = [Gitlab::Ci::Pipeline::Chain::Build,
       Gitlab::Ci::Pipeline::Chain::Validate::Abilities,

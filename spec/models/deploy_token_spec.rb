@@ -682,5 +682,40 @@ RSpec.describe DeployToken, feature_category: :continuous_delivery do
         expect(query.includes_values).to include(projects: :owners_and_maintainers)
       end
     end
+
+    describe '.active' do
+      let_it_be(:revoked_token) { create(:deploy_token, :revoked) }
+      let_it_be(:never_expiring_token) { create(:deploy_token, expires_at: nil) }
+
+      # travel_to moves the application's clock and leaves the database's
+      # where it is, so a scope comparing expires_at with the database's
+      # NOW() fails these examples in one direction or the other.
+      shared_examples 'a scope that compares expires_at with Time.current' do
+        let!(:expired_a_second_ago) { create(:deploy_token, expires_at: 1.second.ago.iso8601) }
+        let!(:expiring_now) { create(:deploy_token, expires_at: Time.current.iso8601) }
+        let!(:expiring_in_a_second) { create(:deploy_token, expires_at: 1.second.from_now.iso8601) }
+
+        it 'returns the tokens that are not revoked and expire after Time.current' do
+          expect(described_class.active).to include(expiring_in_a_second, never_expiring_token)
+          expect(described_class.active).not_to include(expired_a_second_ago, expiring_now, revoked_token)
+        end
+      end
+
+      context "when the application's clock is a day ahead of the database's" do
+        around do |example|
+          travel_to(1.day.from_now) { example.run }
+        end
+
+        it_behaves_like 'a scope that compares expires_at with Time.current'
+      end
+
+      context "when the application's clock is a day behind the database's" do
+        around do |example|
+          travel_to(1.day.ago) { example.run }
+        end
+
+        it_behaves_like 'a scope that compares expires_at with Time.current'
+      end
+    end
   end
 end

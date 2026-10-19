@@ -158,7 +158,28 @@ the following steps if your sites use different URLs:
 
    To allow the sites to talk to each other, [make sure the `Internal URL` field is unique for each site](../../geo_sites.md#set-up-the-internal-urls).
 
+> [!note]
+> A unified URL does not change the internal API URL.
+> If GitLab Shell and Gitaly send internal API requests to the primary site,
+> SSH pushes to the secondary site fail.
+
 In Kubernetes, you can [use the same domain under `global.hosts.domain` as for the primary site](https://docs.gitlab.com/charts/advanced/geo/).
+
+### Keep the internal API URL within each site
+
+On each site, GitLab Shell and Gitaly must send internal API requests to the Rails nodes of the same site.
+
+In the Linux package, `gitlab_rails['internal_api_url']` sets the internal API URL for both
+services. By default, the URL points to the local Workhorse. The Linux package writes this setting
+to these keys:
+
+- GitLab Shell: `gitlab_url` in `/var/opt/gitlab/gitlab-shell/config.yml`
+- Gitaly: `url` in the `[gitlab]` section of `/var/opt/gitlab/gitaly/config.toml`
+
+On secondary sites, do not point `gitlab_rails['internal_api_url']` to the primary site.
+When Gitaly runs on separate nodes, set `gitlab_rails['internal_api_url']` on those nodes so it
+reaches only the Rails nodes of the same site. For example, use the internal load balancer of
+that site.
 
 ## Set up a separate URL for a secondary Geo site
 

@@ -527,7 +527,7 @@ RSpec.describe Git::BranchPushService, :use_clean_rails_redis_caching, :services
 
     before do
       allow(project).to receive(:default_branch).and_return('feature')
-      expect(project).to receive(:change_head) { 'feature' }
+      expect(project).to receive(:change_head).and_return('feature')
     end
 
     it 'push to first branch updates HEAD' do

@@ -54,6 +54,7 @@ describe('Source Editor utils', () => {
     it.each`
       themeName            | expectedThemeName
       ${'solarized-light'} | ${'solarized-light'}
+      ${'dracula'}         | ${'dracula'}
       ${DEFAULT_THEME}     | ${DEFAULT_THEME}
       ${'non-existent'}    | ${DEFAULT_THEME}
     `(
@@ -65,6 +66,27 @@ describe('Source Editor utils', () => {
         expect(monacoEditor.setTheme).toHaveBeenCalledWith(expectedThemeName);
       },
     );
+
+    describe('with the Dracula user preference', () => {
+      beforeEach(() => {
+        stubUserColorScheme('dracula');
+      });
+
+      it('registers the Dracula palette with Monaco', () => {
+        utils.setupEditorTheme();
+
+        expect(monacoEditor.defineTheme).toHaveBeenCalledWith(
+          'dracula',
+          expect.objectContaining({
+            base: 'vs-dark',
+            colors: expect.objectContaining({
+              'editor.background': '#282a36',
+              'editor.foreground': '#f8f8f2',
+            }),
+          }),
+        );
+      });
+    });
   });
 
   describe('getBlobLanguage', () => {

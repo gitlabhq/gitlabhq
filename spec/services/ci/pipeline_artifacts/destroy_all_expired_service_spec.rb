@@ -12,7 +12,7 @@ RSpec.describe Ci::PipelineArtifacts::DestroyAllExpiredService, :clean_gitlab_re
     context 'when timeout happens' do
       before do
         stub_const('Ci::PipelineArtifacts::DestroyAllExpiredService::LOOP_TIMEOUT', 0.1.seconds)
-        allow(service).to receive(:destroy_batch) { true }
+        allow(service).to receive(:destroy_batch).and_return(true)
       end
 
       it 'returns 0 and does not continue destroying' do

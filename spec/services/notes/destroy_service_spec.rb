@@ -91,7 +91,7 @@ RSpec.describe Notes::DestroyService, feature_category: :team_planning do
 
       context 'noteable highlight cache clearing' do
         before do
-          allow(note.position).to receive(:unfolded_diff?) { true }
+          allow(note.position).to receive(:unfolded_diff?).and_return(true)
         end
 
         it 'clears noteable diff cache when it was unfolded for the note position' do

@@ -332,8 +332,7 @@ RSpec.describe ApplicationSettings::UpdateService, feature_category: :shared do
     end
 
     it 'does not save the settings with an error if the service denies access' do
-      expect(::Gitlab::ExternalAuthorization)
-        .to receive(:access_allowed?).with(admin, 'new-label') { false }
+      expect(::Gitlab::ExternalAuthorization).to receive(:access_allowed?).with(admin, 'new-label').and_return(false)
 
       described_class.new(application_settings, admin, { external_authorization_service_default_label: 'new-label' }).execute
 
@@ -341,8 +340,7 @@ RSpec.describe ApplicationSettings::UpdateService, feature_category: :shared do
     end
 
     it 'saves the setting when the user has access to the label' do
-      expect(::Gitlab::ExternalAuthorization)
-        .to receive(:access_allowed?).with(admin, 'new-label') { true }
+      expect(::Gitlab::ExternalAuthorization).to receive(:access_allowed?).with(admin, 'new-label').and_return(true)
 
       described_class.new(application_settings, admin, { external_authorization_service_default_label: 'new-label' }).execute
 

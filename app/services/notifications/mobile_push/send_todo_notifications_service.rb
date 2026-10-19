@@ -18,14 +18,6 @@ module Notifications
 
       LATENCY_BUCKETS = [1, 5, 15, 60, 300, 900].freeze
 
-      # ApnsClient result -> `result` label on the counter for per-send outcomes.
-      SEND_RESULT_LABELS = {
-        delivered: 'delivered',
-        bad_token: 'evicted',
-        failed: 'failed',
-        skipped: 'skipped_not_configured'
-      }.freeze
-
       def initialize(todo_ids)
         @todo_ids = Array(todo_ids)
       end
@@ -48,7 +40,7 @@ module Notifications
           apns_results: @apns_results
         })
       ensure
-        @client&.close
+        @sender&.close
       end
 
       private
@@ -56,18 +48,16 @@ module Notifications
       attr_reader :todo_ids
 
       def process_todo(todo)
-        user = todo.user
+        recipient = ::Gitlab::MobilePush::Recipient.new(todo.user)
 
-        return record_todo_outcome(:skipped_user_inactive) unless user&.active?
-        return record_todo_outcome(:skipped_setting_disabled) unless Feature.enabled?(:mobile_push_notifications, user)
+        skip_reason = recipient.skip_reason
+        return record_todo_outcome(skip_reason) if skip_reason
 
-        subscriptions = user.mobile_device_push_subscriptions.to_a
-        return record_todo_outcome(:skipped_no_subscription) if subscriptions.empty?
-
+        subscriptions = recipient.subscriptions
         @subscription_count += subscriptions.size
 
-        if rate_limited?(user)
-          handle_rate_limited(user, subscriptions)
+        if rate_limited?(recipient.user)
+          handle_rate_limited(recipient.user, subscriptions)
         else
           deliver(todo, subscriptions)
         end
@@ -112,20 +102,12 @@ module Notifications
         end
       end
 
-      def push_to_all(subscriptions)
-        subscriptions.map do |subscription|
-          result = client.push(subscription, yield(subscription))
-
-          subscription.destroy if result == :bad_token
-          counter.increment(result: SEND_RESULT_LABELS.fetch(result, 'failed'))
-          @apns_results[result.to_s] += 1
-
-          result
-        end
+      def push_to_all(subscriptions, &payload)
+        sender.deliver(subscriptions, &payload).each { |result| @apns_results[result.to_s] += 1 }
       end
 
-      def client
-        @client ||= ::Gitlab::MobilePush::ApnsClient.new
+      def sender
+        @sender ||= ::Gitlab::MobilePush::Sender.new
       end
 
       def payload_for(todo, subscription)

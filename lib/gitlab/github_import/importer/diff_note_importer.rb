@@ -5,8 +5,11 @@ module Gitlab
     module Importer
       class DiffNoteImporter
         include ::Import::PlaceholderReferences::Pusher
+        include Gitlab::Utils::StrongMemoize
 
         DiffNoteCreationError = Class.new(ActiveRecord::RecordInvalid)
+
+        attr_reader :imported_note_id
 
         # note - An instance of `Gitlab::GithubImport::Representation::DiffNote`
         # project - An instance of `Project`
@@ -21,8 +24,6 @@ module Gitlab
           return if merge_request_id.blank?
 
           note.merge_request = merge_request
-
-          build_author_attributes
 
           # Diff notes with suggestions are imported with DiffNote, which is
           # slower to import than LegacyDiffNote. Importing DiffNote is slower
@@ -40,13 +41,32 @@ module Gitlab
           import_with_legacy_diff_note
         end
 
+        # Returns the GitLab attributes shared by both note types, so a sync can reuse them.
+        def import_attributes
+          author_id, author_found = user_finder.author_id_for(note)
+
+          {
+            noteable_type: note.noteable_type,
+            noteable_id: merge_request_id,
+            project_id: project.id,
+            author_id: author_id,
+            note: MarkdownText.format(note.note, note.author, author_found, project: project, client: client),
+            discussion_id: note.discussion_id,
+            system: false,
+            created_at: note.created_at,
+            updated_at: note.updated_at,
+            imported_from: ::Import::HasImportSource::IMPORT_SOURCES[:github]
+          }
+        end
+        strong_memoize_attr :import_attributes
+
+        def find_noteable_id
+          merge_request_id
+        end
+
         private
 
-        attr_reader :note, :project, :client, :author_id, :author_found
-
-        def build_author_attributes
-          @author_id, @author_found = user_finder.author_id_for(note)
-        end
+        attr_reader :note, :project, :client
 
         # rubocop:disable Gitlab/BulkInsert
         def import_with_legacy_diff_note
@@ -59,27 +79,18 @@ module Gitlab
           # To work around this we're using bulk_insert with a single row. This
           # allows us to efficiently insert data (even if it's just 1 row)
           # without having to use all sorts of hacks to disable callbacks.
-          attributes = {
-            noteable_type: note.noteable_type,
-            system: false,
+          attributes = import_attributes.merge(
             type: 'LegacyDiffNote',
-            discussion_id: note.discussion_id,
-            noteable_id: merge_request_id,
-            project_id: project.id,
-            author_id: author_id,
-            note: note_body,
             commit_id: note.original_commit_id,
             line_code: note.line_code,
-            created_at: note.created_at,
-            updated_at: note.updated_at,
-            st_diff: note.diff_hash.to_yaml,
-            imported_from: ::Import::HasImportSource::IMPORT_SOURCES[:github]
-          }
+            st_diff: note.diff_hash.to_yaml
+          )
 
           diff_note = LegacyDiffNote.new(attributes.merge(importing: true))
           diff_note.validate!
 
           ids = ApplicationRecord.legacy_bulk_insert(LegacyDiffNote.table_name, [attributes], return_ids: true)
+          @imported_note_id = ids.first
 
           push_references_by_ids(project, ids, LegacyDiffNote, :author_id, note[:author]&.id)
         end
@@ -88,32 +99,20 @@ module Gitlab
         def import_with_diff_note
           log_diff_note_creation('DiffNote')
 
-          record = ::Import::Github::Notes::CreateService.new(project, author, {
-            noteable_type: note.noteable_type,
-            system: false,
+          record = ::Import::Github::Notes::CreateService.new(project, author, import_attributes.merge(
             type: 'DiffNote',
-            noteable_id: merge_request_id,
-            project_id: project.id,
-            note: note_body,
-            discussion_id: note.discussion_id,
             commit_id: note.original_commit_id,
-            created_at: note.created_at,
-            updated_at: note.updated_at,
-            position: note.diff_position,
-            imported_from: ::Import::SOURCE_GITHUB
-          }).execute(importing: true)
+            position: note.diff_position
+          )).execute(importing: true)
 
           raise DiffNoteCreationError, record unless record.persisted?
 
+          @imported_note_id = record.id
           push_reference(project, record, :author_id, note.author&.id)
         end
 
-        def note_body
-          @note_body ||= MarkdownText.format(note.note, note.author, author_found, project: project, client: client)
-        end
-
         def author
-          @author ||= User.find(author_id)
+          @author ||= User.find(import_attributes[:author_id])
         end
 
         def merge_request
@@ -141,3 +140,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::GithubImport::Importer::DiffNoteImporter.prepend_mod

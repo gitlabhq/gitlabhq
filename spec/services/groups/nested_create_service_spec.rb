@@ -12,7 +12,7 @@ RSpec.describe Groups::NestedCreateService, feature_category: :groups_and_projec
   shared_examples 'with a visibility level' do
     it 'creates the group with correct visibility level' do
       allow(Gitlab::CurrentSettings.current_application_settings)
-        .to receive(:default_group_visibility) { Gitlab::VisibilityLevel::INTERNAL }
+        .to receive(:default_group_visibility).and_return(Gitlab::VisibilityLevel::INTERNAL)
 
       group = service.execute
 

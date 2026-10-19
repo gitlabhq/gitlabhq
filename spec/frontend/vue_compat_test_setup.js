@@ -93,8 +93,9 @@ if (global.document) {
     return null;
   };
 
-  const isPropertyValidOnDomNode = (prop) => {
-    if (invalidProperties.has(prop)) {
+  const isPropertyValidOnDomNode = (prop, value) => {
+    // Compat removes `false` attributes anyway, but warns ATTR_FALSE_VALUE for each one.
+    if (value === false || invalidProperties.has(prop)) {
       return false;
     }
 
@@ -169,7 +170,7 @@ if (global.document) {
 
         const props = Object.fromEntries(
           Object.entries(this.$props)
-            .filter(([prop]) => isPropertyValidOnDomNode(prop))
+            .filter(([prop, value]) => isPropertyValidOnDomNode(prop, value))
             .map(([key, value]) => [key, typeof value === 'function' ? ['[Function]'] : value]),
         );
 

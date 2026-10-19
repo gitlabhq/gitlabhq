@@ -151,7 +151,7 @@ RSpec.describe ::MergeRequests::Mergeability::DetailedMergeStatusService, featur
           :created   | :ci_still_running
           :pending   | :ci_still_running
           :running   | :ci_still_running
-          :manual    | :ci_still_running
+          :blocked   | :ci_still_running
           :scheduled | :ci_still_running
           :failed    | :ci_must_pass
           :success   | :mergeable

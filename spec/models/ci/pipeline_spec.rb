@@ -6623,13 +6623,13 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       end
 
       context 'when pipeline status is manual' do
-        let(:pipeline) { create(:ci_pipeline, :manual) }
+        let(:pipeline) { create(:ci_pipeline, :blocked) }
 
         it { is_expected.to be_truthy }
       end
     end
 
-    context 'when pipeline does not have builds' do
+    context 'when pipeline does not have builds with test reports' do
       before do
         create(:ci_build, :artifacts, pipeline: pipeline)
       end
@@ -6641,7 +6641,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       end
 
       context 'when pipeline status is manual' do
-        let(:pipeline) { create(:ci_pipeline, :manual) }
+        let(:pipeline) { create(:ci_pipeline, :blocked) }
 
         it { is_expected.to be_falsey }
       end
@@ -6665,7 +6665,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       end
 
       context 'when pipeline status is manual' do
-        let(:pipeline) { create(:ci_pipeline, :manual) }
+        let(:pipeline) { create(:ci_pipeline, :blocked) }
 
         it { is_expected.to be_falsey }
       end

@@ -87,7 +87,7 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
 
     context 'when read-only DB' do
       before do
-        allow(Gitlab::Database).to receive(:read_only?) { true }
+        allow(Gitlab::Database).to receive(:read_only?).and_return(true)
       end
 
       it 'does not enqueue MergeRequestMergeabilityCheckWorker' do
@@ -171,7 +171,7 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
 
     context 'when broken' do
       before do
-        expect(merge_request).to receive(:broken?) { true }
+        expect(merge_request).to receive(:broken?).and_return(true)
       end
 
       it_behaves_like 'unmergeable merge request'
@@ -366,7 +366,7 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
 
     context 'when read-only DB' do
       it 'returns ServiceResponse.error' do
-        allow(Gitlab::Database).to receive(:read_only?) { true }
+        allow(Gitlab::Database).to receive(:read_only?).and_return(true)
 
         result = subject
 
@@ -422,7 +422,7 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
           # Making sure that we don't touch the merge-status after
           # the MR is not opened any longer. Source branch might
           # have been removed, etc.
-          allow(merge_request).to receive(:broken?) { true }
+          allow(merge_request).to receive(:broken?).and_return(true)
           merge_request.mark_as_mergeable!
           merge_request.close!
         end

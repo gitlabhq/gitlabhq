@@ -34,7 +34,7 @@ RSpec.describe Captcha::CaptchaVerificationService, feature_category: :team_plan
       end
 
       it 'returns false' do
-        expect(service).to receive(:verify_recaptcha).with(response: captcha_response) { true }
+        expect(service).to receive(:verify_recaptcha).with(response: captcha_response).and_return(true)
 
         expect(subject).to be(true)
       end

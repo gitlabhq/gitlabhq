@@ -109,6 +109,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewImporter, :cl
             expect(last_note.author).to eq(author)
             expect(last_note.created_at).to eq(submitted_at)
             expect(last_note.system_note_metadata.action).to eq('approved')
+            expect(subject.imported_note).to eq(last_note)
           end
 
           it 'pushes placeholder references for reviewer and system note', if: push_placeholder_references do
@@ -138,6 +139,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewImporter, :cl
               expect { subject.execute }
                 .to not_change { Note.count }
                 .and not_change { Approval.count }
+              expect(subject.imported_note).to be_nil
             end
 
             it 'only pushes placeholder references for reviewer', if: push_placeholder_references do
@@ -163,6 +165,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewImporter, :cl
 
           it 'does not create note for the review' do
             expect { subject.execute }.not_to change { Note.count }
+            expect(subject.imported_note).to be_nil
           end
 
           it 'only pushes placeholder references for reviewer', if: push_placeholder_references do
@@ -219,12 +222,23 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewImporter, :cl
             expect(note.note).to eq("**Review:** Approved\n\nnote")
             expect(note.author).to eq(author)
             expect(note.created_at).to eq(submitted_at)
+            expect(subject.imported_note).to eq(note)
 
             system_note = merge_request.notes.where(system: true).last
             expect(system_note.note).to eq('approved this merge request')
             expect(system_note.author).to eq(author)
             expect(system_note.created_at).to eq(submitted_at)
             expect(system_note.system_note_metadata.action).to eq('approved')
+          end
+
+          context 'when add_review_note option is false' do
+            it 'adds only the approval' do
+              expect { subject.execute(add_review_note: false) }.to change { Note.count }.by(1)
+                .and change { Approval.count }.by(1)
+
+              expect(merge_request.notes.where(system: false)).to be_empty
+              expect(subject.imported_note).to eq(merge_request.notes.find_by(system: true))
+            end
           end
 
           it 'pushes placeholder references for reviewer, system note, and reviewer note',

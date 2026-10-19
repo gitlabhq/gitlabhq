@@ -368,6 +368,11 @@ methods provided by Active Record:
 Any other methods such as `find_by(some_column: X)` are not included, and
 instead fall under the "Active Record" abstraction.
 
+Controllers, API endpoints, services, and workers can use `find` and `find_by_id` to load a record by ID.
+The table does not allow other model class methods in these abstractions.
+In workers, use `find_by_id` and return early when the record is `nil`.
+For more information, see [Sidekiq retries](sidekiq/_index.md#retries).
+
 #### Model instance methods
 
 Instance methods defined on Active Record models by _GitLab itself_. Methods
@@ -389,6 +394,49 @@ Everything in `app/workers`.
 
 Use `SomeWorker.perform_async` or `SomeWorker.perform_in` to schedule Sidekiq
 jobs. Never directly invoke a worker using `SomeWorker.new.perform`.
+
+Keep business logic out of workers.
+This follows separation of concerns: a worker handles how a job runs, and a service handles what the job does.
+Like [controllers](#controllers), workers pass input to other classes and do little work on their own.
+Keeping the business logic in a service has these benefits:
+
+- The service is testable with loaded objects, without going through `perform` and job arguments.
+- Other callers, such as API endpoints, Rake tasks, or backfills, can reuse the service.
+- The service receives loaded objects in `initialize`, so its dependencies are explicit.
+  Job arguments are primitive values, such as IDs.
+  When business logic stays in the worker, every private helper method must receive the job arguments,
+  or depend on instance variables that `perform` sets.
+
+A worker connects Sidekiq to a service.
+In most workers, do only the following:
+
+- Declare the worker attributes.
+- Load records from the job arguments, and return early when a record no longer exists.
+- Call one service.
+- Add job-specific data to the job log, for example with `log_extra_metadata_on_done`.
+
+Logging that every caller needs belongs in the service.
+Keep the worker focused on Sidekiq concerns alone, such as retry hooks or re-enqueuing the job with a cursor the service returns.
+Everything the job actually does belongs in a service.
+
+```ruby
+class Projects::SomeWorker
+  include ApplicationWorker
+
+  # Worker attributes
+
+  def perform(project_id)
+    project = Project.find_by_id(project_id)
+    return unless project
+
+    result = Projects::SomeService.new(project).execute
+
+    log_extra_metadata_on_done(:result, result.payload)
+  end
+end
+```
+
+To limit runtime in a service, use `Gitlab::Metrics::RuntimeLimiter` instead of the `LoopWithRuntimeLimit` worker concern.
 
 ## Abstract Methods in Base Classes
 

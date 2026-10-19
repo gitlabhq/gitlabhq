@@ -58,7 +58,7 @@ class DeployToken < ApplicationRecord
 
   accepts_nested_attributes_for :project_deploy_tokens
 
-  scope :active, -> { where("revoked = false AND expires_at >= NOW()") }
+  scope :active, -> { where(revoked: false).not_expired }
   scope :project_token, -> { where(deploy_token_type: :project_type) }
   scope :group_token, -> { where(deploy_token_type: :group_type) }
   scope :order_expires_at_asc, -> { order(expires_at: :asc) }

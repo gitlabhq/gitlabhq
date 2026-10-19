@@ -66,6 +66,15 @@ RSpec.describe Gitlab::Backup::Cli::Services::Database do
         expect(database.connection_name).to eq('main')
       end
     end
+
+    describe '#connection' do
+      # ConnectionPool#connection is deprecated in Rails 7.2 and removed in Rails 8.0
+      it 'leases a connection without using deprecated connection pool methods' do
+        expect(ActiveRecord.deprecator).not_to receive(:warn)
+
+        expect(connection).to be_a(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter)
+      end
+    end
   end
 
   context 'with test connection' do

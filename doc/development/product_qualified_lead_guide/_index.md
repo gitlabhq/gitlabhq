@@ -132,11 +132,24 @@ The flow of a PQL lead is as follows:
 
 #### Trial lead flow on GitLab.com
 
+A trial lead originates from one of two paths. A signed-in user who starts a
+trial calls `GitlabSubscriptions::TrialsController#create`, which runs
+`GitlabSubscriptions::Trials::UltimateCreateService`. A new user who starts a
+trial during registration goes through `Onboarding::TrialNamespaceCreateService`,
+which calls `GitlabSubscriptions::CreateLeadService` directly and enqueues
+`GitlabSubscriptions::Trials::ApplyTrialWorker`. For the registration half of
+the second path, see [Registration architecture](../registration_architecture.md).
+
 ```mermaid
 sequenceDiagram
-    Trial Frontend Forms->>TrialsController#35;create_lead: GitLab.com frontend sends [lead] to backend
-    TrialsController#35;create->>CreateLeadService: [lead]
-    TrialsController#35;create->>ApplyTrialService: [lead] Apply the trial
+    Trial Frontend Forms->>TrialsController#35;create: GitLab.com frontend sends [lead] to backend
+    TrialsController#35;create->>Trials#58;#58;UltimateCreateService: [lead] and apply the trial
+    Trials#58;#58;UltimateCreateService->>CreateLeadService: [lead]
+    Trials#58;#58;UltimateCreateService->>ApplyTrialService: [lead] Apply the trial
+    Registration welcome->>Onboarding#58;#58;TrialNamespaceCreateService: New user starts a trial during registration
+    Onboarding#58;#58;TrialNamespaceCreateService->>CreateLeadService: [lead]
+    Onboarding#58;#58;TrialNamespaceCreateService->>Trials#58;#58;ApplyTrialWorker: Async apply the trial
+    Trials#58;#58;ApplyTrialWorker->>ApplyTrialService: [lead] Apply the trial
     CreateLeadService->>SubscriptionPortalClient#35;generate_trial_lead: [lead] Creates customer account on CustomersDot
     ApplyTrialService->>SubscriptionPortalClient#35;generate_trial(sync_to_gl#61;true): [lead] Asks CustomersDot to apply the trial on namespace
     SubscriptionPortalClient#35;generate_trial_lead->>CustomersDot|Leads#58;#58;GitlabCom#58;#58;UltimatesController#35;create: GitLab.com sends [lead] to CustomersDot

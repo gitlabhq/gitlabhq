@@ -13,6 +13,7 @@ module Gitlab
       Gitlab::Ci::Config::External::Context::HTTPTimeoutError
       Gitlab::Ci::Config::External::Context::TimeoutError
       Gitlab::Ci::Pipeline::Chain::Validate::External::RequestFailed
+      Gitlab::Config::Loader::Yaml::DataTooLargeError
       Gitlab::RequestContext::RequestDeadlineExceeded
       GRPC::DeadlineExceeded
       JIRA::HTTPError
