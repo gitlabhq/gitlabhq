@@ -13,6 +13,7 @@ class UserPreference < ApplicationRecord
   NOTES_FILTERS = { all_notes: 0, only_comments: 1, only_activity: 2 }.freeze
   TIME_DISPLAY_FORMATS = { system: 0, non_iso_format: 1, iso_format: 2 }.freeze
   FIRST_DAYS_OF_WEEK = { sunday: 0, monday: 1, saturday: 6 }.freeze
+  EMOJI_SKIN_TONES = { default: 0, light: 1, medium_light: 2, medium: 3, medium_dark: 4, dark: 5 }.freeze
 
   belongs_to :user
 
@@ -48,6 +49,7 @@ class UserPreference < ApplicationRecord
   validates :pass_user_identities_to_ci_jwt, allow_nil: false, inclusion: { in: [true, false] }
   validates :pinned_nav_items, json_schema: { filename: 'pinned_nav_items' }
   validates :emoji_autocomplete_enabled, allow_nil: false, inclusion: { in: [true, false] }
+  validates :emoji_skin_tone, presence: true
 
   validates :time_display_format, inclusion: { in: TIME_DISPLAY_FORMATS.values }, presence: true
   validates :extensions_marketplace_opt_in_url, length: { maximum: 512 }
@@ -66,6 +68,7 @@ class UserPreference < ApplicationRecord
   attribute :text_editor_type, default: 2
 
   enum :visibility_pipeline_id_type, { id: 0, iid: 1 }, scopes: false
+  enum :emoji_skin_tone, EMOJI_SKIN_TONES, prefix: true, scopes: false
 
   enum :text_editor_type, { not_set: 0, plain_text_editor: 1, rich_text_editor: 2 }
   enum :extensions_marketplace_opt_in_status, Enums::WebIde::ExtensionsMarketplaceOptInStatus.statuses

@@ -382,6 +382,21 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
     end
   end
 
+  context 'with a scope validator' do
+    let(:scope_validator) { instance_double(Gitlab::Auth::ScopeValidator) }
+    let(:params) { { scope_validator: scope_validator } }
+
+    it 'passes it to the notes created from drafts' do
+      create(:draft_note, merge_request: merge_request, author: user)
+
+      expect(Notes::CreateService).to receive(:new)
+        .with(project, user, hash_including(scope_validator: scope_validator))
+        .and_call_original
+
+      publish
+    end
+  end
+
   context 'with no draft notes' do
     let_it_be_with_reload(:merge_request) { create(:merge_request) }
 

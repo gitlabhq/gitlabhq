@@ -7017,9 +7017,11 @@ CREATE TABLE p_knowledge_graph_code_indexing_tasks (
     ref text NOT NULL,
     commit_sha text NOT NULL,
     traversal_path text NOT NULL,
+    repository_storage text,
     CONSTRAINT check_291fb206ad CHECK ((char_length(ref) <= 255)),
     CONSTRAINT check_c9cdc501a3 CHECK ((char_length(traversal_path) <= 1024)),
-    CONSTRAINT check_d66fc905af CHECK ((char_length(commit_sha) <= 40))
+    CONSTRAINT check_d66fc905af CHECK ((char_length(commit_sha) <= 40)),
+    CONSTRAINT check_kg_code_indexing_tasks_repository_storage_limit CHECK ((char_length(repository_storage) <= 255))
 )
 PARTITION BY RANGE (created_at);
 
@@ -33798,6 +33800,7 @@ CREATE TABLE user_preferences (
     orbit_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
     knowledge_graph_governing_namespace_id bigint,
     emoji_autocomplete_enabled boolean DEFAULT true NOT NULL,
+    emoji_skin_tone smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_1d670edc68 CHECK ((time_display_relative IS NOT NULL)),
     CONSTRAINT check_89bf269f41 CHECK ((char_length(diffs_deletion_color) <= 7)),
     CONSTRAINT check_9b50d9f942 CHECK ((char_length(extensions_marketplace_opt_in_url) <= 512)),
@@ -53380,8 +53383,6 @@ CREATE INDEX temp_index_on_users_where_dark_theme ON users USING btree (id) WHER
 CREATE UNIQUE INDEX term_agreements_unique_index ON term_agreements USING btree (user_id, term_id);
 
 CREATE INDEX tmp_idx_award_emoji_on_id_where_awardable_type_issue ON award_emoji USING btree (id) WHERE ((awardable_type)::text = 'Issue'::text);
-
-CREATE INDEX tmp_idx_members_on_access_level_source_type_requested_at_id ON members USING btree (id) WHERE ((access_level = 5) AND ((source_type)::text = 'Namespace'::text) AND (requested_at IS NULL));
 
 CREATE INDEX tmp_idx_orphaned_approval_project_rules ON approval_project_rules USING btree (id) WHERE ((report_type = ANY (ARRAY[2, 4])) AND (security_orchestration_policy_configuration_id IS NULL));
 

@@ -602,7 +602,7 @@ module Gitlab
       end
 
       def valid_composite_identity?(user)
-        user.composite_identity_enforced? && user.service_account?
+        user.ai_service_account?
       end
     end
   end

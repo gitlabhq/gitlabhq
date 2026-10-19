@@ -35,6 +35,11 @@
       = f.gitlab_ui_checkbox_component :emoji_autocomplete_enabled,
         s_('Preferences|Enable emoji autocomplete'),
         help_text: s_('Preferences|When you type a colon (:) in a description or comment box, matching emoji are suggested.')
+    - if Feature.enabled?(:emoji_skin_tone_preference, current_user)
+      .js-listbox-input{ data: { label: s_('Preferences|Default emoji skin tone'),
+        description: s_('Preferences|Emoji with skin tone variants use this tone in the emoji picker and in emoji autocomplete.'),
+        name: 'user[emoji_skin_tone]', items: emoji_skin_tone_choices.to_json, value: current_user.emoji_skin_tone,
+        block: true.to_s, toggle_class: 'gl-form-input-md' } }
 
 = render preferences_section(s_('Preferences|Code'), id: 'code') do |c|
   - c.with_description do

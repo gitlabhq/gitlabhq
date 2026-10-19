@@ -1,5 +1,6 @@
 const path = require('path');
 
+const resolve = require('resolve');
 const { IS_EE, IS_JH, ROOT_PATH } = require('../webpack.constants');
 const { CONTEXT_ALIASES } = require('../vue3migration/aliases');
 const { USE_VUE3 } = require('../vue3migration/version');
@@ -46,10 +47,12 @@ const aliases = {
   ),
 
   // prevent loading of index.js to avoid duplicate instances of classes
-  graphql: path.join(ROOT_PATH, 'node_modules/graphql/index.mjs'),
+  graphql: require.resolve('graphql/index.mjs'),
 
-  // load mjs version instead of cjs
-  'markdown-it': path.join(ROOT_PATH, 'node_modules/markdown-it/index.mjs'),
+  // load mjs version instead of cjs, from prosemirror-markdown, which depends on it
+  'markdown-it': resolve.sync('markdown-it/index.mjs', {
+    basedir: path.dirname(resolve.sync('prosemirror-markdown/package.json')),
+  }),
 
   // test-environment-only aliases duplicated from Jest config
   'spec/test_constants$': path.join(ROOT_PATH, 'spec/frontend/__helpers__/test_constants'),

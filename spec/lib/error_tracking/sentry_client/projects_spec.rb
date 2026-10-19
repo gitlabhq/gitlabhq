@@ -78,7 +78,7 @@ RSpec.describe ErrorTracking::SentryClient::Projects, feature_category: :observa
       end
 
       with_them do
-        it do
+        it 'sets the project attribute from the matching sentry response field' do
           expect(subject[0].public_send(sentry_project_object)).to(
             eq(sentry_api_response[0].dig(*sentry_response))
           )

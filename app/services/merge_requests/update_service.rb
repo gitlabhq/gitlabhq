@@ -388,7 +388,7 @@ module MergeRequests
 
       merge_request.project.team.max_member_access_for_user_ids(user_ids)
       User.id_in(user_ids).map do |user|
-        link_composite_identity(user) if user.composite_identity_enforced? && user.service_account?
+        link_composite_identity(user) if user.ai_service_account?
 
         if user.can?(:read_merge_request, merge_request)
           user.id

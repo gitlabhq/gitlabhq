@@ -68,6 +68,12 @@ module Types
       description: 'First day of the week in calendars and date pickers. ' \
         'Null when the user has not chosen one and the instance default applies.'
 
+    field :emoji_skin_tone,
+      Types::Users::EmojiSkinToneEnum,
+      null: false,
+      description: 'Default skin tone for emoji that have skin tone variants.',
+      experiment: { milestone: '19.6' }
+
     field :work_items_display_settings,
       type: GraphQL::Types::JSON,
       null: false,

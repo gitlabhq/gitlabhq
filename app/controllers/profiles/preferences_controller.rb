@@ -62,6 +62,7 @@ class Profiles::PreferencesController < Profiles::ApplicationController
       :project_shortcut_buttons,
       :keyboard_shortcuts_enabled,
       :emoji_autocomplete_enabled,
+      :emoji_skin_tone,
       :markdown_surround_selection,
       :markdown_automatic_lists,
       :markdown_maintain_indentation,

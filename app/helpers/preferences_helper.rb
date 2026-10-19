@@ -98,6 +98,20 @@ module PreferencesHelper
     ]
   end
 
+  # Items for the default emoji skin tone listbox: the thumbs up in each tone, then the tone's Unicode name
+  def emoji_skin_tone_choices
+    {
+      'default' => ['thumbsup', s_('EmojiSkinTone|Default')],
+      'light' => ['thumbsup_tone1', s_('EmojiSkinTone|Light')],
+      'medium_light' => ['thumbsup_tone2', s_('EmojiSkinTone|Medium-light')],
+      'medium' => ['thumbsup_tone3', s_('EmojiSkinTone|Medium')],
+      'medium_dark' => ['thumbsup_tone4', s_('EmojiSkinTone|Medium-dark')],
+      'dark' => ['thumbsup_tone5', s_('EmojiSkinTone|Dark')]
+    }.map do |value, (emoji, label)|
+      { text: "#{TanukiEmoji.find_by_alpha_code(emoji).codepoints} #{label}", value: value }
+    end
+  end
+
   def first_day_of_week_choices
     days = UserPreference::FIRST_DAYS_OF_WEEK
 

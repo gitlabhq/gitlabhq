@@ -28,7 +28,7 @@ module WorkItems
 
         assignees = User.id_in(assignee_ids)
         assignees.select do |assignee|
-          link_composite_identity(assignee) if assignee.composite_identity_enforced? && assignee.service_account?
+          link_composite_identity(assignee) if assignee.ai_service_account?
 
           assignee.can?(:read_work_item, work_item.resource_parent)
         end.map(&:id)

@@ -20149,6 +20149,7 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="mutation-userpreferencesupdate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-userpreferencesupdate-duodefaultnamespaceid"></a>`duoDefaultNamespaceId` | [`Int`](#int) | Default namespace context for Duo features when namespace can not be inferred. |
+| <a id="mutation-userpreferencesupdate-emojiskintone"></a>`emojiSkinTone` {{< icon name="warning-solid" >}} | [`EmojiSkinTone`](#emojiskintone) | Introduced in GitLab 19.6. Status: Experiment. Default skin tone for emoji that have skin tone variants. |
 | <a id="mutation-userpreferencesupdate-extensionsmarketplaceoptinstatus"></a>`extensionsMarketplaceOptInStatus` | [`ExtensionsMarketplaceOptInStatus`](#extensionsmarketplaceoptinstatus) | Status of the Web IDE Extension Marketplace opt-in for the user. |
 | <a id="mutation-userpreferencesupdate-firstdayofweek"></a>`firstDayOfWeek` | [`UserFirstDayOfWeek`](#userfirstdayofweek) | First day of the week in calendars and date pickers. Set to `null` to use the instance default. |
 | <a id="mutation-userpreferencesupdate-issuessort"></a>`issuesSort` | [`IssueSort`](#issuesort) | Sort order for issue lists. |
@@ -66789,6 +66790,7 @@ Fields:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="userpreferences-duodefaultnamespace"></a>`duoDefaultNamespace` | [`Namespace`](#namespace) | Default namespace context for Duo features when namespace cannot be inferred. |
+| <a id="userpreferences-emojiskintone"></a>`emojiSkinTone` {{< icon name="warning-solid" >}} | [`EmojiSkinTone!`](#emojiskintone) | Introduced in GitLab 19.6. Status: Experiment. Default skin tone for emoji that have skin tone variants. |
 | <a id="userpreferences-extensionsmarketplaceoptinstatus"></a>`extensionsMarketplaceOptInStatus` | [`ExtensionsMarketplaceOptInStatus!`](#extensionsmarketplaceoptinstatus) | Status of the Web IDE Extension Marketplace opt-in for the user. |
 | <a id="userpreferences-firstdayofweek"></a>`firstDayOfWeek` | [`UserFirstDayOfWeek`](#userfirstdayofweek) | First day of the week in calendars and date pickers. Null when the user has not chosen one and the instance default applies. |
 | <a id="userpreferences-issuessort"></a>`issuesSort` | [`IssueSort`](#issuesort) | Sort order for issue lists. |
@@ -72864,6 +72866,19 @@ Values for sorting Duo Workflows.
 | <a id="duoworkflowsworkflowsort-created_desc"></a>`created_desc` {{< icon name="warning-solid" >}} | Deprecated in GitLab 13.5. Renamed. Use `CREATED_DESC` instead. |
 | <a id="duoworkflowsworkflowsort-updated_asc"></a>`updated_asc` {{< icon name="warning-solid" >}} | Deprecated in GitLab 13.5. Renamed. Use `UPDATED_ASC` instead. |
 | <a id="duoworkflowsworkflowsort-updated_desc"></a>`updated_desc` {{< icon name="warning-solid" >}} | Deprecated in GitLab 13.5. Renamed. Use `UPDATED_DESC` instead. |
+
+### `EmojiSkinTone`
+
+Default skin tone for emoji that have skin tone variants.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="emojiskintone-dark"></a>`DARK` | Dark skin tone. |
+| <a id="emojiskintone-default"></a>`DEFAULT` | No skin tone. Emoji keep their default yellow. |
+| <a id="emojiskintone-light"></a>`LIGHT` | Light skin tone. |
+| <a id="emojiskintone-medium"></a>`MEDIUM` | Medium skin tone. |
+| <a id="emojiskintone-medium_dark"></a>`MEDIUM_DARK` | Medium-dark skin tone. |
+| <a id="emojiskintone-medium_light"></a>`MEDIUM_LIGHT` | Medium-light skin tone. |
 
 ### `EntryType`
 

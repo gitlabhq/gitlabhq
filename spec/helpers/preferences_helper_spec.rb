@@ -184,6 +184,23 @@ RSpec.describe PreferencesHelper, feature_category: :settings do
     end
   end
 
+  describe '#emoji_skin_tone_choices' do
+    it 'offers every skin tone the preference can store, default first' do
+      expect(helper.emoji_skin_tone_choices.pluck(:value)).to eq(UserPreference.emoji_skin_tones.keys)
+    end
+
+    it 'labels each tone with the thumbs up in that tone and the name of the tone' do
+      expect(helper.emoji_skin_tone_choices.pluck(:text)).to eq([
+        '👍 Default',
+        '👍🏻 Light',
+        '👍🏼 Medium-light',
+        '👍🏽 Medium',
+        '👍🏾 Medium-dark',
+        '👍🏿 Dark'
+      ])
+    end
+  end
+
   describe '#time_display_format_choices_with_default' do
     it 'returns choices' do
       expect(helper.time_display_format_choices).to eq({

@@ -143,6 +143,18 @@ RSpec.describe 'User', feature_category: :user_profile do
     end
   end
 
+  describe 'userPreferences emojiSkinTone field' do
+    let(:query) do
+      graphql_query_for(:user, { username: current_user.username }, 'userPreferences { emojiSkinTone }')
+    end
+
+    it 'returns DEFAULT for a user who has not chosen a tone' do
+      post_graphql(query, current_user: current_user)
+
+      expect(graphql_data.dig('user', 'userPreferences', 'emojiSkinTone')).to eq('DEFAULT')
+    end
+  end
+
   describe 'granular PAT authorization' do
     let(:query) { graphql_query_for(:user, { username: current_user.username }, '__typename') }
 

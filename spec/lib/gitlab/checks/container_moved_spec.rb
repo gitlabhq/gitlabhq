@@ -77,7 +77,7 @@ RSpec.describe Gitlab::Checks::ContainerMoved, :clean_gitlab_redis_shared_state,
   describe '#message' do
     shared_examples 'errors per protocol' do
       shared_examples 'returns redirect message' do
-        it do
+        it 'names the new container path and the git remote set-url command' do
           message = <<~MSG
             #{container_label} '#{redirect_path}' was moved to '#{repository.container.full_path}'.
 

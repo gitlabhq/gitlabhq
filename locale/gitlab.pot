@@ -36134,6 +36134,24 @@ msgstr ""
 msgid "Emoji"
 msgstr ""
 
+msgid "EmojiSkinTone|Dark"
+msgstr ""
+
+msgid "EmojiSkinTone|Default"
+msgstr ""
+
+msgid "EmojiSkinTone|Light"
+msgstr ""
+
+msgid "EmojiSkinTone|Medium"
+msgstr ""
+
+msgid "EmojiSkinTone|Medium-dark"
+msgstr ""
+
+msgid "EmojiSkinTone|Medium-light"
+msgstr ""
+
 msgid "Empty file"
 msgstr ""
 
@@ -65790,6 +65808,9 @@ msgstr ""
 msgid "Preferences|Dark color scheme"
 msgstr ""
 
+msgid "Preferences|Default emoji skin tone"
+msgstr ""
+
 msgid "Preferences|Default group"
 msgstr ""
 
@@ -65803,6 +65824,9 @@ msgid "Preferences|Diffs"
 msgstr ""
 
 msgid "Preferences|Editing"
+msgstr ""
+
+msgid "Preferences|Emoji with skin tone variants use this tone in the emoji picker and in emoji autocomplete."
 msgstr ""
 
 msgid "Preferences|Enable %{link_start}Code Suggestions%{link_end} for the following groups.%{br_tag}Only groups that have purchased the Code Suggestion add-on and have available seats are listed here.%{br_tag} If you were expecting to see a group and it is missing from the list, please contact the group owner."
@@ -86095,6 +86119,9 @@ msgid "The associated issue #%{issueId} has been closed as the error is now reso
 msgstr ""
 
 msgid "The authentication token."
+msgstr ""
+
+msgid "The authority state cannot change after GitHub updates have stopped."
 msgstr ""
 
 msgid "The base URL to the Harbor instance linked to the GitLab project. For example, `https://demo.goharbor.io`."

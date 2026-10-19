@@ -16,6 +16,7 @@ RSpec.describe Types::UserPreferencesType, feature_category: :user_profile do
       organization_groups_projects_display
       timezone
       first_day_of_week
+      emoji_skin_tone
       merge_request_dashboard_list_type
       work_items_display_settings
       merge_request_dashboard_show_drafts

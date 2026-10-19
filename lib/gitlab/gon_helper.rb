@@ -97,6 +97,8 @@ module Gitlab
 
       gon.fluid_layout = current_user.fluid?
 
+      gon.emoji_skin_tone = current_user.emoji_skin_tone if Feature.enabled?(:emoji_skin_tone_preference, current_user)
+
       return unless current_user.user_preference
 
       gon.text_editor = current_user.user_preference.text_editor

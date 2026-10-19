@@ -19,7 +19,7 @@ Use this API to interact with personal access tokens and impersonation tokens. F
 {{< history >}}
 
 - `last_used_ips` in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250307) in GitLab 19.4.
-- `granular_scopes` parameter and response attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/630541) in GitLab 19.5.
+- `granular_scopes` parameter and response attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/630541) in GitLab 19.6.
 
 {{< /history >}}
 

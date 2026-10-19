@@ -1692,7 +1692,9 @@ module API
         optional :show_whitespace_in_diffs, type: Boolean, desc: 'If `true`, the user sees whitespace changes in diffs.'
         optional :pass_user_identities_to_ci_jwt, type: Boolean, desc: "If `true`, passes the user's external identities to CI jobs as part of a JSON web token. This attribute is internal to GitLab and must not be passed to third-party services. For more information, see [Token Payload](https://docs.gitlab.com/ci/secrets/id_token_authentication/#token-payload)."
         optional :policy_advanced_editor, type: Boolean, desc: 'If `true`, enables the advanced editor.'
-        at_least_one_of :view_diffs_file_by_file, :show_whitespace_in_diffs, :pass_user_identities_to_ci_jwt, :policy_advanced_editor
+        optional :emoji_skin_tone, type: String, values: UserPreference.emoji_skin_tones.keys,
+          desc: 'Default skin tone for emoji that have skin tone variants. One of `default`, `light`, `medium_light`, `medium`, `medium_dark`, or `dark`.'
+        at_least_one_of :view_diffs_file_by_file, :show_whitespace_in_diffs, :pass_user_identities_to_ci_jwt, :policy_advanced_editor, :emoji_skin_tone
       end
       route_setting :authorization, permissions: :update_user_preference, boundary_type: :user
       put "preferences", feature_category: :user_profile, urgency: :high do

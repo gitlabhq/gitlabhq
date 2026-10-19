@@ -332,13 +332,13 @@ In the [pipeline details page](_index.md#pipeline-details), downstream pipelines
 as a list of cards on the right of the graph. From this view, you can:
 
 - Select a trigger job to see the triggered downstream pipeline's jobs.
-- Select **Expand jobs** {{< icon name="chevron-lg-right" >}} on a pipeline card to expand the view
+- Select {{< ui text="Expand jobs" >}} {{< icon name="chevron-lg-right" >}} on a pipeline card to expand the view
   with the downstream pipeline's jobs. You can view one downstream pipeline at a time.
 - Hover over a pipeline card to have the job that triggered the downstream pipeline highlighted.
 
 ### Retry failed and canceled jobs in a downstream pipeline
 
-To retry failed and canceled jobs, select **Retry** ({{< icon name="retry" >}}):
+To retry failed and canceled jobs, select {{< ui text="Retry" >}} ({{< icon name="retry" >}}):
 
 - From the downstream pipeline's details page.
 - On the pipeline's card in the pipeline graph view.
@@ -349,11 +349,11 @@ You can recreate a downstream pipeline by retrying its corresponding trigger job
 
 To recreate a downstream pipeline:
 
-- Select **Run again** ({{< icon name="retry" >}}) on the trigger job's card in the pipeline graph view.
+- Select {{< ui text="Run again" >}} ({{< icon name="retry" >}}) on the trigger job's card in the pipeline graph view.
 
 ### Cancel a downstream pipeline
 
-To cancel a downstream pipeline that is still running, select **Cancel** ({{< icon name="cancel" >}}):
+To cancel a downstream pipeline that is still running, select {{< ui text="Cancel" >}} ({{< icon name="cancel" >}}):
 
 - From the downstream pipeline's details page.
 - On the pipeline's card in the pipeline graph view.
@@ -481,7 +481,7 @@ dynamically generated child pipelines, and pipelines created by pipeline executi
 Reports from [scan execution policies](../../user/application_security/policies/scan_execution_policies.md) are not supported.
 
 Test results and [security findings](../../user/application_security/detect/security_scanning_results.md)
-from child pipelines also appear in the parent pipeline's **Tests** and **Security** tabs.
+from child pipelines also appear in the parent pipeline's {{< ui text="Tests" >}} and {{< ui text="Security" >}} tabs.
 
 Child pipeline security findings can trigger [merge request approval policies](../../user/application_security/policies/merge_request_approval_policies.md).
 If a child pipeline detects vulnerabilities, you might need additional approvals before you can merge.

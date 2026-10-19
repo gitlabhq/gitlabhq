@@ -35,6 +35,17 @@ a dedicated full-page view.
 
 {{< /details >}}
 
+{{< history >}}
+
+- Comparison of up to 1,000 findings per severity [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/597438) in GitLab 19.0 [with a feature flag](../../../administration/feature_flags/_index.md) named `security_mr_reports_tab_full_data_set`. Disabled by default.
+- [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/work_items/597608) in GitLab 19.5.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
 The security scan report provides a summary of the changes that would occur in the findings if the source branch were merged.
 
 For example, consider two pipelines with these scan results:
@@ -52,7 +63,9 @@ For the security scan report to show the differences between the source branch a
 
 This approach ensures that even if a commit skips the pipeline, a valid security report from an earlier commit is found. If no security report is found, all findings are listed as new. Before you enable security scanning in merge requests, ensure that security scanning is enabled for the default branch.
 
-For each security report type, the report displays the first 25 added and 25 fixed findings, sorted by severity. To see all findings on the source branch of the merge request, select **View all pipeline findings**.
+GitLab compares up to 1,000 findings of each severity from each scan between the source and target
+branches. For each security report type, the report then displays the first 25 added and 25 fixed
+findings, sorted by severity. To see all findings on the source branch of the merge request, select **View all pipeline findings**.
 
 ### View security scan findings
 

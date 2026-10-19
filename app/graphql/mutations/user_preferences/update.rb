@@ -18,6 +18,11 @@ module Mutations
         :wiki_use_auto_commit_message
       ].freeze
 
+      argument :emoji_skin_tone, Types::Users::EmojiSkinToneEnum,
+        required: false,
+        validates: { allow_null: false },
+        description: 'Default skin tone for emoji that have skin tone variants.',
+        experiment: { milestone: '19.6' }
       argument :extensions_marketplace_opt_in_status, Types::ExtensionsMarketplaceOptInStatusEnum,
         required: false,
         description: 'Status of the Web IDE Extension Marketplace opt-in for the user.'

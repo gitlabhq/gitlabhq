@@ -15,7 +15,7 @@ info:
   title: GitLab REST API
   description: GitLab REST API used to interact with a GitLab installation.
   termsOfService: https://handbook.gitlab.com/handbook/legal/api-terms/
-  version: '19.5'
+  version: '19.6'
   license:
     name: CC BY-SA 4.0
     url: https://gitlab.com/gitlab-org/gitlab/-/blob/master/LICENSE
@@ -92199,6 +92199,8 @@ components:
           type: string
         policy_advanced_editor:
           type: string
+        emoji_skin_tone:
+          type: string
     APIEntitiesUserActivity:
       type: object
       properties:
@@ -109998,13 +110000,13 @@ components:
           type: boolean
           description: If `true`, the user sees only one file diff per page. At least
             one of `view_diffs_file_by_file`, `show_whitespace_in_diffs`, `pass_user_identities_to_ci_jwt`,
-            `policy_advanced_editor` must be provided.
+            `policy_advanced_editor`, `emoji_skin_tone` must be provided.
           nullable: true
         show_whitespace_in_diffs:
           type: boolean
           description: If `true`, the user sees whitespace changes in diffs. At least
             one of `view_diffs_file_by_file`, `show_whitespace_in_diffs`, `pass_user_identities_to_ci_jwt`,
-            `policy_advanced_editor` must be provided.
+            `policy_advanced_editor`, `emoji_skin_tone` must be provided.
           nullable: true
         pass_user_identities_to_ci_jwt:
           type: boolean
@@ -110013,12 +110015,28 @@ components:
             must not be passed to third-party services. For more information, see
             [Token Payload](https://docs.gitlab.com/ci/secrets/id_token_authentication/#token-payload).
             At least one of `view_diffs_file_by_file`, `show_whitespace_in_diffs`,
-            `pass_user_identities_to_ci_jwt`, `policy_advanced_editor` must be provided.
+            `pass_user_identities_to_ci_jwt`, `policy_advanced_editor`, `emoji_skin_tone`
+            must be provided.
           nullable: true
         policy_advanced_editor:
           type: boolean
           description: If `true`, enables the advanced editor. At least one of `view_diffs_file_by_file`,
-            `show_whitespace_in_diffs`, `pass_user_identities_to_ci_jwt`, `policy_advanced_editor`
+            `show_whitespace_in_diffs`, `pass_user_identities_to_ci_jwt`, `policy_advanced_editor`,
+            `emoji_skin_tone` must be provided.
+          nullable: true
+        emoji_skin_tone:
+          type: string
+          enum:
+          - default
+          - light
+          - medium_light
+          - medium
+          - medium_dark
+          - dark
+          description: Default skin tone for emoji that have skin tone variants. One
+            of `default`, `light`, `medium_light`, `medium`, `medium_dark`, or `dark`.
+            At least one of `view_diffs_file_by_file`, `show_whitespace_in_diffs`,
+            `pass_user_identities_to_ci_jwt`, `policy_advanced_editor`, `emoji_skin_tone`
             must be provided.
           nullable: true
     putApiV4UserStatusRequest:

@@ -318,6 +318,40 @@ RSpec.describe Gitlab::GonHelper, feature_category: :navigation do
       end
     end
 
+    describe 'emoji_skin_tone' do
+      context 'when there is no current_user' do
+        it 'does not expose gon.emoji_skin_tone' do
+          expect(gon).not_to receive(:emoji_skin_tone=)
+
+          helper.add_gon_variables
+        end
+      end
+
+      context 'when there is a current_user' do
+        before do
+          allow(helper).to receive(:current_user).and_return(build_stubbed(:user, emoji_skin_tone: 'medium'))
+        end
+
+        it 'exposes the preferred tone' do
+          expect(gon).to receive(:emoji_skin_tone=).with('medium')
+
+          helper.add_gon_variables
+        end
+
+        context 'when the emoji_skin_tone_preference feature flag is disabled' do
+          before do
+            stub_feature_flags(emoji_skin_tone_preference: false)
+          end
+
+          it 'does not expose gon.emoji_skin_tone' do
+            expect(gon).not_to receive(:emoji_skin_tone=)
+
+            helper.add_gon_variables
+          end
+        end
+      end
+    end
+
     describe 'instance_token_prefix' do
       it 'exposes instance_token_prefix' do
         stub_application_setting(instance_token_prefix: 'instanceprefix')

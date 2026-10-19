@@ -318,6 +318,30 @@ To turn off emoji autocomplete:
 1. On the **Editing** tab, in the **Markdown** section, clear the **Enable emoji autocomplete** checkbox.
 1. Select **Save changes**.
 
+### Set a default emoji skin tone
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/633107) in GitLab 19.6 [with a feature flag](../../administration/feature_flags/_index.md) named `emoji_skin_tone_preference`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
+
+Emoji that show people or hands come in five skin tone variants.
+Choose the skin tone that GitLab uses for these emoji by default, in the emoji picker and in emoji autocomplete.
+The setting is saved to your account and applies on every device.
+
+To set a default emoji skin tone:
+
+1. In the upper-right corner, select your avatar.
+1. Select **Preferences**.
+1. On the **Editing** tab, in the **Markdown** section, from the **Default emoji skin tone** dropdown list, select a skin tone.
+1. Select **Save changes**.
+
 ### Show whitespace characters in the Web IDE
 
 Whitespace characters are any blank characters in a text, such as spaces and indentations. You might use whitespace to structure content in code. If your programming language is sensitive to whitespaces, the Web IDE can detect changes to them.

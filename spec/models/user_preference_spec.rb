@@ -70,6 +70,23 @@ RSpec.describe UserPreference, feature_category: :user_profile do
       it { is_expected.not_to allow_value(nil).for(:emoji_autocomplete_enabled) }
     end
 
+    describe 'emoji_skin_tone' do
+      it 'is set to default for a new record' do
+        pref = described_class.new
+
+        expect(pref.emoji_skin_tone).to eq('default')
+      end
+
+      it do
+        is_expected.to define_enum_for(:emoji_skin_tone)
+          .with_values(default: 0, light: 1, medium_light: 2, medium: 3, medium_dark: 4, dark: 5)
+          .with_prefix
+          .without_scopes
+      end
+
+      it { is_expected.not_to allow_value(nil).for(:emoji_skin_tone) }
+    end
+
     describe 'visibility_pipeline_id_type' do
       it 'is set to 0 by default' do
         pref = described_class.new

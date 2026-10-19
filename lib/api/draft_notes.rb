@@ -31,15 +31,19 @@ module API
           .execute(draft_note)
       end
 
+      def scope_validator
+        ::Gitlab::Auth::ScopeValidator.new(current_user, Gitlab::Auth::RequestAuthenticator.new(request))
+      end
+
       def publish_draft_note(params:)
         ::DraftNotes::PublishService
-          .new(merge_request(params: params), current_user)
+          .new(merge_request(params: params), current_user, scope_validator: scope_validator)
           .execute(draft: get_draft_note(params: params))
       end
 
       def publish_draft_notes(params:)
         ::DraftNotes::PublishService
-          .new(merge_request(params: params), current_user)
+          .new(merge_request(params: params), current_user, scope_validator: scope_validator)
           .execute
       end
 
@@ -290,6 +294,8 @@ module API
         else
           status 500
         end
+      rescue QuickActions::InterpretService::QuickActionsNotAllowedError => error
+        forbidden!(error.message)
       end
 
       desc 'Publish all pending draft notes' do
@@ -316,6 +322,12 @@ module API
       post(
         ":id/merge_requests/:merge_request_iid/draft_notes/bulk_publish",
         feature_category: :code_review_workflow) do
+        if params[:note].present?
+          ::QuickActions::InterpretService
+            .new(container: user_project, current_user: current_user, params: { scope_validator: scope_validator })
+            .check_quick_actions!(params[:note], merge_request(params: params))
+        end
+
         result = publish_draft_notes(params: params)
 
         render_api_error!(result[:message], :internal_server_error) unless result[:status] == :success
@@ -325,10 +337,16 @@ module API
             note: params[:note],
             noteable_type: 'MergeRequest',
             noteable_id: merge_request(params: params).id,
-            internal: params[:internal]
+            internal: params[:internal],
+            scope_validator: scope_validator
           }
           note = ::Notes::CreateService.new(user_project, current_user, opts).execute
-          render_api_error!(note.errors.full_messages.join(', '), :unprocessable_entity) unless note.persisted?
+          commands_status = note.quick_actions_status
+          commands_applied = commands_status&.commands_only? && commands_status.success?
+          unless note.persisted? || commands_applied
+            message = note.errors.full_messages.presence || commands_status&.error_messages
+            render_api_error!(Array(message).join(', '), :unprocessable_entity)
+          end
         end
 
         if params[:reviewer_state].present?
@@ -350,6 +368,8 @@ module API
 
         status 204
         body false
+      rescue QuickActions::InterpretService::QuickActionsNotAllowedError => error
+        forbidden!(error.message)
       end
     end
   end

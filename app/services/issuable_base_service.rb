@@ -122,7 +122,7 @@ class IssuableBaseService < ::BaseContainerService
     end
 
     assignee_ids = User.id_in(params[id_key]).select do |assignee|
-      link_composite_identity(assignee) if assignee.composite_identity_enforced? && assignee.service_account?
+      link_composite_identity(assignee) if assignee.ai_service_account?
 
       user_can_read?(issuable, assignee)
     end.map(&:id)

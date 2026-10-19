@@ -19,6 +19,7 @@ description: Automatic detection and filtering of false positives in secret dete
 - Introduced in [epic 17885](https://gitlab.com/groups/gitlab-org/-/work_items/20152) in GitLab 18.10 as a [beta](../../../policy/development_stages_support.md#beta) feature with a [feature flag](../../../administration/feature_flags/_index.md) named `duo_secret_detection_false_positive`. [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227074).
 - [Generally available](https://gitlab.com/groups/gitlab-org/-/work_items/21233) in GitLab 19.1.
 - Support in the triage and remediation profile [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254011) in GitLab 19.4 [with a feature flag](../../../administration/feature_flags/_index.md) named `triage_and_remediation_profile`. Enabled by default.
+- Support for non-default tracked branches [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/23297) in GitLab 19.5.
 
 {{< /history >}}
 
@@ -60,6 +61,7 @@ You can manually run false positive detection for existing vulnerabilities:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Secure** > **Vulnerability report**.
+1. Optional. To find a vulnerability in a branch other than the default branch, [filter by tracked ref](../vulnerability_report/_index.md#tracked-ref-filter).
 1. Select the vulnerability you want to analyze.
 1. In the upper-right corner, select **AI actions**, then select **Check for false positive**.
 

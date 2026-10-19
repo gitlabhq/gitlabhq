@@ -8,6 +8,8 @@ module DraftNotes
       return error('Not allowed to create notes') unless can?(executing_user, :create_note, merge_request)
       return error('Review not found') if params[:review_id].present? && existing_review.nil?
 
+      check_quick_actions!(draft ? [draft] : draft_notes)
+
       review = nil
       if draft
         publish_draft_note(draft, executing_user)
@@ -42,6 +44,17 @@ module DraftNotes
       review if review&.author_id == current_user.id
     end
     strong_memoize_attr :existing_review
+
+    # Rejects the whole publish before anything is created when a draft has a
+    # quick action that the scope validator does not permit.
+    def check_quick_actions!(drafts)
+      return unless params[:scope_validator]
+
+      service = QuickActions::InterpretService.new(
+        container: project, current_user: current_user, params: { scope_validator: params[:scope_validator] }
+      )
+      drafts.each { |draft| service.check_quick_actions!(draft.note, merge_request) }
+    end
 
     def notify?(draft, review)
       (draft || review) && !params[:defer_notifications]
@@ -103,6 +116,7 @@ module DraftNotes
       draft.diff_file&.unfold_diff_lines(draft.original_position)
 
       note_params = draft.publish_params.merge(skip_keep_around_commits: skip_keep_around_commits)
+      note_params[:scope_validator] = params[:scope_validator] if params[:scope_validator]
       note = Notes::CreateService.new(project, current_user, note_params).execute(
         skip_capture_diff_note_position: skip_capture_diff_note_position,
         skip_merge_status_trigger: skip_merge_status_trigger,

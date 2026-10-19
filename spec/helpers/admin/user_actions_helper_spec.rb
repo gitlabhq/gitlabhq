@@ -27,7 +27,7 @@ RSpec.describe Admin::UserActionsHelper, feature_category: :user_management do
     context 'the user is a standard user' do
       let(:user) { build_stubbed(:user) }
 
-      it do
+      it 'returns edit, block, ban, deactivate, both delete actions and trust' do
         is_expected.to contain_exactly(
           "edit",
           "block",
@@ -43,7 +43,7 @@ RSpec.describe Admin::UserActionsHelper, feature_category: :user_management do
     context 'the user is an admin user' do
       let(:user) { build_stubbed(:user, :admin) }
 
-      it do
+      it 'returns the same actions as for a standard user' do
         is_expected.to contain_exactly(
           "edit",
           "block",
@@ -77,7 +77,7 @@ RSpec.describe Admin::UserActionsHelper, feature_category: :user_management do
     context 'the user is deactivated' do
       let(:user) { build_stubbed(:user, state: 'deactivated') }
 
-      it do
+      it 'returns activate instead of deactivate, and no trust action' do
         is_expected.to contain_exactly(
           "edit",
           "block",
@@ -92,7 +92,7 @@ RSpec.describe Admin::UserActionsHelper, feature_category: :user_management do
     context 'the user is locked' do
       let(:user) { build_stubbed(:user, locked_at: Time.current) }
 
-      it do
+      it 'returns the standard user actions plus unlock' do
         is_expected.to contain_exactly(
           "edit",
           "block",
@@ -115,7 +115,7 @@ RSpec.describe Admin::UserActionsHelper, feature_category: :user_management do
     context 'the user is trusted' do
       let_it_be_with_reload(:user) { create(:user, :trusted) }
 
-      it do
+      it 'returns untrust instead of trust' do
         is_expected.to contain_exactly("edit",
           "block",
           "deactivate",

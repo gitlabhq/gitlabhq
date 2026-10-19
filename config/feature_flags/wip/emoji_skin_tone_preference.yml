@@ -1,0 +1,11 @@
+---
+name: emoji_skin_tone_preference
+description: Default emoji skin tone user preference. Gates the preferences page select
+  and gon.emoji_skin_tone, which the emoji picker and autocomplete read.
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/24004
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/262314
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/633111
+milestone: '19.6'
+group: group::work items
+type: wip
+default_enabled: false

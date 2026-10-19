@@ -1,3 +1,5 @@
+const { dirname } = require('path');
+const resolve = require('resolve');
 const IS_EE = require('./config/helpers/is_ee_env');
 const isESLint = require('./config/helpers/is_eslint');
 const IS_JH = require('./config/helpers/is_jh_env');
@@ -161,11 +163,15 @@ module.exports = (path, options = {}) => {
     '^spec/test_constants$': '<rootDir>/spec/frontend/__helpers__/test_constants',
     '^jest/(.*)$': '<rootDir>/spec/frontend/$1',
     '^ee_else_ce_jest/(.*)$': '<rootDir>/spec/frontend/$1',
-    '^jquery$': '<rootDir>/node_modules/jquery/dist/jquery.slim.js',
-    '^dexie$': '<rootDir>/node_modules/dexie/dist/dexie.min.js',
-    '^remend$': '<rootDir>/node_modules/remend/dist/index.js',
+    '^jquery$': 'jquery/dist/jquery.slim.js',
+    // `resolve` reaches files that these packages' `exports` fields hide from Jest.
+    '^dexie$': resolve.sync('dexie/dist/dexie.min.js'),
+    // From @gitlab/duo-ui, which depends on it.
+    '^remend$': resolve.sync('remend/dist/index.js', {
+      basedir: dirname(resolve.sync('@gitlab/duo-ui/package.json')),
+    }),
     // The ESM build the bundler loads; patches/@tiptap+vue-2+*.patch only patches this one.
-    '^@tiptap/vue-2$': '<rootDir>/node_modules/@tiptap/vue-2/dist/index.js',
+    '^@tiptap/vue-2$': resolve.sync('@tiptap/vue-2/dist/index.js'),
     '^eve$': 'eve-raphael',
     ...extModuleNameMapper,
     ...vueModuleNameMappers,

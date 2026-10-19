@@ -20,7 +20,8 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
       'firstDayOfWeek' => 'MONDAY',
       'mergeRequestDashboardListType' => 'ROLE_BASED',
       'workItemsDisplaySettings' => { 'shouldOpenItemsInSidePanel' => false },
-      'mergeRequestDashboardShowDrafts' => true
+      'mergeRequestDashboardShowDrafts' => true,
+      'emojiSkinTone' => 'MEDIUM'
     }
   end
 
@@ -55,6 +56,7 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
       expect(mutation_response['userPreferences']['firstDayOfWeek']).to eq('MONDAY')
       expect(mutation_response['userPreferences']['mergeRequestDashboardListType']).to eq('ROLE_BASED')
       expect(mutation_response['userPreferences']['mergeRequestDashboardShowDrafts']).to be(true)
+      expect(mutation_response['userPreferences']['emojiSkinTone']).to eq('MEDIUM')
       expect(mutation_response['userPreferences']['workItemsDisplaySettings']).to eq({
         'shouldOpenItemsInSidePanel' => false
       })
@@ -68,6 +70,7 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
       expect(current_user.user_preference.merge_request_dashboard_show_drafts).to be(true)
       expect(current_user.user_preference.first_day_of_week).to eq(1)
       expect(current_user.user_preference.work_items_display_settings).to eq({ 'shouldOpenItemsInSidePanel' => false })
+      expect(current_user.user_preference.emoji_skin_tone).to eq('medium')
     end
 
     it_behaves_like 'authorizing granular token permissions for GraphQL', :update_user_preference do
@@ -90,7 +93,8 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
         merge_request_dashboard_list_type: 'action_based',
         first_day_of_week: 6,
         work_items_display_settings: { 'shouldOpenItemsInSidePanel' => true },
-        merge_request_dashboard_show_drafts: false
+        merge_request_dashboard_show_drafts: false,
+        emoji_skin_tone: 'light'
       }
     end
 
@@ -110,6 +114,7 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
       expect(mutation_response['userPreferences']['organizationGroupsProjectsSort']).to eq('NAME_DESC')
       expect(mutation_response['userPreferences']['visibilityPipelineIdType']).to eq('IID')
       expect(mutation_response['userPreferences']['firstDayOfWeek']).to eq('MONDAY')
+      expect(mutation_response['userPreferences']['emojiSkinTone']).to eq('MEDIUM')
       expect(mutation_response['userPreferences']['workItemsDisplaySettings']).to eq({
         'shouldOpenItemsInSidePanel' => false
       })
@@ -122,6 +127,7 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
       expect(current_user.user_preference.work_items_display_settings).to eq({
         'shouldOpenItemsInSidePanel' => false
       })
+      expect(current_user.user_preference.emoji_skin_tone).to eq('medium')
     end
 
     context 'when input has nil attributes' do
@@ -156,6 +162,46 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
           visibility_pipeline_id_type: init_user_preference[:visibility_pipeline_id_type],
           work_items_display_settings: init_user_preference[:work_items_display_settings]
         })
+      end
+    end
+  end
+
+  describe 'emoji_skin_tone argument' do
+    let(:mutation) do
+      graphql_mutation(:userPreferencesUpdate, input, <<~FIELDS)
+        userPreferences { emojiSkinTone }
+        errors
+      FIELDS
+    end
+
+    context 'with each skin tone' do
+      where(:tone) { UserPreference.emoji_skin_tones.keys }
+
+      with_them do
+        let(:input) { { 'emojiSkinTone' => tone.upcase } }
+
+        it 'persists the tone and returns it' do
+          post_graphql_mutation(mutation, current_user: current_user)
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(mutation_response['userPreferences']['emojiSkinTone']).to eq(tone.upcase)
+          expect(current_user.user_preference.reload.emoji_skin_tone).to eq(tone)
+        end
+      end
+    end
+
+    context 'when the tone is null' do
+      let(:input) { { 'emojiSkinTone' => nil } }
+
+      before do
+        current_user.user_preference.update!(emoji_skin_tone: 'dark')
+      end
+
+      it 'rejects the request and keeps the stored tone' do
+        post_graphql_mutation(mutation, current_user: current_user)
+
+        expect(graphql_errors).to include(a_hash_including('message' => a_string_including("can't be null")))
+        expect(current_user.user_preference.reload.emoji_skin_tone).to eq('dark')
       end
     end
   end

@@ -681,9 +681,13 @@
   - 1
 - - import_remove_import_file
   - 1
+- - import_sync_repositories_finish_stop
+  - 1
 - - import_sync_repositories_reconcile
   - 1
 - - import_sync_repositories_schedule_repair
+  - 1
+- - import_sync_repositories_stop_cleanup
   - 1
 - - import_user_mapping_assignment_from_csv
   - 1

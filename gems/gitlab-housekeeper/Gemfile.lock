@@ -55,8 +55,8 @@ GEM
       minitest (>= 5.1)
       securerandom (>= 0.3)
       tzinfo (~> 2.0, >= 2.0.5)
-    addressable (2.8.5)
-      public_suffix (>= 2.0.2, < 6.0)
+    addressable (2.9.0)
+      public_suffix (>= 2.0.2, < 8.0)
     amatch (0.4.2)
       mize
       tins (~> 1.0)
@@ -257,7 +257,7 @@ GEM
     psych (5.2.2)
       date
       stringio
-    public_suffix (5.0.3)
+    public_suffix (7.0.5)
     racc (1.8.1)
     rack (3.1.22)
     rack-session (2.1.2)
@@ -423,7 +423,7 @@ CHECKSUMS
   activemodel (7.2.2.1) sha256=8398861f9ee2c4671a8357ab39e9b38a045fd656f6685a3dd5890c2419dbfdaf
   activerecord (7.2.2.1) sha256=79a31f71c32d5138717c2104e0ff105f5d82922247c85bdca144f2720e67fab9
   activesupport (7.2.2.1) sha256=842bcbf8a92977f80fb4750661a237cf5dd4fdd442066b3c35e88afb488647f5
-  addressable (2.8.5) sha256=63f0fbcde42edf116d6da98a9437f19dd1692152f1efa3fcc4741e443c772117
+  addressable (2.9.0) sha256=7fdf6ac3660f7f4e867a0838be3f6cf722ace541dd97767fa42bc6cfa980c7af
   amatch (0.4.2) sha256=5a7c8c08882864621b81bf3bbc0447bb638afe6066ceeead6b9d11f34cf0d911
   amazing_print (1.8.1) sha256=f53b4e1881f53f9663cb222840c7a027d0e61d46cc908366965739559c0d6d68
   ast (2.4.3) sha256=954615157c1d6a382bc27d690d973195e79db7f55e9765ac7c481c60bdb4d383
@@ -515,7 +515,7 @@ CHECKSUMS
   proc_to_ast (0.1.0) sha256=92a73fa66e2250a83f8589f818b0751bcf227c68f85916202df7af85082f8691
   pry (0.14.2) sha256=c4fe54efedaca1d351280b45b8849af363184696fcac1c72e0415f9bdac4334d
   psych (5.2.2) sha256=a4a9477c85d3e858086c38cf64e7096abe40d1b1eed248b01020dec0ff9906ab
-  public_suffix (5.0.3) sha256=337d475da2bd2ea1de0446751cb972ad43243b4b00aa8cf91cb904fa593d3259
+  public_suffix (7.0.5) sha256=1a8bb08f1bbea19228d3bed6e5ed908d1cb4f7c2726d18bd9cadf60bc676f623
   racc (1.8.1) sha256=4a7f6929691dbec8b5209a0b373bc2614882b55fc5d2e447a21aaa691303d62f
   rack (3.1.22) sha256=db116c1462fd32dec8b942a808ebedd4e1dbf1fcd0b24c481ae32ee99ca1ebe0
   rack-session (2.1.2) sha256=595434f8c0c3473ae7d7ac56ecda6cc6dfd9d37c0b2b5255330aa1576967ffe8

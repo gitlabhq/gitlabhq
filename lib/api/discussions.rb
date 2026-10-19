@@ -146,11 +146,16 @@ module API
             type: type,
             noteable_type: noteables_str.classify,
             position: params[:position],
-            id_key => noteable.id
+            id_key => noteable.id,
+            scope_validator: ::Gitlab::Auth::ScopeValidator.new(current_user, Gitlab::Auth::RequestAuthenticator.new(request))
           }
           opts[:commit_id] = params[:commit_id] if noteable.is_a?(MergeRequest) && type == 'DiffNote'
 
-          note = create_note(noteable, opts)
+          begin
+            note = create_note(noteable, opts)
+          rescue QuickActions::InterpretService::QuickActionsNotAllowedError => error
+            forbidden!(error.message)
+          end
 
           process_note_creation_result(note) do
             present note.discussion, with: Entities::Discussion

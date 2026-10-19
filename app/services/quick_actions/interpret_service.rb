@@ -53,6 +53,16 @@ module QuickActions
       [content, @updates, execution_messages_for(commands), command_names(commands)]
     end
 
+    # Raises QuickActionsNotAllowedError when the content has quick actions that
+    # the scope validator does not permit. Does not run any command.
+    def check_quick_actions!(content, quick_action_target)
+      return unless current_user.can?(:use_quick_actions)
+
+      @quick_action_target = quick_action_target
+      _, commands = extractor.extract_commands(content)
+      check_quick_actions_availability(command_names(commands))
+    end
+
     def remove_type_change_success_message(message)
       %i[type promote_to promote_to_incident promote]
         .filter_map { |name| success_msg[name] }
@@ -233,7 +243,12 @@ module QuickActions
       end.compact
     end
 
+    # Overridden in EE
+    def check_quick_actions_availability(_command_names); end
+
     def extract_updates(commands)
+      check_quick_actions_availability(command_names(commands))
+
       commands.each do |name, arg|
         definition = self.class.definition_by_name(name)
         next unless definition

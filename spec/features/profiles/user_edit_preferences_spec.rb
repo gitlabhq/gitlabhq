@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'User edit preferences profile', :js, feature_category: :user_profile do
   include StubLanguagesTranslationPercentage
+  include ListboxHelpers
 
   # Empty value doesn't change the levels
   let(:language_percentage_levels) { nil }
@@ -41,6 +42,37 @@ RSpec.describe 'User edit preferences profile', :js, feature_category: :user_pro
     visit(profile_preferences_path)
     click_link 'Editing'
     expect(page.find_field("user[emoji_autocomplete_enabled]")).not_to be_checked
+  end
+
+  it 'allows the user to pick a default emoji skin tone and persists the choice' do
+    click_link 'Editing'
+    within_fieldset('Default emoji skin tone') do
+      toggle_listbox
+      select_listbox_item(/Medium\z/)
+    end
+    click_button 'Save changes'
+
+    expect(page).to have_content('Preferences saved.')
+    expect(user.reload.user_preference.emoji_skin_tone).to eq('medium')
+
+    visit(profile_preferences_path)
+    click_link 'Editing'
+    within_fieldset('Default emoji skin tone') do
+      expect(page).to have_button(text: /Medium\z/)
+    end
+  end
+
+  context 'when the emoji_skin_tone_preference feature flag is disabled' do
+    before do
+      stub_feature_flags(emoji_skin_tone_preference: false)
+      visit(profile_preferences_path)
+      click_link 'Editing'
+    end
+
+    it 'does not show the default emoji skin tone setting' do
+      expect(page).to have_field('user[emoji_autocomplete_enabled]')
+      expect(page).not_to have_css('legend', text: 'Default emoji skin tone')
+    end
   end
 
   describe 'User changes tab width to acceptable value' do

@@ -2202,7 +2202,7 @@ ee/lib/gitlab/llm/embeddings/
 ^[DiffMatchPatch gem]
 /vendor/gems/diff_match_patch @garyh
 
-^[Gitlab Housekeeper gem] @DylanGriffith @rymai @tigerwnz
+^[Gitlab Housekeeper gem] @rymai @tigerwnz
 /gems/gitlab-housekeeper/
 /keeps/
 
