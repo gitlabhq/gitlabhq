@@ -15,6 +15,37 @@ RSpec.describe Gitlab::SidekiqConfig do
       expect(worker_classes).to include(PostReceive)
       expect(worker_classes).to include(MergeWorker)
     end
+
+    context 'with workers in a domain' do
+      let(:rails_root) { Pathname.new(Dir.mktmpdir) }
+      let(:domain_worker) do
+        Class.new do
+          def self.name
+            'DomainProbeWorker'
+          end
+
+          include ApplicationWorker
+        end
+      end
+
+      before do
+        stub_const('DomainProbeWorker', domain_worker)
+        FileUtils.mkdir_p(rails_root.join('domains/probe/app/workers'))
+        FileUtils.touch(rails_root.join('domains/probe/app/workers/domain_probe_worker.rb'))
+        allow(Rails).to receive(:root).and_return(rails_root)
+
+        described_class.instance_variable_set(:@workers, nil)
+      end
+
+      after do
+        FileUtils.rm_rf(rails_root)
+        described_class.instance_variable_set(:@workers, nil)
+      end
+
+      it 'includes them as FOSS workers' do
+        expect(described_class.workers).to include(an_object_having_attributes(klass: DomainProbeWorker, ee?: false))
+      end
+    end
   end
 
   describe '.cron_jobs' do

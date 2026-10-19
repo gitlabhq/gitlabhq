@@ -186,7 +186,7 @@ RSpec.describe 'package details', feature_category: :package_registry do
         versions_ids = graphql_data.dig('package', 'versions', 'nodes').pluck('id')
         expected_ids = [composer_package2, composer_package3].map(&:to_gid).map(&:to_s)
 
-        expect(versions_ids).to contain_exactly(*expected_ids)
+        expect(versions_ids).to match_array(expected_ids)
       end
     end
 

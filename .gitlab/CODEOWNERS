@@ -52,6 +52,7 @@ config.ru @gitlab-org/maintainers/rails-backend
 /bin/ @gitlab-org/maintainers/rails-backend
 /cells-mailroom/ @gitlab-org/maintainers/rails-backend
 /config/ @gitlab-org/maintainers/rails-backend
+/domains/ @gitlab-org/maintainers/rails-backend
 /ee/ @gitlab-org/maintainers/rails-backend
 /gems/ @gitlab-org/maintainers/rails-backend
 /generator_templates/ @gitlab-org/maintainers/rails-backend

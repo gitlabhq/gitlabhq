@@ -464,6 +464,8 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             default_syntax_highlighting_theme: 2,
             default_dark_syntax_highlighting_theme: 3,
             projects_api_rate_limit_unauthenticated: 100,
+            project_repositories_blame_limit: 90,
+            project_repositories_blame_unauthenticated_limit: 30,
             project_repositories_blobs_batch_limit: 10,
             silent_mode_enabled: true,
             valid_runner_registrars: ['group'],
@@ -576,6 +578,8 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['default_syntax_highlighting_theme']).to eq(2)
         expect(json_response['default_dark_syntax_highlighting_theme']).to eq(3)
         expect(json_response['projects_api_rate_limit_unauthenticated']).to be(100)
+        expect(json_response['project_repositories_blame_limit']).to be(90)
+        expect(json_response['project_repositories_blame_unauthenticated_limit']).to be(30)
         expect(json_response['project_repositories_blobs_batch_limit']).to be(10)
         expect(json_response['silent_mode_enabled']).to be(true)
         expect(json_response['valid_runner_registrars']).to eq(['group'])

@@ -64,6 +64,10 @@ Dir[Rails.root.join("spec/support/helpers/*.rb")].each { |f| require f }
 Dir[Rails.root.join("spec/support/shared_contexts/*.rb")].each { |f| require f }
 Dir[Rails.root.join("spec/support/shared_examples/*.rb")].each { |f| require f }
 Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
+Dir[Rails.root.join("domains/*/spec/support/helpers/*.rb")].each { |f| require f }
+Dir[Rails.root.join("domains/*/spec/support/shared_contexts/*.rb")].each { |f| require f }
+Dir[Rails.root.join("domains/*/spec/support/shared_examples/*.rb")].each { |f| require f }
+Dir[Rails.root.join("domains/*/spec/support/**/*.rb")].each { |f| require f }
 
 require_relative '../tooling/quality/test_level'
 

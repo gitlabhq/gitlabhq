@@ -67,7 +67,7 @@ RSpec.describe 'getting merge_requests information', feature_category: :code_rev
     actual_merge_requests = nodes.pluck('id')
     expected_merge_requests = merge_requests.map { |merge_request| merge_request.to_global_id.to_s }
 
-    expect(actual_merge_requests).to contain_exactly(*expected_merge_requests)
+    expect(actual_merge_requests).to match_array(expected_merge_requests)
     expect(graphql_errors).to be_nil
   end
 end

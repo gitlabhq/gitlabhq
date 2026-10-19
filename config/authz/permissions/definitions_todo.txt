@@ -349,7 +349,6 @@ read_admin_subscription
 read_admin_system_information
 read_admin_users
 read_ai_agents
-read_ai_catalog_item_consumer
 read_alert_management_alert
 read_alert_management_metric_image
 read_all_geo

@@ -13,12 +13,12 @@ module Gitlab
       # callables at definition time, so `authorize` is always a callable when
       # present.
       #
-      # Unauthorized metrics are dropped from the request (their fields render
-      # as `null`), while unauthorized dimensions, filters, and sort orders
-      # fail request validation. Engines without any `authorize:` declarations
-      # are not affected.
+      # The engine answers whether a definition is authorized; the query plan
+      # applies the answers (see `QueryPlan::Authorization`). Engines without
+      # any `authorize:` declarations are not affected.
       module Authorization
         extend ActiveSupport::Concern
+        include Gitlab::Utils::StrongMemoize
 
         # Normalizes the `authorize:` option: an ability Symbol is converted
         # into the equivalent callable, anything else is returned as-is.
@@ -34,89 +34,26 @@ module Gitlab
           end
         end
 
-        private
-
-        # Returns the request with unauthorized metrics dropped.
-        def authorized_request(request)
-          return request unless self.class.parts_require_authorization?
+        # Raises for a misconfigured engine even when the request does not
+        # touch a protected part.
+        def authorization_required?
+          return false unless self.class.parts_require_authorization?
 
           verify_authorization_context!
-
-          definitions = self.class.metrics.index_by(&:identifier)
-          metrics = request.metrics.select do |configuration|
-            authorized_definition?(definitions[configuration[:identifier]])
-          end
-
-          return request if metrics.size == request.metrics.size
-
-          Request.new(
-            metrics: metrics,
-            dimensions: request.dimensions,
-            filters: request.filters,
-            order: request.order
-          )
+          true
         end
 
-        # Adds validation errors for unauthorized dimensions, filters, and
-        # sort orders. `original_request` is the request before unauthorized
-        # metrics were pruned by `authorized_request`.
-        def validate_authorization!(plan, original_request = nil)
-          return unless self.class.parts_require_authorization?
+        # Memoized per definition: a request builds its query plan more than
+        # once (for example, to coerce GraphQL order parameters).
+        def authorized_definition?(definition)
+          return true unless definition&.authorize
 
-          validate_pruned_metrics_authorization(plan, original_request)
-          validate_dimensions_authorization(plan)
-          validate_filters_authorization(plan)
-          validate_order_authorization(plan)
-        end
-
-        # Pruning unauthorized metrics is silent by design when authorized
-        # metrics remain, but a request left with no metrics at all would fail
-        # plan validation with "at least one metric is required", which is
-        # misleading for a viewer whose real problem is authorization.
-        def validate_pruned_metrics_authorization(plan, original_request)
-          return if original_request.nil? || plan.metrics.any?
-
-          pruned_metrics = original_request.metrics - plan.request.metrics
-          pruned_metrics.each do |configuration|
-            add_authorization_error(
-              s_("AggregationEngine|access to metric '%{identifier}' is not authorized"),
-              identifier: configuration[:identifier])
+          strong_memoize_with(:authorized_definition, definition) do
+            definition.authorize.call(context[:current_user], context[:authorization_resources])
           end
         end
 
-        def validate_dimensions_authorization(plan)
-          plan.dimensions.each do |dimension|
-            next if authorized_part?(dimension)
-
-            add_authorization_error(
-              s_("AggregationEngine|access to dimension '%{identifier}' is not authorized"),
-              identifier: dimension.definition.identifier)
-          end
-        end
-
-        def validate_filters_authorization(plan)
-          plan.filters.each do |filter|
-            next if authorized_part?(filter) && authorized_definition?(referenced_metric_definition(filter))
-
-            add_authorization_error(
-              s_("AggregationEngine|access to filter '%{identifier}' is not authorized"),
-              identifier: filter.definition.identifier)
-          end
-        end
-
-        # A sort order referencing a metric pruned by `authorized_request` has
-        # no plan part anymore; resolve the definition directly to report it
-        # as unauthorized rather than as an unknown identifier.
-        def validate_order_authorization(plan)
-          plan.order.each do |order|
-            definition = order.definition || ordered_metric_definition(order)
-            next if authorized_definition?(definition)
-
-            add_authorization_error(
-              s_("AggregationEngine|ordering by '%{identifier}' is not authorized"),
-              identifier: definition.identifier)
-          end
-        end
+        private
 
         # `current_user` may be nil: anonymous users can legitimately hold
         # abilities on public resources, so `Ability.allowed?` decides.
@@ -126,34 +63,6 @@ module Gitlab
           raise ArgumentError,
             "#{self.class.name} declares part-level authorization: " \
               "`authorization_resources:` is required in the engine context"
-        end
-
-        # Typed :unauthorized so callers (for example, the GraphQL resolver) can
-        # distinguish authorization failures from other validation errors.
-        def add_authorization_error(message, identifier:)
-          errors.add(:base, :unauthorized, message: format(message, identifier: identifier))
-        end
-
-        # Metric filters must also be authorized for the metric they reference.
-        def referenced_metric_definition(filter)
-          return unless filter.definition.try(:metric?)
-
-          self.class.metrics.find { |metric| metric.identifier == filter.definition.identifier }
-        end
-
-        def ordered_metric_definition(order)
-          self.class.metrics.find { |metric| metric.identifier == order.configuration[:identifier] }
-        end
-
-        # Parts with an unresolved definition are reported by plan validation.
-        def authorized_part?(part)
-          part.definition.nil? || authorized_definition?(part.definition)
-        end
-
-        def authorized_definition?(definition)
-          authorize = definition&.authorize
-
-          !authorize || authorize.call(context[:current_user], context[:authorization_resources])
         end
       end
     end

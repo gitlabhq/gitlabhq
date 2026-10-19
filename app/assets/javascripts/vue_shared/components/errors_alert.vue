@@ -1,5 +1,6 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
+import { alertVariantOptions } from '@gitlab/ui/src/utils/constants';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 
 export default {
@@ -15,6 +16,12 @@ export default {
       type: String,
       required: false,
       default: '',
+    },
+    variant: {
+      type: String,
+      required: false,
+      default: 'danger',
+      validator: (variant) => Object.keys(alertVariantOptions).includes(variant),
     },
     errors: {
       type: Array,
@@ -63,10 +70,9 @@ export default {
   <gl-alert
     v-if="hasErrors"
     ref="alertRef"
-    role="alert"
     :title="title"
     :class="alertClass"
-    variant="danger"
+    :variant="variant"
     @dismiss="$emit('dismiss')"
   >
     <span v-if="errors.length === 1" v-safe-html="errors[0]"></span>

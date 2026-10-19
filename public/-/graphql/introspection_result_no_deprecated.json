@@ -225320,12 +225320,6 @@
               "deprecationReason": null
             },
             {
-              "name": "EXPIRED_DUO_PRO_TRIAL_WIDGET",
-              "description": "Callout feature name for expired_duo_pro_trial_widget.",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "EXPIRED_DUO_ENTERPRISE_TRIAL_WIDGET",
               "description": "Callout feature name for expired_duo_enterprise_trial_widget.",
               "isDeprecated": false,

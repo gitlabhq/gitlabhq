@@ -56,6 +56,16 @@ RSpec.describe Gitlab::Database::LoadBalancing, :suppress_gitlab_schemas_validat
     end
   end
 
+  describe '.release_all_connections' do
+    it 'releases all connections of every load balancer' do
+      described_class.each_load_balancer do |lb|
+        expect(lb).to receive(:release_all_connections)
+      end
+
+      described_class.release_all_connections
+    end
+  end
+
   describe '.db_role_for_connection' do
     context 'when the NullPool is used for connection' do
       let(:pool) { ActiveRecord::ConnectionAdapters::NullPool.new }

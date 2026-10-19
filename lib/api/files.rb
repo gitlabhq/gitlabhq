@@ -156,6 +156,14 @@ module API
         )
       end
 
+      def check_blame_rate_limit!
+        if current_user
+          check_rate_limit!(:project_repositories_blame, scope: { user: current_user, project: user_project })
+        else
+          check_rate_limit!(:project_repositories_blame_unauthenticated, scope: { ip: ip_address })
+        end
+      end
+
       def fetch_blame_range(blame_params)
         return if blame_params[:range].blank?
 
@@ -251,8 +259,11 @@ module API
 
       desc 'Retrieve file blame history from a repository' do
         detail 'Retrieves blame history for a specified file in a repository. Each blame range contains lines and ' \
-          'their corresponding commit information.'
+          'their corresponding commit information. This endpoint is rate-limited for each authenticated user for ' \
+          'a given project, and for each IP address for unauthenticated requests. On GitLab Self-Managed and ' \
+          'GitLab Dedicated, an administrator can change these limits in the application settings.'
         success [Entities::BlameRange]
+        failure [{ code: 429, message: 'Too many requests' }]
         tags %w[files]
       end
       params do
@@ -269,6 +280,8 @@ module API
       end
       route_setting :authorization, permissions: :read_repository_file_blame, boundary_type: :project
       get ":id/repository/files/:file_path/blame", requirements: FILE_ENDPOINT_REQUIREMENTS do
+        check_blame_rate_limit!
+
         blame_params = declared_params(include_missing: false)
 
         assign_file_vars!

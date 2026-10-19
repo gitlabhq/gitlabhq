@@ -2,13 +2,4 @@
 # Cop supports --autocorrect.
 RSpec/ContainExactly:
   Exclude:
-    - 'spec/requests/api/graphql/packages/package_spec.rb'
-    - 'spec/requests/api/graphql/project/merge_requests/merge_requests_spec.rb'
-    - 'spec/requests/api/groups_spec.rb'
     - 'spec/requests/api/projects_spec.rb'
-    - 'spec/requests/api/sidekiq_metrics_spec.rb'
-    - 'spec/requests/projects/merge_requests_discussions_spec.rb'
-    - 'spec/services/ci/create_pipeline_service/needs_spec.rb'
-    - 'spec/services/ci/create_pipeline_service/pre_post_stages_spec.rb'
-    - 'spec/services/ci/reset_skipped_jobs_service_spec.rb'
-    - 'spec/services/design_management/copy_design_collection/copy_service_spec.rb'

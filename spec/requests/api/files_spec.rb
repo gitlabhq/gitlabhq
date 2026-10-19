@@ -984,6 +984,81 @@ RSpec.describe API::Files, feature_category: :source_code_management do
         expect(response).to have_gitlab_http_status(:ok)
       end
     end
+
+    context 'when rate limited' do
+      let(:public_blame_route) { "/projects/#{public_project.id}/repository/files/#{file_path}/blame" }
+
+      context 'when authenticated' do
+        it_behaves_like 'rate limited endpoint', rate_limit_key: :project_repositories_blame do
+          let(:current_user) { user }
+
+          def request
+            get api(route(file_path) + '/blame', current_user), params: params
+          end
+
+          # The limit is per user and project, so a second project is a second scope.
+          def request_with_second_scope
+            get api(public_blame_route, current_user), params: params
+          end
+        end
+      end
+
+      context 'when unauthenticated' do
+        it_behaves_like 'rate limited endpoint',
+          rate_limit_key: :project_repositories_blame_unauthenticated, use_second_scope: false do
+          let(:current_user) { nil }
+
+          def request
+            get api(public_blame_route), params: params
+          end
+        end
+      end
+
+      # Only GET is limited. HEAD returns blob metadata without running Gitlab::Blame.
+      context 'when requesting blame metadata' do
+        it_behaves_like 'unthrottled endpoint', rate_limit_key: :project_repositories_blame do
+          def request
+            head api(route(file_path) + '/blame', user), params: params
+          end
+        end
+      end
+
+      context 'with the limits applied', :clean_gitlab_redis_rate_limiting do
+        before do
+          stub_application_setting(
+            project_repositories_blame_limit: 1,
+            project_repositories_blame_unauthenticated_limit: 1
+          )
+        end
+
+        it 'throttles a second anonymous request from the same IP', :aggregate_failures do
+          get api(public_blame_route), params: params
+          expect(response).to have_gitlab_http_status(:ok)
+
+          get api(public_blame_route), params: params
+          expect(response).to have_gitlab_http_status(:too_many_requests)
+        end
+
+        it 'does not charge an anonymous request to the authenticated limit', :aggregate_failures do
+          get api(public_blame_route), params: params
+          expect(response).to have_gitlab_http_status(:ok)
+
+          get api(public_blame_route, user), params: params
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+
+        # The throttle must run before the blame computation, not merely short-circuit the response.
+        it 'does not run blame once throttled', :aggregate_failures do
+          get api(route(file_path) + '/blame', user), params: params
+          expect(response).to have_gitlab_http_status(:ok)
+
+          expect(Gitlab::Blame).not_to receive(:new)
+
+          get api(route(file_path) + '/blame', user), params: params
+          expect(response).to have_gitlab_http_status(:too_many_requests)
+        end
+      end
+    end
   end
 
   describe 'HEAD /projects/:id/repository/files/:file_path/raw' do

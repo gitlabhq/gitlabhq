@@ -690,6 +690,23 @@ module Gitlab
               period: 1.minute,
               action: :limit
             ),
+            project_repositories_blame: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_project_repository_blame_by_user_project',
+              characteristics: %i[user project],
+              limit: -> { Gitlab::CurrentSettings.current_application_settings.project_repositories_blame_limit },
+              period: 1.minute,
+              action: :limit
+            ),
+            project_repositories_blame_unauthenticated: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_project_repository_blame_by_ip',
+              characteristics: %i[ip],
+              limit: -> {
+                Gitlab::CurrentSettings.current_application_settings
+                  .project_repositories_blame_unauthenticated_limit
+              },
+              period: 1.minute,
+              action: :limit
+            ),
             project_repositories_blobs_batch: ::Labkit::RateLimit::Rule.new(
               name: 'limit_project_repository_blobs_batch_by_project_user',
               characteristics: %i[project user],

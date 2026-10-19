@@ -537,7 +537,6 @@ Gitlab/Authz/PermissionCheck:
     - 'ee/app/models/ee/issue.rb'
     - 'ee/app/models/ee/user.rb'
     - 'ee/app/models/gitlab_subscriptions/trials/duo_enterprise.rb'
-    - 'ee/app/models/gitlab_subscriptions/trials/duo_pro.rb'
     - 'ee/app/presenters/ee/projects/security/configuration_presenter.rb'
     - 'ee/app/presenters/epic_issue_presenter.rb'
     - 'ee/app/presenters/gitlab_subscriptions/trials/widget_presenter.rb'

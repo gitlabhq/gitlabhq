@@ -16641,12 +16641,6 @@
     "dottedExample": "/groups/john.doe/bar/-/add_ons/discover_duo_enterprise"
   },
   {
-    "template": "/groups/*group_id/-/add_ons/discover_duo_pro",
-    "example": "/groups/foo/bar/-/add_ons/discover_duo_pro",
-    "acceptsFormat": true,
-    "dottedExample": "/groups/john.doe/bar/-/add_ons/discover_duo_pro"
-  },
-  {
     "template": "/groups/*group_id/-/analytics",
     "example": "/groups/foo/bar/-/analytics",
     "acceptsFormat": true,
@@ -25305,12 +25299,6 @@
     "example": "/o/foo/groups/foo/bar/-/add_ons/discover_duo_enterprise",
     "acceptsFormat": true,
     "dottedExample": "/o/john.doe/groups/john.doe/bar/-/add_ons/discover_duo_enterprise"
-  },
-  {
-    "template": "/o/:organization_path/groups/*group_id/-/add_ons/discover_duo_pro",
-    "example": "/o/foo/groups/foo/bar/-/add_ons/discover_duo_pro",
-    "acceptsFormat": true,
-    "dottedExample": "/o/john.doe/groups/john.doe/bar/-/add_ons/discover_duo_pro"
   },
   {
     "template": "/o/:organization_path/groups/*group_id/-/analytics",

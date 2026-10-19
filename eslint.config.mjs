@@ -653,8 +653,6 @@ export default [
       // A mixin registration and a usage of what it supplies must appear in
       // the same file, both ways. Mixins are identified by import, so local
       // aliases (glFeatureFlagMixin, TimeagoMixin) resolve to the same entry.
-      // `reportUnused: false` marks entries whose existing unused
-      // registrations are still being removed; the missing half stays on.
       'local-rules/vue-mixin-pairing': [
         'error',
         {
@@ -696,14 +694,12 @@ export default [
               imported: 'default',
               localName: 'timeagoMixin',
               members: ['timeFormatted', 'tooltipTitle'],
-              reportUnused: false,
             },
             {
               source: '~/tracking',
               imported: 'InternalEvents',
               factory: 'mixin',
               members: ['trackEvent'],
-              reportUnused: false,
             },
             {
               source: '~/tracking/internal_events',
@@ -711,7 +707,6 @@ export default [
               localName: 'InternalEvents',
               factory: 'mixin',
               members: ['trackEvent'],
-              reportUnused: false,
             },
             {
               source: '~/tracking',

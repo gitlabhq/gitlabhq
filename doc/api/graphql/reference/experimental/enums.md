@@ -5927,7 +5927,6 @@ Name of the feature that the callout is for.
 | `END_OF_TRIAL_MODAL` | Callout feature name for end_of_trial_modal. |
 | `ENFORCEMENT_AT_LIMIT_ALERT` | Callout feature name for enforcement_at_limit_alert. |
 | `EXPIRED_DUO_ENTERPRISE_TRIAL_WIDGET` | Callout feature name for expired_duo_enterprise_trial_widget. |
-| `EXPIRED_DUO_PRO_TRIAL_WIDGET` | Callout feature name for expired_duo_pro_trial_widget. |
 | `EXPIRED_TRIAL_STATUS_WIDGET` | Callout feature name for expired_trial_status_widget. |
 | `EXPLORE_PREMIUM_REQUEST_PAINTED_DOOR` | Callout feature name for explore_premium_request_painted_door. |
 | `FREE_GROUP_LIMITED_ALERT` | Callout feature name for free_group_limited_alert. |

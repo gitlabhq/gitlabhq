@@ -42,18 +42,17 @@ module Gitlab
 
         # @return [Gitlab::Database::Aggregation::AggregationResult]
         def execute(request)
-          plan = authorized_request(request).to_query_plan(self)
+          plan = request.to_query_plan(self)
 
-          if plan_valid?(plan, original_request: request)
+          if plan_valid?(plan)
             ServiceResponse.success(payload: { data: execute_query_plan(plan) })
           else
-            error_response
+            error_response(plan)
           end
         end
 
-        def plan_valid?(plan, original_request: nil)
+        def plan_valid?(plan)
           validate
-          validate_authorization!(plan, original_request)
 
           if errors.empty?
             plan.validate
@@ -65,8 +64,12 @@ module Gitlab
 
         private
 
-        def error_response
-          ServiceResponse.error(payload: { errors: errors }, message: errors.full_messages.join(', '))
+        def error_response(plan)
+          ServiceResponse.error(
+            payload: { errors: errors },
+            message: errors.full_messages.join(', '),
+            reason: (:unauthorized if plan.unauthorized?)
+          )
         end
 
         def execute_query_plan(_plan)

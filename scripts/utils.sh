@@ -267,6 +267,47 @@ function yarn_install_script_storybook() {
   section_end "yarn-install-storybook"
 }
 
+# Danger runs `git merge-base` between the MR diff base and head, but the GIT_DEPTH clone cuts the
+# source branch history after GIT_DEPTH - 1 commits, so with more commits the base is unreachable
+# and Danger falls back to unshallowing the whole repository (slow, often fails).
+function fetch_merge_request_history_to_diff_base() {
+  local mr_head_ref="refs/merge-requests/${CI_MERGE_REQUEST_IID}/head"
+  local head base step depth
+
+  [[ -n "${CI_MERGE_REQUEST_IID}" ]] || return 0
+  # Merged results pipelines check out a merge commit and export the MR head Danger diffs separately.
+  head="${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA:-${CI_COMMIT_SHA}}"
+
+  base="${CI_MERGE_REQUEST_DIFF_BASE_SHA}"
+  if [[ -z "${base}" ]]; then
+    # GitLab exports no diff variables when the MR diff has no file changes, so ask the API like Danger does.
+    base="$(curl --silent --fail --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
+      "${CI_API_V4_URL}/projects/${CI_MERGE_REQUEST_PROJECT_ID}/merge_requests/${CI_MERGE_REQUEST_IID}" |
+      ruby -rjson -e 'puts JSON.parse(STDIN.read).dig("diff_refs", "base_sha")' 2> /dev/null)" || base=""
+  fi
+  if [[ -z "${base}" ]]; then
+    echoerr "Cannot determine the diff base of MR !${CI_MERGE_REQUEST_IID}; Danger will try to fetch history itself."
+    return 0
+  fi
+
+  # A plain merge-base is not enough: a shallow clone can answer it with an old master commit reached
+  # through a branch the MR merged, and Danger then diffs against that commit instead of the base.
+  if git merge-base --is-ancestor "${base}" "${head}" 2> /dev/null; then
+    echoinfo "Diff base ${base} is reachable from MR head ${head}; nothing to fetch."
+    return 0
+  fi
+
+  # An absolute --depth is counted from the fetched ref alone, whereas --deepen extends every shallow
+  # boundary of the clone, which hangs on this repository.
+  for step in 2 3 4 5; do
+    depth="$(( step * ${GIT_DEPTH:-20} ))"
+    echoinfo "Diff base ${base} is not reachable from MR head ${head} in the shallow clone; fetching ${mr_head_ref} with --depth=${depth}."
+    retry git fetch --depth="${depth}" origin "${mr_head_ref}" || break
+    git merge-base --is-ancestor "${base}" "${head}" 2> /dev/null && return 0
+  done
+  echoerr "Diff base ${base} is still not reachable from ${head}; Danger will try to fetch it itself."
+}
+
 function setup_database_yml() {
   if [ "$DECOMPOSED_DB" == "true" ]; then
     if [ "$SEC_DECOMPOSED_DB" == "true" ]; then

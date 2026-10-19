@@ -124,13 +124,13 @@ module Spam
 
     def create_spam_abuse_event(result)
       params = {
-        user_id: user.id,
-        title: target.spam_title,
-        description: target.spam_description,
-        source_ip: spam_params&.ip_address,
-        user_agent: spam_params&.user_agent,
-        noteable_type: noteable_type,
-        verdict: result
+        'user_id' => user.id,
+        'title' => target.spam_title,
+        'description' => target.spam_description,
+        'source_ip' => spam_params&.ip_address,
+        'user_agent' => spam_params&.user_agent,
+        'noteable_type' => noteable_type,
+        'verdict' => result
       }
 
       target.run_after_commit_or_now do

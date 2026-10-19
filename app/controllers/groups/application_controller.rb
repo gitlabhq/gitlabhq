@@ -109,6 +109,8 @@ class Groups::ApplicationController < ApplicationController
       @group&.allow_iframes_in_markdown_feature_flag_enabled? == true)
     push_force_frontend_feature_flag(:use_mermaid_v12,
       @group&.use_mermaid_v12_feature_flag_enabled? == true)
+    push_force_frontend_feature_flag(:markdown_placeholders,
+      @group&.markdown_placeholders_feature_flag_enabled? == true)
   end
 
   def group_finder_params

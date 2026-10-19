@@ -778,6 +778,10 @@ Grants the ability to create, delete, read, report, restore, and update AI catal
 | Read | Project | Type | `AiCatalogSkill` |
 | Read | Project | Type | `AiCatalogSkillVersion` |
 | Read | Project | Mutation | `AiCatalogItemStar` |
+| Read | User | Type | `AiCatalogAgent` |
+| Read | User | Type | `AiCatalogFlow` |
+| Read | User | Type | `AiCatalogThirdPartyFlow` |
+| Read | User | Type | `AiFoundationalChatAgent` |
 | Read | User | Mutation | `AiCatalogItemStar` |
 | Read | User | Field | `Query.aiCatalogBuiltInTools` |
 | Report | Project | Mutation | `AiCatalogItemReport` |
@@ -787,12 +791,14 @@ Grants the ability to create, delete, read, report, restore, and update AI catal
 
 #### AI catalog item consumer
 
-Grants the ability to delete and update AI catalog item consumers.
+Grants the ability to delete, read, and update AI catalog item consumers.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
 | Delete | Project | Mutation | `AiCatalogItemConsumerDelete` |
 | Delete | Group | Mutation | `AiCatalogItemConsumerDelete` |
+| Read | Project | Type | `AiCatalogItemConsumer` |
+| Read | Group | Type | `AiCatalogItemConsumer` |
 | Update | Project | Mutation | `AiCatalogItemConsumerUpdate` |
 | Update | Group | Mutation | `AiCatalogItemConsumerUpdate` |
 
@@ -905,6 +911,7 @@ Grants the ability to create, delete, read, restart, resume, and update duo work
 | Create | User | Mutation | `AiDuoWorkflowCreate` |
 | Delete | User | Mutation | `DeleteDuoWorkflowsWorkflow` |
 | Read | User | Type | `DuoWorkflow` |
+| Read | User | Type | `DuoWorkflowEvent` |
 | Read | User | Type | `DuoWorkflowMergeRequestLink` |
 | Read | User | Type | `DuoWorkflowNoteLink` |
 | Read | User | Type | `DuoWorkflowPipelineLink` |

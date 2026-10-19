@@ -40737,6 +40737,9 @@ ALTER TABLE vulnerability_scanners
 ALTER TABLE user_details
     ADD CONSTRAINT check_3b9aec5742 CHECK ((char_length(company) <= 500)) NOT VALID;
 
+ALTER TABLE events
+    ADD CONSTRAINT check_5766fc2949 CHECK ((num_nonnulls(group_id, personal_namespace_id, project_id) = 1)) NOT VALID;
+
 ALTER TABLE ONLY instance_type_ci_runners
     ADD CONSTRAINT check_5c34a3c1db UNIQUE (id);
 

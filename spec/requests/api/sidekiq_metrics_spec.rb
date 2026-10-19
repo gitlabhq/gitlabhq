@@ -71,7 +71,7 @@ RSpec.describe API::SidekiqMetrics, :clean_gitlab_redis_queues, :aggregate_failu
         expect(json_response).to be_a Hash
         expect(json_response['jobs']).to be_a Hash
         expect(json_response['jobs'].keys)
-          .to contain_exactly(*%w[processed failed enqueued dead])
+          .to match_array(%w[processed failed enqueued dead])
         expect(json_response['jobs'].values).to all(be_an(Integer))
       end
 

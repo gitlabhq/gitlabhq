@@ -65,11 +65,6 @@ RSpec.describe UserPreference, feature_category: :user_profile do
       it { is_expected.not_to allow_value("").for(:pass_user_identities_to_ci_jwt) }
     end
 
-    describe 'early_access_studio_participant' do
-      it { is_expected.to validate_inclusion_of(:early_access_studio_participant).in_array([true, false]) }
-      it { is_expected.not_to allow_value(nil).for(:early_access_studio_participant) }
-    end
-
     describe 'emoji_autocomplete_enabled' do
       it { is_expected.to validate_inclusion_of(:emoji_autocomplete_enabled).in_array([true, false]) }
       it { is_expected.not_to allow_value(nil).for(:emoji_autocomplete_enabled) }

@@ -97,6 +97,7 @@ module API
 
         def render_notes_for(parent_work_item)
           authorize_work_item_feature!(parent_work_item)
+          check_pagination_param!(params)
           authorize! :read_note, parent_work_item
 
           notes_filter = UserPreference::NOTES_FILTERS[params[:activity_filter].to_sym]

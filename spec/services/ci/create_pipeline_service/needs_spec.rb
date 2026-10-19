@@ -94,7 +94,7 @@ RSpec.describe Ci::CreatePipelineService,
         ]
 
         expect(pipeline).to be_persisted
-        expect(pipeline.builds.pluck(:name)).to contain_exactly(*expected_builds)
+        expect(pipeline.builds.pluck(:name)).to match_array(expected_builds)
       end
 
       it 'saves needs' do

@@ -62,9 +62,13 @@ module Gitlab
           result = []
           result.concat(DEFAULT_WORKERS.values)
           result.concat(find_workers(Rails.root.join('app', 'workers'), ee: false, jh: false))
+          domain_roots('domains/*/app/workers').each { |root| result.concat(find_workers(root, ee: false, jh: false)) }
 
           if Gitlab.ee?
             result.concat(find_workers(Rails.root.join('ee', 'app', 'workers'), ee: true, jh: false))
+            domain_roots('domains/*/ee/app/workers').each do |root|
+              result.concat(find_workers(root, ee: true, jh: false))
+            end
           end
 
           if Gitlab.jh?
@@ -169,6 +173,10 @@ module Gitlab
           .map { |path| worker_from_path(path, root) }
           .select { |worker| worker < Sidekiq::Worker }
           .map { |worker| Gitlab::SidekiqConfig::Worker.new(worker, ee: ee, jh: jh) }
+      end
+
+      def domain_roots(glob)
+        Dir[Rails.root.join(glob)].map { |path| Pathname.new(path) }
       end
 
       def worker_from_path(path, root)

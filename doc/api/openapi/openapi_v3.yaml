@@ -63219,7 +63219,11 @@ paths:
       operationId: getApiV4ProjectsIdRepositoryFilesFilePathBlame
       summary: Retrieve file blame history from a repository
       description: Retrieves blame history for a specified file in a repository. Each
-        blame range contains lines and their corresponding commit information.
+        blame range contains lines and their corresponding commit information. This
+        endpoint is rate-limited for each authenticated user for a given project,
+        and for each IP address for unauthenticated requests. On GitLab Self-Managed
+        and GitLab Dedicated, an administrator can change these limits in the application
+        settings.
       tags:
       - Files
       responses:
@@ -63229,6 +63233,8 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/APIEntitiesBlameRange"
+        '429':
+          description: Too many requests
         '404':
           description: Not Found
         '400':
@@ -93447,6 +93453,10 @@ components:
           type: string
         project_invited_groups_api_limit:
           type: string
+        project_repositories_blame_limit:
+          type: string
+        project_repositories_blame_unauthenticated_limit:
+          type: string
         project_repositories_blobs_batch_limit:
           type: string
         projects_api_limit:
@@ -113138,6 +113148,12 @@ components:
           type: string
           nullable: true
         project_invited_groups_api_limit:
+          type: string
+          nullable: true
+        project_repositories_blame_limit:
+          type: string
+          nullable: true
+        project_repositories_blame_unauthenticated_limit:
           type: string
           nullable: true
         project_repositories_blobs_batch_limit:

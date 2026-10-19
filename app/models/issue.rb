@@ -619,17 +619,27 @@ class Issue < ApplicationRecord
 
   # Order by `work_item_positions.relative_position` when the flag is on, else the legacy
   # `issues.relative_position`. LEFT JOIN keeps unpositioned issues last (NULLS LAST).
-  # When a positioning root is known (e.g. a board), also filter by
-  # `relative_positioning_namespace_id` so the root-leading index serves the ordered read;
-  # the table is dense so this drops nothing. Callers without a root (finder-driven sorts)
-  # pass nil and keep today's behaviour until the root is threaded through.
-  def self.order_by_relative_position(root_namespace = nil)
+  # With a root (e.g. a board), broad reads filter it in WHERE so the root-leading index serves
+  # the ordered read. Selective reads (`walk_positions_index: false`, e.g. a label list) filter
+  # it in ON, else the planner may probe positions for every candidate before the selective
+  # filter. Callers without a root (finder-driven sorts) keep today's behaviour.
+  def self.order_by_relative_position(root_namespace = nil, walk_positions_index: true)
     if read_relative_positions_from_work_item_positions?(root_namespace)
-      relation = left_joins(:work_item_position)
+      relation =
+        if root_namespace && !walk_positions_index
+          positions = WorkItems::Position.arel_table
+          join = arel_table.join(positions, Arel::Nodes::OuterJoin).on(
+            positions[:work_item_id].eq(arel_table[:id])
+              .and(positions[:relative_positioning_namespace_id].eq(root_namespace.id))
+          )
 
-      if root_namespace
-        relation = relation.where(work_item_positions: { relative_positioning_namespace_id: root_namespace.id })
-      end
+          joins(join.join_sources)
+        elsif root_namespace
+          left_joins(:work_item_position)
+            .where(work_item_positions: { relative_positioning_namespace_id: root_namespace.id })
+        else
+          left_joins(:work_item_position)
+        end
 
       order = Gitlab::Pagination::Keyset::Order.build([column_order_work_item_position, column_order_id_asc])
       order.apply_cursor_conditions(relation).reorder(order)

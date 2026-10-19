@@ -41,6 +41,46 @@ RSpec.describe RapidDiffs::StreamingResource, feature_category: :source_code_man
     end
   end
 
+  # ActionController::TestCase makes the streaming thread run its block inline
+  describe '#new_controller_thread' do
+    let(:controller_instance) { controller.new }
+    let(:events) { [] }
+
+    before do
+      allow(controller_instance).to receive(:release_database_connections) { events << :released }
+    end
+
+    it 'releases the database connections once the streaming thread finishes' do
+      controller_instance.send(:new_controller_thread) { events << :streamed }
+
+      expect(events).to eq([:streamed, :released])
+    end
+
+    it 'releases the database connections when the streaming thread raises' do
+      expect { controller_instance.send(:new_controller_thread) { raise ArgumentError } }.to raise_error(ArgumentError)
+
+      expect(events).to eq([:released])
+    end
+  end
+
+  describe '#release_database_connections' do
+    it 'releases the connections of the current thread to every host and the primary', :aggregate_failures do
+      expect(Gitlab::Database::LoadBalancing).to receive(:release_all_connections).with(no_args)
+      expect(ApplicationRecord.connection_handler).to receive(:clear_active_connections!).with(no_args)
+
+      controller.new.send(:release_database_connections)
+    end
+
+    it 'tracks an error raised while releasing the connections instead of raising it' do
+      error = StandardError.new('release failed')
+      allow(Gitlab::Database::LoadBalancing).to receive(:release_all_connections).and_raise(error)
+
+      expect(Gitlab::ErrorTracking).to receive(:track_exception).with(error)
+
+      expect { controller.new.send(:release_database_connections) }.not_to raise_error
+    end
+  end
+
   describe '#current_user' do
     let(:controller_instance) { controller.new }
     let(:user) { nil }

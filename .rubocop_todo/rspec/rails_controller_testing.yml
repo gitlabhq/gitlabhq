@@ -120,7 +120,6 @@ RSpec/RailsControllerTesting:
     - 'spec/controllers/admin/clusters_controller_spec.rb'
     - 'spec/controllers/admin/dashboard_controller_spec.rb'
     - 'spec/controllers/admin/groups_controller_spec.rb'
-    - 'spec/controllers/admin/health_check_controller_spec.rb'
     - 'spec/controllers/admin/identities_controller_spec.rb'
     - 'spec/controllers/admin/initial_setup_controller_spec.rb'
     - 'spec/controllers/admin/integrations_controller_spec.rb'

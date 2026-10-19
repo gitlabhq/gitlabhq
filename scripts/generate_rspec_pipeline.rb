@@ -260,7 +260,7 @@ class GenerateRspecPipeline
   end
 
   def test_level_service
-    @test_level_service ||= Quality::TestLevel.new(test_suite_prefix)
+    @test_level_service ||= Quality::TestLevel.new(test_suite_prefix.to_s)
   end
 
   def tier_2_or_above?

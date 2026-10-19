@@ -32,7 +32,7 @@ module Resolvers
           def raise_execution_error!(response)
             message = response.errors.join(' ')
 
-            if response.payload[:errors].any? { |error| error.type == :unauthorized }
+            if response.reason == :unauthorized
               raise GraphQL::ExecutionError.new(message, extensions: { code: NOT_AUTHORIZED_CODE })
             end
 

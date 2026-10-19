@@ -34,7 +34,7 @@ RSpec.describe API::Mcp::Base, feature_category: :mcp_server do
           params: { jsonrpc: '2.0', method: 'initialize', id: '1', params: { protocolVersion: '2025-06-18' } }
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(Gitlab::Json.parse(response.body)).to eq({
+        expect(Gitlab::Json::SafeParser.parse(response.body)).to eq({
           "id" => "1",
           "jsonrpc" => "2.0",
           "result" => {

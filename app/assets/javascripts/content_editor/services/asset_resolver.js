@@ -28,6 +28,20 @@ export default class AssetResolver {
     return { src: embed.dataset.iframeSrc, providerId: embed.dataset.iframeProviderId };
   });
 
+  resolvePlaceholder = memoize(async (placeholder) => {
+    const { body: html } =
+      (await this.renderMarkdown(placeholder).catch(() => {
+        this.resolvePlaceholder.cache.delete(placeholder);
+      })) || {};
+    if (!html) return null;
+
+    const { body } = parser.parseFromString(html, 'text/html');
+    const span = body.querySelector('span[data-placeholder]');
+    if (!span) return null;
+
+    return { placeholder, value: (span.dataset.placeholder && span.textContent) || null };
+  });
+
   resolveReference = memoize(async (originalText) => {
     const text = originalText.replace(/(\+|\+s)$/, '');
     const toRender = `${text} ${text}+ ${text}+s`;

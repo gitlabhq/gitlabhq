@@ -296,6 +296,26 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store, fe
     end
   end
 
+  describe '#release_all_connections' do
+    it 'releases the connections of the current thread to the primary and every host, without the request cache',
+      :aggregate_failures do
+      expect(lb).to receive(:release_primary_connection)
+
+      lb.host_list.hosts.each do |host|
+        host.enable_query_cache!
+        host.pool.lease_connection
+      end
+      request_cache.delete(described_class::CACHE_KEY)
+
+      lb.release_all_connections
+
+      lb.host_list.hosts.each do |host|
+        expect(host.pool.active_connection?).to be_falsey
+        expect(host.query_cache_enabled).to be(false)
+      end
+    end
+  end
+
   describe '#release_host' do
     it 'releases the cached host and its connection' do
       host = lb.host

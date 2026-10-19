@@ -119,6 +119,16 @@
       "minimum": 0,
       "description": "Number of requests allowed to the GET /api/v4/projects/:id/invited_groups endpoint."
     },
+    "project_repositories_blame_limit": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of blame requests allowed per user and project."
+    },
+    "project_repositories_blame_unauthenticated_limit": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of unauthenticated blame requests allowed per IP address."
+    },
     "project_repositories_blobs_batch_limit": {
       "type": "integer",
       "minimum": 0,

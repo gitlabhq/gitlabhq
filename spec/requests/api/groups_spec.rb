@@ -1798,7 +1798,9 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
-          expect(json_response.map { |project| project['id'] }).to contain_exactly(*Project.public_or_visible_to_user(user1).pluck(:id))
+          expect(json_response.map { |project| project['id'] }).to match_array(
+            Project.public_or_visible_to_user(user1).pluck(:id)
+          )
         end
       end
 

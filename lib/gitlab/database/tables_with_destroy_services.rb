@@ -149,9 +149,11 @@ module Gitlab
           tables = EXTRA_TABLES_TO_SERVICES.transform_values { |service| [service] }
           unaccounted = []
 
-          Dir.glob('{app,ee/app}/services/**/{destroy_service,delete_service}.rb', base: root_path).sort.each do |path|
+          glob = '{,domains/*/}{app,ee/app}/services/**/{destroy_service,delete_service}.rb'
+
+          Dir.glob(glob, base: root_path).sort.each do |path|
             namespace = path
-              .sub(%r{\A(?:ee/)?app/services/(?:ee/)?}, '')
+              .sub(%r{\A(?:domains/[^/]+/)?(?:ee/)?app/services/(?:ee/)?}, '')
               .sub(%r{/(?:destroy|delete)_service\.rb\z}, '')
             next if EXCLUDED_NAMESPACES.include?(namespace)
 

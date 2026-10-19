@@ -4,6 +4,9 @@ module Quality
   class TestLevel
     UnknownTestLevelError = Class.new(StandardError)
 
+    # Each prefix also covers the same tree inside every domains/<name> root.
+    DOMAINS_PREFIX = 'domains/*/'
+
     TEST_LEVEL_FOLDERS = {
       migration: %w[
         migrations
@@ -76,7 +79,7 @@ module Quality
     attr_reader :prefixes
 
     def initialize(prefixes = nil)
-      @prefixes = Array(prefixes)
+      @prefixes = Array(prefixes).flat_map { |prefix| [prefix, "#{DOMAINS_PREFIX}#{prefix}"] }
       @patterns = {}
       @regexps = {}
     end
@@ -123,7 +126,7 @@ module Quality
     def prefixes_for_regex
       return '' if prefixes.empty?
 
-      regex_prefix = prefixes.map { |prefix| Regexp.escape(prefix) }.join('|')
+      regex_prefix = prefixes.map { |prefix| Regexp.escape(prefix).gsub('\*', '[^/]+') }.join('|')
 
       "(#{regex_prefix})"
     end

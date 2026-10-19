@@ -45,6 +45,13 @@ RSpec.shared_examples 'a work item endpoint paginated by cursor' do
       expect(json_response['error']).to include('per_page')
     end
   end
+
+  it 'returns 405 when offset pagination is requested explicitly' do
+    get api(api_request_path, user), params: { pagination: 'offset' }
+
+    expect(response).to have_gitlab_http_status(:method_not_allowed)
+    expect(json_response['error']).to include('offset pagination is not supported')
+  end
 end
 
 # `segment` is the last path segment of the list route, for example 'children'. Matching on it keeps

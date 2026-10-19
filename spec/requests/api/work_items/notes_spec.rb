@@ -109,6 +109,29 @@ RSpec.describe API::WorkItems::Notes, feature_category: :portfolio_management do
       end
 
       it_behaves_like 'a work item endpoint paginated by cursor'
+
+      context 'with a non-default order' do
+        # Newest id but oldest updated_at, so the updated_at order differs from the id tie-breaker order
+        let_it_be(:stale_note) do
+          create(:note, project: project, noteable: work_item, author: user, updated_at: 1.hour.ago)
+        end
+
+        let(:order_params) { { order_by: 'updated_at', sort: 'desc' } }
+
+        it 'keeps the order across cursor pages', :aggregate_failures do
+          get api(api_request_path, user), params: order_params.merge(per_page: 100)
+          all_ids = json_response.pluck('id')
+
+          expect(all_ids.last).to eq(stale_note.id)
+
+          get api(api_request_path, user), params: order_params.merge(per_page: 2)
+          get api(api_request_path, user),
+            params: order_params.merge(per_page: 2, cursor: response.headers['X-Next-Cursor'])
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.pluck('id')).to eq(all_ids[2, 2])
+        end
+      end
     end
 
     it 'does not issue N+1 queries when more notes are added', :aggregate_failures do

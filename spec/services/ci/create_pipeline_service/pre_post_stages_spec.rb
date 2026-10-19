@@ -39,10 +39,8 @@ RSpec.describe Ci::CreatePipelineService,
 
       it 'creates a pipeline' do
         expect(pipeline).to be_persisted
-        expect(pipeline.stages.map(&:name)).to contain_exactly(
-          *%w[.pre build .post])
-        expect(pipeline.builds.map(&:name)).to contain_exactly(
-          *%w[validate build notify])
+        expect(pipeline.stages.map(&:name)).to match_array(%w[.pre build .post])
+        expect(pipeline.builds.map(&:name)).to match_array(%w[validate build notify])
       end
     end
 
@@ -54,8 +52,7 @@ RSpec.describe Ci::CreatePipelineService,
 
         # we can validate a list of stages, as they are assigned
         # but not persisted
-        expect(pipeline.stages.map(&:name)).to contain_exactly(
-          *%w[.pre .post])
+        expect(pipeline.stages.map(&:name)).to match_array(%w[.pre .post])
       end
     end
   end

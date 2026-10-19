@@ -11682,6 +11682,9 @@ msgstr ""
 msgid "AnalyticsDashboards|Collapse %{name}"
 msgstr ""
 
+msgid "AnalyticsDashboards|Created by"
+msgstr ""
+
 msgid "AnalyticsDashboards|Created by %{name}"
 msgstr ""
 
@@ -11740,6 +11743,12 @@ msgid "AnalyticsDashboards|Groups and projects"
 msgstr ""
 
 msgid "AnalyticsDashboards|Keep your teams aligned around the metrics that matter most"
+msgstr ""
+
+msgid "AnalyticsDashboards|Last edited"
+msgstr ""
+
+msgid "AnalyticsDashboards|Last edited %{timeAgo}"
 msgstr ""
 
 msgid "AnalyticsDashboards|Load more groups"
@@ -33446,6 +33455,11 @@ msgstr ""
 msgid "DuoAgenticChat|chat-rules.md was not found in this page"
 msgstr ""
 
+msgid "DuoAgentsPlatform|%{count} session"
+msgid_plural "DuoAgentsPlatform|%{count} sessions"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "DuoAgentsPlatform|%{event}: %{conditions}"
 msgstr ""
 
@@ -33766,6 +33780,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Finish or cancel the open condition before saving."
 msgstr ""
 
+msgid "DuoAgentsPlatform|Finished %{timeAgo}"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Fix a failing pipeline"
 msgstr ""
 
@@ -33857,6 +33874,9 @@ msgid "DuoAgentsPlatform|Monthly on day %{dayOfMonth} at %{time} %{timezone}"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Needs a decision"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Never run"
 msgstr ""
 
 msgid "DuoAgentsPlatform|New agent sessions will appear here."
@@ -34024,6 +34044,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Select frequency"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Select hour"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Select merge request actions"
 msgstr ""
 
@@ -34067,6 +34090,9 @@ msgid "DuoAgentsPlatform|Start a free %{trialDuration}-day trial"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Start a free trial"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Started %{timeAgo}"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Started %{timeago} by %{user}"
@@ -89688,12 +89714,6 @@ msgstr ""
 msgid "TrialWidget|GitLab Duo Enterprise Trial"
 msgstr ""
 
-msgid "TrialWidget|GitLab Duo Pro"
-msgstr ""
-
-msgid "TrialWidget|GitLab Duo Pro Trial"
-msgstr ""
-
 msgid "TrialWidget|GitLab Ultimate Trial"
 msgstr ""
 
@@ -89710,9 +89730,6 @@ msgid "TrialWidget|Upgrade"
 msgstr ""
 
 msgid "TrialWidget|Your trial of GitLab Duo Enterprise has ended"
-msgstr ""
-
-msgid "TrialWidget|Your trial of GitLab Duo Pro has ended"
 msgstr ""
 
 msgid "TrialWidget|Your trial of GitLab Ultimate has ended"
@@ -90967,9 +90984,6 @@ msgid "UsageBillingUserDetails|Search types"
 msgstr ""
 
 msgid "UsageBillingUserDetails|Select all"
-msgstr ""
-
-msgid "UsageBillingUserDetails|included credits used this month"
 msgstr ""
 
 msgid "UsageBillingUserDetails|total credits used"

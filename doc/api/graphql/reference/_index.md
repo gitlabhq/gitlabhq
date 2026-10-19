@@ -11163,7 +11163,7 @@ Arguments:
 | <a id="mutation-governpolicycreate-actions"></a>`actions` | [`[JSON!]`](#json) | Actions the policy takes. No more than 1000 actions. |
 | <a id="mutation-governpolicycreate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-governpolicycreate-description"></a>`description` | [`String`](#string) | Description of the policy. |
-| <a id="mutation-governpolicycreate-grouppath"></a>`groupPath` | [`ID`](#id) | Full path of the top-level group whose policy store to use. Exactly one of `organizationId` or `groupPath` is required. |
+| <a id="mutation-governpolicycreate-grouppath"></a>`groupPath` | [`ID`](#id) | Full path of the group whose policy store to use. Exactly one of `organizationId` or `groupPath` is required. |
 | <a id="mutation-governpolicycreate-lifecyclestate"></a>`lifecycleState` | [`String`](#string) | Lifecycle state of the policy. |
 | <a id="mutation-governpolicycreate-mode"></a>`mode` | [`String`](#string) | Enforcement mode of the policy. |
 | <a id="mutation-governpolicycreate-name"></a>`name` | [`String!`](#string) | Name of the policy. |
@@ -11199,7 +11199,7 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutation-governpolicydelete-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutation-governpolicydelete-grouppath"></a>`groupPath` | [`ID`](#id) | Full path of the top-level group whose policy store to use. Exactly one of `organizationId` or `groupPath` is required. |
+| <a id="mutation-governpolicydelete-grouppath"></a>`groupPath` | [`ID`](#id) | Full path of the group whose policy store to use. Exactly one of `organizationId` or `groupPath` is required. |
 | <a id="mutation-governpolicydelete-id"></a>`id` | [`Int!`](#int) | ID of the policy to delete. |
 | <a id="mutation-governpolicydelete-organizationid"></a>`organizationId` | [`OrganizationsOrganizationID`](#organizationsorganizationid) | Global ID of the organization whose policy store to use. Exactly one of `organizationId` or `groupPath` is required. |
 
@@ -11230,7 +11230,7 @@ Arguments:
 | <a id="mutation-governpolicyupdate-actions"></a>`actions` | [`[JSON!]`](#json) | Actions the policy takes. No more than 1000 actions. |
 | <a id="mutation-governpolicyupdate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-governpolicyupdate-description"></a>`description` | [`String`](#string) | Description of the policy. |
-| <a id="mutation-governpolicyupdate-grouppath"></a>`groupPath` | [`ID`](#id) | Full path of the top-level group whose policy store to use. Exactly one of `organizationId` or `groupPath` is required. |
+| <a id="mutation-governpolicyupdate-grouppath"></a>`groupPath` | [`ID`](#id) | Full path of the group whose policy store to use. Exactly one of `organizationId` or `groupPath` is required. |
 | <a id="mutation-governpolicyupdate-lifecyclestate"></a>`lifecycleState` | [`String`](#string) | Lifecycle state of the policy. |
 | <a id="mutation-governpolicyupdate-mode"></a>`mode` | [`String`](#string) | Enforcement mode of the policy. |
 | <a id="mutation-governpolicyupdate-name"></a>`name` | [`String`](#string) | Name of the policy. |
@@ -48242,7 +48242,7 @@ Fields:
 | <a id="governpolicy-lifecyclestate"></a>`lifecycleState` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Lifecycle state of the policy. |
 | <a id="governpolicy-mode"></a>`mode` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Enforcement mode of the policy. |
 | <a id="governpolicy-name"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. Name of the policy. |
-| <a id="governpolicy-namespaceid"></a>`namespaceId` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.4. Status: Experiment. ID of the namespace the policy is scoped to. Null for organization-wide policies. |
+| <a id="governpolicy-namespaceid"></a>`namespaceId` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.4. Status: Experiment. ID of the namespace the policy is scoped to. Null for organization-wide policies, or when the current user cannot read the group. |
 | <a id="governpolicy-organizationid"></a>`organizationId` {{< icon name="warning-solid" >}} | [`Int!`](#int) | Introduced in GitLab 19.4. Status: Experiment. ID of the organization the policy belongs to. |
 | <a id="governpolicy-policyrego"></a>`policyRego` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Rego program merged from the compiled rules. Null when the rules cannot be merged. |
 | <a id="governpolicy-policyscope"></a>`policyScope` {{< icon name="warning-solid" >}} | [`JSON`](#json) | Introduced in GitLab 19.4. Status: Experiment. Scope of the policy. |
@@ -69823,6 +69823,7 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="codereviewmetrics-approvemergerequestduocoderevieweventcount"></a>`approveMergeRequestDuoCodeReviewEventCount` | [`Int`](#int) | Total count of `approve_merge_request_duo_code_review` event. |
 | <a id="codereviewmetrics-assignduosuggestedreviewereventcount"></a>`assignDuoSuggestedReviewerEventCount` | [`Int`](#int) | Total count of `assign_duo_suggested_reviewer` event. |
 | <a id="codereviewmetrics-createduosuggestedreviewerseventcount"></a>`createDuoSuggestedReviewersEventCount` | [`Int`](#int) | Total count of `create_duo_suggested_reviewers` event. |
 | <a id="codereviewmetrics-encounterduocodereviewerrorduringrevieweventcount"></a>`encounterDuoCodeReviewErrorDuringReviewEventCount` | [`Int`](#int) | Total count of `encounter_duo_code_review_error_during_review` event. |
@@ -69844,6 +69845,7 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="codereviewusermetrics-approvemergerequestduocoderevieweventcount"></a>`approveMergeRequestDuoCodeReviewEventCount` | [`Int`](#int) | Total count of `approve_merge_request_duo_code_review` event. |
 | <a id="codereviewusermetrics-assignduosuggestedreviewereventcount"></a>`assignDuoSuggestedReviewerEventCount` | [`Int`](#int) | Total count of `assign_duo_suggested_reviewer` event. |
 | <a id="codereviewusermetrics-createduosuggestedreviewerseventcount"></a>`createDuoSuggestedReviewersEventCount` | [`Int`](#int) | Total count of `create_duo_suggested_reviewers` event. |
 | <a id="codereviewusermetrics-encounterduocodereviewerrorduringrevieweventcount"></a>`encounterDuoCodeReviewErrorDuringReviewEventCount` | [`Int`](#int) | Total count of `encounter_duo_code_review_error_during_review` event. |
@@ -70704,6 +70706,7 @@ Type of AI usage event.
 | <a id="aiusageeventtype-agent_platform_session_started"></a>`AGENT_PLATFORM_SESSION_STARTED` | Agent platform session was started. |
 | <a id="aiusageeventtype-agent_platform_session_stopped"></a>`AGENT_PLATFORM_SESSION_STOPPED` | Agent platform session was stopped. |
 | <a id="aiusageeventtype-ai_duo_messaging_feedback_submitted"></a>`AI_DUO_MESSAGING_FEEDBACK_SUBMITTED` | Feedback was submitted on a Duo agent response in a messaging surface. |
+| <a id="aiusageeventtype-approve_merge_request_duo_code_review"></a>`APPROVE_MERGE_REQUEST_DUO_CODE_REVIEW` | Duo Code Review approved a merge request. |
 | <a id="aiusageeventtype-assign_duo_suggested_reviewer"></a>`ASSIGN_DUO_SUGGESTED_REVIEWER` | Duo suggested reviewers were added as reviewers to a merge request. |
 | <a id="aiusageeventtype-click_duo_agentic_subscription_expired_learn_more"></a>`CLICK_DUO_AGENTIC_SUBSCRIPTION_EXPIRED_LEARN_MORE` | User clicked learn more on Duo Agent Platform subscription expired state. |
 | <a id="aiusageeventtype-click_duo_agentic_subscription_expired_upgrade"></a>`CLICK_DUO_AGENTIC_SUBSCRIPTION_EXPIRED_UPGRADE` | User clicked upgrade on Duo Agent Platform subscription expired state. |
@@ -70772,6 +70775,8 @@ Values for sorting AI user metrics.
 | <a id="aiusermetricssort-ai_catalog_total_count_desc"></a>`AI_CATALOG_TOTAL_COUNT_DESC` | Ai Catalog total event count in descending order. |
 | <a id="aiusermetricssort-ai_duo_messaging_feedback_submitted_asc"></a>`AI_DUO_MESSAGING_FEEDBACK_SUBMITTED_ASC` | Ai Duo Messaging Feedback Submitted event count in ascending order. |
 | <a id="aiusermetricssort-ai_duo_messaging_feedback_submitted_desc"></a>`AI_DUO_MESSAGING_FEEDBACK_SUBMITTED_DESC` | Ai Duo Messaging Feedback Submitted event count in descending order. |
+| <a id="aiusermetricssort-approve_merge_request_duo_code_review_asc"></a>`APPROVE_MERGE_REQUEST_DUO_CODE_REVIEW_ASC` | Approve Merge Request Duo Code Review event count in ascending order. |
+| <a id="aiusermetricssort-approve_merge_request_duo_code_review_desc"></a>`APPROVE_MERGE_REQUEST_DUO_CODE_REVIEW_DESC` | Approve Merge Request Duo Code Review event count in descending order. |
 | <a id="aiusermetricssort-assign_duo_suggested_reviewer_asc"></a>`ASSIGN_DUO_SUGGESTED_REVIEWER_ASC` | Assign Duo Suggested Reviewer event count in ascending order. |
 | <a id="aiusermetricssort-assign_duo_suggested_reviewer_desc"></a>`ASSIGN_DUO_SUGGESTED_REVIEWER_DESC` | Assign Duo Suggested Reviewer event count in descending order. |
 | <a id="aiusermetricssort-chat_total_count_asc"></a>`CHAT_TOTAL_COUNT_ASC` | Chat total event count in ascending order. |
@@ -76106,7 +76111,6 @@ Name of the feature that the callout is for.
 | <a id="usergroupcalloutfeaturename-end_of_trial_modal"></a>`END_OF_TRIAL_MODAL` | Callout feature name for end_of_trial_modal. |
 | <a id="usergroupcalloutfeaturename-enforcement_at_limit_alert"></a>`ENFORCEMENT_AT_LIMIT_ALERT` | Callout feature name for enforcement_at_limit_alert. |
 | <a id="usergroupcalloutfeaturename-expired_duo_enterprise_trial_widget"></a>`EXPIRED_DUO_ENTERPRISE_TRIAL_WIDGET` | Callout feature name for expired_duo_enterprise_trial_widget. |
-| <a id="usergroupcalloutfeaturename-expired_duo_pro_trial_widget"></a>`EXPIRED_DUO_PRO_TRIAL_WIDGET` | Callout feature name for expired_duo_pro_trial_widget. |
 | <a id="usergroupcalloutfeaturename-expired_trial_status_widget"></a>`EXPIRED_TRIAL_STATUS_WIDGET` | Callout feature name for expired_trial_status_widget. |
 | <a id="usergroupcalloutfeaturename-explore_premium_request_painted_door"></a>`EXPLORE_PREMIUM_REQUEST_PAINTED_DOOR` | Callout feature name for explore_premium_request_painted_door. |
 | <a id="usergroupcalloutfeaturename-free_group_limited_alert"></a>`FREE_GROUP_LIMITED_ALERT` | Callout feature name for free_group_limited_alert. |

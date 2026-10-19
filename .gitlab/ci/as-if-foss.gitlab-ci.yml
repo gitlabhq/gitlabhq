@@ -25,6 +25,7 @@ prepare-as-if-foss-branch:
     # See: https://gitlab.com/gitlab-org/merge-train/-/blob/041d942ae1b5615703b7a786982340b61620e7c5/bin/merge-train#L228-239
     - git checkout VERSION
     - rm -rf ee
+    - rm -rf domains/*/ee
     - rm -rf qa/spec/ee
     - rm -rf qa/qa/specs/features/ee
     - rm -rf qa/qa/ee

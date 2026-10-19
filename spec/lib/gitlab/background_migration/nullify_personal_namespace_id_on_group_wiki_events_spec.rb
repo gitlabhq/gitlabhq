@@ -129,6 +129,21 @@ RSpec.describe Gitlab::BackgroundMigration::NullifyPersonalNamespaceIdOnGroupWik
     )
   end
 
+  # check_5766fc2949 rejects the rows with more than one sharding key that this spec needs
+  before(:context) do
+    ApplicationRecord.connection.execute('ALTER TABLE events DROP CONSTRAINT IF EXISTS check_5766fc2949')
+  end
+
+  after(:context) do
+    # before(:context) is skipped when the migration is outside the test window
+    next if migration_out_of_test_window?(described_class)
+
+    ApplicationRecord.connection.execute(<<~SQL)
+      ALTER TABLE events
+        ADD CONSTRAINT check_5766fc2949 CHECK ((num_nonnulls(group_id, personal_namespace_id, project_id) = 1)) NOT VALID
+    SQL
+  end
+
   describe '#perform' do
     subject(:perform_migration) { described_class.new(**migration_args).perform }
 

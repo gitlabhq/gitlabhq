@@ -180,7 +180,8 @@ function rspec_parallelized_job() {
   local report_name=$(echo "${CI_JOB_NAME} ${CI_PROJECT_ID}" | sed -E 's|[/ ]|_|g')
   local rspec_opts="--force-color ${1:-}"
   local rspec_tests_mapping_enabled="${GLCI_PREDICTIVE_RSPEC_TESTS_MAPPING_ENABLED:-}"
-  local spec_folder_prefixes=""
+  # An explicit '' (FOSS root) makes Quality::TestLevel also add domains/*/, so FOSS jobs run CE domain specs.
+  local spec_folder_prefixes="''"
   local rspec_flaky_folder_path="$(dirname "${FLAKY_RSPEC_SUITE_REPORT_PATH}")/"
   local knapsack_folder_path="$(dirname "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}")/"
   local rspec_run_status=0
@@ -344,7 +345,7 @@ function retry_failed_rspec_examples() {
   # Disable simplecov so retried tests don't override test coverage report
   export SIMPLECOV=0
 
-  local default_knapsack_pattern="{,ee/,jh/}spec/{,**/}*_spec.rb"
+  local default_knapsack_pattern="{,ee/,jh/,domains/*/,domains/*/ee/}spec/{,**/}*_spec.rb"
   local knapsack_test_file_pattern="${KNAPSACK_TEST_FILE_PATTERN:-$default_knapsack_pattern}"
   local json_retry_file="rspec/rspec-retry-${CI_JOB_ID}.json"
   local junit_retry_file="rspec/rspec-retry-${CI_JOB_ID}.xml"

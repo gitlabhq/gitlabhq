@@ -17,6 +17,7 @@ description: "Migrate from Bitbucket Cloud to GitLab."
 
 - An **Imported** badge on some imported items [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/461210) in GitLab 17.2.
 - Wiki import [deprecated](https://gitlab.com/gitlab-org/gitlab/-/work_items/601061) in GitLab 19.1 and [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/601065) in GitLab 19.6.
+- Issue import deprecated in GitLab 19.1 and [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/601064) in GitLab 19.6.
 
 {{< /history >}}
 
@@ -28,11 +29,7 @@ The Bitbucket Cloud importer imports a subset of items from Bitbucket Cloud.
 |:----------------------------------|:---------|
 | Repository description            | {{< yes >}} |
 | Git repository data               | {{< yes >}} |
-| Issues, including comments        | {{< yes >}} |
 | Pull requests, including comments | {{< yes >}} |
-| Milestones                        | {{< yes >}} |
-| Labels                            | {{< yes >}} |
-| Milestones                        | {{< yes >}} |
 | LFS objects                       | {{< yes >}} |
 | Inline images and attachments in Markdown | {{< no >}} |
 | Pull request approvals            | {{< no >}} |
@@ -40,7 +37,11 @@ The Bitbucket Cloud importer imports a subset of items from Bitbucket Cloud.
 
 ## Known issues
 
-- Images and file attachments embedded in issues, issue comments, and pull requests are not copied to GitLab.
+- Issues are not imported. Atlassian removed Bitbucket Cloud Issues on August 20, 2026, so the importer can no longer
+  fetch them.
+  To bring your issues into GitLab, export them from Bitbucket and use the [CSV import](../project/issues/csv_import.md).
+  If you move your issues to Jira, see [Migrate from Jira](third_party_systems/jira.md).
+- Images and file attachments embedded in pull requests and pull request comments are not copied to GitLab.
   They remain as external links pointing to the original Bitbucket-hosted URLs (for example, `bitbucket.org` or `bbuseruploads.s3.amazonaws.com`).
   If the source Bitbucket repository is deleted, all embedded images and attachment links break permanently.
   Before deleting the source Bitbucket repository, verify that all embedded images and attachments are accessible or preserve them separately.
@@ -50,28 +51,22 @@ The Bitbucket Cloud importer imports a subset of items from Bitbucket Cloud.
 
 When Bitbucket Cloud items are imported:
 
-- References to pull requests and issues are preserved.
+- Links in pull request comments to other pull requests and to files in the repository are converted to GitLab links.
+  Links to Bitbucket issues are left unchanged.
 - Repository public access is retained. If a repository is private in Bitbucket Cloud, it's created as private in GitLab.
-- Imported issues, merge requests, and comments have an **Imported** badge in GitLab.
+- Imported merge requests and comments have an **Imported** badge in GitLab.
 
-When importing issues, pull requests, and comments, the Bitbucket Cloud importer:
+When importing pull requests and comments, the Bitbucket Cloud importer:
 
 - Uses the Bitbucket nickname of the author/assignee and tries to find the same Bitbucket identity in GitLab.
 - If they don't match or the user is not found in the GitLab database, sets the project creator (usually the current
-  user that started the import process) as the author and keeps a reference on the issue about the original Bitbucket
-  author.
+  user that started the import process) as the author and keeps a reference to the original Bitbucket author.
 
 For pull requests, the importer:
 
 - Uses the source SHA, and if it does not exist in the repository, attempts to set the source commit to the merge commit SHA.
 - Sets the merge request assignee to the author and sets reviewers with usernames matching Bitbucket identities in GitLab.
 - Sets merge requests in GitLab to be either `opened`, `closed`, or `merged`.
-
-For issues, the importer:
-
-- Adds a label corresponding to the type of issue on Bitbucket. Either `bug`, `enhancement`, `proposal`, or `task`.
-- If the issue on Bitbucket was one of `resolved`, `invalid`, `duplicate`, `wontfix`, or `closed`, closes the issue on
-  GitLab.
 
 The Bitbucket Cloud importer creates any new namespaces (groups) if they don't exist. If the namespace is taken, the
 repository is imported under the namespace of the user who started the import process.
@@ -108,7 +103,6 @@ To generate a Bitbucket Cloud API token:
 
    - `read:repository:bitbucket`
    - `read:pullrequest:bitbucket`
-   - `read:issue:bitbucket`
 
 1. Select **Create token** and copy the token.
 

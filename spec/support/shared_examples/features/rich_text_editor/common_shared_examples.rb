@@ -151,6 +151,25 @@ RSpec.shared_examples 'rich text editor - common' do
 
         expect(page).to have_field(type: 'textarea', with: 'Server: %{gitlab_server} hello world')
       end
+
+      it 'resolves a placeholder typed in the rich text editor' do
+        page.within content_editor_testid do
+          expect(page).to have_css(placeholder_selector)
+        end
+
+        type_in_content_editor :end
+        type_in_content_editor ' and %{gitlab_server} again'
+
+        page.within content_editor_testid do
+          expect(page).to have_css(placeholder_selector, text: Gitlab.config.gitlab.host, count: 2)
+        end
+
+        wait_until_hidden_field_is_updated(/again/)
+        switch_to_markdown_editor
+
+        expect(page).to have_field(type: 'textarea',
+          with: 'Server: %{gitlab_server} and %{gitlab_server} again')
+      end
     end
 
     it 'renders correctly with table as initial content' do

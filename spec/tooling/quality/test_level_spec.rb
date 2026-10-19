@@ -82,14 +82,14 @@ RSpec.describe Quality::TestLevel, feature_category: :tooling do
     context 'with a prefix' do
       it 'returns a pattern' do
         expect(described_class.new('ee/').pattern(:system))
-          .to eq("{ee/}spec/{features}{,/**/}*_spec.rb")
+          .to eq("{ee/,domains/*/ee/}spec/{features}{,/**/}*_spec.rb")
       end
     end
 
     context 'with several prefixes' do
       it 'returns a pattern' do
         expect(described_class.new(['', 'ee/', 'jh/']).pattern(:system))
-          .to eq("{,ee/,jh/}spec/{features}{,/**/}*_spec.rb")
+          .to eq("{,domains/*/,ee/,domains/*/ee/,jh/,domains/*/jh/}spec/{features}{,/**/}*_spec.rb")
       end
     end
 
@@ -157,21 +157,21 @@ RSpec.describe Quality::TestLevel, feature_category: :tooling do
     context 'with a prefix' do
       it 'returns a regexp' do
         expect(described_class.new('ee/').regexp(:system))
-          .to eq(%r{(ee/)spec/(features)/})
+          .to eq(%r{(ee/|domains/[^/]+/ee/)spec/(features)/})
       end
     end
 
     context 'with several prefixes' do
       it 'returns a regexp' do
         expect(described_class.new(['', 'ee/', 'jh/']).regexp(:system))
-          .to eq(%r{(|ee/|jh/)spec/(features)/})
+          .to eq(%r{(|domains/[^/]+/|ee/|domains/[^/]+/ee/|jh/|domains/[^/]+/jh/)spec/(features)/})
       end
     end
 
     context 'when start_with == true' do
       it 'returns a regexp' do
         expect(described_class.new(['ee/']).regexp(:system, true))
-          .to eq(%r{^(ee/)spec/(features)/})
+          .to eq(%r{^(ee/|domains/[^/]+/ee/)spec/(features)/})
       end
     end
 
@@ -189,6 +189,10 @@ RSpec.describe Quality::TestLevel, feature_category: :tooling do
   describe '#level_for' do
     it 'returns the correct level for a unit test' do
       expect(subject.level_for('spec/models/abuse_report_spec.rb')).to eq(:unit)
+    end
+
+    it 'returns the correct level for a unit test in an EE domain' do
+      expect(described_class.new('ee/').level_for('domains/cd/ee/spec/models/cd/application_spec.rb')).to eq(:unit)
     end
 
     it 'returns the correct level for a frontend fixture test' do

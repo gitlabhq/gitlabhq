@@ -638,6 +638,7 @@
   - "keeps/**/*"
   # List explicitly all the app/ dirs that are backend (i.e. all except app/assets).
   - "{,ee/,jh/}{app/channels,app/components,app/controllers,app/finders,app/graphql,app/helpers,app/mailers,app/models,app/policies,app/presenters,app/serializers,app/services,app/uploaders,app/validators,app/views,app/workers}/**/*"
+  - "domains/**/*"
   - "{,ee/,jh/}{bin,config,db,elastic,gems,generator_templates,lib}/**/*"
   # Spec support files
   - "{,ee/,jh/}spec/{support,factories,fixtures,tooling/fixtures}/**/*"
@@ -661,6 +662,7 @@
   - "keeps/**/*"
   # List explicitly all the app/ dirs that are backend (i.e. all except app/assets).
   - "{,ee/,jh/}{app/channels,app/components,app/controllers,app/finders,app/graphql,app/helpers,app/mailers,app/models,app/policies,app/presenters,app/serializers,app/services,app/uploaders,app/validators,app/views,app/workers}/**/*"
+  - "domains/**/*"
   - "{,ee/,jh/}{bin,config,db,elastic,gems,generator_templates,lib}/**/*"
   - "{,ee/,jh/}spec/**/*"
   # GraphQL query files
@@ -685,6 +687,7 @@
   - "*_VERSION"
   # List explicitly all the app/ dirs that are backend (i.e. all except app/assets).
   - "{,ee/,jh/}{app/channels,app/components,app/controllers,app/finders,app/graphql,app/helpers,app/mailers,app/models,app/policies,app/presenters,app/serializers,app/services,app/uploaders,app/validators,app/views,app/workers}/**/*"
+  - "domains/**/*"
   - "{,ee/,jh/}{bin,config,db,elastic,gems,generator_templates,lib}/**/*"
   # GraphQL query files
   - "{,ee/,jh/}app/assets/javascripts/**/*.graphql"
@@ -696,6 +699,7 @@
   - "GITLAB_ZOEKT_VERSION"
   # List explicitly all the app/ dirs that are backend (i.e. all except app/assets).
   - "{,ee/,jh/}{app/channels,app/components,app/controllers,app/finders,app/graphql,app/helpers,app/mailers,app/models,app/policies,app/presenters,app/serializers,app/services,app/uploaders,app/validators,app/views,app/workers}/**/*"
+  - "domains/**/*"
   - "{,ee/,jh/}{bin,config,db,elastic,gems,generator_templates,lib}/**/*"
   - "{,ee/,jh/}spec/**/*"
 
@@ -803,6 +807,7 @@
   - ".browserslistrc"
   - ".stylelintrc"
   - "{,ee/,jh/}{app,bin,config,db,elastic,generator_templates,gems,haml_lint,lib,locale,public,scripts,sidekiq_cluster,storybook,symbol,vendor}/**/*"
+  - "domains/**/*"
   - "{,jh/}Gemfile{,.lock}"
   - "{,jh/}Gemfile.next{,.lock}"
   - "{package.json,yarn.lock}"
@@ -842,6 +847,7 @@
   - ".browserslistrc"
   - ".stylelintrc"
   - "{,ee/,jh/}{app,bin,config,db,elastic,generator_templates,gems,haml_lint,lib,locale,public,scripts,sidekiq_cluster,storybook,symbol,vendor}/**/*"
+  - "domains/**/*"
   - "{,jh/}Gemfile{,.lock}"
   - "{,jh/}Gemfile.next{,.lock}"
   - "{package.json,yarn.lock}"
@@ -889,6 +895,7 @@
   - ".browserslistrc"
   - ".stylelintrc"
   - "{,ee/,jh/}{app,bin,config,db,elastic,generator_templates,gems,haml_lint,lib,locale,public,scripts,sidekiq_cluster,storybook,symbol,vendor}/**/*"
+  - "domains/**/*"
   - "{,jh/}Gemfile{,.lock}"
   - "{,jh/}Gemfile.next{,.lock}"
   - "{package.json,yarn.lock}"
@@ -935,6 +942,7 @@
   - ".browserslistrc"
   - ".stylelintrc"
   - "{,ee/,jh/}{app,bin,config,db,elastic,generator_templates,gems,haml_lint,lib,locale,public,scripts,sidekiq_cluster,storybook,symbol,vendor}/**/*"
+  - "domains/**/*"
   - "{,jh/}Gemfile{,.lock}"
   - "{,jh/}Gemfile.next{,.lock}"
   - "{package.json,yarn.lock}"
@@ -975,6 +983,7 @@
   - ".browserslistrc"
   - ".stylelintrc"
   - "{,ee/,jh/}{app,bin,config,db,elastic,generator_templates,gems,haml_lint,lib,locale,public,scripts,sidekiq_cluster,storybook,symbol,vendor}/**/*"
+  - "domains/**/*"
   - "{,jh/}Gemfile{,.lock}"
   - "{,jh/}Gemfile.next{,.lock}"
   - "{package.json,yarn.lock}"
@@ -1024,6 +1033,7 @@
   - ".browserslistrc"
   - ".stylelintrc"
   - "{,ee/,jh/}{app,bin,config,db,elastic,generator_templates,gems,haml_lint,lib,locale,public,scripts,sidekiq_cluster,storybook,symbol,vendor}/**/*"
+  - "domains/**/*"
   - "{,jh/}Gemfile{,.lock}"
   - "{,jh/}Gemfile.next{,.lock}"
   - "{package.json,yarn.lock}"
@@ -1088,7 +1098,7 @@
   - "*_VERSION"
   - "{,jh/}Gemfile{,.lock}"
   - "{,jh/}Gemfile.next{,.lock}"
-  - "keeps/**/*"
+  - "{domains,keeps}/**/*"
   - "Rakefile"
   - "tests.yml"
   - "config.ru"

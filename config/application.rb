@@ -187,8 +187,17 @@ module Gitlab
       config.paths['config/routes'].unshift "#{config.root}/#{dir}/config/routes"
     end
 
+    # Each domains/<name> (and its ee/ half) mirrors the top-level layout, so moved
+    # files keep their path relative to the Zeitwerk root and constants are unchanged.
+    domain_dirs = ->(glob) do
+      Dir[config.root.join(glob)].map { |path| Pathname(path).dirname.relative_path_from(config.root).to_s }.uniq.sort
+    end
+
+    domain_dirs.call('domains/*/{app,lib}').each { |dir| load_paths.call(dir: dir) }
+
     Gitlab.ee do
       load_paths.call(dir: 'ee')
+      domain_dirs.call('domains/*/ee/{app,lib}').each { |dir| load_paths.call(dir: dir) }
     end
 
     Gitlab.jh do
@@ -629,6 +638,12 @@ module Gitlab
 
     if defined?(FactoryBotRails)
       config.factory_bot.definition_file_paths << 'ee/spec/factories' if Gitlab.ee?
+      config.factory_bot.definition_file_paths.concat(Dir[config.root.join('domains/*/spec/factories')])
+
+      if Gitlab.ee?
+        config.factory_bot.definition_file_paths.concat(Dir[config.root.join('domains/*/ee/spec/factories')])
+      end
+
       config.factory_bot.definition_file_paths << 'jh/spec/factories' if Gitlab.jh?
     end
 

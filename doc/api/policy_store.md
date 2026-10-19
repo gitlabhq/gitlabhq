@@ -252,7 +252,7 @@ The policy endpoints return the following attributes:
 | `lifecycle_state` | string          | Either `active` or `disabled`. |
 | `mode`            | string          | One of `audit`, `warn`, or `enforce`. |
 | `name`            | string          | Name of the policy. |
-| `namespace_id`    | integer         | ID of the group that owns the policy. `null` for a policy created through an organization endpoint, because the organization owns that policy. |
+| `namespace_id`    | integer         | ID of the group that owns the policy. `null` for a policy created through an organization endpoint, because the organization owns that policy, or when you can't view the group. |
 | `organization_id` | integer         | ID of the organization the policy belongs to. |
 | `policy_rego`     | string          | The policy's rules, compiled to a single Rego module. `null` for a policy with no rules. |
 | `policy_scope`    | object          | Structured scope of the policy, or `null` when the Rego was authored directly. |
@@ -573,7 +573,7 @@ In these endpoints, `id` is the ID or [URL-encoded path](rest/_index.md#namespac
 
 Prerequisites:
 
-- The group must be a top-level group that has opted in to the policy store experiment.
+- The group must have opted in to the policy store experiment. A subgroup follows its top-level group's opt-in.
 - To list or retrieve policies, you must have the Owner role for the group, be an auditor, or be an administrator of the instance.
 - To create, update, or delete policies, you must have the Owner role for the group or be an administrator of the instance.
 

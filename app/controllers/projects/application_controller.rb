@@ -142,6 +142,8 @@ class Projects::ApplicationController < ApplicationController
       @project&.allow_iframes_in_markdown_feature_flag_enabled? == true)
     push_force_frontend_feature_flag(:use_mermaid_v12,
       @project&.use_mermaid_v12_feature_flag_enabled? == true)
+    push_force_frontend_feature_flag(:markdown_placeholders,
+      @project&.markdown_placeholders_feature_flag_enabled? == true)
   end
 end
 

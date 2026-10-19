@@ -89,18 +89,26 @@ RSpec.describe Spam::SpamActionService, feature_category: :instance_resiliency d
   shared_examples 'calls SpamAbuseEventsWorker with correct arguments' do
     let(:params) do
       {
-        user_id: user.id,
-        title: target.title,
-        description: target.spam_description,
-        source_ip: fake_ip,
-        user_agent: fake_user_agent,
-        noteable_type: target_type,
-        verdict: verdict
+        'user_id' => user.id,
+        'title' => target.title,
+        'description' => target.spam_description,
+        'source_ip' => fake_ip,
+        'user_agent' => fake_user_agent,
+        'noteable_type' => target_type,
+        'verdict' => verdict
       }
     end
 
     it 'executes the ::AntiAbuse::SpamAbuseEventsWorker' do
       expect(::AntiAbuse::SpamAbuseEventsWorker).to receive(:perform_async).with(params)
+
+      subject
+    end
+
+    it 'enqueues only native JSON types' do
+      expect(::AntiAbuse::SpamAbuseEventsWorker).to receive(:perform_async) do |args|
+        expect([args]).to param_containing_valid_native_json_types
+      end
 
       subject
     end
@@ -268,6 +276,22 @@ RSpec.describe Spam::SpamActionService, feature_category: :instance_resiliency d
 
             expect(response.message).to match(expected_service_check_response_message)
             expect(target).to be_spam
+          end
+        end
+
+        context 'when spam params are not present' do
+          let(:spam_params) { nil }
+          let(:fake_ip) { nil }
+          let(:fake_user_agent) { nil }
+          let(:verdict_service_opts) { { ip_address: nil, user_agent: nil, referer: nil } }
+
+          before do
+            allow(fake_verdict_service).to receive(:execute).and_return(DISALLOW)
+          end
+
+          it_behaves_like 'calls SpamAbuseEventsWorker with correct arguments' do
+            let(:verdict) { DISALLOW }
+            let(:target_type) { target_type }
           end
         end
 

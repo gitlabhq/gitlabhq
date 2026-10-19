@@ -47,6 +47,25 @@ To override the general user and IP rate limits for requests to the Repository f
    1. Select the **Max authenticated API requests per period per user**.
    1. Select the **Authenticated API rate limit period in seconds**.
 
+## Configure file blame rate limits
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/261912) in GitLab 19.6.
+
+{{< /history >}}
+
+The [file blame endpoint](../../api/repository_files.md#retrieve-file-blame-history-from-a-repository)
+has its own rate limits. These limits apply in addition to the Files API rate limits, and are enabled by default.
+
+| Request type    | Default limit             | Applies to            | Application setting |
+|-----------------|---------------------------|-----------------------|---------------------|
+| Authenticated   | 400 requests every minute | Each user and project | `project_repositories_blame_limit` |
+| Unauthenticated | 400 requests every minute | Each IP address       | `project_repositories_blame_unauthenticated_limit` |
+
+To change a limit, use the [application settings API](../../api/settings.md#available-settings).
+Set a limit to `0` to disable it.
+
 ## Related topics
 
 - [Rate limits](../_index.md)

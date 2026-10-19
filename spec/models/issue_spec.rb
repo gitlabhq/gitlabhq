@@ -693,6 +693,26 @@ RSpec.describe Issue, feature_category: :team_planning do
         .to match [issue4, issue3, issue1, issue2]
     end
 
+    context 'with a positioning root' do
+      let(:root) { project.project_namespace.work_item_positioning_root }
+
+      before do
+        WorkItems::Position.where(work_item_id: issue1.id).delete_all
+      end
+
+      it 'filters by the root in WHERE, dropping issues without a positions row' do
+        expect(project.issues.order_by_relative_position(root))
+          .to match [issue3, issue4, issue2]
+      end
+
+      context 'when not walking the positions index' do
+        it 'filters by the root in the join, keeping issues without a positions row last' do
+          expect(project.issues.order_by_relative_position(root, walk_positions_index: false))
+            .to match [issue3, issue4, issue2, issue1]
+        end
+      end
+    end
+
     context 'when read_relative_positions_from_work_item_positions is disabled' do
       before do
         stub_feature_flags(read_relative_positions_from_work_item_positions: false)

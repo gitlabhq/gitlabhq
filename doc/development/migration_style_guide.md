@@ -469,9 +469,11 @@ For example, if we are currently developing against GitLab 16.0, the previous
 required stop is 15.11. 15.11 was released on April 23rd, 2023. Therefore, the
 minimum acceptable timestamp would be 20230424000000.
 
-#### Best practice
+#### Three-week limit
 
-While the above should be considered a hard rule, it is a best practice to try to keep migration timestamps to within three weeks of the date it is anticipated that the migration will be merged upstream, regardless of how much time has elapsed since the last required stop.
+A new migration's timestamp must also be no more than three weeks (21 days) old.
+This limit applies regardless of how long ago the last required stop was.
+The [`db:check-migrations` job](database/dbcheck-migrations-job.md) enforces it and measures the age when the job runs, not when the migration merges.
 
 To update a migration timestamp:
 

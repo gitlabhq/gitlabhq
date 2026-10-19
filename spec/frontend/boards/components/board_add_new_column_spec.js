@@ -36,7 +36,6 @@ describe('BoardAddNewColumn', () => {
 
   const mountComponent = ({
     selectedId,
-    provide = {},
     lists = {},
     labelsHandler = labelsQueryHandler,
     createHandler = createBoardListQueryHandler,
@@ -70,7 +69,6 @@ describe('BoardAddNewColumn', () => {
         issuableType: 'issue',
         fullPath: 'gitlab-org/gitlab',
         boardType: 'project',
-        ...provide,
       },
       stubs: {
         GlCollapsibleListbox,

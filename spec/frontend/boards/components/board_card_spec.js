@@ -36,8 +36,6 @@ describe('Board card', () => {
 
   // this particular mount component needs to be used after the root beforeEach because it depends on list being initialized
   const mountComponent = ({
-    propsData = {},
-    provide = {},
     stubs = { BoardCardInner },
     item = mockIssue,
     activeBoardItem = {},
@@ -66,7 +64,6 @@ describe('Board card', () => {
         list: mockLabelList,
         item,
         index: 0,
-        ...propsData,
       },
       provide: {
         groupId: null,
@@ -79,7 +76,6 @@ describe('Board card', () => {
         isGroupBoard: true,
         disabled: false,
         allowSubEpics: false,
-        ...provide,
       },
       ...mountOptions,
     });

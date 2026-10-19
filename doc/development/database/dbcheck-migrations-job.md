@@ -7,6 +7,15 @@ title: db:check-migrations job
 
 This job runs on the test stage of a merge request pipeline. It checks:
 
+1. A timestamp check on the migration files.
+   This check validates that no migration has a future timestamp.
+   It also validates that each migration the merge request adds is no more than three weeks (21 days) old.
+   The job measures the age when it runs, so a migration that passes in one pipeline can fail in a later one.
+   To update a migration timestamp, see [Migration timestamp age](../migration_style_guide.md#migration-timestamp-age).
+1. An ignored-columns check on the migration files.
+   This check validates that the model ignores each column that a new migration drops or renames.
+   It also scans `cleanup_conversion_of_integer_to_bigint` calls, which drop the old `integer` columns of a `bigint` conversion.
+   For more information, see [Dropping columns](avoiding_downtime_in_migrations.md#dropping-columns), [Renaming columns](avoiding_downtime_in_migrations.md#renaming-columns), and [Migrating `integer` primary keys to `bigint`](avoiding_downtime_in_migrations.md#migrating-integer-primary-keys-to-bigint).
 1. A schema dump comparison between the author's working branch and the target branch,
    after executing a rollback of your new migrations. This check validates that the
    schema properly resets to what it was before executing new migrations.
@@ -34,7 +43,11 @@ This job is not allowed to fail, but it can throw some false positives.
    - Do report this in the `#database` Slack channel or create an issue, if not already done by someone else, since this will
      affect all the feature MRs.
 
-In such cases, it's safer to add the `pipeline:skip-check-migrations` label to the MR to skip this job.
+In such cases, it's safer to add the `pipeline:skip-check-migrations` label to the merge request.
+The label skips both schema dump comparisons and the `db/schema_migrations` diff.
+It does not skip the timestamp check or the ignored-columns check, so the job can still fail on either.
+The validator also accepts `pipeline::skip-check-migrations`, but avoid it.
+That scoped label shares the `pipeline::` scope with the [pipeline tier labels](../pipelines/_index.md#pipeline-tiers), so adding either one removes the other.
 
 ### Schema dump comparison fails after rollback
 

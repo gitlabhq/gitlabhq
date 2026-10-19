@@ -159,6 +159,10 @@ RSpec.describe Event, feature_category: :user_profile do
       end
 
       it 'still saves an existing record that has more than one sharding key', :aggregate_failures do
+        # check_5766fc2949 rejects this legacy row in the DB; drop it to test the model alone.
+        # The example's transaction rolls the DDL back.
+        described_class.connection.execute('ALTER TABLE events DROP CONSTRAINT check_5766fc2949')
+
         event = create(:event, project: project, group: nil, author: author)
         event.update_column(:personal_namespace_id, author.namespace_id)
         event.reload

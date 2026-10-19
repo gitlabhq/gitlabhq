@@ -54,12 +54,19 @@ module AutoloadersSetup
     autoloaded_dirs.any?(File.expand_path(dir, __dir__))
   end
 
+  def self.domain_lib_dirs
+    Dir['domains/*/lib'] + (Gitlab.ee? ? Dir['domains/*/ee/lib'] : [])
+  end
+
   def self.setup_autoloaders
     autoloaded_dirs = [] # NOTE: can't use Rails.autoloaders.each_with_object, it doesn't work, so we need a local var.
     Rails.autoloaders.each do |autoloader|
       autoloader.push_dir('lib') unless dir_already_autoloaded?(autoloaded_dirs, "../lib")
       autoloader.push_dir('ee/lib') if Gitlab.ee? && !dir_already_autoloaded?(autoloaded_dirs, "../ee/lib")
       autoloader.push_dir('jh/lib') if Gitlab.jh? && !dir_already_autoloaded?(autoloaded_dirs, "../jh/lib")
+      domain_lib_dirs.each do |dir|
+        autoloader.push_dir(dir) unless dir_already_autoloaded?(autoloaded_dirs, "../#{dir}")
+      end
       autoloader.setup
       autoloaded_dirs += autoloader.dirs
     end

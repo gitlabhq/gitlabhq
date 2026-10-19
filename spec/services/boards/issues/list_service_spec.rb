@@ -57,6 +57,25 @@ RSpec.describe Boards::Issues::ListService, feature_category: :planning_views do
 
           expect(result).to include(positioned_issue, unpositioned_issue)
         end
+
+        context 'when filtering by the positioning root' do
+          let(:root_id) { project.project_namespace.work_item_positioning_root.id }
+          let(:root_condition) { %("work_item_positions"."relative_positioning_namespace_id" = #{root_id}) }
+          let(:root_join_condition) { %("work_item_positions"."work_item_id" = "issues"."id" AND #{root_condition}) }
+
+          it 'filters in WHERE for the backlog list so the positions index can serve the order' do
+            sql = described_class.new(parent, user, board_id: board.id, id: backlog.id).execute.to_sql
+
+            expect(sql).not_to include(root_join_condition)
+            expect(sql).to include(root_condition)
+          end
+
+          it 'filters in the join for a label list' do
+            sql = described_class.new(parent, user, board_id: board.id, id: list1.id).execute.to_sql
+
+            expect(sql).to include(root_join_condition)
+          end
+        end
       end
 
       context 'when project is archived' do

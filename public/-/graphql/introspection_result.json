@@ -31430,6 +31430,12 @@
               "deprecationReason": null
             },
             {
+              "name": "APPROVE_MERGE_REQUEST_DUO_CODE_REVIEW",
+              "description": "Duo Code Review approved a merge request.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "DUO_WORKFLOW_WORKLOAD_COMPLETED",
               "description": "Duo Workflow workload was completed.",
               "isDeprecated": false,
@@ -32428,6 +32434,18 @@
             {
               "name": "ASSIGN_DUO_SUGGESTED_REVIEWER_ASC",
               "description": "Assign Duo Suggested Reviewer event count in ascending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "APPROVE_MERGE_REQUEST_DUO_CODE_REVIEW_DESC",
+              "description": "Approve Merge Request Duo Code Review event count in descending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "APPROVE_MERGE_REQUEST_DUO_CODE_REVIEW_ASC",
+              "description": "Approve Merge Request Duo Code Review event count in ascending order.",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -183179,7 +183197,7 @@
             },
             {
               "name": "namespaceId",
-              "description": "ID of the namespace the policy is scoped to. Null for organization-wide policies. Introduced in GitLab 19.4: Status: Experiment.",
+              "description": "ID of the namespace the policy is scoped to. Null for organization-wide policies, or when the current user cannot read the group. Introduced in GitLab 19.4: Status: Experiment.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -183498,7 +183516,7 @@
             },
             {
               "name": "groupPath",
-              "description": "Full path of the top-level group whose policy store to use. Exactly one of `organizationId` or `groupPath` is required.",
+              "description": "Full path of the group whose policy store to use. Exactly one of `organizationId` or `groupPath` is required.",
               "type": {
                 "kind": "SCALAR",
                 "name": "ID",
@@ -183660,7 +183678,7 @@
             },
             {
               "name": "groupPath",
-              "description": "Full path of the top-level group whose policy store to use. Exactly one of `organizationId` or `groupPath` is required.",
+              "description": "Full path of the group whose policy store to use. Exactly one of `organizationId` or `groupPath` is required.",
               "type": {
                 "kind": "SCALAR",
                 "name": "ID",
@@ -184292,7 +184310,7 @@
             },
             {
               "name": "groupPath",
-              "description": "Full path of the top-level group whose policy store to use. Exactly one of `organizationId` or `groupPath` is required.",
+              "description": "Full path of the group whose policy store to use. Exactly one of `organizationId` or `groupPath` is required.",
               "type": {
                 "kind": "SCALAR",
                 "name": "ID",
@@ -442762,12 +442780,6 @@
               "deprecationReason": null
             },
             {
-              "name": "EXPIRED_DUO_PRO_TRIAL_WIDGET",
-              "description": "Callout feature name for expired_duo_pro_trial_widget.",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "EXPIRED_DUO_ENTERPRISE_TRIAL_WIDGET",
               "description": "Callout feature name for expired_duo_enterprise_trial_widget.",
               "isDeprecated": false,
@@ -485837,6 +485849,18 @@
           "description": "Requires ClickHouse. Premium and Ultimate only.",
           "fields": [
             {
+              "name": "approveMergeRequestDuoCodeReviewEventCount",
+              "description": "Total count of `approve_merge_request_duo_code_review` event.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "assignDuoSuggestedReviewerEventCount",
               "description": "Total count of `assign_duo_suggested_reviewer` event.",
               "args": [],
@@ -485991,6 +486015,18 @@
           "name": "codeReviewUserMetrics",
           "description": "Code Review user metrics for a user. Requires ClickHouse. Premium and Ultimate with GitLab Duo Enterprise only.",
           "fields": [
+            {
+              "name": "approveMergeRequestDuoCodeReviewEventCount",
+              "description": "Total count of `approve_merge_request_duo_code_review` event.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
             {
               "name": "assignDuoSuggestedReviewerEventCount",
               "description": "Total count of `assign_duo_suggested_reviewer` event.",

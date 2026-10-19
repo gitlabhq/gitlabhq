@@ -194,6 +194,13 @@ module Gitlab
           )
         end
 
+        # Releases the connections of the current thread to the primary and every host, without relying on
+        # the request cache, which the thread may share with another thread.
+        def release_all_connections
+          @host_list.hosts.each { |host| clear_cache_and_release_host(host) }
+          release_primary_connection
+        end
+
         def clear_cache_and_release_host(host)
           host.disable_query_cache!
           host.clear_query_cache

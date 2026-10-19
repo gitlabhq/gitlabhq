@@ -476,7 +476,7 @@ RSpec.describe Ci::ResetSkippedJobsService, :sidekiq_inline, feature_category: :
   end
 
   def check_jobs_statuses(statuses)
-    expect(processables.order(:name).pluck(:name, :status)).to contain_exactly(*statuses.stringify_keys.to_a)
+    expect(processables.order(:name).pluck(:name, :status)).to match_array(statuses.stringify_keys.to_a)
   end
 
   def processables

@@ -52,7 +52,6 @@ describe('Board List Header Component', () => {
     currentUserId = 1,
     listQueryHandler = jest.fn().mockResolvedValue(boardListQueryResponse()),
     updateListHandler = updateListHandlerSuccess,
-    injectedProps = {},
     mountFn = shallowMountExtended,
     additionalApolloMocks = [],
     list = null,
@@ -102,7 +101,6 @@ describe('Board List Header Component', () => {
         currentUserId,
         isEpicBoard: false,
         disabled: false,
-        ...injectedProps,
       },
       stubs: {
         GlButtonGroup,

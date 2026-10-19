@@ -28,42 +28,18 @@ RSpec.shared_examples 'issuable time tracker' do |issuable_type|
     end
   end
 
-  it 'renders the sidebar component empty state' do
+  it 'updates the sidebar component when estimate is added and removed', :aggregate_failures do
     page.within '[data-testid="noTrackingPane"]' do
       expect(page).to have_content 'No estimate or time spent'
     end
-  end
 
-  it 'updates the sidebar component when estimate is added' do
     submit_time('/estimate 3w 1d 1h')
 
     wait_for_requests
     page.within '[data-testid="estimateOnlyPane"]' do
       expect(page).to have_content '3w 1d 1h'
     end
-  end
 
-  it 'updates the sidebar component when spent is added' do
-    submit_time('/spend 3w 1d 1h')
-
-    wait_for_requests
-    page.within '[data-testid="spentOnlyPane"]' do
-      expect(page).to have_content '3w 1d 1h'
-    end
-  end
-
-  it 'shows the comparison when estimate and spent are added' do
-    submit_time('/estimate 3w 1d 1h')
-    submit_time('/spend 3w 1d 1h')
-
-    wait_for_requests
-    page.within '[data-testid="timeTrackingComparisonPane"]' do
-      expect(page).to have_content '3w 1d 1h'
-    end
-  end
-
-  it 'updates the sidebar component when estimate is removed' do
-    submit_time('/estimate 3w 1d 1h')
     submit_time('/remove_estimate')
 
     page.within time_tracker_selector do
@@ -71,8 +47,14 @@ RSpec.shared_examples 'issuable time tracker' do |issuable_type|
     end
   end
 
-  it 'updates the sidebar component when spent is removed' do
+  it 'updates the sidebar component when spent is added and removed', :aggregate_failures do
     submit_time('/spend 3w 1d 1h')
+
+    wait_for_requests
+    page.within '[data-testid="spentOnlyPane"]' do
+      expect(page).to have_content '3w 1d 1h'
+    end
+
     submit_time('/remove_time_spent')
 
     page.within time_tracker_selector do
@@ -99,27 +81,19 @@ RSpec.shared_examples 'issuable time tracker' do |issuable_type|
     end
   end
 
-  it 'shows the time tracking report when link is clicked' do
-    submit_time('/estimate 1w')
-    submit_time('/spend 1d')
-
-    wait_for_requests
-
-    open_time_tracking_report
-
-    page.within '#time-tracking-report' do
-      expect(find('tbody')).to have_content maintainer.name
-      expect(find('tbody')).to have_content '1d'
-    end
-  end
-
-  it 'removes time log when delete is clicked in time tracking report' do
+  it 'shows the comparison and the time tracking report, and removes a time log from it', :aggregate_failures do
     submit_time('/estimate 1w')
     submit_time("/spend 1d #{5.days.ago.strftime('%F')}")
     submit_time('/spend 3d')
 
+    page.within '[data-testid="timeTrackingComparisonPane"]' do
+      expect(page).to have_content '4d'
+      expect(page).to have_content '1w'
+    end
+
     open_time_tracking_report
 
+    expect(find('#time-tracking-report tbody')).to have_content maintainer.name
     expect(find('#time-tracking-report tbody tr:nth-child(1)')).to have_content "1d"
     expect(find('#time-tracking-report tbody tr:nth-child(2)')).to have_content "3d"
 

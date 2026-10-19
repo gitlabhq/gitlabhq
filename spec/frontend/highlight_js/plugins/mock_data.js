@@ -34,3 +34,4 @@ export const PODSPEC_JSON_CONTENT = `{
 export const COMPOSER_JSON_FILE_TYPE = 'composer_json';
 
 export const GO_SUM_FILE_TYPE = 'go_sum';
+export const CARTFILE_FILE_TYPE = 'cartfile';

@@ -28,7 +28,7 @@ module Boards
       def order(items)
         return items.order_closed_at_desc if list&.closed?
 
-        items.order_by_relative_position(positioning_root)
+        items.order_by_relative_position(positioning_root, walk_positions_index: !list&.label?)
       end
 
       # Items on a board share one positioning root: the group's root for group boards, the

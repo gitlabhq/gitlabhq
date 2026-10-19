@@ -1,5 +1,5 @@
 import { nextTick } from 'vue';
-import { shallowMount } from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
 import { GlAlert } from '@gitlab/ui';
 import ErrorsAlert from '~/vue_shared/components/errors_alert.vue';
 
@@ -49,6 +49,37 @@ describe('ErrorsAlert', () => {
       createWrapper({ errors: [mockError1], alertClass: 'gl-mb-4' });
 
       expect(findErrorAlert().attributes('class')).toBe('gl-mb-4');
+    });
+
+    it('uses the danger variant by default', () => {
+      createWrapper({ errors: [mockError1] });
+
+      expect(findErrorAlert().props('variant')).toBe('danger');
+    });
+
+    it('forwards the variant prop to the alert', () => {
+      createWrapper({ errors: [mockError1], variant: 'warning' });
+
+      expect(findErrorAlert().props('variant')).toBe('warning');
+    });
+
+    it('validates supported variants', () => {
+      expect(ErrorsAlert.props.variant.validator('danger')).toBe(true);
+      expect(ErrorsAlert.props.variant.validator('warning')).toBe(true);
+      expect(ErrorsAlert.props.variant.validator('info')).toBe(true);
+      expect(ErrorsAlert.props.variant.validator('success')).toBe(true);
+      expect(ErrorsAlert.props.variant.validator('not-a-variant')).toBe(false);
+    });
+
+    it.each`
+      variant      | role
+      ${'danger'}  | ${'alert'}
+      ${'warning'} | ${'alert'}
+      ${'info'}    | ${'status'}
+    `('uses the $role role for the $variant variant', ({ variant, role }) => {
+      wrapper = mount(ErrorsAlert, { propsData: { errors: [mockError1], variant } });
+
+      expect(wrapper.attributes('role')).toBe(role);
     });
   });
 

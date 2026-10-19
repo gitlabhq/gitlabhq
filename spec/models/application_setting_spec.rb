@@ -240,6 +240,8 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
         project_import_limit: 6,
         project_invited_groups_api_limit: 60,
         project_jobs_api_rate_limit: 600,
+        project_repositories_blame_limit: 400,
+        project_repositories_blame_unauthenticated_limit: 400,
         project_repositories_blobs_batch_limit: 5,
         projects_api_limit: 2000,
         projects_api_rate_limit_unauthenticated: 400,
@@ -732,6 +734,8 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
           group_create_limit
           group_deletion_jobs_concurrency_limit
           project_deletion_jobs_concurrency_limit
+          project_repositories_blame_limit
+          project_repositories_blame_unauthenticated_limit
           project_repositories_blobs_batch_limit
           projects_api_limit
           projects_api_rate_limit_unauthenticated

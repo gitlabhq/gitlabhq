@@ -179,7 +179,7 @@ RSpec.describe Gitlab::Database::Aggregation::Authorization, feature_category: :
 
         expect(response).to be_error
         expect(response.message).to include("access to metric 'owner_count' is not authorized")
-        expect(response.payload[:errors].map(&:type)).to include(:unauthorized)
+        expect(response.reason).to eq(:unauthorized)
       end
 
       it 'preserves unprotected request parts when pruning' do
@@ -203,6 +203,7 @@ RSpec.describe Gitlab::Database::Aggregation::Authorization, feature_category: :
 
         expect(response).to be_error
         expect(response.message).to include("the specified identifier is not available: 'unknown_metric'")
+        expect(response.reason).to be_nil
       end
     end
   end
@@ -231,7 +232,7 @@ RSpec.describe Gitlab::Database::Aggregation::Authorization, feature_category: :
 
         expect(response).to be_error
         expect(response.message).to include("access to dimension 'owner_dimension' is not authorized")
-        expect(response.payload[:errors].map(&:type)).to include(:unauthorized)
+        expect(response.reason).to eq(:unauthorized)
       end
 
       it 'resolves association dimension aliases' do
@@ -262,7 +263,7 @@ RSpec.describe Gitlab::Database::Aggregation::Authorization, feature_category: :
 
         expect(response).to be_error
         expect(response.message).to include("access to filter 'owner_filter' is not authorized")
-        expect(response.payload[:errors].map(&:type)).to include(:unauthorized)
+        expect(response.reason).to eq(:unauthorized)
       end
 
       it 'returns a validation error for metric filters referencing a protected metric' do
@@ -309,7 +310,7 @@ RSpec.describe Gitlab::Database::Aggregation::Authorization, feature_category: :
 
         expect(response).to be_error
         expect(response.message).to include("ordering by 'owner_count' is not authorized")
-        expect(response.payload[:errors].map(&:type)).to include(:unauthorized)
+        expect(response.reason).to eq(:unauthorized)
       end
 
       it 'returns a validation error when ordering by a protected dimension' do
@@ -384,6 +385,15 @@ RSpec.describe Gitlab::Database::Aggregation::Authorization, feature_category: :
         expect(response).to be_success
         expect(response.payload[:data].metrics.map(&:identifier)).to contain_exactly(:owner_count)
         expect(received_arguments).to contain_exactly([user, [resource, other_resource]])
+      end
+
+      it 'evaluates the callable once per engine across query plans' do
+        request = build_request(metrics: [{ identifier: :owner_count }])
+
+        request.to_query_plan(engine).metrics
+        engine.execute(request)
+
+        expect(received_arguments.size).to eq(1)
       end
     end
 

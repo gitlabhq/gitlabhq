@@ -1186,8 +1186,10 @@ When a user is not authorized for a part:
   pruned metric, so the caller can tell an authorization failure from an empty request.
 - A protected dimension, filter, order fails request validation with a clear error.
 
-Authorization validation errors are added with the `:unauthorized` type on the model errors,
-so callers can distinguish them from other validation errors.
+The query plan resolves part-level authorization while planning, and adds its authorization
+validation errors with the `:unauthorized` type.
+When a request fails authorization, the engine returns an error `ServiceResponse` with the
+`:unauthorized` reason, so callers can distinguish authorization failures from other validation errors.
 
 ### Example GraphQL query
 

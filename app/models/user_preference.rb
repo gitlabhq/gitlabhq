@@ -20,6 +20,7 @@ class UserPreference < ApplicationRecord
 
   ignore_columns :early_access_program_participant, :early_access_program_tracking,
     remove_with: '18.10', remove_after: '2026-03-13'
+  ignore_column :early_access_studio_participant, remove_with: '19.8', remove_after: '2026-12-17'
 
   scope :with_user, -> { joins(:user) }
   scope :gitpod_enabled, -> { where(gitpod_enabled: true) }
@@ -46,7 +47,6 @@ class UserPreference < ApplicationRecord
   validates :render_whitespace_in_code, allow_nil: false, inclusion: { in: [true, false] }
   validates :pass_user_identities_to_ci_jwt, allow_nil: false, inclusion: { in: [true, false] }
   validates :pinned_nav_items, json_schema: { filename: 'pinned_nav_items' }
-  validates :early_access_studio_participant, allow_nil: false, inclusion: { in: [true, false] }
   validates :emoji_autocomplete_enabled, allow_nil: false, inclusion: { in: [true, false] }
 
   validates :time_display_format, inclusion: { in: TIME_DISPLAY_FORMATS.values }, presence: true

@@ -1,6 +1,7 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import DashboardsList from '~/vue_shared/components/dashboards_list/dashboards_list.vue';
 import DashboardCard from '~/vue_shared/components/dashboards_list/dashboard_card.vue';
+import DashboardsTable from '~/vue_shared/components/dashboards_list/dashboards_table.vue';
 
 // Custom dashboards have a null slug in production; only their `id` is unique.
 const mockDashboards = [
@@ -52,8 +53,9 @@ describe('DashboardsList', () => {
   /** @type {import('helpers/vue_test_utils_helper').ExtendedWrapper} */
   let wrapper;
 
-  const findGrid = () => wrapper.findByTestId('dashboards-list');
+  const findGrid = () => wrapper.find('ul[data-testid="dashboards-list"]');
   const findDashboardCards = () => wrapper.findAllComponents(DashboardCard);
+  const findTable = () => wrapper.findComponent(DashboardsTable);
 
   const createWrapper = (props = {}) => {
     wrapper = shallowMountExtended(DashboardsList, {
@@ -64,50 +66,75 @@ describe('DashboardsList', () => {
     });
   };
 
-  describe('with dashboards', () => {
+  describe('default layout', () => {
     beforeEach(() => {
       createWrapper();
     });
 
-    it('renders the dashboards in a list', () => {
-      expect(findGrid().element.tagName).toBe('UL');
+    it('renders the dashboards in a table', () => {
+      expect(findTable().props('dashboards')).toEqual(mockDashboards);
     });
 
-    it('renders a card for each dashboard', () => {
-      expect(findDashboardCards()).toHaveLength(mockDashboards.length);
+    it('does not render the grid', () => {
+      expect(findGrid().exists()).toBe(false);
+      expect(findDashboardCards()).toHaveLength(0);
     });
 
-    it('passes each dashboard to its card', () => {
-      const cards = findDashboardCards();
-
-      mockDashboards.forEach((dashboard, index) => {
-        expect(cards.at(index).props('dashboard')).toEqual(dashboard);
-      });
-    });
-
-    it('keeps cards in sync when the list is re-ordered', async () => {
+    it('passes re-ordered dashboards to the table', async () => {
       const reversed = [...mockDashboards].reverse();
 
       await wrapper.setProps({ dashboards: reversed });
 
-      const cards = findDashboardCards();
-      reversed.forEach((dashboard, index) => {
-        expect(cards.at(index).props('dashboard')).toEqual(dashboard);
-      });
+      expect(findTable().props('dashboards')).toEqual(reversed);
     });
   });
 
-  describe('with empty dashboard data', () => {
-    beforeEach(() => {
-      createWrapper({ dashboards: [] });
+  describe('grid layout', () => {
+    describe('with dashboards', () => {
+      beforeEach(() => {
+        createWrapper({ layout: 'grid' });
+      });
+
+      it('does not render the table', () => {
+        expect(findTable().exists()).toBe(false);
+      });
+
+      it('renders a card for each dashboard', () => {
+        expect(findDashboardCards()).toHaveLength(mockDashboards.length);
+      });
+
+      it('passes each dashboard to its card', () => {
+        const cards = findDashboardCards();
+
+        mockDashboards.forEach((dashboard, index) => {
+          expect(cards.at(index).props('dashboard')).toEqual(dashboard);
+        });
+      });
+
+      it('keeps cards in sync when the list is re-ordered', async () => {
+        const reversed = [...mockDashboards].reverse();
+
+        await wrapper.setProps({ dashboards: reversed });
+
+        const cards = findDashboardCards();
+        reversed.forEach((dashboard, index) => {
+          expect(cards.at(index).props('dashboard')).toEqual(dashboard);
+        });
+      });
     });
 
-    it('renders the list container', () => {
-      expect(findGrid().exists()).toBe(true);
-    });
+    describe('with empty dashboard data', () => {
+      beforeEach(() => {
+        createWrapper({ dashboards: [], layout: 'grid' });
+      });
 
-    it('renders no cards', () => {
-      expect(findDashboardCards()).toHaveLength(0);
+      it('renders the list container', () => {
+        expect(findGrid().exists()).toBe(true);
+      });
+
+      it('renders no cards', () => {
+        expect(findDashboardCards()).toHaveLength(0);
+      });
     });
   });
 });

@@ -140,7 +140,24 @@ X-Gitlab-Execute-Filemode: false
 
 ## Retrieve file blame history from a repository
 
+{{< history >}}
+
+- Rate limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/261912) in GitLab 19.6.
+
+{{< /history >}}
+
 Retrieves blame history for a specified file in a repository. Each blame range contains lines and their corresponding commit information.
+
+This endpoint has the following rate limits:
+
+- Authenticated requests: 400 requests every minute for each user and project. Configure with the
+  `project_repositories_blame_limit` [application setting](settings.md#available-settings).
+- Unauthenticated requests: 400 requests every minute for each IP address. Configure with the
+  `project_repositories_blame_unauthenticated_limit` [application setting](settings.md#available-settings).
+
+Set a limit to `0` to disable it. Requests over a limit return
+`429 Too Many Requests`.
+`HEAD` requests do not count toward these limits.
 
 ```plaintext
 GET /projects/:id/repository/files/:file_path/blame

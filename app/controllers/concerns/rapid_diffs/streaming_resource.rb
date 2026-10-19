@@ -51,6 +51,26 @@ module RapidDiffs
 
     private
 
+    # ActionController::Live runs the callbacks and the action in its own thread, which on Rails 8 is pooled
+    # and outlives the request. Nothing else releases what that thread leased: the reaper only reclaims
+    # connections of dead threads, and the request cache it shares with the request thread is cleared early.
+    def new_controller_thread
+      super do
+        yield
+      ensure
+        release_database_connections
+      end
+    end
+
+    def release_database_connections
+      ::Gitlab::Database::LoadBalancing.release_all_connections
+      ::ApplicationRecord.connection_handler.clear_active_connections!
+    rescue StandardError => e
+      # Runs outside the rescue of ActionController::Live: an error here would abort the process on Rails 7.2
+      # and be swallowed by the thread pool on Rails 8.
+      Gitlab::ErrorTracking.track_exception(e)
+    end
+
     def server_timings
       @server_timings ||= Gitlab::RapidDiffs::ServerTimings.new
     end

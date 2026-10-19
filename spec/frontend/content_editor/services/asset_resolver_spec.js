@@ -98,6 +98,85 @@ describe('content_editor/services/asset_resolver', () => {
     });
   });
 
+  describe('resolvePlaceholder', () => {
+    describe('when the server resolves the placeholder', () => {
+      it('returns the placeholder syntax and its value', async () => {
+        renderMarkdown.mockResolvedValue({
+          body: '<p><span data-placeholder="%{project_name}">gitlab</span></p>',
+        });
+
+        expect(await assetResolver.resolvePlaceholder('%{project_name}')).toEqual({
+          placeholder: '%{project_name}',
+          value: 'gitlab',
+        });
+      });
+    });
+
+    describe('when the server leaves the placeholder unresolved', () => {
+      it('returns a null value', async () => {
+        renderMarkdown.mockResolvedValue({
+          body: '<p><span data-placeholder>%{foo}</span></p>',
+        });
+
+        expect(await assetResolver.resolvePlaceholder('%{foo}')).toEqual({
+          placeholder: '%{foo}',
+          value: null,
+        });
+      });
+    });
+
+    describe('when the server resolves the placeholder to an empty value', () => {
+      it('returns a null value', async () => {
+        renderMarkdown.mockResolvedValue({
+          body: '<p><span data-placeholder="%{current_ref}"></span></p>',
+        });
+
+        expect(await assetResolver.resolvePlaceholder('%{current_ref}')).toEqual({
+          placeholder: '%{current_ref}',
+          value: null,
+        });
+      });
+    });
+
+    describe('when the server does not detect a placeholder', () => {
+      it('returns null', async () => {
+        renderMarkdown.mockResolvedValue({ body: '<p>%{foo}</p>' });
+
+        expect(await assetResolver.resolvePlaceholder('%{foo}')).toBeNull();
+      });
+    });
+
+    describe('when no HTML is returned', () => {
+      it('returns null', async () => {
+        renderMarkdown.mockResolvedValue({});
+
+        expect(await assetResolver.resolvePlaceholder('%{foo}')).toBeNull();
+      });
+    });
+
+    describe('when the request fails', () => {
+      beforeEach(() => {
+        renderMarkdown.mockRejectedValueOnce(new Error('Network Error'));
+      });
+
+      it('returns null', async () => {
+        expect(await assetResolver.resolvePlaceholder('%{project_name}')).toBeNull();
+      });
+
+      it('requests the placeholder again on the next call', async () => {
+        await assetResolver.resolvePlaceholder('%{project_name}');
+        renderMarkdown.mockResolvedValueOnce({
+          body: '<p><span data-placeholder="%{project_name}">gitlab</span></p>',
+        });
+
+        expect(await assetResolver.resolvePlaceholder('%{project_name}')).toEqual({
+          placeholder: '%{project_name}',
+          value: 'gitlab',
+        });
+      });
+    });
+  });
+
   describe('resolveReference', () => {
     const resolvedEpic = {
       expandedText: 'Approvals in merge request list (&1)',

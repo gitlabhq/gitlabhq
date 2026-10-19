@@ -5,11 +5,13 @@ module Gitlab
     module Aggregation
       class QueryPlan
         include ActiveModel::Validations
+        include Authorization
 
         attr_reader :engine, :request
 
-        validate :validate_request
-        validate :validate_parts
+        validate :validate_authorization
+        validate :validate_request, unless: :unauthorized?
+        validate :validate_parts, unless: :unauthorized?
         validate :validate_instance_keys_uniqueness
 
         def initialize(engine, request)
@@ -44,12 +46,7 @@ module Gitlab
         end
 
         def metrics
-          @metrics ||= begin
-            definitions = engine.class.metrics.index_by(&:identifier)
-            request.metrics.map do |configuration|
-              Metric.new(definitions[configuration[:identifier]], configuration, query_plan: self)
-            end
-          end
+          @metrics ||= requested_metrics - unauthorized_metrics
         end
 
         def order
@@ -68,7 +65,31 @@ module Gitlab
           filters + dimensions + metrics + order
         end
 
+        # Lets callers tell an authorization failure apart from other
+        # validation errors. Only meaningful after validation.
+        def unauthorized?
+          errors.of_kind?(:base, :unauthorized)
+        end
+
         private
+
+        # Pruned metrics block execution only when no metrics remain.
+        def validate_authorization
+          blocking_parts = metrics.empty? ? unauthorized_parts : unauthorized_parts - unauthorized_metrics
+
+          blocking_parts.each do |part|
+            errors.add(:base, :unauthorized, message: unauthorized_message(part))
+          end
+        end
+
+        def requested_metrics
+          @requested_metrics ||= begin
+            definitions = engine.class.metrics.index_by(&:identifier)
+            request.metrics.map do |configuration|
+              Metric.new(definitions[configuration[:identifier]], configuration, query_plan: self)
+            end
+          end
+        end
 
         def validate_parts
           parts.reject(&:valid?).each do |invalid_part|

@@ -5,6 +5,7 @@ import gemfileLinker from './utils/gemfile_linker';
 import podspecJsonLinker from './utils/podspec_json_linker';
 import composerJsonLinker from './utils/composer_json_linker';
 import goSumLinker from './utils/go_sum_linker';
+import cartfileLinker from './utils/cartfile_linker';
 
 const DEPENDENCY_LINKERS = {
   package_json: packageJsonLinker,
@@ -14,6 +15,7 @@ const DEPENDENCY_LINKERS = {
   podspec_json: podspecJsonLinker,
   composer_json: composerJsonLinker,
   go_sum: goSumLinker,
+  cartfile: cartfileLinker,
 };
 
 /**

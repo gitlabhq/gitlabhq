@@ -583,7 +583,6 @@
 - spec/features/work_items/issues/user_creates_branch_and_merge_request_spec.rb
 - spec/features/work_items/issues/user_edits_issue_spec.rb
 - spec/features/work_items/issues/user_interacts_with_awards_spec.rb
-- spec/features/work_items/issues/user_toggles_subscription_spec.rb
 - spec/features/work_items/issues/user_uploads_file_to_note_spec.rb
 - spec/features/work_items/issues/user_uses_quick_actions_spec.rb
 - spec/finders/autocomplete/move_to_project_finder_spec.rb

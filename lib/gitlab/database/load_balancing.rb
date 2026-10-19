@@ -53,6 +53,10 @@ module Gitlab
         end
       end
 
+      def self.release_all_connections
+        each_load_balancer(&:release_all_connections)
+      end
+
       DB_ROLES = [
         ROLE_PRIMARY = :primary,
         ROLE_REPLICA = :replica,

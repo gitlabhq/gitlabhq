@@ -199,7 +199,6 @@
 - "GET /api/:version/users/:id/keys/:key_id"
 - "GET /api/scim/:version/application/Users/:id"
 - "GitlabSubscriptions::Trials::DuoProController#create"
-- "Groups::AddOns::DiscoverDuoProController#show"
 - "Groups::Analytics::CoverageReportsController#index"
 - "Groups::Analytics::CycleAnalytics::ValueStreamsController#create"
 - "Groups::Analytics::CycleAnalytics::ValueStreamsController#destroy"

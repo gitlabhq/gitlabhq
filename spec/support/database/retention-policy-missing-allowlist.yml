@@ -72,8 +72,6 @@
 - analytics_cycle_analytics_aggregations
 - analytics_cycle_analytics_group_stages
 - analytics_cycle_analytics_group_value_streams
-- analytics_cycle_analytics_issue_stage_events
-- analytics_cycle_analytics_merge_request_stage_events
 - analytics_cycle_analytics_stage_aggregations
 - analytics_cycle_analytics_stage_event_hashes
 - analytics_cycle_analytics_value_stream_settings
@@ -351,7 +349,6 @@
 - detached_partitions
 - diff_note_positions
 - dora_configurations
-- dora_daily_metrics
 - dora_performance_scores
 - draft_notes
 - duo_agent_platform_functional_verification_runs
@@ -519,7 +516,6 @@
 - members_deletion_schedules
 - merge_request_approval_metrics
 - merge_request_assignees
-- merge_request_assignment_events
 - merge_request_blocks
 - merge_request_cleanup_schedules
 - merge_request_commits_metadata

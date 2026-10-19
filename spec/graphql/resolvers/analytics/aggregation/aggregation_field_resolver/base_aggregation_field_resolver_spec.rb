@@ -90,4 +90,26 @@ RSpec.describe Resolvers::Analytics::Aggregation::AggregationFieldResolver::Base
         .to eq([{ identifier: :total, direction: :asc, parameters: {} }])
     end
   end
+
+  describe '#raise_execution_error!' do
+    let(:resolver) { described_class.new(object: nil, context: double.as_null_object, field: nil) }
+
+    it 'adds the not authorized code for an unauthorized response' do
+      response = ServiceResponse.error(message: "access to metric 'total' is not authorized", reason: :unauthorized)
+
+      expect { resolver.send(:raise_execution_error!, response) }.to raise_error(GraphQL::ExecutionError) { |error|
+        expect(error.message).to eq("access to metric 'total' is not authorized")
+        expect(error.extensions).to eq(code: described_class::NOT_AUTHORIZED_CODE)
+      }
+    end
+
+    it 'raises without extensions for other errors' do
+      response = ServiceResponse.error(message: 'at least one metric is required')
+
+      expect { resolver.send(:raise_execution_error!, response) }.to raise_error(GraphQL::ExecutionError) { |error|
+        expect(error.message).to eq('at least one metric is required')
+        expect(error.extensions).to be_nil
+      }
+    end
+  end
 end

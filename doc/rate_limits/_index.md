@@ -69,6 +69,10 @@ You can set these rate limits with the [application settings API](../api/setting
 - [Create tag rate limit](../api/settings.md#available-settings) (`tags_create_limit`): 100 requests
   per 30 minutes per project. Applies to the REST API endpoint for creating a tag, the
   GraphQL `tagCreate` mutation, tag creation in the UI, and the `/tag` quick action.
+- [Retrieve file blame rate limit](api/repository-files.md#configure-file-blame-rate-limits)
+  (`project_repositories_blame_limit`, `project_repositories_blame_unauthenticated_limit`):
+  400 requests every minute for each user and project. Unauthenticated requests are limited
+  to 400 requests every minute for each IP address. Applies to the REST API endpoint for file blame.
 
 You can set this rate limit with the [plan limits API](../api/plan_limits.md) or the
 [Rails console](../administration/operations/rails_console.md#starting-a-rails-console-session):

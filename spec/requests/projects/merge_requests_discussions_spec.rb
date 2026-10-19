@@ -68,7 +68,7 @@ RSpec.describe 'merge requests discussions', feature_category: :source_code_mana
         it 'does not hit a warm cache' do
           expect_next_instance_of(DiscussionSerializer) do |serializer|
             expect(serializer).to receive(:represent).and_wrap_original do |method, arg|
-              expect(arg.first.notes).to contain_exactly(*changed_notes)
+              expect(arg.first.notes).to match_array(changed_notes)
               method.call(arg)
             end
           end
