@@ -21,8 +21,13 @@ export const initPersonalAccessTokenApp = () => {
     return null;
   }
 
-  const { accessTokenGranularNew, accessTokenLegacyNew, accessTokenGranularTokensEnforced } =
-    el.dataset;
+  const {
+    accessTokenGranularNew,
+    accessTokenGranularTokensEnforced,
+    accessTokenLegacyNew,
+    accessTokenMaxDate,
+    accessTokenMinDate,
+  } = el.dataset;
 
   return initVueApp({
     el,
@@ -31,6 +36,8 @@ export const initPersonalAccessTokenApp = () => {
     provide: {
       accessTokenGranularNewUrl: accessTokenGranularNew,
       accessTokenLegacyNewUrl: accessTokenLegacyNew,
+      accessTokenMaxDate,
+      accessTokenMinDate,
       granularTokensEnforced: parseBoolean(accessTokenGranularTokensEnforced),
     },
     component: PersonalAccessTokensApp,

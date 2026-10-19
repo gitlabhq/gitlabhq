@@ -248,6 +248,7 @@ export default {
           <note-form
             v-if="diffFileCommentForm"
             ref="noteForm"
+            :diff-file="diffFile"
             :save-button-title="__('Comment')"
             class="diff-comment-form new-note discussion-form discussion-form-container"
             @handle-form-update-add-to-review="addToReview"

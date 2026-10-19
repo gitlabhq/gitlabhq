@@ -292,6 +292,20 @@ RSpec.describe 'User Settings > Granular personal access tokens > tokens table',
       expect(page).to have_text('Make sure you copy your token - you won\'t be able to access it again.')
     end
 
+    it 'keeps the token lifetime, starting today, when rotating', :aggregate_failures do
+      aged_token = create(:granular_pat, user: user, name: 'Aged PAT', created_at: 10.days.ago,
+        expires_at: 20.days.from_now)
+      visit user_settings_personal_access_tokens_path
+
+      open_row_actions(aged_token.name)
+      click_button 'Rotate'
+      within_modal { click_button 'Rotate' }
+
+      expect(page).to have_text('Make sure you copy your token - you won\'t be able to access it again.')
+      expect(PersonalAccessToken.find_by(previous_personal_access_token_id: aged_token.id).expires_at)
+        .to eq(30.days.from_now.to_date)
+    end
+
     it 'shows the duplicate action only for granular tokens' do
       open_row_actions(active_token.name)
       expect(page).to have_button('Duplicate')

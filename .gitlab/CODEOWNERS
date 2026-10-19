@@ -918,7 +918,7 @@ lib/gitlab/checks/
 /doc/administration/configure.md @eread
 /doc/administration/consul.md @eread
 /doc/administration/credentials_inventory.md @idurham
-/doc/administration/dedicated/ @lyspin
+/doc/administration/dedicated/ @eread
 /doc/administration/dedicated/configure_instance/dedicated_self_hosted_models.md @ashrafkhamis
 /doc/administration/diff_limits.md @uchandran
 /doc/administration/docs_self_host.md @eread
@@ -1274,6 +1274,7 @@ lib/gitlab/checks/
 /doc/development/integrations/arkose.md @gitlab-org/software-supply-chain-security/authorization/approvers
 /doc/development/integrations/jenkins.md @gitlab-org/maintainers/cicd-verify
 /doc/development/internal_analytics/ @gitlab-org/analytics-section/product-analytics/engineers/frontend @gitlab-org/analytics-section/analytics-instrumentation/engineers
+/doc/development/internal_api/ @abdwdd @alexpooley
 /doc/development/logging.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/namespaces_state_propagation.md @abdwdd @alexpooley
 /doc/development/navigation_sidebar.md @gitlab-org/growth
@@ -1317,17 +1318,13 @@ lib/gitlab/checks/
 /doc/rate_limits/api/users.md @idurham
 /doc/security/ @idurham
 /doc/security/asset_proxy.md @brendan777
-/doc/security/dedicated_for_government_secure_config_guide.md @lyspin
-/doc/security/dedicated_for_government_shared_responsibility_model.md @lyspin
-/doc/security/hardening_nist_800_53.md @lyspin
 /doc/security/user_file_uploads.md @brendan777
 /doc/solutions/ @jfullam @Darwinjs @sbrightwell
 /doc/solutions/integrations/servicenow.md @eread
 /doc/subscriptions/ @lciutacu
 /doc/subscriptions/gitlab_com/compute_minutes.md @lyspin
 /doc/subscriptions/gitlab_com/gitlab_subscription_troubleshooting.md @lciutacu
-/doc/subscriptions/gitlab_dedicated/ @lyspin
-/doc/subscriptions/gitlab_dedicated_for_government/ @lyspin
+/doc/subscriptions/gitlab_dedicated/ @eread
 /doc/topics/autodevops/ @rsarangadharan
 /doc/topics/build_your_application.md @marcel.amirault
 /doc/topics/git/ @brendan777

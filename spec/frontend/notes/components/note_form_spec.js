@@ -149,6 +149,32 @@ describe('issue_note_form component', () => {
       expect(textarea.attributes('data-supports-quick-actions')).toBe('true');
     });
 
+    it('does not opt out of any quick action by default', () => {
+      expect(
+        wrapper.findComponent(MarkdownEditor).attributes('data-exclude-commands'),
+      ).toBeUndefined();
+    });
+
+    it.each`
+      context                             | formProps
+      ${'a diff comment'}                 | ${{ diffFile: { file_path: 'file.rb', diff_refs: {} } }}
+      ${'a reply draft on a diff thread'} | ${{ isDraft: true, note: { id: 1 }, discussion: { diff_file: { file_path: 'file.rb', diff_refs: {} } } }}
+    `('opts $context out of the /internal_note quick action', ({ formProps }) => {
+      createComponentWrapper(formProps);
+
+      expect(wrapper.findComponent(MarkdownEditor).attributes('data-exclude-commands')).toBe(
+        'internal_note',
+      );
+    });
+
+    it('keeps the /internal_note quick action on a top-level draft', () => {
+      createComponentWrapper({ isDraft: true, note: { id: 1 } });
+
+      expect(
+        wrapper.findComponent(MarkdownEditor).attributes('data-exclude-commands'),
+      ).toBeUndefined();
+    });
+
     it.each`
       confidential | placeholder
       ${false}     | ${'Write a comment or drag your files here…'}

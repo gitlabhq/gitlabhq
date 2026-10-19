@@ -93,6 +93,12 @@ describe('NoteForm', () => {
     });
   });
 
+  it('opts out of the /internal_note quick action', () => {
+    createComponent();
+
+    expect(findEditor().attributes('data-exclude-commands')).toBe('internal_note');
+  });
+
   describe('renderMarkdownPath', () => {
     it('uses base previewMarkdown endpoint when no previewParams', () => {
       createComponent();

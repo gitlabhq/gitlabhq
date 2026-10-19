@@ -1,6 +1,7 @@
 import { cloneDeep, isEqual, mapValues } from 'lodash-es';
 import {
   getDateInFuture,
+  getDayDifference,
   nDaysAfter,
   setUTCTime,
   toISODateFormat,
@@ -20,6 +21,30 @@ export function defaultDate(maxDate) {
     return maxDate;
   }
   return thirtyDaysFromNow;
+}
+
+/**
+ * Return the default expiration date when rotating a token: the token keeps its lifetime,
+ * starting today, within the allowed date range.
+ * A token without expiration falls back to the creation default when an expiration is required.
+ * @param {{createdAt: string, expiresAt: string|null}} token
+ * @param {{minDate?: Date|null, maxDate?: Date|null}} [range]
+ */
+export function rotationDefaultDate({ createdAt, expiresAt }, { minDate, maxDate } = {}) {
+  if (!expiresAt) {
+    return maxDate ? defaultDate(maxDate) : null;
+  }
+
+  const lifetimeInDays = getDayDifference(setUTCTime(createdAt), setUTCTime(expiresAt));
+  const date = getDateInFuture(new Date(), lifetimeInDays);
+
+  if (maxDate && date > maxDate) {
+    return maxDate;
+  }
+  if (minDate && date < minDate) {
+    return minDate;
+  }
+  return date;
 }
 
 /**

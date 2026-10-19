@@ -56859,6 +56859,9 @@ msgstr ""
 msgid "Notify|%{removed} were removed as assignees."
 msgstr ""
 
+msgid "Notify|%{singular_or_plural_line} %{error_lines}: Work item type \"%{work_item_type}\" is disabled or archived for this project."
+msgstr ""
+
 msgid "Notify|%{singular_or_plural_line} %{error_lines}: Work item type cannot be found or is not supported."
 msgstr ""
 
@@ -97122,6 +97125,9 @@ msgid "WorkItem|%{invalidWorkItemsList} cannot be added: Cannot assign a non-con
 msgstr ""
 
 msgid "WorkItem|%{state} default"
+msgstr ""
+
+msgid "WorkItem|%{type} is disabled or archived for this project or group."
 msgstr ""
 
 msgid "WorkItem|%{usersLength} assignees"

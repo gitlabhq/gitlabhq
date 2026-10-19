@@ -45,5 +45,3 @@ export function initJiraConnect() {
     component: JiraConnectApp,
   });
 }
-
-initJiraConnect();

@@ -117,6 +117,18 @@ Please check that these lines have the following fields: title, description")
     it_behaves_like 'does not contain parse error'
   end
 
+  context 'when work item type column contains unavailable entries' do
+    let(:results) { { success: 0, parse_error: false, type_errors: { unavailable: { 'Issue' => [2, 3] } } } }
+
+    it 'renders the unavailable work item type message' do
+      expect(rendered).to have_content('Lines 2, 3: Work item type "Issue" is disabled or archived for this project.')
+    end
+
+    it_behaves_like 'contains project link'
+    it_behaves_like 'no records created'
+    it_behaves_like 'does not contain parse error'
+  end
+
   context 'when CSV contains multiple kinds of work item type errors' do
     let(:results) do
       { success: 0, parse_error: false, type_errors: { blank: [4],

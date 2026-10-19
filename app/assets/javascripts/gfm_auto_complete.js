@@ -311,6 +311,14 @@ class GfmAutoComplete {
     if (this.enableMap.wikis) this.setupWikis($input);
     if (this.enableMap.types) this.setupQuotedCompletions($input);
 
+    // Commands a form opts out of, e.g. /internal_note on diff comment forms.
+    const excludedCommands = String(
+      $input.closest('[data-exclude-commands]').data('excludeCommands') || '',
+    )
+      .split(',')
+      .map((name) => name.trim())
+      .filter(Boolean);
+
     $input.filter('[data-supports-quick-actions="true"]').atwho({
       at: '/',
       alias: 'commands',
@@ -442,25 +450,28 @@ class GfmAutoComplete {
         },
         beforeSave(commands) {
           if (GfmAutoComplete.isLoading(commands)) return commands;
-          return $.map(commands, (c) => {
-            let search = c.name;
-            if (c.aliases.length > 0) {
-              search = `${search} ${c.aliases.join(' ')}`;
-            }
-            const searchNoUnderscores = search.replace(/_/g, '');
-            if (searchNoUnderscores !== search) {
-              search = `${search} ${searchNoUnderscores}`;
-            }
-            return {
-              name: c.name,
-              aliases: c.aliases,
-              params: c.params,
-              description: c.description,
-              warning: c.warning,
-              icon: c.icon,
-              search,
-            };
-          });
+          return $.map(
+            commands.filter((c) => !excludedCommands.includes(c.name)),
+            (c) => {
+              let search = c.name;
+              if (c.aliases.length > 0) {
+                search = `${search} ${c.aliases.join(' ')}`;
+              }
+              const searchNoUnderscores = search.replace(/_/g, '');
+              if (searchNoUnderscores !== search) {
+                search = `${search} ${searchNoUnderscores}`;
+              }
+              return {
+                name: c.name,
+                aliases: c.aliases,
+                params: c.params,
+                description: c.description,
+                warning: c.warning,
+                icon: c.icon,
+                search,
+              };
+            },
+          );
         },
         matcher(flag, subtext) {
           const regexp = /(?:^|\n)\/([A-Za-z_]*)$/gi;

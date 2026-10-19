@@ -274,7 +274,7 @@ RSpec.describe Issues::BuildService, :request_store, feature_category: :team_pla
             issue = service.execute
 
             expect(issue.errors[:work_item_type]).to include(
-              s_('WorkItem|could not be found or is not accessible.')
+              'Task is disabled or archived for this project or group.'
             )
           end
         end
@@ -294,6 +294,7 @@ RSpec.describe Issues::BuildService, :request_store, feature_category: :team_pla
             archived_type = instance_double(
               WorkItems::TypesFramework::SystemDefined::Type,
               base_type: 'task',
+              name: 'Task',
               archived?: true,
               only_for_group?: false,
               creatable?: true

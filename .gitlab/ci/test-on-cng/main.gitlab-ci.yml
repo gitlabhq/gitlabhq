@@ -286,6 +286,7 @@ cng-registry-caproni:
   variables:
     QA_SCENARIO: Test::Integration::Registry
     QA_RUN_IN_PARALLEL: "false"
+    E2E_CODE_PATHS_MAPPING: "true"
 
 # Runs login_via_oauth_and_oidc_with_gitlab_as_idp_spec.rb against the CNG consumer that
 # caproni.oidc-consumer.yaml deploys next to the instance under test
@@ -309,6 +310,7 @@ cng-secrets-manager-caproni:
     QA_RUN_IN_PARALLEL: "true"
     QA_PARALLEL_PROCESSES: 4
     QA_FEATURE_FLAGS: "secrets_manager_api_access=enabled"
+    E2E_CODE_PATHS_MAPPING: "true"
   before_script:
     - !reference [.caproni-test, before_script]
     # The *_ci_access_failure specs pass with OpenBao unreachable, so the route is asserted here
@@ -349,6 +351,10 @@ export-code-paths-mapping-caproni:
     - .export-code-paths-mapping
   needs:
     - job: cng-instance-caproni
+      optional: true
+    - job: cng-registry-caproni
+      optional: true
+    - job: cng-secrets-manager-caproni
       optional: true
   script:
     # The trigger job's QA_RUN_TYPE outranks job variables

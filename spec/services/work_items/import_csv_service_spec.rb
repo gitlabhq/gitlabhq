@@ -80,7 +80,8 @@ RSpec.describe WorkItems::ImportCsvService, feature_category: :team_planning do
               missing: {
                 "isssue" => [2],
                 "issue!!" => [3]
-              }
+              },
+              unavailable: {}
             })
           end
         end

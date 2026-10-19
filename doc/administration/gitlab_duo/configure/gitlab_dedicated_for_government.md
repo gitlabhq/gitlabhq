@@ -17,8 +17,8 @@ For GitLab Dedicated for Government, you must use the GitLab Duo Self-Hosted arc
 The GitLab-managed AI Gateway and models are not available.
 
 > [!note]
-> GitLab Duo Agent Platform features are controlled by feature flags that are disabled
-> by default and are not available on GitLab Dedicated for Government.
+> GitLab Duo Agent Platform capabilities are authorized for use in GitLab Dedicated for Government
+> on a per-capability basis. For more information, see [GitLab Dedicated for Government](../../../subscriptions/gitlab_dedicated_for_government/_index.md#gitlab-duo).
 
 To set up GitLab Duo Self-Hosted:
 

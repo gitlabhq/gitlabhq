@@ -640,6 +640,16 @@ Supported attributes:
 
 On success, this endpoint returns the response code `204 No Content`.
 
+Setting the variable value does not automatically replace a literal value in the existing URL
+with the placeholder.
+
+To use a URL variable in a webhook URL, make two API calls:
+
+1. Call `PUT /projects/:id/hooks/:hook_id/url_variables/:key` with the `value` attribute to set the
+   variable value.
+1. Call `PUT /projects/:id/hooks/:hook_id` with the `url` attribute to update the webhook URL to
+   include the `{key}` placeholder.
+
 ## Delete a URL variable
 
 ```plaintext

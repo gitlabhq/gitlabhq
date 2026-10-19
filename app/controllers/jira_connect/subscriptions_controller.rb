@@ -35,6 +35,9 @@ class JiraConnect::SubscriptionsController < JiraConnect::ApplicationController
   before_action :allow_rendering_in_iframe, only: :index
   before_action :verify_qsh_claim!, only: :index
   before_action :allow_self_managed_content_security_policy, only: :index
+  before_action only: :index do
+    push_frontend_feature_flag(:vue3_migrate_jira_connect_app)
+  end
 
   def index
     @subscriptions = current_jira_installation.subscriptions.preload_namespace_route

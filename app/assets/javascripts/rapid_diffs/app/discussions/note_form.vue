@@ -254,9 +254,11 @@ export default {
     </gl-alert>
     <div class="flash-container gl-mb-5"></div>
     <form ref="form" class="edit-note common-note-form js-quick-submit gfm-form">
+      <!-- Diff comments cannot be internal notes, so keep /internal_note out of the autocomplete. -->
       <markdown-editor
         ref="markdownEditor"
         v-model="editedNoteBody"
+        data-exclude-commands="internal_note"
         :code-suggestions-config="codeSuggestionsConfig"
         :render-markdown-path="renderMarkdownPath"
         :markdown-docs-path="endpoints.markdownDocs"

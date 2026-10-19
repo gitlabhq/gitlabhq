@@ -5,7 +5,7 @@ const baseEntryPoints = {
   sentry: './sentry/index.js',
   coverage_persistence: './entrypoints/coverage_persistence.js',
   performance_bar: './entrypoints/performance_bar.js',
-  jira_connect_app: './jira_connect/subscriptions/index.js',
+  jira_connect_app: './entrypoints/jira_connect_app.js',
   sandboxed_mermaid_v11: './lib/mermaid_v11.js',
   sandboxed_mermaid_v12: './lib/mermaid_v12.js',
   redirect_listbox: './entrypoints/behaviors/redirect_listbox.js',

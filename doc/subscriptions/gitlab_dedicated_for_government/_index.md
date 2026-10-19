@@ -142,8 +142,11 @@ Available features include:
 - [GitLab Duo Vulnerability Explanation](../../user/application_security/analyze/duo.md)
 - [GitLab Duo Vulnerability Resolution](../../user/application_security/remediate/duo.md)
 - [GitLab Duo Chat](../../user/gitlab_duo_chat/_index.md)
+- [GitLab Duo Agentic Chat](../../user/gitlab_duo_chat/agentic_chat.md)
+- [Foundational agents](../../user/duo_agent_platform/agents/foundational_agents/_index.md)
 
-[GitLab Duo Agent Platform](../../user/duo_agent_platform/_index.md) is not available on GitLab Dedicated for Government.
+GitLab Duo Agent Platform capabilities are authorized for use in GitLab Dedicated for Government on a per-capability basis.
+For more information, see the [shared responsibility model](../../security/dedicated_for_government_shared_responsibility_model.md#gitlab-duo-and-gitlab-duo-agent-platform).
 
 ## Unavailable features
 
@@ -169,7 +172,7 @@ some GitLab features are not available in GitLab Dedicated for Government.
 
 | Feature                                                            | Alternative |
 | ------------------------------------------------------------------ | ----------- |
-| [GitLab Duo Agent Platform](../../user/duo_agent_platform/_index.md) | No autonomous workflow alternative. Use [other GitLab Duo features](#gitlab-duo) instead |
+| [GitLab Duo Agent Platform flows and external agents](../../user/duo_agent_platform/_index.md) | Not authorized for use in GitLab Dedicated for Government. Use Agentic Chat or foundational agents instead |
 | [Server-side Git hooks](../../administration/server_hooks.md) | Use [push rules](../../user/project/repository/push_rules.md) or [webhooks](../../user/project/integrations/webhooks.md) |
 | Features configured outside of the GitLab user interface           | Contact support |
 

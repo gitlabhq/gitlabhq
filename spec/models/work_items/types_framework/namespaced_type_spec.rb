@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe WorkItems::TypesFramework::NamespacedType, feature_category: :team_planning do
+  using RSpec::Parameterized::TableSyntax
+
   let(:system_type) { build(:work_item_system_defined_type, :issue) }
 
   describe '#class' do
@@ -46,6 +48,25 @@ RSpec.describe WorkItems::TypesFramework::NamespacedType, feature_category: :tea
       namespaced = described_class.new(system_type)
 
       expect(namespaced.instance_of?(described_class)).to be(false)
+    end
+  end
+
+  describe '#disabled_or_archived?' do
+    where(:enabled, :archived, :only_for_group, :expected) do
+      true  | false | false | false
+      true  | false | true  | false
+      false | false | false | true
+      true  | true  | false | true
+    end
+
+    with_them do
+      it 'ignores the context and checks only the toggle and archived state' do
+        allow(system_type).to receive_messages(archived?: archived, only_for_group?: only_for_group)
+
+        type = described_class.new(system_type, enabled: enabled, is_a_group: false)
+
+        expect(type.disabled_or_archived?).to be(expected)
+      end
     end
   end
 

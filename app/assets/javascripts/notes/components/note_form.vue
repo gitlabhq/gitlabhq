@@ -136,6 +136,10 @@ export default {
     };
   },
   computed: {
+    // Diff comments cannot be internal notes, so keep /internal_note out of the autocomplete.
+    excludedCommands() {
+      return this.diffParams ? 'internal_note' : null;
+    },
     ...mapState(useNotes, [
       'getDiscussionCurrentUserLastNote',
       'getNoteableData',
@@ -383,6 +387,7 @@ export default {
         <markdown-editor
           ref="markdownEditor"
           :value="updatedNoteBody"
+          :data-exclude-commands="excludedCommands"
           :render-markdown-path="markdownPreviewPath"
           :markdown-docs-path="markdownDocsPath"
           :code-suggestions-config="codeSuggestionsConfig"

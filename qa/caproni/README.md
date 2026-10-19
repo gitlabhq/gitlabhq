@@ -254,7 +254,8 @@ To opt in:
 3. Run `caproni up`.
 
 In CI, scheduled `master` pipelines set `COVERBAND_ENABLED=true`.
-Only jobs with `E2E_CODE_PATHS_MAPPING: "true"` keep it, which today is `cng-instance-caproni`.
+Only jobs with `E2E_CODE_PATHS_MAPPING: "true"` keep it: `cng-instance-caproni`, `cng-registry-caproni`
+and `cng-secrets-manager-caproni`.
 `export-code-paths-mapping-caproni` merges their mapping files.
 It uploads the result under the `e2e-test-on-cng-caproni` run type.
 

@@ -275,7 +275,6 @@ Lint/UnusedBlockArgument:
     - 'spec/support/shared_contexts/lib/gitlab/middleware/multipart_shared_contexts.rb'
     - 'spec/support/shared_contexts/services/service_ping/stubbed_service_ping_metrics_definitions_shared_context.rb'
     - 'spec/support/shared_examples/ci/jobs_shared_examples.rb'
-    - 'spec/support/shared_examples/features/packages_shared_examples.rb'
     - 'spec/support/shared_examples/graphql/members_shared_examples.rb'
     - 'spec/support/shared_examples/lib/gitlab/database/reestablished_connection_stack_shared_examples.rb'
     - 'spec/support/shared_examples/lib/gitlab/diff_file_collections_shared_examples.rb'

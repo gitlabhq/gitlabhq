@@ -358,6 +358,15 @@ export default class AutocompleteHelper {
         }
         return [];
       },
+      command: (items) => {
+        // Forms opt out of quick actions they reject, e.g. /internal_note on diff comments.
+        const { excludeCommands } =
+          this.tiptapEditor?.view.dom.closest('[data-exclude-commands]')?.dataset || {};
+        if (!excludeCommands) return items;
+
+        const excluded = excludeCommands.split(',').map((name) => name.trim());
+        return items.filter((item) => !excluded.includes(item.name));
+      },
       emoji: (_, query) =>
         query
           ? searchEmoji(query)

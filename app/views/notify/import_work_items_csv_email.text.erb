@@ -18,6 +18,7 @@
     blank_lines = type_errors[:blank]
     missing_lines = type_errors[:missing]&.values&.flatten
     disallowed_lines = type_errors[:disallowed]&.values&.flatten
+    unavailable_types = type_errors[:unavailable] || {}
 %>
   <%= s_('Notify|Some values in the "type" column could not be matched with supported work item types:') %>
 
@@ -31,6 +32,10 @@
 
   <% if disallowed_lines.present? %>
     <%= s_('Notify|%{singular_or_plural_line} %{error_lines}: Work item type is not available. Please check your license and permissions.') % { singular_or_plural_line: n_('Line', 'Lines', disallowed_lines.size), error_lines: disallowed_lines.join(', ') } %>
+  <% end %>
+
+  <% unavailable_types.each do |work_item_type, lines| %>
+    <%= s_('Notify|%{singular_or_plural_line} %{error_lines}: Work item type "%{work_item_type}" is disabled or archived for this project.') % { singular_or_plural_line: n_('Line', 'Lines', lines.size), error_lines: lines.join(', '), work_item_type: work_item_type } %>
   <% end %>
 <% end %>
 

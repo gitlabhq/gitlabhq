@@ -17,7 +17,8 @@ module WorkItems
       @type_errors = {
         blank: [],
         missing: {},
-        disallowed: {}
+        disallowed: {},
+        unavailable: {}
       }
     end
 
@@ -71,12 +72,15 @@ module WorkItems
           (type_errors[:missing][work_item_type] ||= []) << line_no
         elsif !work_item_type_allowed?(work_item_type)
           (type_errors[:disallowed][work_item_type] ||= []) << line_no
+        elsif work_item_type_unavailable?(work_item_type)
+          (type_errors[:unavailable][available_work_item_types[work_item_type].name] ||= []) << line_no
         end
       end
 
       return if type_errors[:blank].empty? &&
         type_errors[:missing].blank? &&
-        type_errors[:disallowed].blank?
+        type_errors[:disallowed].blank? &&
+        type_errors[:unavailable].blank?
 
       results[:type_errors] = type_errors
       raise PreprocessError
@@ -95,11 +99,17 @@ module WorkItems
       !available_work_item_types.key?(work_item_type_name)
     end
 
+    def work_item_type_unavailable?(work_item_type)
+      strong_memoize_with(:work_item_type_unavailable, work_item_type) do
+        available_work_item_types[work_item_type].disabled_or_archived?
+      end
+    end
+
     def work_item_type_allowed?(work_item_type)
       strong_memoize_with(:work_item_type_allowed, work_item_type) do
         wit = available_work_item_types[work_item_type]
         next false unless wit
-        next false unless wit.enabled?
+        next false unless wit.visible_in_context?
 
         # Use the type's base_type for the permission check so that renamed or custom
         # types (whose names are not system-defined base type identifiers) resolve correctly.

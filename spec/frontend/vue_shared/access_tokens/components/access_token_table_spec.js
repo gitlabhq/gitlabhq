@@ -22,7 +22,7 @@ describe('AccessTokenTable', () => {
     createdAt: '2020-01-01',
   };
 
-  const createComponent = (props = {}) => {
+  const createComponent = (props = {}, provide = {}) => {
     wrapper = mountExtended(AccessTokenTable, {
       pinia,
       propsData: {
@@ -30,6 +30,7 @@ describe('AccessTokenTable', () => {
         tokens: [defaultToken],
         ...props,
       },
+      provide,
       stubs: {
         GlModal: stubComponent(GlModal, { template: RENDER_ALL_SLOTS_TEMPLATE }),
       },
@@ -41,6 +42,7 @@ describe('AccessTokenTable', () => {
   const findDisclosureButton = (index) =>
     findDisclosure().findAll('button.gl-new-dropdown-item-content').at(index);
   const findModal = () => wrapper.findComponent(GlModal);
+  const findDatepicker = () => wrapper.findComponentByTestId('rotation-expiry-date-field');
   const findIcon = (component) => component.findComponent(GlIcon);
   const findTable = () => wrapper.findComponent(GlTable);
 
@@ -284,6 +286,7 @@ describe('AccessTokenTable', () => {
       expect(modal.props('visible')).toBe(false);
       await findDisclosureButton(1).trigger('click');
 
+      expect(findDatepicker().exists()).toBe(false);
       expect(modal.props()).toMatchObject({
         visible: true,
         actionPrimary: {
@@ -332,18 +335,67 @@ describe('AccessTokenTable', () => {
       expect(modal.find('[data-testid="slot-modal-title"]').text()).toBe(
         "Rotate the token 'My name <super token>'?",
       );
-      expect(modal.find('[data-testid="slot-default"]').text()).toBe(
+      expect(modal.find('[data-testid="slot-default"]').text()).toContain(
         'Are you sure you want to rotate the token My name <super token>? This action cannot be undone. Any tools that rely on this access token will stop working.',
       );
+      expect(findDatepicker().exists()).toBe(true);
     });
 
-    it('confirming the primary action calls the rotateToken method in the store', async () => {
-      const tokens = [{ ...defaultToken, expiresAt: '2025-01-01' }];
-      createComponent({ tokens });
-      findDisclosureButton(0).trigger('click');
-      await findModal().vm.$emit('primary');
+    describe('expiration date', () => {
+      // Current date, `new Date()`, for these tests is 2020-07-06
+      const tokens = [{ ...defaultToken, expiresAt: '2020-01-31' }];
+      const provide = { accessTokenMinDate: '2020-07-07', accessTokenMaxDate: '2020-12-31' };
 
-      expect(store.rotateToken).toHaveBeenCalledWith(1, '2025-01-01');
+      const openRotateModal = async (props = { tokens }, provideOverrides = provide) => {
+        createComponent(props, provideOverrides);
+        await findDisclosureButton(0).trigger('click');
+      };
+
+      it('defaults to the token lifetime starting today, within the allowed dates', async () => {
+        await openRotateModal();
+
+        expect(findDatepicker().props()).toMatchObject({
+          value: new Date('2020-08-05'),
+          minDate: new Date('2020-07-07'),
+          maxDate: new Date('2020-12-31'),
+          showClearButton: false,
+        });
+      });
+
+      it('defaults to the max date when the token lifetime ends after it', async () => {
+        await openRotateModal({ tokens: [{ ...defaultToken, expiresAt: '2021-01-01' }] });
+
+        expect(findDatepicker().props('value')).toEqual(new Date('2020-12-31'));
+      });
+
+      it('allows clearing the date when there is no max date', async () => {
+        await openRotateModal({ tokens }, {});
+
+        expect(findDatepicker().props('showClearButton')).toBe(true);
+      });
+
+      it('confirming the primary action rotates the token with the default date', async () => {
+        await openRotateModal();
+        await findModal().vm.$emit('primary');
+
+        expect(store.rotateToken).toHaveBeenCalledWith(1, '2020-08-05');
+      });
+
+      it('confirming the primary action rotates the token with the selected date', async () => {
+        await openRotateModal();
+        await findDatepicker().vm.$emit('input', new Date('2020-09-15'));
+        await findModal().vm.$emit('primary');
+
+        expect(store.rotateToken).toHaveBeenCalledWith(1, '2020-09-15');
+      });
+
+      it('confirming the primary action rotates the token without a date when cleared', async () => {
+        await openRotateModal({ tokens }, {});
+        await findDatepicker().vm.$emit('clear');
+        await findModal().vm.$emit('primary');
+
+        expect(store.rotateToken).toHaveBeenCalledWith(1, null);
+      });
     });
   });
 });

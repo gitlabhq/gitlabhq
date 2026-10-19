@@ -79,16 +79,26 @@ module Issues
 
     def set_work_item_type(issue)
       explicit_type_requested = params[:work_item_type_id].present? || params[:work_item_type].present?
-      work_item_type = resolve_work_item_type(skip_visibility_check: issue.importing?)
+      work_item_type = resolve_work_item_type
+
+      if work_item_type && work_item_type.disabled_or_archived? && !issue.importing?
+        unavailable_type = work_item_type
+        work_item_type = nil
+      end
 
       issue.work_item_type = work_item_type || work_item_type_provider.default_issue_type
 
-      return unless explicit_type_requested && work_item_type.nil?
+      return unless explicit_type_requested
 
-      issue.errors.add(:work_item_type, s_('WorkItem|could not be found or is not accessible.'))
+      if unavailable_type
+        message = s_('WorkItem|%{type} is disabled or archived for this project or group.')
+        issue.errors.add(:work_item_type, format(message, type: unavailable_type.name))
+      elsif work_item_type.nil?
+        issue.errors.add(:work_item_type, s_('WorkItem|could not be found or is not accessible.'))
+      end
     end
 
-    def resolve_work_item_type(skip_visibility_check: false)
+    def resolve_work_item_type
       work_item_type = work_item_type_provider.fetch_work_item_type(extract_work_item_type_param)
 
       # We need to support the legacy input params[:issue_type] even if we don't have the issue_type column anymore.
@@ -97,15 +107,7 @@ module Issues
 
       return unless create_issue_type_allowed?(container, base_type)
 
-      resolved_type = work_item_type || work_item_type_provider.find_by_base_type(base_type)
-
-      # Enforce visibility controls (disabled via namespace settings, or archived).
-      # Intentionally does NOT use enabled? because that also checks visible_in_context?
-      # which rejects group-only types (e.g. Epic) in project context - already gated
-      # by create_issue_type_allowed? and Provider filtering above. Imports are exempt.
-      return if !skip_visibility_check && resolved_type && (!resolved_type.enabled || resolved_type.archived?)
-
-      resolved_type
+      work_item_type || work_item_type_provider.find_by_base_type(base_type)
     end
 
     def extract_work_item_type_param

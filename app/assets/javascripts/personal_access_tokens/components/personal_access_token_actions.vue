@@ -2,17 +2,29 @@
 import { GlModal, GlSprintf } from '@gitlab/ui';
 import { s__, __, sprintf } from '~/locale';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
+import { setUTCTime, toISODateFormat } from '~/lib/utils/datetime_utility';
+import { rotationDefaultDate } from '~/vue_shared/access_tokens/utils';
 import getUserPersonalAccessTokens from '../graphql/get_user_personal_access_tokens.query.graphql';
 import getUserPersonalAccessTokenStatistics from '../graphql/get_user_personal_access_token_statistics.query.graphql';
 import revokePersonalAccessToken from '../graphql/revoke_personal_access_token.mutation.graphql';
 import rotatePersonalAccessToken from '../graphql/rotate_personal_access_token.mutation.graphql';
 import { ACTIONS } from '../constants';
+import PersonalAccessTokenExpirationDate from './create_granular_token/personal_access_token_expiration_date.vue';
 
 export default {
   name: 'PersonalAccessTokenActions',
   components: {
     GlModal,
     GlSprintf,
+    PersonalAccessTokenExpirationDate,
+  },
+  inject: {
+    accessTokenMaxDate: {
+      default: null,
+    },
+    accessTokenMinDate: {
+      default: null,
+    },
   },
   props: {
     token: {
@@ -30,9 +42,15 @@ export default {
   data() {
     return {
       isLoading: false,
+      maxDate: this.accessTokenMaxDate && setUTCTime(this.accessTokenMaxDate),
+      minDate: this.accessTokenMinDate && setUTCTime(this.accessTokenMinDate),
+      rotationExpiresAt: null,
     };
   },
   computed: {
+    isRotate() {
+      return this.action === ACTIONS.ROTATE;
+    },
     isModalVisible() {
       return Boolean(this.token);
     },
@@ -70,6 +88,19 @@ export default {
       };
     },
   },
+  watch: {
+    token: {
+      handler(token) {
+        if (token && this.isRotate) {
+          this.rotationExpiresAt = rotationDefaultDate(token, {
+            minDate: this.minDate,
+            maxDate: this.maxDate,
+          });
+        }
+      },
+      immediate: true,
+    },
+  },
   methods: {
     handleModalHide() {
       this.isLoading = false;
@@ -90,6 +121,7 @@ export default {
           mutation: rotatePersonalAccessToken,
           variables: {
             id: this.token.id,
+            expiresAt: this.rotationExpiresAt ? toISODateFormat(this.rotationExpiresAt) : null,
           },
           refetchQueries: [getUserPersonalAccessTokens],
           update: (_, { data: { personalAccessTokenRotate } }) => {
@@ -204,5 +236,11 @@ export default {
         <span class="gl-font-bold gl-wrap-anywhere">{{ token && token.name }}</span>
       </template>
     </gl-sprintf>
+
+    <personal-access-token-expiration-date
+      v-if="isRotate"
+      v-model="rotationExpiresAt"
+      class="gl-mb-0 gl-mt-5"
+    />
   </gl-modal>
 </template>

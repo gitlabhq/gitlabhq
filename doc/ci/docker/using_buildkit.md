@@ -484,6 +484,64 @@ build-with-cache:
     - docker buildx rm cached-builder
 ```
 
+#### Use CI/CD variables as build secrets
+
+Some builds need credentials during the build process, like a token to install packages from a
+private registry or a key to clone a private repository, without exposing that value in the final
+image. Build arguments passed with `--build-arg` can end up in the image's build history, visible
+with `docker history`, so they're unsuitable for secrets. Use the `--secret` flag instead, which
+mounts the value only for the specific `RUN` step that requests it.
+
+To use a CI/CD variable to store a secret for your build:
+
+1. Create a [masked CI/CD variable](../variables/_index.md#mask-a-cicd-variable) named `BUILD_SECRET`
+   for the secret, and [protect it](../variables/_index.md#protect-a-cicd-variable) if needed.
+1. In your `.gitlab-ci.yml` file, reference the variable with `--secret id=mysecret,env=BUILD_SECRET`,
+   where `mysecret` is the ID your `Dockerfile` uses to mount the secret, and `BUILD_SECRET` is the
+   CI/CD variable you just created. For example:
+
+   ```yaml
+   build-with-secrets:
+     image: docker:cli
+     services:
+       - docker:dind
+     stage: build
+     variables:
+       DOCKER_TLS_CERTDIR: "/certs"
+     before_script:
+       - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+       - docker buildx create --use --driver docker-container --name secret-builder
+       - docker buildx inspect --bootstrap
+     script:
+       - docker buildx build
+           --secret id=mysecret,env=BUILD_SECRET
+           --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+           --push .
+     after_script:
+       - docker buildx rm secret-builder
+   ```
+
+1. In your `Dockerfile`, mount the secret directly to `/root/.netrc` so Git reads the credential
+   without it appearing on the command line. This assumes the build runs as root. If your `Dockerfile`
+   sets a non-root `USER`, mount to that user's home directory instead. The secret's value must be
+   netrc-formatted, for example `machine example.com login <username> password <token>`:
+
+   ```dockerfile
+   RUN --mount=type=secret,id=mysecret,target=/root/.netrc \
+       git clone https://example.com/group/project.git
+   ```
+
+> [!note]
+> Masked variables can't hold multi-line values, like
+> private keys or certificates. For those, use a [file-type CI/CD variable](../variables/_index.md#use-file-type-cicd-variables)
+> and pass it with `--secret id=mysecret,src=$MY_FILE_VAR` instead of `env=`.
+>
+> Masking and protecting a variable also doesn't stop someone with edit access to your
+> `.gitlab-ci.yml` file or `Dockerfile` from attempting to output the secret to the job log.
+
+For production secrets, you can use [GitLab Secrets Manager](../secrets/_index.md)
+as a more secure solution.
+
 ### Native BuildKit
 
 Use native BuildKit `buildctl` commands for more control over the build process.

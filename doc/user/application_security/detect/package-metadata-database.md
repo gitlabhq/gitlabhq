@@ -27,6 +27,14 @@ The Package Metadata Database is licensed under the
 
 ## Datasets
 
+{{< history >}}
+
+- Malware advisories [introduced](https://gitlab.com/groups/gitlab-org/-/epics/20876) as a [beta](../../../policy/development_stages_support.md#beta) in GitLab 19.3 [with flags](../../../administration/feature_flags/_index.md) named `sync_malware_advisories` and `ingest_malware_advisories`. Enabled by default.
+- v3 license data [introduced](https://gitlab.com/groups/gitlab-org/-/epics/22880) in GitLab 19.4 with a flag named `sync_v3_license_expressions`. Enabled by default.
+- Malware advisories [generally available](https://gitlab.com/groups/gitlab-org/-/epics/20876) in GitLab 19.5. Feature flags `sync_malware_advisories` and `ingest_malware_advisories` removed.
+
+{{< /history >}}
+
 The Package Metadata Database holds four datasets:
 
 | Dataset            | Contents                                              | Used by |
@@ -60,9 +68,6 @@ You do not choose the format version. Your GitLab version determines which one i
 | 19.2 and earlier | v2       | v2         | v2             | Not available      |
 | 19.3             | v2       | v2         | v2             | v3                 |
 | 19.4 and later   | v3       | v2         | v2             | v3                 |
-
-Feature flags control the v3 license data and the malware advisories, and both are enabled by default.
-Malware advisories are in beta.
 
 ## Synchronization
 

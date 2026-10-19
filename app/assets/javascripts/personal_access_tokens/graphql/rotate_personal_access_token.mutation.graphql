@@ -1,7 +1,7 @@
 # @feature_category: system_access
 
-mutation rotatePersonalAccessToken($id: PersonalAccessTokenID!) {
-  personalAccessTokenRotate(input: { id: $id }) {
+mutation rotatePersonalAccessToken($id: PersonalAccessTokenID!, $expiresAt: ISO8601Date) {
+  personalAccessTokenRotate(input: { id: $id, expiresAt: $expiresAt }) {
     token
     errors
   }

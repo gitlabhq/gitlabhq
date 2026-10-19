@@ -1,7 +1,10 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import {
   GlBadge,
+  GlDatepicker,
   GlDisclosureDropdown,
+  GlFormGroup,
   GlIcon,
   GlLink,
   GlModal,
@@ -11,6 +14,7 @@ import {
 } from '@gitlab/ui';
 import { mapActions } from 'pinia';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import { setUTCTime, toISODateFormat } from '~/lib/utils/datetime_utility';
 import { __, s__, sprintf } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
@@ -18,7 +22,12 @@ import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import UserDate from '~/vue_shared/components/user_date.vue';
 
 import { useAccessTokens } from '../stores/access_tokens';
-import { fifteenDaysFromNow, resetCreatedTime, utcExpiredDate } from '../utils';
+import {
+  fifteenDaysFromNow,
+  resetCreatedTime,
+  rotationDefaultDate,
+  utcExpiredDate,
+} from '../utils';
 
 const REVOKE = 'revoke';
 const ROTATE = 'rotate';
@@ -27,13 +36,19 @@ export default {
   name: 'AccessTokenTable',
   components: {
     GlBadge,
+    GlDatepicker,
     GlDisclosureDropdown,
+    GlFormGroup,
     GlIcon,
     GlLink,
     GlModal,
     GlSprintf,
     GlTable,
     HelpIcon,
+    MaxExpirationDateMessage: defineAsyncComponent(
+      () =>
+        import('ee_component/vue_shared/components/access_tokens/max_expiration_date_message.vue'),
+    ),
     TimeAgoTooltip,
     UserDate,
   },
@@ -41,6 +56,14 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [glFeatureFlagsMixin()],
+  inject: {
+    accessTokenMaxDate: {
+      default: null,
+    },
+    accessTokenMinDate: {
+      default: null,
+    },
+  },
   props: {
     busy: {
       type: Boolean,
@@ -54,11 +77,17 @@ export default {
   data() {
     return {
       action: REVOKE,
+      maxDate: this.accessTokenMaxDate && setUTCTime(this.accessTokenMaxDate),
+      minDate: this.accessTokenMinDate && setUTCTime(this.accessTokenMinDate),
+      rotationExpiresAt: null,
       selectedToken: null,
       showModal: false,
     };
   },
   computed: {
+    isRotate() {
+      return this.action === ROTATE;
+    },
     visibleTokens() {
       return this.glFeatures?.granularPersonalAccessTokens
         ? this.tokens
@@ -88,7 +117,10 @@ export default {
       if (this.action === REVOKE) {
         this.revokeToken(this.selectedToken.id);
       } else if (this.action === ROTATE) {
-        this.rotateToken(this.selectedToken.id, this.selectedToken.expiresAt);
+        this.rotateToken(
+          this.selectedToken.id,
+          this.rotationExpiresAt ? toISODateFormat(this.rotationExpiresAt) : null,
+        );
       }
     },
     isExpiring(expiresAt) {
@@ -117,6 +149,12 @@ export default {
     },
     toggleModal({ action, item }) {
       this.action = action;
+      if (action === ROTATE) {
+        this.rotationExpiresAt = rotationDefaultDate(item, {
+          minDate: this.minDate,
+          maxDate: this.maxDate,
+        });
+      }
       this.showModal = true;
       this.selectedToken = item;
     },
@@ -317,6 +355,26 @@ export default {
           ><code>{{ selectedToken && selectedToken.name }}</code></template
         >
       </gl-sprintf>
+
+      <gl-form-group
+        v-if="isRotate"
+        class="gl-mb-0 gl-mt-5"
+        :label="s__('AccessTokens|Expiration date')"
+        label-for="token-rotation-expiry-date"
+      >
+        <template #description>
+          <max-expiration-date-message :max-date="maxDate" />
+        </template>
+        <gl-datepicker
+          v-model="rotationExpiresAt"
+          input-id="token-rotation-expiry-date"
+          :show-clear-button="!maxDate"
+          :max-date="maxDate"
+          :min-date="minDate"
+          data-testid="rotation-expiry-date-field"
+          @clear="rotationExpiresAt = null"
+        />
+      </gl-form-group>
     </gl-modal>
   </div>
 </template>

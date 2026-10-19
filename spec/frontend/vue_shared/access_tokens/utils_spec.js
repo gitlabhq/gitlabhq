@@ -5,6 +5,7 @@ import {
   update15DaysFromNow,
   resetCreatedTime,
   isWithin2Weeks,
+  rotationDefaultDate,
 } from '~/vue_shared/access_tokens/utils';
 
 // Current date, `new Date()`, for these tests is 2020-07-06
@@ -24,6 +25,48 @@ describe('defaultDate', () => {
     it('defaults max date if max date is sooner than 30 days', () => {
       const maxDate = new Date('2020-08-01');
       expect(defaultDate(maxDate).getTime()).toBe(new Date('2020-08-01').getTime());
+    });
+  });
+});
+
+describe('rotationDefaultDate', () => {
+  const createdAt = '2020-01-01T10:20:30.000Z';
+
+  describe('when the token does not expire', () => {
+    it('returns null when there is no max date', () => {
+      expect(rotationDefaultDate({ createdAt, expiresAt: null })).toBe(null);
+    });
+
+    it('returns the creation default when there is a max date', () => {
+      const maxDate = new Date('2021-01-01');
+
+      expect(rotationDefaultDate({ createdAt, expiresAt: null }, { maxDate }).getTime()).toBe(
+        new Date('2020-08-05').getTime(),
+      );
+    });
+  });
+
+  describe('when the token expires', () => {
+    it('keeps the token lifetime starting today', () => {
+      expect(rotationDefaultDate({ createdAt, expiresAt: '2020-01-31' }).getTime()).toBe(
+        new Date('2020-08-05').getTime(),
+      );
+    });
+
+    it('returns the max date when the lifetime ends after it', () => {
+      const maxDate = new Date('2020-12-31');
+
+      expect(
+        rotationDefaultDate({ createdAt, expiresAt: '2021-01-01' }, { maxDate }).getTime(),
+      ).toBe(maxDate.getTime());
+    });
+
+    it('returns the min date when the lifetime ends before it', () => {
+      const minDate = new Date('2020-07-07');
+
+      expect(
+        rotationDefaultDate({ createdAt, expiresAt: '2020-01-01' }, { minDate }).getTime(),
+      ).toBe(minDate.getTime());
     });
   });
 });

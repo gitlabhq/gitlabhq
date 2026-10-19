@@ -161,6 +161,18 @@ RSpec.describe 'User Settings > Personal access tokens', :with_current_organizat
       expect(active_access_tokens_count).to have_text('1')
     end
 
+    it 'keeps the token lifetime, starting today', :aggregate_failures do
+      personal_access_token.update!(created_at: 10.days.ago, expires_at: 20.days.from_now)
+
+      visit user_settings_personal_access_tokens_path
+      access_token_options.click
+      accept_gl_confirm(button_text: s_('AccessTokens|Rotate')) { click_on s_('AccessTokens|Rotate') }
+
+      expect(page).to have_content(s_("AccessTokens|Make sure you save it - you won't be able to access it again."))
+      expect(PersonalAccessToken.find_by(previous_personal_access_token_id: personal_access_token.id).expires_at)
+        .to eq(30.days.from_now.to_date)
+    end
+
     context "when rotation fails" do
       it "displays an error message" do
         visit user_settings_personal_access_tokens_path

@@ -1,0 +1,10 @@
+---
+name: vue3_migrate_jira_connect_app
+description: Enables Vue 3 in compatibility mode for the GitLab for Jira Cloud app.
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/23066
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/258657
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/632652
+milestone: '19.6'
+group: group::work items
+type: beta
+default_enabled: false

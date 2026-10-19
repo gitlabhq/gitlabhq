@@ -1157,6 +1157,49 @@ describe('GfmAutoComplete', () => {
     });
   });
 
+  describe('excluded quick actions', () => {
+    let autocomplete;
+    let $textarea;
+
+    const getDropdownItems = () => getAutocompleteDropdownItems('at-view-commands');
+
+    beforeEach(() => {
+      jest.spyOn(AjaxCache, 'retrieve').mockReturnValue(
+        Promise.resolve([
+          { name: 'internal_note', aliases: [], params: [], description: '' },
+          { name: 'approve', aliases: [], params: [], description: '' },
+        ]),
+      );
+
+      setHTMLFixture(
+        '<div data-exclude-commands="internal_note"><textarea data-supports-quick-actions="true"></textarea></div>',
+      );
+      autocomplete = new GfmAutoComplete({
+        commands: `${TEST_HOST}/autocomplete_sources/commands`,
+      });
+      $textarea = $('textarea');
+      autocomplete.setup($textarea, {});
+    });
+
+    afterEach(() => {
+      autocomplete.destroy();
+      resetHTMLFixture();
+    });
+
+    it('leaves the excluded command out of the dropdown', async () => {
+      triggerDropdown($textarea, '/');
+
+      await waitForPromises();
+
+      triggerDropdown($textarea, '/');
+
+      const items = getDropdownItems();
+
+      expect(items).toHaveLength(1);
+      expect(items[0]).toContain('/approve');
+    });
+  });
+
   describe('atwho dropdown container', () => {
     let autocomplete;
     let $textarea;

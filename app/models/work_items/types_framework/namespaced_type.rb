@@ -67,8 +67,23 @@ module WorkItems
         true
       end
 
+      # Not disabled or archived, and visible in context:
+      # Epic only at group level, every other type only at project level.
       def enabled?
-        enabled && !delegation_source.archived? && visible_in_context?
+        !disabled_or_archived? && visible_in_context?
+      end
+
+      # Only checks the toggle and archived state, without the context check of enabled?.
+      def disabled_or_archived?
+        !enabled || delegation_source.archived?
+      end
+
+      def visible_in_context?
+        if is_a_group
+          delegation_source.only_for_group?
+        else
+          !delegation_source.only_for_group?
+        end
       end
 
       attr_reader :enabled
@@ -86,14 +101,6 @@ module WorkItems
         return false if !is_a_group && !enabled
 
         true
-      end
-
-      def visible_in_context?
-        if is_a_group
-          delegation_source.only_for_group?
-        else
-          !delegation_source.only_for_group?
-        end
       end
 
       def delegation_source

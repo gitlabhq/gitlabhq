@@ -1,5 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import axios from '~/lib/utils/axios_utils';
 import AutocompleteHelper, {
   defaultSorter,
@@ -443,6 +444,29 @@ describe('AutocompleteHelper', () => {
       ).toMatchSnapshot();
     },
   );
+
+  describe('when the form excludes commands', () => {
+    beforeEach(() => {
+      setHTMLFixture('<div data-exclude-commands="shrug, confidential"><div></div></div>');
+      autocompleteHelper.tiptapEditor = { view: { dom: document.querySelector('div > div') } };
+    });
+
+    afterEach(() => {
+      resetHTMLFixture();
+    });
+
+    it.each(['shrug', 'confidential'])('leaves /%s out of the results', async (name) => {
+      const results = await autocompleteHelper.getDataSource('command').search('', name);
+
+      expect(results).toEqual([]);
+    });
+
+    it('keeps the other commands', async () => {
+      const results = await autocompleteHelper.getDataSource('command').search('', 'tableflip');
+
+      expect(results.map(({ name }) => name)).toEqual(['tableflip']);
+    });
+  });
 
   describe('for work items', () => {
     beforeEach(() => {

@@ -6,6 +6,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import PersonalAccessTokenActions from '~/personal_access_tokens/components/personal_access_token_actions.vue';
+import PersonalAccessTokenExpirationDate from '~/personal_access_tokens/components/create_granular_token/personal_access_token_expiration_date.vue';
 import getUserPersonalAccessTokens from '~/personal_access_tokens/graphql/get_user_personal_access_tokens.query.graphql';
 import getUserPersonalAccessTokenStatistics from '~/personal_access_tokens/graphql/get_user_personal_access_token_statistics.query.graphql';
 import revokePersonalAccessToken from '~/personal_access_tokens/graphql/revoke_personal_access_token.mutation.graphql';
@@ -42,6 +43,7 @@ describe('PersonalAccessTokenActions', () => {
     action = mockAction,
     rotateHandler = mockRotateHandler,
     revokeHandler = mockRevokeHandler,
+    provide = {},
   } = {}) => {
     mockApollo = createMockApollo(
       [
@@ -68,6 +70,7 @@ describe('PersonalAccessTokenActions', () => {
 
     wrapper = shallowMountExtended(PersonalAccessTokenActions, {
       apolloProvider: mockApollo,
+      provide,
       propsData: {
         token,
         action,
@@ -81,6 +84,7 @@ describe('PersonalAccessTokenActions', () => {
 
   const findModal = () => wrapper.findComponent(GlModal);
   const findModalActionPrimary = () => findModal().props('actionPrimary');
+  const findExpirationDate = () => wrapper.findComponent(PersonalAccessTokenExpirationDate);
 
   beforeEach(() => {
     createComponent();
@@ -119,6 +123,10 @@ describe('PersonalAccessTokenActions', () => {
   describe('token revocation', () => {
     beforeEach(() => {
       createComponent({ action: 'revoke' });
+    });
+
+    it('does not show the expiration date', () => {
+      expect(findExpirationDate().exists()).toBe(false);
     });
 
     it('displays correct title for revoke action', () => {
@@ -220,8 +228,53 @@ describe('PersonalAccessTokenActions', () => {
       await findModal().vm.$emit('primary', { preventDefault: jest.fn() });
       await waitForPromises();
 
+      // Current date, `new Date()`, for these tests is 2020-07-06; the token lifetime is 91 days
       expect(mockRotateHandler).toHaveBeenCalledWith({
         id: 'gid://gitlab/PersonalAccessToken/1',
+        expiresAt: '2020-10-05',
+      });
+    });
+
+    describe('expiration date', () => {
+      const provide = { accessTokenMinDate: '2020-07-07', accessTokenMaxDate: '2020-12-31' };
+
+      it('defaults to the token lifetime starting today, within the allowed dates', () => {
+        createComponent({ action: 'rotate', provide });
+
+        expect(findExpirationDate().props('value')).toEqual(new Date('2020-10-05'));
+      });
+
+      it('defaults to the max date when the token lifetime ends after it', () => {
+        createComponent({
+          action: 'rotate',
+          token: { ...mockToken, expiresAt: '2026-10-01' },
+          provide,
+        });
+
+        expect(findExpirationDate().props('value')).toEqual(new Date('2020-12-31'));
+      });
+
+      it('rotates the token with the selected date', async () => {
+        createComponent({ action: 'rotate', provide });
+        await findExpirationDate().vm.$emit('input', new Date('2020-09-15'));
+        await findModal().vm.$emit('primary', { preventDefault: jest.fn() });
+        await waitForPromises();
+
+        expect(mockRotateHandler).toHaveBeenCalledWith({
+          id: 'gid://gitlab/PersonalAccessToken/1',
+          expiresAt: '2020-09-15',
+        });
+      });
+
+      it('rotates the token without a date when cleared', async () => {
+        await findExpirationDate().vm.$emit('input', null);
+        await findModal().vm.$emit('primary', { preventDefault: jest.fn() });
+        await waitForPromises();
+
+        expect(mockRotateHandler).toHaveBeenCalledWith({
+          id: 'gid://gitlab/PersonalAccessToken/1',
+          expiresAt: null,
+        });
       });
     });
 

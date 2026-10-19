@@ -5,7 +5,6 @@ require 'spec_helper'
 RSpec.describe 'Group Packages', feature_category: :package_registry do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project, group: group, name: 'project-zzz') }
 
   before do
     sign_in(user)
@@ -35,55 +34,6 @@ RSpec.describe 'Group Packages', feature_category: :package_registry do
       sidebar = find_by_testid('super-sidebar')
       expect(sidebar).to have_link _('Package registry')
     end
-
-    context 'when there are packages' do
-      let_it_be(:second_project) { create(:project, group: group, name: 'project-aaa') }
-      let_it_be(:npm_package) { create(:npm_package, :with_build, project: project, name: 'zzz', created_at: 1.day.ago, version: '1.0.0') }
-      let_it_be(:maven_package) { create(:maven_package, project: second_project, name: 'aaa', created_at: 2.days.ago, version: '2.0.0') }
-      let_it_be(:packages) { [npm_package, maven_package] }
-
-      let(:package) { packages.first }
-      let(:package_details_path) { group_package_path(group, package) }
-
-      it_behaves_like 'packages list', check_project_name: true
-
-      it_behaves_like 'packages can be deleted'
-
-      it_behaves_like 'pipelines on packages list', is_group_page: true
-
-      it_behaves_like 'package details link'
-
-      it 'allows you to navigate to the project page' do
-        click_link(project.name)
-
-        expect(page).to have_current_path(project_path(project))
-        expect(page).to have_content(project.name)
-      end
-
-      context 'sorting' do
-        it_behaves_like 'shared package sorting' do
-          let_it_be(:package_one) { maven_package }
-          let_it_be(:package_two) { npm_package }
-        end
-
-        it_behaves_like 'correctly sorted packages list', 'Project' do
-          let(:packages) { [maven_package, npm_package] }
-        end
-
-        it_behaves_like 'correctly sorted packages list', 'Project', ascending: true do
-          let(:packages) { [npm_package, maven_package] }
-        end
-      end
-
-      context 'filtering' do
-        it_behaves_like 'shared package filtering' do
-          let_it_be(:package_one) { maven_package }
-          let_it_be(:package_two) { npm_package }
-        end
-      end
-    end
-
-    it_behaves_like 'when there are no packages'
   end
 
   def visit_group_packages

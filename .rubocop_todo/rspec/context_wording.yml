@@ -2426,7 +2426,6 @@ RSpec/ContextWording:
     - 'spec/support/shared_examples/features/access_tokens_shared_examples.rb'
     - 'spec/support/shared_examples/features/archive_download_buttons_shared_examples.rb'
     - 'spec/support/shared_examples/features/board_sidebar_labels_examples.rb'
-    - 'spec/support/shared_examples/features/packages_shared_examples.rb'
     - 'spec/support/shared_examples/features/project_features_apply_to_issuables_shared_examples.rb'
     - 'spec/support/shared_examples/features/sidebar/sidebar_due_date_shared_examples.rb'
     - 'spec/support/shared_examples/features/sidebar/sidebar_labels_shared_examples.rb'

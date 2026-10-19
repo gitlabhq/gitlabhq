@@ -213,6 +213,13 @@ describe('DiffContent', () => {
       });
     });
 
+    it('passes the diff file to the image comment form', () => {
+      useLegacyDiffs().commentForms = [{ fileHash: imageDiffFile.file_hash }];
+      createComponent({ props: { diffFile: imageDiffFile } });
+
+      expect(wrapper.findComponent(NoteForm).props('diffFile')).toBe(imageDiffFile);
+    });
+
     describe('when note-form emits `handle-form-update`', () => {
       const noteStub = {};
       const parentElement = null;
