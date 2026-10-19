@@ -3,6 +3,9 @@ import { toggleWikiSidebar } from '~/wikis/utils/sidebar_toggle';
 
 describe('wikis/utils/sidebar_toggle', () => {
   let sidebar;
+  let overview;
+
+  const getSidebarWidthVar = () => overview.style.getPropertyValue('--wiki-sidebar-width');
 
   const expectSidebarExpanded = () => {
     expect(sidebar.classList.contains('sidebar-expanded')).toBe(true);
@@ -24,8 +27,11 @@ describe('wikis/utils/sidebar_toggle', () => {
   };
 
   beforeEach(() => {
-    setHTMLFixture('<div class="js-wiki-sidebar sidebar-collapsed"></div>');
+    setHTMLFixture(
+      '<div class="js-wiki-overview"><div class="js-wiki-sidebar sidebar-collapsed"></div></div>',
+    );
     sidebar = document.querySelector('.js-wiki-sidebar');
+    overview = document.querySelector('.js-wiki-overview');
   });
 
   afterEach(() => {
@@ -34,41 +40,97 @@ describe('wikis/utils/sidebar_toggle', () => {
   });
 
   describe('toggleWikiSidebar', () => {
-    it('expands collapsed sidebar and persists', () => {
-      toggleWikiSidebar();
+    describe('when the sidebar is collapsed', () => {
+      describe('when toggled', () => {
+        beforeEach(() => {
+          toggleWikiSidebar();
+        });
 
-      expectSidebarExpanded();
-      expectPersistedAs('true');
+        it('expands the sidebar', () => {
+          expectSidebarExpanded();
+        });
+
+        it('persists the open state', () => {
+          expectPersistedAs('true');
+        });
+
+        it('restores the width variable to the default width', () => {
+          expect(getSidebarWidthVar()).toBe('220px');
+        });
+      });
+
+      describe('when toggled with a stored width', () => {
+        beforeEach(() => {
+          localStorage.setItem('wiki_sidebar_width', '350');
+          toggleWikiSidebar();
+        });
+
+        it('restores the width variable to the stored width', () => {
+          expect(getSidebarWidthVar()).toBe('350px');
+        });
+      });
+
+      describe('when toggled without persisting', () => {
+        beforeEach(() => {
+          toggleWikiSidebar(false);
+        });
+
+        it('expands the sidebar', () => {
+          expectSidebarExpanded();
+        });
+
+        it('does not persist the open state', () => {
+          expectPersistedAs(null);
+        });
+      });
     });
 
-    it('collapses expanded sidebar and persists', () => {
-      setSidebarExpanded();
+    describe('when the sidebar is expanded', () => {
+      beforeEach(() => {
+        setSidebarExpanded();
+      });
 
-      toggleWikiSidebar();
+      describe('when toggled', () => {
+        beforeEach(() => {
+          toggleWikiSidebar();
+        });
 
-      expectSidebarCollapsed();
-      expectPersistedAs('false');
+        it('collapses the sidebar', () => {
+          expectSidebarCollapsed();
+        });
+
+        it('persists the closed state', () => {
+          expectPersistedAs('false');
+        });
+
+        it('sets the width variable to 0px', () => {
+          expect(getSidebarWidthVar()).toBe('0px');
+        });
+      });
+
+      describe('when toggled without persisting', () => {
+        beforeEach(() => {
+          toggleWikiSidebar(false);
+        });
+
+        it('collapses the sidebar', () => {
+          expectSidebarCollapsed();
+        });
+
+        it('does not persist the closed state', () => {
+          expectPersistedAs(null);
+        });
+      });
     });
 
-    it('can toggle without persisting', () => {
-      toggleWikiSidebar(false);
+    describe('when the sidebar is missing', () => {
+      beforeEach(() => {
+        resetHTMLFixture();
+      });
 
-      expectSidebarExpanded();
-      expectPersistedAs(null);
-    });
-
-    it('can toggle collapse without persisting', () => {
-      setSidebarExpanded();
-
-      toggleWikiSidebar(false);
-
-      expectSidebarCollapsed();
-      expectPersistedAs(null);
-    });
-
-    it('handles missing sidebar gracefully', () => {
-      resetHTMLFixture();
-      expect(() => toggleWikiSidebar()).not.toThrow();
+      it('does not throw', () => {
+        expect(() => toggleWikiSidebar()).not.toThrow();
+      });
     });
   });
 });

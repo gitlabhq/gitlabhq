@@ -105,7 +105,7 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-px-3">
+  <div class="gl-px-5">
     <gl-skeleton-loader v-if="isLoadingContent" :width="830" :height="113">
       <rect width="540" height="16" rx="4" />
       <rect y="49" width="701" height="16" rx="4" />
