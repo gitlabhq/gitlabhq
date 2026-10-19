@@ -132,13 +132,14 @@ RSpec.describe Organizations::Transfer::TopLevelGroupService, :aggregate_failure
           private_organization.add_owner(user)
         end
 
-        it 'clamps public groups to private but keeps internal groups as internal' do
+        it 'clamps public and internal groups to private' do
           result = service.execute
 
           expect(result).to be_success
           expect(public_group.reload.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
-          expect(internal_group.reload.visibility_level).to eq(Gitlab::VisibilityLevel::INTERNAL)
+          expect(internal_group.reload.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
           expect(private_group.reload.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+          expect(internal_group.visibility_level_allowed_by_organization?).to be(true)
         end
       end
 

@@ -39,6 +39,9 @@ module Types
     field :closed_at, Types::TimeType, null: true,
       scopes: [:api, :read_api, :ai_workflows],
       description: 'Timestamp of when the work item was closed.'
+    field :closed_by, Types::UserType, null: true, # rubocop:disable GraphQL/ExtractType -- matches public closedAt and REST closed_by
+      scopes: [:api, :read_api, :ai_workflows],
+      description: 'User that closed the work item.'
     field :confidential, GraphQL::Types::Boolean, null: false,
       scopes: [:api, :read_api, :ai_workflows],
       description: 'Indicates the work item is confidential.'

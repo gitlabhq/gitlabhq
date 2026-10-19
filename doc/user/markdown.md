@@ -1094,6 +1094,10 @@ When you sort by a different column, the previous sort clears.
 Exclusions:
 
 - Tables with fewer than two rows of data or more than 1,000 rows.
+- Tables with no header row or more than one header row.
+- Tables with cells that span multiple rows or columns.
+- Tables with more than one `<tbody>` section.
+- Tables inside another table.
 - [JSON tables](#json-tables).
 - Tables in the [rich text editor](rich_text_editor.md).
 

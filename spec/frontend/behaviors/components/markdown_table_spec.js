@@ -55,8 +55,10 @@ describe('MarkdownTable', () => {
     expect(wrapper.find('table').element.firstElementChild).toBe(renderedCaption.element);
   };
 
-  const createFooterRows = (rows) =>
-    rows.map((contents) => contents.map((content) => createCell('td', content)));
+  const createRows = (tagName, rows) =>
+    rows.map((contents) => contents.map((content) => createCell(tagName, content)));
+
+  const createFooterRows = (rows) => createRows('td', rows);
 
   const expectFooter = (text) => {
     const renderedFoot = wrapper.find('table tfoot');
@@ -83,7 +85,7 @@ describe('MarkdownTable', () => {
             }
           : jest.requireActual('@gitlab/ui/src/components/base/tooltip/tooltip.vue').default,
       },
-      propsData: { fields, items, ...props },
+      propsData: { fields, bodies: [items], ...props },
     });
   };
 
@@ -130,7 +132,7 @@ describe('MarkdownTable', () => {
       wrapper = mountExtended(MarkdownTable, {
         propsData: {
           fields,
-          items: buildItems(fields, [['Alice', '25', '160cm']]),
+          bodies: [buildItems(fields, [['Alice', '25', '160cm']])],
         },
       });
 
@@ -215,8 +217,11 @@ describe('MarkdownTable', () => {
     });
 
     describe('when canSort is false', () => {
-      it('does not fire sort_markdown_table_column when there is only one row', async () => {
-        createWrapper([['Alice', '25']]);
+      it('does not fire sort_markdown_table_column when a header is clicked', async () => {
+        createWrapper([['Alice', '25']], {
+          headers: [],
+          headRows: createRows('th', [['Name', 'Age']]),
+        });
 
         const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
@@ -509,24 +514,93 @@ describe('MarkdownTable', () => {
     });
   });
 
-  describe('when sortable but only one row', () => {
+  describe('when not sortable', () => {
+    let headRows;
+
     beforeEach(() => {
-      createWrapper([['Alice', '25']]);
+      headRows = createRows('th', [
+        ['Name', 'Age'],
+        ['First', 'Years'],
+      ]);
+      createWrapper(
+        [
+          ['Bob', '35'],
+          ['Alice', '25'],
+        ],
+        { headers: [], headRows },
+      );
     });
 
-    it('does not render sort affordances', () => {
-      const header = findHeaders().at(0);
-      expect(header.attributes('tabindex')).toBeUndefined();
-      expect(header.attributes('aria-sort')).toBeUndefined();
-      expect(header.classes()).not.toContain('gl-cursor-pointer');
+    it('adopts the header rows without sort affordances', () => {
+      const headers = findHeaders().wrappers.map((th) => th.element);
+      expect(headers).toHaveLength(4);
+      headers.forEach((header, index) => expect(header).toBe(headRows.flat()[index]));
+      expect(findHeaders().at(0).attributes('aria-sort')).toBeUndefined();
+      expect(wrapper.find('thead button').exists()).toBe(false);
       expect(wrapper.find('[data-sort-icon]').exists()).toBe(false);
-      expect(wrapper.find('.gl-sr-only').exists()).toBe(false);
+      expect(findSortStatus().exists()).toBe(false);
     });
 
     it('does not sort when a header is clicked', async () => {
       await findHeaders().at(0).trigger('click');
 
+      expect(getRowTexts(0)).toEqual(['Bob', 'Alice']);
+    });
+  });
+
+  describe('without a header', () => {
+    beforeEach(() => {
+      createWrapper([['Alice', '25']], { headers: [] });
+    });
+
+    it('renders no table head', () => {
+      expect(wrapper.find('thead').exists()).toBe(false);
       expect(getRowTexts(0)).toEqual(['Alice']);
+    });
+  });
+
+  describe('with multiple bodies', () => {
+    beforeEach(() => {
+      createWrapper([], {
+        headers: [],
+        bodies: [buildItems([], [['Bob']]), buildItems([], [['Alice']])],
+      });
+    });
+
+    it('renders each body in order', () => {
+      const bodies = wrapper.findAll('tbody');
+      expect(bodies).toHaveLength(2);
+      expect(bodies.at(0).text()).toBe('Bob');
+      expect(bodies.at(1).text()).toBe('Alice');
+    });
+  });
+
+  describe('with table attributes', () => {
+    beforeEach(() => {
+      createWrapper([['Alice', '25']], {
+        tableAttributes: { class: 'tableblock stripes-even', 'data-sourcepos': '1:1-4:9' },
+      });
+    });
+
+    it('sets them on the table', () => {
+      expect(wrapper.find('table').attributes('data-sourcepos')).toBe('1:1-4:9');
+    });
+
+    it('merges classes with its own', () => {
+      expect(wrapper.find('table').classes()).toEqual(
+        expect.arrayContaining(['tableblock', 'stripes-even', 'gl-min-w-full']),
+      );
+    });
+  });
+
+  describe('with a direction', () => {
+    beforeEach(() => {
+      createWrapper([['Alice', '25']], { dir: 'auto' });
+    });
+
+    it('sets it on the wrapper so scrolling and shadows follow the table', () => {
+      expect(findShadowOverlayWrapper().attributes('dir')).toBe('auto');
+      expect(wrapper.find('table').attributes('dir')).toBeUndefined();
     });
   });
 
@@ -751,33 +825,6 @@ describe('MarkdownTable', () => {
       expect(getRowTexts(0)).toEqual(['Bob', 'Alice']);
       expect(findHeaders().at(0).attributes('aria-sort')).toBe('none');
       expect(findSortStatus().text()).toBe('');
-    });
-  });
-
-  describe.each([0, 1, 1001])('with %i rows', (rowCount) => {
-    beforeEach(() => {
-      createWrapper(Array.from({ length: rowCount }, (_, index) => [`Row ${index}`, '']));
-    });
-
-    it('does not render sort buttons', () => {
-      expect(wrapper.find('button').exists()).toBe(false);
-      expect(findSortStatus().exists()).toBe(false);
-    });
-  });
-
-  describe('with 1000 rows', () => {
-    beforeEach(() => {
-      createWrapper(Array.from({ length: 1000 }, (_, index) => [`Row ${index}`, '']));
-    });
-
-    it('supports sorting and restoring the original order', async () => {
-      const originalOrder = getRowTexts(0);
-      await clickHeader(0);
-      expect(getRowTexts(0)).not.toEqual(originalOrder);
-      await clickHeader(0);
-      await clickHeader(0);
-
-      expect(getRowTexts(0)).toEqual(originalOrder);
     });
   });
 

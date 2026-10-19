@@ -469,7 +469,7 @@ ul.wiki-pages-list.content-list {
     // the middle of the printed page. Unstick it and let the browser repeat
     // `<thead>` across page breaks instead.
     [data-print-scale-container][data-sticky-header] > table:not(.code) {
-      > thead th,
+      > thead > tr:first-child > th,
       > tbody > tr:first-child > th {
         position: static;
       }

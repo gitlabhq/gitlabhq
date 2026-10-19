@@ -183,21 +183,11 @@ module Organizations
       end
 
       def clamped_visibility_sql
-        if new_organization.visibility_level == Gitlab::VisibilityLevel::PRIVATE
-          Arel.sql(
-            ActiveRecord::Base.sanitize_sql([
-              'CASE WHEN visibility_level = ? THEN ? ELSE visibility_level END',
-              Gitlab::VisibilityLevel::PUBLIC,
-              Gitlab::VisibilityLevel::PRIVATE
-            ])
+        Arel.sql(
+          ActiveRecord::Base.sanitize_sql(
+            ['LEAST(?, visibility_level)', new_organization.visibility_level]
           )
-        else
-          Arel.sql(
-            ActiveRecord::Base.sanitize_sql(
-              ['LEAST(?, visibility_level)', new_organization.visibility_level]
-            )
-          )
-        end
+        )
       end
 
       def group_not_root_error

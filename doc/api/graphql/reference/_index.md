@@ -30229,6 +30229,98 @@ Fields:
 | <a id="oncallparticipanttypeedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="oncallparticipanttypeedge-node"></a>`node` | [`OncallParticipantType`](#oncallparticipanttype) | The item at the end of the edge. |
 
+#### `OrbitSchemaEdgeConnection`
+
+The connection type for [`OrbitSchemaEdge`](#orbitschemaedge).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="orbitschemaedgeconnection-edges"></a>`edges` | [`[OrbitSchemaEdgeEdge]`](#orbitschemaedgeedge) | A list of edges. |
+| <a id="orbitschemaedgeconnection-nodes"></a>`nodes` | [`[OrbitSchemaEdge]`](#orbitschemaedge) | A list of nodes. |
+| <a id="orbitschemaedgeconnection-pageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `OrbitSchemaEdgeEdge`
+
+The edge type for [`OrbitSchemaEdge`](#orbitschemaedge).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="orbitschemaedgeedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="orbitschemaedgeedge-node"></a>`node` | [`OrbitSchemaEdge`](#orbitschemaedge) | The item at the end of the edge. |
+
+#### `OrbitSchemaEdgeEndpointConnection`
+
+The connection type for [`OrbitSchemaEdgeEndpoint`](#orbitschemaedgeendpoint).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="orbitschemaedgeendpointconnection-edges"></a>`edges` | [`[OrbitSchemaEdgeEndpointEdge]`](#orbitschemaedgeendpointedge) | A list of edges. |
+| <a id="orbitschemaedgeendpointconnection-nodes"></a>`nodes` | [`[OrbitSchemaEdgeEndpoint]`](#orbitschemaedgeendpoint) | A list of nodes. |
+| <a id="orbitschemaedgeendpointconnection-pageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `OrbitSchemaEdgeEndpointEdge`
+
+The edge type for [`OrbitSchemaEdgeEndpoint`](#orbitschemaedgeendpoint).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="orbitschemaedgeendpointedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="orbitschemaedgeendpointedge-node"></a>`node` | [`OrbitSchemaEdgeEndpoint`](#orbitschemaedgeendpoint) | The item at the end of the edge. |
+
+#### `OrbitSchemaNodeConnection`
+
+The connection type for [`OrbitSchemaNode`](#orbitschemanode).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="orbitschemanodeconnection-edges"></a>`edges` | [`[OrbitSchemaNodeEdge]`](#orbitschemanodeedge) | A list of edges. |
+| <a id="orbitschemanodeconnection-nodes"></a>`nodes` | [`[OrbitSchemaNode]`](#orbitschemanode) | A list of nodes. |
+| <a id="orbitschemanodeconnection-pageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `OrbitSchemaNodeEdge`
+
+The edge type for [`OrbitSchemaNode`](#orbitschemanode).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="orbitschemanodeedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="orbitschemanodeedge-node"></a>`node` | [`OrbitSchemaNode`](#orbitschemanode) | The item at the end of the edge. |
+
+#### `OrbitSchemaPropertyConnection`
+
+The connection type for [`OrbitSchemaProperty`](#orbitschemaproperty).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="orbitschemapropertyconnection-edges"></a>`edges` | [`[OrbitSchemaPropertyEdge]`](#orbitschemapropertyedge) | A list of edges. |
+| <a id="orbitschemapropertyconnection-nodes"></a>`nodes` | [`[OrbitSchemaProperty]`](#orbitschemaproperty) | A list of nodes. |
+| <a id="orbitschemapropertyconnection-pageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `OrbitSchemaPropertyEdge`
+
+The edge type for [`OrbitSchemaProperty`](#orbitschemaproperty).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="orbitschemapropertyedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="orbitschemapropertyedge-node"></a>`node` | [`OrbitSchemaProperty`](#orbitschemaproperty) | The item at the end of the edge. |
+
 #### `OrganizationConnection`
 
 The connection type for [`Organization`](#organization).
@@ -56762,6 +56854,7 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="orbit-access"></a>`access` {{< icon name="warning-solid" >}} | [`OrbitAccess`](#orbitaccess) | Introduced in GitLab 19.6. Status: Experiment. Orbit access state of the instance on GitLab Self-Managed and GitLab Dedicated. Null on GitLab.com, where access is per top-level group, and for users who are not administrators. |
 | <a id="orbit-excludedgroups"></a>`excludedGroups` | [`GroupConnection`](#groupconnection) | Top-level groups excluded from automatic Orbit indexing. Administrators only. (see [Connections](#connections)) |
+| <a id="orbit-schema"></a>`schema` {{< icon name="warning-solid" >}} | [`OrbitSchema`](#orbitschema) | Introduced in GitLab 19.6. Status: Experiment. Node kinds and edge kinds that the current user can query in Orbit. Returns null when the user cannot use Orbit or Orbit returns no schema. |
 
 #### Fields with arguments
 
@@ -56954,6 +57047,90 @@ Fields:
 | <a id="orbitnamespace-indexingstatus"></a>`indexingStatus` | [`OrbitIndexingStatus`](#orbitindexingstatus) | Indexing status of the group or project. Null when Orbit is not available to the current user. |
 | <a id="orbitnamespace-itemcounts"></a>`itemCounts` | [`OrbitItemCounts`](#orbititemcounts) | Number of indexed items in the group or project. Null when Orbit is not available to the current user. This field can be resolved for only one group or project in any single request. |
 | <a id="orbitnamespace-trial"></a>`trial` {{< icon name="warning-solid" >}} | [`OrbitTrial`](#orbittrial) | Introduced in GitLab 19.6. Status: Experiment. Orbit trial of the top-level group, or of the instance on GitLab Self-Managed and GitLab Dedicated. Null for subgroups, projects, when the user cannot read the trial, and when the CustomersDot request fails. This field can be resolved for at most 10 groups in any single request. |
+
+### `OrbitSchema`
+
+Node kinds and edge kinds that the current user can query in Orbit.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="orbitschema-edges"></a>`edges` | [`OrbitSchemaEdgeConnection!`](#orbitschemaedgeconnection) | Edge kinds. (see [Connections](#connections)) |
+| <a id="orbitschema-nodes"></a>`nodes` | [`OrbitSchemaNodeConnection!`](#orbitschemanodeconnection) | Node kinds. (see [Connections](#connections)) |
+
+### `OrbitSchemaDisplay`
+
+How to draw nodes of a kind in the Orbit schema.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="orbitschemadisplay-color"></a>`color` | [`String`](#string) | Hex color of the node kind. |
+| <a id="orbitschemadisplay-size"></a>`size` | [`Int`](#int) | Relative size of the node kind in a graph. |
+
+### `OrbitSchemaDomain`
+
+Domain that groups related node kinds in the Orbit schema.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="orbitschemadomain-name"></a>`name` | [`String!`](#string) | Name of the domain. |
+
+### `OrbitSchemaEdge`
+
+Edge kind in the Orbit schema.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="orbitschemaedge-description"></a>`description` | [`String`](#string) | Description of the edge kind. |
+| <a id="orbitschemaedge-endpoints"></a>`endpoints` | [`OrbitSchemaEdgeEndpointConnection!`](#orbitschemaedgeendpointconnection) | Pairs of node kinds that the edge kind connects. (see [Connections](#connections)) |
+| <a id="orbitschemaedge-name"></a>`name` | [`String!`](#string) | Name of the edge kind. Queries use it as the relationship type. |
+
+### `OrbitSchemaEdgeEndpoint`
+
+Pair of node kinds that an edge kind connects.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="orbitschemaedgeendpoint-source"></a>`source` | [`OrbitSchemaNode!`](#orbitschemanode) | Node kind at the start of the edge. |
+| <a id="orbitschemaedgeendpoint-target"></a>`target` | [`OrbitSchemaNode!`](#orbitschemanode) | Node kind at the end of the edge. |
+
+### `OrbitSchemaNode`
+
+Node kind in the Orbit schema.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="orbitschemanode-description"></a>`description` | [`String`](#string) | Description of the node kind. |
+| <a id="orbitschemanode-display"></a>`display` | [`OrbitSchemaDisplay`](#orbitschemadisplay) | How to draw nodes of the kind. |
+| <a id="orbitschemanode-domain"></a>`domain` | [`OrbitSchemaDomain!`](#orbitschemadomain) | Domain of the node kind. |
+| <a id="orbitschemanode-labelproperty"></a>`labelProperty` | [`String`](#string) | Property to show as the label of a node. |
+| <a id="orbitschemanode-name"></a>`name` | [`String!`](#string) | Name of the node kind. Queries use it as the node label. |
+| <a id="orbitschemanode-primarykey"></a>`primaryKey` | [`String`](#string) | Property that identifies a node. |
+| <a id="orbitschemanode-properties"></a>`properties` | [`OrbitSchemaPropertyConnection!`](#orbitschemapropertyconnection) | Properties of the node kind. (see [Connections](#connections)) |
+
+### `OrbitSchemaProperty`
+
+Property of a node kind in the Orbit schema.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="orbitschemaproperty-datatype"></a>`dataType` | [`String!`](#string) | Data type of the property, for example `string` or `int64`. |
+| <a id="orbitschemaproperty-enumvalues"></a>`enumValues` | [`[String!]!`](#string) | Allowed values of an enum property. Empty for other properties. |
+| <a id="orbitschemaproperty-name"></a>`name` | [`String!`](#string) | Name of the property. |
+| <a id="orbitschemaproperty-nullable"></a>`nullable` | [`Boolean!`](#boolean) | Indicates whether the property can be empty. |
 
 ### `OrbitTrial`
 
@@ -68194,6 +68371,7 @@ Fields:
 | <a id="workitem-author"></a>`author` {{< icon name="warning-solid" >}} | [`UserCore`](#usercore) | Introduced in GitLab 15.9. Status: Experiment. User that created the work item. |
 | <a id="workitem-availablequickactions"></a>`availableQuickActions` | [`[QuickActionCommand!]`](#quickactioncommand) | Quick actions available to the current user on the work item. |
 | <a id="workitem-closedat"></a>`closedAt` | [`Time`](#time) | Timestamp of when the work item was closed. |
+| <a id="workitem-closedby"></a>`closedBy` | [`UserCore`](#usercore) | User that closed the work item. |
 | <a id="workitem-commenttemplatespaths"></a>`commentTemplatesPaths` | [`[CommentTemplatePathType!]!`](#commenttemplatepathtype) | Paths of the comment templates. |
 | <a id="workitem-confidential"></a>`confidential` | [`Boolean!`](#boolean) | Indicates the work item is confidential. |
 | <a id="workitem-createnoteemail"></a>`createNoteEmail` | [`String`](#string) | User specific email address for the work item. |

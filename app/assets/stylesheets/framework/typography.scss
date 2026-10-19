@@ -310,6 +310,14 @@
       animation-timeline: --gl-table-scroll-x;
     }
 
+    &:dir(rtl) {
+      margin-left: auto;
+
+      &::before {
+        background: linear-gradient(to right, var(--gl-shadow-color-default), transparent);
+      }
+    }
+
     &::after {
       // Scrollbar width can vary depending on the OS settings for visible scrollbar.
       // This means that we cannot use --scrollbar-width to position the shadow, as it will be different for each user.
@@ -515,7 +523,7 @@
     }
   }
 
-  [data-sticky-header] > table:not(.code) > thead th,
+  [data-sticky-header] > table:not(.code) > thead > tr:first-child > th,
   [data-sticky-header] > table:not(.code) > tbody > tr:first-child > th {
     @apply gl-sticky;
     @apply gl-top-0;

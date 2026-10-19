@@ -574,6 +574,33 @@ RSpec.describe Tooling::Graphql::DeprecatedDocs::Renderer, feature_category: :ap
       it_behaves_like 'renders correctly as GraphQL documentation'
     end
 
+    context 'when an object type name ends with Edge but the type is not a pagination edge' do
+      let(:type) do
+        Class.new(Types::BaseObject) do
+          graphql_name 'RoadEdge'
+          description 'Road between two towns.'
+
+          field :length, GraphQL::Types::Int, null: true, description: 'Length of the road.'
+        end
+      end
+
+      specify do
+        expectation = <<~DOC
+          ### `RoadEdge`
+
+          Road between two towns.
+
+          Fields:
+
+          | Name | Type | Description |
+          | ---- | ---- | ----------- |
+          | <a id="roadedge-length"></a>`length` | [`Int`](#int) | Length of the road. |
+        DOC
+
+        is_expected.to include(expectation)
+      end
+    end
+
     context 'when a field has a global ID type' do
       let(:type) do
         Class.new(Types::BaseObject) do

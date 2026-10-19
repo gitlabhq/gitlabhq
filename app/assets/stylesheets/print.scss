@@ -36,7 +36,7 @@
     // Restore real borders and remove the shadow.
     // See framework/typography.scss for the non-print declaration.
     [data-sticky-header] > table:not(.code) {
-      > thead th,
+      > thead > tr:first-child > th,
       > tbody > tr:first-child > th {
         border-top: 1px solid var(--gl-border-color-default);
         border-bottom: 1px solid var(--gl-border-color-default);

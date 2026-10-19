@@ -34,6 +34,7 @@ RSpec.describe GitlabSchema.types['WorkItem'], feature_category: :team_planning 
       created_at
       updated_at
       closed_at
+      closed_by
       web_url
       web_path
       create_note_email
@@ -72,7 +73,7 @@ RSpec.describe GitlabSchema.types['WorkItem'], feature_category: :team_planning 
 
   describe 'fields with :ai_workflows scope' do
     expected_scoped_fields = %w[
-      author closedAt confidential createdAt description id iid imported namespace project
+      author closedAt closedBy confidential createdAt description id iid imported namespace project
       state title updatedAt userDiscussionsCount widgets features workItemType archived
     ]
 

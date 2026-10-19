@@ -15,6 +15,7 @@ module WorkItems
         author: [:author],
         [:author, :gitpod_enabled] => { author: :user_preference },
         [:author, :location] => { author: :user_detail },
+        closed_by: [:closed_by],
         archived: {
           namespace: :namespace_settings_with_ancestors_inherited_settings,
           project: { namespace: :namespace_settings_with_ancestors_inherited_settings }

@@ -183,6 +183,43 @@ RSpec.describe 'getting a work item list for a project', feature_category: :port
     end
   end
 
+  context 'when querying closedBy' do
+    let(:fields) do
+      <<~GRAPHQL
+        nodes {
+          id
+          closedBy { id }
+        }
+      GRAPHQL
+    end
+
+    before_all do
+      item1.close!(current_user)
+    end
+
+    it 'returns the user that closed the work item and null for open items' do
+      post_graphql(query, current_user: current_user)
+
+      expect(items_data).to include(
+        { 'id' => item1.to_gid.to_s, 'closedBy' => { 'id' => current_user.to_gid.to_s } },
+        { 'id' => item2.to_gid.to_s, 'closedBy' => nil }
+      )
+    end
+
+    it 'avoids N+1 queries', :use_sql_query_cache do
+      post_graphql(query, current_user: current_user) # warm-up
+
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        post_graphql(query, current_user: current_user)
+      end
+
+      create_list(:work_item, 2, project: project).each { |work_item| work_item.close!(create(:user)) }
+
+      expect { post_graphql(query, current_user: current_user) }.not_to exceed_all_query_limit(control)
+      expect_graphql_errors_to_be_empty
+    end
+  end
+
   context 'when querying features.hierarchy' do
     let_it_be(:children) { create_list(:work_item, 4, :task, project: project) }
     let_it_be_with_reload(:child_link1) { create(:parent_link, work_item_parent: item1, work_item: children[0]) }

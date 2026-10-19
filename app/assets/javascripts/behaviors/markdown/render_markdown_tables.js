@@ -6,6 +6,9 @@ const loadMarkdownTable = memoize(
   () => import(/* webpackChunkName: 'gfm_markdown_table' */ '../components/markdown_table.vue'),
 );
 
+const APPLIED_ATTRIBUTE = 'data-markdown-table-applied';
+const MAX_SORTABLE_ROWS = 1000;
+
 const mountedApps = new Set();
 let removalObserver;
 
@@ -22,8 +25,7 @@ function observeRemoval(table, app) {
       if (entry.app.$el.isConnected) return;
 
       entry.app.$destroy();
-      // eslint-disable-next-line no-param-reassign
-      delete entry.table.dataset.markdownTableApplied;
+      entry.table.removeAttribute(APPLIED_ATTRIBUTE);
       mountedApps.delete(entry);
     });
 
@@ -36,40 +38,69 @@ function observeRemoval(table, app) {
   removalObserver.observe(document.body, { childList: true, subtree: true });
 }
 
+const cellsOf = (row) => Array.from(row.cells);
+const rowsOf = (section) => Array.from(section.rows);
+const isHeaderRow = (row) =>
+  row.cells.length > 0 && cellsOf(row).every((cell) => cell.tagName === 'TH');
+const hasSpan = (row) => cellsOf(row).some((cell) => cell.colSpan !== 1 || cell.rowSpan !== 1);
+const toItems = (rows) => rows.map((row, rowIndex) => ({ cells: cellsOf(row), rowIndex }));
+const isNested = (table) => table.parentElement.closest('table, .md').tagName === 'TABLE';
+
+function isClaimable(table) {
+  return (
+    !table.hasAttribute(APPLIED_ATTRIBUTE) &&
+    table.parentNode &&
+    !('tableFields' in table.dataset) &&
+    !isNested(table)
+  );
+}
+
 function parseTable(table) {
-  // Take care to grab only *this* table's cells, and not any nested tables'.
-  const thead = table.tHead;
-  const { caption } = table;
+  const sections = Array.from(table.children);
+  const rowsIn = (tagName) => sections.filter((el) => el.tagName === tagName).flatMap(rowsOf);
 
-  // A table without a declared header (e.g. hand-authored HTML) is left as-is;
-  // promoting the first body row would fabricate a header that was never authored.
-  if (!thead) return null;
+  const headRows = rowsIn('THEAD');
+  const bodies = sections.filter((el) => el.tagName === 'TBODY').map(rowsOf);
+  const footRows = rowsIn('TFOOT');
+  const [firstBody = []] = bodies;
+  const firstNonHeaderIndex = firstBody.findIndex((row) => !isHeaderRow(row));
+  const leadingHeaderRows = firstBody.slice(
+    0,
+    firstNonHeaderIndex === -1 ? firstBody.length : firstNonHeaderIndex,
+  );
+  const headerRows = [...headRows, ...leadingHeaderRows];
+  const bodyRowCount = bodies.flat().length - leadingHeaderRows.length;
 
-  const [tbody] = table.tBodies;
-  const [headerRow] = thead.rows;
-  const bodyRows = tbody ? Array.from(tbody.rows) : [];
-  const footerRows = Array.from(table.tFoot?.rows ?? [], (row) => Array.from(row.cells));
+  const sortable =
+    headerRows.length === 1 &&
+    bodies.length === 1 &&
+    bodyRowCount >= 2 &&
+    bodyRowCount <= MAX_SORTABLE_ROWS &&
+    ![...headRows, ...firstBody, ...footRows].some(hasSpan);
 
-  if (!headerRow) return null;
+  const { dir = null, ...tableAttributes } = Object.fromEntries(
+    Array.from(table.attributes, ({ name, value }) => [name, value]),
+  );
+  const common = {
+    footerRows: footRows.map(cellsOf),
+    caption: table.caption,
+    dir,
+    tableAttributes,
+  };
 
-  const headerCells = Array.from(headerRow.cells);
-  if (headerCells.length === 0) return null;
+  if (!sortable) {
+    return { ...common, fields: [], headRows: headRows.map(cellsOf), bodies: bodies.map(toItems) };
+  }
 
-  const fields = headerCells.map((cell, index) => ({
-    key: `col_${index}`,
-    cell,
+  const fields = cellsOf(headerRows[0]).map((cell, index) => ({ key: `col_${index}`, cell }));
+  const items = toItems(firstBody.slice(leadingHeaderRows.length)).map((item) => ({
+    ...item,
+    ...Object.fromEntries(
+      fields.map(({ key }, index) => [key, { text: item.cells[index]?.textContent.trim() ?? '' }]),
+    ),
   }));
 
-  const items = bodyRows.map((row, rowIndex) => {
-    const cells = Array.from(row.cells);
-    const item = { cells, rowIndex };
-    fields.forEach((field, index) => {
-      item[field.key] = { text: cells[index] ? cells[index].textContent.trim() : '' };
-    });
-    return item;
-  });
-
-  return { fields, items, footerRows, caption };
+  return { ...common, fields, headRows: [], bodies: [items] };
 }
 
 /**
@@ -80,18 +111,10 @@ function parseTable(table) {
  *   there is nothing to render.
  */
 export default function renderMarkdownTables(els) {
-  const claimed = [];
-
-  els.forEach((table) => {
-    if (table.dataset.markdownTableApplied === 'true') return;
-    if (!table.parentNode) return;
-
-    const parsed = parseTable(table);
-    if (!parsed) return;
-
-    // eslint-disable-next-line no-param-reassign
-    table.dataset.markdownTableApplied = 'true';
-    claimed.push({ table, ...parsed });
+  const claimed = els.filter(isClaimable).map((table) => {
+    const props = parseTable(table);
+    table.setAttribute(APPLIED_ATTRIBUTE, 'true');
+    return { table, props };
   });
 
   if (!claimed.length) {
@@ -99,17 +122,16 @@ export default function renderMarkdownTables(els) {
   }
 
   return loadMarkdownTable().then(({ default: MarkdownTable }) => {
-    claimed.forEach(({ table, fields, items, footerRows, caption }) => {
+    claimed.forEach(({ table, props }) => {
       if (!table.parentNode) {
-        // eslint-disable-next-line no-param-reassign
-        delete table.dataset.markdownTableApplied;
+        table.removeAttribute(APPLIED_ATTRIBUTE);
         return;
       }
 
       const app = new Vue({
         el: table,
         name: 'MarkdownTableRoot',
-        render: (h) => h(MarkdownTable, { props: { fields, items, footerRows, caption } }),
+        render: (h) => h(MarkdownTable, { props }),
       });
 
       observeRemoval(table, app);

@@ -236028,6 +236028,18 @@
               "deprecationReason": null
             },
             {
+              "name": "closedBy",
+              "description": "User that closed the work item.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "UserCore",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "commentTemplatesPaths",
               "description": "Paths of the comment templates.",
               "args": [],

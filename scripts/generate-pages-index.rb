@@ -20,6 +20,7 @@ DESCRIPTIONS = {
   'crystalball' => 'Test to source mapping',
   'knapsack' => 'Knapsack RSpec timing report',
   'rspec' => 'Flaky RSpec tests',
+  'rubocop-docs' => 'RuboCop documentation site',
   'storybook' => 'Frontend component Storybook'
 }.freeze
 

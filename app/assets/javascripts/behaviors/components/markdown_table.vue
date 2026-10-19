@@ -10,8 +10,6 @@ import { InternalEvents } from '~/tracking';
 
 const ASCENDING = 'ascending';
 const DESCENDING = 'descending';
-// Performance limit: disable sorting for tables with more than 1000 rows.
-const MAX_SORTABLE_ROWS = 1000;
 
 const SORT_ACTIONS = {
   ascending: { icon: 'sort-lowest', label: s__('Table|Sort ascending') },
@@ -50,16 +48,17 @@ export default {
   stickyHeaderClasses: STICKY_HEADER_CLASSES,
   stickyTableWrapperClasses: STICKY_TABLE_WRAPPER_CLASSES,
   props: {
-    // Header cells. Each field is `{ key, cell }`, where `cell` is the header cell
-    // element.
     fields: {
       type: Array,
       required: false,
       default: () => [],
     },
-    // Body rows. Each item is `{ cells, rowIndex }` plus, per field `key`,
-    // a `{ text }` used for sorting comparisons.
-    items: {
+    headRows: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    bodies: {
       type: Array,
       required: false,
       default: () => [],
@@ -71,6 +70,16 @@ export default {
     },
     caption: {
       type: HTMLElement,
+      required: false,
+      default: null,
+    },
+    tableAttributes: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
+    dir: {
+      type: String,
       required: false,
       default: null,
     },
@@ -99,7 +108,7 @@ export default {
   },
   computed: {
     canSort() {
-      return this.items.length <= MAX_SORTABLE_ROWS && this.items.length > 1;
+      return this.fields.length > 0;
     },
     sortAnnouncement() {
       if (!this.hasSorted) return '';
@@ -113,14 +122,15 @@ export default {
         false,
       );
     },
-    sortedItems() {
-      if (!this.canSort || !this.sortKey) {
-        return this.items;
+    sortedBodies() {
+      if (!this.sortKey) {
+        return this.bodies;
       }
       const key = this.sortKey;
       const ascending = this.sortDirection === ASCENDING;
+      const [items] = this.bodies;
 
-      return [...this.items].sort((rowA, rowB) => {
+      const sorted = [...items].sort((rowA, rowB) => {
         const a = rowA[key]?.text ?? '';
         const b = rowB[key]?.text ?? '';
 
@@ -132,6 +142,8 @@ export default {
         const comparison = a.toLowerCase().localeCompare(b.toLowerCase());
         return ascending ? comparison : -comparison;
       });
+
+      return [sorted];
     },
   },
   methods: {
@@ -142,7 +154,6 @@ export default {
       return cell.getAttribute('style');
     },
     ariaSort(key) {
-      if (!this.canSort) return null;
       if (this.sortKey !== key) return 'none';
       return this.sortDirection;
     },
@@ -157,8 +168,6 @@ export default {
       this.visibleTooltipKeys = this.visibleTooltipKeys.filter((visibleKey) => visibleKey !== key);
     },
     handleSort(key) {
-      if (!this.canSort) return;
-
       this.hasSorted = true;
       if (this.sortKey === key) {
         if (this.sortDirection === DESCENDING) {
@@ -179,7 +188,7 @@ export default {
 };
 </script>
 <template>
-  <div data-testid="table-shadow-overlay" :class="$options.stickyTableWrapperClasses">
+  <div data-testid="table-shadow-overlay" :class="$options.stickyTableWrapperClasses" :dir="dir">
     <!--
     Print scale-to-fit (wikis/utils/print_table_scale.js) measures
     `[data-print-scale-target]` against `[data-print-scale-container]`, which
@@ -187,13 +196,14 @@ export default {
   -->
     <div :class="$options.stickyHeaderClasses" data-sticky-header data-print-scale-container>
       <table
+        v-bind="tableAttributes"
         data-markdown-table-applied="true"
         data-print-scale-target
         class="gl-min-w-full gl-overflow-y-hidden"
       >
         <caption v-if="caption" v-adopt-content="caption"></caption>
-        <thead>
-          <tr>
+        <thead v-if="canSort || headRows.length">
+          <tr v-if="canSort">
             <th
               v-for="field in fields"
               :key="field.key"
@@ -208,13 +218,12 @@ export default {
             >
               <div class="gl-flex gl-items-center gl-gap-2">
                 <span
-                  v-if="!canSort || interactiveHeaderKeys.includes(field.key)"
+                  v-if="interactiveHeaderKeys.includes(field.key)"
                   :id="`${tableId}-${field.key}`"
                   v-adopt-content="field.cell"
-                  :class="{ 'gl-relative gl-z-1': canSort }"
+                  class="gl-relative gl-z-1"
                 ></span>
                 <button
-                  v-if="canSort"
                   :id="`${tableId}-${field.key}-sort`"
                   type="button"
                   class="gl-group gl-flex gl-cursor-pointer gl-items-center gl-gap-2 gl-border-0 gl-bg-transparent gl-p-0 gl-text-left gl-font-bold gl-text-inherit focus-visible:gl-outline-none"
@@ -242,7 +251,6 @@ export default {
                   />
                 </button>
                 <gl-tooltip
-                  v-if="canSort"
                   :target="`${tableId}-${field.key}-sort`"
                   @show="showTooltip(field.key)"
                   @hidden="hideTooltip(field.key)"
@@ -252,9 +260,10 @@ export default {
               </div>
             </th>
           </tr>
+          <tr v-for="(cells, index) in headRows" :key="index" v-adopt-cells="cells"></tr>
         </thead>
-        <tbody>
-          <tr v-for="item in sortedItems" :key="item.rowIndex" v-adopt-cells="item.cells"></tr>
+        <tbody v-for="(items, index) in sortedBodies" :key="index">
+          <tr v-for="item in items" :key="item.rowIndex" v-adopt-cells="item.cells"></tr>
         </tbody>
         <tfoot v-if="footerRows.length">
           <tr v-for="(cells, index) in footerRows" :key="index" v-adopt-cells="cells"></tr>
