@@ -403,16 +403,20 @@ RSpec.describe Gitlab::OtherMarkup, :aggregate_failures, feature_category: :wiki
         RDOC
       end
 
-      it 'preserves existing heading IDs and adds anchor links for table of contents' do
+      it 'adds heading IDs and anchor links for table of contents' do
         headings = doc.css('h1, h2, h3, h4, h5, h6')
 
         expect(headings.size).to eq(7)
 
-        # RDoc generates heading IDs with a `label-` prefix.
         headings.each do |heading|
-          expect(heading['id']).to start_with('user-content-label-')
-          expect(heading.at_css('a.anchor')['href']).to start_with('#label-')
+          expect(heading['id']).to start_with('user-content-')
+          expect(heading.at_css('a.anchor')).to be_present
         end
+
+        expect(doc.at_css('h1')['id']).to eq('user-content-heading-1')
+        expect(doc.at_css('h1 a.anchor')['href']).to eq('#heading-1')
+        expect(doc.at_css('h6')['id']).to eq('user-content-heading-6')
+        expect(doc.at_css('h6 a.anchor')['href']).to eq('#heading-6')
       end
     end
   end
@@ -422,7 +426,7 @@ RSpec.describe Gitlab::OtherMarkup, :aggregate_failures, feature_category: :wiki
       'links' => {
         file: 'file.rdoc',
         input: 'XSS[JaVaScriPt:alert(1)]',
-        output: "\n" + '<p><a>XSS</a></p>' + "\n"
+        output: "\n" + '<p>XSS</p>' + "\n"
       }
     }
     links.each do |name, data|
