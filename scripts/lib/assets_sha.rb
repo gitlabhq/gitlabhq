@@ -27,6 +27,7 @@ module AssetsSha
     package.json
     yarn.lock
     babel.config.js
+    .browserslistrc
     .nvmrc
   ].freeze
 

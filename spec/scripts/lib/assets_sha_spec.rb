@@ -14,6 +14,12 @@ RSpec.describe AssetsSha, feature_category: :tooling do
 
       expect(files).to include(a_string_matching(%r{\Apatches/.+\.patch\z}))
     end
+
+    it 'includes .browserslistrc, which sets the browsers the assets are compiled for' do
+      files = described_class.send(:assets_impacting_compilation)
+
+      expect(files).to include('.browserslistrc')
+    end
   end
 
   describe '.sha256_of_assets_impacting_compilation' do
