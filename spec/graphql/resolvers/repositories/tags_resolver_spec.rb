@@ -141,6 +141,25 @@ RSpec.describe Resolvers::Repositories::TagsResolver, feature_category: :source_
         end
       end
 
+      context 'when following the returned search cursor' do
+        let(:first) { 1 }
+
+        it 'reaches the final match and reports the end of the filtered list', :aggregate_failures do
+          first_page = resolved
+
+          expect(first_page.items.map(&:name)).to eq(['v1.1.0'])
+          expect(first_page.has_next_page).to be(true)
+          expect(Base64.strict_decode64(first_page.end_cursor)).to eq('v1.1.0')
+
+          second_page = resolve_field(field_instance, repository,
+            args: arguments.merge(after: first_page.end_cursor), object_type: resolver_parent, schema: GitlabSchema)
+
+          expect(second_page.items.map(&:name)).to eq(['v1.1.1'])
+          expect(second_page.has_next_page).to be(false)
+          expect(second_page.end_cursor).to be_nil
+        end
+      end
+
       context 'when nothing matches' do
         let(:search) { 'no-such-tag' }
 

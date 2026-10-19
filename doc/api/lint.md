@@ -20,9 +20,10 @@ For example, the following command uses JQ to properly escape a given YAML file,
 
 ```shell
 jq --null-input --arg yaml "$(<example-gitlab-ci.yml)" '.content=$yaml' \
-| curl --url "https://gitlab.com/api/v4/projects/:id/ci/lint?include_merged_yaml=true" \
---header 'Content-Type: application/json' \
---data @-
+| curl --request POST \
+    --url "https://gitlab.example.com/api/v4/projects/:id/ci/lint?include_merged_yaml=true" \
+    --header 'Content-Type: application/json' \
+    --data @-
 ```
 
 1. Create a YAML file named `example-gitlab-ci.yml`:
@@ -48,7 +49,8 @@ jq --null-input --arg yaml "$(<example-gitlab-ci.yml)" '.content=$yaml' \
 
    ```shell
    jq --null-input --arg yaml "$(<example-gitlab-ci.yml)" '.content=$yaml' \
-   | curl --url "https://gitlab.com/api/v4/projects/:id/ci/lint?include_merged_yaml=true" \
+   | curl --request POST \
+       --url "https://gitlab.com/api/v4/projects/:id/ci/lint?include_merged_yaml=true" \
        --header 'Content-Type: application/json' \
        --data @-
    ```

@@ -107,6 +107,14 @@ RSpec.describe Mcp::Tools::Repositories::Tags::ListTagsService, feature_category
         expect(tag_names(execute({ project_id: project.full_path, search: 'v1.1' }))).to eq(%w[v1.1.1 v1.1.0])
       end
 
+      it 'finds a match beyond the first unfiltered page', :aggregate_failures do
+        result = execute({ project_id: project.full_path, search: '^v1.0', first: 1 })
+
+        expect(result[:isError]).to be false
+        expect(tag_names(result)).to eq(['v1.0.0'])
+        expect(result[:structuredContent][:metadata]).to eq(has_next_page: false, end_cursor: nil)
+      end
+
       # Filtering happens before slicing, so the cursor must walk the matched set, not all tags.
       it 'paginates within the filtered set', :aggregate_failures do
         first_page = execute({ project_id: project.full_path, search: 'v1.1', first: 1 })
@@ -181,8 +189,8 @@ RSpec.describe Mcp::Tools::Repositories::Tags::ListTagsService, feature_category
         expect(execute({ project_id: project.full_path, first: 100 })[:isError]).to be false
       end
 
-      it 'rejects first below the minimum' do
-        expect(execute({ project_id: project.full_path, first: 0 })[:isError]).to be true
+      it 'strips a zero first value instead of rejecting it' do
+        expect(execute({ project_id: project.full_path, first: 0 })[:isError]).to be false
       end
 
       it 'rejects first above the maximum', :aggregate_failures do

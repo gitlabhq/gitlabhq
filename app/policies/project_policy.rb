@@ -343,7 +343,7 @@ class ProjectPolicy < BasePolicy
 
   rule { ~can_create_fork_in_namespace }.prevent :link_forked_project
 
-  rule { internal_pages & ~anonymous & ~external_user }.policy do
+  rule { internal_pages & ~anonymous & ~external_user & can?(:read_project) }.policy do
     enable :read_pages_content
   end
 

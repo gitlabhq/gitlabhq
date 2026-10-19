@@ -137,6 +137,25 @@ RSpec.describe Badge, feature_category: :groups_and_projects do
     end
   end
 
+  context 'with multiple annotated tags' do
+    let(:project) { create(:project, :small_repo) }
+    let(:badge) do
+      build(:badge, link_url: 'https://example.com/%{latest_tag}', image_url: 'https://example.com/%{latest_tag}.svg')
+    end
+
+    it 'uses the newest tag date rather than its name in both URLs', :aggregate_failures do
+      travel_to(Time.utc(2025, 1, 1)) do
+        project.repository.add_tag(project.first_owner, 'z-older', 'HEAD', 'Older release')
+      end
+      travel_to(Time.utc(2025, 1, 2)) do
+        project.repository.add_tag(project.first_owner, 'a-newer', 'HEAD', 'Newer release')
+      end
+
+      expect(badge.rendered_link_url(project)).to eq('https://example.com/a-newer')
+      expect(badge.rendered_image_url(project)).to eq('https://example.com/a-newer.svg')
+    end
+  end
+
   context 'methods' do
     let(:badge) { build(:badge, link_url: placeholder_url, image_url: placeholder_url) }
     let_it_be(:project) { create(:project, :repository, :in_group) }

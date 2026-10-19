@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Query.mergeRequest.conflictFiles', feature_category: :code_review_workflow do
   include GraphqlHelpers
+  using RSpec::Parameterized::TableSyntax
 
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:developer) { create(:user, developer_of: project) }
@@ -19,6 +20,11 @@ RSpec.describe 'Query.mergeRequest.conflictFiles', feature_category: :code_revie
         ourPath
         theirPath
         content
+        sections {
+          sectionId
+          ourLines
+          theirLines
+        }
       }
     GRAPHQL
   end
@@ -48,6 +54,21 @@ RSpec.describe 'Query.mergeRequest.conflictFiles', feature_category: :code_revie
 
         contents = conflict_files_data.pluck('content').join("\n")
         expect(contents).to include('<<<<<<').and include('======').and include('>>>>>>')
+      end
+
+      it 'returns each conflict with the lines each side keeps', :aggregate_failures do
+        sections = conflict_files_data.to_h { |file| [file['ourPath'], file['sections']] }
+
+        expect(sections['files/ruby/popen.rb']).to eq([{
+          'sectionId' => '2f6fcd96b88b36ce98c38da085c795a27d92a3dd_14_14',
+          'ourLines' => ["    vars = { 'PWD' => path }"],
+          'theirLines' => ['    vars = {', "      'PWD' => path", '    }']
+        }])
+        expect(sections['files/ruby/regex.rb'].pluck('sectionId')).to eq(%w[
+          6eb14e00385d2fb284765eb1cd8d420d33d63fc9_9_9
+          6eb14e00385d2fb284765eb1cd8d420d33d63fc9_21_21
+          6eb14e00385d2fb284765eb1cd8d420d33d63fc9_49_49
+        ])
       end
     end
 
@@ -80,6 +101,7 @@ RSpec.describe 'Query.mergeRequest.conflictFiles', feature_category: :code_revie
     it 'returns the conflict file with content', :aggregate_failures do
       expect(conflict_files_data).to be_present
       expect(conflict_files_data.first).to include('ourPath' => be_present, 'content' => be_present)
+      expect(conflict_files_data.first['sections']).to be_nil
     end
   end
 
@@ -180,9 +202,38 @@ RSpec.describe 'Query.mergeRequest.conflictFiles', feature_category: :code_revie
       post_query
     end
 
-    it 'returns null for the content field instead of raising' do
+    it 'returns null for the content and sections fields instead of raising' do
       expect(conflict_files_data).to be_present
       expect(conflict_files_data.first['content']).to be_nil
+      expect(conflict_files_data.first['sections']).to be_nil
+    end
+  end
+
+  context 'when a conflict file cannot be split into sections' do
+    let_it_be(:merge_request) do
+      create(:merge_request, source_branch: 'conflict-resolvable', target_branch: 'conflict-start',
+        source_project: project, merge_status: :cannot_be_merged)
+    end
+
+    where(:case_name, :content) do
+      'markers the parser cannot follow' | "<<<<<<< a.rb\n\\ours\n=======\ntheirs\n>>>>>>> a.rb\n"
+      'blank content, as in a binary file' | ''
+    end
+
+    with_them do
+      before do
+        ::MergeRequests::MergeabilityCheckService.new(merge_request).execute
+
+        allow_next_instance_of(Gitlab::Git::Conflict::File) do |file|
+          allow(file).to receive(:content).and_return(content)
+        end
+        post_query
+      end
+
+      it 'returns null for the sections field instead of raising', :aggregate_failures do
+        expect(conflict_files_data).to be_present
+        expect(conflict_files_data.first['sections']).to be_nil
+      end
     end
   end
 

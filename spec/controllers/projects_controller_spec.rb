@@ -1524,6 +1524,26 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
       get :refs, params: { namespace_id: project.namespace, id: project, ref: "123456" }
     end
 
+    context 'when the tag list exceeds the refs limit' do
+      before do
+        stub_const('ProjectsController::REFS_LIMIT', 2)
+      end
+
+      it 'returns the first tags in the requested order' do
+        get :refs, params: { namespace_id: project.namespace, id: project, find: ['tags'], sort: 'name_asc' }
+
+        expect(json_response['Tags']).to eq(%w[v1.0.0 v1.1.0])
+      end
+
+      it 'searches beyond the unfiltered prefix before limiting results' do
+        get :refs, params: {
+          namespace_id: project.namespace, id: project, find: ['tags'], sort: 'name_asc', search: 'v1.1'
+        }
+
+        expect(json_response['Tags']).to eq(%w[v1.1.0 v1.1.1])
+      end
+    end
+
     it 'defaults to updated_desc sorting for branches when no sort parameter provided' do
       branch_params = ActionController::Parameters.new(per_page: 100, sort: 'updated_desc').permit!
 

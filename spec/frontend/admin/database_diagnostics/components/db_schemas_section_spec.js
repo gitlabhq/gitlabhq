@@ -11,11 +11,10 @@ describe('DbSchemasSection component', () => {
   const findTable = () => wrapper.findComponent(GlTableLite);
   const findBadges = () => wrapper.findAllComponents(GlBadge);
 
-  const createComponent = ({ props = {} } = {}) => {
+  const createComponent = () => {
     wrapper = mountExtended(DbSchemasSection, {
       propsData: {
         schemas,
-        ...props,
       },
     });
   };

@@ -33,13 +33,12 @@ describe('RunnerEditApp', () => {
   const findRunnerHeader = () => wrapper.findComponent(RunnerHeader);
   const findRunnerUpdateForm = () => wrapper.findComponent(RunnerUpdateForm);
 
-  const createComponentWithApollo = ({ props = {}, mountFn = shallowMount } = {}) => {
+  const createComponentWithApollo = ({ mountFn = shallowMount } = {}) => {
     wrapper = mountFn(RunnerEditApp, {
       apolloProvider: createMockApollo([[runnerFormQuery, mockRunnerQuery]]),
       propsData: {
         runnerId: mockRunnerId,
         runnerPath: mockRunnerPath,
-        ...props,
       },
     });
 

@@ -91,10 +91,10 @@ RSpec.describe Mcp::Tools::Groups::ListGroupsService, feature_category: :mcp_ser
       expect(result[:content].first[:text]).to include('Validation error')
     end
 
-    it 'rejects a first value below the minimum' do
+    it 'strips a zero first value instead of rejecting it' do
       result = service.execute(request: nil, params: { arguments: { first: 0 } })
 
-      expect(result[:content].first[:text]).to include('Validation error')
+      expect(result[:isError]).to be(false)
     end
 
     it 'rejects a first value above the maximum' do

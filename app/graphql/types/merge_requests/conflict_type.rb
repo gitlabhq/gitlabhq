@@ -18,9 +18,24 @@ module Types
         description: 'Raw content of the conflicting file, including Git conflict markers. ' \
           'Returns null for files with unsupported encodings (binary, non-UTF-8).'
 
+      field :sections, [Types::MergeRequests::ConflictSectionType], null: true,
+        experiment: { milestone: '19.6' },
+        description: 'Conflicts in the file, in file order. Returns null when the file cannot be resolved ' \
+          'section by section, for example when its conflict markers cannot be parsed. ' \
+          'Resolve such files with new content instead.'
+
       def content
         object.content
       rescue Gitlab::Git::Conflict::File::UnsupportedEncoding
+        nil
+      end
+
+      # Reuses the web conflicts page's sections, so section IDs match what it resolves with
+      def sections
+        return unless object.type.text?
+
+        object.sections.select { |section| section[:conflict] }.presence
+      rescue Gitlab::Git::Conflict::Parser::UnresolvableError, Gitlab::Git::Conflict::File::UnsupportedEncoding
         nil
       end
     end

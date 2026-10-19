@@ -6,12 +6,8 @@ import LogViewerTopBar from '~/ci/job_log_viewer/components/log_viewer_top_bar.v
 describe('LogViewerTopBar', () => {
   let wrapper;
 
-  const createWrapper = ({ props = {}, mountFn = shallowMountExtended } = {}) => {
-    wrapper = mountFn(LogViewerTopBar, {
-      propsData: {
-        ...props,
-      },
-    });
+  const createWrapper = ({ mountFn = shallowMountExtended } = {}) => {
+    wrapper = mountFn(LogViewerTopBar);
   };
 
   const findExperimentBadge = () => wrapper.findComponent(GlExperimentBadge);

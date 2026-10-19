@@ -201,10 +201,10 @@ RSpec.describe Mcp::Tools::Releases::ListReleasesService, feature_category: :mcp
         expect(result[:content].first[:text]).to include('per_page')
       end
 
-      it 'rejects a page below 1' do
+      it 'strips a zero page instead of rejecting it' do
         result = execute({ project_id: project.full_path, page: 0 })
 
-        expect(result[:isError]).to be true
+        expect(result[:isError]).to be false
       end
     end
 

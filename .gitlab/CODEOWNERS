@@ -912,7 +912,7 @@ lib/gitlab/checks/
 /doc/administration/auditor_users.md @idurham
 /doc/administration/auth/ @idurham
 /doc/administration/auth/ldap/ldap_synchronization.md @lciutacu
-/doc/administration/cicd/ @lyspin
+/doc/administration/cicd/ @marcel.amirault
 /doc/administration/cicd/job_logs.md @rsarangadharan
 /doc/administration/clusters/ @rsarangadharan
 /doc/administration/configure.md @eread
@@ -985,7 +985,7 @@ lib/gitlab/checks/
 /doc/administration/server_hooks.md @eread
 /doc/administration/settings/account_and_limit_settings.md @brendan777
 /doc/administration/settings/code-dropdown-custom-clients.md @brendan777
-/doc/administration/settings/continuous_integration.md @lyspin
+/doc/administration/settings/continuous_integration.md @marcel.amirault
 /doc/administration/settings/editor_extensions.md @lyspin
 /doc/administration/settings/email.md @brendan777
 /doc/administration/settings/external_authorization.md @idurham
@@ -1097,8 +1097,8 @@ lib/gitlab/checks/
 /doc/api/issues.md @brendan777
 /doc/api/issues_statistics.md @brendan777
 /doc/api/iterations.md @brendan777
-/doc/api/job_artifacts.md @lyspin
-/doc/api/jobs.md @lyspin
+/doc/api/job_artifacts.md @marcel.amirault
+/doc/api/jobs.md @marcel.amirault
 /doc/api/keys.md @brendan777
 /doc/api/labels.md @brendan777
 /doc/api/license.md @lciutacu
@@ -1111,7 +1111,7 @@ lib/gitlab/checks/
 /doc/api/merge_request_approvals.md @uchandran
 /doc/api/merge_request_context_commits.md @uchandran
 /doc/api/merge_requests.md @uchandran
-/doc/api/merge_trains.md @lyspin
+/doc/api/merge_trains.md @marcel.amirault
 /doc/api/metadata.md @rsarangadharan
 /doc/api/milestones.md @brendan777
 /doc/api/mobile_push_subscriptions.md @brendan777
@@ -1125,9 +1125,9 @@ lib/gitlab/checks/
 /doc/api/pages.md @brendan777
 /doc/api/pages_domains.md @brendan777
 /doc/api/personal_access_tokens.md @idurham
-/doc/api/pipeline_schedules.md @lyspin
-/doc/api/pipeline_triggers.md @lyspin
-/doc/api/pipelines.md @lyspin
+/doc/api/pipeline_schedules.md @marcel.amirault
+/doc/api/pipeline_triggers.md @marcel.amirault
+/doc/api/pipelines.md @marcel.amirault
 /doc/api/plan_limits.md @idurham
 /doc/api/project_access_tokens.md @idurham
 /doc/api/project_aliases.md @brendan777
@@ -1183,7 +1183,7 @@ lib/gitlab/checks/
 /doc/api/tags.md @brendan777
 /doc/api/templates/ @brendan777
 /doc/api/templates/gitlab_ci_ymls.md @marcel.amirault
-/doc/api/test_balancing.md @lyspin
+/doc/api/test_balancing.md @marcel.amirault
 /doc/api/todos.md @brendan777
 /doc/api/topics.md @z_painter
 /doc/api/user_applications.md @idurham
@@ -1197,55 +1197,23 @@ lib/gitlab/checks/
 /doc/api/web_commits.md @brendan777
 /doc/api/wikis.md @brendan777
 /doc/auth/ @idurham
-/doc/ci/_index.md @lyspin
-/doc/ci/caching/ @marcel.amirault
+/doc/ci/ @marcel.amirault
 /doc/ci/chatops/ @rsarangadharan
-/doc/ci/ci_cd_for_external_repos/ @lyspin
 /doc/ci/cloud_deployment/ @rsarangadharan
-/doc/ci/cloud_services/ @marcel.amirault
-/doc/ci/components/ @marcel.amirault
-/doc/ci/debugging.md @marcel.amirault
-/doc/ci/docker/ @lyspin
 /doc/ci/docker/using_docker_images.md @rsarangadharan
 /doc/ci/environments/ @rsarangadharan
-/doc/ci/examples/ @lyspin
 /doc/ci/examples/deployment/ @rsarangadharan
 /doc/ci/examples/semantic-release.md @z_painter
 /doc/ci/functions/ @rsarangadharan
 /doc/ci/gitlab_google_cloud_integration/ @z_painter
-/doc/ci/inputs/ @marcel.amirault
 /doc/ci/interactive_web_terminal/ @rsarangadharan
-/doc/ci/jobs/ @marcel.amirault
 /doc/ci/jobs/fine_grained_permissions.md @idurham
-/doc/ci/jobs/job_artifacts.md @lyspin
-/doc/ci/jobs/job_artifacts_troubleshooting.md @lyspin
-/doc/ci/jobs/job_logs.md @lyspin
-/doc/ci/migration/ @marcel.amirault
-/doc/ci/migration/bamboo.md @lyspin
 /doc/ci/migration/convert_to_gitlab_ci.md @fneill
-/doc/ci/migration/teamcity.md @lyspin
-/doc/ci/pipeline_editor/ @marcel.amirault
-/doc/ci/pipeline_security/ @marcel.amirault
-/doc/ci/pipelines/ @lyspin
-/doc/ci/pipelines/_index.md @marcel.amirault
-/doc/ci/pipelines/downstream_pipelines.md @marcel.amirault
-/doc/ci/pipelines/downstream_pipelines_troubleshooting.md @marcel.amirault
-/doc/ci/pipelines/pipeline_architectures.md @marcel.amirault
-/doc/ci/quick_start/ @marcel.amirault
 /doc/ci/resource_groups/ @rsarangadharan
-/doc/ci/review_apps/ @lyspin
 /doc/ci/runners/ @rsarangadharan
-/doc/ci/runners/git_submodules.md @lyspin
-/doc/ci/secrets/ @marcel.amirault
-/doc/ci/secure_files/ @marcel.amirault
+/doc/ci/runners/git_submodules.md @marcel.amirault
 /doc/ci/services/ @rsarangadharan
-/doc/ci/sustainability/ @lyspin
 /doc/ci/test_cases/ @brendan777
-/doc/ci/testing/ @lyspin
-/doc/ci/triggers/ @marcel.amirault
-/doc/ci/variables/ @marcel.amirault
-/doc/ci/yaml/ @marcel.amirault
-/doc/ci/yaml/artifacts_reports.md @lyspin
 /doc/development/advanced_search.md @gitlab-org/search-team/maintainers/advanced-framework
 /doc/development/advanced_search/ @gitlab-org/search-team/maintainers/advanced-framework
 /doc/development/application_slis/ @gitlab-org/search-team/maintainers/advanced-framework
@@ -1300,10 +1268,10 @@ lib/gitlab/checks/
 /doc/install/install_ai_gateway.md @ashrafkhamis
 /doc/integration/ @idurham
 /doc/integration/datadog.md @rsarangadharan
-/doc/integration/diffblue_cover.md @lyspin
+/doc/integration/diffblue_cover.md @marcel.amirault
 /doc/integration/external-issue-tracker.md @brendan777
 /doc/integration/gmail_action_buttons_for_gitlab.md @brendan777
-/doc/integration/jenkins.md @lyspin
+/doc/integration/jenkins.md @marcel.amirault
 /doc/integration/jira/ @brendan777
 /doc/integration/mattermost/ @eread
 /doc/integration/sourcegraph.md @brendan777
@@ -1322,7 +1290,7 @@ lib/gitlab/checks/
 /doc/solutions/ @jfullam @Darwinjs @sbrightwell
 /doc/solutions/integrations/servicenow.md @eread
 /doc/subscriptions/ @lciutacu
-/doc/subscriptions/gitlab_com/compute_minutes.md @lyspin
+/doc/subscriptions/gitlab_com/compute_minutes.md @marcel.amirault
 /doc/subscriptions/gitlab_com/gitlab_subscription_troubleshooting.md @lciutacu
 /doc/subscriptions/gitlab_dedicated/ @eread
 /doc/topics/autodevops/ @rsarangadharan
@@ -1407,7 +1375,7 @@ lib/gitlab/checks/
 /doc/user/group/iterations/ @brendan777
 /doc/user/group/moderate_users.md @idurham
 /doc/user/group/reporting/ @idurham
-/doc/user/group/repositories_analytics/ @lyspin
+/doc/user/group/repositories_analytics/ @marcel.amirault
 /doc/user/group/roadmap/ @brendan777
 /doc/user/group/saml_sso/_index.md @idurham
 /doc/user/group/saml_sso/example_saml_config.md @idurham
@@ -1448,12 +1416,12 @@ lib/gitlab/checks/
 /doc/user/project/import/ @eread
 /doc/user/project/insights/ @lciutacu
 /doc/user/project/integrations/aws_codepipeline.md @jfullam @Darwinjs @sbrightwell
-/doc/user/project/integrations/bamboo.md @lyspin
-/doc/user/project/integrations/github.md @lyspin
+/doc/user/project/integrations/bamboo.md @marcel.amirault
+/doc/user/project/integrations/github.md @marcel.amirault
 /doc/user/project/integrations/google_artifact_management.md @z_painter
 /doc/user/project/integrations/harbor.md @z_painter
-/doc/user/project/integrations/mock_ci.md @lyspin
-/doc/user/project/integrations/pipeline_status_emails.md @lyspin
+/doc/user/project/integrations/mock_ci.md @marcel.amirault
+/doc/user/project/integrations/pipeline_status_emails.md @marcel.amirault
 /doc/user/project/integrations/webhook_events.md @eread
 /doc/user/project/integrations/webhooks.md @eread
 /doc/user/project/integrations/webhooks_troubleshooting.md @eread
@@ -1846,7 +1814,7 @@ lib/gitlab/checks/
 /lib/omni_auth/strategies/bitbucket.rb
 /lib/security/weak_passwords.rb
 /lib/system_check/ldap_check.rb
-/vendor/gems/gitlab-iam-grpc/
+/vendor/gems/gitlab-iam-grpc/ @gitlab-org/software-supply-chain-security/authentication/approvers @gitlab-org/software-supply-chain-security/authentication/gate-infra-team
 
 # Necessary for GitLab availability
 [Verify] @gitlab-org/maintainers/cicd-verify @stanhu @ayufan

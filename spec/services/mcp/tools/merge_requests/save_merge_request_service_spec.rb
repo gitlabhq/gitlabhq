@@ -107,7 +107,7 @@ RSpec.describe Mcp::Tools::MergeRequests::SaveMergeRequestService, feature_categ
             },
             milestone_id: {
               type: 'integer',
-              description: 'Milestone ID to assign.'
+              description: 'Milestone ID to assign. On update, 0 removes the milestone.'
             },
             milestone: {
               type: 'string',
@@ -213,6 +213,18 @@ RSpec.describe Mcp::Tools::MergeRequests::SaveMergeRequestService, feature_categ
         })
         expect(result[:content].first[:text]).to include('Merge request updated successfully via save_merge_request')
         expect(result[:dispatch]).to eq(tool_name: 'update_merge_request')
+      end
+    end
+
+    context 'when an update sets milestone_id to 0' do
+      let(:arguments) { { project_id: 'group/project', merge_request_iid: 42, milestone_id: 0 } }
+
+      it 'forwards it, because the REST API removes the milestone for 0' do
+        allow(update_tool).to receive(:execute).and_return(mock_response)
+
+        service.execute(request: request, params: params)
+
+        expect(params[:arguments]).to include(milestone_id: 0)
       end
     end
 

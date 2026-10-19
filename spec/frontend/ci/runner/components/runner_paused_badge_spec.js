@@ -10,11 +10,8 @@ describe('RunnerTypeBadge', () => {
   const findBadge = () => wrapper.findComponent(GlBadge);
   const getTooltip = () => getBinding(findBadge().element, 'gl-tooltip');
 
-  const createComponent = ({ props = {} } = {}) => {
+  const createComponent = () => {
     wrapper = shallowMount(RunnerStatePausedBadge, {
-      propsData: {
-        ...props,
-      },
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
       },

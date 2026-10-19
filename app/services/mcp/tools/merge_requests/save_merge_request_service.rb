@@ -100,7 +100,7 @@ module Mcp
               },
               milestone_id: {
                 type: 'integer',
-                description: 'Milestone ID to assign.'
+                description: 'Milestone ID to assign. On update, 0 removes the milestone.'
               },
               milestone: {
                 type: 'string',
@@ -193,6 +193,12 @@ module Mcp
             tool_name: :"#{operation}_merge_request",
             action_description: action
           )
+        end
+
+        # The REST API removes the milestone when milestone_id is 0.
+        override :arguments_where_zero_is_a_value
+        def arguments_where_zero_is_a_value
+          %w[milestone_id]
         end
 
         def ignored_params(arguments, operation)

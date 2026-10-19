@@ -3101,6 +3101,47 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
   end
 
+  describe 'read_pages_content with pages access control enabled' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be(:external_user) { create(:user, :external) }
+
+    where(:project_name, :current_user, :access_level, :forced_by_ancestor, :allowed) do
+      :private_project  | ref(:non_member)    | Featurable::ENABLED  | false | false
+      :private_project  | ref(:guest)         | Featurable::ENABLED  | false | true
+      :private_project  | ref(:non_member)    | Featurable::PUBLIC   | false | true
+      :private_project  | ref(:non_member)    | Featurable::ENABLED  | true  | false
+      :private_project  | ref(:guest)         | Featurable::ENABLED  | true  | true
+      :private_project  | ref(:guest)         | Featurable::DISABLED | false | false
+      :internal_project | ref(:non_member)    | Featurable::ENABLED  | false | true
+      :internal_project | ref(:external_user) | Featurable::ENABLED  | false | false
+      :internal_project | ref(:anonymous)     | Featurable::ENABLED  | false | false
+      :internal_project | ref(:non_member)    | Featurable::DISABLED | false | false
+      :public_project   | ref(:non_member)    | Featurable::PUBLIC   | false | true
+      :public_project   | ref(:non_member)    | Featurable::ENABLED  | false | true
+      :public_project   | ref(:non_member)    | Featurable::PRIVATE  | false | false
+      :public_project   | ref(:anonymous)     | Featurable::PUBLIC   | false | true
+      :public_project   | ref(:anonymous)     | Featurable::ENABLED  | false | true
+      :public_project   | ref(:non_member)    | Featurable::DISABLED | false | false
+    end
+
+    with_them do
+      let(:project) { public_send(project_name) }
+
+      before do
+        stub_pages_setting(access_control: true)
+        project.project_feature.update!(pages_access_level: access_level)
+        allow(project).to receive(:pages_access_control_forced_by_ancestor?).and_return(forced_by_ancestor)
+      end
+
+      if params[:allowed]
+        it { expect_allowed(:read_pages_content) }
+      else
+        it { expect_disallowed(:read_pages_content) }
+      end
+    end
+  end
+
   describe 'read_model_registry' do
     context 'for public projects' do
       using RSpec::Parameterized::TableSyntax

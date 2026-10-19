@@ -7,7 +7,9 @@ module SupplyChain
     HASH_READ_CHUNK_SIZE = 1.megabyte
     COSIGN_KEY_PREFIX = 'cosign'
     COSIGN_PASSWORD_BYTES = 32
+    COSIGN_CA_CERTIFICATE_FILE = 'ca.crt.pem'
     COSIGN_SIGNING_CONFIG_FILE = 'signing-config.json'
+    COSIGN_TRUSTED_ROOT_FILE = 'trusted-root.json'
     LEAF_CERTIFICATE_FILE = 'leaf.crt.pem'
 
     Error = Class.new(StandardError)
@@ -16,6 +18,7 @@ module SupplyChain
     InvalidInput = Class.new(Error)
     KeyImportFailure = Class.new(Error)
     SigningConfigFailure = Class.new(Error)
+    TrustedRootFailure = Class.new(Error)
     LocalCaSigningError = Class.new(Error)
 
     LocalCaSigningMaterial = Struct.new(:key_path, :password, :certificate_path, :signing_certificate_id,
@@ -165,6 +168,32 @@ module SupplyChain
       return signing_config_path if result.status.success?
 
       raise SigningConfigFailure, "Signing config creation failed after #{result.duration}s: #{result.stderr}"
+    end
+
+    def cosign_create_trusted_root(ca_certificate:, dir:)
+      validate_key_dir!(dir)
+
+      issuer = ci_server_url
+      # cosign splits --fulcio on commas, so neither value may contain one.
+      raise InvalidInput if dir.include?(',') || issuer.include?(',')
+      raise InvalidInput unless ca_certificate.is_a?(OpenSSL::X509::Certificate)
+
+      ca_path = File.join(dir, COSIGN_CA_CERTIFICATE_FILE)
+      trusted_root_path = File.join(dir, COSIGN_TRUSTED_ROOT_FILE)
+      File.write(ca_path, ca_certificate.to_pem, perm: 0o600)
+
+      command = [
+        'cosign', 'trusted-root', 'create',
+        '--fulcio', "url=#{issuer},certificate-chain=#{ca_path}",
+        '--no-default-fulcio', '--no-default-rekor', '--no-default-ctfe', '--no-default-tsa',
+        '--out', trusted_root_path
+      ]
+
+      result = Gitlab::Popen.popen_with_detail(command)
+
+      return trusted_root_path if result.status.success?
+
+      raise TrustedRootFailure, "Trusted root creation failed after #{result.duration}s: #{result.stderr}"
     end
 
     def persist_attestation!(status:, subject_digest:, bundle_file: nil)

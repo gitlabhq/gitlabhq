@@ -251066,6 +251066,26 @@
               "deprecationReason": null
             },
             {
+              "name": "sections",
+              "description": "Conflicts in the file, in file order. Returns null when the file cannot be resolved section by section, for example when its conflict markers cannot be parsed. Resolve such files with new content instead. Introduced in GitLab 19.6: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "MergeRequestConflictSection",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.6."
+            },
+            {
               "name": "theirPath",
               "description": "Path of the conflicting file on the target branch.",
               "args": [],
@@ -251073,6 +251093,81 @@
                 "kind": "SCALAR",
                 "name": "String",
                 "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "MergeRequestConflictSection",
+          "description": "Conflict in a file, with the lines each side of the conflict keeps.",
+          "fields": [
+            {
+              "name": "ourLines",
+              "description": "Lines of the source branch, kept when the conflict is resolved with the source branch.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "sectionId",
+              "description": "ID of the section. Pass it back unchanged to choose a side of the conflict.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "theirLines",
+              "description": "Lines of the target branch, kept when the conflict is resolved with the target branch.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null

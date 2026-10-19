@@ -30,11 +30,10 @@ describe('Ci variable table', () => {
   const findCiVariableDrawer = () => wrapper.findComponent(CiVariableDrawer);
   const findCiVariableTable = () => wrapper.findComponent(CiVariableTable);
 
-  const createComponent = ({ props = {} } = {}) => {
+  const createComponent = () => {
     wrapper = shallowMount(CiVariableSettings, {
       propsData: {
         ...defaultProps,
-        ...props,
       },
     });
   };

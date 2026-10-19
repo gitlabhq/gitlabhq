@@ -215,6 +215,21 @@ RSpec.describe Banzai::Filter::PlaceholdersPostFilter, feature_category: :markdo
     end
   end
 
+  context 'when multiple tags have different creation dates' do
+    let(:project) { create(:project, :small_repo, :public) }
+
+    it 'replaces the latest tag placeholder with the newest tag rather than the last name' do
+      travel_to(Time.utc(2025, 1, 1)) do
+        project.repository.add_tag(user, 'z-older', 'HEAD', 'Older release')
+      end
+      travel_to(Time.utc(2025, 1, 2)) do
+        project.repository.add_tag(user, 'a-newer', 'HEAD', 'Newer release')
+      end
+
+      expect_replaces_placeholder('%{latest_tag}', 'a-newer')
+    end
+  end
+
   context 'when private group, private project' do
     let_it_be_with_reload(:project) { create(:project, :small_repo, group: private_group, create_tag: 'test') }
 

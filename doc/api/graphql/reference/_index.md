@@ -54111,7 +54111,20 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="mergerequestconflict-content"></a>`content` | [`String`](#string) | Raw content of the conflicting file, including Git conflict markers. Returns null for files with unsupported encodings (binary, non-UTF-8). |
 | <a id="mergerequestconflict-ourpath"></a>`ourPath` | [`String`](#string) | Path of the conflicting file on the source branch. |
+| <a id="mergerequestconflict-sections"></a>`sections` {{< icon name="warning-solid" >}} | [`[MergeRequestConflictSection!]`](#mergerequestconflictsection) | Introduced in GitLab 19.6. Status: Experiment. Conflicts in the file, in file order. Returns null when the file cannot be resolved section by section, for example when its conflict markers cannot be parsed. Resolve such files with new content instead. |
 | <a id="mergerequestconflict-theirpath"></a>`theirPath` | [`String`](#string) | Path of the conflicting file on the target branch. |
+
+### `MergeRequestConflictSection`
+
+Conflict in a file, with the lines each side of the conflict keeps.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestconflictsection-ourlines"></a>`ourLines` | [`[String!]!`](#string) | Lines of the source branch, kept when the conflict is resolved with the source branch. |
+| <a id="mergerequestconflictsection-sectionid"></a>`sectionId` | [`String!`](#string) | ID of the section. Pass it back unchanged to choose a side of the conflict. |
+| <a id="mergerequestconflictsection-theirlines"></a>`theirLines` | [`[String!]!`](#string) | Lines of the target branch, kept when the conflict is resolved with the target branch. |
 
 ### `MergeRequestDiff`
 

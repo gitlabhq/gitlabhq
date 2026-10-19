@@ -6,6 +6,8 @@ module Mcp
       class BaseService
         include Mcp::Tools::Concerns::GovernanceContainerResolver
 
+        ID_FIELD_PATTERN = /(?:\A|_)i?id\z/
+
         # override this method when renaming tools
         def self.tool_aliases
           []
@@ -94,11 +96,35 @@ module Mcp
 
         attr_reader :name, :current_user, :access_token
 
-        # `null`/`""` should behave like an omitted key, not a present value.
+        # Values a client sends for a field it doesn't mean behave like an omitted key: `null`, `""`, zero or
+        # negative IDs, and `0` on integer fields with a minimum of 1.
         def reject_omitted_arguments(arguments)
           return arguments unless arguments.respond_to?(:reject)
 
-          arguments.reject { |_, value| value.nil? || value == '' }
+          arguments.reject { |key, value| omitted_value?(key, value) }
+        end
+
+        def omitted_value?(key, value)
+          return true if value.nil? || value == ''
+          return true if zero_filled_id?(key, value)
+
+          value == 0 && schema_minimum_one_field?(key)
+        end
+
+        def zero_filled_id?(key, value)
+          value.is_a?(Integer) && value <= 0 && key.to_s.match?(ID_FIELD_PATTERN) &&
+            arguments_where_zero_is_a_value.exclude?(key.to_s)
+        end
+
+        # Override for ID arguments where 0 means something, such as `milestone_id: 0` to remove a milestone.
+        def arguments_where_zero_is_a_value
+          []
+        end
+
+        def schema_minimum_one_field?(key)
+          props = input_schema[:properties] || {}
+          prop = props[key.to_sym] || props[key.to_s]
+          prop.is_a?(Hash) && prop[:type] == 'integer' && prop[:minimum]&.>=(1)
         end
 
         def validate_arguments!(arguments)

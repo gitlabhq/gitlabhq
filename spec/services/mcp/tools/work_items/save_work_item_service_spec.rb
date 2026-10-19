@@ -412,10 +412,9 @@ RSpec.describe Mcp::Tools::WorkItems::SaveWorkItemService, feature_category: :mc
       end
 
       it 'routes to the create tool and creates the work item', :aggregate_failures do
-        # Blank strings are stripped by BaseService#reject_omitted_arguments before dispatch.
         expect(Mcp::Tools::WorkItems::CreateWorkItemTool).to receive(:new).with(
           current_user: user,
-          params: params[:arguments].except(:url),
+          params: params[:arguments].except(:url, :work_item_iid),
           version: '0.1.0'
         ).and_call_original
 

@@ -44,6 +44,43 @@ RSpec.describe JiraConnect::SubscriptionsController, :with_current_organization,
     it { is_expected.to include('http://self-managed-gitlab.com/oauth/') }
     it { is_expected.to include('frame-ancestors \'self\' https://*.atlassian.net https://*.jira.com https://*.atlassian-us-gov-mod.net') }
 
+    describe 'Atlassian Connect library' do
+      include ContentSecurityPolicyHelpers
+
+      let(:gov_cloud_cdn) { 'https://*.cdn.atlassian-us-gov-mod.com' }
+      let(:gov_cloud_js_url) do
+        'https://connect-alljs-cdn-bifrost.frontend.cdn.atlassian-us-gov-mod.com/assets/all.js'
+      end
+
+      it 'loads the commercial library', :aggregate_failures do
+        get path, params: params, headers: cors_request_headers
+
+        expect(response.body).to include('https://connect-cdn.atl-paas.net/all.js')
+        expect(response.body).not_to include(gov_cloud_js_url)
+        expect(find_csp_directive('script-src')).not_to include(gov_cloud_cdn)
+        expect(find_csp_directive('style-src')).not_to include(gov_cloud_cdn)
+      end
+
+      context 'with an AGC installation' do
+        let_it_be(:installation) do
+          create(
+            :jira_connect_installation,
+            base_url: 'https://agc.atlassian-us-gov-mod.net',
+            organization: current_organization
+          )
+        end
+
+        it 'loads the AGC library and allows the AGC CDN', :aggregate_failures do
+          get path, params: params, headers: cors_request_headers
+
+          expect(response.body).to include(gov_cloud_js_url)
+          expect(response.body).not_to include('https://connect-cdn.atl-paas.net/all.js')
+          expect(find_csp_directive('script-src')).to include(gov_cloud_cdn)
+          expect(find_csp_directive('style-src')).to include(gov_cloud_cdn)
+        end
+      end
+    end
+
     context 'with additional iframe ancestors' do
       before do
         allow(Gitlab.config.jira_connect).to receive(:additional_iframe_ancestors).and_return(['http://localhost:*', 'http://dev.gitlab.com'])

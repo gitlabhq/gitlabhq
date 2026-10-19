@@ -13,11 +13,10 @@ describe('DbDiagnosticResults component', () => {
     dbDiagnosticResult: collationMismatchResults.databases.main,
   };
 
-  const createComponent = ({ props = {} } = {}) => {
+  const createComponent = () => {
     wrapper = shallowMountExtended(DbDiagnosticResults, {
       propsData: {
         ...defaultProps,
-        ...props,
       },
       stubs: { GlCard, GlSprintf },
     });

@@ -281,6 +281,61 @@ RSpec.describe Mcp::Tools::Repositories::AddCommitService, feature_category: :mc
       end
     end
 
+    context 'when old_str holds only whitespace' do
+      let(:params) do
+        {
+          arguments: {
+            project_id: project.full_path,
+            branch: project.default_branch,
+            commit_message: 'x',
+            actions: [{
+              action: 'update', file_path: 'README.md',
+              old_str: "\n\n\n", new_str: '', content: 'whole file'
+            }]
+          }
+        }
+      end
+
+      it 'still counts as a partial edit instead of committing content blindly', :aggregate_failures do
+        result = service.execute(params: params)
+
+        expect(result[:isError]).to be(true)
+        expect(result.dig(:content, 0, :text)).to include('not both')
+      end
+    end
+
+    context 'when an update has neither content nor a partial edit' do
+      where(:empty_fields) do
+        [
+          [{ old_str: '', new_str: '' }],
+          [{ content: '', old_str: '', new_str: '' }]
+        ]
+      end
+
+      with_them do
+        let(:params) do
+          {
+            arguments: {
+              project_id: project.full_path,
+              branch: project.default_branch,
+              commit_message: 'x',
+              actions: [{ action: 'update', file_path: 'README.md' }.merge(empty_fields)]
+            }
+          }
+        end
+
+        it 'refuses it instead of emptying the file', :aggregate_failures do
+          head_sha = project.repository.commit(project.default_branch).sha
+
+          result = service.execute(params: params)
+
+          expect(result[:isError]).to be(true)
+          expect(result.dig(:content, 0, :text)).to include('Provide content, or old_str and new_str')
+          expect(project.repository.commit(project.default_branch).sha).to eq(head_sha)
+        end
+      end
+    end
+
     context 'when starting from a forked project' do
       let_it_be(:forked_project) { fork_project(project, nil, repository: true) }
 
@@ -607,6 +662,34 @@ RSpec.describe Mcp::Tools::Repositories::AddCommitService, feature_category: :mc
         .with(hash_including(params: hash_including(ref: project.default_branch)))
         .and_return(instance_double(Mcp::Tools::Repositories::BlobsTool, execute: blob_result))
       expect(service).to receive(:execute_graphql_tool).and_return(Mcp::Tools::Base::Response.success([]))
+
+      service.send(:perform_v0_1_0, base_arguments)
+    end
+
+    it 'treats empty-string old_str and new_str as absent' do
+      arguments = {
+        project_id: project.full_path,
+        branch: project.default_branch,
+        commit_message: 'Create file with GPT defaults',
+        actions: [{
+          action: 'create', file_path: 'gpt-default.txt', content: 'hello',
+          old_str: '', new_str: '', previous_path: '', last_commit_id: '', execute_filemode: false
+        }]
+      }
+
+      expect(service).to receive(:execute_graphql_tool).with(hash_including(
+        actions: [hash_including(action: 'create', file_path: 'gpt-default.txt', content: 'hello')]
+      )).and_return(Mcp::Tools::Base::Response.success([]))
+
+      service.send(:perform_v0_1_0, arguments)
+    end
+
+    it 'treats an empty-string content as absent on a partial edit' do
+      base_arguments[:actions][0][:content] = ''
+
+      expect(service).to receive(:execute_graphql_tool).with(hash_including(
+        actions: [hash_including(content: 'before new after')]
+      )).and_return(Mcp::Tools::Base::Response.success([]))
 
       service.send(:perform_v0_1_0, base_arguments)
     end

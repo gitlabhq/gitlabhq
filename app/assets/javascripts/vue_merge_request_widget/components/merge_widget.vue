@@ -471,8 +471,13 @@ export default {
             this.mr.transitionStateMachine({ transition: AUTO_MERGE });
           } else if (data.status === MERGE_SUCCESS_STATUS) {
             this.mr.transitionStateMachine({ transition: MERGING });
-          } else if (hasError) {
-            eventHub.$emit('failed-to-merge', data.merge_error);
+          } else {
+            this.isMakingRequest = false;
+            this.isMergingImmediately = false;
+            if (hasError) {
+              eventHub.$emit('failed-to-merge', data.merge_error);
+            }
+            eventHub.$emit('mr-widget-check-status');
             this.mr.transitionStateMachine({ transition: MERGE_FAILURE });
           }
 

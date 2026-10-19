@@ -52,7 +52,7 @@ describe('RunnerList', () => {
 
   const defaultProps = { namespace: 'runners', tokens: [], value: mockSearch };
 
-  const createComponent = ({ props = {}, options = {} } = {}) => {
+  const createComponent = ({ props = {} } = {}) => {
     wrapper = shallowMountExtended(RunnerFilteredSearchBar, {
       propsData: {
         ...defaultProps,
@@ -62,7 +62,6 @@ describe('RunnerList', () => {
         FilteredSearchBar,
         GlFilteredSearch,
       },
-      ...options,
     });
   };
 

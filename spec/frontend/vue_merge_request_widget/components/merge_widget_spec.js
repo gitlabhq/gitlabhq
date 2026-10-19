@@ -597,6 +597,52 @@ describe('ReadyToMerge', () => {
       expect(params.auto_merge_strategy).toBeUndefined();
     });
 
+    it.each(['failed', 'hook_validation_error', 'sha_mismatch'])(
+      'stops loading and refreshes the widget when setting auto-merge returns %s',
+      async (status) => {
+        // Matches the query response so the autoMergeEnabled watcher can't reset loading.
+        createComponent({ mr: { autoMergeEnabled: false } });
+
+        jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
+        jest.spyOn(service, 'merge').mockResolvedValue(response(status));
+
+        findMergeButton().vm.$emit('click');
+        await nextTick();
+
+        expect(findMergeButton().props('loading')).toBe(true);
+
+        await waitForPromises();
+
+        expect(service.merge.mock.calls[0][0].auto_merge_strategy).toBe(MWCP_MERGE_STRATEGY);
+        expect(findMergeButton().props('loading')).toBe(false);
+        expect(eventHub.$emit).toHaveBeenCalledWith('mr-widget-check-status');
+      },
+    );
+
+    it('resets the merge button text when merging immediately fails', async () => {
+      createComponent({
+        mr: {
+          autoMergeEnabled: false,
+          isMergeAllowed: true,
+          headPipeline: { active: false },
+          onlyAllowMergeIfPipelineSucceeds: false,
+        },
+      });
+
+      jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
+      jest.spyOn(service, 'merge').mockResolvedValue(response('failed'));
+
+      wrapper.findComponentByTestId('merge-immediately-button').vm.$emit('action');
+      await nextTick();
+
+      expect(findMergeButton().text()).toBe('Merge in progress');
+
+      await waitForPromises();
+
+      expect(service.merge.mock.calls[0][0].auto_merge_strategy).toBeUndefined();
+      expect(findMergeButton().text()).not.toBe('Merge in progress');
+    });
+
     it('should handle merge action accepted case', async () => {
       createComponent({ mr: { availableAutoMergeStrategies: [] } });
 

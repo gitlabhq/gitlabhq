@@ -125,6 +125,96 @@ RSpec.describe SupplyChain::ProvenancePublisher, feature_category: :artifact_sec
     end
   end
 
+  describe '#cosign_create_trusted_root' do
+    let(:ca_certificate) { SupplyChain::PostgresCaDriver.new(build.project).ca_certificate }
+    let(:dir) { Dir.mktmpdir }
+    let(:issuer) { 'https://gitlab.example.com' }
+    let(:ca_path) { File.join(dir, described_class::COSIGN_CA_CERTIFICATE_FILE) }
+    let(:expected_path) { File.join(dir, described_class::COSIGN_TRUSTED_ROOT_FILE) }
+
+    subject(:trusted_root_path) do
+      publisher.send(:cosign_create_trusted_root, ca_certificate: ca_certificate, dir: dir)
+    end
+
+    before do
+      allow(publisher).to receive(:ci_server_url).and_return(issuer)
+      allow(Gitlab::Popen).to receive(:popen_with_detail).and_return(popen_result)
+    end
+
+    after do
+      FileUtils.rm_rf(dir) if dir
+    end
+
+    it 'writes the CA certificate and runs cosign to build a trusted root from only that CA', :aggregate_failures do
+      expect(trusted_root_path).to eq(expected_path)
+      expect(Gitlab::Popen).to have_received(:popen_with_detail).with([
+        'cosign', 'trusted-root', 'create',
+        '--fulcio', "url=#{issuer},certificate-chain=#{ca_path}",
+        '--no-default-fulcio', '--no-default-rekor', '--no-default-ctfe', '--no-default-tsa',
+        '--out', expected_path
+      ])
+      expect(File.read(ca_path)).to eq(ca_certificate.to_pem)
+      expect(File.stat(ca_path).mode & 0o777).to eq(0o600)
+    end
+
+    it 'validates the dir before running cosign', :aggregate_failures do
+      expect(publisher).to receive(:validate_key_dir!).with(dir).and_raise(described_class::InvalidInput)
+
+      expect { trusted_root_path }.to raise_exception(described_class::InvalidInput)
+      expect(Gitlab::Popen).not_to have_received(:popen_with_detail)
+    end
+
+    shared_examples 'rejects the input without running cosign' do
+      it 'raises InvalidInput', :aggregate_failures do
+        expect { trusted_root_path }.to raise_exception(described_class::InvalidInput)
+        expect(Gitlab::Popen).not_to have_received(:popen_with_detail)
+        expect(File).not_to exist(ca_path)
+      end
+    end
+
+    context 'when the dir is nil' do
+      let(:dir) { nil }
+
+      it 'raises InvalidInput without running cosign', :aggregate_failures do
+        expect { trusted_root_path }.to raise_exception(described_class::InvalidInput)
+        expect(Gitlab::Popen).not_to have_received(:popen_with_detail)
+      end
+    end
+
+    context 'when the dir contains a comma' do
+      let(:dir) { Dir.mktmpdir('trusted,root') }
+
+      it_behaves_like 'rejects the input without running cosign'
+    end
+
+    context 'when the CA certificate is a PEM string' do
+      let(:ca_certificate) { super().to_pem }
+
+      it_behaves_like 'rejects the input without running cosign'
+    end
+
+    context 'when the CA certificate is nil' do
+      let(:ca_certificate) { nil }
+
+      it_behaves_like 'rejects the input without running cosign'
+    end
+
+    context 'when the issuer contains a comma' do
+      let(:issuer) { 'https://gitlab.example.com/a,b' }
+
+      it_behaves_like 'rejects the input without running cosign'
+    end
+
+    context 'when cosign fails' do
+      let(:popen_success) { false }
+
+      it 'raises TrustedRootFailure with the cosign error' do
+        expect { trusted_root_path }.to raise_error(described_class::TrustedRootFailure,
+          "Trusted root creation failed after #{expected_duration}s: #{expected_stderr}")
+      end
+    end
+  end
+
   describe '#with_local_ca_signing_material' do
     def with_signing_material(&block)
       publisher.send(:with_local_ca_signing_material, &block)

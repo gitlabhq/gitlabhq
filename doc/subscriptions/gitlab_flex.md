@@ -112,7 +112,7 @@ You can change your monthly reservation for the upcoming month in the Flex dashb
 
 - Changes take effect at month boundaries. You cannot change a reservation mid-month. After a month begins, that month's reservation is final and you cannot adjust it.
 - Changes are due by the second-to-last day of the month. Submit changes before 11:59 PM UTC on the second-to-last day of the current month to apply them to the next month. For example, submit changes by July 30 to apply them to August. In the Flex dashboard, submit changes before the date shown in the **Reserve by** column for that month.
-- Your reservation cannot exceed your monthly commitment amount. This is your annual commitment divided by 12.
+- Your reservation cannot exceed 120% of your monthly commitment amount. Your monthly commitment amount is your annual commitment divided by 12. For example, with a $1,200,000 annual commitment, your monthly commitment amount is $100,000 and you can reserve up to $120,000 for a month. This ceiling is set when your contract starts and does not change during your term, including if you add to your commitment mid-term.
 - Your minimum required reservation is fixed. You cannot change the minimum monthly reservation fixed in your contract. This amount remains due for each remaining month of your term, even if your commitment is exhausted before the term ends.
 - Seat tier changes require a contract amendment. To change between Premium and Ultimate, contact your GitLab account team. A tier change takes effect on the first of the month and cannot be applied mid-month.
 

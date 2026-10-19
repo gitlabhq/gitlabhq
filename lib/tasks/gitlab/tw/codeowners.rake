@@ -106,7 +106,7 @@ module TwCodeowners
     CodeOwnerRule.new('Package Registry', '@z_painter'),
     # CodeOwnerRule.new('Performance Enablement', ''),
     CodeOwnerRule.new('Pipeline Authoring', '@marcel.amirault'),
-    CodeOwnerRule.new('Pipeline Execution', '@lyspin'),
+    CodeOwnerRule.new('Pipeline Execution', '@marcel.amirault'),
     CodeOwnerRule.new('Pipeline Security', '@marcel.amirault'),
     CodeOwnerRule.new('Planner Intelligence', '@brendan777'),
     CodeOwnerRule.new('Planning Views', '@brendan777'),

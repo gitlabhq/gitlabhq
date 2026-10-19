@@ -336,6 +336,7 @@ e2e-test-pipeline-generate:
   variables:
     COLORIZED_LOGS: "true"
     GENERATED_PIPELINE_PATH: "${CI_PROJECT_DIR}/qa/tmp"
+    GIT_DEPTH: "1"
   script:
     - bundle exec rake "ci:generate_e2e_pipelines[$GENERATED_PIPELINE_PATH]"
   artifacts:

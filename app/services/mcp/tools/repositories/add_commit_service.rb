@@ -157,11 +157,16 @@ module Mcp
         end
 
         def partial?(action)
-          action.key?(:old_str) || action.key?(:new_str)
+          !action[:old_str].to_s.empty? || !action[:new_str].to_s.empty?
+        end
+
+        def content?(action)
+          !action[:content].to_s.empty?
         end
 
         def expand_partial_edits(arguments)
           actions = arguments[:actions].map(&:with_indifferent_access)
+          validate_updates_have_content!(actions)
           partial_actions = actions.select { |action| partial?(action) }
           return actions if partial_actions.empty?
 
@@ -178,6 +183,13 @@ module Mcp
           actions.map { |action| partial?(action) ? expand_partial_action(action, contents) : action }
         end
 
+        # An update without content or a partial edit would replace the file with an empty one.
+        def validate_updates_have_content!(actions)
+          return unless actions.any? { |action| action[:action] == 'update' && !partial?(action) && !content?(action) }
+
+          raise PartialEditError, 'Provide content, or old_str and new_str, for an update action'
+        end
+
         def validate_partial_actions!(actions)
           actions.each do |action|
             unless action[:action] == 'update'
@@ -189,7 +201,7 @@ module Mcp
             end
 
             raise PartialEditError, 'old_str cannot be empty' if action[:old_str].empty?
-            raise PartialEditError, 'Provide either content or old_str and new_str, not both' if action.key?(:content)
+            raise PartialEditError, 'Provide either content or old_str and new_str, not both' if content?(action)
 
             if action[:encoding].present? && action[:encoding] != 'text'
               raise PartialEditError, 'Partial edits require text encoding'

@@ -90,6 +90,16 @@ RSpec.describe Projects::GoogleCloud::GcpRegionsController, feature_category: :d
         is_expected.to render_template('projects/google_cloud/gcp_regions/index')
       end
 
+      it 'supplies tag names to the region form', :aggregate_failures do
+        get project_google_cloud_gcp_regions_path(project)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        form = Nokogiri::HTML.fragment(response.body).at_css('#js-google-cloud-gcp-regions')
+        refs = Gitlab::Json::SafeParser.parse(form['data'])['refs']
+
+        expect(refs.select { |ref| ref.start_with?('v1.') }).to eq(%w[v1.0.0 v1.1.0 v1.1.1])
+      end
+
       context 'but gitlab instance is not configured for google oauth2' do
         unconfigured_google_oauth2 = Struct.new(:app_id, :app_secret)
                                            .new('', '')

@@ -17,6 +17,35 @@ RSpec.describe Projects::TagsController, feature_category: :source_code_manageme
       expect(assigns(:tags).map(&:name)).to include('v1.1.0', 'v1.0.0')
     end
 
+    context 'when requesting a later page' do
+      before do
+        allow(Kaminari.config).to receive(:default_per_page).and_return(2)
+      end
+
+      it 'returns the remaining tags and the full total', :aggregate_failures do
+        get :index, params: {
+          namespace_id: project.namespace.to_param, project_id: project,
+          sort: 'name_asc', page: 2, per_page: 2
+        }
+
+        expect(assigns(:tags).map(&:name)).to eq(['v1.1.1'])
+        expect(assigns(:tags).total_count).to eq(3)
+        expect(assigns(:tags).total_pages).to eq(2)
+      end
+
+      it 'paginates the complete search results', :aggregate_failures do
+        allow(Kaminari.config).to receive(:default_per_page).and_return(1)
+
+        get :index, params: {
+          namespace_id: project.namespace.to_param, project_id: project,
+          sort: 'name_asc', search: 'v1.1', page: 2, per_page: 1
+        }
+
+        expect(assigns(:tags).map(&:name)).to eq(['v1.1.1'])
+        expect(assigns(:tags).total_count).to eq(2)
+      end
+    end
+
     context 'when batch loading signatures' do
       let(:per_page_limit) { 2 }
       let(:tags) do

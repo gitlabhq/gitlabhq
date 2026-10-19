@@ -1,0 +1,10 @@
+---
+migration_job_name: BackfillImportedDiffCommitsToPartitioned
+description: Copies diff commits of projects imported through import/export in 2021 that BackfillMergeRequestDiffCommitsToPartitioned
+  skipped because of NULL commit_author_id or committer_id, using a placeholder commit user for the missing values
+feature_category: code_review_workflow
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/257836
+milestone: '19.6'
+queued_migration_version: 20261014110304
+gitlab_schema: gitlab_main_org
+finalized_by: # version of the migration that finalized this BBM

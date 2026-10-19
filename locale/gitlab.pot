@@ -3522,6 +3522,9 @@ msgstr ""
 msgid "AICatalog|System prompt is required."
 msgstr ""
 
+msgid "AICatalog|The flow of a group trigger cannot be changed"
+msgstr ""
+
 msgid "AICatalog|The number of projects that have used this item in the last 30 days."
 msgstr ""
 
@@ -32688,6 +32691,9 @@ msgstr ""
 msgid "DuoAgentPlatform|No agent sessions"
 msgstr ""
 
+msgid "DuoAgentPlatform|No agent sessions yet"
+msgstr ""
+
 msgid "DuoAgentPlatform|None of the %{total} are available to projects in this group."
 msgstr ""
 
@@ -32701,6 +32707,9 @@ msgid "DuoAgentPlatform|Nothing is turned on yet. %d step left to set up agents 
 msgid_plural "DuoAgentPlatform|Nothing is turned on yet. %d steps left to set up agents and flows."
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "DuoAgentPlatform|Nothing needs you right now"
+msgstr ""
 
 msgid "DuoAgentPlatform|Off for %{group}. Only a top-level Group Owner can turn it on."
 msgstr ""
@@ -32943,6 +32952,9 @@ msgid "DuoAgentPlatform|View session for this change"
 msgstr ""
 
 msgid "DuoAgentPlatform|What are flows?"
+msgstr ""
+
+msgid "DuoAgentPlatform|When an agent needs a decision from you, it shows up here."
 msgstr ""
 
 msgid "DuoAgentPlatform|Whether users can approve tools for a whole session in the IDE and CLI."
@@ -33886,9 +33898,6 @@ msgstr ""
 msgid "DuoAgentsPlatform|Note on %{reference}"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Nothing needs you right now"
-msgstr ""
-
 msgid "DuoAgentsPlatform|On a schedule"
 msgstr ""
 
@@ -33983,9 +33992,6 @@ msgid "DuoAgentsPlatform|Search for a session"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Search issues"
-msgstr ""
-
-msgid "DuoAgentsPlatform|See what’s running"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Select a service account"
@@ -34205,9 +34211,6 @@ msgid "DuoAgentsPlatform|Write file"
 msgstr ""
 
 msgid "DuoAgentsPlatform|You do not have permission to cancel this session."
-msgstr ""
-
-msgid "DuoAgentsPlatform|Your agents are grinding away. The moment one of them wants a decision, it lands here."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Your group doesn't have GitLab Duo yet"

@@ -16,11 +16,10 @@ describe('Form group component', () => {
   const findDeletionAdjournedPeriodInput = () =>
     wrapper.findComponentByTestId('deletion_adjourned_period');
 
-  const createComponent = ({ props = {}, provide = {} } = {}) => {
+  const createComponent = ({ provide = {} } = {}) => {
     wrapper = mountExtended(FormGroup, {
       propsData: {
         deletionAdjournedPeriod: 7,
-        ...props,
       },
       provide,
     });

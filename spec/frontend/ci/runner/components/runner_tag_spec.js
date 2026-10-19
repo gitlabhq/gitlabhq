@@ -24,11 +24,10 @@ describe('RunnerTag', () => {
     getBinding(content, 'gl-resize-observer').value({ target: content });
   };
 
-  const createComponent = ({ props = {} } = {}) => {
+  const createComponent = () => {
     wrapper = shallowMount(RunnerTag, {
       propsData: {
         tag: mockTag,
-        ...props,
       },
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),

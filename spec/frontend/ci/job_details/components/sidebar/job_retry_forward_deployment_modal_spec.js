@@ -12,13 +12,12 @@ describe('Job Retry Forward Deployment Modal', () => {
   const findLink = () => wrapper.findComponent(GlLink);
   const findModal = () => wrapper.findComponent(GlModal);
 
-  const createWrapper = ({ props = {}, provide = {}, stubs = {} } = {}) => {
+  const createWrapper = ({ provide = {}, stubs = {} } = {}) => {
     store = createStore();
     wrapper = shallowMount(JobRetryForwardDeploymentModal, {
       propsData: {
         modalId: 'modal-id',
         href: job.retry_path,
-        ...props,
       },
       provide,
       store,

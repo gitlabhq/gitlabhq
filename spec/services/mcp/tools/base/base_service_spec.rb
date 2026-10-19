@@ -361,5 +361,103 @@ RSpec.describe Mcp::Tools::Base::BaseService, feature_category: :mcp_server do
         expect(result[:content].first[:text]).to include('required_field is missing')
       end
     end
+
+    context 'when an integer argument is a zero-filled ID or a bounded field' do
+      let(:minimum_service_class) do
+        Class.new(described_class) do
+          def description
+            'Echoes the arguments it received'
+          end
+
+          def input_schema
+            {
+              type: 'object',
+              properties: {
+                id: { type: 'integer' },
+                item_iid: { type: 'integer' },
+                project_id: { type: 'integer' },
+                name: { type: 'string' },
+                weight: { type: 'integer' },
+                line: { type: 'integer', minimum: 1 }
+              }
+            }
+          end
+
+          def version
+            '1.0.0'
+          end
+
+          protected
+
+          def perform(arguments, _query = {})
+            Mcp::Tools::Base::Response.success([{ type: 'text', text: 'ok' }], arguments)
+          end
+        end
+      end
+
+      let(:minimum_service) { minimum_service_class.new(name: service_name) }
+
+      def execute_with(args)
+        minimum_service.execute(request: nil, params: { arguments: args })
+      end
+
+      it 'strips zero for *_iid fields by name pattern', :aggregate_failures do
+        result = execute_with({ item_iid: 0, name: 'test' })
+
+        expect(result[:isError]).to be false
+        expect(result[:structuredContent]).to eq({ name: 'test' })
+      end
+
+      it 'strips zero for *_id fields by name pattern', :aggregate_failures do
+        result = execute_with({ project_id: 0, name: 'test' })
+
+        expect(result[:isError]).to be false
+        expect(result[:structuredContent]).to eq({ name: 'test' })
+      end
+
+      it 'strips zero for a bare id field' do
+        result = execute_with({ id: 0, name: 'test' })
+
+        expect(result[:structuredContent]).to eq({ name: 'test' })
+      end
+
+      it 'strips zero for non-ID fields with minimum: 1' do
+        result = execute_with({ line: 0, name: 'test' })
+
+        expect(result[:structuredContent]).to eq({ name: 'test' })
+      end
+
+      it 'preserves non-zero values for ID fields' do
+        result = execute_with({ item_iid: 42, project_id: 5, name: 'test' })
+
+        expect(result[:structuredContent]).to eq({ item_iid: 42, project_id: 5, name: 'test' })
+      end
+
+      it 'preserves zero for integer fields that are neither ID nor minimum: 1' do
+        result = execute_with({ weight: 0, name: 'test' })
+
+        expect(result[:structuredContent]).to eq({ weight: 0, name: 'test' })
+      end
+
+      it 'strips multiple zero-valued fields across both patterns', :aggregate_failures do
+        result = execute_with({ item_iid: 0, project_id: 0, line: 0, name: 'test' })
+
+        expect(result[:isError]).to be false
+        expect(result[:structuredContent]).to eq({ name: 'test' })
+      end
+
+      it 'strips negative values for ID fields' do
+        result = execute_with({ item_iid: -1, project_id: -5, name: 'test' })
+
+        expect(result[:structuredContent]).to eq({ name: 'test' })
+      end
+
+      it 'still strips nil and empty string values', :aggregate_failures do
+        result = execute_with({ item_iid: nil, name: '', weight: 0 })
+
+        expect(result[:isError]).to be false
+        expect(result[:structuredContent]).to eq({ weight: 0 })
+      end
+    end
   end
 end
