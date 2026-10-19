@@ -103,9 +103,8 @@ You can also start the trial from the **Overview** tab of the Orbit dashboard: s
 You and the Owners of top-level groups can turn on Orbit for groups before and during the trial.
 The trial credits pay for Orbit queries.
 
-When the trial ends or the credits run out, Orbit turns off for all groups, except groups in the Orbit beta.
-Orbit turns off within one hour after the trial ends.
-To keep using Orbit, contact sales.
+When the trial ends or the credits run out, Orbit keeps indexing your groups, but Orbit queries stop.
+To run Orbit queries again, contact sales.
 
 ## Turn Orbit on or off for your groups
 

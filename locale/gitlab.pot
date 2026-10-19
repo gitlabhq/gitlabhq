@@ -13127,6 +13127,9 @@ msgstr ""
 msgid "ArtifactRegistry|Another role change is in progress. Try again."
 msgstr ""
 
+msgid "ArtifactRegistry|Artifact Registry"
+msgstr ""
+
 msgid "ArtifactRegistry|Artifact Registry is already activated for this organization with the handle '%{handle}'."
 msgstr ""
 
@@ -60691,9 +60694,6 @@ msgid "Orbit|The JSON query format is going away. GQL replaces it soon."
 msgstr ""
 
 msgid "Orbit|The Orbit trial for this group has ended. Add GitLab credits to turn Orbit on again."
-msgstr ""
-
-msgid "Orbit|The Orbit trial for this instance has ended. Add GitLab credits to turn Orbit on again."
 msgstr ""
 
 msgid "Orbit|The examples are not available. Try again later."

@@ -23304,6 +23304,11 @@
     "dottedExample": "/o/john.doe/-/access"
   },
   {
+    "template": "/o/:organization_path/-/access/artifact-registry",
+    "example": "/o/foo/-/access/artifact-registry",
+    "dottedExample": "/o/john.doe/-/access/artifact-registry"
+  },
+  {
     "template": "/o/:organization_path/-/acme-challenge",
     "example": "/o/foo/-/acme-challenge",
     "acceptsFormat": true,

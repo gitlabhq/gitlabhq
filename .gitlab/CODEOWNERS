@@ -857,17 +857,24 @@ Dangerfile
 [Application Security] @gitlab-com/gl-security/appsec
 /.gitlab/duo/flows/appsec-review.yaml
 /doc/development/application_secrets.md
+/app/assets/javascripts/behaviors/components/embedded_iframe.vue
+/app/assets/javascripts/behaviors/markdown/render_iframe.js
+/app/assets/javascripts/content_editor/components/wrappers/iframe.vue
 /app/assets/javascripts/lib/dompurify.js
 /app/assets/javascripts/gfm_auto_complete.js
 /ee/app/assets/javascripts/gfm_auto_complete.js
 /app/validators/addressable_url_validator.rb
 /app/validators/public_url_validator.rb
+/config/iframe_providers.yml
 /config/initializers/content_security_policy.rb
 /config/initializers/gitlab_http.rb
 /gems/gitlab-http/**/*.rb
+/lib/banzai/filter/iframe_link_filter.rb
 /lib/gitlab/content_security_policy/
 /lib/gitlab/http.rb
 /lib/gitlab/http_connection_adapter.rb
+/lib/gitlab/markdown/iframe_providers/
+/lib/gitlab/markdown/iframe_providers.rb
 /lib/gitlab/sanitizers
 /lib/gitlab/untrusted_regexp.rb
 /lib/gitlab/url_blocker.rb
