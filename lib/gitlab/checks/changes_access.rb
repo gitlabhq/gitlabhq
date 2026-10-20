@@ -56,7 +56,7 @@ module Gitlab
 
           next [] if newrevs.empty?
 
-          project.repository.new_commits(newrevs)
+          project.repository.new_commits(newrevs, allow_quarantine: false)
         end
       end
 

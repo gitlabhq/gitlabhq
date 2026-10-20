@@ -71,6 +71,46 @@ RSpec.describe Gitlab::Auth::Ldap::Person do
     end
   end
 
+  describe '.find_by_email', feature_category: :system_access do
+    let(:adapter) { ldap_adapter }
+
+    # A raw wildcard would reach Net::LDAP::Filter.eq and build a presence filter
+    # (mail=*) that matches any LDAP user; escaping keeps the lookup a literal match.
+    # The value assertion is shape-agnostic so it holds for both the FOSS
+    # implementation (one call with all email attributes) and the EE override
+    # (one call per email attribute).
+    it 'escapes LDAP filter metacharacters before searching' do
+      escaped = Net::LDAP::Filter.escape('*')
+      expect(escaped).not_to eq('*')
+      expect(adapter).to receive(:user).at_least(:once) do |_fields, value|
+        expect(value).to eq(escaped)
+        nil
+      end
+
+      described_class.find_by_email('*', adapter)
+    end
+
+    it 'passes an ordinary email address through unchanged' do
+      email = 'john@example.com'
+      expect(adapter).to receive(:user).at_least(:once) do |_fields, value|
+        expect(value).to eq(email)
+        nil
+      end
+
+      described_class.find_by_email(email, adapter)
+    end
+
+    # EE prepends its own find_by_email, so unwrap it to also run the FOSS one in EE.
+    it 'escapes LDAP filter metacharacters in the FOSS implementation' do
+      find_by_email = described_class.method(:find_by_email)
+      find_by_email = find_by_email.super_method until find_by_email.owner == described_class.singleton_class
+
+      expect(adapter).to receive(:user).with(%w[mail email userPrincipalName], Net::LDAP::Filter.escape('*'))
+
+      find_by_email.call('*', adapter)
+    end
+  end
+
   describe '#name' do
     it 'uses the configured name attribute and handles values as an array' do
       name = 'John Doe'

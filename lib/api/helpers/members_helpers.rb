@@ -101,9 +101,9 @@ module API
         instance = ::Members::CreateService.new(current_user, create_service_params)
         result = instance.execute
 
-        # This currently can only be reached in EE if group membership is locked
+        # Only reachable in EE, when the project's membership is locked
         if instance.membership_locked
-          not_allowed!('Members cannot be added because the group has locked project membership')
+          not_allowed!('Members cannot be added because membership is locked')
         end
 
         if result[:status] == :error && result[:http_status] == :unauthorized

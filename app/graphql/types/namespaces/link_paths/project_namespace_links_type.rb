@@ -10,6 +10,7 @@ module Types
         field :new_work_item_email_address,
           GraphQL::Types::String,
           null: true,
+          scopes: [:api],
           description: 'Email address that can be used to create a new work item in this project. ' \
             'Returns null if incoming email is not configured. More details on how to configure incoming email ' \
             'is in this [documentation](https://docs.gitlab.com/administration/incoming_email/#set-it-up).'

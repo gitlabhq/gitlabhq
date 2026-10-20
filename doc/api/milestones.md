@@ -28,8 +28,13 @@ GET /projects/:id/milestones?state=active
 GET /projects/:id/milestones?state=closed
 GET /projects/:id/milestones?title=1.0
 GET /projects/:id/milestones?search=version
+GET /projects/:id/milestones?search_title=17.3+17.4
+GET /projects/:id/milestones?search_title=17.3%2017.4
 GET /projects/:id/milestones?updated_before=2013-10-02T09%3A24%3A18Z
 GET /projects/:id/milestones?updated_after=2013-10-02T09%3A24%3A18Z
+GET /projects/:id/milestones?containing_date=2013-10-02T09%3A24%3A18Z
+GET /projects/:id/milestones?start_date=2013-10-02T09%3A24%3A18Z&end_date=2013-11-02T09%3A24%3A18Z
+GET /projects/:id/milestones?sort=due_date_desc
 ```
 
 Parameters:
@@ -41,10 +46,15 @@ Parameters:
 | `state`                           | string | no | Return only `active` or `closed` milestones |
 | `title`                           | string | no | Return only the milestones having the given `title` |
 | `search`                          | string | no | Return only milestones with a title or description matching the provided string |
+| `search_title`                    | string | no | Return only milestones with a title matching the provided string (case-insensitive). To search for multiple terms, separate them with an escaped space, either `+` or `%20`. Results must match all terms. For example, `17.4+17.5` matches the substrings `17.4` and `17.5` in any order. |
 | `include_parent_milestones`       | boolean | no | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/433298) in GitLab 16.7. Use `include_ancestors` instead. |
 | `include_ancestors`               | boolean | no | Include milestones from all parent groups. |
 | `updated_before`                  | datetime | no | Return only milestones updated before the given datetime. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `updated_after`                   | datetime | no | Return only milestones updated after the given datetime. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
+| `containing_date`                 | datetime | no | Return only milestones where `start_date <= containing_date <= due_date`. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
+| `start_date`                      | datetime | no | Return only milestones where `due_date >=` the provided `start_date`. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). Note: only valid if `end_date` is also provided. |
+| `end_date`                        | datetime | no | Return only milestones where `start_date <=` the provided `end_date`. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). Note: only valid if `start_date` is also provided. |
+| `sort`                            | string | no | Return milestones sorted in the given order. Possible values: `due_date_asc`, `due_date_desc`, `start_date_asc`, `start_date_desc`, `name_asc`, `name_desc`, `created_asc`, `created_desc`, `updated_asc`, `updated_desc`. Default is `due_date_asc`. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
