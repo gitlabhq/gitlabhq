@@ -7,16 +7,20 @@ describe('SidebarResizer component', () => {
   useLocalStorageSpy();
 
   let wrapper;
+  let wikiOverview;
   let sidebarContainer;
   let sidebar;
 
   const createComponent = () => {
     document.body.innerHTML = `
-      <div class="sidebar-container">
-        <div class="wiki-sidebar"></div>
+      <div class="js-wiki-overview">
+        <div class="sidebar-container">
+          <div class="wiki-sidebar"></div>
+        </div>
       </div>
     `;
 
+    wikiOverview = document.querySelector('.js-wiki-overview');
     sidebarContainer = document.querySelector('.sidebar-container');
     sidebar = document.querySelector('.wiki-sidebar');
 
@@ -58,11 +62,11 @@ describe('SidebarResizer component', () => {
   it('updates sidebar width when PanelResizer emits update:size', async () => {
     createComponent();
 
-    const initialWidth = sidebarContainer.style.width;
+    const initialWidth = wikiOverview.style.getPropertyValue('--wiki-sidebar-width');
     await wrapper.findComponent(PanelResizer).vm.$emit('update:size', 350);
 
-    expect(sidebarContainer.style.width).toBe('350px');
-    expect(sidebarContainer.style.width).not.toBe(initialWidth);
+    expect(wikiOverview.style.getPropertyValue('--wiki-sidebar-width')).toBe('350px');
+    expect(wikiOverview.style.getPropertyValue('--wiki-sidebar-width')).not.toBe(initialWidth);
   });
 
   it('removes transition styles when PanelResizer emits resize-start', async () => {
@@ -86,13 +90,13 @@ describe('SidebarResizer component', () => {
 
     await wrapper.findComponent(PanelResizer).vm.$emit('update:size', 400);
 
-    expect(sidebarContainer.style.width).toBe('400px');
+    expect(wikiOverview.style.getPropertyValue('--wiki-sidebar-width')).toBe('400px');
 
     // Simulate component re-render or page refresh
     wrapper.destroy();
     createComponent();
 
     // Check if the width is still persisted
-    expect(sidebarContainer.style.width).toBe('400px');
+    expect(wikiOverview.style.getPropertyValue('--wiki-sidebar-width')).toBe('400px');
   });
 });
