@@ -21,6 +21,49 @@ RSpec.describe JwksController, feature_category: :system_access do
     end
   end
 
+  describe 'discovery endpoint URLs' do
+    let(:parsed_response) { Gitlab::Json.parse(response.body) }
+    let(:endpoint_fields) do
+      %w[authorization_endpoint token_endpoint revocation_endpoint introspection_endpoint userinfo_endpoint
+        jwks_uri registration_endpoint]
+    end
+
+    [*described_class::OAUTH_PATHS, '/.well-known/openid-configuration'].each do |path|
+      context "for #{path}" do
+        let(:forged_host) { 'attacker.example.com:1337' }
+
+        before do
+          get path, headers: { 'X-Forwarded-Host' => forged_host, 'Host' => forged_host }
+        end
+
+        it 'builds endpoint URLs from the configured instance URL, ignoring the request host', :aggregate_failures do
+          urls = parsed_response.slice(*endpoint_fields)
+          expect(urls.size).to be >= 6
+
+          urls.each do |field, url|
+            expect(url).to start_with("#{Gitlab.config.gitlab.url}/"), field
+          end
+
+          expect(response.body).not_to include('attacker.example.com')
+        end
+      end
+    end
+  end
+
+  describe '/.well-known/webfinger' do
+    let(:parsed_response) { Gitlab::Json.parse(response.body) }
+    let(:forged_host) { 'attacker.example.com:1337' }
+
+    before do
+      get "/.well-known/webfinger?resource=#{create(:user).email}",
+        headers: { 'X-Forwarded-Host' => forged_host, 'Host' => forged_host }
+    end
+
+    it 'builds the issuer link from the configured instance URL, ignoring the request host' do
+      expect(parsed_response['links'].pluck('href')).to all(eq(Gitlab.config.gitlab.url))
+    end
+  end
+
   describe '/.well-known/openid-configuration' do
     let(:parsed_response) { Gitlab::Json.parse(response.body) }
     let(:oauth_endpoints) do
@@ -176,6 +219,10 @@ RSpec.describe JwksController, feature_category: :system_access do
 
         it 'includes relative_url_root in registration_endpoint' do
           expect(parsed_response['registration_endpoint']).to eq("#{base_url_with_root}/oauth/register")
+        end
+
+        it 'includes relative_url_root in token_endpoint' do
+          expect(parsed_response['token_endpoint']).to eq("#{base_url_with_root}/oauth/token")
         end
 
         it 'returns only mcp scope in scopes_supported' do

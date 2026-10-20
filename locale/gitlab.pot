@@ -52186,6 +52186,9 @@ msgstr ""
 msgid "Members can be added by project %{i_open}Maintainers%{i_close} or %{i_open}Owners%{i_close}"
 msgstr ""
 
+msgid "Members cannot be added because membership is locked"
+msgstr ""
+
 msgid "Members listed as CODEOWNERS of affected files."
 msgstr ""
 
@@ -52217,9 +52220,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Membership"
-msgstr ""
-
-msgid "Membership is locked for this group"
 msgstr ""
 
 msgid "Members|%{time} by %{user}"

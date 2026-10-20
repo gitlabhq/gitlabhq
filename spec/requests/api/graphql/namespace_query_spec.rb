@@ -180,6 +180,31 @@ RSpec.describe 'Query', feature_category: :groups_and_projects do
               expect(graphql_dig_at(graphql_data, :namespace, :link_paths,
                 :new_work_item_email_address)).to eq(expected_address)
             end
+
+            context 'when using a read_api scoped token' do
+              let(:token) { create(:personal_access_token, user: user, scopes: [:read_api]) }
+
+              it 'does not return the work item email address' do
+                post_graphql(query_string, current_user: current_user, token: { personal_access_token: token })
+
+                expect(graphql_dig_at(graphql_data, :namespace, :link_paths,
+                  :new_work_item_email_address)).to be_nil
+              end
+            end
+
+            context 'when using an api scoped token' do
+              let(:token) { create(:personal_access_token, user: user, scopes: [:api]) }
+
+              it 'returns the work item email address' do
+                post_graphql(query_string, current_user: current_user, token: { personal_access_token: token })
+
+                expected_address = "incoming+#{test_project.full_path_slug}-#{test_project.id}-" \
+                  "#{user.incoming_email_token}-issue@localhost.com"
+
+                expect(graphql_dig_at(graphql_data, :namespace, :link_paths,
+                  :new_work_item_email_address)).to eq(expected_address)
+              end
+            end
           end
 
           context 'when user does not have incoming email token' do
