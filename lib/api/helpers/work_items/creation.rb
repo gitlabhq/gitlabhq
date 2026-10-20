@@ -5,6 +5,9 @@ module API
     module WorkItems
       module Creation
         def execute_work_item_creation(resource_parent)
+          ::Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/work_items/633143',
+            new_threshold: 110)
+
           check_work_item_rest_api_feature_flag!
           authorize! :create_work_item, resource_parent
           validate_requested_keys!(available_features: declared_features)

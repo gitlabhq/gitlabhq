@@ -21375,7 +21375,7 @@ Fields:
 
 {{< /details >}}
 
-Generates a workplan for a work item asynchronously through a Duo Agent Platform flow, instead of Duo Chat. Available only when the `duo_workplan_async_flow` feature flag is enabled; returns an error otherwise.
+Generates a workplan for a work item asynchronously through a Duo Agent Platform flow. Available only when the `workplan` feature flag is enabled; returns an error otherwise.
 
 Input type: `WorkItemGenerateWorkplanInput`
 
@@ -21462,7 +21462,7 @@ Fields:
 
 {{< /details >}}
 
-Resumes a paused workplan generation flow that is awaiting input, sending the replies left on the questions the flow asked. Available only when the `duo_workplan_async_flow` feature flag is enabled; returns an error otherwise.
+Resumes a paused workplan generation flow that is awaiting input, sending the replies left on the questions the flow asked. Available only when the `workplan` feature flag is enabled; returns an error otherwise.
 
 Input type: `WorkItemResumeWorkplanInput`
 
@@ -68911,9 +68911,9 @@ Fields:
 | <a id="workitemwidgetagentplan-aiplanningenabled"></a>`aiPlanningEnabled` | [`Boolean!`](#boolean) | Indicates whether AI planning is enabled for the work item. |
 | <a id="workitemwidgetagentplan-content"></a>`content` | [`String`](#string) | Content of the agent plan. This field can only be resolved for one work item in any single request. |
 | <a id="workitemwidgetagentplan-contenthtml"></a>`contentHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `content`. This field can only be resolved for one work item in any single request. |
-| <a id="workitemwidgetagentplan-generationstatus"></a>`generationStatus` {{< icon name="warning-solid" >}} | [`WorkItemAgentPlanGenerationStatus`](#workitemagentplangenerationstatus) | Introduced in GitLab 19.4. Status: Experiment. Status of the asynchronous workplan generation flow for the work item. Reflects the most recent `workplan/v1` Duo Agent Platform workflow, if any; creation of that workflow is currently gated by the `duo_workplan_async_flow` feature flag. |
-| <a id="workitemwidgetagentplan-openquestionscount"></a>`openQuestionsCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.5. Status: Experiment. Number of questions asked by workplan flows whose thread is not resolved, across every run on the work item. Null when no workplan flow has run on the work item. Only available when the `duo_workplan_async_flow` feature flag is enabled. This field can only be resolved for one work item in any single request. |
-| <a id="workitemwidgetagentplan-questions"></a>`questions` {{< icon name="warning-solid" >}} | [`WorkItemAgentPlanQuestionConnection`](#workitemagentplanquestionconnection) | Introduced in GitLab 19.5. Status: Experiment. Questions asked by workplan flows, across every run on the work item, oldest first. Null when no workplan flow has run on the work item. Only available when the `duo_workplan_async_flow` feature flag is enabled. This field can only be resolved for one work item in any single request. |
+| <a id="workitemwidgetagentplan-generationstatus"></a>`generationStatus` {{< icon name="warning-solid" >}} | [`WorkItemAgentPlanGenerationStatus`](#workitemagentplangenerationstatus) | Introduced in GitLab 19.4. Status: Experiment. Status of the asynchronous workplan generation flow for the work item. Reflects the most recent `workplan/v1` Duo Agent Platform workflow, if any; creation of that workflow is currently gated by the `workplan` feature flag. |
+| <a id="workitemwidgetagentplan-openquestionscount"></a>`openQuestionsCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.5. Status: Experiment. Number of questions asked by workplan flows whose thread is not resolved, across every run on the work item. Null when no workplan flow has run on the work item. Only available when the `workplan` feature flag is enabled. This field can only be resolved for one work item in any single request. |
+| <a id="workitemwidgetagentplan-questions"></a>`questions` {{< icon name="warning-solid" >}} | [`WorkItemAgentPlanQuestionConnection`](#workitemagentplanquestionconnection) | Introduced in GitLab 19.5. Status: Experiment. Questions asked by workplan flows, across every run on the work item, oldest first. Null when no workplan flow has run on the work item. Only available when the `workplan` feature flag is enabled. This field can only be resolved for one work item in any single request. |
 | <a id="workitemwidgetagentplan-readinessscore"></a>`readinessScore` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.3. Status: Experiment. Readiness score of the agent plan (0-100). Null when the score is not yet available. Only available when the `workplan_score` feature flag is enabled. |
 | <a id="workitemwidgetagentplan-readinessscorefeedback"></a>`readinessScoreFeedback` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. Markdown feedback explaining the readiness score. Null when no feedback is available. Only available when the `workplan_score` feature flag is enabled. This field can only be resolved for one work item in any single request. |
 | <a id="workitemwidgetagentplan-readinessscorefeedbackhtml"></a>`readinessScoreFeedbackHtml` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.4. Status: Experiment. GitLab Flavored Markdown rendering of `readiness_score_feedback`. Only available when the `workplan_score` feature flag is enabled. This field can only be resolved for one work item in any single request. |

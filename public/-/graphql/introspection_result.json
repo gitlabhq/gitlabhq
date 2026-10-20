@@ -292544,7 +292544,7 @@
             },
             {
               "name": "workItemGenerateWorkplan",
-              "description": "Generates a workplan for a work item asynchronously through a Duo Agent Platform flow, instead of Duo Chat. Available only when the `duo_workplan_async_flow` feature flag is enabled; returns an error otherwise. Introduced in GitLab 19.3: Status: Experiment.",
+              "description": "Generates a workplan for a work item asynchronously through a Duo Agent Platform flow. Available only when the `workplan` feature flag is enabled; returns an error otherwise. Introduced in GitLab 19.3: Status: Experiment.",
               "args": [
                 {
                   "name": "input",
@@ -292631,7 +292631,7 @@
             },
             {
               "name": "workItemResumeWorkplan",
-              "description": "Resumes a paused workplan generation flow that is awaiting input, sending the replies left on the questions the flow asked. Available only when the `duo_workplan_async_flow` feature flag is enabled; returns an error otherwise. Introduced in GitLab 19.4: Status: Experiment.",
+              "description": "Resumes a paused workplan generation flow that is awaiting input, sending the replies left on the questions the flow asked. Available only when the `workplan` feature flag is enabled; returns an error otherwise. Introduced in GitLab 19.4: Status: Experiment.",
               "args": [
                 {
                   "name": "input",
@@ -475639,7 +475639,7 @@
             },
             {
               "name": "generationStatus",
-              "description": "Status of the asynchronous workplan generation flow for the work item. Reflects the most recent `workplan/v1` Duo Agent Platform workflow, if any; creation of that workflow is currently gated by the `duo_workplan_async_flow` feature flag. Introduced in GitLab 19.4: Status: Experiment.",
+              "description": "Status of the asynchronous workplan generation flow for the work item. Reflects the most recent `workplan/v1` Duo Agent Platform workflow, if any; creation of that workflow is currently gated by the `workplan` feature flag. Introduced in GitLab 19.4: Status: Experiment.",
               "args": [],
               "type": {
                 "kind": "ENUM",
@@ -475651,7 +475651,7 @@
             },
             {
               "name": "openQuestionsCount",
-              "description": "Number of questions asked by workplan flows whose thread is not resolved, across every run on the work item. Null when no workplan flow has run on the work item. Only available when the `duo_workplan_async_flow` feature flag is enabled. This field can only be resolved for one work item in any single request. Introduced in GitLab 19.5: Status: Experiment.",
+              "description": "Number of questions asked by workplan flows whose thread is not resolved, across every run on the work item. Null when no workplan flow has run on the work item. Only available when the `workplan` feature flag is enabled. This field can only be resolved for one work item in any single request. Introduced in GitLab 19.5: Status: Experiment.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -475663,7 +475663,7 @@
             },
             {
               "name": "questions",
-              "description": "Questions asked by workplan flows, across every run on the work item, oldest first. Null when no workplan flow has run on the work item. Only available when the `duo_workplan_async_flow` feature flag is enabled. This field can only be resolved for one work item in any single request. Introduced in GitLab 19.5: Status: Experiment.",
+              "description": "Questions asked by workplan flows, across every run on the work item, oldest first. Null when no workplan flow has run on the work item. Only available when the `workplan` feature flag is enabled. This field can only be resolved for one work item in any single request. Introduced in GitLab 19.5: Status: Experiment.",
               "args": [
                 {
                   "name": "after",

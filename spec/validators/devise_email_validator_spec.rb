@@ -7,6 +7,16 @@ RSpec.describe DeviseEmailValidator do
 
   subject(:validate) { validator.validate(user) }
 
+  describe '#check_validity!' do
+    [/.*/, nil, false].each do |value|
+      it "raises when regexp: #{value.inspect} is passed" do
+        expect do
+          described_class.new(attributes: [:public_email], regexp: value)
+        end.to raise_error(ArgumentError, 'DeviseEmailValidator does not support :regexp')
+      end
+    end
+  end
+
   describe 'validations' do
     context 'with default settings' do
       let(:validator) { described_class.new(attributes: [:public_email]) }

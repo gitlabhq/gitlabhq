@@ -8,7 +8,7 @@ module Groups
     feature_category :planning_views, [:index, :rss, :calendar]
     feature_category :team_planning
 
-    urgency :low, [:rss, :calendar]
+    urgency :low, [:index, :rss, :calendar]
 
     before_action do
       push_force_frontend_feature_flag(:glql_load_on_click, !!group&.glql_load_on_click_feature_flag_enabled?)

@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { GlButton } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import WorkItemRelationshipIcons from '~/work_items/components/shared/work_item_relationship_icons.vue';
 import { LINKED_CATEGORIES_MAP } from '~/work_items/constants';
@@ -50,8 +51,8 @@ describe('WorkItemRelationshipIcons', () => {
     await waitForPromises();
   };
 
-  const findBlockedIcon = () => wrapper.findByTestId('relationship-blocked-by-icon');
-  const findBlockingIcon = () => wrapper.findByTestId('relationship-blocks-icon');
+  const findBlockedIcon = () => wrapper.findComponentByTestId('relationship-blocked-by-icon');
+  const findBlockingIcon = () => wrapper.findComponentByTestId('relationship-blocks-icon');
 
   const blockedItems = mockLinkedItems.linkedItems.nodes.filter(
     (item) => item.linkType === LINKED_CATEGORIES_MAP.IS_BLOCKED_BY,
@@ -75,6 +76,12 @@ describe('WorkItemRelationshipIcons', () => {
 
     expect(findBlockedIcon().attributes('aria-label')).toBe('Task is blocked by 1 item');
     expect(findBlockingIcon().attributes('aria-label')).toBe('Task blocks 1 item');
+  });
+
+  it('renders the icons as buttons', () => {
+    createComponent();
+
+    expect(wrapper.findAllComponents(GlButton)).toHaveLength(2);
   });
 
   it('renders only blocked icon if no blocking relationship exists', () => {
@@ -102,16 +109,31 @@ describe('WorkItemRelationshipIcons', () => {
   it('triggers child link items query on hover', async () => {
     createComponent();
 
-    await findBlockedIcon().trigger('mouseenter');
+    await findBlockedIcon().vm.$emit('mouseenter');
     await waitForPromises();
 
     expect(workItemLinkedItemsSuccessHandler).toHaveBeenCalled();
   });
 
+  describe('when an icon gets keyboard focus', () => {
+    it.each`
+      icon            | findIcon
+      ${'blocked by'} | ${findBlockedIcon}
+      ${'blocks'}     | ${findBlockingIcon}
+    `('triggers child link items query for the $icon icon', async ({ findIcon }) => {
+      createComponent();
+
+      await findIcon().vm.$emit('focus');
+      await waitForPromises();
+
+      expect(workItemLinkedItemsSuccessHandler).toHaveBeenCalled();
+    });
+  });
+
   it('passes useWorkItemFeatures as false to the query by default', async () => {
     createComponent();
 
-    await findBlockedIcon().trigger('mouseenter');
+    await findBlockedIcon().vm.$emit('mouseenter');
     await waitForPromises();
 
     expect(workItemLinkedItemsSuccessHandler).toHaveBeenCalledWith(
@@ -122,7 +144,7 @@ describe('WorkItemRelationshipIcons', () => {
   it('passes useWorkItemFeatures as true to the query when workItemFeaturesField feature flag is enabled', async () => {
     createComponent({ provide: { glFeatures: { workItemFeaturesField: true } } });
 
-    await findBlockedIcon().trigger('mouseenter');
+    await findBlockedIcon().vm.$emit('mouseenter');
     await waitForPromises();
 
     expect(workItemLinkedItemsSuccessHandler).toHaveBeenCalledWith(

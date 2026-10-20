@@ -840,7 +840,9 @@ Grants the ability to create, delete, and update AI flow triggers.
 | ------ | ------ | ---- | ---- |
 | Create | Project | Mutation | `AiFlowTriggerCreate` |
 | Delete | Project | Mutation | `AiFlowTriggerDelete` |
+| Delete | Group | Mutation | `AiFlowTriggerDelete` |
 | Update | Project | Mutation | `AiFlowTriggerUpdate` |
+| Update | Group | Mutation | `AiFlowTriggerUpdate` |
 
 #### AI Self-Hosted Model
 

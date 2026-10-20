@@ -104,6 +104,13 @@ describe('WorkItemCard', () => {
 
       expect(findLink().attributes('href')).toBe('/some/path/-/issues/42');
     });
+
+    it('wraps only the title, so the metadata is not nested inside it', () => {
+      createComponent();
+
+      expect(findLink().findComponent(GlTruncate).exists()).toBe(true);
+      expect(findLink().element.contains(findMetadataRow().element)).toBe(false);
+    });
   });
 
   describe('when selecting a card', () => {
@@ -186,6 +193,12 @@ describe('WorkItemCard', () => {
         iconVariant: 'subtle',
         showTooltipOnHover: true,
       });
+    });
+
+    it('keeps the type icon out of the tab order, so the title link is the first tab stop', () => {
+      createComponent();
+
+      expect(findTypeIcon().attributes('tabindex')).toBe('-1');
     });
 
     it('does not render the type icon when workItemType is null', () => {

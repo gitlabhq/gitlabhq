@@ -7,3 +7,4 @@ permissions:
   - update_ai_flow_trigger
 boundaries:
   - project
+  - group

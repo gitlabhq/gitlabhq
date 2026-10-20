@@ -17853,7 +17853,7 @@ Scores the readiness of a work item asynchronously through a Duo Agent Platform 
 
 {{< /history >}}
 
-Generates a workplan for a work item asynchronously through a Duo Agent Platform flow, instead of Duo Chat. Available only when the `duo_workplan_async_flow` feature flag is enabled; returns an error otherwise.
+Generates a workplan for a work item asynchronously through a Duo Agent Platform flow. Available only when the `workplan` feature flag is enabled; returns an error otherwise.
 
 **Input type:** `WorkItemGenerateWorkplanInput`
 
@@ -17949,7 +17949,7 @@ Remove items linked to the work item.
 
 {{< /history >}}
 
-Resumes a paused workplan generation flow that is awaiting input, sending the replies left on the questions the flow asked. Available only when the `duo_workplan_async_flow` feature flag is enabled; returns an error otherwise.
+Resumes a paused workplan generation flow that is awaiting input, sending the replies left on the questions the flow asked. Available only when the `workplan` feature flag is enabled; returns an error otherwise.
 
 **Input type:** `WorkItemResumeWorkplanInput`
 

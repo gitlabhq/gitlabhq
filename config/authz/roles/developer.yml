@@ -157,6 +157,7 @@ group:
   - read_ai_catalog_flow
   - read_ai_catalog_item
   - read_ai_catalog_third_party_flow
+  - read_ai_flow_triggers
   - read_ai_foundational_flow
   - read_audit_event
   - read_cluster

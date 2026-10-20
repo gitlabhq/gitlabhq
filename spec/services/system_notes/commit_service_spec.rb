@@ -40,15 +40,15 @@ RSpec.describe SystemNotes::CommitService, feature_category: :code_review_workfl
           decoded_note_content = HTMLEntities.new.decode(subject.note)
 
           new_commits.each do |commit|
-            expect(decoded_note_content).to include("<li>#{commit.short_id} - #{commit.title}</li>")
+            expect(decoded_note_content).to include("<li>#{commit.id} - #{commit.title}</li>")
           end
         end
 
         context 'with HTML content' do
-          let(:new_commits) { [double(title: '<pre>This is a test</pre>', short_id: '12345678')] }
+          let(:new_commits) { [double(title: '<pre>This is a test</pre>', id: '1234567890abcdef1234567890abcdef12345678')] }
 
           it 'escapes HTML titles' do
-            expect(note_lines[1]).to eq("<ul><li>12345678 - &lt;pre&gt;This is a test&lt;/pre&gt;</li></ul>")
+            expect(note_lines[1]).to eq("<ul><li>1234567890abcdef1234567890abcdef12345678 - &lt;pre&gt;This is a test&lt;/pre&gt;</li></ul>")
           end
         end
 
@@ -57,14 +57,14 @@ RSpec.describe SystemNotes::CommitService, feature_category: :code_review_workfl
           let(:earlier_commit_summary_line) { note_lines[1] }
 
           it 'includes the truncated new commits summary' do
-            expect(earlier_commit_summary_line).to start_with("<ul><li>#{new_commits[0].short_id} - 1 earlier commit")
+            expect(earlier_commit_summary_line).to start_with("<ul><li>#{new_commits[0].id} - 1 earlier commit")
           end
 
           context 'with oldrev' do
             let(:oldrev) { '12345678abcd' }
 
             it 'includes the truncated new commits summary with the oldrev' do
-              expect(earlier_commit_summary_line).to start_with("<ul><li>#{new_commits[0].short_id} - 1 earlier commit")
+              expect(earlier_commit_summary_line).to start_with("<ul><li>#{new_commits[0].id} - 1 earlier commit")
             end
           end
         end
@@ -74,14 +74,14 @@ RSpec.describe SystemNotes::CommitService, feature_category: :code_review_workfl
           let(:earlier_commit_summary_line) { note_lines[1] }
 
           it 'includes the truncated new commits summary' do
-            expect(earlier_commit_summary_line).to start_with("<ul><li>#{new_commits[0].short_id}..#{new_commits[2].short_id} - 3 earlier commits")
+            expect(earlier_commit_summary_line).to start_with("<ul><li>#{new_commits[0].id}..#{new_commits[2].id} - 3 earlier commits")
           end
 
           context 'with oldrev' do
             let(:oldrev) { '12345678abcd' }
 
             it 'includes the truncated new commits summary with the oldrev' do
-              expect(earlier_commit_summary_line).to start_with("<ul><li>12345678...#{new_commits[2].short_id} - 3 earlier commits")
+              expect(earlier_commit_summary_line).to start_with("<ul><li>12345678abcd...#{new_commits[2].id} - 3 earlier commits")
             end
           end
         end
@@ -94,7 +94,7 @@ RSpec.describe SystemNotes::CommitService, feature_category: :code_review_workfl
           let(:old_commits) { [noteable.commits.last] }
 
           it 'includes the existing commit' do
-            expect(summary_line).to start_with("<ul><li>#{old_commits.first.short_id} - 1 commit from branch <code>feature</code>")
+            expect(summary_line).to start_with("<ul><li>#{old_commits.first.id} - 1 commit from branch <code>feature</code>")
           end
 
           context 'with new commits exceeding the display limit' do
@@ -102,7 +102,7 @@ RSpec.describe SystemNotes::CommitService, feature_category: :code_review_workfl
             let(:new_commits) { create_commits(13) }
 
             it 'includes the existing commit as well as the truncated new commit summary' do
-              expect(summary_line).to start_with("<ul><li>#{old_commits.first.short_id} - 1 commit from branch <code>feature</code></li><li>#{old_commits.last.short_id}...#{new_commits[2].short_id} - 3 earlier commits")
+              expect(summary_line).to start_with("<ul><li>#{old_commits.first.id} - 1 commit from branch <code>feature</code></li><li>#{old_commits.last.id}...#{new_commits[2].id} - 3 earlier commits")
             end
           end
         end
@@ -115,7 +115,7 @@ RSpec.describe SystemNotes::CommitService, feature_category: :code_review_workfl
 
             it 'includes a commit range and count' do
               expect(summary_line)
-                .to start_with("<ul><li>#{Commit.truncate_sha(oldrev)}...#{old_commits.last.short_id} - 26 commits from branch <code>feature</code>")
+                .to start_with("<ul><li>#{oldrev}...#{old_commits.last.id} - 26 commits from branch <code>feature</code>")
             end
 
             context 'with new commits exceeding the display limit' do
@@ -123,7 +123,7 @@ RSpec.describe SystemNotes::CommitService, feature_category: :code_review_workfl
 
               it 'includes the existing commit as well as the truncated new commit summary' do
                 expect(summary_line)
-                  .to start_with("<ul><li>#{Commit.truncate_sha(oldrev)}...#{old_commits.last.short_id} - 26 commits from branch <code>feature</code></li><li>#{old_commits.last.short_id}...#{new_commits[2].short_id} - 3 earlier commits")
+                  .to start_with("<ul><li>#{oldrev}...#{old_commits.last.id} - 26 commits from branch <code>feature</code></li><li>#{old_commits.last.id}...#{new_commits[2].id} - 3 earlier commits")
               end
             end
           end
@@ -131,7 +131,7 @@ RSpec.describe SystemNotes::CommitService, feature_category: :code_review_workfl
           context 'without oldrev' do
             it 'includes a commit range and count' do
               expect(summary_line)
-                .to start_with("<ul><li>#{old_commits[0].short_id}..#{old_commits[-1].short_id} - 26 commits from branch <code>feature</code>")
+                .to start_with("<ul><li>#{old_commits[0].id}..#{old_commits[-1].id} - 26 commits from branch <code>feature</code>")
             end
 
             context 'with new commits exceeding the display limit' do
@@ -139,7 +139,7 @@ RSpec.describe SystemNotes::CommitService, feature_category: :code_review_workfl
 
               it 'includes the existing commit as well as the truncated new commit summary' do
                 expect(summary_line)
-                  .to start_with("<ul><li>#{old_commits.first.short_id}..#{old_commits.last.short_id} - 26 commits from branch <code>feature</code></li><li>#{old_commits.last.short_id}...#{new_commits[2].short_id} - 3 earlier commits")
+                  .to start_with("<ul><li>#{old_commits.first.id}..#{old_commits.last.id} - 26 commits from branch <code>feature</code></li><li>#{old_commits.last.id}...#{new_commits[2].id} - 3 earlier commits")
               end
             end
           end
@@ -177,7 +177,7 @@ RSpec.describe SystemNotes::CommitService, feature_category: :code_review_workfl
 
   def create_commits(count)
     Array.new(count) do |i|
-      double(title: "Test commit #{i}", short_id: "abcd00#{i}")
+      double(title: "Test commit #{i}", id: format('abcd%036d', i))
     end
   end
 end

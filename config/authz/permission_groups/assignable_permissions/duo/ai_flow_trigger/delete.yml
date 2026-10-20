@@ -7,3 +7,4 @@ permissions:
   - delete_ai_flow_trigger
 boundaries:
   - project
+  - group

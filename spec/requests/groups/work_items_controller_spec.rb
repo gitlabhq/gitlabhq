@@ -16,10 +16,11 @@ RSpec.describe 'Group Level Work Items', feature_category: :team_planning do
     context 'when the user can read the group' do
       let(:current_user) { developer }
 
-      it 'renders index' do
+      it 'renders index', :aggregate_failures do
         get work_items_path
 
         expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to have_request_urgency(:low)
         expect(response.body).to have_pushed_frontend_feature_flags(useWorkItemUrl: true)
       end
 

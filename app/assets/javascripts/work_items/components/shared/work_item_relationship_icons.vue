@@ -1,5 +1,5 @@
 <script>
-import { GlIcon } from '@gitlab/ui';
+import { GlButton, GlIcon } from '@gitlab/ui';
 import { n__, sprintf } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { LINKED_CATEGORIES_MAP, STATE_OPEN } from '../../constants';
@@ -10,6 +10,7 @@ import WorkItemRelationshipPopover from './work_item_relationship_popover.vue';
 export default {
   name: 'WorkItemRelationshipIcons',
   components: {
+    GlButton,
     GlIcon,
     WorkItemRelationshipPopover,
   },
@@ -135,17 +136,20 @@ export default {
 <template>
   <span class="gl-flex gl-gap-3">
     <template v-if="blockedByCount > 0">
-      <span
+      <gl-button
         :id="itemsBlockedByIconId"
         :aria-label="blockedByLabel"
-        tabIndex="0"
-        class="gl-cursor-pointer gl-text-sm gl-text-subtle"
+        category="tertiary"
+        size="small"
+        button-text-classes="gl-text-sm gl-text-subtle"
+        class="!gl-px-0 hover:!gl-bg-transparent active:!gl-bg-transparent"
         data-testid="relationship-blocked-by-icon"
         @mouseenter="handleBlockedByMouseEnter"
+        @focus="handleBlockedByMouseEnter"
       >
         <gl-icon name="entity-blocked" variant="danger" />
         {{ blockedByCount }}
-      </span>
+      </gl-button>
       <work-item-relationship-popover
         :target="itemsBlockedByIconId"
         :title="blockedByLabel"
@@ -159,17 +163,20 @@ export default {
     </template>
 
     <template v-if="blockingCount > 0">
-      <span
+      <gl-button
         :id="itemsBlocksIconId"
         :aria-label="blocksLabel"
-        tabIndex="0"
-        class="gl-cursor-pointer gl-text-sm gl-text-subtle"
+        category="tertiary"
+        size="small"
+        button-text-classes="gl-text-sm gl-text-subtle"
+        class="!gl-px-0 hover:!gl-bg-transparent active:!gl-bg-transparent"
         data-testid="relationship-blocks-icon"
         @mouseenter="handleBlocksMouseEnter"
+        @focus="handleBlocksMouseEnter"
       >
         <gl-icon name="entity-blocking" variant="warning" />
         {{ blockingCount }}
-      </span>
+      </gl-button>
       <work-item-relationship-popover
         :target="itemsBlocksIconId"
         :title="blocksLabel"

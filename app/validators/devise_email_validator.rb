@@ -11,6 +11,10 @@
 #     validates :personal_email, devise_email: true
 #   end
 class DeviseEmailValidator < ActiveModel::EachValidator
+  def check_validity!
+    raise ArgumentError, 'DeviseEmailValidator does not support :regexp' if options.key?(:regexp)
+  end
+
   def validate_each(record, attribute, value)
     return if record.errors.include?(attribute)
 

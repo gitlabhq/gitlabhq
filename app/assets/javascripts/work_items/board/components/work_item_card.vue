@@ -248,12 +248,7 @@ export default {
     }"
     class="js-board-card gl-group gl-border gl-relative gl-rounded-lg gl-border-section gl-bg-section hover:gl-bg-subtle"
   >
-    <a
-      :href="item.webPath"
-      data-testid="work-item-link"
-      class="gl-flex gl-min-w-0 gl-flex-col gl-gap-2 gl-p-3 gl-text-default hover:gl-text-default hover:gl-no-underline"
-      @click="handleCardClick"
-    >
+    <div class="gl-flex gl-min-w-0 gl-flex-col gl-gap-2 gl-p-3">
       <div
         class="gl-flex gl-min-w-0 gl-items-center gl-gap-2"
         :class="{ 'gl-pr-6': showActionsMenu }"
@@ -264,9 +259,22 @@ export default {
           :type-icon-name="item.workItemType.iconName"
           icon-variant="subtle"
           show-tooltip-on-hover
+          tabindex="-1"
+          class="gl-relative gl-z-1"
         />
         <h4 class="gl-m-0 gl-min-w-0 gl-text-base gl-font-normal">
-          <gl-truncate :text="item.title" with-tooltip />
+          <!-- after: utilities set content: var(--tw-content), and GitLab has no Tailwind preflight to give it a default.
+               Without gl-content-[''] the stretched link's ::after, and with it the card focus ring and click area, disappears on focus. -->
+          <!-- eslint-disable tailwindcss/no-arbitrary-value -- gl-content-[''] is needed, see the comment above -->
+          <a
+            :href="item.webPath"
+            data-testid="work-item-link"
+            class="gl-text-default gl-stretched-link hover:gl-text-default hover:gl-no-underline focus-visible:gl-outline-none focus-visible:after:gl-rounded-lg focus-visible:after:gl-content-[''] focus-visible:after:gl-focus"
+            @click="handleCardClick"
+          >
+            <gl-truncate :text="item.title" with-tooltip class="gl-relative gl-z-1" />
+          </a>
+          <!-- eslint-enable tailwindcss/no-arbitrary-value -->
         </h4>
       </div>
       <div
@@ -279,18 +287,24 @@ export default {
           data-testid="work-item-parent"
           :parent="parent"
           :icon-size="12"
+          class="gl-relative gl-z-1"
         />
-        <issue-weight v-if="showWeight" data-testid="work-item-weight" :weight="weight" />
+        <issue-weight
+          v-if="showWeight"
+          data-testid="work-item-weight"
+          :weight="weight"
+          class="gl-relative gl-z-1"
+        />
         <issue-milestone
           v-if="showMilestone"
           data-testid="work-item-milestone"
           :milestone="milestone"
-          class="!gl-max-w-28"
+          class="gl-relative gl-z-1 !gl-max-w-28"
         />
         <work-item-iteration-attribute
           v-if="showIteration"
           data-testid="work-item-iteration"
-          class="gl-max-w-15 gl-truncate"
+          class="gl-relative gl-z-1 gl-max-w-15 gl-truncate"
           :iteration="iteration"
           :namespace-path="rootPageFullPath"
         />
@@ -298,7 +312,7 @@ export default {
           v-if="showDates"
           anchor-id="work-item-dates"
           wrapper-component="span"
-          wrapper-component-class="gl-text-subtle"
+          wrapper-component-class="gl-relative gl-z-1 gl-text-subtle"
           :start-date="startDate"
           :due-date="dueDate"
           :is-closed="Boolean(item.closedAt)"
@@ -313,6 +327,7 @@ export default {
           :title="label.title"
           :description="label.description"
           :scoped="showAsScopedLabel(label)"
+          class="gl-relative gl-z-1"
         />
       </div>
       <div
@@ -325,7 +340,7 @@ export default {
           :assignees="assignees"
           :icon-size="16"
           :max-visible="3"
-          class="gl-flex gl-items-center"
+          class="gl-relative gl-z-1 gl-flex gl-items-center"
         />
         <issue-health-status
           v-if="showHealthStatus"
@@ -333,6 +348,7 @@ export default {
           display-as-text
           text-size="sm"
           :health-status="healthStatus"
+          class="gl-relative gl-z-1"
         />
         <!-- eslint-disable local-rules/vue-no-web-url -- WorkItemRelationshipIcons needs the full webUrl (not the relative webPath) to build the "view all linked items" link. -->
         <work-item-relationship-icons
@@ -344,18 +360,19 @@ export default {
           :blocking-count="blockingCount"
           :blocked-by-count="blockedByCount"
           :target-id="targetId"
+          class="gl-relative gl-z-1"
         />
         <!-- eslint-enable local-rules/vue-no-web-url -->
-        <work-item-status-badge v-if="showStatus" :item="status" />
+        <work-item-status-badge v-if="showStatus" :item="status" class="gl-relative gl-z-1" />
       </div>
-    </a>
+    </div>
     <gl-disclosure-dropdown
       v-if="showActionsMenu"
       :items="actionItems"
       :toggle-text="$options.i18n.actions"
       :class="[
         $options.noDragClass,
-        'gl-invisible gl-absolute gl-right-3 gl-top-3 group-focus-within:gl-visible group-hover:gl-visible',
+        'gl-invisible gl-absolute gl-right-3 gl-top-3 gl-z-1 group-focus-within:gl-visible group-hover:gl-visible',
       ]"
       icon="ellipsis_v"
       category="tertiary"

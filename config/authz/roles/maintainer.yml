@@ -254,6 +254,7 @@ group:
   - destroy_virtual_registry
   - enable_secret_push_protection
   - import_projects
+  - manage_ai_flow_triggers
   - modify_value_stream_dashboard_settings
   - provision_ai_catalog
   - provision_cloud_runner

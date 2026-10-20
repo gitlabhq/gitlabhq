@@ -47,7 +47,9 @@ module SystemNotes
     # Returns an Array of Strings
     def new_commits_list(new_commits)
       new_commits.collect do |commit|
-        content_tag('li', "#{commit.short_id} - #{commit.title}")
+        # Full SHAs: abbreviated prefixes collide in large repositories, and a
+        # reference that cannot resolve hides the whole note (#614048).
+        content_tag('li', "#{commit.id} - #{commit.title}")
       end
     end
 
@@ -82,15 +84,15 @@ module SystemNotes
       count = commits.size
 
       commit_ids = if count == 1
-                     commits.first.short_id
+                     commits.first.id
                    elsif start_rev && !Gitlab::Git.blank_ref?(start_rev)
-                     "#{Commit.truncate_sha(start_rev)}...#{commits.last.short_id}"
+                     "#{start_rev}...#{commits.last.id}"
                    else
                      # This two-dots notation seems to be not functioning as expected, but we should
                      # fallback to it as start_rev can be empty.
                      #
                      # For more information, please see https://gitlab.com/gitlab-org/gitlab/-/issues/391809
-                     "#{commits.first.short_id}..#{commits.last.short_id}"
+                     "#{commits.first.id}..#{commits.last.id}"
                    end
 
       commits_text = "#{count} earlier commit".pluralize(count)
@@ -117,11 +119,11 @@ module SystemNotes
     #
     # Examples:
     #
-    #   "* ea0f8418...2f4426b7 - 24 commits from branch `master`"
+    #   "* <full oldrev sha>...<full last commit sha> - 24 commits from branch `master`"
     #
-    #   "* ea0f8418..4188f0ea - 15 commits from branch `fork:master`"
+    #   "* <full first commit sha>..<full last commit sha> - 15 commits from branch `fork:master`"
     #
-    #   "* ea0f8418 - 1 commit from branch `feature`"
+    #   "* <full commit sha> - 1 commit from branch `feature`"
     #
     # Returns a newline-terminated String
     def existing_commit_summary(noteable, existing_commits, oldrev = nil)
@@ -130,11 +132,11 @@ module SystemNotes
       count = existing_commits.size
 
       commit_ids = if count == 1
-                     existing_commits.first.short_id
+                     existing_commits.first.id
                    elsif oldrev && !Gitlab::Git.blank_ref?(oldrev)
-                     "#{Commit.truncate_sha(oldrev)}...#{existing_commits.last.short_id}"
+                     "#{oldrev}...#{existing_commits.last.id}"
                    else
-                     "#{existing_commits.first.short_id}..#{existing_commits.last.short_id}"
+                     "#{existing_commits.first.id}..#{existing_commits.last.id}"
                    end
 
       commits_text = "#{count} commit".pluralize(count)

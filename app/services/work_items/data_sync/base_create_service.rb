@@ -81,3 +81,5 @@ module WorkItems
     end
   end
 end
+
+WorkItems::DataSync::BaseCreateService.prepend_mod
