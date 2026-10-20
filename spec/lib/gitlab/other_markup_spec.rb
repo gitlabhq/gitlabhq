@@ -190,7 +190,7 @@ RSpec.describe Gitlab::OtherMarkup, feature_category: :wiki do
       'links' => {
         file: 'file.rdoc',
         input: 'XSS[JaVaScriPt:alert(1)]',
-        output: "\n" + '<p><a>XSS</a></p>' + "\n"
+        output: "\n" + '<p>XSS</p>' + "\n"
       }
     }
     links.each do |name, data|
