@@ -2,6 +2,12 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 19.0.10 (2026-10-20)
+
+### Changed (1 change)
+
+- [Update gitlab-markup to 2.2.0 and rdoc to 8.1.0](https://gitlab.com/gitlab-org/gitlab/-/commit/28ee38b3bdac21207000669cd03d04c9be7c9fe0) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/262719))
+
 ## 19.0.9 (2026-09-22)
 
 ### Security (6 changes)
