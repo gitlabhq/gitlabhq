@@ -1,9 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
 import VisualizeAndLintSection from '~/ci/pipeline_editor/components/drawer/sections/visualize_and_lint_section.vue';
 import SectionComponent from '~/ci/pipeline_editor/components/drawer/pipeline_editor_drawer_section.vue';
-
-Vue.config.ignoredElements = ['gl-emoji'];
 
 describe('Visual and Lint section', () => {
   let wrapper;

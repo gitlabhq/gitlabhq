@@ -15,8 +15,6 @@ describe('MRWidgetMerging', () => {
   let wrapper;
 
   const pollMock = jest.fn().mockResolvedValue();
-
-  const GlEmoji = { template: '<img />' };
   const createComponent = () => {
     wrapper = shallowMount(MrWidgetMerging, {
       propsData: {
@@ -28,9 +26,6 @@ describe('MRWidgetMerging', () => {
         service: {
           poll: pollMock,
         },
-      },
-      stubs: {
-        GlEmoji,
       },
     });
   };

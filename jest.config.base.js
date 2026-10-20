@@ -4,6 +4,7 @@ const IS_EE = require('./config/helpers/is_ee_env');
 const isESLint = require('./config/helpers/is_eslint');
 const IS_JH = require('./config/helpers/is_jh_env');
 const { CONTEXT_ALIASES } = require('./config/vue3migration/aliases');
+const { isCustomElement } = require('./config/vue3migration/compilers/vue3_template');
 
 const { VUE_VERSION: EXPLICIT_VUE_VERSION } = process.env;
 const { VUE_COMPILER_VERSION } = process.env;
@@ -74,6 +75,7 @@ module.exports = (path, options = {}) => {
             compatConfig: {
               MODE: 2,
             },
+            isCustomElement,
           },
         },
       });

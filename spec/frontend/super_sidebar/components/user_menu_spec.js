@@ -24,8 +24,6 @@ jest.mock('~/lib/logger');
 describe('UserMenu component', () => {
   let wrapper;
   let trackingSpy;
-
-  const GlEmoji = { template: '<img/>' };
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findSetStatusModal = () => wrapper.findComponent(SetStatusModal);
   const showDropdown = () => findDropdown().vm.$emit('shown');
@@ -42,7 +40,6 @@ describe('UserMenu component', () => {
         },
       },
       stubs: {
-        GlEmoji,
         GlAvatar: true,
         GlIcon: true,
         SetStatusModal: stubComponent(SetStatusModal),

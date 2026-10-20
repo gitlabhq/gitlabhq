@@ -15,7 +15,7 @@ Gem::Specification.new do |spec|
     "against its own routing table to detect drift."
   spec.homepage = "https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-cells-http_router"
   spec.license = 'MIT'
-  spec.required_ruby_version = ">= 3.2"
+  spec.required_ruby_version = ">= 3.3"
   spec.metadata["rubygems_mfa_required"] = "true"
 
   spec.files = Dir['lib/**/*.rb']

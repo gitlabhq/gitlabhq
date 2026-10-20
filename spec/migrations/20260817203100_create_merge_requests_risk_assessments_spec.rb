@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe CreateMergeRequestsRiskAssessments, migration: :gitlab_main_org, feature_category: :duo_code_review do
+RSpec.describe CreateMergeRequestsRiskAssessments, migration: :gitlab_main_org, feature_category: :dap_code_review do
   let(:merge_requests_risk_assessments) { table(:merge_requests_risk_assessments) }
 
   before do

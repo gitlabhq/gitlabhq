@@ -25,8 +25,8 @@ module Gitlab
         # ash.config.missed_samples and returns -1, so this does not raise.
         STATEMENT_TIMEOUT_MS = 500
 
-        # Give up on the inner loop after this many failures in a row and let
-        # the next sampler tick retry, rather than spinning on a broken schema.
+        # Give up on the inner loop after this many failures in a row, rather
+        # than spinning on a broken schema. See #lease_release? for the retry.
         MAX_CONSECUTIVE_ERRORS = 3
 
         # How often to republish the ash.config counters as gauges.
@@ -47,6 +47,7 @@ module Gitlab
           @connection = connection
           @lease_key = "pg_ash_sampler:#{connection.load_balancer.name}:lock"
           @consecutive_errors = 0
+          @keep_lease = false
         end
 
         # @param continue [Proc] returns false once the calling thread is shutting down
@@ -57,6 +58,9 @@ module Gitlab
 
             reconcile_config!
             sample_loop(&continue)
+          rescue StandardError
+            @keep_lease = true
+            raise
           ensure
             # Only the lease holder contributes to this resettable gauge.
             config_gauges[:consecutive_rotate_failures].set({}, 0)
@@ -66,7 +70,7 @@ module Gitlab
         rescue StandardError => e
           # Not only ActiveRecordError: an escaped error stops the BaseSampler
           # thread for good, which on a single Sidekiq process ends sampling
-          # until a restart. The lease is released; the next tick retries.
+          # until a restart. A later tick retries once the lease expires.
           errors_metric.increment
           Gitlab::ErrorTracking.track_exception(e, lease_key: lease_key)
 
@@ -124,6 +128,7 @@ module Gitlab
           return true if @consecutive_errors < MAX_CONSECUTIVE_ERRORS
 
           Gitlab::ErrorTracking.track_exception(e, lease_key: lease_key, consecutive_errors: @consecutive_errors)
+          @keep_lease = true
 
           false
         end
@@ -194,6 +199,13 @@ module Gitlab
         # Used by ExclusiveLeaseGuard
         def lease_timeout
           LEASE_TIMEOUT
+        end
+
+        # Used by ExclusiveLeaseGuard. After a failure the lease is kept until it expires, so no process
+        # retries for up to LEASE_TIMEOUT. A broken schema or a missing privilege fails in every process,
+        # and handing the lease straight on made the whole fleet retry about once a second.
+        def lease_release?
+          !@keep_lease
         end
 
         def lease_taken_log_level

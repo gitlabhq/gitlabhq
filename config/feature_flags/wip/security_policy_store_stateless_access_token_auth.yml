@@ -1,0 +1,9 @@
+---
+name: security_policy_store_stateless_access_token_auth
+description: PoC - accepts a glsat- StatelessAccessToken scoped to read_security_policies as a bearer credential on the policy store API
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/606971
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/262098
+milestone: '19.6'
+group: group::security policies
+type: wip
+default_enabled: false

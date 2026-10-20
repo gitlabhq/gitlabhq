@@ -17,10 +17,6 @@ RSpec.describe Ci::RunnerJobsFinder, '#execute', factory_default: :keep, feature
 
   subject(:execute) { described_class.new(runner, user, params).execute }
 
-  before do
-    stub_feature_flags(lateral_runner_jobs_api_pagination: false)
-  end
-
   context 'when params is empty' do
     let!(:job1) { create(:ci_build, project: project) }
 
@@ -148,10 +144,6 @@ RSpec.describe Ci::RunnerJobsFinder, '#execute', factory_default: :keep, feature
   context 'with lateral authorization' do
     subject(:lateral_jobs) { described_class.new(runner, user, params).execute }
 
-    before do
-      stub_feature_flags(lateral_runner_jobs_api_pagination: true)
-    end
-
     it 'keeps permission checks correlated with each job', :aggregate_failures do
       sql = lateral_jobs.to_sql
 
@@ -193,7 +185,7 @@ RSpec.describe Ci::RunnerJobsFinder, '#execute', factory_default: :keep, feature
     context 'when the user is an admin', :enable_admin_mode do
       let(:user) { create(:user, :admin) }
 
-      it 'uses the legacy relation without a lateral join' do
+      it 'does not add an authorization join' do
         expect(lateral_jobs.to_sql).not_to include('LATERAL')
       end
     end

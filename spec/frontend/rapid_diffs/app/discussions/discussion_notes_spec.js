@@ -191,14 +191,17 @@ describe('DiscussionNotes', () => {
       expect(wrapper.findComponent(SystemNote).exists()).toBe(false);
     });
 
+    // Vue 2 warns about duplicate keys, which fails the spec. The Vue 3 compiler keys the
+    // `<template v-for>` with the first child's key instead.
     it('renders multiple same-type placeholders with distinct keys in one discussion', () => {
       const first = { id: 'placeholder-1', isPlaceholderNote: true, notes: [{ body: 'wip' }] };
       const second = { id: 'placeholder-2', isPlaceholderNote: true, notes: [{ body: 'command' }] };
       createComponent({ notes: [{ id: 'foo' }, first, second] });
       const placeholders = wrapper.findAllComponents(PlaceholderNote);
-      expect(placeholders).toHaveLength(2);
-      const keys = placeholders.wrappers.map((placeholder) => placeholder.vm.$vnode.key);
-      expect(keys).toStrictEqual(['placeholder-1', 'placeholder-2']);
+      expect(placeholders.wrappers.map((placeholder) => placeholder.props('note'))).toStrictEqual([
+        first.notes[0],
+        second.notes[0],
+      ]);
     });
   });
 

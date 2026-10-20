@@ -252,7 +252,7 @@ RSpec.describe ProjectExportJob, feature_category: :importers do
         relation_exports = export_job.find_or_create_relation_exports!(excluded_relations: excluded_relations)
 
         expect(relation_exports.map(&:relation)).not_to include(*excluded_relations)
-        expect(export_job.relation_exports.by_relation(excluded_relations)).to be_empty
+        expect(export_job.relation_exports.where(relation: excluded_relations)).to be_empty
       end
 
       it 'creates a relation export for every other relation' do

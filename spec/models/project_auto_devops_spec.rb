@@ -36,7 +36,7 @@ RSpec.describe ProjectAutoDevops, :with_current_organization, feature_category: 
 
       it { expect(auto_devops.predefined_variables).to include(key: 'AUTO_DEVOPS_EXPLICITLY_ENABLED', value: '1') }
 
-      it do
+      it 'does not set the staging or incremental rollout variables' do
         expect(auto_devops.predefined_variables.map { |var| var[:key] })
           .not_to include("STAGING_ENABLED", "INCREMENTAL_ROLLOUT_ENABLED")
       end
@@ -49,7 +49,7 @@ RSpec.describe ProjectAutoDevops, :with_current_organization, feature_category: 
 
       it { expect(auto_devops.predefined_variables).to include(key: 'AUTO_DEVOPS_EXPLICITLY_ENABLED', value: '1') }
 
-      it do
+      it 'does not set the staging or incremental rollout variables' do
         expect(auto_devops.predefined_variables.map { |var| var[:key] })
           .not_to include("STAGING_ENABLED", "INCREMENTAL_ROLLOUT_ENABLED")
       end
@@ -66,13 +66,13 @@ RSpec.describe ProjectAutoDevops, :with_current_organization, feature_category: 
     let(:auto_devops) { build(:project_auto_devops, project: project) }
 
     shared_examples 'does not create a gitlab deploy token' do
-      it do
+      it 'does not add a deploy token on save' do
         expect { auto_devops.save! }.not_to change { project.deploy_tokens.count }
       end
     end
 
     shared_examples 'creates a gitlab deploy token' do
-      it do
+      it 'adds the GitLab deploy token with registry read access on save' do
         expect { auto_devops.save! }.to change { project.deploy_tokens.count }.by(1)
 
         token = project.deploy_tokens.last

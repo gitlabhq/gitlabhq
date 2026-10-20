@@ -12,6 +12,7 @@ import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.qu
 import getPipelineNeeds from 'shared_queries/pipelines/get_pipeline_needs.query.graphql';
 import getPipelinePermissions from '~/ci/pipeline_details/graph/graphql/queries/get_pipeline_permissions.query.graphql';
 import getUserCallouts from '~/graphql_shared/queries/get_user_callouts.query.graphql';
+import AccessorUtilities from '~/lib/utils/accessor';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import {
@@ -384,6 +385,8 @@ describe('Pipeline graph wrapper', () => {
     describe('default', () => {
       let layersFn;
       beforeEach(async () => {
+        // `canUseLocalStorage` writes a probe key, which would count as a write here.
+        jest.spyOn(AccessorUtilities, 'canUseLocalStorage').mockReturnValue(true);
         layersFn = jest.spyOn(parsingUtils, 'listByLayers');
         createComponentWithApollo({
           mountFn: mountExtended,

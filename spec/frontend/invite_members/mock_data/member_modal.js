@@ -70,5 +70,3 @@ export const singleUserPostData = {
   invite_source: inviteSource,
   format: 'json',
 };
-
-export const GlEmoji = { template: '<img/>' };

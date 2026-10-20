@@ -1,4 +1,5 @@
 import { isString } from 'lodash-es';
+import AccessorUtilities from '~/lib/utils/accessor';
 
 /**
  * Serializes a value for storage in localStorage
@@ -36,6 +37,10 @@ const deserializeValue = (val, asString = false) => {
  * @returns {Object} Object with exists flag and value if it exists
  */
 export const getStorageValue = (storageKey, asString = false) => {
+  if (!AccessorUtilities.canUseLocalStorage()) {
+    return { exists: false };
+  }
+
   const value = localStorage.getItem(storageKey);
 
   if (value === null) {
@@ -62,6 +67,8 @@ export const getStorageValue = (storageKey, asString = false) => {
  * @param {boolean} asString - Whether to store as raw string (legacy mode)
  */
 export const saveStorageValue = (storageKey, val, asString = false) => {
+  if (!AccessorUtilities.canUseLocalStorage()) return;
+
   localStorage.setItem(storageKey, serializeValue(val, asString));
 };
 
@@ -70,6 +77,8 @@ export const saveStorageValue = (storageKey, val, asString = false) => {
  * @param {string} storageKey - The localStorage key to remove
  */
 export const removeStorageValue = (storageKey) => {
+  if (!AccessorUtilities.canUseLocalStorage()) return;
+
   localStorage.removeItem(storageKey);
 };
 

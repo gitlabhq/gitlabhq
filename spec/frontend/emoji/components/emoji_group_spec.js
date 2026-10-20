@@ -1,11 +1,8 @@
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
 import { GlButton } from '@gitlab/ui';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import EmojiGroup from '~/emoji/components/emoji_group.vue';
 import { EMOJI_THUMBS_UP, EMOJI_THUMBS_DOWN } from '~/emoji/constants';
-
-Vue.config.ignoredElements = ['gl-emoji'];
 
 let wrapper;
 function factory(propsData = {}) {
@@ -14,7 +11,6 @@ function factory(propsData = {}) {
       propsData,
       stubs: {
         GlButton,
-        GlEmoji: { template: '<div/>' },
       },
     }),
   );

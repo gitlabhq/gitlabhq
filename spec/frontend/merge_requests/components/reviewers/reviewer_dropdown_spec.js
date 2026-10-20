@@ -868,13 +868,7 @@ describe('Reviewer dropdown component', () => {
               compositeIdentityEnforced: false,
             }),
           ],
-          mountFn: (component, options) =>
-            mount(component, {
-              ...options,
-              stubs: {
-                'gl-emoji': true,
-              },
-            }),
+          mountFn: mount,
         });
 
         await waitForPromises();

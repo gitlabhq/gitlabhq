@@ -113,7 +113,7 @@ RSpec.describe Projects::ImportExport::WaitRelationExportsWorker, feature_catego
     end
 
     it 'enqueues ParallelProjectExportWorker once all existing relation exports are finished' do
-      expect(project_export_job.relation_exports.by_relation(excluded_relations)).to be_empty
+      expect(project_export_job.relation_exports.where(relation: excluded_relations)).to be_empty
 
       expect { described_class.new.perform(*job_args) }
         .to change { Projects::ImportExport::ParallelProjectExportWorker.jobs.size }.by(1)
@@ -127,7 +127,7 @@ RSpec.describe Projects::ImportExport::WaitRelationExportsWorker, feature_catego
     end
 
     it 'keeps waiting while an existing relation export is not finished' do
-      project_export_job.relation_exports.by_relation('issues').update_all(
+      project_export_job.relation_exports.where(relation: 'issues').update_all(
         status: Projects::ImportExport::RelationExport::STATUS[:queued]
       )
 

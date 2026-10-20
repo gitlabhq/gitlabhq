@@ -20,7 +20,6 @@ describe('Pipeline config reference section', () => {
       provide: {
         ...defaultProvide,
       },
-      stubs: ['gl-emoji'],
     });
   };
 

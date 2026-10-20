@@ -13,6 +13,7 @@ import DeleteAgentButton from '~/clusters_list/components/delete_agent_button.vu
 import ConnectToAgentModal from '~/clusters_list/components/connect_to_agent_modal.vue';
 import { CONNECT_MODAL_ID, MAX_LIST_COUNT } from '~/clusters_list/constants';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { getTableHeaderLabel } from 'helpers/gl_table_helper';
 import { stubComponent } from 'helpers/stub_component';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
@@ -45,8 +46,7 @@ describe('AgentTable', () => {
   const findProject = (at) => wrapper.findAllByTestId('cluster-agent-project-link').at(at);
   const findDeleteAgentButtons = () => wrapper.findAllComponents(DeleteAgentButton);
   const findTableRow = (at) => wrapper.findComponent(GlTable).find('tbody').findAll('tr').at(at);
-  const findTableHeaders = () =>
-    wrapper.findAll('thead th').wrappers.map((x) => x.text().split('\n')[0].trim());
+  const findTableHeaders = () => wrapper.findAll('thead th').wrappers.map(getTableHeaderLabel);
   const findSharedBadgeByRow = (at) => findTableRow(at).findComponent(GlBadge);
   const findDeleteAgentButtonByRow = (at) => findTableRow(at).findComponent(DeleteAgentButton);
   const findPagination = () => wrapper.findComponent(GlKeysetPagination);
@@ -61,7 +61,7 @@ describe('AgentTable', () => {
   };
 
   const findHeader = (label) =>
-    wrapper.findAll('thead th').wrappers.find((th) => th.text().split('\n')[0].trim() === label);
+    wrapper.findAll('thead th').wrappers.find((th) => getTableHeaderLabel(th) === label);
 
   const clickHeader = async (label) => {
     await findHeader(label).trigger('click');

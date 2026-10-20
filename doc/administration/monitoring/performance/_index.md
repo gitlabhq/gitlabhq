@@ -210,6 +210,7 @@ A background thread in the Sidekiq process takes the samples.
 Only one process samples at a time, so the interval you set is the interval for the whole instance.
 Sampling needs the GitLab Prometheus metrics endpoint, which is on by default.
 Sampling stops when Sidekiq stops, so a restart or a deployment can lose samples.
+If three samples in a row fail, no process tries to sample again for about 90 seconds.
 
 A change to either setting applies without a restart, but not at once.
 Each Sidekiq process reads the new value in up to 90 seconds.

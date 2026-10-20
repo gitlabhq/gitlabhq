@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.description = "A more descriptive text about what the gem is doing."
   spec.homepage = "https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-database-lock_retries"
   spec.license = "MIT"
-  spec.required_ruby_version = ">= 3.0"
+  spec.required_ruby_version = ">= 3.3"
   spec.metadata["rubygems_mfa_required"] = "true"
 
   spec.files = Dir['lib/**/*.rb']

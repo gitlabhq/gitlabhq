@@ -310952,6 +310952,18 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
             },
             {
+              "name": "securityTrackedContextQuota",
+              "description": "Quota information for tracked security contexts in the organization. Introduced in GitLab 19.6: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "SecurityTrackedContextQuota",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.6."
+            },
+            {
               "name": "softDeletedAt",
               "description": "Timestamp when the organization was soft-deleted.Visible to admins and organization owners only. Introduced in GitLab 19.1: Status: Experiment.",
               "args": [],
@@ -405785,6 +405797,73 @@
           "fields": null,
           "inputFields": null,
           "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "SecurityTrackedContextQuota",
+          "description": "Organization-level quota information for tracked security contexts.",
+          "fields": [
+            {
+              "name": "explicitlySet",
+              "description": "Whether the quota was explicitly set for the organization rather than using the default.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "limit",
+              "description": "Maximum number of tracked contexts allowed, or null when no limit applies to the organization.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "remaining",
+              "description": "Remaining quota available, or null when no limit applies to the organization.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "usage",
+              "description": "Current number of tracked contexts in use.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
           "enumValues": null,
           "possibleTypes": null
         },

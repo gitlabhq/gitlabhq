@@ -1,3 +1,5 @@
+import { useWithoutLocalStorage } from 'helpers/local_storage_helper';
+import AccessorUtilities from '~/lib/utils/accessor';
 import {
   getStorageValue,
   saveStorageValue,
@@ -124,6 +126,48 @@ describe('Local Storage Utils', () => {
       // Verify
       expect(localStorage.getItem(TEST_KEY)).toBeNull();
       expect(localStorage.getItem(OTHER_KEY)).toBe('other value');
+    });
+  });
+
+  describe('when localStorage cannot be used', () => {
+    beforeEach(() => {
+      jest.spyOn(AccessorUtilities, 'canUseLocalStorage').mockReturnValue(false);
+    });
+
+    it('getStorageValue returns { exists: false } without reading the stored value', () => {
+      localStorage.setItem(TEST_KEY, JSON.stringify(STRING_VALUE));
+
+      expect(getStorageValue(TEST_KEY)).toEqual({ exists: false });
+    });
+
+    it('saveStorageValue does not write to localStorage', () => {
+      saveStorageValue(TEST_KEY, STRING_VALUE);
+
+      expect(localStorage.getItem(TEST_KEY)).toBeNull();
+    });
+
+    it('removeStorageValue does not remove the key from localStorage', () => {
+      localStorage.setItem(TEST_KEY, 'some value');
+
+      removeStorageValue(TEST_KEY);
+
+      expect(localStorage.getItem(TEST_KEY)).toBe('some value');
+    });
+  });
+
+  describe('when window.localStorage is not available', () => {
+    useWithoutLocalStorage();
+
+    it('getStorageValue returns { exists: false }', () => {
+      expect(getStorageValue(TEST_KEY)).toEqual({ exists: false });
+    });
+
+    it('saveStorageValue does not throw', () => {
+      expect(() => saveStorageValue(TEST_KEY, STRING_VALUE)).not.toThrow();
+    });
+
+    it('removeStorageValue does not throw', () => {
+      expect(() => removeStorageValue(TEST_KEY)).not.toThrow();
     });
   });
 

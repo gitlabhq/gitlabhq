@@ -14,8 +14,6 @@ jest.mock('~/lib/utils/datetime/locale_dateformat', () => ({
   },
 }));
 
-Vue.config.ignoredElements = ['gl-emoji'];
-
 Vue.use(VueRouter);
 
 const router = new VueRouter({
@@ -33,9 +31,6 @@ function createComponent(propsData = {}) {
       count: CUSTOM_EMOJI.length,
       userPermissions: { createCustomEmoji: true },
       ...propsData,
-    },
-    stubs: {
-      GlEmoji: { template: '<div/>' },
     },
     router,
   });

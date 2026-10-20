@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::ProjectDismissibleAlertComponent, feature_category: :shared do
+RSpec.describe Users::ProjectDismissibleAlertComponent, feature_category: :acquisition do
   let(:project) { build_stubbed(:project) }
   let(:callout_model) { Users::ProjectCallout }
   let(:dismissal_method) { :dismissed_callout_for_project? }

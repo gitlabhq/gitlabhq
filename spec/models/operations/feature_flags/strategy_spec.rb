@@ -7,7 +7,7 @@ RSpec.describe Operations::FeatureFlags::Strategy do
   let_it_be(:feature_flag) { create(:operations_feature_flag, project: project) }
 
   describe 'validations' do
-    it do
+    it 'validates the name is one of the supported strategy names' do
       is_expected.to validate_inclusion_of(:name)
         .in_array(%w[default gradualRolloutUserId flexibleRollout userWithId gitlabUserList])
         .with_message('strategy name is invalid')

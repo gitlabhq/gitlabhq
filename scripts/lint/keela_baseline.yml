@@ -605,8 +605,6 @@ scopes:
   - include_integration
   - with_builds_enabled
   - pages_metadata_not_migrated
-  app/models/projects/import_export/relation_export.rb:
-  - by_relation
   app/models/user.rb:
   - for_todos
   - with_provisioning_project

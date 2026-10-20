@@ -16,7 +16,7 @@ RSpec.describe Users::PhoneNumberValidation, feature_category: :instance_resilie
 
   it { is_expected.to validate_presence_of(:international_dial_code) }
 
-  it do
+  it 'validates international_dial_code is an integer between 1 and 999' do
     is_expected.to validate_numericality_of(:international_dial_code)
       .only_integer
       .is_greater_than_or_equal_to(1)

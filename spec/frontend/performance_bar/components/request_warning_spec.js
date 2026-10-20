@@ -1,8 +1,5 @@
-import Vue from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import RequestWarning from '~/performance_bar/components/request_warning.vue';
-
-Vue.config.ignoredElements = ['gl-emoji'];
 
 describe('request warning', () => {
   let wrapper;
@@ -11,9 +8,6 @@ describe('request warning', () => {
   const createComponent = ({ propsData = {} } = {}) => {
     wrapper = shallowMountExtended(RequestWarning, {
       propsData,
-      stubs: {
-        GlEmoji: { template: `<div id="${htmlId}" />` },
-      },
     });
   };
 

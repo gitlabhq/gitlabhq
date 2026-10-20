@@ -26,7 +26,6 @@ describe('~/content_editor/components/suggestions_dropdown', () => {
           command: jest.fn(),
           ...propsData,
         },
-        stubs: ['gl-emoji'],
       }),
     );
   };
@@ -716,35 +715,35 @@ describe('~/content_editor/components/suggestions_dropdown', () => {
         },
       });
 
-      expect(wrapper.findAllComponents('gl-emoji-stub').at(0).html()).toMatchInlineSnapshot(`
-        <gl-emoji-stub
+      expect(wrapper.findAll('gl-emoji').at(0).html()).toMatchInlineSnapshot(`
+        <gl-emoji
           data-name="smile"
           data-unicode-version="6.0"
           title="smiling face with open mouth and smiling eyes"
         >
           😄
-        </gl-emoji-stub>
+        </gl-emoji>
       `);
-      expect(wrapper.findAllComponents('gl-emoji-stub').at(1).html()).toMatchInlineSnapshot(`
-        <gl-emoji-stub
+      expect(wrapper.findAll('gl-emoji').at(1).html()).toMatchInlineSnapshot(`
+        <gl-emoji
           data-name="smile_cat"
           data-unicode-version="6.0"
           title="grinning cat face with smiling eyes"
         >
           😸
-        </gl-emoji-stub>
+        </gl-emoji>
       `);
-      expect(wrapper.findAllComponents('gl-emoji-stub').at(2).html()).toMatchInlineSnapshot(`
-        <gl-emoji-stub
+      expect(wrapper.findAll('gl-emoji').at(2).html()).toMatchInlineSnapshot(`
+        <gl-emoji
           data-name="smiley"
           data-unicode-version="6.0"
           title="smiling face with open mouth"
         >
           😃
-        </gl-emoji-stub>
+        </gl-emoji>
       `);
-      expect(wrapper.findAllComponents('gl-emoji-stub').at(3).html()).toMatchInlineSnapshot(`
-        <gl-emoji-stub
+      expect(wrapper.findAll('gl-emoji').at(3).html()).toMatchInlineSnapshot(`
+        <gl-emoji
           data-fallback-src="https://cultofthepartyparrot.com/parrots/hd/parrot.gif"
           data-name="party-parrot"
           data-unicode-version="custom"

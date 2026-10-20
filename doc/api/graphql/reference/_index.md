@@ -57305,6 +57305,7 @@ Fields:
 | <a id="organization-path"></a>`path` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 16.4. Status: Experiment. Path of the organization. |
 | <a id="organization-policystore"></a>`policyStore` {{< icon name="warning-solid" >}} | [`PolicyStore`](#policystore) | Introduced in GitLab 19.4. Status: Experiment. Policy store catalogs. Returns `null` when the policy store experiment is not active for the organization. |
 | <a id="organization-rootpath"></a>`rootPath` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 18.5. Status: Experiment. Root path in the context of the organization. |
+| <a id="organization-securitytrackedcontextquota"></a>`securityTrackedContextQuota` {{< icon name="warning-solid" >}} | [`SecurityTrackedContextQuota`](#securitytrackedcontextquota) | Introduced in GitLab 19.6. Status: Experiment. Quota information for tracked security contexts in the organization. |
 | <a id="organization-softdeletedat"></a>`softDeletedAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.1. Status: Experiment. Timestamp when the organization was soft-deleted.Visible to admins and organization owners only. |
 | <a id="organization-state"></a>`state` {{< icon name="warning-solid" >}} | [`OrganizationState!`](#organizationstate) | Introduced in GitLab 19.0. Status: Experiment. State of the organization. |
 | <a id="organization-uuid"></a>`uuid` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.2. Status: Experiment. Globally unique identifier (UUID) of the organization. |
@@ -65000,6 +65001,19 @@ Fields:
 | <a id="securityscanners-available"></a>`available` | [`[SecurityScannerType!]`](#securityscannertype) | List of analyzers which are available for the project. |
 | <a id="securityscanners-enabled"></a>`enabled` | [`[SecurityScannerType!]`](#securityscannertype) | List of analyzers which are enabled for the project. |
 | <a id="securityscanners-pipelinerun"></a>`pipelineRun` | [`[SecurityScannerType!]`](#securityscannertype) | List of analyzers which ran successfully in the latest pipeline. |
+
+### `SecurityTrackedContextQuota`
+
+Organization-level quota information for tracked security contexts.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="securitytrackedcontextquota-explicitlyset"></a>`explicitlySet` | [`Boolean!`](#boolean) | Whether the quota was explicitly set for the organization rather than using the default. |
+| <a id="securitytrackedcontextquota-limit"></a>`limit` | [`Int`](#int) | Maximum number of tracked contexts allowed, or null when no limit applies to the organization. |
+| <a id="securitytrackedcontextquota-remaining"></a>`remaining` | [`Int`](#int) | Remaining quota available, or null when no limit applies to the organization. |
+| <a id="securitytrackedcontextquota-usage"></a>`usage` | [`Int!`](#int) | Current number of tracked contexts in use. |
 
 ### `SecurityTrackedRef`
 

@@ -18,9 +18,6 @@ const createComponent = ({ props = {} } = {}) => {
       currentRequest: defaultCurrentRequest,
       ...props,
     },
-    stubs: {
-      GlEmoji: { template: '<div/>' },
-    },
   });
 };
 

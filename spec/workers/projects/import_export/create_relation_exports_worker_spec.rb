@@ -114,7 +114,7 @@ RSpec.describe Projects::ImportExport::CreateRelationExportsWorker, feature_cate
     it 'does not create relation exports for the excluded relations' do
       perform
 
-      expect(export_job.relation_exports.by_relation(excluded_relations)).to be_empty
+      expect(export_job.relation_exports.where(relation: excluded_relations)).to be_empty
     end
 
     it 'creates a relation export for every other relation' do
@@ -153,7 +153,7 @@ RSpec.describe Projects::ImportExport::CreateRelationExportsWorker, feature_cate
       it 'does not create relation exports for the excluded relations' do
         perform
 
-        expect(export_job.relation_exports.by_relation(excluded_relations)).to be_empty
+        expect(export_job.relation_exports.where(relation: excluded_relations)).to be_empty
       end
     end
 

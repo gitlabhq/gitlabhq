@@ -19,9 +19,6 @@ describe('performance bar app', () => {
         simulateSaas: false,
         ...props,
       },
-      stubs: {
-        GlEmoji: { template: '<div/>' },
-      },
     });
   };
 

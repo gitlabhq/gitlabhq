@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.description = "Reads the committed MFE version pin file and exposes the delivery gate and registry URL."
   spec.homepage = "https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-mfe"
   spec.license = "MIT"
-  spec.required_ruby_version = ">= 3.0"
+  spec.required_ruby_version = ">= 3.3"
   spec.metadata["rubygems_mfa_required"] = "true"
 
   spec.files = Dir["lib/**/*.rb"]

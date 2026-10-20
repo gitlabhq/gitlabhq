@@ -661,7 +661,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   context 'with an admin when admin mode is disabled' do
     let(:current_user) { admin }
 
-    it do
+    it 'disallows member and work item import, invitations, usage quotas and the edit page' do
       expect_disallowed(
         :import_project_members_from_another_project,
         :import_work_items,
@@ -1546,7 +1546,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     with_them do
       let(:current_user) { send(role) }
 
-      it do
+      it 'grants read_package according to project visibility and role' do
         expect(subject.can?(:read_package)).to be(allowed)
       end
     end
@@ -3091,7 +3091,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
           :guest      | true
 
           with_them do
-            it do
+            it 'grants download_code and read_code according to the role' do
               expect(subject.can?(:download_code)).to be(allowed)
               expect(subject.can?(:read_code)).to be(allowed)
             end

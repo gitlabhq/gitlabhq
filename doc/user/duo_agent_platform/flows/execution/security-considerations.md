@@ -21,7 +21,8 @@ When flows execute in GitLab CI/CD:
 - The tools at their disposal are specific to the purpose of the flow.
   These tools can include the creation of merge requests or the running of local shell commands in their execution environment.
 
-By default, flows have network access to the GitLab instance only.
+When the sandbox is applied, flows have network access only to the GitLab instance by default.
+If [the sandbox cannot be applied](../../environment_sandbox.md#warnings-and-fallback-behavior), flows run without network restrictions.
 For more information about network access rules, see [how to configure a network policy](../../environment_sandbox.md#configure-a-network-policy).
 This separate environment protects from unintended consequences of running shell commands.
 

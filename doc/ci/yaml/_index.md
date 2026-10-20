@@ -6716,6 +6716,8 @@ the job configuration takes precedence and the default configuration is not used
 **Supported values**:
 
 - An array of tag names, which are case-sensitive.
+- An empty array (`[]`), to remove tags inherited from `default:tags` or [`extends`](#extends).
+  Only runners configured to run untagged jobs can run the job.
 - CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
 
 **Example of `tags`**:

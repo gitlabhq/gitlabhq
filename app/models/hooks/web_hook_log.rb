@@ -42,7 +42,7 @@ class WebHookLog < ApplicationRecord
 
     row = log.attribute_names.index_with do |name|
       if skip_yaml_round_trip && SERIALIZED_ATTRIBUTES.include?(name)
-        log.read_attribute_before_type_cast(name)
+        serialized_literal(log, name)
       else
         log.read_attribute(name)
       end
@@ -50,6 +50,16 @@ class WebHookLog < ApplicationRecord
 
     insert(row.compact, unique_by: %i[id created_at], returning: false)
   end
+
+  # Since Rails 8, `insert` casts every value, which round-trips serialized
+  # columns through YAML. SQL literals are inserted as given.
+  def self.serialized_literal(log, name)
+    value = log.read_attribute_before_type_cast(name)
+    return if value.nil?
+
+    Arel.sql(connection.quote(log.type_for_attribute(name).serialize(value)))
+  end
+  private_class_method :serialized_literal
 
   def self.recent(number_of_days = 2)
     if number_of_days > MAX_RECENT_DAYS

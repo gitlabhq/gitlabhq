@@ -106,7 +106,10 @@ they stay associated with placeholder users.
 
 ### Security considerations
 
-Contribution and membership reassignment cannot be undone, so check everything carefully before you start.
+Reassignment of past contributions and memberships is permanent and cannot be undone,
+so check everything carefully before you start.
+Users can [revoke an accepted reassignment](#revoke-contribution-reassignment),
+but revocation only prevents automatic reassignment in future imports.
 
 Reassigning contributions and membership to an incorrect user poses a security threat, because the user becomes a member
 of your group. They can, therefore, view information they should not be able to see.
@@ -323,6 +326,7 @@ In the **Reassigned** tab, possible statuses are:
 
 - `Success` - Reassignment succeeded.
 - `Kept as placeholder` - Placeholder user was made permanent.
+- `Revoked` - Reassignment approval was [revoked](#revoke-contribution-reassignment) by the reassigned user.
 
 By default, the table is sorted alphabetically by placeholder user name.
 You can also sort the table by reassignment status.
@@ -362,7 +366,7 @@ notice mistakes in this information:
 1. Do not proceed at all or reject the contribution reassignment.
 1. Talk to a trusted colleague or your manager.
 
-### Security considerations
+### Security considerations for reassigned users
 
 You must review the reassignment details of any reassignment request very carefully. If you were not already informed
 about this process by a trusted colleague or your manager, take extra care.
@@ -372,8 +376,43 @@ Rather than accept any reassignments that you have any doubts about:
 1. Don't act on the emails.
 1. Talk to a trusted colleague or your manager.
 
-Accept reassignments only from the users that you know and trust. Reassignment of contributions is permanent and cannot
-be undone. Accepting the reassignment might cause contributions to be incorrectly attributed to you.
+Accept reassignments only from the users that you know and trust. Accepting the reassignment might
+cause contributions to be incorrectly attributed to you.
+You can [revoke an accepted reassignment](#revoke-contribution-reassignment) to prevent automatic
+reassignment in future imports, but contributions that were already reassigned to you are not removed.
 
 The contribution reassignment process starts only after you accept the reassignment request by selecting
 **Approve reassignment** in GitLab. The process doesn't start by selecting links in the email.
+
+### Revoke contribution reassignment
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/629220) in GitLab 19.5 [with a feature flag](../../../administration/feature_flags/_index.md) named `revoke_import_source_user_reassignment`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+After you accept a contribution reassignment, you can revoke your approval.
+When you revoke a reassignment:
+
+- Future imports no longer automatically assign contributions from the source user to you.
+- A user with the Owner role for the top-level group can propose the same reassignment again,
+  and contributions are reassigned only if you approve the new request.
+- Contributions that were already reassigned to you are not removed.
+- The user who requested the reassignment is notified by email.
+
+If an import is in progress when you revoke a reassignment, contributions from that import
+might still be assigned to you. The revocation applies to subsequent imports.
+
+To revoke a contribution reassignment:
+
+1. In the upper-right corner, select your avatar.
+1. Select **Edit profile**.
+1. In the left sidebar, select **Account**.
+1. In the **Reassigned import contributions** section, find the source user.
+1. Select **Revoke**.
+1. On the confirmation dialog, select **Revoke reassignment**.

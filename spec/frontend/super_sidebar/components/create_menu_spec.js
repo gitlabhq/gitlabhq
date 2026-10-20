@@ -40,7 +40,6 @@ describe('CreateMenu component', () => {
         InviteMembersTrigger,
         CreateWorkItemModal,
         GlDisclosureDropdown,
-        GlEmoji: { template: '<div/>' },
         ...stubs,
       },
       directives: {

@@ -1,8 +1,6 @@
 ---
 Gitlab/AvoidGitlabDedicatedInstanceChecks:
   Exclude:
-    - 'app/controllers/admin/registrations/groups_controller.rb'
-    - 'app/controllers/admin/registrations/profiles_controller.rb'
     - 'app/controllers/event_forward/event_forward_controller.rb'
     - 'app/controllers/sessions_controller.rb'
     - 'ee/app/models/ee/ci/runner.rb'

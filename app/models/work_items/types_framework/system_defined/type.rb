@@ -219,7 +219,7 @@ module WorkItems
         end
 
         def use_legacy_view?(resource_parent)
-          return false if ticket? && Feature.enabled?(:work_item_ticket_migration, resource_parent&.root_ancestor)
+          return false if ticket? && Feature.enabled?(:work_item_ticket_migration, resource_parent.try(:root_ancestor))
 
           configuration_class.try(:use_legacy_view?) || false
         end

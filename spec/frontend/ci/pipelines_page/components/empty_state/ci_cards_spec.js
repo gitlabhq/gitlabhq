@@ -15,9 +15,6 @@ describe('CI Cards', () => {
         pipelineEditorPath: '/-/ci/editor',
         showJenkinsCiPrompt,
       },
-      stubs: {
-        GlEmoji: { template: '<div/>' },
-      },
     });
   };
 

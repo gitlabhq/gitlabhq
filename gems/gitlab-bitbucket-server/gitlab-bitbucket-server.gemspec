@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.description = "REST API client for Bitbucket Server / Data Center used by the GitLab importer."
   spec.homepage = "https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-bitbucket-server"
   spec.license = "MIT"
-  spec.required_ruby_version = ">= 3.0"
+  spec.required_ruby_version = ">= 3.3"
   spec.metadata["rubygems_mfa_required"] = "true"
 
   spec.files = Dir["lib/**/*.rb"]

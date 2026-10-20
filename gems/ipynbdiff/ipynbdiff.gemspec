@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
   s.files = Dir['lib/**/*.rb']
   s.require_paths = ["lib"]
-  s.required_ruby_version = ">= 3.0"
+  s.required_ruby_version = ">= 3.3"
   s.homepage = 'https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/ipynbdiff'
   s.license = 'MIT'
 

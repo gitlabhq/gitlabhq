@@ -12,9 +12,6 @@ import { sidebarData, loggedOutSidebarData } from '../mock_data';
 describe('HelpCenter component', () => {
   let wrapper;
   let trackingSpy;
-
-  const GlEmoji = { template: '<img/>' };
-
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findAllGroups = () => wrapper.findAllComponents(GlDisclosureDropdownGroup);
   const findDropdownGroup = (i = 0) => findAllGroups().at(i);
@@ -26,7 +23,7 @@ describe('HelpCenter component', () => {
   const createWrapper = (sidebarDataOverride = sidebarData, provide = {}) => {
     wrapper = mountExtended(HelpCenter, {
       propsData: { sidebarData: sidebarDataOverride },
-      stubs: { GlEmoji, HelpCenterUpgradeSubscription: true },
+      stubs: { HelpCenterUpgradeSubscription: true },
       provide: {
         isSaas: false,
         isIconOnly: false,

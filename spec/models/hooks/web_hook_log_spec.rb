@@ -130,6 +130,12 @@ RSpec.describe WebHookLog, :freeze_time, feature_category: :webhooks do
       insert_log
     end
 
+    it 'dumps each serialized column once' do
+      expect(Psych).to receive(:safe_dump).exactly(described_class::SERIALIZED_ATTRIBUTES.size).times.and_call_original
+
+      insert_log
+    end
+
     shared_examples 'storing the same row as when round-tripping through YAML' do
       it 'stores the same row as when round-tripping through YAML' do
         insert_log

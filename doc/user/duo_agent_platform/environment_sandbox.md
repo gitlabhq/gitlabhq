@@ -35,6 +35,10 @@ The sandbox is enabled when:
 
 - Anthropic Sandbox Runtime (SRT) is available in the Docker image.
 - GitLab Duo Agent Platform sessions are being executed on a runner.
+- The job can [create the user and mount namespaces](flows/execution/_index.md#sandbox-requirements-without-privileged-mode) that SRT needs.
+
+If SRT is not available or cannot create the sandbox, the flow runs without it.
+For more information, see [warnings and fallback behavior](#warnings-and-fallback-behavior).
 
 For agents that run on your computer, see [local sandbox](../../editor_extensions/local_sandbox.md).
 
@@ -147,7 +151,7 @@ The sandbox enforces the following filesystem restrictions:
 SRT is included in the default GitLab-provided Docker image. You can also
 [install SRT on a custom image](#install-anthropic-sandbox-runtime-srt-on-a-custom-image).
 
-When SRT is installed, flows can access only the following domains by default.
+When the sandbox is applied, flows can access only the following domains by default.
 These domains are always allowed and cannot be removed:
 
 - `localhost`
@@ -155,9 +159,9 @@ These domains are always allowed and cannot be removed:
 - Your GitLab instance domain (for example, `gitlab.com`, `*.gitlab.com`)
 - The GitLab Duo Workflow Service domain
 
-If you use a custom image without SRT,
-no network restrictions are applied and the flow can access any domain
-reachable from the runner.
+If you use a custom image without SRT, or SRT cannot create the sandbox,
+no network restrictions are applied.
+The flow can access any domain reachable from the runner.
 
 > [!note]
 > The `network_policy` does not allow `"*"` in the `allowed_domains` or the `denied_domains`. SRT does not
@@ -222,6 +226,9 @@ In addition to [project-level `agent-config.yml` settings](#configure-a-network-
 administrators and top-level group owners can manage network access controls through the GitLab UI.
 These settings are stored at the instance level (GitLab Self-Managed) or top-level group level
 (GitLab.com) and are inherited by all projects underneath.
+
+These settings take effect only when the sandbox is applied.
+Otherwise, flows run without network restrictions.
 
 For a description of how these settings combine with project-level `agent-config.yml`,
 see [Administrator network policy controls](#administrator-network-policy-controls).
@@ -477,5 +484,8 @@ If sandboxing is unavailable or cannot be applied:
 
 - The flow runs directly without sandbox protection
 - A warning message is displayed within CI job logs with a link to runner configuration guidance
+- Network policy and network access control settings do not apply, and the job can reach any destination its runner can reach
 
 This ensures flows continue to execute even if sandboxing cannot be enabled, while alerting you to the situation.
+To limit what these jobs can reach, restrict outbound network traffic where the jobs run.
+For example, use a firewall on the runner host or a Kubernetes `NetworkPolicy` for the job pods.

@@ -50,7 +50,7 @@ module Admin
       end
 
       def verify_available!
-        render_404 if Gitlab::CurrentSettings.gitlab_dedicated_instance?
+        # Overridden in EE
       end
 
       def post_onboarding_redirect_path

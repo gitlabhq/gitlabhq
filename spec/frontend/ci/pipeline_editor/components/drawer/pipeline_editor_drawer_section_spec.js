@@ -17,7 +17,6 @@ describe('Getting started section', () => {
       slots: {
         default: '<span data-testid="default-slot">Content</span>',
       },
-      stubs: ['gl-emoji'],
     });
   };
 

@@ -1,12 +1,9 @@
 import { GlLink, GlSprintf } from '@gitlab/ui';
-import Vue from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { pipelineEditorTrackingOptions } from '~/ci/pipeline_editor/constants';
 import GitlabUniversitySection from '~/ci/pipeline_editor/components/drawer/sections/gitlab_university_section.vue';
 import SectionComponent from '~/ci/pipeline_editor/components/drawer/pipeline_editor_drawer_section.vue';
-
-Vue.config.ignoredElements = ['gl-emoji'];
 
 describe('GitLab University section', () => {
   let wrapper;

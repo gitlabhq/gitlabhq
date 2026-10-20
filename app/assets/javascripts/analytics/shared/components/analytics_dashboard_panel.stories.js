@@ -1,3 +1,4 @@
+import { VISUALIZATION_SLUG_VSD_DORA_METRICS_TABLE } from '../constants';
 import AnalyticsDashboardPanel from './analytics_dashboard_panel.vue';
 
 const weeklyData = [
@@ -207,4 +208,110 @@ export const WithActions = ActionsTemplate.bind({});
 WithActions.args = {
   title: 'Code Suggestions',
   visualization: actionsVisualization,
+};
+
+const basePanelProvide = {
+  namespaceId: '1',
+  namespaceFullPath: 'gitlab-org/gitlab',
+  isProject: true,
+  dataSourceClickhouse: false,
+  overviewCountsAggregationEnabled: true,
+  glAbilities: {},
+  glLicensedFeatures: {},
+};
+
+// Each alert state comes from what the data source does, so every story gets a panel
+// whose data source is the given fetch function.
+const createPanelTemplate = (fetch, provide = {}) => {
+  const PanelWithFetch = {
+    name: 'PanelWithFetch',
+    extends: AnalyticsDashboardPanel,
+    methods: {
+      async importDataSourceModule() {
+        return fetch;
+      },
+    },
+  };
+
+  return (args, { argTypes }) => ({
+    components: { PanelWithFetch },
+    provide: { ...basePanelProvide, ...provide },
+    props: Object.keys(argTypes),
+    template: `
+      <div class="gl-h-48">
+        <panel-with-fetch v-bind="$props" />
+      </div>`,
+  });
+};
+
+export const FetchError = createPanelTemplate(async () => {
+  throw new Error('Request failed with status code 500');
+}).bind({});
+FetchError.args = {
+  title: 'Code Suggestions',
+  visualization: weeklyVisualization,
+};
+
+export const Warning = createPanelTemplate(async ({ setAlerts }) => {
+  setAlerts({
+    title: 'Partial results',
+    warnings: ['Archived projects are not included in this chart.'],
+  });
+  return weeklyData;
+}).bind({});
+Warning.args = {
+  title: 'Code Suggestions',
+  visualization: weeklyVisualization,
+};
+
+export const Information = createPanelTemplate(async ({ setAlerts }) => {
+  setAlerts({
+    title: 'About this data',
+    alerts: ['Data is refreshed once a day.'],
+  });
+  return weeklyData;
+}).bind({});
+Information.args = {
+  title: 'Code Suggestions',
+  visualization: weeklyVisualization,
+};
+
+export const InvalidVisualizationConfiguration = createPanelTemplate(async () => weeklyData).bind(
+  {},
+);
+InvalidVisualizationConfiguration.args = {
+  title: 'Code Suggestions',
+  visualization: {
+    ...weeklyVisualization,
+    errors: ["property '/panels/0/visualization' is missing required keys: type"],
+  },
+};
+
+const doraVisualization = {
+  ...weeklyVisualization,
+  slug: VISUALIZATION_SLUG_VSD_DORA_METRICS_TABLE,
+};
+
+export const InsufficientPermissions = createPanelTemplate(async () => weeklyData, {
+  glAbilities: { readDora4Analytics: false },
+  glLicensedFeatures: { dora4Analytics: true },
+}).bind({});
+InsufficientPermissions.args = {
+  title: 'DORA metrics',
+  visualization: doraVisualization,
+};
+
+export const Unlicensed = createPanelTemplate(async () => weeklyData, {
+  glAbilities: { readDora4Analytics: true },
+  glLicensedFeatures: { dora4Analytics: false },
+}).bind({});
+Unlicensed.args = {
+  title: 'DORA metrics',
+  visualization: doraVisualization,
+};
+
+export const EmptyData = createPanelTemplate(async () => []).bind({});
+EmptyData.args = {
+  title: 'Code Suggestions',
+  visualization: weeklyVisualization,
 };

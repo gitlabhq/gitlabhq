@@ -31,8 +31,6 @@ Vue.use(VueApollo);
 
 jest.mock('~/lib/logger');
 
-Vue.config.ignoredElements = ['gl-emoji'];
-
 describe('Pipeline editor tabs component', () => {
   let wrapper;
   const MockTextEditor = {
@@ -78,7 +76,6 @@ describe('Pipeline editor tabs component', () => {
       stubs: {
         TextEditor: MockTextEditor,
         EditorTab,
-        'gl-emoji': true,
       },
       listeners,
       ...options,

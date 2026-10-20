@@ -1344,6 +1344,7 @@ Grants the ability to create, delete, read, restore, and update organizations.
 | Delete | Instance | Mutation | `OrganizationDelete` |
 | Read | Instance | Type | `Organization` |
 | Read | Instance | Type | `OrganizationUser` |
+| Read | Instance | Type | `SecurityTrackedContextQuota` |
 | Restore | Instance | Mutation | `OrganizationRestore` |
 | Update | Instance | Mutation | `OrganizationConfirm` |
 | Update | Instance | Mutation | `OrganizationUpdate` |

@@ -1,9 +1,0 @@
----
-name: lateral_runner_jobs_api_pagination
-description: Uses lateral authorization checks for runner jobs API pagination
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/632279
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/258387
-milestone: '19.5'
-group: group::ci platform
-type: gitlab_com_derisk
-default_enabled: false

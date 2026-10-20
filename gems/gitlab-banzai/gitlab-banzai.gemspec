@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
     "Banzai::Configuration. Constants keep their original Banzai:: names and lib/banzai/ paths."
   spec.homepage = "https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-banzai"
   spec.license = "MIT"
-  spec.required_ruby_version = ">= 3.2"
+  spec.required_ruby_version = ">= 3.3"
   spec.metadata["rubygems_mfa_required"] = "true"
 
   spec.files = Dir["lib/**/*.rb"]

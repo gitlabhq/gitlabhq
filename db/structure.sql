@@ -60901,7 +60901,7 @@ ALTER TABLE ONLY ml_candidate_metrics
     ADD CONSTRAINT fk_e2684c8ffc FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY web_hooks
-    ADD CONSTRAINT fk_e295b26646 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE NOT VALID;
+    ADD CONSTRAINT fk_e295b26646 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY oauth_applications
     ADD CONSTRAINT fk_e2fdb31d70 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;

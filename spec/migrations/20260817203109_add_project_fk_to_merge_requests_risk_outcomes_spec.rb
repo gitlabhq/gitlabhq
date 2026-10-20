@@ -4,7 +4,7 @@ require 'spec_helper'
 require_migration!
 
 RSpec.describe AddProjectFkToMergeRequestsRiskOutcomes, migration: :gitlab_main_org,
-  feature_category: :duo_code_review do
+  feature_category: :dap_code_review do
   let(:connection) { described_class.new.connection }
   let(:table_name) { :merge_requests_risk_outcomes }
 

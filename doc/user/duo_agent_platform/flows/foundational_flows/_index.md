@@ -31,6 +31,7 @@ The following foundational flows are available:
 | [Convert to GitLab CI/CD](../../../../ci/migration/convert_to_gitlab_ci.md) | Migrate Jenkins pipelines to CI/CD. |
 | [Developer](../../../project/merge_requests/developer.md) | Convert issues into merge requests, or complete coding tasks in Agentic Chat or the GitLab Duo CLI. |
 | [Fix CI/CD Pipeline](../../../../ci/pipelines/fix_pipeline.md) | Diagnose and repair failed jobs. |
+| [Generate Workplan](../../../work_items/workplan.md) | Draft a workplan for a work item and add it to the **Workplan** widget. |
 | [Recommend Reviewers](../../../project/merge_requests/reviews/automatic_reviewer_assignment.md#recommend-reviewers-flow) | Recommend the reviewers best suited to review a merge request. |
 | [SAST False Positive Detection](../../../application_security/vulnerabilities/false_positive_detection.md) | Automatically identify and filter false positives in SAST findings. |
 | [SAST Vulnerability Resolution](../../../application_security/vulnerabilities/agentic_vulnerability_resolution.md) | Automatically generate merge requests to resolve SAST vulnerabilities. |

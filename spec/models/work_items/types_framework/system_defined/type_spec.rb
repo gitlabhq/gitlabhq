@@ -1133,6 +1133,12 @@ RSpec.describe WorkItems::TypesFramework::SystemDefined::Type, feature_category:
       }, nil
     end
 
+    context 'when resource_parent is an organization' do
+      it 'returns false for ticket' do
+        expect(described_class.find_by_type(:ticket).use_legacy_view?(build(:organization))).to be(false)
+      end
+    end
+
     it_behaves_like 'work item type configuration', :supports_move_action?, {
       issue: true,
       task: false,

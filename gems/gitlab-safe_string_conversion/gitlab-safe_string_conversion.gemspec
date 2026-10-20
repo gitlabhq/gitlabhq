@@ -13,7 +13,7 @@ Gem::Specification.new do |spec|
     "when converting an oversized string, preventing algorithmic-complexity DoS attacks."
   spec.homepage = "https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-safe_string_conversion"
   spec.license = 'MIT'
-  spec.required_ruby_version = ">= 3.0"
+  spec.required_ruby_version = ">= 3.3"
   spec.metadata["rubygems_mfa_required"] = "true"
 
   spec.files = Dir['lib/**/*.rb']

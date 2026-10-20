@@ -7,6 +7,7 @@ import CommentsOnRootLevel from './components/comments_on_root_level.vue';
 import SlotWithComment from './components/slot_with_comment.vue';
 import DefaultSlotWithComment from './components/default_slot_with_comment.vue';
 import DynamicComponent from './components/dynamic_component.vue';
+import CustomElement from './components/custom_element.vue';
 
 describe('Vue.js 3 compiler edge cases', () => {
   it('workarounds issue #6063 when same slot is used with whitespace preserve', () => {
@@ -42,5 +43,11 @@ describe('Vue.js 3 compiler edge cases', () => {
     const el = wrapper.find('[data-testid="dynamic"]');
     expect(el.element.tagName).toBe('BUTTON');
     expect(el.attributes('tag')).toBeUndefined();
+  });
+
+  it('renders a custom element as an element, not a component', () => {
+    const wrapper = mount(CustomElement);
+
+    expect(wrapper.find('gl-emoji').attributes('data-name')).toBe('thumbsup');
   });
 });

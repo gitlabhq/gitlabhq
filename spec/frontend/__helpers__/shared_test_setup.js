@@ -34,6 +34,8 @@ setGlobalDateToFakeDate();
 
 Vue.config.devtools = false;
 Vue.config.productionTip = false;
+// Same as `commons/vue.js`.
+Vue.config.ignoredElements = ['gl-emoji'];
 
 Vue.use(Translate);
 

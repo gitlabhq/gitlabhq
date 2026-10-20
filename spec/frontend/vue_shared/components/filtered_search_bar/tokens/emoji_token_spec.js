@@ -23,7 +23,6 @@ import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_t
 import { mockReactionEmojiToken, mockEmojis } from '../mock_data';
 
 jest.mock('~/alert');
-const GlEmoji = { template: '<img/>' };
 const defaultStubs = {
   Portal: true,
   GlFilteredSearchSuggestionList: {
@@ -32,7 +31,6 @@ const defaultStubs = {
       getValue: () => '=',
     },
   },
-  GlEmoji,
 };
 
 function createComponent(options = {}) {
@@ -154,16 +152,14 @@ describe('EmojiToken', () => {
       const tokenSegments = wrapper.findAllComponents(GlFilteredSearchTokenSegment);
 
       expect(tokenSegments).toHaveLength(3); // My reaction, =, "thumbsup"
-      expect(tokenSegments.at(2).findComponent(GlEmoji).attributes('data-name')).toEqual(
-        EMOJI_THUMBS_UP,
-      );
+      expect(tokenSegments.at(2).find('gl-emoji').attributes('data-name')).toEqual(EMOJI_THUMBS_UP);
     });
 
     it('renders provided defaultEmojis as suggestions', async () => {
       wrapper = createComponent({
         active: true,
         config: { ...mockReactionEmojiToken, defaultEmojis },
-        stubs: { Portal: true, GlEmoji },
+        stubs: { Portal: true },
       });
       const tokenSegments = wrapper.findAllComponents(GlFilteredSearchTokenSegment);
       const suggestionsSegment = tokenSegments.at(2);
@@ -182,7 +178,7 @@ describe('EmojiToken', () => {
       wrapper = createComponent({
         active: true,
         config: { ...mockReactionEmojiToken, defaultEmojis: [] },
-        stubs: { Portal: true, GlEmoji },
+        stubs: { Portal: true },
       });
       const tokenSegments = wrapper.findAllComponents(GlFilteredSearchTokenSegment);
       const suggestionsSegment = tokenSegments.at(2);
@@ -197,7 +193,7 @@ describe('EmojiToken', () => {
       wrapper = createComponent({
         active: true,
         config: { ...mockReactionEmojiToken },
-        stubs: { Portal: true, GlEmoji },
+        stubs: { Portal: true },
       });
       const tokenSegments = wrapper.findAllComponents(GlFilteredSearchTokenSegment);
       const suggestionsSegment = tokenSegments.at(2);

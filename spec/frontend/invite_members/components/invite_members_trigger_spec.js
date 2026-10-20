@@ -10,7 +10,6 @@ import {
   TRIGGER_ELEMENT_DROPDOWN_WITH_EMOJI,
   TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN,
 } from '~/invite_members/constants';
-import { GlEmoji } from '../mock_data/member_modal';
 
 let mockFailModuleLoad = false;
 const mockInitInviteMembersModal = jest.fn();
@@ -53,7 +52,6 @@ const createComponent = (props = {}) => {
       ...props,
     },
     stubs: {
-      GlEmoji,
       GlDisclosureDropdownItem,
       GlButton,
     },
@@ -152,7 +150,7 @@ describe.each(triggerItems)('with triggerElement as %s', (triggerItem) => {
 
 describe('link with emoji', () => {
   it('includes the specified icon with correct size when triggerElement is link', () => {
-    const findEmoji = () => wrapper.findComponent(GlEmoji);
+    const findEmoji = () => wrapper.find('gl-emoji');
 
     createComponent({ triggerElement: TRIGGER_ELEMENT_WITH_EMOJI, icon: 'shaking_hands' });
 
@@ -163,7 +161,7 @@ describe('link with emoji', () => {
 
 describe('dropdown item with emoji', () => {
   it('includes the specified icon with correct size when triggerElement is link', () => {
-    const findEmoji = () => wrapper.findComponent(GlEmoji);
+    const findEmoji = () => wrapper.find('gl-emoji');
 
     createComponent({ triggerElement: TRIGGER_ELEMENT_DROPDOWN_WITH_EMOJI, icon: 'shaking_hands' });
 

@@ -10,9 +10,7 @@ describe('First pipeline section', () => {
   let trackingSpy;
 
   const createComponent = () => {
-    wrapper = mountExtended(FirstPipelineSection, {
-      stubs: ['gl-emoji'],
-    });
+    wrapper = mountExtended(FirstPipelineSection);
   };
 
   const findInstructionsList = () => wrapper.find('ol');

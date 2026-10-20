@@ -9,9 +9,6 @@ describe('UserMenuProfileItem component', () => {
   const findGlDisclosureDropdownItem = () => wrapper.findComponent(GlDisclosureDropdownItem);
   const findGlTooltip = () => wrapper.findComponent(GlTooltip);
   const findUserStatus = () => wrapper.findByTestId('user-menu-status');
-
-  const GlEmoji = { template: '<img/>' };
-
   const createWrapper = (userDataChanges = {}) => {
     wrapper = mountExtended(UserMenuProfileItem, {
       propsData: {
@@ -21,7 +18,6 @@ describe('UserMenuProfileItem component', () => {
         },
       },
       stubs: {
-        GlEmoji,
         GlDisclosureDropdownItem,
       },
     });
@@ -80,7 +76,7 @@ describe('UserMenuProfileItem component', () => {
       });
 
       it('should render status emoji', () => {
-        expect(findUserStatus().findComponent(GlEmoji).attributes('data-name')).toBe(
+        expect(findUserStatus().find('gl-emoji').attributes('data-name')).toBe(
           userMenuMockData.status.emoji,
         );
       });

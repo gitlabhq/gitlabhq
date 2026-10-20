@@ -1,5 +1,5 @@
 import tippy from 'tippy.js';
-import Vue, { nextTick } from 'vue';
+import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import Suggestions from '~/content_editor/extensions/suggestions';
 import Emoji from '~/content_editor/extensions/emoji';
@@ -87,13 +87,6 @@ describe('content_editor/extensions/suggestions keyboard handling', () => {
     editor.view.dom.dispatchEvent(event);
     return event;
   };
-
-  beforeAll(() => {
-    // The dropdown renders emoji through the <gl-emoji> custom element, which is not
-    // installed in jsdom; register a plain stand-in so Vue does not warn about it.
-    Vue.component('GlEmoji', { render: (h) => h('span') });
-  });
-
   beforeEach(() => {
     window.gon = { emoji_autocomplete_enabled: true };
     popup = { setProps: jest.fn(), destroy: jest.fn(), hide: jest.fn() };

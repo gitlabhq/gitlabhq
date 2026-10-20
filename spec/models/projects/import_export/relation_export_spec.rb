@@ -23,18 +23,6 @@ RSpec.describe Projects::ImportExport::RelationExport, feature_category: :import
     end
   end
 
-  describe '.by_relation' do
-    it 'returns export relations filtered by relation name' do
-      project_relation_export_1 = create(:project_relation_export, relation: 'labels')
-      project_relation_export_2 = create(:project_relation_export, relation: 'labels')
-      create(:project_relation_export, relation: 'uploads')
-
-      relations = described_class.by_relation('labels').to_a
-
-      expect(relations).to match_array([project_relation_export_1, project_relation_export_2])
-    end
-  end
-
   describe '.relation_names_list' do
     it 'includes extra relations list' do
       expect(described_class.relation_names_list).to include(

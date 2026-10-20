@@ -13,7 +13,7 @@ Gem::Specification.new do |spec|
     "multiple route files matching a pattern from config/routes directories."
   spec.homepage = "https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/action_dispatch-draw_all"
   spec.license = "MIT"
-  spec.required_ruby_version = ">= 3.0"
+  spec.required_ruby_version = ">= 3.3"
   spec.metadata["rubygems_mfa_required"] = "true"
 
   spec.files = Dir["lib/**/*.rb"]

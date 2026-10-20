@@ -24,11 +24,21 @@ RSpec.describe Gitlab::Database::PgAsh::Sampler, :clean_gitlab_redis_shared_stat
     sampler.execute { (remaining -= 1) >= 0 }
   end
 
+  def lease_held?
+    Gitlab::ExclusiveLease.new(sampler.lease_key, timeout: described_class::LEASE_TIMEOUT).exists?
+  end
+
   describe '#execute' do
     it 'samples once per tick until the caller stops it' do
       execute(ticks: 3)
 
       expect(Gitlab::Database::PgAsh).to have_received(:execute).with(conn, take_sample_sql).thrice
+    end
+
+    it 'releases the lease when the caller stops' do
+      execute(ticks: 1)
+
+      expect(lease_held?).to be(false)
     end
 
     it 'limits each sample with a statement timeout' do
@@ -98,6 +108,12 @@ RSpec.describe Gitlab::Database::PgAsh::Sampler, :clean_gitlab_redis_shared_stat
         expect(Gitlab::Database::PgAsh).to have_received(:execute)
           .with(conn, a_string_matching(/sampling_enabled = false/)).once
       end
+
+      it 'releases the lease' do
+        execute(ticks: 5)
+
+        expect(lease_held?).to be(false)
+      end
     end
 
     context 'when the interval is out of range' do
@@ -155,6 +171,27 @@ RSpec.describe Gitlab::Database::PgAsh::Sampler, :clean_gitlab_redis_shared_stat
 
         expect(counter).to have_received(:increment).exactly(described_class::MAX_CONSECUTIVE_ERRORS).times
       end
+
+      it 'keeps the lease so that no process retries before it expires' do
+        allow(Gitlab::ErrorTracking).to receive(:track_exception)
+
+        execute(ticks: 100)
+
+        expect(lease_held?).to be(true)
+      end
+    end
+
+    context 'when a sample fails and the next one succeeds' do
+      before do
+        allow(Gitlab::Database::PgAsh).to receive(:execute)
+          .with(conn, take_sample_sql).and_invoke(->(*) { raise ActiveRecord::StatementInvalid, 'boom' }, ->(*) { [] })
+      end
+
+      it 'releases the lease when the caller stops' do
+        execute(ticks: 2)
+
+        expect(lease_held?).to be(false)
+      end
     end
 
     context 'when reconciling ash.config fails' do
@@ -167,6 +204,14 @@ RSpec.describe Gitlab::Database::PgAsh::Sampler, :clean_gitlab_redis_shared_stat
         expect(Gitlab::ErrorTracking).to receive(:track_exception).once
 
         expect { execute(ticks: 1) }.not_to raise_error
+      end
+
+      it 'keeps the lease so that no process retries before it expires' do
+        allow(Gitlab::ErrorTracking).to receive(:track_exception)
+
+        execute(ticks: 1)
+
+        expect(lease_held?).to be(true)
       end
     end
 

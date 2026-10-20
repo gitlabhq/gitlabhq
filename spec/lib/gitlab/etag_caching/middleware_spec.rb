@@ -329,7 +329,7 @@ RSpec.describe Gitlab::EtagCaching::Middleware, :clean_gitlab_redis_shared_state
   def build_request(path, if_none_match, request_method: 'GET')
     { 'PATH_INFO' => path,
       'HTTP_IF_NONE_MATCH' => if_none_match,
-      'rack.input' => '',
+      'rack.input' => StringIO.new,
       'REQUEST_METHOD' => request_method,
       'REMOTE_ADDR' => '127.0.0.1' }
   end

@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.description = "Abstraction for indexing and searching vectors"
   spec.homepage = "https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-active-context"
   spec.license = "MIT"
-  spec.required_ruby_version = ">= 3.1.0"
+  spec.required_ruby_version = ">= 3.3"
 
   spec.metadata["homepage_uri"] = spec.homepage
 

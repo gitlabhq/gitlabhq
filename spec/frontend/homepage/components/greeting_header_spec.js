@@ -102,9 +102,6 @@ describe('GreetingHeader', () => {
 
     wrapper = shallowMountExtended(GreetingHeader, {
       apolloProvider: mockApollo,
-      stubs: {
-        'gl-emoji': true,
-      },
       directives: { GlTooltip: createMockDirective('gl-tooltip') },
     });
   };
@@ -113,10 +110,7 @@ describe('GreetingHeader', () => {
   const findName = () => wrapper.find('[data-testid="greeting-name"]');
   const findGreeting = () => wrapper.find('[data-testid="greeting-message"]');
   const findStatusBadge = () => wrapper.find('[data-testid="status-emoji-badge"]');
-  const findStatusEmoji = () => {
-    const stub = wrapper.find('gl-emoji-stub');
-    return stub.exists() ? stub : wrapper.find('gl-emoji');
-  };
+  const findStatusEmoji = () => wrapper.find('gl-emoji');
   const findAvatarButton = () => wrapper.find('[data-testid="status-modal-trigger"]');
   const findStatusModal = () => wrapper.findComponent(SetStatusModal);
 

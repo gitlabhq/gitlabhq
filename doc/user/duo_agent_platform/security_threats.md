@@ -55,15 +55,15 @@ The table assumes agents and flows have access to all available tools.
 | Trifecta element | [Remote flows (GitLab CI)](flows/execution/_index.md#configure-cicd-execution) | Chat [agents](agents/_index.md) (GitLab UI) | Chat agents and flows (IDE local environment) |
 |---|---|---|---|
 | Access to private data | Same access as the user who started the flow session, scoped to a top-level group | Same access to GitLab resources as the user who started the flow session, including public resources from groups or projects the user is not a member of | Same access as Chat agents on the GitLab UI, plus access to the local working directory |
-| External communication | [Sandboxed](environment_sandbox.md) (`srt`) blocks external communication. GitLab API writes are scoped to the top-level group | Writes to GitLab API only (public and private projects) | Unrestricted network access by default. When turned on, the [local sandbox](../../editor_extensions/local_sandbox.md) restricts network access for agent actions and local MCP servers. Writes to GitLab API (public and private projects) |
+| External communication | When the [sandbox](environment_sandbox.md#when-the-sandbox-is-applied) (`srt`) is applied, external communication is limited to allowed domains. GitLab API writes are scoped to the top-level group | Writes to GitLab API only (public and private projects) | Unrestricted network access by default. When turned on, the [local sandbox](../../editor_extensions/local_sandbox.md) restricts network access for agent actions and local MCP servers. Writes to GitLab API (public and private projects) |
 | Exposure to untrusted data | On multi-tenant GitLab instances: access to public resources outside the top-level group hierarchy | On multi-tenant GitLab instances: access to public resources outside the top-level group hierarchy | Unrestricted network access by default. When turned on, the [local sandbox](../../editor_extensions/local_sandbox.md) restricts network access for agent actions and local MCP servers. On multi-tenant GitLab instances: access to public resources outside the top-level group hierarchy |
-| Risk profile | Sandboxing, scope restrictions, and tool limitations break the lethal trifecta | Without strict tool restrictions, the full trifecta is present. Security relies primarily on human approval | Without strict tool restrictions, the full trifecta is present. Security relies primarily on human approval |
+| Risk profile | When the sandbox is applied, sandboxing, scope restrictions, and tool limitations break the lethal trifecta. Without the sandbox, the full trifecta can be present | Without strict tool restrictions, the full trifecta is present. Security relies primarily on human approval | Without strict tool restrictions, the full trifecta is present. Security relies primarily on human approval |
 
 ### Content protection layers
 
 GitLab Duo Agent Platform executes in the following modes:
 
-- Flows that execute in GitLab Runner jobs with full sandbox isolation.
+- Flows that execute in GitLab Runner jobs, isolated by the sandbox when it is applied.
 - IDE and CLI agents that execute on your computer through editor extensions or GitLab CLI.
 - GitLab Duo Agentic Chat in the GitLab UI.
 
@@ -71,8 +71,8 @@ The following table describes the security controls and how they apply to each m
 
 | Security control | Flows | IDE and CLI agents | GitLab Duo Agentic Chat |
 |------------------|--------------|---------------|------------------|
-| Sandbox | Isolated VM and sandbox | Optional [local sandbox](../../editor_extensions/local_sandbox.md) | Not applied |
-| Network egress controls | Configurable allowlist and denylist | Configurable allowlist and denylist for agent actions and local MCP servers, when the local sandbox is turned on | Not applied |
+| Sandbox | Isolated VM and sandbox[^sandbox] | Optional [local sandbox](../../editor_extensions/local_sandbox.md) | Not applied |
+| Network egress controls | Configurable allowlist and denylist[^sandbox] | Configurable allowlist and denylist for agent actions and local MCP servers, when the local sandbox is turned on | Not applied |
 | Identity | [Composite identity](composite_identity.md) of a service account and human user | Human user | Human user |
 | Human-in-the-loop | Not applied | User approves write API tool calls and terminal commands | User approves write API tool calls |
 | Tool restrictions | In each flow definition | In each flow definition | In each flow definition |
@@ -80,6 +80,8 @@ The following table describes the security controls and how they apply to each m
 | Tool response sanitization | Executed on the server | Executed on the server | Executed on the server |
 | Prompt injection detection | Executed on the server through HiddenLayer | Executed on the server through HiddenLayer | Executed on the server through HiddenLayer |
 | Secret scanning | Client-side Gitleaks redaction | Client-side Gitleaks redaction | Not applied |
+
+[^sandbox]: Applies only when the [sandbox is applied](environment_sandbox.md#when-the-sandbox-is-applied).
 
 ### Example attack sequences
 

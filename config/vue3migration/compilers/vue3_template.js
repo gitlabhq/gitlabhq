@@ -1,4 +1,19 @@
-const { parse, compile: compilerDomCompile } = require('@vue/compiler-dom');
+/**
+ * Vue 3 template compiler for the Vue 3 migration.
+ *
+ * During the migration, the same templates must run on Vue 2 and on Vue 3 compat mode.
+ * They are written for Vue 2, and we do not want to change them one by one. This compiler
+ * lets the Vue 3 build compile them as they are.
+ *
+ * The Vue 3 compiler reads some Vue 2 patterns differently, and some of them trigger Vue 3
+ * bugs. So, before it compiles, `transformAst` rewrites those patterns into the form that
+ * renders as Vue 2 does. The Vue 2 build also has global configuration that the template
+ * compiler must know about. For example, `CUSTOM_ELEMENTS` does here what
+ * `Vue.config.ignoredElements` does for Vue 2.
+ *
+ * When we drop Vue 2 support, templates can use Vue 3 syntax directly, and this file goes away.
+ */
+const { parse: compilerDomParse, compile: compilerDomCompile } = require('@vue/compiler-dom');
 
 // Custom elements that should not be resolved as Vue components
 // Defined here because webpack 4 cannot serialize functions in loader options
@@ -10,7 +25,7 @@ const COMMENT_NODE_TYPE = 3;
 const hasProp = (node, prop) => node.props?.some((p) => p.name === prop);
 
 function modifyKeysInsideTemplateTag(templateNode) {
-  if (!templateNode.tag === 'template' || !hasProp(templateNode, 'for')) {
+  if (templateNode.tag !== 'template' || !hasProp(templateNode, 'for')) {
     return;
   }
 
@@ -100,6 +115,19 @@ function fixSameSlotsInsideTemplateFailingWhenUsingWhitespacePreserveDueToIssue6
   });
 }
 
+/**
+ * Walks every node of a parsed template and changes it in place:
+ *
+ * - Moves a `key` from the children of `<template v-for>` to the `<template>`. Vue 2
+ *   allows the key on the children, but Vue 3 expects it on the `<template>`.
+ * - Removes `v-once` from the direct children of a `v-if` node (vuejs/core#7725).
+ * - Removes comments and the whitespace after them. Vue 3 counts them as content, so an
+ *   empty slot or a component root with a comment behaves differently (vuejs/core#7909).
+ * - Removes the whitespace between two slots with the same name (vuejs/core#6063).
+ *
+ * @param {import('@vue/compiler-core').RootNode} rootNode
+ * @returns {import('@vue/compiler-core').RootNode} The same `rootNode`.
+ */
 function transformAst(rootNode) {
   const pendingNodes = [rootNode];
   while (pendingNodes.length) {
@@ -124,15 +152,33 @@ function transformAst(rootNode) {
   return rootNode;
 }
 
+/**
+ * Same as `parse` from `@vue/compiler-dom`, with `isCustomElement` as the default. The
+ * parser decides whether a tag is an element or a component, so it needs it too.
+ *
+ * @param {string} template
+ * @param {import('@vue/compiler-core').ParserOptions} [options]
+ * @returns {import('@vue/compiler-core').RootNode}
+ */
+function parse(template, options) {
+  return compilerDomParse(template, { isCustomElement, ...options });
+}
+
+/**
+ * Same as `compile` from `@vue/compiler-dom`, with `isCustomElement` as the default, and
+ * `transformAst` applied first. Like upstream, it changes a passed AST in place.
+ *
+ * @param {string | import('@vue/compiler-core').RootNode} template
+ * @param {import('@vue/compiler-core').CompilerOptions} [options]
+ * @returns {import('@vue/compiler-core').CodegenResult}
+ */
+function compile(template, options) {
+  const rootNode = typeof template === 'string' ? parse(template, options) : template;
+  return compilerDomCompile(transformAst(rootNode), { isCustomElement, ...options });
+}
+
 module.exports = {
   isCustomElement,
   parse,
-  compile(template, options) {
-    // template can be a string or an already-parsed AST (RootNode)
-    const rootNode = typeof template === 'string' ? parse(template, options) : template;
-
-    transformAst(rootNode);
-
-    return compilerDomCompile(rootNode, { isCustomElement, ...options });
-  },
+  compile,
 };

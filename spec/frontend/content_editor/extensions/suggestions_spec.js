@@ -1,5 +1,5 @@
 import tippy from 'tippy.js';
-import Vue, { nextTick } from 'vue';
+import { nextTick } from 'vue';
 import { Plugin as MockPMPlugin } from '@tiptap/pm/state';
 import Suggestions from '~/content_editor/extensions/suggestions';
 
@@ -320,13 +320,6 @@ describe('content_editor/extensions/suggestions', () => {
       });
       await nextTick();
     };
-
-    beforeAll(() => {
-      // The dropdown renders emoji through the <gl-emoji> custom element, which is not
-      // installed in jsdom; register a plain stand-in so Vue does not warn about it.
-      Vue.component('GlEmoji', { render: (h) => h('span') });
-    });
-
     beforeEach(() => {
       popup = { setProps: jest.fn(), destroy: jest.fn(), hide: jest.fn() };
       tippy.mockImplementation((_, options) => {

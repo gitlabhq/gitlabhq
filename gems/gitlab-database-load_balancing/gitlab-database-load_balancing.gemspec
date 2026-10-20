@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.description = "Provides a code on top of existing databases to support read-only replicas."
   spec.homepage = "https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-safe_request_store"
   spec.license = 'MIT'
-  spec.required_ruby_version = ">= 3.0"
+  spec.required_ruby_version = ">= 3.3"
   spec.metadata["rubygems_mfa_required"] = "true"
 
   spec.files = Dir['lib/**/*.rb']
