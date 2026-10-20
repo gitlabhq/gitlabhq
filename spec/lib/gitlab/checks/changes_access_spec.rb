@@ -100,8 +100,8 @@ RSpec.describe Gitlab::Checks::ChangesAccess, feature_category: :source_code_man
   end
 
   describe '#commits' do
-    it 'calls #new_commits' do
-      expect(project.repository).to receive(:new_commits).and_call_original
+    it 'calls #new_commits with the quarantine bypassed' do
+      expect(project.repository).to receive(:new_commits).with(anything, allow_quarantine: false).and_call_original
 
       expect(subject.commits).to be_empty
     end
@@ -123,7 +123,7 @@ RSpec.describe Gitlab::Checks::ChangesAccess, feature_category: :source_code_man
         specify do
           expect(project.repository)
             .to receive(:new_commits)
-            .with([newrev]) { [expected_commit] }
+            .with([newrev], allow_quarantine: false) { [expected_commit] }
           expect(subject.commits).to match_array([expected_commit])
         end
       end

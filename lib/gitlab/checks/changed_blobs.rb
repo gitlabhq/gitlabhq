@@ -3,22 +3,24 @@
 module Gitlab
   module Checks
     class ChangedBlobs
-      def initialize(project, revisions, bytes_limit:, with_paths: false)
+      def initialize(project, revisions, bytes_limit:, with_paths: false, allow_quarantine: true)
         @project = project
         @revisions = revisions
         @bytes_limit = bytes_limit
         @with_paths = with_paths
+        @allow_quarantine = allow_quarantine
       end
 
       def execute(timeout:)
         # List all blobs via `ListAllBlobs()` based on the existence of a
         # quarantine directory. If no directory exists, we use `ListBlobs()` instead.
-        if ignore_alternate_directories?
+        if allow_quarantine && ignore_alternate_directories?
           fetch_blobs_from_quarantined_repo(timeout: timeout)
         else
-          # We use `--not --all --not revisions` to ensure we only get new blobs.
+          globs = allow_quarantine ? %w[--not --all] : %w[--not --glob=refs/heads/*]
+
           project.repository.list_blobs(
-            ['--not', '--all', '--not'] + revisions,
+            globs + ['--not'] + revisions,
             bytes_limit: bytes_limit,
             with_paths: with_paths,
             dynamic_timeout: timeout
@@ -28,7 +30,7 @@ module Gitlab
 
       private
 
-      attr_reader :project, :revisions, :bytes_limit, :with_paths
+      attr_reader :project, :revisions, :bytes_limit, :with_paths, :allow_quarantine
 
       def fetch_blobs_from_quarantined_repo(timeout:)
         blobs = project.repository.list_all_blobs(

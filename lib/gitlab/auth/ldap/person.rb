@@ -23,6 +23,7 @@ module Gitlab
         end
 
         def self.find_by_email(email, adapter)
+          email = Net::LDAP::Filter.escape(email)
           email_fields = adapter.config.attributes['email']
 
           adapter.user(email_fields, email)
