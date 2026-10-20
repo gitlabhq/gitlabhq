@@ -58,6 +58,31 @@ RSpec.describe Gitlab::GitalyClient::AnalysisService, feature_category: :gitaly 
         )
       end
 
+      context 'when changed_paths includes a renamed file' do
+        let(:changed_paths) do
+          [
+            Gitlab::Git::ChangedPath.new(
+              status: :RENAMED, path: 'renamed/package-lock.json', old_path: 'VERSION',
+              old_mode: '100644', new_mode: '100644'
+            )
+          ]
+        end
+
+        before do
+          project.repository.update_file(
+            project.creator,
+            'renamed/package-lock.json',
+            'renamed file content',
+            previous_path: 'VERSION',
+            message: 'Rename VERSION',
+            branch_name: branch)
+        end
+
+        it 'reads the blob from the head' do
+          expect(check_blobs_generated).to contain_exactly({ generated: true, path: 'renamed/package-lock.json' })
+        end
+      end
+
       context 'when changed_paths includes a submodule' do
         let(:changed_paths) do
           [

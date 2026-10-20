@@ -34,7 +34,6 @@ Style/StringConcatenation:
     - 'ee/lib/gitlab/geo/git_ssh_proxy.rb'
     - 'ee/lib/omni_auth/strategies/kerberos.rb'
     - 'ee/lib/tasks/gitlab/license.rake'
-    - 'ee/spec/features/boards/boards_spec.rb'
     - 'ee/spec/features/projects/pipelines/pipeline_spec.rb'
     - 'ee/spec/lib/gitlab/auth/ldap/person_spec.rb'
     - 'ee/spec/lib/gitlab/auth/o_auth/user_spec.rb'

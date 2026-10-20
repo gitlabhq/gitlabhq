@@ -841,13 +841,14 @@ module API
     # for every response, which combined with Rack::ConditionalGet causes
     # spurious 304s (gitlab-org/gitlab#371991). Callers that can derive a
     # content-based ETag should pass one via the `etag:` kwarg; otherwise we
-    # suppress Rack::ETag's default by setting Last-Modified, matching the
-    # approach used for streaming responses in ApplicationController.
+    # set a random per-response weak ETag, which Rack::ETag keeps and no
+    # If-None-Match can match. A Last-Modified would be invalid (apt rejects
+    # `0`) or let Rack::ConditionalGet answer 304 to any If-Modified-Since.
     def apply_etag_or_suppress_rack_etag!(etag)
       if etag
         header 'ETag', etag
-      elsif !headers['Last-Modified']
-        header 'Last-Modified', '0'
+      elsif !header['ETag'] && !header['Last-Modified']
+        header 'ETag', %(W/"#{SecureRandom.hex(16)}")
       end
     end
 

@@ -108,16 +108,15 @@ RSpec.describe Gitlab::BackgroundMigration::CleanupWebHookLogsDailyShardingKeyOr
   end
 
   def restore_trigger_and_constraint
-    # Restore the constraint as NOT VALID to match the production schema state: validation is
-    # deferred to a later release. Re-adding it validated would leak a convalidated constraint
-    # into the shared test schema (DDL is not rolled back by transactional fixtures) and trip
-    # spec/lib/gitlab/organizations/sharding_key_spec.rb. NOT VALID also skips the existing-row
-    # scan, so no pre-delete is needed. CREATE OR REPLACE keeps this safe if the before hook
-    # ever fails mid-execution and leaves the trigger in place.
+    # check_19dc80d658 is restored VALIDATED to match the schema, since DDL isn't rolled back
+    # by fixtures and a leftover NOT VALID constraint would trip sharding_key_spec. Violating
+    # rows are deleted first since a validated ADD CONSTRAINT scans existing rows; CREATE OR
+    # REPLACE keeps this safe if the before hook failed mid-way.
     connection.execute(<<~SQL)
+      DELETE FROM web_hook_logs_daily WHERE num_nonnulls(group_id, organization_id, project_id) != 1;
       ALTER TABLE web_hook_logs_daily DROP CONSTRAINT IF EXISTS check_19dc80d658;
       ALTER TABLE web_hook_logs_daily
-        ADD CONSTRAINT check_19dc80d658 CHECK ((num_nonnulls(group_id, organization_id, project_id) = 1)) NOT VALID;
+        ADD CONSTRAINT check_19dc80d658 CHECK ((num_nonnulls(group_id, organization_id, project_id) = 1));
       CREATE OR REPLACE TRIGGER trigger_web_hook_logs_daily_assign_sharding_keys BEFORE INSERT OR UPDATE
         ON web_hook_logs_daily FOR EACH ROW
         EXECUTE FUNCTION trigger_web_hook_logs_daily_assign_sharding_keys();

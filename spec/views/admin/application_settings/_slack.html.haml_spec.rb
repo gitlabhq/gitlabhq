@@ -12,6 +12,8 @@ RSpec.describe 'admin/application_settings/_slack.html.haml', feature_category: 
   it 'renders the form correctly', :aggregate_failures do
     render
 
+    expect(rendered).to have_css('h5', text: 'Step 1: Create your GitLab for Slack app')
+    expect(rendered).to have_css('h5', text: 'Step 2: Configure the app settings')
     expect(rendered).to have_field('Client ID', type: 'text')
     expect(rendered).to have_field('Client secret', type: 'text')
     expect(rendered).to have_field('Signing secret', type: 'text')
@@ -30,6 +32,9 @@ RSpec.describe 'admin/application_settings/_slack.html.haml', feature_category: 
     it 'renders the form correctly', :aggregate_failures do
       render
 
+      expect(rendered).to have_css('h5', exact_text: 'Configure the app settings')
+      expect(rendered).not_to have_content('Step 1: Create your GitLab for Slack app')
+      expect(rendered).not_to have_content('Step 2: Configure the app settings')
       expect(rendered).to have_field('Client ID', type: 'text')
       expect(rendered).to have_field('Client secret', type: 'text')
       expect(rendered).to have_field('Signing secret', type: 'text')

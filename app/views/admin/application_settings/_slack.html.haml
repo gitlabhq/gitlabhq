@@ -19,7 +19,10 @@
           = s_("SlackIntegration|Create Slack app")
       %hr
     %h5
-      = s_('SlackIntegration|Step 2: Configure the app settings')
+      - if gitlab_com
+        = s_('SlackIntegration|Configure the app settings')
+      - else
+        = s_('SlackIntegration|Step 2: Configure the app settings')
     %p
       - tag_pair_slack_apps = tag_pair(link_to('', 'https://api.slack.com/apps', target: '_blank', rel: 'noopener noreferrer'), :link_start, :link_end)
       - tag_pair_strong = tag_pair(tag.strong, :strong_open, :strong_close)

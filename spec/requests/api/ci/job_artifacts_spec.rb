@@ -1522,12 +1522,31 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
         job.job_artifacts_archive.update_column(:file_sha256, nil)
       end
 
-      it 'suppresses Rack::ETag instead of emitting a bogus ETag' do
-        get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", developer)
+      let(:url) { "/projects/#{project.id}/jobs/#{job.id}/artifacts" }
+
+      it 'returns a random weak ETag instead of a shared or derived one' do
+        get api(url, developer)
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(response.headers['ETag']).to be_nil
-        expect(response.headers['Last-Modified']).to eq('0')
+        expect(response.headers['ETag']).to match(%r{\AW/"\h{32}"\z})
+        expect(response.headers['Last-Modified']).to be_nil
+      end
+
+      it 'returns 200 when If-None-Match carries the previous response ETag' do
+        get api(url, developer)
+        previous_etag = response.headers['ETag']
+
+        get api(url, developer), headers: { 'If-None-Match' => previous_etag }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.headers['ETag']).not_to eq(previous_etag)
+      end
+
+      it 'returns 200 when If-Modified-Since is now' do
+        get api(url, developer), headers: { 'If-Modified-Since' => Time.current.httpdate }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.headers['X-Sendfile']).to eq(job.artifacts_file.file.path)
       end
     end
   end

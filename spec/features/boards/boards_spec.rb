@@ -302,7 +302,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :planning_views do
 
           wait_for_requests
           wait_for_board_cards(2, 1)
-          wait_for_empty_boards((3..4))
+          wait_for_empty_boards(3..4)
         end
 
         it 'filters by assignee', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9301' do
@@ -310,7 +310,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :planning_views do
 
           wait_for_requests
           wait_for_board_cards(2, 1)
-          wait_for_empty_boards((3..4))
+          wait_for_empty_boards(3..4)
         end
 
         it 'filters by milestone' do
@@ -327,7 +327,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :planning_views do
 
           wait_for_requests
           wait_for_board_cards(2, 1)
-          wait_for_empty_boards((3..4))
+          wait_for_empty_boards(3..4)
         end
 
         it 'filters by label with encoded character' do
@@ -335,7 +335,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :planning_views do
 
           wait_for_requests
           wait_for_board_cards(1, 1)
-          wait_for_empty_boards((2..4))
+          wait_for_empty_boards(2..4)
         end
 
         it 'filters by label with space after reload', :quarantine do
@@ -344,7 +344,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :planning_views do
           # Test after reload
           page.evaluate_script 'window.location.reload()'
           wait_for_board_cards(2, 1)
-          wait_for_empty_boards((3..4))
+          wait_for_empty_boards(3..4)
 
           wait_for_requests
 
@@ -414,7 +414,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :planning_views do
           wait_for_requests
 
           wait_for_board_cards(2, 1)
-          wait_for_empty_boards((3..4))
+          wait_for_empty_boards(3..4)
         end
 
         it 'filters by clicking label button on issue' do
@@ -432,7 +432,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :planning_views do
           wait_for_requests
 
           wait_for_board_cards(2, 1)
-          wait_for_empty_boards((3..4))
+          wait_for_empty_boards(3..4)
         end
 
         it 'removes label filter by clicking label button on issue' do

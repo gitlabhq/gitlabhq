@@ -40,7 +40,6 @@ Prerequisites:
     for Rekor and its Trillian backend
   - [Fulcio repository](https://github.com/sigstore/fulcio) for Fulcio and the Certificate
     Transparency log
-- Rekor configured with a persistent signing key.
 - If your GitLab instance uses HTTPS with a private certificate authority, that certificate
   authority must be trusted by both Fulcio and your CI/CD runners:
   - The certificate authority certificate mounted into the Fulcio container, with `SSL_CERT_FILE`
@@ -124,6 +123,45 @@ To configure Fulcio:
    > [!note]
    > This section is maintained by the Sigstore project, not GitLab. Periodically check the
    > upstream file for changes, and update your copy to match.
+
+## Configure Rekor to keep its key and log across restarts
+
+By default, Rekor generates a new signing key and creates a new, empty log tree every time it
+starts.
+To keep both across restarts, configure Rekor with a persistent signer and a fixed tree ID.
+
+To configure Rekor:
+
+1. While Rekor is running, get the tree ID of its current log:
+
+   ```shell
+   curl --silent "http://<sigstore-host>:3000/api/v1/log" | jq --raw-output .treeID
+   ```
+
+1. Add these flags to the `rekor-server serve` command that starts Rekor, then restart Rekor:
+
+   ```plaintext
+   --rekor_server.signer=<signer>
+   --trillian_log_server.tlog_id=<tree_id>
+   ```
+
+   Replace:
+
+   - `<signer>` with a key management service URI, such as `hashivault://<key_name>` for a
+     HashiCorp Vault transit key.
+     For Vault, also set the `VAULT_ADDR` and `VAULT_TOKEN` environment variables for Rekor.
+     Rekor also accepts the path to a PEM-encoded private key file.
+     The Rekor command help says file-based signers should only be used for testing.
+   - `<tree_id>` with the tree ID from the previous step.
+
+1. If you changed the signer, rebuild the trust material with the new Rekor public key.
+   For the commands, see
+   [error: `not enough verified log entries from transparency log`](#error-not-enough-verified-log-entries-from-transparency-log).
+
+> [!warning]
+> With a persistent signer and no tree ID, signing continues to work after a restart.
+> However, Rekor no longer returns entries recorded before the restart, and new entries start
+> again at log index `0`.
 
 ## Sign artifacts and container images
 
@@ -290,7 +328,7 @@ Cosign v3, or set the `SIGSTORE_CT_LOG_PUBLIC_KEY_FILE` environment variable for
 
 This error occurs when the Rekor public key in `trusted-root.json` no longer matches the
 key the Rekor instance is using.
-An in-memory signer generates a new key and a new empty Merkle tree (Rekor's tamper-evident log structure) on every restart.
+With the default in-memory signer, Rekor generates a new key every time it starts.
 Any restart therefore invalidates the trust material, and signing fails for every job until
 it is rebuilt.
 
@@ -308,8 +346,8 @@ cosign trusted-root create \
 
 Distribute the regenerated `trusted-root.json` to every runner.
 
-To prevent this issue, configure Rekor with a persistent signing key and a fixed tree
-identifier.
+To prevent this issue, configure Rekor with a persistent signer, as documented in
+[configure Rekor to keep its key and log across restarts](#configure-rekor-to-keep-its-key-and-log-across-restarts).
 
 ### Error: `failed to verify signed certificate timestamp`
 

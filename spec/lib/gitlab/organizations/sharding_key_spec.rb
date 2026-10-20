@@ -8,10 +8,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   # Specific tables can be temporarily exempt from this requirement. You must add an issue link in a comment next to
   # the table name to remove this once a decision has been made.
   let(:allowed_to_be_missing_not_null) do
-    # web_hook_logs_daily's check_19dc80d658 is left NOT VALID by
-    # https://gitlab.com/gitlab-org/gitlab/-/work_items/603303 and re-validated (these entries removed)
-    # in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244171
-    #
     # push_rules' check_1d23f0a102 is validated on GitLab.com only
     # (https://gitlab.com/gitlab-org/gitlab/-/work_items/607950) and remains NOT VALID for self-managed
     # until https://gitlab.com/gitlab-org/gitlab/-/work_items/607955 (19.6, after required stop 19.5)
@@ -20,9 +16,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
     # in db/post_migrate/20260824105520_swap_merge_request_diff_commits_table.rb
     # https://gitlab.com/groups/gitlab-org/-/work_items/22634 will schedule this swap for self-managed.
     %w[
-      web_hook_logs_daily.organization_id
-      web_hook_logs_daily.group_id
-      web_hook_logs_daily.project_id
       merge_request_diff_commits.project_id
       push_rules.project_id
     ]
@@ -39,11 +32,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
     [
       'events', # has `(group_id IS NOT NULL) OR (project_id IS NOT NULL) OR (personal_namespace_id IS NOT NULL)`
       'notes', # has `num_nonnulls(namespace_id, organization_id, project_id) >= 1`
-      'scan_result_policies', # has `num_nonnulls(namespace_id, project_id) >= 1`
-      # has `num_nonnulls(...) = 1` but left NOT VALID by
-      # https://gitlab.com/gitlab-org/gitlab/-/work_items/603303, re-validated (this entry removed)
-      # in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244171
-      'web_hook_logs_daily'
+      'scan_result_policies' # has `num_nonnulls(namespace_id, project_id) >= 1`
     ]
   end
 

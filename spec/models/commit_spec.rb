@@ -584,7 +584,7 @@ TEXT
 
     it { expect(data).to be_a(Hash) }
 
-    it do
+    it 'includes the commit message' do
       expect(data[:message]).to include('adds bar folder and branch-test text file to check Repository merged_to_root_ref method')
     end
 
@@ -636,7 +636,7 @@ TEXT
     context 'of a regular commit' do
       let(:commit) { project.commit('video') }
 
-      it do
+      it 'appends the cherry-picked commit reference' do
         expect(commit.cherry_pick_message(user)).to include("\n\n(cherry picked from commit 88790590ed1337ab189bccaa355f068481c90bec)")
       end
     end
@@ -671,7 +671,7 @@ TEXT
           merge_request.update!(merge_commit_sha: merge_commit.id)
         end
 
-        it do
+        it 'appends the cherry-picked commit reference and the merged commits' do
           expected_appended_text = <<~STR.rstrip
 
             (cherry picked from commit #{merge_commit.sha})

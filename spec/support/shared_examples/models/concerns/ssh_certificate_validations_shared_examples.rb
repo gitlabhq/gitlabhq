@@ -8,7 +8,6 @@ RSpec.shared_examples 'an SSH certificate record' do |factory_name:|
     it 'presence fields' do
       is_expected.to validate_presence_of(:key)
       is_expected.to validate_presence_of(:title)
-      is_expected.to validate_presence_of(:fingerprint)
     end
 
     it 'length of key and title' do
@@ -22,6 +21,47 @@ RSpec.shared_examples 'an SSH certificate record' do |factory_name:|
     end
 
     it_behaves_like 'meets ssh key restrictions'
+  end
+
+  describe 'fingerprint derivation' do
+    # rubocop:disable Rails/SaveBang -- This is a FactoryBot call, not an ActiveRecord one
+    let_it_be_with_reload(:persisted) { create(factory_name) }
+    # rubocop:enable Rails/SaveBang
+
+    let(:certificate) { build(factory_name) }
+    let(:other_key) { build(:rsa_key_4096).key }
+
+    def fingerprint_of(key)
+      Gitlab::SSHPublicKey.new(key).fingerprint_sha256.delete_prefix('SHA256:')
+    end
+
+    it 'derives the fingerprint from the key' do
+      certificate.validate
+
+      expect(certificate.fingerprint).to eq(fingerprint_of(certificate.key))
+    end
+
+    it 'overwrites a fingerprint that does not match the key' do
+      persisted.fingerprint = fingerprint_of(other_key)
+
+      expect { persisted.validate }.to change { persisted.fingerprint }
+        .to(fingerprint_of(persisted.key))
+    end
+
+    it 're-derives the fingerprint when the key changes' do
+      persisted.key = other_key
+
+      expect { persisted.validate }.to change { persisted.fingerprint }
+        .to(fingerprint_of(other_key))
+    end
+
+    it 'clears the fingerprint and rejects the record when the key cannot be parsed', :aggregate_failures do
+      certificate.key = 'unsupported-ssh-rsa key'
+
+      expect(certificate).to be_invalid
+      expect(certificate.fingerprint).to be_nil
+      expect(certificate.errors[:fingerprint]).to include("can't be blank")
+    end
   end
 
   describe '.for_fingerprint' do

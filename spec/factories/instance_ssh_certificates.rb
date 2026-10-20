@@ -9,9 +9,5 @@ FactoryBot.define do
         ::Gitlab::SSHPublicKey.supported_sizes(:rsa).min, unsafe_allow_small_key: true
       ).public_key.openssh(comment: 'dummy@gitlab.com')
     end
-
-    fingerprint do
-      Gitlab::SSHPublicKey.new(key).fingerprint_sha256.delete_prefix('SHA256:')
-    end
   end
 end

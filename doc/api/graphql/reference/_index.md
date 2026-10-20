@@ -12739,7 +12739,7 @@ Arguments:
 | <a id="mutation-iterationcadencecreate-grouppath"></a>`groupPath` | [`ID!`](#id) | Group where the iteration cadence is created. |
 | <a id="mutation-iterationcadencecreate-iterationsinadvance"></a>`iterationsInAdvance` | [`Int`](#int) | Number of future iterations to schedule in addition to the current one. |
 | <a id="mutation-iterationcadencecreate-rollover"></a>`rollOver` | [`Boolean`](#boolean) | Whether the iteration cadence should roll over issues to the next iteration or not. |
-| <a id="mutation-iterationcadencecreate-startdate"></a>`startDate` | [`Time`](#time) | Timestamp of the automation start date. |
+| <a id="mutation-iterationcadencecreate-startdate"></a>`startDate` | [`Time`](#time) | Automation start date. |
 | <a id="mutation-iterationcadencecreate-title"></a>`title` | [`String`](#string) | Title of the iteration cadence. |
 
 Fields:
@@ -12785,7 +12785,7 @@ Arguments:
 | <a id="mutation-iterationcadenceupdate-id"></a>`id` | [`IterationsCadenceID!`](#iterationscadenceid) | Global ID of the iteration cadence. |
 | <a id="mutation-iterationcadenceupdate-iterationsinadvance"></a>`iterationsInAdvance` | [`Int`](#int) | Number of future iterations to schedule in addition to the current one. |
 | <a id="mutation-iterationcadenceupdate-rollover"></a>`rollOver` | [`Boolean`](#boolean) | Whether the iteration cadence should roll over issues to the next iteration or not. |
-| <a id="mutation-iterationcadenceupdate-startdate"></a>`startDate` | [`Time`](#time) | Timestamp of the automation start date. |
+| <a id="mutation-iterationcadenceupdate-startdate"></a>`startDate` | [`Time`](#time) | Automation start date. |
 | <a id="mutation-iterationcadenceupdate-title"></a>`title` | [`String`](#string) | Title of the iteration cadence. |
 
 Fields:
@@ -52216,7 +52216,7 @@ Fields:
 | <a id="iterationcadence-id"></a>`id` | [`IterationsCadenceID!`](#iterationscadenceid) | Global ID of the iteration cadence. |
 | <a id="iterationcadence-iterationsinadvance"></a>`iterationsInAdvance` | [`Int`](#int) | Number of future iterations to schedule in addition to the current one. |
 | <a id="iterationcadence-rollover"></a>`rollOver` | [`Boolean!`](#boolean) | Whether the iteration cadence should roll over issues to the next iteration or not. |
-| <a id="iterationcadence-startdate"></a>`startDate` | [`Time`](#time) | Timestamp of the automation start date. |
+| <a id="iterationcadence-startdate"></a>`startDate` | [`Date`](#date) | Automation start date. |
 | <a id="iterationcadence-title"></a>`title` | [`String!`](#string) | Title of the iteration cadence. |
 
 ### `JiraImport`

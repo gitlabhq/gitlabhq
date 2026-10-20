@@ -21,9 +21,9 @@ module Gitlab
               # Submodule changes should be ignored as the blob won't exist
               next if changed_path.submodule_change?
 
-              # The Blob won't exist in the base if the file is newly added.
-              # We can use the head to get the blob to handle both added or deleted files.
-              prefix = changed_path.new_file? ? head : base
+              # Only a deleted file is missing from the head. A renamed file's path is its new
+              # path, which doesn't exist in the base.
+              prefix = changed_path.deleted_file? ? base : head
               revision = "#{prefix}:#{changed_path.path}"
 
               Gitaly::CheckBlobsGeneratedRequest::Blob.new(

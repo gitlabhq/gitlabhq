@@ -118,7 +118,7 @@ RSpec.describe Integrations::DroneCi, :use_clean_rails_memory_store_caching, fea
   end
 
   describe '#attribution_notice' do
-    it do
+    it 'returns the Harness Inc. CC NC-ND 4.0 license notice for the Drone CI logo' do
       expect(subject.attribution_notice)
       .to eq('Drone CI icon and logo by Harness Inc. are licensed under CC NC-ND 4.0.')
     end

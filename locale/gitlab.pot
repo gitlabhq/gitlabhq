@@ -2964,6 +2964,9 @@ msgstr ""
 msgid "AICatalog|Enabled by %{groupName}"
 msgstr ""
 
+msgid "AICatalog|Enabled by top level group"
+msgstr ""
+
 msgid "AICatalog|Enabled in all projects."
 msgstr ""
 
@@ -82870,6 +82873,9 @@ msgid "SlackIntegration|Client ID"
 msgstr ""
 
 msgid "SlackIntegration|Client secret"
+msgstr ""
+
+msgid "SlackIntegration|Configure the app settings"
 msgstr ""
 
 msgid "SlackIntegration|Configure your GitLab for Slack app."

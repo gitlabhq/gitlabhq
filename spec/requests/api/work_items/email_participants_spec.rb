@@ -63,12 +63,25 @@ RSpec.describe API::WorkItems::EmailParticipants, feature_category: :service_des
         expect(json_response.first).to include('id', 'email', 'created_at', 'updated_at')
       end
 
-      it 'ignores unknown field names', :aggregate_failures do
-        get api(api_request_path, user), params: { fields: 'nonexistent,created_at' }
+      it 'tolerates whitespace and case in field names', :aggregate_failures do
+        get api(api_request_path, user), params: { fields: ' Created_At , UPDATED_AT ' }
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response.first).to include('id', 'email', 'created_at')
-        expect(json_response.first).not_to include('nonexistent')
+        expect(json_response.first).to include('id', 'email', 'created_at', 'updated_at')
+      end
+
+      it 'returns 400 for unknown field names', :aggregate_failures do
+        get api(api_request_path, user), params: { fields: 'nonexistent,created_at' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response).to eq('error' => 'fields does not have a valid value: nonexistent')
+      end
+
+      it 'ignores the undeclared features param', :aggregate_failures do
+        get api(api_request_path, user), params: { fields: 'created_at', features: 'nonexistent' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.first.keys).to contain_exactly('id', 'email', 'created_at')
       end
     end
 

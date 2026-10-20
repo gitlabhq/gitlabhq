@@ -203,11 +203,15 @@ module API
           )
         end
 
-        def validate_requested_keys!(available_features: ::API::WorkItems::FEATURE_NAME_LOOKUP)
-          unknown = {
-            fields: unknown_requested_keys(params[:fields], ::API::WorkItems::FIELD_NAME_LOOKUP),
-            features: unknown_requested_keys(params[:features], available_features)
-          }.reject { |_, values| values.empty? }
+        def validate_requested_keys!(
+          available_fields: ::API::WorkItems::FIELD_NAME_LOOKUP,
+          available_features: ::API::WorkItems::FEATURE_NAME_LOOKUP
+        )
+          lookups = { fields: available_fields, features: available_features }.compact
+          unknown = lookups.filter_map do |param, available|
+            values = unknown_requested_keys(params[param], available)
+            [param, values] if values.any?
+          end
           return if unknown.empty?
 
           message = unknown

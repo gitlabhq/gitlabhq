@@ -1792,11 +1792,15 @@ RSpec.describe API::Helpers, feature_category: :api do
   end
 
   describe '#apply_etag_or_suppress_rack_etag!' do
+    let(:request_headers) { {} }
     let(:response_headers) { {} }
 
     before do
-      allow(helper).to receive(:headers).and_return(response_headers)
-      allow(helper).to receive(:header) { |key, value| response_headers[key] = value }
+      # Grape: `headers` is the request, `header` with no arguments is the response.
+      allow(helper).to receive(:headers).and_return(request_headers)
+      allow(helper).to receive(:header) do |key = nil, value = nil|
+        key ? response_headers[key] = value : response_headers
+      end
     end
 
     context 'when an etag is provided' do
@@ -1807,11 +1811,31 @@ RSpec.describe API::Helpers, feature_category: :api do
       end
     end
 
-    context 'when no etag is provided and Last-Modified is not set' do
-      it 'sets Last-Modified to 0 to suppress Rack::ETag' do
+    context 'when no etag is provided and neither ETag nor Last-Modified is set' do
+      it 'sets a random weak ETag and no Last-Modified' do
         helper.apply_etag_or_suppress_rack_etag!(nil)
 
-        expect(response_headers).to eq('Last-Modified' => '0')
+        expect(response_headers.keys).to eq(['ETag'])
+        expect(response_headers['ETag']).to match(%r{\AW/"\h{32}"\z})
+      end
+
+      it 'sets a different ETag on each response' do
+        helper.apply_etag_or_suppress_rack_etag!(nil)
+        first_etag = response_headers.delete('ETag')
+
+        helper.apply_etag_or_suppress_rack_etag!(nil)
+
+        expect(response_headers['ETag']).not_to eq(first_etag)
+      end
+    end
+
+    context 'when no etag is provided and an ETag is already set' do
+      let(:response_headers) { { 'ETag' => %("existing") } }
+
+      it 'leaves the ETag unchanged' do
+        helper.apply_etag_or_suppress_rack_etag!(nil)
+
+        expect(response_headers).to eq('ETag' => %("existing"))
       end
     end
 
@@ -1822,6 +1846,17 @@ RSpec.describe API::Helpers, feature_category: :api do
         helper.apply_etag_or_suppress_rack_etag!(nil)
 
         expect(response_headers).to eq('Last-Modified' => 'Wed, 21 Oct 2015 07:28:00 GMT')
+      end
+    end
+
+    context 'when no etag is provided and only the request carries ETag and Last-Modified' do
+      let(:request_headers) { { 'ETag' => %("from-client"), 'Last-Modified' => 'Wed, 21 Oct 2015 07:28:00 GMT' } }
+
+      it 'still sets a random weak ETag on the response' do
+        helper.apply_etag_or_suppress_rack_etag!(nil)
+
+        expect(response_headers.keys).to eq(['ETag'])
+        expect(response_headers['ETag']).to match(%r{\AW/"\h{32}"\z})
       end
     end
   end
@@ -1835,8 +1870,7 @@ RSpec.describe API::Helpers, feature_category: :api do
     let(:etag) { nil }
 
     before do
-      allow(helper).to receive(:headers).and_return({})
-      allow(helper).to receive(:header)
+      allow(helper).to receive_messages(headers: {}, header: {})
       # See the #send_git_blob describe above: the synthetic helper class
       # does not include Grape, so the `verify_workhorse_api!` rescue path
       # cannot call `forbidden!`. Stub to skip the chokepoint guard.
@@ -2042,10 +2076,10 @@ RSpec.describe API::Helpers, feature_category: :api do
         end
 
         context 'when no etag is provided' do
-          it 'sets Last-Modified: 0 to suppress Rack::ETag default' do
+          it 'sets a random weak ETag to suppress Rack::ETag default' do
             allow(helper).to receive(:status)
             allow(helper).to receive(:body)
-            expect(helper).to receive(:header).with('Last-Modified', '0')
+            expect(helper).to receive(:header).with('ETag', %r{\AW/"\h{32}"\z})
 
             subject
           end
@@ -2287,7 +2321,7 @@ RSpec.describe API::Helpers, feature_category: :api do
           request: instance_double(Rack::Request, head?: is_head_request),
           headers: {}
         )
-        allow(helper).to receive(:header)
+        allow(helper).to receive(:header).and_return({})
         stub_artifacts_object_storage(enabled: true)
       end
 

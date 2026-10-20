@@ -28,6 +28,8 @@ module API
 
       helpers do
         def render_email_participants_for(resource_parent, work_item_iid)
+          validate_requested_keys!(available_fields: EMAIL_PARTICIPANT_FIELD_LOOKUP, available_features: nil)
+
           work_item = work_item_for!(resource_parent, work_item_iid)
           authorize_work_item_feature!(work_item)
 

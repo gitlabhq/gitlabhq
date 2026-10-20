@@ -15,13 +15,13 @@ module InstanceSshCertificates # rubocop:disable Gitlab/BoundedContexts -- Mirro
       return ServiceResponse.error(message: 'Not found', reason: :not_found) unless InstanceSshCertificate.available?
 
       key = params[:key]
-      fingerprint = Gitlab::SSHPublicKey.new(key).fingerprint_sha256&.delete_prefix('SHA256:')
 
-      unless fingerprint
+      # Report the key rather than the fingerprint the model derives from it, which the user never sees.
+      unless Gitlab::SSHPublicKey.new(key).valid?
         return ServiceResponse.error(message: 'Validation failed: Invalid key', reason: :unprocessable_entity)
       end
 
-      certificate = InstanceSshCertificate.create!(title: params[:title], key: key, fingerprint: fingerprint)
+      certificate = InstanceSshCertificate.create!(title: params[:title], key: key)
 
       ServiceResponse.success(payload: certificate)
     rescue ActiveRecord::RecordInvalid, ArgumentError => e

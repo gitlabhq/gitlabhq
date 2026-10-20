@@ -101471,11 +101471,11 @@
             },
             {
               "name": "startDate",
-              "description": "Timestamp of the automation start date.",
+              "description": "Automation start date.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
-                "name": "Time",
+                "name": "Date",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -101624,7 +101624,7 @@
             },
             {
               "name": "startDate",
-              "description": "Timestamp of the automation start date.",
+              "description": "Automation start date.",
               "type": {
                 "kind": "SCALAR",
                 "name": "Time",
@@ -101943,7 +101943,7 @@
             },
             {
               "name": "startDate",
-              "description": "Timestamp of the automation start date.",
+              "description": "Automation start date.",
               "type": {
                 "kind": "SCALAR",
                 "name": "Time",

@@ -27,7 +27,8 @@ RSpec.describe InstanceSshCertificates::FindService, feature_category: :source_c
   end
 
   context 'when no certificate matches the fingerprint' do
-    let_it_be(:unregistered) { build(:instance_ssh_certificate) }
+    # Validating derives the fingerprint from the key without persisting the certificate.
+    let_it_be(:unregistered) { build(:instance_ssh_certificate).tap(&:validate) }
 
     let(:ca_fingerprint) { unregistered.fingerprint }
 

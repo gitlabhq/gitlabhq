@@ -11,7 +11,7 @@ RSpec.describe InstanceSshCertificate, feature_category: :source_code_management
     it 'rejects a duplicate fingerprint instance-wide' do
       existing = create(:instance_ssh_certificate)
 
-      duplicate = build(:instance_ssh_certificate, fingerprint: existing.fingerprint)
+      duplicate = build(:instance_ssh_certificate, key: existing.key)
 
       expect(duplicate).to be_invalid
       expect(duplicate.errors[:fingerprint]).to include(
@@ -22,6 +22,7 @@ RSpec.describe InstanceSshCertificate, feature_category: :source_code_management
     it 'is enforced by a unique index when model validation is skipped' do
       existing = create(:instance_ssh_certificate)
 
+      # Skipping validation also skips the callback that derives the fingerprint, so set it here.
       duplicate = build(:instance_ssh_certificate, fingerprint: existing.fingerprint)
 
       expect { duplicate.save!(validate: false) }.to raise_error(ActiveRecord::RecordNotUnique)
