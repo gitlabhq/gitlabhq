@@ -386,7 +386,6 @@ GEM
       ice_nine (~> 0.11.0)
       thread_safe (~> 0.3, >= 0.3.1)
     babosa (2.0.0)
-    backport (1.2.0)
     base32 (0.3.4)
     base64 (0.2.0)
     batch-loader (2.0.5)
@@ -806,7 +805,12 @@ GEM
       oauth2 (>= 1.4.4, < 3)
       redis (>= 5, < 6)
       redis-namespace (>= 1.8.2)
-    gitlab-markup (2.0.0)
+    gitlab-markup (2.2.0)
+      RedCloth (~> 4.3)
+      creole (~> 0.5.0)
+      org-ruby (~> 0.9)
+      rdoc (>= 6.13, < 9)
+      wikicloth (= 0.8.1)
     gitlab-net-dns (0.15.0)
       logger
     gitlab-sdk (0.3.1)
@@ -1095,7 +1099,6 @@ GEM
     jaeger-client (1.1.0)
       opentracing (~> 0.3)
       thrift
-    jaro_winkler (1.6.1)
     jira-ruby (2.3.0)
       activesupport
       atlassian-jwt
@@ -1292,7 +1295,6 @@ GEM
       rack (>= 1.2, < 4)
       snaky_hash (~> 2.0)
       version_gem (>= 1.1.8, < 3)
-    observer (0.1.2)
     octokit (9.2.0)
       faraday (>= 1, < 3)
       sawyer (~> 0.9)
@@ -1636,9 +1638,6 @@ GEM
       pry (>= 0.13.0)
       tty-markdown
       tty-prompt
-    psych (5.3.1)
-      date
-      stringio
     public_suffix (6.0.1)
     puma (7.2.0)
       nio4r (~> 2.0)
@@ -1717,16 +1716,19 @@ GEM
       ffi (~> 1.0)
     rb_sys (0.9.124)
       rake-compiler-dock (= 1.11.0)
-    rbs (3.9.5)
+    rbs (4.2.0)
       logger
+      prism (>= 1.6.0)
+      tsort
     rbtrace (0.5.3)
       ffi (>= 1.0.6)
       msgpack (>= 0.4.3)
       optimist (>= 3.0.0)
     rchardet (1.8.0)
-    rdoc (6.17.0)
+    rdoc (8.1.0)
       erb
-      psych (>= 4.0.0)
+      prism (>= 1.6.0)
+      rbs (>= 4.0.0)
       tsort
     re2 (2.23.0)
       mini_portile2 (~> 2.8.9)
@@ -1948,27 +1950,6 @@ GEM
       hashie
       version_gem (~> 1.1)
     snowplow-tracker (0.8.0)
-    solargraph (0.54.4)
-      backport (~> 1.2)
-      benchmark (~> 0.4)
-      bundler (~> 2.0)
-      diff-lcs (~> 1.4)
-      jaro_winkler (~> 1.6, >= 1.6.1)
-      kramdown (~> 2.3)
-      kramdown-parser-gfm (~> 1.1)
-      logger (~> 1.6)
-      observer (~> 0.1)
-      ostruct (~> 0.6)
-      parser (~> 3.0)
-      rbs (~> 3.3)
-      reverse_markdown (~> 3.0)
-      rubocop (~> 1.38)
-      thor (~> 1.0)
-      tilt (~> 2.0)
-      yard (~> 0.9, >= 0.9.24)
-      yard-solargraph (~> 0.1)
-    solargraph-rspec (0.5.4)
-      solargraph (>= 0.52.0)
     sorbet-runtime (0.6.12984)
     spamcheck (1.3.3)
       grpc (~> 1.63)
@@ -1999,7 +1980,6 @@ GEM
       activesupport
       rspec (~> 3.3)
       state_machines
-    stringio (3.2.0)
     strings (0.2.1)
       strings-ansi (~> 0.2)
       unicode-display_width (>= 1.5, < 3.0)
@@ -2177,8 +2157,6 @@ GEM
       nokogiri (~> 1.8)
     yajl-ruby (1.4.3)
     yard (0.9.38)
-    yard-solargraph (0.1.0)
-      yard (~> 0.9)
     zeitwerk (2.6.18)
     zlib (3.2.3)
 
@@ -2299,7 +2277,7 @@ DEPENDENCIES
   gitlab-labkit (~> 1.5.0)
   gitlab-license (~> 2.6)
   gitlab-mail_room (~> 1.0.0)
-  gitlab-markup (~> 2.0.0)
+  gitlab-markup (~> 2.2.0)
   gitlab-net-dns (~> 0.15.0)
   gitlab-rspec!
   gitlab-rspec_flaky!
@@ -2518,8 +2496,6 @@ DEPENDENCIES
   simplecov-lcov (~> 0.8.0)
   slack-messenger (~> 2.3.5)
   snowplow-tracker (~> 0.8.0)
-  solargraph (~> 0.54.0)
-  solargraph-rspec (~> 0.5.1)
   spamcheck (~> 1.3.0)
   spring (~> 4.3.0)
   spring-commands-rspec (~> 1.0.4)
@@ -2611,7 +2587,6 @@ CHECKSUMS
   axe-core-rspec (4.10.3) sha256=ca21d0111e2d0fcd0f1da922c9071337336732aa6a3a8dc21bed94c9a701527e
   axiom-types (0.1.1) sha256=c1ff113f3de516fa195b2db7e0a9a95fd1b08475a502ff660d04507a09980383
   babosa (2.0.0) sha256=a6218db8a4dc8fd99260dde8bc3d5fa1a0c52178196e236ebb31e41fbdcdb8a6
-  backport (1.2.0) sha256=912c7dfdd9ee4625d013ddfccb6205c3f92da69a8990f65c440e40f5b2fc7f75
   base32 (0.3.4) sha256=cb9810ab7c79862ed6ead254b3a44fa2535d088396cd412eef38bdc206055aba
   base64 (0.2.0) sha256=0f25e9b21a02a0cc0cea8ef92b2041035d39350946e8789c562b2d1a3da01507
   batch-loader (2.0.5) sha256=964bf638b8f498bab40abaafc6f89c057b2e02aa25b64fc1ec12872ad6bff213
@@ -2784,7 +2759,7 @@ CHECKSUMS
   gitlab-labkit (1.5.1) sha256=07c88cb63ae6d44ffca734e4c5a9c89b4143317c1daa6c85d0771acedbfbb727
   gitlab-license (2.6.0) sha256=2c1f8ae73835640ec77bf758c1d0c9730635043c01cf77902f7976e826d7d016
   gitlab-mail_room (1.0.0) sha256=00910bc000ff819f8e2030fd2260f7b40f025c410b11b82de8f67de7922c0159
-  gitlab-markup (2.0.0) sha256=951a1c871463a8f329e6c002b2da337cd547febcc1e33d84df4a212419fba02e
+  gitlab-markup (2.2.0) sha256=a6f494202983262961e8a68f95018a8f971aaa60f396552337e0fb910f6e68d7
   gitlab-net-dns (0.15.0) sha256=d229aae205055b86b2ad166981257eb589ce6d6a146aa79b3ea2b1e5d9741f46
   gitlab-rspec (0.1.0)
   gitlab-rspec_flaky (0.1.0)
@@ -2884,7 +2859,6 @@ CHECKSUMS
   ipynbdiff (0.4.8)
   irb (1.18.0) sha256=de9454a0703a54704b9811a5ef31a60c86949fbf4013fcf244fabc7c775248e3
   jaeger-client (1.1.0) sha256=cb5e9b9bbee6ee8d6a82d03d947a5b04543d8c0a949c22e484254f18d8a458a8
-  jaro_winkler (1.6.1) sha256=c056b61bbf7f1fc0151bde7c8f589a2d666d42d0cdb889395b9b73b328e1b393
   jira-ruby (2.3.0) sha256=abf26e6bff4a8ea40bae06f7df6276a5776905c63fb2070934823ca54f62eb62
   jmespath (1.6.2) sha256=238d774a58723d6c090494c8879b5e9918c19485f7e840f2c1c7532cf84ebcb1
   js-routes (2.3.6) sha256=a46220beadddf3ee4dc7a1e0b908587c0b3418d44d84ef7970ed72e849598474
@@ -2971,7 +2945,6 @@ CHECKSUMS
   numerizer (0.2.0) sha256=e58076d5ee5370417b7e52d9cb25836d62acd1b8d9a194c308707986c1705d7b
   oauth (0.5.6) sha256=4085fe28e0c5e2434135e00a6555294fd2a4ff96a98d1bdecdcd619fc6368dff
   oauth2 (2.0.10) sha256=8f132679598d21885d4bcc68d7e7e6ef0a29f9a782abca00d67d884280dc3a42
-  observer (0.1.2) sha256=d8a3107131ba661138d748e7be3dbafc0d82e732fffba9fccb3d7829880950ac
   octokit (9.2.0) sha256=4fa47ff35ce654127edf2c836ab9269bcc8829f5542dc1e86871f697ce7f4316
   ohai (19.1.24) sha256=a15f3fd2298321a494c536a7af0e97020d71e4034963d42598bd4f33eacd7758
   oj (3.17.3) sha256=ebe3967b0bb7ac4f206561d0d9ac8875b9973f778600d7b61b5c355662a707ed
@@ -3085,7 +3058,6 @@ CHECKSUMS
   pry-byebug (3.11.0) sha256=0b0abb7d309bc7f00044d512a3c8567274f7012b944b38becc8440439a1cea72
   pry-rails (0.3.11) sha256=a69e28e24a34d75d1f60bcf241192a54253f8f7ef8a62cba1e75750a9653593d
   pry-shell (0.6.4) sha256=ad024882d29912b071a7de65ebea538b242d2dc1498c60c7c2352ef94769f208
-  psych (5.3.1) sha256=eb7a57cef10c9d70173ff74e739d843ac3b2c019a003de48447b2963d81b1974
   public_suffix (6.0.1) sha256=61d44e1cab5cbbbe5b31068481cf16976dd0dc1b6b07bd95617ef8c5e3e00c6f
   puma (7.2.0) sha256=bf8ef4ab514a4e6d4554cb4326b2004eba5036ae05cf765cfe51aba9706a72a8
   pyu-ruby-sasl (0.0.3.3) sha256=5683a6bc5738db5a1bf5ceddeaf545405fb241b4184dd4f2587e679a7e9497e5
@@ -3114,10 +3086,10 @@ CHECKSUMS
   rb-fsevent (0.11.2) sha256=43900b972e7301d6570f64b850a5aa67833ee7d87b458ee92805d56b7318aefe
   rb-inotify (0.10.1) sha256=050062d4f31d307cca52c3f6a7f4b946df8de25fc4bd373e1a5142e41034a7ca
   rb_sys (0.9.124) sha256=513476557b12eaf73764b3da9f8746024558fe8699bda785fb548c9aa3877ae7
-  rbs (3.9.5) sha256=eabaaf60aee84e38cbf94839c6e1b9cd145c7295fc3cc0e88c92e4069b1119b0
+  rbs (4.2.0) sha256=51f7b886dcc05bc09e10b901daa6a81829f6adc03101d6ca9ea4aac6103e0674
   rbtrace (0.5.3) sha256=c432292f305d9ab12fd47d9722e0d5210d983758a951fe6107c36cc955cb923f
   rchardet (1.8.0) sha256=693acd5253d5ade81a51940697955f6dd4bb2f0d245bda76a8e23deec70a52c7
-  rdoc (6.17.0) sha256=0f50d4e568fc98195f9bb155a9e8dff6c7feabfb515fb22ef6df1d12ad5a02b7
+  rdoc (8.1.0) sha256=befc37880a5cfd36dcb176c748b5fd5ee39dd3536a75e81824e4972ce230f60a
   re2 (2.23.0) sha256=5545b7709832c26ded88f1829fa9b24cdd7c5f0ebb0526c3c476b92505ef256f
   recaptcha (5.12.3) sha256=37d1894add9e70a54d0c6c7f0ecbeedffbfa7d075acfbd4c509818dfdebdb7ee
   recursive-open-struct (1.1.3) sha256=a3538a72552fcebcd0ada657bdff313641a4a5fbc482c08cfb9a65acb1c9de5a
@@ -3209,8 +3181,6 @@ CHECKSUMS
   slack-messenger (2.3.6) sha256=58581e587debcbb769336cc7ebe4eb6ae411947fccf347e967a17ac9813e66d8
   snaky_hash (2.0.0) sha256=fe8b2e39e8ff69320f7812af73ea06401579e29ff1734a7009567391600687de
   snowplow-tracker (0.8.0) sha256=7ba6f4f1443a829845fd28e63eda72d9d3d247f485310ddcccaebbc52b734a38
-  solargraph (0.54.4) sha256=842705cc511a085e967314de8bd2dd89b00f90238b5582e665ffa39efbd880e0
-  solargraph-rspec (0.5.4) sha256=295fc5ae98694edcc638488a93d4c8cd66f56883cf7961f47f1409602baf7e1c
   sorbet-runtime (0.6.12984) sha256=3fff20a5b147a2e191210563d61886ac121fc1cd8b5e0faf6bc18873139e0fe4
   spamcheck (1.3.3) sha256=3a29ba9dfcd59543d88054d38c657f79e0a6cf44d763df08ad47680abed50ec7
   spring (4.3.0) sha256=0aaaf3bcce38e8528275854881d1922660d76cbd19a9a3af4a419d95b7fe7122
@@ -3225,7 +3195,6 @@ CHECKSUMS
   state_machines-activemodel (0.101.0) sha256=6798c6bf5aa4be2b1a00ca633949c999ebee7a148bd4ea8f6858b189e2cdf72d
   state_machines-activerecord (0.100.0) sha256=b2213f74f3f32c6d92de5139e8898bc64a0ffb3f048df7d950ce27e28384beb5
   state_machines-rspec (0.6.0) sha256=2ba57a45df57d0c97f79146e2e0f65f519b52e65e182805ef79cb73b1fe5c0bd
-  stringio (3.2.0) sha256=c37cb2e58b4ffbd33fe5cd948c05934af997b36e0b6ca6fdf43afa234cf222e1
   strings (0.2.1) sha256=933293b3c95cf85b81eb44b3cf673e3087661ba739bbadfeadf442083158d6fb
   strings-ansi (0.2.0) sha256=90262d760ea4a94cc2ae8d58205277a343409c288cbe7c29416b1826bd511c88
   swd (2.0.3) sha256=4cdbe2a4246c19f093fce22e967ec3ebdd4657d37673672e621bf0c7eb770655
@@ -3308,7 +3277,6 @@ CHECKSUMS
   xpath (3.2.0) sha256=6dfda79d91bb3b949b947ecc5919f042ef2f399b904013eb3ef6d20dd3a4082e
   yajl-ruby (1.4.3) sha256=8c974d9c11ae07b0a3b6d26efea8407269b02e4138118fbe3ef0d2ec9724d1d2
   yard (0.9.38) sha256=721fb82afb10532aa49860655f6cc2eaa7130889df291b052e1e6b268283010f
-  yard-solargraph (0.1.0) sha256=a19a4619c942181a618fb9458970a9d2534cf7fda69fc43949629a7948a5930e
   zeitwerk (2.6.18) sha256=bd2d213996ff7b3b364cd342a585fbee9797dbc1c0c6d868dc4150cc75739781
   zlib (3.2.3) sha256=5bd316698b32f31a64ab910a8b6c282442ca1626a81bbd6a1674e8522e319c20
 
