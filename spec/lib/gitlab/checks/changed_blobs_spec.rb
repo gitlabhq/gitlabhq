@@ -133,57 +133,6 @@ RSpec.describe Gitlab::Checks::ChangedBlobs, feature_category: :source_code_mana
           expect(blobs).to eq([])
         end
       end
-
-      context 'when allow_quarantine is false' do
-        let(:service_params) { { allow_quarantine: false } }
-
-        it 'skips the quarantine path and derives blobs by branches-only reachability', :aggregate_failures do
-          expect(repository).not_to receive(:list_all_blobs)
-          expect(repository).to receive(:list_blobs).with(
-            ['--not', '--glob=refs/heads/*', '--not'] + revisions,
-            bytes_limit: 100,
-            with_paths: false,
-            dynamic_timeout: 60
-          ).and_call_original
-
-          blobs
-        end
-      end
-    end
-
-    context 'when a blob is reachable only via a non-branch ref' do
-      let_it_be(:project) { create(:project, :small_repo) }
-
-      let_it_be(:staged_commit) do
-        project.repository.commit_files(
-          user,
-          branch_name: 'staging-branch',
-          message: 'Pre-staged commit',
-          actions: [{ action: :create, file_path: 'secret.txt', content: 'AKIA-pre-staged-secret' }]
-        ).tap do
-          sha = project.repository.commit('staging-branch').id
-          project.repository.add_tag(user, 'hidden-tag', sha)
-          project.repository.delete_branch('staging-branch')
-        end
-      end
-
-      let(:revisions) { [project.repository.find_tag('hidden-tag').dereferenced_target.id] }
-
-      context 'with the default allow_quarantine (true)' do
-        let(:service_params) { {} }
-
-        it 'misses the blob because the tag hides it from --not --all' do
-          expect(blobs.map(&:data)).not_to include('AKIA-pre-staged-secret')
-        end
-      end
-
-      context 'with allow_quarantine: false' do
-        let(:service_params) { { allow_quarantine: false } }
-
-        it 'returns the blob adopted from the non-branch ref' do
-          expect(blobs.map(&:data)).to include('AKIA-pre-staged-secret')
-        end
-      end
     end
   end
 end

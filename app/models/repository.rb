@@ -180,8 +180,8 @@ class Repository
   end
 
   # Returns a list of commits that are not present in any reference
-  def new_commits(newrev, allow_quarantine: true)
-    commits = raw.new_commits(newrev, allow_quarantine: allow_quarantine)
+  def new_commits(newrev)
+    commits = raw.new_commits(newrev)
 
     ::Commit.decorate(commits, container)
   end
