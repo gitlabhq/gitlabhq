@@ -1,6 +1,8 @@
 @import 'mixins_and_variables_and_functions';
 @import 'components/content_editor';
 
+$wiki-page-gap: var(--gl-spacing-scale-6);
+
 .wiki-page-header {
   @apply gl-flex;
   @apply gl-items-center;
@@ -14,10 +16,6 @@
   }
 
   @include gl-container-width-up(md) {
-    &.has-sidebar-toggle {
-      padding-right: 0;
-    }
-
     button.sidebar-toggle {
       display: none;
     }
@@ -28,7 +26,7 @@
   @apply gl-flex;
   @apply gl-justify-center;
   @apply gl-relative;
-  @apply gl-gap-6;
+  gap: $wiki-page-gap;
 }
 
 .has-wiki-sidebar {
@@ -122,6 +120,10 @@
   &.sidebar-collapsed {
     @apply gl-border-transparent;
 
+    ~ .wiki-page-details .wiki-sticky-header {
+      margin-left: 0;
+    }
+
     .sidebar-container {
       width: 0 !important;
       overflow: hidden;
@@ -133,7 +135,7 @@
     }
 
     + * .toggle-with-hide-transition {
-      @apply gl-w-9;
+      @apply gl-w-8;
     }
   }
 
@@ -143,7 +145,7 @@
     z-index: 3;
     @apply gl-overflow-hidden;
     -webkit-overflow-scrolling: touch;
-    width: $wiki-sidebar-inner-width;
+    width: var(--wiki-sidebar-width, #{$wiki-sidebar-inner-width});
     position: relative;
     @apply gl-flex;
     @apply gl-flex-col;
@@ -258,7 +260,29 @@
   @apply gl-relative;
   min-width: 0;
   flex: 1 1 0;
-  max-width: $wiki-content-default-width;
+  max-width: 100%;
+}
+
+.wiki-overview.layout-limited-width {
+  .wiki-page-details, .wiki-comments {
+    max-width: $wiki-content-default-width;
+  }
+
+  .wiki-sticky-header > div {
+    max-width: $wiki-content-default-width;
+  }
+}
+
+.wiki-sticky-header {
+  margin-left: var(--wiki-sidebar-width, #{$wiki-sidebar-inner-width});
+
+  @include gl-container-width-up(lg) {
+    padding-left: $wiki-page-gap;
+  }
+
+  > div {
+    max-width: $wiki-content-max-width;
+  }
 }
 
 .wiki-overview {
