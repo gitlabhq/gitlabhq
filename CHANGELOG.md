@@ -2,6 +2,16 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 19.2.9 (2026-10-20)
+
+### Added (1 change)
+
+- [Allow job, source project claims in ID token sub claims](https://gitlab.com/gitlab-org/gitlab/-/commit/dffe910e2938e17153ebe26e5fc20ddd6389c684) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/259316))
+
+### Changed (1 change)
+
+- [Update gitlab-markup to 2.2.0 and rdoc to 8.1.0](https://gitlab.com/gitlab-org/gitlab/-/commit/856df0cec69a187d4f9e328caccce17e2dcb9fce) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/262716))
+
 ## 19.2.8 (2026-10-07)
 
 ### Fixed (7 changes)
