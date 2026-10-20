@@ -7,7 +7,7 @@ source "https://rubygems.org"
 gem "gitlab-mail_room", "~> 1.0"
 gem "mail", "~> 2.8"
 
-gem "gitlab-email_handler", path: "../gems/gitlab-email_handler"
+gem "gitlab-email_handler", "~> 0.1.0"
 gem "gitlab-topology-service-client", path: "../vendor/gems/gitlab-topology-service-client"
 
 gem "grpc", "~> 1.0"

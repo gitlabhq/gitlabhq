@@ -7,6 +7,7 @@ import composerJsonLinker from './utils/composer_json_linker';
 import goSumLinker from './utils/go_sum_linker';
 import cartfileLinker from './utils/cartfile_linker';
 import goModLinker from './utils/go_mod_linker';
+import requirementsTxtLinker from './utils/requirements_txt_linker';
 
 const DEPENDENCY_LINKERS = {
   package_json: packageJsonLinker,
@@ -18,6 +19,7 @@ const DEPENDENCY_LINKERS = {
   go_sum: goSumLinker,
   cartfile: cartfileLinker,
   go_mod: goModLinker,
+  requirements_txt: requirementsTxtLinker,
 };
 
 /**

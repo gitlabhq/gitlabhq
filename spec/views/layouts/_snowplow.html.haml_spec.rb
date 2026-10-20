@@ -56,7 +56,7 @@ RSpec.describe 'layouts/_snowplow', feature_category: :service_ping do
     before do
       allow(view).to receive(:current_user).and_return(user)
       allow(view).to receive(:webpack_bundle_tag).and_call_original
-      allow(Gitlab::Tracking).to receive(:frontend_tracker_needed?).and_return(tracker_needed)
+      allow(Gitlab::Tracking::EventEligibilityChecker).to receive(:send_frontend_events?).and_return(tracker_needed)
     end
 
     context 'when the frontend tracker is needed' do

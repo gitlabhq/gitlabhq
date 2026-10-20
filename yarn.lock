@@ -1445,10 +1445,10 @@
   resolved "https://registry.yarnpkg.com/@floating-ui/utils/-/utils-0.2.12.tgz#afefe785949f16ac4cdd1e695935a321572dd56a"
   integrity sha512-HpCo8tmWzLVad5s2d19EhAz5zqrrQ6s69qd6moPMQvkOuSwDT1YgRfWSVuc4ennqrgv3OHppiOGMQ7oC13yIww==
 
-"@gitlab/at.js@1.5.9":
-  version "1.5.9"
-  resolved "https://registry.yarnpkg.com/@gitlab/at.js/-/at.js-1.5.9.tgz#ae17dc12544a38612bdb74b0b89fbe94d05d5b8e"
-  integrity sha512-yqumzptgiu0QbVNlAthS3FcQOc6SXFjySPAD2lYtaRJlgaTlM8onu+rY3hqywZ2YFOVtgrw2XElHFXBXtIWhIw==
+"@gitlab/at.js@1.5.11":
+  version "1.5.11"
+  resolved "https://registry.yarnpkg.com/@gitlab/at.js/-/at.js-1.5.11.tgz#8c81acb75523e68a3f6c10fb90794c558dae87e6"
+  integrity sha512-m46Eyfp42vzHszXF67rHLpvMb2C7iRswQlqCSIToN3Aq2JogRWo4jrzwxZwEd92q5O7NahFNb2zmSAs34aOp3w==
 
 "@gitlab/cluster-client@^3.0.0":
   version "3.0.0"
@@ -1554,10 +1554,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.167.1.tgz#a5c80fbaed01ebff6af625d59a14ac871ad0baa4"
   integrity sha512-l/R1dodUJsFDUhIE9tmtz6ht7Xs2WNLjw0/4JYKy0ox18cgwo+9R4Pno0gOCg6O7GtXA/vpbWns8M9SPKgV1Tw==
 
-"@gitlab/ui@138.6.1":
-  version "138.6.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-138.6.1.tgz#3125233d452a5053975a6d1dd6177e784ed642ef"
-  integrity sha512-EvsjsAgLc8cUX7rhcIwvRctBy8krvjF9jmbEm6lAqY8r8oaWRhFECzE1akjDNK9QX6y5WaLqcXcBMgRGIBf3cw==
+"@gitlab/ui@138.6.2":
+  version "138.6.2"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-138.6.2.tgz#72cdc0a8633054b75eb769d8fbfc09bcbc11e4a8"
+  integrity sha512-cXQ8edyvzEYRGHMNti2RTn4wKEsCcZJTVyYDtDnLhn14RQfBnWdJLuu1dy2qXkaVERO3JOvSJWWlkD7FkF3cUA==
   dependencies:
     "@floating-ui/dom" "1.8.0"
     echarts "^5.6.0"

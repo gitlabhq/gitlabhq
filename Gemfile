@@ -54,9 +54,9 @@ group :monorepo do
   gem 'gitlab-configs', path: 'gems/gitlab-configs', feature_category: :settings
   gem 'gitlab-banzai', path: 'gems/gitlab-banzai', feature_category: :markdown
   gem 'gitlab-mfe', path: 'gems/gitlab-mfe', feature_category: :compliance_management
-  gem 'gitlab-email_handler', path: 'gems/gitlab-email_handler', require: false,
-    feature_category: :service_desk
 end
+
+gem 'gitlab-email_handler', '~> 0.1.0', require: false, feature_category: :service_desk
 
 gem 'gitlab-backup-cli', path: 'gems/gitlab-backup-cli', require: 'gitlab/backup/cli', feature_category: :backup_restore
 

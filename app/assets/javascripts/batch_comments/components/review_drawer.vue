@@ -393,7 +393,8 @@ export default {
                 <markdown-header-divider class="gl-ml-2" />
                 <summarize-my-review
                   :id="getNoteableData.id"
-                  v-model="summarizeReviewLoading"
+                  :summarize-review-loading="summarizeReviewLoading"
+                  @loading="summarizeReviewLoading = $event"
                   @input="updateNote"
                 />
               </template>

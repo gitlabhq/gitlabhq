@@ -14342,6 +14342,73 @@ Fields:
 | <a id="mutation-mergerequestupdateapprovalrule-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutation-mergerequestupdateapprovalrule-mergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
 
+### `Mutation.mergeRequestsCsvExport`
+
+{{< details >}}
+
+- Introduced in GitLab 19.6.
+- Status: Experiment.
+
+{{< /details >}}
+
+Input type: `MergeRequestsCsvExportInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-mergerequestscsvexport-approvedby"></a>`approvedBy` | [`[String!]`](#string) | Usernames of the approvers. |
+| <a id="mutation-mergerequestscsvexport-approver"></a>`approver` | [`[String!]`](#string) | Usernames of possible approvers. |
+| <a id="mutation-mergerequestscsvexport-assigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
+| <a id="mutation-mergerequestscsvexport-assigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the merge request. |
+| <a id="mutation-mergerequestscsvexport-assigneewildcardid"></a>`assigneeWildcardId` | [`AssigneeWildcardId`](#assigneewildcardid) | Filter by assignee presence. Incompatible with assigneeUsernames and assigneeUsername. |
+| <a id="mutation-mergerequestscsvexport-authorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
+| <a id="mutation-mergerequestscsvexport-blobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 17.7. Status: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. |
+| <a id="mutation-mergerequestscsvexport-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-mergerequestscsvexport-closedafter"></a>`closedAfter` | [`Time`](#time) | Merge requests closed after the date. |
+| <a id="mutation-mergerequestscsvexport-closedbefore"></a>`closedBefore` | [`Time`](#time) | Merge requests closed before the date. |
+| <a id="mutation-mergerequestscsvexport-createdafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
+| <a id="mutation-mergerequestscsvexport-createdbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
+| <a id="mutation-mergerequestscsvexport-deployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
+| <a id="mutation-mergerequestscsvexport-deployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before the timestamp. |
+| <a id="mutation-mergerequestscsvexport-deploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
+| <a id="mutation-mergerequestscsvexport-draft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
+| <a id="mutation-mergerequestscsvexport-environmentname"></a>`environmentName` | [`String`](#string) | Environment merge requests have been deployed to. |
+| <a id="mutation-mergerequestscsvexport-ignoredreviewerusername"></a>`ignoredReviewerUsername` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 18.0. Status: Experiment. Username of the reviewer to ignore when searching by reviewer state. |
+| <a id="mutation-mergerequestscsvexport-iids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
+| <a id="mutation-mergerequestscsvexport-in"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
+| <a id="mutation-mergerequestscsvexport-labelname"></a>`labelName` | [`[String]`](#string) | Labels applied to the merge request. |
+| <a id="mutation-mergerequestscsvexport-labels"></a>`labels` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | Deprecated in GitLab 17.1. Use `labelName`. |
+| <a id="mutation-mergerequestscsvexport-mergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after the date. |
+| <a id="mutation-mergerequestscsvexport-mergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before the date. |
+| <a id="mutation-mergerequestscsvexport-mergedby"></a>`mergedBy` | [`String`](#string) | Username of the merger. |
+| <a id="mutation-mergerequestscsvexport-milestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. Incompatible with milestoneWildcardId. |
+| <a id="mutation-mergerequestscsvexport-milestonewildcardid"></a>`milestoneWildcardId` | [`MilestoneWildcardId`](#milestonewildcardid) | Filter issues by milestone ID wildcard. Incompatible with milestoneTitle. |
+| <a id="mutation-mergerequestscsvexport-myreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by your reaction emoji. |
+| <a id="mutation-mergerequestscsvexport-not"></a>`not` | [`MergeRequestsResolverNegatedParams`](#mergerequestsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
+| <a id="mutation-mergerequestscsvexport-or"></a>`or` | [`UnionedMergeRequestFilterInput`](#unionedmergerequestfilterinput) | List of arguments with inclusive OR. |
+| <a id="mutation-mergerequestscsvexport-projectpath"></a>`projectPath` | [`ID!`](#id) | Full project path. |
+| <a id="mutation-mergerequestscsvexport-releasetag"></a>`releaseTag` | [`String`](#string) | Filter by release tag. |
+| <a id="mutation-mergerequestscsvexport-reviewstate"></a>`reviewState` | [`MergeRequestReviewState`](#mergerequestreviewstate) | Reviewer state of the merge request. |
+| <a id="mutation-mergerequestscsvexport-reviewstates"></a>`reviewStates` | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | Reviewer states of the merge request. |
+| <a id="mutation-mergerequestscsvexport-reviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
+| <a id="mutation-mergerequestscsvexport-reviewerwildcardid"></a>`reviewerWildcardId` | [`ReviewerWildcardId`](#reviewerwildcardid) | Filter by reviewer presence. Incompatible with reviewerUsername. |
+| <a id="mutation-mergerequestscsvexport-search"></a>`search` | [`String`](#string) | Search query for title or description. |
+| <a id="mutation-mergerequestscsvexport-sourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
+| <a id="mutation-mergerequestscsvexport-state"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have the state. |
+| <a id="mutation-mergerequestscsvexport-subscribed"></a>`subscribed` | [`SubscriptionStatus`](#subscriptionstatus) | Merge requests the current user is subscribed to. |
+| <a id="mutation-mergerequestscsvexport-targetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
+| <a id="mutation-mergerequestscsvexport-updatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after the timestamp. |
+| <a id="mutation-mergerequestscsvexport-updatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before the timestamp. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-mergerequestscsvexport-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-mergerequestscsvexport-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutation-mergerequestscsvexport-message"></a>`message` | [`String`](#string) | Export request result message. |
+
 ### `Mutation.mergeTrainsDeleteCar`
 
 {{< details >}}

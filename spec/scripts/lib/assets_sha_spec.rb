@@ -20,6 +20,18 @@ RSpec.describe AssetsSha, feature_category: :tooling do
 
       expect(files).to include('.browserslistrc')
     end
+
+    it 'includes Gemfile.next and Gemfile.next.lock, which affect gem-emitted assets' do
+      files = described_class.send(:assets_impacting_compilation)
+
+      expect(files).to include('Gemfile.next', 'Gemfile.next.lock')
+    end
+
+    it 'includes lib/tasks/gitlab/assets.rake, which controls asset compilation' do
+      files = described_class.send(:assets_impacting_compilation)
+
+      expect(files).to include('lib/tasks/gitlab/assets.rake')
+    end
   end
 
   describe '.sha256_of_assets_impacting_compilation' do

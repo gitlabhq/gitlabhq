@@ -31,7 +31,6 @@ RSpec/ContextWording:
     - 'ee/spec/controllers/groups/saml_providers_controller_spec.rb'
     - 'ee/spec/controllers/groups/scim_oauth_controller_spec.rb'
     - 'ee/spec/controllers/groups/sso_controller_spec.rb'
-    - 'ee/spec/controllers/oauth/applications_controller_spec.rb'
     - 'ee/spec/controllers/oauth/geo_auth_controller_spec.rb'
     - 'ee/spec/controllers/operations_controller_spec.rb'
     - 'ee/spec/controllers/projects/audit_events_controller_spec.rb'

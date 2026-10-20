@@ -1969,6 +1969,7 @@ Grants the ability to approve, create, delete, merge, read, subscribe, and updat
 | Read | Project | Type | `MergeRequestResourceLabelEvent` |
 | Read | Project | Type | `MergeRequestWorkItemRelation` |
 | Read | Project | Type | `UserMergeRequestInteraction` |
+| Read | Project | Mutation | `MergeRequestsCsvExport` |
 | Subscribe | Project | Mutation | `MergeRequestSetSubscription` |
 | Update | Project | Mutation | `DismissPolicyViolations` |
 | Update | Project | Mutation | `MergeRequestBypassSecurityPolicy` |

@@ -82,7 +82,7 @@ export const LFS_STORAGE = 'lfs';
  * do not yet support.
  * These are file types that we want the legacy (backend) syntax highlighter to highlight.
  */
-export const LEGACY_FILE_TYPES = ['podfile', 'podspec', 'requirements_txt', 'cargo_toml'];
+export const LEGACY_FILE_TYPES = ['podfile', 'podspec', 'cargo_toml'];
 
 export const i18n = {
   generalError: __('An error occurred while fetching folder content.'),

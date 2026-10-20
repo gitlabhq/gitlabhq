@@ -126,11 +126,6 @@ PATH
     gitlab-deploy-driver-argo-rollouts (0.7.0)
 
 PATH
-  remote: gems/gitlab-email_handler
-  specs:
-    gitlab-email_handler (0.1.0)
-
-PATH
   remote: gems/gitlab-housekeeper
   specs:
     gitlab-housekeeper (0.1.0)
@@ -885,6 +880,7 @@ GEM
       danger (>= 9.3.0)
       danger-gitlab (>= 8.0.0)
       rake (~> 13.0)
+    gitlab-email_handler (0.1.0)
     gitlab-experiment (2.0.0)
       activesupport (>= 3.0)
       request_store (>= 1.0)
@@ -2582,7 +2578,7 @@ DEPENDENCIES
   gitlab-database-data_isolation!
   gitlab-deploy-driver-argo-rollouts!
   gitlab-duo-workflow-service-client (~> 0.16)!
-  gitlab-email_handler!
+  gitlab-email_handler (~> 0.1.0)
   gitlab-experiment (~> 2.0.0)
   gitlab-fog-azure-rm (~> 2.5.0)
   gitlab-glaz (~> 2.1.0)
@@ -3101,7 +3097,7 @@ CHECKSUMS
   gitlab-database-data_isolation (0.1.0)
   gitlab-deploy-driver-argo-rollouts (0.7.0)
   gitlab-duo-workflow-service-client (0.16)
-  gitlab-email_handler (0.1.0)
+  gitlab-email_handler (0.1.0) sha256=832527c08d57b335396ff01fc82d7c2d63d3d26188e35f0740ed79dd904ef520
   gitlab-experiment (2.0.0) sha256=05183dee7ddad1ef183de43c2c330e57a1457f679744c19c61f637e1135d3c76
   gitlab-fog-azure-rm (2.5.2) sha256=075f28509c83e717f39eaaea44c4c877ded5808e7b06150b37b99876ae50fbed
   gitlab-glaz (2.1.0) sha256=d6e9c22977cdcfc2216c58d883134367998110b6641c6ba42f0af6e4004aea58

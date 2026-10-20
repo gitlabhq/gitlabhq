@@ -362,44 +362,6 @@ RSpec.describe Gitlab::Tracking, feature_category: :application_instrumentation 
     end
   end
 
-  describe '.frontend_tracker_needed?' do
-    subject { described_class.frontend_tracker_needed? }
-
-    where(:snowplow_micro_enabled?, :only_send_duo_events?, :internal_duo_events, :result) do
-      true  | true  | []                | true
-      false | false | []                | true
-      false | true  | ['click_button']  | true
-      false | true  | []                | false
-    end
-
-    with_them do
-      before do
-        allow(described_class).to receive(:snowplow_micro_enabled?).and_return(snowplow_micro_enabled?)
-        allow(Gitlab::Tracking::EventEligibilityChecker).to receive_messages(
-          only_send_duo_events?: only_send_duo_events?,
-          internal_duo_events: internal_duo_events
-        )
-      end
-
-      it { is_expected.to be(result) }
-    end
-
-    context 'when Snowplow and product usage data are disabled' do
-      before do
-        stub_application_setting(snowplow_enabled: false)
-        stub_env('GITLAB_PRODUCT_USAGE_DATA_ENABLED', 'false')
-      end
-
-      it 'returns false in FOSS', unless: Gitlab.ee? do
-        is_expected.to be(false)
-      end
-
-      it 'returns true in EE because there are Duo events to forward', if: Gitlab.ee? do
-        is_expected.to be(true)
-      end
-    end
-  end
-
   describe 'tracker' do
     it 'returns a SnowPlowMicro instance in development' do
       allow(Rails.env).to receive(:development?).and_return(true)

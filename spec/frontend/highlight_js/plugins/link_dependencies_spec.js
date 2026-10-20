@@ -7,6 +7,7 @@ import composerJsonLinker from '~/highlight_js/plugins/utils/composer_json_linke
 import goSumLinker from '~/highlight_js/plugins/utils/go_sum_linker';
 import cartfileLinker from '~/highlight_js/plugins/utils/cartfile_linker';
 import goModLinker from '~/highlight_js/plugins/utils/go_mod_linker';
+import requirementsTxtLinker from '~/highlight_js/plugins/utils/requirements_txt_linker';
 import linkDependencies from '~/highlight_js/plugins/link_dependencies';
 import {
   PACKAGE_JSON_FILE_TYPE,
@@ -18,6 +19,7 @@ import {
   GO_SUM_FILE_TYPE,
   CARTFILE_FILE_TYPE,
   GO_MOD_FILE_TYPE,
+  REQUIREMENTS_TXT_FILE_TYPE,
 } from './mock_data';
 
 jest.mock('~/highlight_js/plugins/utils/package_json_linker');
@@ -29,21 +31,23 @@ jest.mock('~/highlight_js/plugins/utils/composer_json_linker');
 jest.mock('~/highlight_js/plugins/utils/go_sum_linker');
 jest.mock('~/highlight_js/plugins/utils/cartfile_linker');
 jest.mock('~/highlight_js/plugins/utils/go_mod_linker');
+jest.mock('~/highlight_js/plugins/utils/requirements_txt_linker');
 
 describe('Highlight.js plugin for linking dependencies', () => {
   const hljsResultMock = { value: 'test' };
 
   describe.each`
-    fileType                   | linker
-    ${PACKAGE_JSON_FILE_TYPE}  | ${packageJsonLinker}
-    ${GEMSPEC_FILE_TYPE}       | ${gemspecLinker}
-    ${GODEPS_JSON_FILE_TYPE}   | ${godepsJsonLinker}
-    ${GEMFILE_FILE_TYPE}       | ${gemfileLinker}
-    ${PODSPEC_JSON_FILE_TYPE}  | ${podspecJsonLinker}
-    ${COMPOSER_JSON_FILE_TYPE} | ${composerJsonLinker}
-    ${GO_SUM_FILE_TYPE}        | ${goSumLinker}
-    ${CARTFILE_FILE_TYPE}      | ${cartfileLinker}
-    ${GO_MOD_FILE_TYPE}        | ${goModLinker}
+    fileType                      | linker
+    ${PACKAGE_JSON_FILE_TYPE}     | ${packageJsonLinker}
+    ${GEMSPEC_FILE_TYPE}          | ${gemspecLinker}
+    ${GODEPS_JSON_FILE_TYPE}      | ${godepsJsonLinker}
+    ${GEMFILE_FILE_TYPE}          | ${gemfileLinker}
+    ${PODSPEC_JSON_FILE_TYPE}     | ${podspecJsonLinker}
+    ${COMPOSER_JSON_FILE_TYPE}    | ${composerJsonLinker}
+    ${GO_SUM_FILE_TYPE}           | ${goSumLinker}
+    ${CARTFILE_FILE_TYPE}         | ${cartfileLinker}
+    ${GO_MOD_FILE_TYPE}           | ${goModLinker}
+    ${REQUIREMENTS_TXT_FILE_TYPE} | ${requirementsTxtLinker}
   `('$fileType file type', ({ fileType, linker }) => {
     it('calls the correct linker', () => {
       linkDependencies(hljsResultMock, fileType);

@@ -1,9 +1,4 @@
 PATH
-  remote: ../gems/gitlab-email_handler
-  specs:
-    gitlab-email_handler (0.1.0)
-
-PATH
   remote: ../vendor/gems/gitlab-topology-service-client
   specs:
     gitlab-topology-service-client (0.1)
@@ -62,6 +57,7 @@ GEM
       logger
     faraday-net_http (3.4.4)
       net-http (~> 0.5)
+    gitlab-email_handler (0.1.0)
     gitlab-labkit (2.6.1)
       actionpack (>= 5.0.0, < 8.2.0)
       activesupport (>= 5.0.0, < 8.2.0)
@@ -488,7 +484,7 @@ PLATFORMS
 
 DEPENDENCIES
   faraday (~> 2.0)
-  gitlab-email_handler!
+  gitlab-email_handler (~> 0.1.0)
   gitlab-labkit (~> 2.6)
   gitlab-mail_room (~> 1.0)
   gitlab-topology-service-client!
@@ -515,7 +511,7 @@ CHECKSUMS
   erubi (1.13.1) sha256=a082103b0885dbc5ecf1172fede897f9ebdb745a4b97a5e8dc63953db1ee4ad9
   faraday (2.14.3) sha256=1882247e6766615c8220b4392bf1d27f6ebb63d8e28267587cef1fb0bf37f278
   faraday-net_http (3.4.4) sha256=0e78af151747ed1b00f33e25973b4bc220d7f16c00c39676817c8b12331eb588
-  gitlab-email_handler (0.1.0)
+  gitlab-email_handler (0.1.0) sha256=832527c08d57b335396ff01fc82d7c2d63d3d26188e35f0740ed79dd904ef520
   gitlab-labkit (2.6.1) sha256=4734c1f108c269f32c329000581268279dfb3b8338a5fe7715aba3b80a01e102
   gitlab-mail_room (1.1.0) sha256=784847b914a6636b30264fd8a042c15e39f3473f3acd78ebd254ac0a885a5878
   gitlab-topology-service-client (0.1)

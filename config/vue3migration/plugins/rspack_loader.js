@@ -57,7 +57,16 @@ function buildEdgeMap(importerPath) {
 
 const isBareSpecifier = (spec) => !spec.startsWith('.') && !path.isAbsolute(spec);
 
-function collectEdits(ast, edgeMap) {
+// Rspack sizes modules by their loader output, and splitChunks places them by size.
+// An absolute path would make the chunks depend on where the checkout lives.
+const relativeToImporter = (importer, request) => {
+  const filePath = stripQuery(request);
+  if (!importer || !path.isAbsolute(filePath)) return request;
+  const rel = path.relative(path.dirname(importer), filePath).split(path.sep).join('/');
+  return `${rel.startsWith('../') ? rel : `./${rel}`}${getQuery(request)}`;
+};
+
+function collectEdits(ast, edgeMap, importer) {
   const edits = [];
 
   const recordSpecifierEdit = (node) => {
@@ -74,7 +83,11 @@ function collectEdits(ast, edgeMap) {
     if (isBareSpecifier(cleanSpec) && contextAliasKeys.includes(cleanSpec)) {
       const target = resolvedContextAliases[cleanSpec];
       const value = hasSpecialQuery(target) ? target : appendVue3Query(target);
-      edits.push({ start: node.start + 1, end: node.end - 1, value });
+      edits.push({
+        start: node.start + 1,
+        end: node.end - 1,
+        value: relativeToImporter(importer, value),
+      });
       return;
     }
 
@@ -87,13 +100,13 @@ function collectEdits(ast, edgeMap) {
         infectable = false;
       }
       if (infectable) {
-        // Rewrite to the resolved absolute path so all importers of a shared module
+        // Rewrite to the resolved file so all importers of a shared module
         // converge on one `?vue3` module. The specifier form would let rspack treat
         // `~/x?vue3` and `../x?vue3` as distinct modules → split store → reactivity split.
         edits.push({
           start: node.start + 1,
           end: node.end - 1,
-          value: appendVue3Query(edge.resolved),
+          value: relativeToImporter(importer, appendVue3Query(edge.resolved)),
         });
       }
     }
@@ -253,7 +266,7 @@ module.exports = function vue3InfectionLoader(source) {
   if (!ast) return source;
 
   const edgeMap = buildEdgeMap(resourcePath);
-  return applyEdits(source, collectEdits(ast, edgeMap));
+  return applyEdits(source, collectEdits(ast, edgeMap, resourcePath));
 };
 
 module.exports.INFECTION_LOADER_PATH = __filename;

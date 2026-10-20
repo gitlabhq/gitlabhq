@@ -102,6 +102,7 @@ module Types
     mount_mutation Mutations::Members::Projects::BulkUpdate
     mount_mutation Mutations::MergeRequests::Accept
     mount_mutation Mutations::MergeRequests::Create
+    mount_mutation Mutations::MergeRequests::CSV::Export, experiment: { milestone: '19.6' }
     mount_mutation Mutations::MergeRequests::Update
     mount_mutation Mutations::MergeRequests::SetLabels
     mount_mutation Mutations::MergeRequests::SetLocked

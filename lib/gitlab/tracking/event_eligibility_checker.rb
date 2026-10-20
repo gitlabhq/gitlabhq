@@ -10,6 +10,10 @@ module Gitlab
         snowplow_disabled && product_usage_data_disabled
       end
 
+      def self.send_frontend_events?
+        !only_send_duo_events?
+      end
+
       def self.internal_duo_events
         []
       end

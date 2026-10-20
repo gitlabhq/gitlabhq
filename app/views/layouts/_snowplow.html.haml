@@ -1,5 +1,5 @@
 - namespace = @group || @project&.namespace || @namespace
-= webpack_bundle_tag 'tracker' if Gitlab::Tracking.frontend_tracker_needed?
+= webpack_bundle_tag 'tracker' if Gitlab::Tracking::EventEligibilityChecker.send_frontend_events?
 - tracking_context = Gitlab::Tracking::ContextFactory.for_frontend(user: current_user, namespace: namespace, project_id: @project&.id)
 = javascript_tag do
   :plain

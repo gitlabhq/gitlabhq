@@ -5,7 +5,20 @@ const {
   decorateJSParserWithVueSupport,
   decorateExtractorWithHelpers,
 } = require('gettext-extractor-vue');
-const vue2TemplateCompiler = require('vue-template-compiler');
+const compilerSfc = require('@vue/compiler-sfc');
+const vue3Template = require('../../config/vue3migration/compilers/vue3_template');
+const { compatConfig } = require('../../app/assets/javascripts/lib/utils/vue3compat/compat_config');
+
+// Compile templates the way the bundler does. The plain compiler crashes on some templates.
+const vue3TemplateCompiler = {
+  ...compilerSfc,
+  compileTemplate: (options) =>
+    compilerSfc.compileTemplate({
+      ...options,
+      compiler: vue3Template,
+      compilerOptions: { whitespace: 'preserve', compatConfig },
+    }),
+};
 
 program
   .option('-f, --file <file>', 'Extract message from one single file')
@@ -45,7 +58,7 @@ const jsParser = extractor.createJsParser([
 ]);
 
 const vueParser = decorateJSParserWithVueSupport(jsParser, {
-  vue2TemplateCompiler,
+  vue3TemplateCompiler,
   // All of our expressions contain `__`.
   // So we can safely ignore parsing files _not_ containing it.
   guard: '__',

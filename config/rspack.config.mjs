@@ -167,6 +167,15 @@ export default {
     // Use the real NODE_ENV (not `mode`) so the app's env-gated behavior matches Webpack.
     nodeEnv: process.env.NODE_ENV || 'development',
     minimize: IS_PRODUCTION && MINIFY !== false,
+    // The minifier runs before real content hashes, so the runtime's chunk-hash table
+    // still holds hashes of the source maps' absolute paths. Mangling by character
+    // frequency would pick names from those: web-infra-dev/rspack#14089.
+    minimizer: [
+      new rspack.SwcJsMinimizerRspackPlugin({
+        minimizerOptions: { mangle: { disableCharFreq: true } },
+      }),
+      new rspack.LightningCssMinimizerRspackPlugin(),
+    ],
     splitChunks: {
       maxInitialRequests: 20,
       maxAsyncRequests: 20,

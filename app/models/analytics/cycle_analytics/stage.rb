@@ -3,12 +3,12 @@
 module Analytics
   module CycleAnalytics
     class Stage < ApplicationRecord
+      include Analytics::CycleAnalytics::Stageable
+      include Analytics::CycleAnalytics::Parentable
+
       MAX_STAGES_PER_VALUE_STREAM = 15
 
       self.table_name = :analytics_cycle_analytics_group_stages
-
-      include Analytics::CycleAnalytics::Stageable
-      include Analytics::CycleAnalytics::Parentable
 
       validates :name, uniqueness: { scope: [:group_id, :group_value_stream_id] }
       validate :max_stages_count, on: :create
@@ -26,13 +26,6 @@ module Analytics
 
       after_create :ensure_aggregation_record_presence!
 
-      def to_global_id
-        return super if persisted?
-
-        # Returns default name as the id for built in stages at the FOSS level
-        name
-      end
-
       def self.distinct_stages_within_hierarchy(namespace)
         # Looking up the whole hierarchy including all kinds (type) of Namespace records.
         # We're doing a custom traversal_ids query because:
@@ -48,6 +41,13 @@ module Analytics
         with_preloaded_labels
           .where(parent_id: all_namespace_ids)
           .select("DISTINCT ON(stage_event_hash_id) #{quoted_table_name}.*")
+      end
+
+      def to_global_id
+        return super if persisted?
+
+        # Returns default name as the id for built in stages at the FOSS level
+        name
       end
 
       private

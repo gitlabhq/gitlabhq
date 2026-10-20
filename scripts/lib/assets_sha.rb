@@ -18,7 +18,7 @@ module AssetsSha
   JS_ASSET_PATTERNS = %w[
     *.js
     config/**/*.{js,mjs}
-    scripts/frontend/*.{mjs,js}
+    scripts/frontend/*.{mjs,js,cjs}
     locale/**/gitlab.po
     patches/**/*.patch
   ].freeze
@@ -38,6 +38,9 @@ module AssetsSha
     config/application.rb
     Gemfile
     Gemfile.lock
+    Gemfile.next
+    Gemfile.next.lock
+    lib/tasks/gitlab/assets.rake
   ].freeze
 
   EXCLUDE_PATTERNS = %w[
