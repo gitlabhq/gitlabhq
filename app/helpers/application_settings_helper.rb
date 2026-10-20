@@ -341,6 +341,7 @@ module ApplicationSettingsHelper
       :default_project_creation,
       :default_project_visibility,
       :default_projects_limit,
+      :default_remove_source_branch_after_merge,
       :default_snippet_visibility,
       :default_syntax_highlighting_theme,
       :default_dark_syntax_highlighting_theme,

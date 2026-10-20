@@ -656,6 +656,28 @@ module Gitlab
       Gitlab::SafeRequestStore[:allow_ref_name_caching]
     end
 
+    # FindMergeBase uses fast_timeout to protect web requests. Background
+    # callers like importers can opt into default_timeout for large repositories.
+    def self.allow_slow_merge_base
+      return yield unless Gitlab::SafeRequestStore.active?
+      return yield if slow_merge_base_allowed?
+
+      begin
+        Gitlab::SafeRequestStore[:allow_slow_merge_base] = true
+        yield
+      ensure
+        Gitlab::SafeRequestStore[:allow_slow_merge_base] = false
+      end
+    end
+
+    def self.slow_merge_base_allowed?
+      Gitlab::SafeRequestStore[:allow_slow_merge_base]
+    end
+
+    def self.merge_base_timeout
+      slow_merge_base_allowed? ? default_timeout : fast_timeout
+    end
+
     def self.get_call_count(key)
       Gitlab::SafeRequestStore[key] || 0
     end

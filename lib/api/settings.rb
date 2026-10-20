@@ -65,6 +65,7 @@ module API
       optional :default_artifacts_expire_in, type: String, desc: "Set the default expiration time for each job's artifacts."
       optional :default_ci_config_path, type: String, desc: 'Default CI/CD configuration file and path for new projects. If empty, new projects use `.gitlab-ci.yml`.'
       optional :default_project_creation, type: Integer, values: ::Gitlab::Access.project_creation_values, desc: 'Default minimum role required to create projects. Can take: `0` _(No one)_, `1` _(Maintainers)_, `2` _(Developers)_, `3` _(Administrators)_, or `4` _(Owners)_.'
+      optional :default_remove_source_branch_after_merge, type: Boolean, desc: 'Enable the delete source branch option by default for new projects'
       optional :default_branch_protection, type: Integer, values: ::Gitlab::Access.protection_values, desc: 'Level of protection for the default branch. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/408314) in GitLab 17.0. Use `default_branch_protection_defaults` instead.'
       optional :default_branch_protection_defaults, type: Hash, desc: 'Default branch protection settings. For available options, see [Options for `default_branch_protection_defaults`](https://docs.gitlab.com/api/groups/#options-for-default_branch_protection_defaults). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408314) in GitLab 17.0.' do
         optional :allowed_to_push, type: Array, desc: 'Array of access levels allowed to push to the default branch.' do

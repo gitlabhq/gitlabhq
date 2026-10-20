@@ -117,7 +117,7 @@ RSpec.describe RuboCop::Cop::Gitlab::OmniscientClassMethods, feature_category: :
   it 'registers an offense for baseline methods that the class no longer defines' do
     expect_offense(<<~RUBY)
       class Project < ApplicationRecord
-            ^^^^^^^ Remove methods that `Project` no longer defines from rubocop/cop/gitlab/config/omniscient_classes_baseline.yml: existing_method, self.existing_class_method
+            ^^^^^^^ Remove methods that `Project` no longer defines from rubocop/cop/gitlab/config/omniscient_classes/project/: existing_method, self.existing_class_method
         def intrinsic_method; end
       end
     RUBY
@@ -135,8 +135,15 @@ RSpec.describe RuboCop::Cop::Gitlab::OmniscientClassMethods, feature_category: :
     end
   end
 
+  describe '.directory_name' do
+    it 'converts the class name to a directory name' do
+      expect(described_class.directory_name('EE::Ci::Pipeline')).to eq('ee_ci_pipeline')
+      expect(described_class.directory_name('SecurityPolicy')).to eq('security_policy')
+    end
+  end
+
   describe '.external_dependency_checksum' do
-    it 'returns a SHA256 hex digest of the baseline file' do
+    it 'returns a SHA256 hex digest of the baseline files' do
       expect(described_class.external_dependency_checksum).to match(/\A[a-f0-9]{64}\z/)
     end
   end

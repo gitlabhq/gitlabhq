@@ -120,7 +120,6 @@ per-test-coverage:trigger:
     GIT_STRATEGY: $GIT_STRATEGY
     PIPELINE_NAME: "per-test-coverage"
     GLCI_PER_TEST_COVERAGE: "true"
-    GIT_ALTERNATE_OBJECT_DIRECTORIES: ""
   trigger:
     strategy: depend
     forward:

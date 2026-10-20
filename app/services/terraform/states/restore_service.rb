@@ -11,7 +11,7 @@ module Terraform
       def execute
         return unauthorized_response unless can_restore_state?
         return not_deleted_response unless state.deleted_at?
-        return grace_period_expired_response if state.deleted_at <= Terraform::State::GRACE_PERIOD.ago
+        return grace_period_expired_response unless state.within_grace_period?
 
         state.update!(deleted_at: nil)
         log_event

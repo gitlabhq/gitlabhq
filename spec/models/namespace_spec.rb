@@ -1043,7 +1043,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it { is_expected.to delegate_method(:require_sha_for_merge).to(:namespace_settings) }
     it { is_expected.to delegate_method(:require_sha_for_merge?).to(:namespace_settings) }
     it { is_expected.to delegate_method(:lock_require_sha_for_merge).to(:namespace_settings) }
-    it { is_expected.to delegate_method(:lock_require_sha_for_merge?).to(:namespace_settings) }
     it { is_expected.to delegate_method(:granular_tokens_enforced?).to(:namespace_settings).allow_nil }
 
     it do

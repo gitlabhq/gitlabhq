@@ -200,6 +200,16 @@ RSpec.describe API::WorkItems::Update, feature_category: :portfolio_management d
         expect(work_item.reload.work_item_parent).to eq(parent_work_item)
       end
 
+      it 'returns has_children on the updated work item when the field is requested' do
+        create(:parent_link, work_item: work_item, work_item_parent: parent_work_item)
+
+        patch api("#{base_path}/#{parent_work_item.iid}", user),
+          params: { title: 'Updated parent', fields: 'has_children' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to include('title' => 'Updated parent', 'has_children' => true)
+      end
+
       it 'removes the parent work item when parent_id is null' do
         work_item.update!(work_item_parent: parent_work_item)
 

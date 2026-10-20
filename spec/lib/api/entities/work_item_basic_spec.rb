@@ -67,6 +67,30 @@ RSpec.describe API::Entities::WorkItemBasic, feature_category: :team_planning do
         .deep_symbolize_keys
     end
 
+    context 'when exposing has_children' do
+      let(:fields) { [:has_children] }
+
+      it 'is false when nothing is preloaded' do
+        expect(representation).to include(has_children: false)
+      end
+
+      context 'when the work item is among the preloaded parent ids' do
+        let(:represent_options) { { parent_ids_with_children: Set[work_item.id, work_item.id + 1] } }
+
+        it 'is true' do
+          expect(representation).to include(has_children: true)
+        end
+      end
+
+      context 'when the work item is not among the preloaded parent ids' do
+        let(:represent_options) { { parent_ids_with_children: Set.new } }
+
+        it 'is false' do
+          expect(representation).to include(has_children: false)
+        end
+      end
+    end
+
     context 'when exposing the work item type' do
       let(:fields) { [:work_item_type] }
 

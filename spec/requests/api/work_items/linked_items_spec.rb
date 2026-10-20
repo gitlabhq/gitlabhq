@@ -116,6 +116,20 @@ RSpec.describe API::WorkItems::LinkedItems, feature_category: :portfolio_managem
           'link_type' => 'relates_to'
         )
       end
+
+      it 'returns has_children per linked item when requested' do
+        linked_issue = create(:work_item, :issue, project: project)
+        create(:work_item_link, source: parent_work_item, target: linked_issue)
+        create(:parent_link, work_item: create(:work_item, :task, project: project), work_item_parent: linked_issue)
+
+        get api(api_request_path, user), params: { fields: 'has_children' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        flags = json_response.to_h { |item| [item['id'], item['has_children']] }
+        expect(flags).to eq(
+          linked_issue.id => true, linked_closed_task.id => false, linked_task_b.id => false, linked_task_a.id => false
+        )
+      end
     end
 
     context 'when a linked item is not readable by the current user' do

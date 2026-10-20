@@ -1,7 +1,7 @@
 <script>
 import { GlIcon } from '@gitlab/ui';
 import { uniqueId } from 'lodash-es';
-import { s__ } from '~/locale';
+import { s__, sprintf } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import DraggableCompat from '~/lib/utils/vue3compat/draggable_compat.vue';
@@ -39,6 +39,7 @@ export default {
     dropText: s__('WorkItemBoard|Drop here to move item.'),
     fetchError: s__('WorkItemBoard|An error occurred while fetching work items for this column.'),
     loadMoreError: s__('WorkItemBoard|An error occurred while fetching more work items.'),
+    loadMoreLabel: s__('WorkItemBoard|Load more %{listName} list items'),
   },
   components: {
     ColumnHeader,
@@ -157,6 +158,7 @@ export default {
       workItemsConnection: { nodes: [], pageInfo: {} },
       error: null,
       loadMoreError: false,
+      loadMoreErrorFocusable: false,
       fetchNextPageInProgress: false,
       columnBodyId: uniqueId('board-column-body-'),
       isDropTarget: false,
@@ -189,6 +191,9 @@ export default {
         baseQueryVariables: this.baseQueryVariables,
         groupFilter: this.strategy.groupFilter(this.value),
       });
+    },
+    loadMoreLabel() {
+      return sprintf(this.$options.i18n.loadMoreLabel, { listName: this.value.name }, false);
     },
     decoration() {
       return this.strategy.headerDecoration(this.value);
@@ -284,13 +289,14 @@ export default {
     },
     fetchNextPage() {
       if (!this.hasNextPage || this.fetchNextPageInProgress) {
-        return;
+        return Promise.resolve(null);
       }
 
       this.fetchNextPageInProgress = true;
       this.loadMoreError = false;
+      let firstNewId = null;
 
-      this.$apollo.queries.workItemsConnection
+      return this.$apollo.queries.workItemsConnection
         .fetchMore({
           variables: {
             ...this.queryVariables,
@@ -304,6 +310,8 @@ export default {
             if (!newConnection) {
               return previousResult;
             }
+
+            firstNewId = newConnection.nodes[0]?.id ?? null;
 
             if (this.useRestApi) {
               return {
@@ -327,13 +335,49 @@ export default {
             };
           },
         })
+        .then(() => ({ firstNewId }))
         .catch((error) => {
           this.loadMoreError = true;
           Sentry.captureException(error);
+          return { firstNewId: null };
         })
         .finally(() => {
           this.fetchNextPageInProgress = false;
         });
+    },
+    async onLoadMore() {
+      const result = await this.fetchNextPage();
+      if (!result) {
+        return;
+      }
+      await this.$nextTick();
+
+      // The button unmounts while loading, so focus is on body. Leave it alone if the
+      // user moved it out of this column in the meantime.
+      const { activeElement } = document;
+      if (activeElement && activeElement !== document.body && !this.$el.contains(activeElement)) {
+        return;
+      }
+
+      if (this.loadMoreError) {
+        await this.focusLoadMoreError();
+        return;
+      }
+
+      const target =
+        this.findCardLink(result.firstNewId) ||
+        this.$refs.loadMoreItem?.querySelector('button') ||
+        this.findCardLink(this.workItems.at(-1)?.id);
+      target?.focus();
+    },
+    async focusLoadMoreError() {
+      this.loadMoreErrorFocusable = true;
+      await this.$nextTick();
+      this.$refs.loadMoreErrorAlert?.focus();
+      this.$refs.loadMoreErrorAlert?.scrollIntoView({ block: 'nearest' });
+    },
+    findCardLink(workItemId) {
+      return workItemId ? this.$el.querySelector(`[data-work-item-id="${workItemId}"] > a`) : null;
     },
   },
 };
@@ -426,11 +470,16 @@ export default {
             <gl-icon name="work-items" :size="24" />
             <span>{{ $options.i18n.emptyText }}</span>
           </li>
-          <li v-if="hasNextPage && !fetchNextPageInProgress" class="gl-list-none">
+          <li
+            v-if="hasNextPage && !fetchNextPageInProgress"
+            ref="loadMoreItem"
+            class="gl-list-none"
+          >
             <work-item-children-load-more
               class="gl-justify-center"
               :fetch-next-page-in-progress="fetchNextPageInProgress"
-              @fetch-next-page="fetchNextPage"
+              :aria-label="loadMoreLabel"
+              @fetch-next-page="onLoadMore"
             />
           </li>
           <li
@@ -438,7 +487,14 @@ export default {
             data-testid="load-more-error"
             class="gl-list-none gl-py-2 gl-text-center gl-text-sm gl-text-subtle"
           >
-            {{ $options.i18n.loadMoreError }}
+            <div
+              ref="loadMoreErrorAlert"
+              role="alert"
+              :tabindex="loadMoreErrorFocusable ? -1 : null"
+              @blur="loadMoreErrorFocusable = false"
+            >
+              {{ $options.i18n.loadMoreError }}
+            </div>
           </li>
         </template>
       </draggable-compat>

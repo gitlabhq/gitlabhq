@@ -7,7 +7,8 @@ RSpec.describe API::WorkItems::Children, feature_category: :portfolio_management
   let_it_be(:project) { create(:project, :private, reporters: user) }
   let_it_be_with_reload(:parent_work_item) { create(:work_item, :issue, project: project) }
 
-  let_it_be(:first_child) { create(:work_item, :task, project: project, title: 'First child') }
+  # Creating a note touches the noteable, which fails on a frozen record once it is over a minute old.
+  let_it_be_with_reload(:first_child) { create(:work_item, :task, project: project, title: 'First child') }
   let_it_be(:second_child) { create(:work_item, :task, project: project, title: 'Second child') }
   let_it_be(:closed_child) do
     create(:work_item, :task, project: project, title: 'Closed child', state: :closed)
@@ -90,6 +91,35 @@ RSpec.describe API::WorkItems::Children, feature_category: :portfolio_management
           'reference' => first_child.to_reference(full: true),
           'features' => a_hash_including('description')
         )
+      end
+
+      it 'returns has_children for each child when requested' do
+        get api(api_request_path, user), params: { fields: 'has_children' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.size).to eq(3)
+        expect(json_response).to all(include('has_children' => false))
+      end
+
+      it 'returns preloaded count fields for each child when requested' do
+        create(:discussion_note_on_work_item, noteable: first_child, project: project)
+
+        get api(api_request_path, user), params: { fields: 'user_discussions_count' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        counts = json_response.to_h { |item| [item['id'], item['user_discussions_count']] }
+        expect(counts).to eq(first_child.id => 1, second_child.id => 0, closed_child.id => 0)
+      end
+
+      it 'returns an empty list when has_children is requested for a work item without children' do
+        childless_work_item = create(:work_item, :issue, project: project)
+        path = api_request_path
+          .sub("/-/work_items/#{parent_work_item.iid}/", "/-/work_items/#{childless_work_item.iid}/")
+
+        get api(path, user), params: { fields: 'has_children' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to eq([])
       end
     end
 

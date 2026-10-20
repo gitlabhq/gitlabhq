@@ -2538,12 +2538,6 @@ msgstr ""
 msgid "AICatalog|%{linkStart}Service accounts%{linkEnd} represent non-human entities. This is the account that you mention or assign to trigger the %{itemType}."
 msgstr ""
 
-msgid "AICatalog|A goal cannot be set for an event type the trigger does not use: %{event_types}."
-msgstr ""
-
-msgid "AICatalog|A goal cannot be set for the %{flow_name} flow."
-msgstr ""
-
 msgid "AICatalog|A new version is available"
 msgstr ""
 
@@ -3175,6 +3169,12 @@ msgid "AICatalog|Inheritance is only supported for a top-level group"
 msgstr ""
 
 msgid "AICatalog|Input cannot exceed %{value} characters."
+msgstr ""
+
+msgid "AICatalog|Instructions cannot be set for an event type the trigger does not use: %{event_types}."
+msgstr ""
+
+msgid "AICatalog|Instructions cannot be set for the %{flow_name} flow."
 msgstr ""
 
 msgid "AICatalog|Internal tools and shared workflows."
@@ -33804,12 +33804,6 @@ msgstr ""
 msgid "DuoAgentsPlatform|GitLab Duo can autonomously change code. Responses and changes can be inaccurate. Review carefully."
 msgstr ""
 
-msgid "DuoAgentsPlatform|Goal"
-msgstr ""
-
-msgid "DuoAgentsPlatform|Goal cannot exceed %{maxLength} characters."
-msgstr ""
-
 msgid "DuoAgentsPlatform|Hour (24-hour)"
 msgstr ""
 
@@ -33835,6 +33829,12 @@ msgid "DuoAgentsPlatform|Identity verification is required to use GitLab Duo Age
 msgstr ""
 
 msgid "DuoAgentsPlatform|Inactive sessions are archived after 30 days."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Instructions"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Instructions cannot exceed %{maxLength} characters."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Interest recorded"
@@ -60102,7 +60102,7 @@ msgstr ""
 msgid "Orbit|Free trial when turned on"
 msgstr ""
 
-msgid "Orbit|Free trials are for selected Premium and Ultimate groups. Contact sales to get Orbit for this group. %{linkStart}Learn about Orbit pricing%{linkEnd}"
+msgid "Orbit|Free trials are for selected Premium and Ultimate groups. Contact sales to get Orbit for this group."
 msgstr ""
 
 msgid "Orbit|From"
@@ -60440,7 +60440,7 @@ msgstr ""
 msgid "Orbit|Orbit is not available for this group"
 msgstr ""
 
-msgid "Orbit|Orbit is not available for your groups yet"
+msgid "Orbit|Orbit is not available for your groups"
 msgstr ""
 
 msgid "Orbit|Orbit is not available on this instance yet"
@@ -60465,7 +60465,7 @@ msgstr[1] ""
 msgid "Orbit|Orbit is on your subscription"
 msgstr ""
 
-msgid "Orbit|Orbit is paused for %{groupName}. Contact sales to buy GitLab credits and keep using Orbit. %{linkStart}Learn about Orbit pricing%{linkEnd}"
+msgid "Orbit|Orbit is paused for %{groupName}. Contact sales to buy GitLab credits and keep using Orbit."
 msgstr ""
 
 msgid "Orbit|Orbit is paused for this group. Contact sales to buy more GitLab credits and keep using Orbit. %{linkStart}View usage quotas%{linkEnd}"
@@ -65046,7 +65046,31 @@ msgstr ""
 msgid "PolicyStore|All projects in the group"
 msgstr ""
 
+msgid "PolicyStore|All threads must be resolved"
+msgstr ""
+
+msgid "PolicyStore|Allow approval rule edits"
+msgstr ""
+
+msgid "PolicyStore|Allow author approval"
+msgstr ""
+
+msgid "PolicyStore|Allow committer approval"
+msgstr ""
+
+msgid "PolicyStore|Allow fork pipelines in parent project"
+msgstr ""
+
+msgid "PolicyStore|Allow users to request access"
+msgstr ""
+
+msgid "PolicyStore|Always"
+msgstr ""
+
 msgid "PolicyStore|An error occurred updating the Policy store setting. Please try again."
+msgstr ""
+
+msgid "PolicyStore|An upper level can still override the values left out, so only the values offered here can be required."
 msgstr ""
 
 msgid "PolicyStore|Are you sure you want to delete %{name}? This action cannot be undone."
@@ -65077,6 +65101,9 @@ msgid "PolicyStore|Build policy"
 msgstr ""
 
 msgid "PolicyStore|CI/CD"
+msgstr ""
+
+msgid "PolicyStore|CI/CD access level"
 msgstr ""
 
 msgid "PolicyStore|Choose individual projects to govern"
@@ -65121,7 +65148,16 @@ msgstr ""
 msgid "PolicyStore|Default (all projects)"
 msgstr ""
 
+msgid "PolicyStore|Default off"
+msgstr ""
+
+msgid "PolicyStore|Default on"
+msgstr ""
+
 msgid "PolicyStore|Delete policy?"
+msgstr ""
+
+msgid "PolicyStore|Delete source branch by default"
 msgstr ""
 
 msgid "PolicyStore|Deployment"
@@ -65181,6 +65217,9 @@ msgstr ""
 msgid "PolicyStore|Enable the Policy store experiment"
 msgstr ""
 
+msgid "PolicyStore|Enabled"
+msgstr ""
+
 msgid "PolicyStore|Ends at"
 msgstr ""
 
@@ -65223,6 +65262,9 @@ msgstr ""
 msgid "PolicyStore|Exclusions"
 msgstr ""
 
+msgid "PolicyStore|Forks access level"
+msgstr ""
+
 msgid "PolicyStore|Freeze Window"
 msgstr ""
 
@@ -65230,6 +65272,12 @@ msgid "PolicyStore|Freeze windows"
 msgstr ""
 
 msgid "PolicyStore|Hide configuration details"
+msgstr ""
+
+msgid "PolicyStore|Internal"
+msgstr ""
+
+msgid "PolicyStore|Keep latest artifact"
 msgstr ""
 
 msgid "PolicyStore|Last updated"
@@ -65244,13 +65292,22 @@ msgstr ""
 msgid "PolicyStore|Members of this organization can author and manage policies in the Policy store."
 msgstr ""
 
+msgid "PolicyStore|Merge requests access level"
+msgstr ""
+
 msgid "PolicyStore|Message shown when the action is blocked"
+msgstr ""
+
+msgid "PolicyStore|Minimum role to override pipeline variables"
 msgstr ""
 
 msgid "PolicyStore|Mode"
 msgstr ""
 
 msgid "PolicyStore|Name"
+msgstr ""
+
+msgid "PolicyStore|Never"
 msgstr ""
 
 msgid "PolicyStore|No actions configured"
@@ -65260,6 +65317,9 @@ msgid "PolicyStore|No building blocks match your search."
 msgstr ""
 
 msgid "PolicyStore|No matching options"
+msgstr ""
+
+msgid "PolicyStore|No one"
 msgstr ""
 
 msgid "PolicyStore|No options available"
@@ -65289,7 +65349,7 @@ msgstr ""
 msgid "PolicyStore|Owner"
 msgstr ""
 
-msgid "PolicyStore|Pipelines must succeed before merging"
+msgid "PolicyStore|Pipelines must succeed"
 msgstr ""
 
 msgid "PolicyStore|Policies"
@@ -65316,6 +65376,9 @@ msgstr ""
 msgid "PolicyStore|Policy store experiment setting updated."
 msgstr ""
 
+msgid "PolicyStore|Private"
+msgstr ""
+
 msgid "PolicyStore|Production"
 msgstr ""
 
@@ -65338,6 +65401,9 @@ msgid "PolicyStore|Projects affected"
 msgstr ""
 
 msgid "PolicyStore|Projects to exempt from this policy"
+msgstr ""
+
+msgid "PolicyStore|Public"
 msgstr ""
 
 msgid "PolicyStore|Read-only Rego the store compiled from the rules. The policy engine evaluates this single program when the trigger fires."
@@ -65368,6 +65434,9 @@ msgid "PolicyStore|Require approval"
 msgstr ""
 
 msgid "PolicyStore|Required value"
+msgstr ""
+
+msgid "PolicyStore|Retain approvals on push"
 msgstr ""
 
 msgid "PolicyStore|Review impact"
@@ -65403,7 +65472,10 @@ msgstr ""
 msgid "PolicyStore|Search…"
 msgstr ""
 
-msgid "PolicyStore|Secret push protection is enabled"
+msgid "PolicyStore|Secret push protection"
+msgstr ""
+
+msgid "PolicyStore|Select a required value"
 msgstr ""
 
 msgid "PolicyStore|Select projects"
@@ -65428,6 +65500,9 @@ msgid "PolicyStore|Showing the first %{shown} of %{total} projects."
 msgstr ""
 
 msgid "PolicyStore|Specific projects"
+msgstr ""
+
+msgid "PolicyStore|Squash commits when merging"
 msgstr ""
 
 msgid "PolicyStore|Staging"
@@ -65503,6 +65578,9 @@ msgid "PolicyStore|Version %{version}"
 msgstr ""
 
 msgid "PolicyStore|View projects"
+msgstr ""
+
+msgid "PolicyStore|Visibility"
 msgstr ""
 
 msgid "PolicyStore|Warn"
@@ -97001,6 +97079,9 @@ msgid "WorkItemBoard|Drop here to move item."
 msgstr ""
 
 msgid "WorkItemBoard|Hide list"
+msgstr ""
+
+msgid "WorkItemBoard|Load more %{listName} list items"
 msgstr ""
 
 msgid "WorkItemBoard|Move left"

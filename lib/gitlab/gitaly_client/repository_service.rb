@@ -124,7 +124,7 @@ module Gitlab
           revisions: revisions.map { |r| encode_binary(r) }
         )
 
-        response = gitaly_client_call(@storage, :repository_service, :find_merge_base, request, timeout: GitalyClient.fast_timeout)
+        response = gitaly_client_call(@storage, :repository_service, :find_merge_base, request, timeout: GitalyClient.merge_base_timeout)
         response.base.presence
       end
 

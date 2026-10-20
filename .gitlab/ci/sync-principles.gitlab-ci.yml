@@ -95,7 +95,6 @@ ai-principles-distill:
       artifacts: true
   variables:
     PARENT_PIPELINE_ID: $CI_PIPELINE_ID
-    GIT_ALTERNATE_OBJECT_DIRECTORIES: ""
   trigger:
     strategy: depend
     include:

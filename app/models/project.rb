@@ -141,7 +141,7 @@ class Project < ApplicationRecord
   attribute :repository_storage, default: -> { Repository.pick_storage_shard }
   attribute :shared_runners_enabled, default: -> { Gitlab::CurrentSettings.shared_runners_enabled }
   attribute :only_allow_merge_if_all_discussions_are_resolved, default: false
-  attribute :remove_source_branch_after_merge, default: true
+  attribute :remove_source_branch_after_merge, default: -> { Gitlab::CurrentSettings.default_remove_source_branch_after_merge }
   attribute :autoclose_referenced_issues, default: true
   attribute :ci_config_path, default: -> { Gitlab::CurrentSettings.default_ci_config_path }
 

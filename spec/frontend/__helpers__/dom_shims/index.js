@@ -13,6 +13,7 @@ import './get_client_rects';
 import './image_element_properties';
 import './inner_text';
 import './performance';
+import './popover';
 import './range';
 import './scroll_by';
 import './size_properties';

@@ -6,11 +6,11 @@ module RuboCop
       # Prevents adding methods to omniscient classes (also known as god classes),
       # such as `Project`, `Group`, `User` and their `EE::` counterparts.
       #
-      # The cop loads a baseline YAML file that maps each protected class or module
-      # to the methods it is allowed to define:
+      # The cop loads, for each protected class or module, the methods it is allowed
+      # to define from `config/omniscient_classes/<class_name>/`:
       #
-      # - `intrinsic`: methods that are fundamental to the identity of the record.
-      # - `legacy`: methods that existed before the cop and should move to
+      # - `intrinsic_methods.yml`: methods that are fundamental to the identity of the record.
+      # - `legacy_methods.yml`: methods that existed before the cop and should move to
       #   the bounded context where they belong.
       #
       # Class methods are listed with a `self.` prefix. The cop also flags baseline
@@ -34,26 +34,36 @@ module RuboCop
       #     end
       #   end
       class OmniscientClassMethods < RuboCop::Cop::Base
-        BASELINE_PATH = 'rubocop/cop/gitlab/config/omniscient_classes_baseline.yml'
+        BASELINE_DIR = 'rubocop/cop/gitlab/config/omniscient_classes'
         DOC_LINK = 'https://docs.gitlab.com/development/software_design/#taming-omniscient-classes'
         MSG = 'Do not add methods to omniscient classes like `%{class_name}`. ' \
           "Define the behavior in the bounded context where it belongs. See #{DOC_LINK}".freeze
-        STALE_MSG = "Remove methods that `%{class_name}` no longer defines from #{BASELINE_PATH}: " \
-          '%{methods}'.freeze
+        STALE_MSG = 'Remove methods that `%{class_name}` no longer defines from %{directory}: %{methods}'
 
         class << self
           def external_dependency_checksum
-            @external_dependency_checksum ||= Digest::SHA256.file(baseline_file_path).hexdigest
+            @external_dependency_checksum ||= Digest::SHA256.hexdigest(
+              baseline_files.map { |file| "#{file.delete_prefix(baseline_dir)}:#{Digest::SHA256.file(file)}" }.join
+            )
           end
 
           def baseline
-            @baseline ||= YAML.load_file(baseline_file_path).transform_values do |entry|
-              Set.new(entry.values_at('intrinsic', 'legacy').flatten.compact)
+            @baseline ||= baseline_files.each_with_object({}) do |file, result|
+              YAML.load_file(file).each { |class_name, methods| (result[class_name] ||= Set.new).merge(methods) }
             end
           end
 
-          def baseline_file_path
-            File.expand_path("../../../#{BASELINE_PATH}", __dir__)
+          def baseline_files
+            Dir[File.join(baseline_dir, '*', '{intrinsic,legacy}_methods.yml')]
+          end
+
+          def baseline_dir
+            File.expand_path("../../../#{BASELINE_DIR}", __dir__)
+          end
+
+          # EE::Ci::Pipeline => ee_ci_pipeline
+          def directory_name(class_name)
+            class_name.split('::').map { |part| part.gsub(/([a-z\d])([A-Z])/, '\1_\2').downcase }.join('_')
           end
         end
 
@@ -79,7 +89,7 @@ module RuboCop
             next if stale.empty?
 
             add_offense(owner_node.identifier, message: format(STALE_MSG, class_name: class_name,
-              methods: stale.sort.join(', ')))
+              directory: "#{BASELINE_DIR}/#{self.class.directory_name(class_name)}/", methods: stale.sort.join(', ')))
           end
         end
 

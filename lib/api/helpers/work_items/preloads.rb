@@ -152,6 +152,9 @@ module API
           end
 
           preloads[:award_emoji_counts] = preload_award_emoji_counts(work_items) if feature_keys.include?(:award_emoji)
+          if field_keys.include?(:has_children)
+            preloads[:parent_ids_with_children] = preload_parent_ids_with_children(work_items)
+          end
 
           if feature_keys.include?(:development)
             preloads[:closing_merge_requests_counts] = preload_closing_merge_requests_counts(work_items)
@@ -239,6 +242,14 @@ module API
           return Set.new if eligible.empty?
 
           ::MergeRequestIssue.auto_close_issue_ids(eligible.map(&:id))
+        end
+
+        # Ids of the given work items that have at least one child, in one query per page rather than one
+        # EXISTS per work item.
+        def preload_parent_ids_with_children(work_items)
+          return Set.new if work_items.empty?
+
+          ::WorkItems::ParentLink.for_parents(work_items.map(&:id)).distinct.pluck(:work_item_parent_id).to_set # rubocop:disable CodeReuse/ActiveRecord -- bulk lookup for API response
         end
 
         def preload_award_emoji_counts(work_items)

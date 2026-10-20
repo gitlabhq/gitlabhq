@@ -237,7 +237,7 @@ class Namespace < ApplicationRecord
       delegate :emails_enabled, :emails_enabled=
       delegate :web_based_commit_signing_enabled?, :lock_web_based_commit_signing_enabled?
       delegate :web_based_commit_signing_enabled, :lock_web_based_commit_signing_enabled
-      delegate :require_sha_for_merge?, :lock_require_sha_for_merge?
+      delegate :require_sha_for_merge?
       delegate :require_sha_for_merge, :lock_require_sha_for_merge
       delegate :granular_tokens_enforced?
     end

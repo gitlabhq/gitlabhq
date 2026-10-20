@@ -72,11 +72,12 @@ describe.each([
     headerDecoration: (value) => ({ type: 'icon', name: value.iconName, color: value.color }),
   };
 
-  const createComponent = ({ props = {} } = {}) => {
+  const createComponent = ({ props = {}, stubs = {}, attachTo } = {}) => {
     apolloProvider = createMockApollo([[query, queryHandler]]);
 
     wrapper = shallowMountExtended(BoardColumn, {
       apolloProvider,
+      attachTo,
       provide: {
         glFeatures,
       },
@@ -91,6 +92,7 @@ describe.each([
             <slot name="footer"></slot>
           </ul>`,
         }),
+        ...stubs,
       },
       propsData: {
         value: mockStatus,
@@ -671,6 +673,7 @@ describe.each([
       await waitForPromises();
 
       expect(findLoadMore().exists()).toBe(true);
+      expect(findLoadMore().props('ariaLabel')).toBe('Load more To do list items');
     });
 
     it('fetches the next page with the end cursor and subsequent page size', async () => {
@@ -779,6 +782,188 @@ describe.each([
 
       it('resets the in-progress state', () => {
         expect(findLoadMore().props('fetchNextPageInProgress')).toBe(false);
+      });
+    });
+  });
+
+  describe('focus after load more', () => {
+    const queryError = new Error('GraphQL failure');
+    let outsideButton;
+
+    const findLoadMoreButton = () => findLoadMore().find('button');
+    const findCardLink = (id) =>
+      wrapper.find(`[data-work-item-id="gid://gitlab/WorkItem/${id}"] a`);
+    const findLoadMoreAlert = () => wrapper.find('[data-testid="load-more-error"] [role="alert"]');
+
+    const firstPage = () =>
+      buildResponse([buildWorkItemNode(1), buildWorkItemNode(2)], {
+        hasNextPage: true,
+        endCursor: 'CURSOR1',
+      });
+
+    const createFocusComponent = () =>
+      createComponent({
+        attachTo: document.body,
+        stubs: {
+          WorkItemChildrenLoadMore: stubComponent(WorkItemChildrenLoadMore, {
+            template: `<button type="button" @click="$emit('fetch-next-page')">Load more</button>`,
+          }),
+          WorkItemCard: stubComponent(WorkItemCard, {
+            template: `<li :data-work-item-id="item.id"><a :href="item.webPath">{{ item.title }}</a></li>`,
+          }),
+        },
+      });
+
+    const clickLoadMore = async () => {
+      findLoadMoreButton().element.focus();
+      await findLoadMoreButton().trigger('click');
+    };
+
+    afterEach(() => {
+      outsideButton?.remove();
+      outsideButton = null;
+    });
+
+    describe('when the next page loads new items', () => {
+      beforeEach(async () => {
+        queryHandler.mockResolvedValueOnce(firstPage());
+        createFocusComponent();
+        await waitForPromises();
+      });
+
+      it('does not focus any card after the initial page loads', () => {
+        expect(document.activeElement).toBe(document.body);
+      });
+
+      it('focuses the link of the first newly loaded card', async () => {
+        queryHandler.mockResolvedValueOnce(
+          buildResponse([buildWorkItemNode(3), buildWorkItemNode(4)], { hasNextPage: false }),
+        );
+        await clickLoadMore();
+        await waitForPromises();
+
+        expect(document.activeElement).toBe(findCardLink(3).element);
+      });
+    });
+
+    describe('when the next page returns no new items', () => {
+      describe('when there is still a next page', () => {
+        beforeEach(async () => {
+          queryHandler.mockResolvedValueOnce(firstPage());
+          queryHandler.mockResolvedValueOnce(
+            buildResponse([], { hasNextPage: true, endCursor: 'CURSOR2' }),
+          );
+          createFocusComponent();
+          await waitForPromises();
+
+          await clickLoadMore();
+          await waitForPromises();
+        });
+
+        it('focuses the Load more button', () => {
+          expect(document.activeElement).toBe(findLoadMoreButton().element);
+        });
+      });
+
+      describe('when there is no next page', () => {
+        beforeEach(async () => {
+          queryHandler.mockResolvedValueOnce(firstPage());
+          queryHandler.mockResolvedValueOnce(buildResponse([], { hasNextPage: false }));
+          createFocusComponent();
+          await waitForPromises();
+
+          await clickLoadMore();
+          await waitForPromises();
+        });
+
+        it('focuses the last card link', () => {
+          expect(document.activeElement).toBe(findCardLink(2).element);
+        });
+      });
+    });
+
+    describe('when the next page fails', () => {
+      beforeEach(async () => {
+        queryHandler.mockResolvedValueOnce(firstPage());
+        queryHandler.mockRejectedValueOnce(queryError);
+        createFocusComponent();
+        await waitForPromises();
+
+        await clickLoadMore();
+        await waitForPromises();
+      });
+
+      it('focuses the error message', () => {
+        expect(document.activeElement).toBe(findLoadMoreAlert().element);
+      });
+
+      it('scrolls the error message into view', () => {
+        expect(findLoadMoreAlert().element.scrollIntoView).toHaveBeenCalled();
+      });
+
+      it('renders the error inside an element with role alert', () => {
+        expect(findLoadMoreAlert().text()).toBe(
+          'An error occurred while fetching more work items.',
+        );
+        expect(findLoadMoreAlert().attributes('tabindex')).toBe('-1');
+      });
+
+      it('drops the tabindex once the error message loses focus', async () => {
+        await findLoadMoreAlert().trigger('blur');
+
+        expect(findLoadMoreAlert().attributes('tabindex')).toBeUndefined();
+      });
+
+      it('announces the error again on a second failure', async () => {
+        let rejectSecondFailure;
+        queryHandler.mockReturnValueOnce(
+          new Promise((resolve, reject) => {
+            rejectSecondFailure = reject;
+          }),
+        );
+        await clickLoadMore();
+
+        expect(findLoadMoreAlert().exists()).toBe(false);
+
+        rejectSecondFailure(queryError);
+        await waitForPromises();
+
+        expect(findLoadMoreAlert().exists()).toBe(true);
+      });
+
+      it('focuses the error message again after a second failure', async () => {
+        queryHandler.mockRejectedValueOnce(queryError);
+        await clickLoadMore();
+        await waitForPromises();
+
+        expect(document.activeElement).toBe(findLoadMoreAlert().element);
+      });
+    });
+
+    describe('when focus moved elsewhere during the fetch', () => {
+      beforeEach(async () => {
+        let resolveSecondPage;
+        queryHandler.mockResolvedValueOnce(firstPage());
+        queryHandler.mockReturnValueOnce(
+          new Promise((resolve) => {
+            resolveSecondPage = resolve;
+          }),
+        );
+        createFocusComponent();
+        await waitForPromises();
+
+        await clickLoadMore();
+        outsideButton = document.createElement('button');
+        document.body.appendChild(outsideButton);
+        outsideButton.focus();
+
+        resolveSecondPage(buildResponse([buildWorkItemNode(3)], { hasNextPage: false }));
+        await waitForPromises();
+      });
+
+      it('leaves focus on the element outside the column', () => {
+        expect(findCardLink(3).exists()).toBe(true);
+        expect(document.activeElement).toBe(outsideButton);
       });
     });
   });

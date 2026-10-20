@@ -18,6 +18,10 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
   it { expect(setting).to have_db_column(:auto_devops_enabled) }
 
   describe 'default values' do
+    it 'provides the default when application settings fall back to fake settings' do
+      expect(described_class.defaults[:default_remove_source_branch_after_merge]).to be(true)
+    end
+
     it 'has correct default values', :do_not_mock_admin_mode_setting do
       is_expected.to have_attributes(
         id: 1,
@@ -95,6 +99,7 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
         default_project_creation: Settings.gitlab['default_project_creation'],
         default_project_visibility: Settings.gitlab.default_projects_features['visibility_level'],
         default_projects_limit: Settings.gitlab['default_projects_limit'],
+        default_remove_source_branch_after_merge: true,
         default_snippet_visibility: Settings.gitlab.default_projects_features['visibility_level'],
         default_syntax_highlighting_theme: 1,
         deletion_adjourned_period: 30,
@@ -687,6 +692,13 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
         setting.transitive_sharing_cutoff_at = Time.current
 
         expect(setting).to be_valid
+      end
+    end
+
+    context 'for project defaults' do
+      it 'accepts boolean values and rejects other values', :aggregate_failures do
+        expect(setting).to allow_values(true, false).for(:default_remove_source_branch_after_merge)
+        expect(setting).not_to allow_value(nil).for(:default_remove_source_branch_after_merge)
       end
     end
 
@@ -2554,8 +2566,9 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
 
   describe '#project_defaults' do
     context 'for json schema validation' do
-      it 'allows only an empty hash', :aggregate_failures do
+      it 'allows only known keys', :aggregate_failures do
         is_expected.to allow_value({}).for(:project_defaults)
+        is_expected.to allow_value({ 'default_remove_source_branch_after_merge' => false }).for(:project_defaults)
         is_expected.not_to allow_value({ 'foo' => 'bar' }).for(:project_defaults)
       end
     end

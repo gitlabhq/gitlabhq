@@ -732,6 +732,20 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
     end
   end
 
+  describe '.allow_slow_merge_base', :request_store do
+    it 'keeps the flag set until the outermost block returns when nested' do
+      described_class.allow_slow_merge_base do
+        described_class.allow_slow_merge_base do
+          expect(described_class.slow_merge_base_allowed?).to be(true)
+        end
+
+        expect(described_class.slow_merge_base_allowed?).to be(true)
+      end
+
+      expect(described_class.slow_merge_base_allowed?).to be(false)
+    end
+  end
+
   describe '.request_kwargs' do
     it 'sets the gitaly-session-id in the metadata' do
       results = described_class.request_kwargs('default', timeout: 1)

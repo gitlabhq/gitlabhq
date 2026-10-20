@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Admin::Topics::AvatarsController do
+RSpec.describe Admin::Topics::AvatarsController, feature_category: :groups_and_projects do
   let(:user) { create(:admin) }
   let(:topic) { create(:topic, avatar: fixture_file_upload("spec/fixtures/dk.png")) }
 

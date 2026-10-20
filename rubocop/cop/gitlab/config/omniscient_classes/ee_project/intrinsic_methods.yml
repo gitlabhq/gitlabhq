@@ -1,0 +1,7 @@
+# Methods that are fundamental to the identity of EE::Project. They stay in the class.
+# A method enters this list only when it moves from legacy_methods.yml after
+# agreement with the domain owners. Changes need CODEOWNERS approval.
+# Checked by Gitlab/OmniscientClassMethods. Class methods have a `self.` prefix.
+# See https://docs.gitlab.com/development/software_design/#taming-omniscient-classes
+---
+EE::Project: []

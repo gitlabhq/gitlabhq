@@ -227,7 +227,6 @@ delegations:
   - lock_math_rendering_limits_enabled?
   - web_based_commit_signing_enabled?
   - lock_web_based_commit_signing_enabled?
-  - lock_require_sha_for_merge?
   app/models/packages/conan/package.rb:
   - conan_recipe_path
   app/models/packages/package_file.rb:

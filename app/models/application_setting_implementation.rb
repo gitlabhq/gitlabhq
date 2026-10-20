@@ -78,6 +78,7 @@ module ApplicationSettingImplementation
         default_project_creation: Settings.gitlab['default_project_creation'],
         default_project_visibility: Settings.gitlab.default_projects_features['visibility_level'],
         default_projects_limit: Settings.gitlab['default_projects_limit'],
+        default_remove_source_branch_after_merge: true,
         default_snippet_visibility: Settings.gitlab.default_projects_features['visibility_level'],
         default_syntax_highlighting_theme: 1,
         default_dark_syntax_highlighting_theme: 2,

@@ -49,7 +49,9 @@ If you prefer to use GDK locally without a container, use the steps in [Install 
 
 ## Use VS Code to connect to GDK
 
-[View a demo video of this step](https://go.gitlab.com/b54mHb).
+<i class="fa-youtube-play" aria-hidden="true"></i>
+For a demo of this step, see [GDK-in-a-box](https://www.youtube.com/watch?v=lqt83-boUhc).
+<!-- Video published on 2024-02-01 -->
 
 > [!note]
 > You might need to modify the system configuration of your container runtime (CPU cores and RAM) before starting it. A suggested configuration is at least 12 GB RAM, and 4 cores.

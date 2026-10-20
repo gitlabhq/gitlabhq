@@ -25,7 +25,9 @@ RSpec.shared_examples 'work item API field parity' do
   let(:extra_skipped_feature_comparison) { Set.new }
 
   describe 'REST entity vs GraphQL type' do
-    let(:rest_field_exceptions) { Set.new(%w[id]) }
+    # GraphQL has `has_children` on the hierarchy widget. REST keeps it top-level so clients can
+    # request it without paying for the hierarchy feature's parent preload.
+    let(:rest_field_exceptions) { Set.new(%w[id has_children]) }
 
     let(:graphql_field_exceptions) do
       Set.new(%w[

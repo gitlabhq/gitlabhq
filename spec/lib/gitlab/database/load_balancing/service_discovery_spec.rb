@@ -115,6 +115,8 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery, feature_catego
 
         expect(service).to receive(:refresh_if_necessary).and_return(45).ordered
 
+        expect(Gitlab::Database::LoadBalancing::Callbacks).not_to receive(:track_exception)
+
         expect(service.perform_service_discovery).to eq(45)
       end
 
@@ -132,7 +134,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery, feature_catego
         service.perform_service_discovery
       end
 
-      it 'reports exceptions to Sentry' do
+      it 'reports the exception to Sentry once when every attempt fails' do
         error = StandardError.new
 
         expect(service)
@@ -140,8 +142,22 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery, feature_catego
                 .and_raise(error).exactly(described_class::MAX_DISCOVERY_RETRIES).times
 
         expect(Gitlab::Database::LoadBalancing::Callbacks)
-          .to receive(:track_exception)
-                .with(error).exactly(described_class::MAX_DISCOVERY_RETRIES).times
+          .to receive(:track_exception).with(error).once
+
+        service.perform_service_discovery
+      end
+
+      it 'logs every failed attempt with its error class and attempt number' do
+        expect(service)
+          .to receive(:refresh_if_necessary)
+                .and_raise(StandardError).exactly(described_class::MAX_DISCOVERY_RETRIES).times
+
+        (1..described_class::MAX_DISCOVERY_RETRIES).each do |attempt|
+          expect(Gitlab::Database::LoadBalancing::Logger)
+            .to receive(:error)
+                  .with(hash_including(event: :service_discovery_failure, Labkit::Fields::ERROR_TYPE => 'StandardError', attempt: attempt))
+                  .ordered
+        end
 
         service.perform_service_discovery
       end
@@ -237,6 +253,24 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery, feature_catego
       expect(host).to receive(:force_disconnect!)
 
       service.replace_hosts([address_bar])
+    end
+
+    context 'when disconnecting the old hosts fails' do
+      let(:error) { StandardError.new('disconnect failed') }
+
+      before do
+        allow(service).to receive(:disconnect_timeout).and_return(2)
+        allow(load_balancer.host_list.hosts.first).to receive(:try_disconnect).and_raise(error)
+      end
+
+      it 'keeps the new hosts, reports and logs the error without raising', :aggregate_failures do
+        expect(Gitlab::Database::LoadBalancing::Callbacks).to receive(:track_exception).with(error).once
+        expect(Gitlab::Database::LoadBalancing::Logger)
+          .to receive(:error).with(hash_including(event: :host_list_disconnection_failure, Labkit::Fields::ERROR_TYPE => 'StandardError'))
+
+        expect { service.replace_hosts([address_bar]) }.not_to raise_error
+        expect(load_balancer.host_list.host_names_and_ports).to eq([['bar', nil]])
+      end
     end
 
     context 'without old hosts' do

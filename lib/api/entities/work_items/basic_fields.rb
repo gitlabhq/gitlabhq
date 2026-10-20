@@ -116,6 +116,13 @@ module API
             options[:user_discussions_counts]&.fetch(work_item.id, 0) || 0
           end
 
+          # Reads parent links regardless of the current user's access to each child, like GraphQL's
+          # `hasChildren`, so GET /work_items/:iid/children may still return nothing.
+          expose_field :has_children,
+            documentation: { type: 'Boolean', example: true } do |work_item, options|
+            options[:parent_ids_with_children]&.include?(work_item.id) || false
+          end
+
           strong_memoize_attr :work_item_presenter
         end
 

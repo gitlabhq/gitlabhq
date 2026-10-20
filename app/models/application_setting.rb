@@ -940,6 +940,14 @@ class ApplicationSetting < ApplicationRecord
   validates :group_settings,
     json_schema: { filename: "application_setting_group_settings" }
 
+  jsonb_accessor :project_defaults,
+    default_remove_source_branch_after_merge: [:boolean, { default: true }]
+
+  validates :project_defaults,
+    json_schema: { filename: 'application_setting_project_defaults', size_limit: 64.kilobytes },
+    if: -> { has_attribute?(:project_defaults) }
+  validates :default_remove_source_branch_after_merge, inclusion: { in: [true, false] }
+
   jsonb_accessor :clickhouse,
     use_clickhouse_for_analytics: [:boolean, { default: false }]
 
@@ -1190,9 +1198,6 @@ class ApplicationSetting < ApplicationRecord
     organization_cluster_agent_authorization_enabled: [:boolean, { default: false }]
 
   validates :cluster_agents, json_schema: { filename: 'application_setting_cluster_agents' }
-
-  validates :project_defaults, json_schema: { filename: 'application_setting_project_defaults' },
-    if: -> { has_attribute?(:project_defaults) }
 
   jsonb_accessor :database_reindexing,
     reindexing_minimum_index_size: [::Gitlab::Database::Type::JsonbInteger.new, { default: 1.gigabyte }],

@@ -91,7 +91,7 @@ module TwCodeowners
     CodeOwnerRule.new('Gitaly', '@eread'),
     # CodeOwnerRule.new('Global Search', ''),
     # CodeOwnerRule.new('Hosted Runners Platform', ''),
-    CodeOwnerRule.new('Import', '@eread'),
+    # CodeOwnerRule.new('Import', ''),
     # CodeOwnerRule.new('Knowledge Graph', ''),
     # CodeOwnerRule.new('MLOps', ''),
     # CodeOwnerRule.new('Mobile DevOps', ''),

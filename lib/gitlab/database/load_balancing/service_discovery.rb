@@ -91,16 +91,18 @@ module Gitlab
         end
 
         def perform_service_discovery
-          MAX_DISCOVERY_RETRIES.times do
+          MAX_DISCOVERY_RETRIES.times do |attempt|
             return refresh_if_necessary
           rescue StandardError => error
-            # Any exceptions that might occur should be reported to
-            # Sentry, instead of silently terminating this thread.
-            ::Gitlab::Database::LoadBalancing::Callbacks.track_exception(error)
+            # Retries absorb transient DNS failures, so every failed attempt is logged below
+            # but only reported to Sentry when every attempt failed.
+            ::Gitlab::Database::LoadBalancing::Callbacks.track_exception(error) if attempt == MAX_DISCOVERY_RETRIES - 1
 
             Gitlab::Database::LoadBalancing::Logger.error(
               event: :service_discovery_failure,
               message: "Service discovery encountered an error: #{error.message}",
+              Labkit::Fields::ERROR_TYPE => error.class.name,
+              attempt: attempt + 1,
               host_list_length: load_balancer.host_list.length,
               backtrace: error.backtrace
             )
@@ -291,6 +293,15 @@ module Gitlab
             gentle_disconnect_duration_s: gentle_disconnect_duration,
             force_disconnect_duration_s: force_disconnect_duration,
             total_disconnect_duration_s: total_disconnect_duration
+          )
+        rescue StandardError => error
+          ::Gitlab::Database::LoadBalancing::Callbacks.track_exception(error)
+
+          ::Gitlab::Database::LoadBalancing::Logger.error(
+            event: :host_list_disconnection_failure,
+            message: "Failed to disconnect old load balancing hosts",
+            Labkit::Fields::ERROR_MESSAGE => error.message,
+            Labkit::Fields::ERROR_TYPE => error.class.name
           )
         end
       end

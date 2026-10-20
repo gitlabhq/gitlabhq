@@ -445,4 +445,16 @@ RSpec.shared_examples 'work item show endpoint' do
     expect(response).to have_gitlab_http_status(:ok)
     expect(json_response).to include('user_discussions_count' => 2)
   end
+
+  it 'returns has_children only when requested' do
+    get api(show_request_path, user)
+
+    expect(response).to have_gitlab_http_status(:ok)
+    expect(json_response).not_to have_key('has_children')
+
+    get api(show_request_path, user), params: { fields: 'has_children' }
+
+    expect(response).to have_gitlab_http_status(:ok)
+    expect(json_response).to include('has_children' => false)
+  end
 end

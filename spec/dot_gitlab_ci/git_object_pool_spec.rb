@@ -30,9 +30,10 @@ RSpec.describe 'CI per-VM git object pool', feature_category: :tooling do
   gitlab_ci = load_config.call(File.join(root, '.gitlab-ci.yml')).freeze
   default_hooks = gitlab_ci.dig('default', 'hooks')
   default_seed_steps = default_hooks['pre_get_sources_script']
+  default_seed_script = default_seed_steps.join("\n")
   # The hook seeds `$GLCI_GIT_OBJECT_POOL_DIR<path>`; capture `<path>` to check the
-  # variable git borrows through names the same pool.
-  pool_path = default_seed_steps.join("\n")[/\bglci_pool="\$GLCI_GIT_OBJECT_POOL_DIR([^"]+)"/, 1]
+  # alternates file the checkout borrows through names the same pool.
+  pool_path = default_seed_script[/\bglci_pool="\$GLCI_GIT_OBJECT_POOL_DIR([^"]+)"/, 1]
 
   # CI YAML `hooks:` only supports `pre_get_sources_script`. `post_get_sources_script` exists
   # only in the runner's config.toml, and GitLab rejects a pipeline that sets it here.
@@ -41,11 +42,31 @@ RSpec.describe 'CI per-VM git object pool', feature_category: :tooling do
   end
 
   # Runners serve many projects, so they only say where pools live; the pool's name, and the
-  # alternate git borrows through, belong to this project.
+  # alternate git borrows through, belong to this project. The runner's `git init --template`
+  # copies the alternates file into the checkout's .git only.
   it 'borrows from the pool the hook seeds' do
     expect(pool_path).to eq('$CI_PROJECT_DIR/.git')
-    expect(gitlab_ci.dig('variables', 'GIT_ALTERNATE_OBJECT_DIRECTORIES'))
-      .to eq('${GLCI_GIT_OBJECT_POOL_DIR}${CI_PROJECT_DIR}/.git/objects')
+    expect(default_seed_script)
+      .to match(%r{_template_alternates="\$\{RUNNER_TEMP_PROJECT_DIR[^"]*/git-template/objects/info/alternates"})
+      .and match(%r{"\$glci_pool/objects"\s*>\s*"\$glci_pool_template_alternates"})
+  end
+
+  # A fetch-strategy job's template directory outlives the job on a VM, and an uploaded .git
+  # must not borrow.
+  it 'clears a stale alternates file and honours the opt-out before attaching' do
+    write_at = default_seed_script.index('> "$glci_pool_template_alternates"')
+
+    expect(default_seed_script.index('rm -f "$glci_pool_template_alternates"')).to be < write_at
+    expect(default_seed_script.index('"$GLCI_GIT_OBJECT_POOL_ATTACH" != "false"')).to be < write_at
+  end
+
+  # The variable applies to every git process in the job, so fixture repositories created by
+  # specs would also see the pool, and their short SHAs stop being unique.
+  it 'does not attach the pool through GIT_ALTERNATE_OBJECT_DIRECTORIES' do
+    offenders = jobs.filter_map { |name, job| name if job['variables']&.key?('GIT_ALTERNATE_OBJECT_DIRECTORIES') }
+    offenders << '.gitlab-ci.yml: variables' if gitlab_ci['variables'].key?('GIT_ALTERNATE_OBJECT_DIRECTORIES')
+
+    expect(offenders).to be_empty
   end
 
   # The pool is an alternate object store, which `git fetch` reads, so none of this needs
@@ -77,44 +98,6 @@ RSpec.describe 'CI per-VM git object pool', feature_category: :tooling do
         "(job-level hooks replace them): #{offenders.join(', ')}"
   end
 
-  # The hook skips jobs without a fetch, so no placeholder exists at the pool path.
-  it 'does not borrow from the pool in jobs that take the repository from artifacts' do
-    repo_from_artifacts = jobs.to_h.fetch('.gitlab/ci/global.gitlab-ci.yml: .repo-from-artifacts')
-
-    expect(repo_from_artifacts.dig('variables', 'GIT_ALTERNATE_OBJECT_DIRECTORIES')).to eq('')
-  end
-
-  # Trigger jobs have no runner, so they expand the default GIT_ALTERNATE_OBJECT_DIRECTORIES
-  # without CI_PROJECT_DIR and would forward "/.git/objects" to their downstream pipeline.
-  it 'does not forward the pool alternate from trigger jobs' do
-    # Only the files the root pipeline includes inherit its default variables.
-    root_jobs = Dir.glob(File.join(root, '.gitlab/ci/{,includes/,includes/gitlab-com/}*.gitlab-ci.yml'))
-      .each_with_object({}) do |path, acc|
-        config = load_config.call(path)
-        config.each { |name, job| acc[name] = job if job.is_a?(Hash) } if config.is_a?(Hash)
-      end
-    # `extends` deep-merges parents into the job, the job's own keys winning.
-    deep_merge = ->(a, b) { a.merge(b) { |_, x, y| x.is_a?(Hash) && y.is_a?(Hash) ? deep_merge.call(x, y) : y } }
-    resolve = ->(job) do
-      Array(job['extends']).map { |parent| resolve.call(root_jobs.fetch(parent, {})) }
-        .reduce({}, &deep_merge).then { |base| deep_merge.call(base, job) }
-    end
-
-    offenders = root_jobs.filter_map do |name, job|
-      job = resolve.call(job)
-      next if name.start_with?('.') || !job.key?('trigger')
-
-      inherited = job.dig('inherit', 'variables')
-      next if inherited == false || (inherited.is_a?(Array) && inherited.exclude?('GIT_ALTERNATE_OBJECT_DIRECTORIES'))
-
-      name unless job.dig('variables', 'GIT_ALTERNATE_OBJECT_DIRECTORIES') == ''
-    end
-
-    expect(offenders).to be_empty,
-      "These trigger jobs forward the default GIT_ALTERNATE_OBJECT_DIRECTORIES and must set it " \
-        "to \"\": #{offenders.join(', ')}"
-  end
-
   it 'never uploads a .git that borrows objects from the object pool' do
     global_strategy = gitlab_ci.dig('variables', 'GIT_STRATEGY')
     repo_root_paths = %w[* . ./ .git]
@@ -127,11 +110,11 @@ RSpec.describe 'CI per-VM git object pool', feature_category: :tooling do
       variables = job['variables'] || {}
       next if no_source_strategies.include?(variables.fetch('GIT_STRATEGY', global_strategy))
 
-      name unless variables['GIT_ALTERNATE_OBJECT_DIRECTORIES'] == ''
+      name unless variables['GLCI_GIT_OBJECT_POOL_ATTACH'] == 'false'
     end
 
     expect(offenders).to be_empty,
-      "These jobs upload .git as an artifact and must set GIT_ALTERNATE_OBJECT_DIRECTORIES " \
-        "to \"\": #{offenders.join(', ')}"
+      "These jobs upload .git as an artifact and must set GLCI_GIT_OBJECT_POOL_ATTACH " \
+        "to \"false\": #{offenders.join(', ')}"
   end
 end

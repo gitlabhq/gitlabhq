@@ -12,6 +12,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    ariaLabel: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   emits: ['fetch-next-page'],
 };
@@ -23,6 +28,7 @@ export default {
       v-if="!fetchNextPageInProgress"
       category="tertiary"
       variant="confirm"
+      :aria-label="ariaLabel"
       @click="$emit('fetch-next-page', $event)"
     >
       {{ s__('WorkItem|Load more') }}</gl-button

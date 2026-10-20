@@ -3,5 +3,10 @@
   "description": "Application settings for project defaults",
   "type": "object",
   "additionalProperties": false,
-  "properties": {}
+  "properties": {
+    "default_remove_source_branch_after_merge": {
+      "type": "boolean",
+      "description": "Selects the delete source branch option by default for new projects"
+    }
+  }
 }

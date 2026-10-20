@@ -11162,6 +11162,20 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   describe '#remove_source_branch_after_merge' do
     it { expect(subject.remove_source_branch_after_merge).to be_truthy }
 
+    context 'when the instance default is disabled' do
+      before do
+        stub_application_setting(default_remove_source_branch_after_merge: false)
+      end
+
+      it 'uses the instance default for new projects' do
+        expect(described_class.new.remove_source_branch_after_merge).to be(false)
+      end
+
+      it 'preserves an explicitly selected value' do
+        expect(described_class.new(remove_source_branch_after_merge: true).remove_source_branch_after_merge).to be(true)
+      end
+    end
+
     context 'when set explicitly' do
       subject { described_class.new(remove_source_branch_after_merge: false) }
 

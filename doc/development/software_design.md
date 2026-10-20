@@ -249,14 +249,26 @@ Guidelines:
 
 The `Gitlab/OmniscientClassMethods` RuboCop cop prevents new instance and class methods in `Project`, `Group`, and `User`, and in their `EE::Project`, `EE::Group`, and `EE::User` counterparts.
 The cop source is in [`omniscient_class_methods.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/cop/gitlab/omniscient_class_methods.rb).
-The [baseline](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/cop/gitlab/config/omniscient_classes_baseline.yml) lists, for each class, the methods it can define. It has two lists:
+For each class, the cop reads the methods it can define from two files in [`rubocop/cop/gitlab/config/omniscient_classes/<class_name>/`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/rubocop/cop/gitlab/config/omniscient_classes):
 
-- `intrinsic`: methods that are fundamental to the identity of the record. These stay in the class.
-  A method enters this list only when it moves from `legacy` after agreement with the domain owners. Never add a new method to it.
-- `legacy`: methods that existed when the cop was added. These should move to the bounded context where they belong.
+- `intrinsic_methods.yml`: methods that are fundamental to the identity of the record. These stay in the class.
+  A method enters this list primarily when it moves from `legacy_methods.yml` after agreement with the domain owners.
+  Brand new methods added to this list should be considered rare exceptions. Changes to this file need approval from its code owners.
+- `legacy_methods.yml`: methods that existed when the cop was added. These should move to the bounded context where they belong.
 
-Do not add methods to the baseline. Instead, define the behavior in a dedicated class in the bounded context, as described in the guidelines above.
-When you remove or move a method out of one of these classes, also remove it from `legacy`. The cop reports baseline entries for methods that the class no longer defines, so the list only gets shorter.
+In these files, class methods have a `self.` prefix (for example `self.cached_count`), and instance methods have no prefix.
+
+What makes a method intrinsic depends on the class.
+`Project`, `Group` and `User` are generic concepts that every domain uses, so keep them as identity objects as much as possible.
+A method is intrinsic when it is one of these:
+
+- It reads an attribute defined in the database table that the class represents.
+- It is a derived method strongly linked to the identity of the record, for example the project full path (`full_path`).
+
+A method is not intrinsic when it is a responsibility linked to a domain, or to a cross-functional concept that can have its own class.
+
+Do not add methods to these files. Instead, define the behavior in a dedicated class in the bounded context, as described in the guidelines above.
+When you remove or move a method out of one of these classes, also remove it from `legacy_methods.yml`. The cop reports baseline entries for methods that the class no longer defines, so the list only gets shorter.
 
 ### Example: Define a thin domain object around a generic model
 

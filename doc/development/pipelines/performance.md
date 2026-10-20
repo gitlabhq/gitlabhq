@@ -31,11 +31,13 @@ This works well for the following reasons:
   the runners that have a pool are deployed. A runner that has a pool sets only `GLCI_GIT_OBJECT_POOL_DIR`, for
   example `/cache/git-object-pools`, which names where pools live. The seeding hook in `.gitlab-ci.yml` seeds a
   bare clone of the default branch at `$GLCI_GIT_OBJECT_POOL_DIR$CI_PROJECT_DIR/.git` on the first job of each VM.
-  `.gitlab-ci.yml` derives `GIT_ALTERNATE_OBJECT_DIRECTORIES` from that directory, and Git reads it to borrow
-  objects from the pool during `git fetch`. Until a pool is seeded, the hook creates an empty `objects`
-  directory there, which Git accepts without complaint. On a runner without a pool, the variable resolves to
-  the job's own `.git/objects`, which Git ignores as an alternate. The pool needs no feature flags and no
-  change to `GIT_STRATEGY`.
+  When the pool is usable, the hook writes an `objects/info/alternates` file into the Git template directory
+  that the runner passes to `git init`, so only the job's checkout borrows objects from the pool, through its
+  own `.git/objects/info/alternates`. Other repositories the job creates, such as the test fixture repositories,
+  do not see it.
+  A job that uploads `.git` as an artifact sets `GLCI_GIT_OBJECT_POOL_ATTACH` to `"false"` to opt out.
+  The pool needs no feature flags and no change to `GIT_STRATEGY`. Child-pipeline jobs don't run the hook,
+  so they don't borrow from the pool.
 - We use [shallow clone](../../ci/pipelines/settings.md#limit-the-number-of-changes-fetched-during-clone) to avoid downloading the full Git
   history for every job.
 

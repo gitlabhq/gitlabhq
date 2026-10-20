@@ -507,6 +507,7 @@ This heading is referenced by a script: `scripts/cells/application-settings-anal
 - `pipeline_delete_limit_per_user_project` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/627268) in GitLab 19.5 [with a feature flag](../administration/feature_flags/_index.md) named `rate_limit_pipeline_delete`. Disabled by default.
 - `job_erase_limit_per_user_project` [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/627274) in GitLab 19.5 [with a feature flag](../administration/feature_flags/_index.md) named `rate_limit_job_erase`. Disabled by default.
 - `duo_token_usage_tracking_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/259436) in GitLab 19.6.
+- `default_remove_source_branch_after_merge` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/260680) in GitLab 19.6.
 
 {{< /history >}}
 
@@ -600,6 +601,7 @@ to configure other related settings. These requirements are in the `Required` co
 | `default_project_creation`               | integer          | no                                   | Default minimum role required to create projects. Can take: `0` _(No one)_, `1` _(Maintainers)_, `2` _(Developers)_, `3` _(Administrators)_, or `4` _(Owners)_. |
 | `default_project_visibility`             | string           | no                                   | What visibility level new projects receive. Can take `private`, `internal`, and `public` as a parameter. Default is `private`. Cannot be set to any levels in `restricted_visibility_levels`. |
 | `default_projects_limit`                 | integer          | no                                   | Project limit per user. Default is `100000`. |
+| `default_remove_source_branch_after_merge` | boolean        | no                                   | Select the **Delete source branch** option by default for new projects. Default is `true`.  |
 | `default_snippet_visibility`             | string           | no                                   | What visibility level new snippets receive. Can take `private`, `internal`, and `public` as a parameter. Default is `private`. |
 | `default_syntax_highlighting_theme`      | integer          | no                                   | Default syntax highlighting theme for users who are new or not signed in. See [IDs of available themes](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/themes.rb#L16). |
 | `default_dark_syntax_highlighting_theme` | integer          | no                                   | Default dark mode syntax highlighting theme for users who are new or not signed in. See [IDs of available themes](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/themes.rb#L16). |

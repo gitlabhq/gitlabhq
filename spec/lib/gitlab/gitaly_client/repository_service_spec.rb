@@ -127,6 +127,32 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
     end
   end
 
+  describe '#find_merge_base', :request_store do
+    let(:sha) { project.repository.commit.id }
+
+    def expect_find_merge_base_timeout(timeout)
+      expect(client).to receive(:gitaly_client_call)
+        .with(storage_name, :repository_service, :find_merge_base, kind_of(Gitaly::FindMergeBaseRequest), timeout: timeout)
+        .and_call_original
+    end
+
+    it 'uses the fast timeout' do
+      expect_find_merge_base_timeout(Gitlab::GitalyClient.fast_timeout)
+
+      expect(client.find_merge_base(sha, sha)).to eq(sha)
+    end
+
+    context 'when slow merge base is allowed' do
+      it 'uses the default timeout' do
+        expect_find_merge_base_timeout(Gitlab::GitalyClient.default_timeout)
+
+        Gitlab::GitalyClient.allow_slow_merge_base do
+          expect(client.find_merge_base(sha, sha)).to eq(sha)
+        end
+      end
+    end
+  end
+
   describe '#fork_repository' do
     let(:source_repository) { Gitlab::Git::Repository.new('default', 'repo/path', '', 'group/project') }
 

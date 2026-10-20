@@ -92801,6 +92801,8 @@ components:
           type: string
         default_projects_limit:
           type: string
+        default_remove_source_branch_after_merge:
+          type: string
         default_snippet_visibility:
           type: string
         default_syntax_highlighting_theme:
@@ -110353,6 +110355,10 @@ components:
           description: 'Default minimum role required to create projects. Can take:
             `0` _(No one)_, `1` _(Maintainers)_, `2` _(Developers)_, `3` _(Administrators)_,
             or `4` _(Owners)_.'
+          nullable: true
+        default_remove_source_branch_after_merge:
+          type: boolean
+          description: Enable the delete source branch option by default for new projects
           nullable: true
         default_branch_protection:
           type: integer

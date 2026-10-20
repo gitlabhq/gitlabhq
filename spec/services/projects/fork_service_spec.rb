@@ -68,6 +68,17 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
         expect(fork_of_project.squash_commit_template).to eq(project.squash_commit_template)
       end
 
+      context 'when the instance default differs from the source project setting' do
+        before do
+          project.update!(remove_source_branch_after_merge: true)
+          stub_application_setting(default_remove_source_branch_after_merge: false)
+        end
+
+        it 'uses the instance default for the fork' do
+          expect(fork_of_project.remove_source_branch_after_merge).to be(false)
+        end
+      end
+
       context 'when source project repository storage is disabled' do
         before do
           stub_application_setting(pick_repository_storage: 'storage_1')

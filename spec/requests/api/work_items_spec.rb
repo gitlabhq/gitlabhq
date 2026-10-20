@@ -552,6 +552,41 @@ RSpec.describe API::WorkItems, feature_category: :portfolio_management do
       end
     end
 
+    context 'when the has_children field is requested' do
+      let_it_be(:other_project, freeze: false) { create(:project, :private) }
+      let_it_be(:parent_work_item, freeze: false) { create(:work_item, project: project) }
+      let_it_be(:hidden_child, freeze: false) { create(:work_item, :task, project: other_project) }
+
+      before_all do
+        create(:parent_link, work_item: hidden_child, work_item_parent: parent_work_item)
+      end
+
+      it 'is true when the only child is one the user cannot read' do
+        get api("/projects/#{project.id}/-/work_items/#{parent_work_item.iid}", user),
+          params: { fields: 'has_children' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to include('has_children' => true)
+      end
+
+      it 'is set per row on the list endpoint' do
+        get api("/projects/#{project.id}/-/work_items", user), params: { fields: 'has_children' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        flags = json_response.to_h { |item| [item['id'], item['has_children']] }
+        expect(flags[parent_work_item.id]).to be(true)
+        expect(flags.except(parent_work_item.id).values).to all(be(false))
+      end
+
+      it 'does not render the hierarchy feature' do
+        get api("/projects/#{project.id}/-/work_items/#{parent_work_item.iid}", user),
+          params: { fields: 'has_children' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).not_to have_key('features')
+      end
+    end
+
     context 'when the hierarchy feature is requested' do
       let_it_be(:other_project, freeze: false) { create(:project, :private) }
 

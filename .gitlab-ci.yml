@@ -45,14 +45,23 @@ default:
       # Seeds a git object pool (a bare clone of the default branch, using bundle-uri) on
       # runners that set GLCI_GIT_OBJECT_POOL_DIR to a path in their per-project /cache
       # volume. Protected and unprotected refs get separate cache volumes, so each has its
-      # own pool that other projects cannot read. GIT_ALTERNATE_OBJECT_DIRECTORIES below
-      # points git at what this seeds. A pool that is not a usable bare repository is removed
+      # own pool that other projects cannot read. The checkout borrows from the pool through
+      # its own .git/objects/info/alternates (see below), so other repositories the job
+      # creates never see it. A pool that is not a usable bare repository is removed
       # and reseeded. If a get_sources attempt fails, the retry removes the pool and fetches
       # normally, and the next job reseeds. It is a no-op on runners without
       # GLCI_GIT_OBJECT_POOL_DIR and for jobs that skip sources, and never fails the job.
       - |
         # Only one job runs per VM at a time, so none of this needs locking.
         glci_pool=
+        # After the hook, the runner creates the checkout with `git init --template` (or
+        # `git clone --template`) using this directory, deleting at most its config and hooks
+        # first, so an alternates file left here is copied into the new .git. Jobs may write here:
+        # https://docs.gitlab.com/runner/configuration/advanced-configuration/#modify-git-lfs-endpoints
+        # A job with GIT_STRATEGY fetch reuses its builds volume on a VM, so a file here can
+        # outlive the job that wrote it. Start clean.
+        glci_pool_template_alternates="${RUNNER_TEMP_PROJECT_DIR:-${CI_PROJECT_DIR}.tmp}/git-template/objects/info/alternates"
+        rm -f "$glci_pool_template_alternates" || true
         if [ -n "$GLCI_GIT_OBJECT_POOL_DIR" ] && [ "$GIT_STRATEGY" != "none" ] && [ "$GIT_STRATEGY" != "empty" ]; then
           case "$GLCI_GIT_OBJECT_POOL_DIR" in
             /cache/?*) glci_pool="$GLCI_GIT_OBJECT_POOL_DIR$CI_PROJECT_DIR/.git" ;;
@@ -64,11 +73,6 @@ default:
           glci_pool_attempt="$GLCI_GIT_OBJECT_POOL_DIR/.attempt-$CI_JOB_ID"
           glci_pool_usable() {
             [ -d "$glci_pool" ] && git --git-dir="$glci_pool" rev-parse --verify --quiet 'HEAD^{commit}' >/dev/null 2>&1
-          }
-          # Until a pool is seeded, an empty objects directory stands in for it, because git
-          # writes an error on every command when GIT_ALTERNATE_OBJECT_DIRECTORIES is missing.
-          glci_pool_placeholder() {
-            [ "$(ls -A "$glci_pool" 2>/dev/null)" = "objects" ] && [ -z "$(ls -A "$glci_pool/objects" 2>/dev/null)" ]
           }
           mkdir -p "$GLCI_GIT_OBJECT_POOL_DIR" || true
           # The runner reruns this hook for each GET_SOURCES_ATTEMPTS retry. A marker for this
@@ -86,12 +90,11 @@ default:
             # Don't reseed here: this retry clones normally, and the next job reseeds.
             rm -rf "$glci_pool" || true
             echo "Git object pool removed: a previous get_sources attempt of this job failed"
-          elif [ -e "$glci_pool" ] && ! glci_pool_usable && ! glci_pool_placeholder; then
+          elif [ -e "$glci_pool" ] && ! glci_pool_usable; then
             # A plain file at the pool path makes every clone fail; so can a broken repository.
             echo "Git object pool at $glci_pool is not a usable repository; removing it"
             rm -rf "$glci_pool" || true
           fi
-          [ -e "$glci_pool" ] || mkdir -p "$glci_pool/objects" || true
           if [ "$glci_pool_retry" = false ] && [ "$GLCI_GIT_OBJECT_POOL" = "true" ] && ! glci_pool_usable; then
             glci_pool_free_kb=$(df -Pk "$GLCI_GIT_OBJECT_POOL_DIR" | awk 'NR==2 {print $4}') || true
             case "$glci_pool_free_kb" in
@@ -115,18 +118,36 @@ default:
               echo "Git object pool seeded at $glci_pool"
             else
               rm -rf "$glci_pool_tmp" || true
-              [ -e "$glci_pool" ] || mkdir -p "$glci_pool/objects" || true
               echo "Git object pool seed failed; continuing with a normal clone"
             fi
           fi
+          if [ "$GLCI_GIT_OBJECT_POOL_ATTACH" != "false" ] && glci_pool_usable; then
+            mkdir -p "$(dirname "$glci_pool_template_alternates")" &&
+              echo "$glci_pool/objects" > "$glci_pool_template_alternates" || true
+          fi
         fi
-        # One status line on every job, so job logs show which jobs borrow from a pool.
+        # Rerunning `git init` on a reused checkout (GIT_STRATEGY fetch) copies only missing
+        # template files, so it keeps any alternates file it already has. Unless that is the pool
+        # attached above, remove the .git so the runner starts a fresh one, rather than fetching
+        # into objects that are gone.
+        glci_pool_checkout_alternates="$CI_PROJECT_DIR/.git/objects/info/alternates"
+        if [ "$GIT_STRATEGY" != "none" ] && [ "$GIT_STRATEGY" != "empty" ] && [ -e "$glci_pool_checkout_alternates" ] &&
+          [ "$(cat "$glci_pool_checkout_alternates" 2>/dev/null)" != "$(cat "$glci_pool_template_alternates" 2>/dev/null)" ]; then
+          echo "Git object pool: removing $CI_PROJECT_DIR/.git, which borrows from a pool this job does not attach"
+          rm -rf "$CI_PROJECT_DIR/.git" || true
+        fi
+        # One status line on every job, so job logs show which jobs borrow from a pool. The hook
+        # runs before the checkout exists, so this reports what it handed the runner.
         if [ -z "$GLCI_GIT_OBJECT_POOL_DIR" ]; then
           echo "Git object pool: not configured on this runner"
         elif [ -z "$glci_pool" ]; then
           echo "Git object pool: not used by this job"
+        elif [ "$GLCI_GIT_OBJECT_POOL_ATTACH" = "false" ]; then
+          echo "Git object pool: not attached (GLCI_GIT_OBJECT_POOL_ATTACH=false)"
+        elif [ -s "$glci_pool_template_alternates" ]; then
+          echo "Git object pool: attaching $glci_pool ($(git --git-dir="$glci_pool" rev-parse --short HEAD 2>/dev/null)) through the git template"
         elif glci_pool_usable; then
-          echo "Git object pool: borrowing from $glci_pool ($(git --git-dir="$glci_pool" rev-parse --short HEAD 2>/dev/null))"
+          echo "Git object pool: not attached, could not write $glci_pool_template_alternates"
         else
           echo "Git object pool: none seeded yet at $glci_pool"
         fi
@@ -378,10 +399,6 @@ variables:
   # `default:` above. Off until the runners that set GLCI_GIT_OBJECT_POOL_DIR have it, so
   # this merges inert; "false" only skips seeding, not borrowing from a pool that exists.
   GLCI_GIT_OBJECT_POOL: "false"
-  # Where git borrows objects from the pool. The runner sets only GLCI_GIT_OBJECT_POOL_DIR, so
-  # the pool's name stays with this project. On runners without a pool this is the job's own
-  # object directory, which git ignores as an alternate, so it never names a missing path.
-  GIT_ALTERNATE_OBJECT_DIRECTORIES: "${GLCI_GIT_OBJECT_POOL_DIR}${CI_PROJECT_DIR}/.git/objects"
   GIT_SUBMODULE_STRATEGY: "none"
   GET_SOURCES_ATTEMPTS: "3"
   # See the `pre_get_sources_script` hook in `default:` above.

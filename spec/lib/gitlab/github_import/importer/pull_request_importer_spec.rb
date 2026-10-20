@@ -388,6 +388,16 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitla
         importer.insert_git_data(merge_request, false)
       end
 
+      it 'computes the merge base with the default Gitaly timeout', :request_store do
+        allow(Gitlab::GitalyClient).to receive(:call).and_call_original
+        expect(Gitlab::GitalyClient).to receive(:call)
+          .with(anything, :repository_service, :find_merge_base, anything,
+            hash_including(timeout: Gitlab::GitalyClient.default_timeout))
+          .and_call_original
+
+        importer.insert_git_data(merge_request, true)
+      end
+
       context 'when the source branch does not exist' do
         before do
           allow(importer).to receive(:insert_or_replace_git_data)

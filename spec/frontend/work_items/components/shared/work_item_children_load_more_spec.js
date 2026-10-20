@@ -8,13 +8,20 @@ describe('WorkItemChildrenLoadMore', () => {
   const findLoadMoreButton = () => wrapper.findComponent(GlButton);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 
-  const createComponent = (fetchNextPageInProgress = false) => {
+  const createComponent = (fetchNextPageInProgress = false, props = {}) => {
     wrapper = shallowMountExtended(WorkItemChildrenLoadMore, {
       propsData: {
         fetchNextPageInProgress,
+        ...props,
       },
     });
   };
+
+  it('passes ariaLabel to the button', () => {
+    createComponent(false, { ariaLabel: 'Load more To do list items' });
+
+    expect(findLoadMoreButton().attributes('aria-label')).toBe('Load more To do list items');
+  });
 
   it('renders "Load more" button when fetchNextPageInProgress is false', () => {
     createComponent();

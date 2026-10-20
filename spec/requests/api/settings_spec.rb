@@ -41,6 +41,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['diagramsnet_enabled']).to be_truthy
       expect(json_response['diagramsnet_url']).to eq('https://embed.diagrams.net')
       expect(json_response['default_ci_config_path']).to be_nil
+      expect(json_response['default_remove_source_branch_after_merge']).to be(true)
       expect(json_response['sourcegraph_enabled']).to be_falsey
       expect(json_response['sourcegraph_url']).to be_nil
       expect(json_response['secret_detection_token_revocation_url']).to be_nil
@@ -144,6 +145,14 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
 
   describe "PUT /application/settings" do
     let(:group) { create(:group) }
+
+    it 'updates the default source branch removal for new projects', :aggregate_failures do
+      put api('/application/settings', admin), params: { default_remove_source_branch_after_merge: false }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['default_remove_source_branch_after_merge']).to be(false)
+      expect(ApplicationSetting.current.default_remove_source_branch_after_merge).to be(false)
+    end
 
     describe 'accepted parameters' do
       # `optional_attributes` varies by build and by license, but an explicitly declared

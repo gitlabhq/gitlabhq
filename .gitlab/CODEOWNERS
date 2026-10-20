@@ -928,7 +928,6 @@ lib/gitlab/checks/
 /doc/administration/environment_variables.md @eread
 /doc/administration/external_users.md @idurham
 /doc/administration/feature_flags/ @eread
-/doc/administration/file_hooks.md @eread
 /doc/administration/get_started.md @eread
 /doc/administration/git_protocol.md @brendan777
 /doc/administration/gitaly/ @eread
@@ -953,7 +952,6 @@ lib/gitlab/checks/
 /doc/administration/merge_request_diffs.md @uchandran
 /doc/administration/merge_requests_approvals.md @brendan777
 /doc/administration/moderate_users.md @lciutacu
-/doc/administration/monitoring/ @eread
 /doc/administration/monitoring/prometheus/_index.md @eread
 /doc/administration/monitoring/prometheus/registry_exporter.md @z_painter
 /doc/administration/nfs.md @eread
@@ -990,13 +988,10 @@ lib/gitlab/checks/
 /doc/administration/settings/email.md @brendan777
 /doc/administration/settings/external_authorization.md @idurham
 /doc/administration/settings/gitaly_timeouts.md @eread
-/doc/administration/settings/import_and_export_settings.md @eread
-/doc/administration/settings/import_export_rate_limits.md @eread
 /doc/administration/settings/instance_template_repository.md @brendan777
 /doc/administration/settings/jira_cloud_app.md @brendan777
 /doc/administration/settings/jira_cloud_app_troubleshooting.md @brendan777
 /doc/administration/settings/push_event_activities_limit.md @brendan777
-/doc/administration/settings/rate-limit-on-webhook-operations.md @eread
 /doc/administration/settings/scim_setup.md @lciutacu
 /doc/administration/settings/sign_in_restrictions.md @idurham
 /doc/administration/settings/sign_up_restrictions.md @idurham
@@ -1004,10 +999,8 @@ lib/gitlab/checks/
 /doc/administration/settings/terraform_state_settings.md @rsarangadharan
 /doc/administration/settings/third_party_offers.md @z_painter
 /doc/administration/settings/visibility_and_access_controls.md @brendan777
-/doc/administration/sidekiq/ @eread
 /doc/administration/smime_signing_email.md @eread
 /doc/administration/snippets/ @brendan777
-/doc/administration/system_hooks.md @eread
 /doc/administration/terraform_state.md @rsarangadharan
 /doc/administration/timezone.md @eread
 /doc/administration/troubleshooting/ @eread
@@ -1024,7 +1017,6 @@ lib/gitlab/checks/
 /doc/api/avatar.md @idurham
 /doc/api/boards.md @brendan777
 /doc/api/branches.md @brendan777
-/doc/api/bulk_imports.md @eread
 /doc/api/chat.md @lyspin
 /doc/api/cluster_agents.md @rsarangadharan
 /doc/api/cluster_discovery.md @rsarangadharan
@@ -1070,7 +1062,6 @@ lib/gitlab/checks/
 /doc/api/group_clusters.md @rsarangadharan
 /doc/api/group_enterprise_users.md @idurham
 /doc/api/group_epic_boards.md @brendan777
-/doc/api/group_import_export.md @eread
 /doc/api/group_iterations.md @brendan777
 /doc/api/group_labels.md @brendan777
 /doc/api/group_ldap_links.md @lciutacu
@@ -1078,17 +1069,13 @@ lib/gitlab/checks/
 /doc/api/group_markdown_uploads.md @brendan777
 /doc/api/group_members.md @z_painter
 /doc/api/group_milestones.md @brendan777
-/doc/api/group_placeholder_reassignments.md @eread
 /doc/api/group_protected_branches.md @brendan777
 /doc/api/group_protected_environments.md @rsarangadharan
 /doc/api/group_push_rules.md @brendan777
-/doc/api/group_relations_export.md @eread
 /doc/api/group_releases.md @rsarangadharan
 /doc/api/group_ssh_certificates.md @brendan777
-/doc/api/group_webhooks.md @eread
 /doc/api/group_wikis.md @brendan777
 /doc/api/groups.md @z_painter
-/doc/api/import.md @eread
 /doc/api/instance_clusters.md @rsarangadharan
 /doc/api/instance_level_ci_variables.md @marcel.amirault
 /doc/api/instance_ssh_certificates.md @brendan777
@@ -1134,7 +1121,6 @@ lib/gitlab/checks/
 /doc/api/project_badges.md @z_painter
 /doc/api/project_clusters.md @rsarangadharan
 /doc/api/project_forks.md @z_painter
-/doc/api/project_import_export.md @eread
 /doc/api/project_job_token_scopes.md @marcel.amirault
 /doc/api/project_level_variables.md @marcel.amirault
 /doc/api/project_markdown_uploads.md @brendan777
@@ -1142,14 +1128,12 @@ lib/gitlab/checks/
 /doc/api/project_packages_protection_rules.md @z_painter
 /doc/api/project_pull_mirroring.md @brendan777
 /doc/api/project_push_rules.md @brendan777
-/doc/api/project_relations_export.md @eread
 /doc/api/project_repository_storage_moves.md @eread
 /doc/api/project_security_settings.md @rsarangadharan
 /doc/api/project_snippets.md @brendan777
 /doc/api/project_starring.md @z_painter
 /doc/api/project_statistics.md @brendan777
 /doc/api/project_templates.md @brendan777
-/doc/api/project_webhooks.md @eread
 /doc/api/projects.md @z_painter
 /doc/api/protected_branches.md @brendan777
 /doc/api/protected_environments.md @rsarangadharan
@@ -1179,7 +1163,6 @@ lib/gitlab/checks/
 /doc/api/snippets.md @brendan777
 /doc/api/statistics.md @idurham
 /doc/api/suggestions.md @brendan777
-/doc/api/system_hooks.md @eread
 /doc/api/tags.md @brendan777
 /doc/api/templates/ @brendan777
 /doc/api/templates/gitlab_ci_ymls.md @marcel.amirault
@@ -1288,7 +1271,6 @@ lib/gitlab/checks/
 /doc/security/asset_proxy.md @brendan777
 /doc/security/user_file_uploads.md @brendan777
 /doc/solutions/ @jfullam @Darwinjs @sbrightwell
-/doc/solutions/integrations/servicenow.md @eread
 /doc/subscriptions/ @lciutacu
 /doc/subscriptions/gitlab_com/compute_minutes.md @marcel.amirault
 /doc/subscriptions/gitlab_com/gitlab_subscription_troubleshooting.md @lciutacu
@@ -1370,7 +1352,6 @@ lib/gitlab/checks/
 /doc/user/group/custom_project_templates.md @brendan777
 /doc/user/group/devops_adoption/ @lciutacu
 /doc/user/group/epics/ @brendan777
-/doc/user/group/import/ @eread
 /doc/user/group/issues_analytics/ @lciutacu
 /doc/user/group/iterations/ @brendan777
 /doc/user/group/moderate_users.md @idurham
@@ -1386,8 +1367,7 @@ lib/gitlab/checks/
 /doc/user/group/settings/ @idurham
 /doc/user/group/ssh_certificates.md @brendan777
 /doc/user/group/value_stream_analytics/ @lciutacu
-/doc/user/import/ @eread
-/doc/user/import/third_party_systems/jira.md @brendan777
+/doc/user/import/third_party_systems/ @brendan777
 /doc/user/infrastructure/ @rsarangadharan
 /doc/user/infrastructure/clusters/manage/management_project_applications/ @rsarangadharan
 /doc/user/markdown.md @brendan777
@@ -1413,7 +1393,6 @@ lib/gitlab/checks/
 /doc/user/project/deploy_boards.md @rsarangadharan
 /doc/user/project/deploy_keys/ @rsarangadharan
 /doc/user/project/deploy_tokens/ @rsarangadharan
-/doc/user/project/import/ @eread
 /doc/user/project/insights/ @lciutacu
 /doc/user/project/integrations/aws_codepipeline.md @jfullam @Darwinjs @sbrightwell
 /doc/user/project/integrations/bamboo.md @marcel.amirault
@@ -1422,10 +1401,6 @@ lib/gitlab/checks/
 /doc/user/project/integrations/harbor.md @z_painter
 /doc/user/project/integrations/mock_ci.md @marcel.amirault
 /doc/user/project/integrations/pipeline_status_emails.md @marcel.amirault
-/doc/user/project/integrations/webhook_events.md @eread
-/doc/user/project/integrations/webhooks.md @eread
-/doc/user/project/integrations/webhooks_troubleshooting.md @eread
-/doc/user/project/issues/csv_import.md @eread
 /doc/user/project/members/ @z_painter
 /doc/user/project/merge_requests/ @uchandran
 /doc/user/project/merge_requests/approvals/ @brendan777
@@ -1440,8 +1415,6 @@ lib/gitlab/checks/
 /doc/user/project/repository/code_suggestions/ @uchandran
 /doc/user/project/repository/monorepos/ @eread
 /doc/user/project/settings/_index.md @z_painter
-/doc/user/project/settings/import_export.md @eread
-/doc/user/project/settings/import_export_troubleshooting.md @eread
 /doc/user/project/settings/project_access_tokens.md @idurham
 /doc/user/project/troubleshooting.md @z_painter
 /doc/user/project/working_with_projects.md @z_painter
@@ -2004,6 +1977,13 @@ lib/api/entities/project_with_access.rb
 lib/api/entities/project_identity.rb
 lib/api/entities/project.rb
 ee/lib/ee/api/entities/project.rb
+# Intrinsic methods of omniscient classes: https://docs.gitlab.com/development/software_design/#taming-omniscient-classes
+/rubocop/cop/gitlab/config/omniscient_classes/group/intrinsic_methods.yml
+/rubocop/cop/gitlab/config/omniscient_classes/project/intrinsic_methods.yml
+/rubocop/cop/gitlab/config/omniscient_classes/user/intrinsic_methods.yml
+/rubocop/cop/gitlab/config/omniscient_classes/ee_group/intrinsic_methods.yml
+/rubocop/cop/gitlab/config/omniscient_classes/ee_project/intrinsic_methods.yml
+/rubocop/cop/gitlab/config/omniscient_classes/ee_user/intrinsic_methods.yml
 
 [Compliance] @gitlab-org/software-supply-chain-security/compliance/engineering
 /app/services/audit_events/build_service.rb

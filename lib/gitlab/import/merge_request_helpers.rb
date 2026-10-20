@@ -75,7 +75,7 @@ module Gitlab
         diff = merge_request.merge_request_diffs.build
         diff.importing = true
         diff.save
-        diff.save_git_content
+        Gitlab::GitalyClient.allow_slow_merge_base { diff.save_git_content }
         diff.set_as_latest_diff
       end
 
