@@ -2,6 +2,16 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 19.1.9 (2026-10-20)
+
+### Fixed (1 change)
+
+- [Bump gitlab-shell to 14.56.1](https://gitlab.com/gitlab-org/gitlab/-/commit/40c946ede3c3150267931e74103342e931922917) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/258647))
+
+### Changed (1 change)
+
+- [Update gitlab-markup to 2.2.0 and rdoc to 8.1.0](https://gitlab.com/gitlab-org/gitlab/-/commit/ed9249ef85d5311fc182004ab67ae4a5b358443c) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/262718))
+
 ## 19.1.8 (2026-09-10)
 
 ### Fixed (1 change)
