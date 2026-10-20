@@ -77,6 +77,44 @@ RSpec.describe 'CI per-VM git object pool', feature_category: :tooling do
         "(job-level hooks replace them): #{offenders.join(', ')}"
   end
 
+  # The hook skips jobs without a fetch, so no placeholder exists at the pool path.
+  it 'does not borrow from the pool in jobs that take the repository from artifacts' do
+    repo_from_artifacts = jobs.to_h.fetch('.gitlab/ci/global.gitlab-ci.yml: .repo-from-artifacts')
+
+    expect(repo_from_artifacts.dig('variables', 'GIT_ALTERNATE_OBJECT_DIRECTORIES')).to eq('')
+  end
+
+  # Trigger jobs have no runner, so they expand the default GIT_ALTERNATE_OBJECT_DIRECTORIES
+  # without CI_PROJECT_DIR and would forward "/.git/objects" to their downstream pipeline.
+  it 'does not forward the pool alternate from trigger jobs' do
+    # Only the files the root pipeline includes inherit its default variables.
+    root_jobs = Dir.glob(File.join(root, '.gitlab/ci/{,includes/,includes/gitlab-com/}*.gitlab-ci.yml'))
+      .each_with_object({}) do |path, acc|
+        config = load_config.call(path)
+        config.each { |name, job| acc[name] = job if job.is_a?(Hash) } if config.is_a?(Hash)
+      end
+    # `extends` deep-merges parents into the job, the job's own keys winning.
+    deep_merge = ->(a, b) { a.merge(b) { |_, x, y| x.is_a?(Hash) && y.is_a?(Hash) ? deep_merge.call(x, y) : y } }
+    resolve = ->(job) do
+      Array(job['extends']).map { |parent| resolve.call(root_jobs.fetch(parent, {})) }
+        .reduce({}, &deep_merge).then { |base| deep_merge.call(base, job) }
+    end
+
+    offenders = root_jobs.filter_map do |name, job|
+      job = resolve.call(job)
+      next if name.start_with?('.') || !job.key?('trigger')
+
+      inherited = job.dig('inherit', 'variables')
+      next if inherited == false || (inherited.is_a?(Array) && inherited.exclude?('GIT_ALTERNATE_OBJECT_DIRECTORIES'))
+
+      name unless job.dig('variables', 'GIT_ALTERNATE_OBJECT_DIRECTORIES') == ''
+    end
+
+    expect(offenders).to be_empty,
+      "These trigger jobs forward the default GIT_ALTERNATE_OBJECT_DIRECTORIES and must set it " \
+        "to \"\": #{offenders.join(', ')}"
+  end
+
   it 'never uploads a .git that borrows objects from the object pool' do
     global_strategy = gitlab_ci.dig('variables', 'GIT_STRATEGY')
     repo_root_paths = %w[* . ./ .git]
