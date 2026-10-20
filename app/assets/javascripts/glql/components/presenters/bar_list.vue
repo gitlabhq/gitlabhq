@@ -25,9 +25,15 @@ import { pageOf, pageSizeFor } from './bar_list/fold_tail';
 import TwoDimensionsBarList from './bar_list/two_dimensions_bar_list.vue';
 import { listDescriptionError, listDescriptionFor } from './utils/description';
 import { hiddenMetricsError, visibleFieldsOf } from './utils/hidden_metrics';
-import { NO_VALUE, trendPresentationFor } from './utils/stat';
-import { TREND_PREVIOUS_KEY, hasTemporalDimension, withTrendValues } from './utils/table';
-import { formatSignedChange, trendChangeFor } from './utils/trend';
+import { NO_VALUE } from './utils/stat';
+import {
+  TREND_PREVIOUS_KEY,
+  formatSignedChange,
+  hasTemporalDimension,
+  trendChangeFor,
+  trendPresentationFor,
+  withTrendValues,
+} from './utils/trend';
 
 // A query returning fewer rows shows no paging controls.
 const DEFAULT_MAX_ROWS = 6;

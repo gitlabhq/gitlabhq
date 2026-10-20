@@ -19,3 +19,4 @@ replication_targets:
         filters:
           - column: type
             value: Project
+  - name: gcs_parquet_consumer

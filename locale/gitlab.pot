@@ -32317,6 +32317,15 @@ msgid_plural "DuoAgentPlatform|%{first}, %{second}, and %{count} more connected.
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "DuoAgentPlatform|%{group} has turned off GitLab Duo and flows."
+msgstr ""
+
+msgid "DuoAgentPlatform|%{group} has turned off GitLab Duo."
+msgstr ""
+
+msgid "DuoAgentPlatform|%{group} has turned off flows."
+msgstr ""
+
 msgid "DuoAgentPlatform|%{linkStart}Session%{linkEnd}"
 msgstr ""
 
@@ -32348,6 +32357,9 @@ msgid "DuoAgentPlatform|%{user} via %{source}"
 msgstr ""
 
 msgid "DuoAgentPlatform|.gitlab/duo/agent-config.yml is on the default branch."
+msgstr ""
+
+msgid "DuoAgentPlatform|1 more step to set up agents."
 msgstr ""
 
 msgid "DuoAgentPlatform|A knowledge graph that helps agents reason across your whole project."
@@ -32401,10 +32413,10 @@ msgstr ""
 msgid "DuoAgentPlatform|Agent Platform is controlled at the instance level"
 msgstr ""
 
-msgid "DuoAgentPlatform|Agent Platform is off for %{group}. A Group Owner needs to turn it on before anything here can be set up."
+msgid "DuoAgentPlatform|Agent Platform is off for %{group}."
 msgstr ""
 
-msgid "DuoAgentPlatform|Agent Platform is off for the instance. An administrator needs to turn it on before anything here can be set up."
+msgid "DuoAgentPlatform|Agent Platform is off for this instance."
 msgstr ""
 
 msgid "DuoAgentPlatform|Agent and flow setup"
@@ -32431,12 +32443,13 @@ msgstr ""
 msgid "DuoAgentPlatform|Agents get repo-wide context."
 msgstr ""
 
-msgid "DuoAgentPlatform|Agents work today. %d more step to set up flows."
-msgid_plural "DuoAgentPlatform|Agents work today. %d more steps to set up flows."
-msgstr[0] ""
-msgstr[1] ""
+msgid "DuoAgentPlatform|Agents work now."
+msgstr ""
 
-msgid "DuoAgentPlatform|Agents work today. Flows are on but no runner is connected yet, so they will not start."
+msgid "DuoAgentPlatform|Agents work now. 1 more step to set up flows."
+msgstr ""
+
+msgid "DuoAgentPlatform|Agents work now. Flows are on, but they won't start until you connect a runner."
 msgstr ""
 
 msgid "DuoAgentPlatform|All %{count} are required for full agent and flow support."
@@ -32451,7 +32464,22 @@ msgstr ""
 msgid "DuoAgentPlatform|Allow foundational flows"
 msgstr ""
 
+msgid "DuoAgentPlatform|An administrator has turned off GitLab Duo and flows."
+msgstr ""
+
+msgid "DuoAgentPlatform|An administrator has turned off GitLab Duo."
+msgstr ""
+
+msgid "DuoAgentPlatform|An administrator has turned off flows."
+msgstr ""
+
 msgid "DuoAgentPlatform|An instance administrator turns on Agent Platform, Orbit, and MCP tools for every group on the instance. It can't be set here."
+msgstr ""
+
+msgid "DuoAgentPlatform|Ask a top-level group Owner to register one."
+msgstr ""
+
+msgid "DuoAgentPlatform|Ask an administrator to register one."
 msgstr ""
 
 msgid "DuoAgentPlatform|Awaiting your input"
@@ -32501,6 +32529,12 @@ msgid "DuoAgentPlatform|Completed"
 msgstr ""
 
 msgid "DuoAgentPlatform|Connect a runner to run CI/CD flows."
+msgstr ""
+
+msgid "DuoAgentPlatform|Connected. A runner is available and picking up jobs."
+msgstr ""
+
+msgid "DuoAgentPlatform|Could not check for a runner."
 msgstr ""
 
 msgid "DuoAgentPlatform|Could not check for a runner. Try again."
@@ -32566,20 +32600,20 @@ msgstr ""
 msgid "DuoAgentPlatform|Failed to retry session. Please try again."
 msgstr ""
 
-msgid "DuoAgentPlatform|Features that let projects run agents and flows."
-msgstr ""
-
 msgid "DuoAgentPlatform|Flow"
 msgstr ""
 
 msgid "DuoAgentPlatform|Flow execution"
 msgstr ""
 
+msgid "DuoAgentPlatform|Flows combine one or more agents to solve a complex problem."
+msgstr ""
+
 msgid "DuoAgentPlatform|Flows run without these. Set them up for the best results."
 msgstr ""
 
-msgid "DuoAgentPlatform|Flows work today. %d more step to set up agents."
-msgid_plural "DuoAgentPlatform|Flows work today. %d more steps to set up agents."
+msgid "DuoAgentPlatform|Flows work now. %d more step to set up agents."
+msgid_plural "DuoAgentPlatform|Flows work now. %d more steps to set up agents."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -32616,9 +32650,6 @@ msgstr ""
 msgid "DuoAgentPlatform|GitLab Duo is not available for this project."
 msgstr ""
 
-msgid "DuoAgentPlatform|GitLab Duo is off for this group, so nothing here is available yet."
-msgstr ""
-
 msgid "DuoAgentPlatform|GitLab Orbit"
 msgstr ""
 
@@ -32626,6 +32657,9 @@ msgid "DuoAgentPlatform|Group runner"
 msgstr ""
 
 msgid "DuoAgentPlatform|Group settings"
+msgstr ""
+
+msgid "DuoAgentPlatform|How to configure"
 msgstr ""
 
 msgid "DuoAgentPlatform|How to connect"
@@ -32694,10 +32728,10 @@ msgstr ""
 msgid "DuoAgentPlatform|None of the %{total} are available to projects in this group."
 msgstr ""
 
-msgid "DuoAgentPlatform|Not set up yet. To get started, turn on GitLab Duo."
+msgid "DuoAgentPlatform|Not connected. Flows run as CI/CD jobs and require a runner."
 msgstr ""
 
-msgid "DuoAgentPlatform|Not set up yet. Turn on GitLab Duo and the Agent Platform to get started."
+msgid "DuoAgentPlatform|Not set up yet. To get started, turn on GitLab Duo."
 msgstr ""
 
 msgid "DuoAgentPlatform|Nothing is turned on yet. %d step left to set up agents and flows."
@@ -32711,16 +32745,10 @@ msgstr ""
 msgid "DuoAgentPlatform|Off for %{group}. Only a top-level Group Owner can turn it on."
 msgstr ""
 
-msgid "DuoAgentPlatform|Off for every project in this group, and projects can't opt in on their own. Flows combine one or more agents to solve a complex problem."
-msgstr ""
-
 msgid "DuoAgentPlatform|Off for this group. Only a Group Owner can turn it on."
 msgstr ""
 
 msgid "DuoAgentPlatform|Off for this instance. Only an administrator can turn it on."
-msgstr ""
-
-msgid "DuoAgentPlatform|Off, and locked for every project in this group."
 msgstr ""
 
 msgid "DuoAgentPlatform|On for %{group}. Only a top-level Group Owner can change it."
@@ -32747,16 +32775,13 @@ msgstr ""
 msgid "DuoAgentPlatform|Production-ready flows built and maintained by GitLab."
 msgstr ""
 
-msgid "DuoAgentPlatform|Projects can opt out individually."
-msgstr ""
-
 msgid "DuoAgentPlatform|Projects can use third-party agents."
 msgstr ""
 
 msgid "DuoAgentPlatform|Projects in this group can run agents and flows."
 msgstr ""
 
-msgid "DuoAgentPlatform|Projects in this group can run flows, and can opt out individually. Flows combine one or more agents to solve a complex problem."
+msgid "DuoAgentPlatform|Projects in this group can use flows built and maintained by GitLab."
 msgstr ""
 
 msgid "DuoAgentPlatform|Query graph"
@@ -32888,10 +32913,19 @@ msgstr ""
 msgid "DuoAgentPlatform|Turn on AI-native features for this project."
 msgstr ""
 
+msgid "DuoAgentPlatform|Turn on GitLab Duo and the Agent Platform to get started."
+msgstr ""
+
+msgid "DuoAgentPlatform|Turn on GitLab Duo to get started."
+msgstr ""
+
 msgid "DuoAgentPlatform|Turn on flows so agents can review merge requests, fix pipelines, and more."
 msgstr ""
 
-msgid "DuoAgentPlatform|Turn on the Agent Platform so projects in this group can run agents and flows."
+msgid "DuoAgentPlatform|Turn on the Agent Platform to get started."
+msgstr ""
+
+msgid "DuoAgentPlatform|Turning off a setting here turns it off for every project in this group. Projects can't turn it back on."
 msgstr ""
 
 msgid "DuoAgentPlatform|Turning this off disables everything below until it's back on."
@@ -32948,14 +32982,16 @@ msgstr ""
 msgid "DuoAgentPlatform|View session for this change"
 msgstr ""
 
-msgid "DuoAgentPlatform|What are flows?"
-msgstr ""
-
 msgid "DuoAgentPlatform|When an agent needs a decision from you, it shows up here."
 msgstr ""
 
 msgid "DuoAgentPlatform|Whether users can approve tools for a whole session in the IDE and CLI."
 msgstr ""
+
+msgid "DuoAgentPlatform|You can still set up the other %d step here."
+msgid_plural "DuoAgentPlatform|You can still set up the other %d steps here."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "DuoAgentPlatform|You do not have access to this session."
 msgstr ""
@@ -33457,7 +33493,7 @@ msgstr ""
 msgid "DuoAgentsPlatform|%{serviceAccount} runs as %{role}"
 msgstr ""
 
-msgid "DuoAgentsPlatform|%{title} #%{id}"
+msgid "DuoAgentsPlatform|%{title} %{id}"
 msgstr ""
 
 msgid "DuoAgentsPlatform|(editing)"
@@ -38940,6 +38976,12 @@ msgstr ""
 msgid "FeatureLibrary|Can't find what you're looking for? Search with AI"
 msgstr ""
 
+msgid "FeatureLibrary|Contact a group owner to upgrade"
+msgstr ""
+
+msgid "FeatureLibrary|Contact your administrator to upgrade"
+msgstr ""
+
 msgid "FeatureLibrary|Filter features by category"
 msgstr ""
 
@@ -38978,6 +39020,9 @@ msgstr ""
 msgid "FeatureLibrary|Recommended based on your search"
 msgstr ""
 
+msgid "FeatureLibrary|Renew subscription"
+msgstr ""
+
 msgid "FeatureLibrary|Search GitLab features"
 msgstr ""
 
@@ -39004,6 +39049,9 @@ msgstr ""
 msgid "FeatureLibrary|Suggested by Gemini"
 msgstr ""
 
+msgid "FeatureLibrary|Talk to sales"
+msgstr ""
+
 msgid "FeatureLibrary|Try a different search term."
 msgstr ""
 
@@ -39011,6 +39059,12 @@ msgid "FeatureLibrary|Unpin"
 msgstr ""
 
 msgid "FeatureLibrary|Unpin %{title}"
+msgstr ""
+
+msgid "FeatureLibrary|Upgrade to Premium"
+msgstr ""
+
+msgid "FeatureLibrary|Upgrade to Ultimate"
 msgstr ""
 
 msgid "FeatureLibrary|You have reached the search limit. Try again later."

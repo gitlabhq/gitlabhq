@@ -194,7 +194,7 @@ RSpec.describe 'Creating a Snippet', :with_current_organization, feature_categor
           ::ServiceResponse.error(message: 'urk', payload: { snippet: snippet })
         end
 
-        it do
+        it 'passes the uploaded files to the create service as the files param' do
           expect(::Snippets::CreateService).to receive(:new)
             .with(project: nil, current_user: user, params: hash_including(files: expected_value))
             .and_return(double(execute: creation_response))

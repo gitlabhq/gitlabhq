@@ -28,3 +28,4 @@ replication_targets:
         filters:
           - column: target_type
             value: Issue
+  - name: gcs_parquet_consumer

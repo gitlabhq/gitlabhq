@@ -101,12 +101,23 @@ export default {
     },
   },
   emits: ['set-active-item', 'move-to-start', 'move-to-end'],
+  data() {
+    return {
+      typeDescriptionId: uniqueId('work-item-card-type-'),
+      referenceDescriptionId: uniqueId('work-item-card-reference-'),
+    };
+  },
   computed: {
     reference() {
       // An item in the board's own namespace just shows as `#iid`. An item from
       // somewhere else (e.g. a different project on a group board) keeps its
       // full reference, so you can still tell which project it's from.
       return getDisplayReference(this.rootPageFullPath, this.item.reference);
+    },
+    cardDescribedBy() {
+      return this.item.workItemType
+        ? `${this.typeDescriptionId} ${this.referenceDescriptionId}`
+        : this.referenceDescriptionId;
     },
     isActive() {
       return (
@@ -262,14 +273,23 @@ export default {
           tabindex="-1"
           class="gl-relative gl-z-1"
         />
+        <span
+          v-if="item.workItemType"
+          :id="typeDescriptionId"
+          data-testid="work-item-type-description"
+          class="gl-sr-only !gl-absolute"
+          >{{ item.workItemType.name }}</span
+        >
         <h4 class="gl-m-0 gl-min-w-0 gl-text-base gl-font-normal">
           <!-- after: utilities set content: var(--tw-content), and GitLab has no Tailwind preflight to give it a default.
                Without gl-content-[''] the stretched link's ::after, and with it the card focus ring and click area, disappears on focus. -->
           <!-- eslint-disable tailwindcss/no-arbitrary-value -- gl-content-[''] is needed, see the comment above -->
           <a
             :href="item.webPath"
+            :aria-current="isActive ? 'true' : undefined"
+            :aria-describedby="cardDescribedBy"
             data-testid="work-item-link"
-            class="gl-text-default gl-stretched-link hover:gl-text-default hover:gl-no-underline focus-visible:gl-outline-none focus-visible:after:gl-rounded-lg focus-visible:after:gl-content-[''] focus-visible:after:gl-focus"
+            class="gl-text-default gl-stretched-link hover:gl-text-default hover:gl-no-underline focus-visible:gl-outline-none focus-visible:after:gl-rounded-lg focus-visible:after:gl-content-[''] focus-visible:after:gl-focus-inset"
             @click="handleCardClick"
           >
             <gl-truncate :text="item.title" with-tooltip class="gl-relative gl-z-1" />
@@ -281,7 +301,7 @@ export default {
         data-testid="work-item-metadata"
         class="gl-flex gl-flex-wrap gl-items-center gl-gap-x-3 gl-gap-y-2 gl-text-sm gl-text-subtle"
       >
-        <span data-testid="work-item-reference">{{ reference }}</span>
+        <span :id="referenceDescriptionId" data-testid="work-item-reference">{{ reference }}</span>
         <work-item-parent-metadata
           v-if="showParent"
           data-testid="work-item-parent"

@@ -10,6 +10,7 @@ import { i18n, PAGE_SIZE, DEFAULT_SORT } from '~/releases/constants';
 import { convertAllReleasesGraphQLResponse } from '~/releases/util';
 import { popDeleteReleaseNotification } from '~/releases/release_notification_service';
 
+import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 import allReleasesQuery from '../graphql/queries/all_releases.query.graphql';
 
 import ReleaseBlock from './release_block.vue';
@@ -37,6 +38,7 @@ export default {
     ReleasesEmptyState,
     ReleasesPagination,
     ReleasesSort,
+    UserCalloutDismisser,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -287,31 +289,38 @@ export default {
 <template>
   <div class="gl-mt-3 gl-flex gl-flex-col">
     <ci-cd-catalog-wrapper>
-      <template #default="{ isCiCdCatalogProject }">
-        <gl-alert
-          v-if="isCiCdCatalogProject"
-          :title="$options.i18n.alertTitle"
-          :dismissible="false"
-          variant="warning"
-          class="!gl-mb-5 !gl-mt-3"
+      <template #default="{ isCiCdCatalogProject, isPublished }">
+        <user-callout-dismisser
+          v-if="isCiCdCatalogProject && !isPublished"
+          feature-name="ci_catalog_release_alert"
         >
-          <gl-sprintf :message="$options.i18n.alertInfoMessage">
-            <template #link="{ content }">
-              <gl-link
-                :href="$options.links.alertInfoMessageLink"
-                target="_blank"
-                class="gl-mr-2 !gl-no-underline"
-              >
-                <code class="gl-pr-0">
-                  {{ content }}
-                </code>
+          <template #default="{ dismiss, shouldShowCallout }">
+            <gl-alert
+              v-if="shouldShowCallout"
+              :title="$options.i18n.alertTitle"
+              variant="warning"
+              class="!gl-mb-5 !gl-mt-3"
+              @dismiss="dismiss"
+            >
+              <gl-sprintf :message="$options.i18n.alertInfoMessage">
+                <template #link="{ content }">
+                  <gl-link
+                    :href="$options.links.alertInfoMessageLink"
+                    target="_blank"
+                    class="gl-mr-2 !gl-no-underline"
+                  >
+                    <code class="gl-pr-0">
+                      {{ content }}
+                    </code>
+                  </gl-link>
+                </template>
+              </gl-sprintf>
+              <gl-link :href="$options.links.alertInfoPublishLink" target="_blank">
+                {{ $options.i18n.alertInfoPublishMessage }}
               </gl-link>
-            </template>
-          </gl-sprintf>
-          <gl-link :href="$options.links.alertInfoPublishLink" target="_blank">
-            {{ $options.i18n.alertInfoPublishMessage }}
-          </gl-link>
-        </gl-alert>
+            </gl-alert>
+          </template>
+        </user-callout-dismisser>
       </template>
     </ci-cd-catalog-wrapper>
     <releases-empty-state v-if="shouldRenderEmptyState" />

@@ -89,13 +89,13 @@ func newStreamManager(r *http.Request, cfg *api.DuoWorkflow) (*streamManager, er
 	if cfg.CloudServiceForSelfHosted != nil && cfg.CloudServiceForSelfHosted.URI != "" {
 		cloudServiceClient, err = NewClient(cfg.CloudServiceForSelfHosted, userAgent, clientName)
 		if err != nil {
-			return nil, fmt.Errorf("failed to initialize cloud service client: %v", err)
+			return nil, fmt.Errorf("failed to initialize cloud service client: %w", errors.Join(err, client.Close()))
 		}
 
 		cloudServiceStream, err = cloudServiceClient.TrackSelfHostedExecuteWorkflow(r.Context())
 		if err != nil {
-			_ = cloudServiceClient.Close()
-			return nil, fmt.Errorf("failed to initialize cloud service stream: %w", err)
+			closeErr := errors.Join(cloudServiceClient.Close(), client.Close())
+			return nil, fmt.Errorf("failed to initialize cloud service stream: %w", errors.Join(err, closeErr))
 		}
 	}
 

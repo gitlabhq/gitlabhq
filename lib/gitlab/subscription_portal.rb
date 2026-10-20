@@ -2,6 +2,10 @@
 
 module Gitlab
   module SubscriptionPortal
+    # Mirrors ZuoraSubscription::GRACE_PERIOD_AFTER_EXPIRATION in CustomersDot: manual renewal
+    # closes this many days after a subscription expires.
+    RENEWAL_DAYS_AFTER_EXPIRATION = 15
+
     def self.registration_validation_form_id
       "cc_registration_validation"
     end

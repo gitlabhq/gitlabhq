@@ -349,6 +349,74 @@ RSpec.describe Gitlab::Config::Entry::Validators, feature_category: :pipeline_co
     end
   end
 
+  describe described_class::StringValidator do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:config, :valid_result) do
+      'string' | true
+      ''       | true
+      :symbol  | true
+      nil      | false
+      1        | false
+      true     | false
+      []       | false
+      {}       | false
+    end
+
+    with_them do
+      before do
+        klass.instance_eval do
+          validates :config, string: true
+        end
+
+        allow(instance).to receive(:config).and_return(config)
+      end
+
+      it 'validates the instance' do
+        expect(instance.valid?).to be(valid_result)
+
+        unless valid_result
+          expect(instance.errors.messages_for(:config))
+            .to contain_exactly('should be a string or symbol')
+        end
+      end
+    end
+  end
+
+  describe described_class::KeyValidator do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:config, :error_message) do
+      'key'     | nil
+      :key      | nil
+      '.key'    | nil
+      'a/b'     | 'cannot contain the "/" character'
+      'a%2Fb'   | 'cannot contain the "/" character'
+      '.'       | 'cannot be "." or ".."'
+      '..'      | 'cannot be "." or ".."'
+      '%2E%2E'  | 'cannot be "." or ".."'
+      nil       | 'should be a string or symbol'
+      1         | 'should be a string or symbol'
+      ['key']   | 'should be a string or symbol'
+    end
+
+    with_them do
+      before do
+        klass.instance_eval do
+          validates :config, key: true
+        end
+
+        allow(instance).to receive(:config).and_return(config)
+      end
+
+      it 'validates the instance' do
+        expect(instance.valid?).to be(error_message.nil?)
+
+        expect(instance.errors.messages_for(:config)).to contain_exactly(error_message) if error_message
+      end
+    end
+  end
+
   describe described_class::DurationValidator do
     using RSpec::Parameterized::TableSyntax
 

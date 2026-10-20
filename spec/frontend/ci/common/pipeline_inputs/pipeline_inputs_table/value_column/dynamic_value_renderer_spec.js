@@ -133,50 +133,35 @@ describe('DynamicValueRenderer', () => {
         expect(dropdownItems[1].value).toBe('option2');
         expect(dropdownItems[2].value).toBe('option3');
       });
+    });
 
-      it('displays selected value in dropdown toggle text', () => {
+    describe('toggle text', () => {
+      it.each([
+        ['NUMBER', 2, '2'],
+        ['NUMBER', 0, '0'],
+        ['STRING', 'option2', 'option2'],
+        ['ARRAY', ['option1'], 'option1'],
+        ['ARRAY', [1], '1'],
+        ['ARRAY', [1, 2], '2 options selected'],
+        ['ARRAY', [true], 'true'],
+        ['ARRAY', ['option1', 'option2'], '2 options selected'],
+        ['STRING', '', 'Select option'],
+        ['STRING', null, 'Select option'],
+        ['ARRAY', '', 'Select option'],
+        ['ARRAY', [], 'Select option'],
+      ])('%s input set to %p shows %p', (type, value, expected) => {
         createComponent({
           props: {
             item: {
               ...defaultProps.item,
-              type: 'ARRAY',
-              value: ['option2'],
+              type,
+              value,
               options: ['option1', 'option2', 'option3'],
             },
           },
         });
 
-        expect(findDropdown().props('toggleText')).toBe('option2');
-      });
-
-      it('displays multiple selected values in dropdown toggle text', () => {
-        createComponent({
-          props: {
-            item: {
-              ...defaultProps.item,
-              type: 'ARRAY',
-              value: ['option1', 'option2'],
-              options: ['option1', 'option2', 'option3'],
-            },
-          },
-        });
-
-        expect(findDropdown().props('toggleText')).toBe('2 options selected');
-      });
-
-      it('displays placeholder in dropdown toggle text when array value is empty', () => {
-        createComponent({
-          props: {
-            item: {
-              ...defaultProps.item,
-              type: 'ARRAY',
-              value: '',
-              options: ['option1', 'option2', 'option3'],
-            },
-          },
-        });
-
-        expect(findDropdown().props('toggleText')).toBe('Select option');
+        expect(findDropdown().props('toggleText')).toBe(expected);
       });
     });
   });

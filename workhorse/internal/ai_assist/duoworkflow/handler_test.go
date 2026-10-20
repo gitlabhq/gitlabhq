@@ -177,6 +177,30 @@ func TestHandler_InvalidServiceURL(t *testing.T) {
 	}
 }
 
+func TestHandler_InitializationErrorSendsCloseFrame(t *testing.T) {
+	testhelper.ConfigureSecret()
+
+	// No Service configuration makes runner initialization fail after the
+	// connection has been upgraded.
+	apiServer, apiClient := setupAPIServer(t, `{"DuoWorkflow": {}}`)
+	defer apiServer.Close()
+
+	httpServer := httptest.NewServer(NewHandler(apiClient, initRdb(t), http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}), "").Build())
+	defer httpServer.Close()
+
+	wsURL := "ws" + strings.TrimPrefix(httpServer.URL, "http") + "/duo"
+
+	wsConn, resp, err := websocket.DefaultDialer.Dial(wsURL, nil)
+	if resp != nil {
+		_ = resp.Body.Close()
+	}
+	require.NoError(t, err)
+	defer wsConn.Close()
+
+	_, _, err = wsConn.ReadMessage()
+	require.Equal(t, "websocket: close 1011 (internal server error): Failed to initialize agent platform client", err.Error())
+}
+
 func TestHandler_ShutdownWithNoActiveRunners(t *testing.T) {
 	testhelper.ConfigureSecret()
 

@@ -17,20 +17,30 @@ To authenticate with the container registry, you can use:
 
 - GitLab username and password (not available if 2FA is enabled)
 - [Personal access token](../../profile/personal_access_tokens.md)
+- [Fine-grained personal access token](../../../auth/tokens/fine_grained_access_tokens.md)
 - [Deploy token](../../project/deploy_tokens/_index.md)
 - [Project access token](../../project/settings/project_access_tokens.md)
 - [Group access token](../../group/settings/group_access_tokens.md)
 - The [GitLab CLI](https://docs.gitlab.com/cli/)
 
-For token-based authentication methods, the minimum required scope:
+For token-based authentication, the token must have the following scopes or permissions:
 
-- For read (pull) access, must be `read_registry`
-- For write (push) access, must be `write_registry` and `read_registry`
+| Operation                        | Personal, project, group, or deploy token scopes | Fine-grained personal access token permissions |
+| -------------------------------- | ------------------------------------------------ | ---------------------------------------------- |
+| Pull container images            | `read_registry`                                  | **Container Repository**: **Read**             |
+| Push container images            | `read_registry` and `write_registry`             | Not supported                                  |
+| Delete container images and tags | `api`[^deploy-token-delete]                      | **Container Repository**: **Delete**           |
+
+[^deploy-token-delete]: Deploy tokens do not have the `api` scope and cannot delete container images or tags.
+
+For more information, see [access token scopes](../../../security/tokens/access_token_scopes.md) and
+[fine-grained permissions for the container registry](../../../auth/tokens/fine_grained_access_tokens_other.md#container-registry).
 
 > [!note]
-> Admin Mode does not apply during authentication with the container registry. If you are an administrator
-> with Admin Mode enabled, and you create a personal access token without the `admin_mode` scope,
-> that token works even though Admin Mode is enabled. For more information, see
+> Admin Mode does not apply during authentication with the container registry.
+> For example, you might be an administrator with Admin Mode enabled.
+> A personal access token you create without the `admin_mode` scope still works with the registry.
+> For more information, see
 > [Admin Mode](../../../administration/settings/sign_in_restrictions.md#admin-mode).
 
 ## Authenticate with username and password
@@ -80,7 +90,7 @@ To use CI/CD to authenticate with the container registry, you can use:
   echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
   ```
 
-- A [CI job token](../../../ci/jobs/ci_job_token.md).
+- A [CI/CD job token](../../../ci/jobs/ci_job_token.md).
 
   This token has read (pull) and write (push) access to the container registry of the project that runs the job.
   The [CI/CD job token allowlist](../../../ci/jobs/ci_job_token.md#control-job-token-access-to-your-project) controls access to other projects' registries.
@@ -95,17 +105,13 @@ To use CI/CD to authenticate with the container registry, you can use:
   echo "$CI_JOB_TOKEN" | docker login $CI_REGISTRY -u gitlab-ci-token --password-stdin
   ```
 
-- A [GitLab deploy token](../../project/deploy_tokens/_index.md#gitlab-deploy-token) with the minimum scope of:
-  - For read (pull) access, `read_registry`.
-  - For write (push) access, `read_registry` and `write_registry`.
+- A [GitLab deploy token](../../project/deploy_tokens/_index.md#gitlab-deploy-token).
 
   ```shell
   echo "$CI_DEPLOY_PASSWORD" | docker login $CI_REGISTRY -u $CI_DEPLOY_USER --password-stdin
   ```
 
-- A personal access token with the minimum scope of:
-  - For read (pull) access, `read_registry`.
-  - For write (push) access, `read_registry` and `write_registry`.
+- A personal access token or fine-grained personal access token.
 
   ```shell
   echo "<access_token>" | docker login $CI_REGISTRY -u <username> --password-stdin
@@ -187,14 +193,13 @@ To resolve the error, identify the error code and follow the instructions:
 
 - `UNAUTHORIZED` (`401`): GitLab could not verify the credentials. To resolve:
   - Confirm the password or token is correct and not expired.
-  - Confirm a personal access token or deploy token has the `read_registry` scope for pull
-    access, or the `read_registry` and `write_registry` scopes for push access.
+  - Confirm the token has the scopes or permissions required for the operation.
   - If the account uses two-factor authentication, authenticate with a token instead of a
     password. For more information, see [authenticate with a token](#authenticate-with-a-token).
 - `DENIED` (`403`): GitLab denied access. Check the message:
   - `access forbidden`: the credentials are valid but do not grant registry access. Confirm
-    the token has the `read_registry` scope (and `write_registry` for push access), and that
-    your role allows access to the project's registry.
+    the token has the scopes or permissions required for the operation, and that your role
+    allows access to the project's registry.
   - `Pushing to protected repository path forbidden`: the target path is protected by
     container registry protection rules.
   - `Access denied: too many failed authentication attempts from this network`: abuse
@@ -207,7 +212,7 @@ To resolve the error, identify the error code and follow the instructions:
   - Verify the registry token service is configured correctly.
 
 If the Docker client instead reports `unexpected end of JSON input`, the response body was empty
-or contained invalid JSON:
+or contained invalid JSON.
 
 ### Error: `unexpected end of JSON input`
 
@@ -237,5 +242,4 @@ unauthorized: authentication required
 ```
 
 This error happens when your authentication token expires before the image push is complete.
-By default, tokens for the container registry on GitLab Self-Managed instances expire after five minutes.
-On GitLab.com, the token expiration time is 15 minutes.
+On GitLab Self-Managed, an administrator can [increase the token duration](../../../administration/packages/container_registry.md#increase-token-duration).

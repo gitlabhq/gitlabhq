@@ -56,6 +56,7 @@
 - :elasticsearch_adapter
 - :elasticsearch_settings_enabled
 - :enable_admin_mode
+- :es_service
 - :event_store_publisher
 - :example_group
 - :execution_result

@@ -4,3 +4,4 @@ database: main
 replication_targets:
 - name: clickhouse_main
   target: siphon_banned_users
+- name: gcs_parquet_consumer

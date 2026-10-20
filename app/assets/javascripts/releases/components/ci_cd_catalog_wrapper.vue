@@ -46,11 +46,11 @@ export default normalizeRender({
   data() {
     return {
       catalogReleases: [],
-      isCiCdCatalogProject: false,
+      catalogSettings: { isCatalogResource: false, isPublished: false },
     };
   },
   apollo: {
-    isCiCdCatalogProject: {
+    catalogSettings: {
       query: getCiCatalogSettingsQuery,
       variables() {
         return {
@@ -58,7 +58,10 @@ export default normalizeRender({
         };
       },
       update({ project }) {
-        return project?.isCatalogResource || false;
+        return {
+          isCatalogResource: Boolean(project?.isCatalogResource),
+          isPublished: Boolean(project?.isPublished),
+        };
       },
       error() {
         createAlert({ message: this.$options.i18n.catalogResourceQueryError });
@@ -83,6 +86,12 @@ export default normalizeRender({
     },
   },
   computed: {
+    isCiCdCatalogProject() {
+      return this.catalogSettings.isCatalogResource;
+    },
+    isPublished() {
+      return this.catalogSettings.isPublished;
+    },
     detailsPagePath() {
       return this.isCatalogRelease ? exploreCatalogPath(this.projectPath) : '';
     },
@@ -94,6 +103,7 @@ export default normalizeRender({
     return getSlotFunction(this)({
       isCatalogRelease: this.isCatalogRelease,
       isCiCdCatalogProject: this.isCiCdCatalogProject,
+      isPublished: this.isPublished,
       detailsPagePath: this.detailsPagePath,
     });
   },

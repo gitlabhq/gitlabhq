@@ -17,3 +17,4 @@ replication_targets:
           - id
         source_keys:
           - work_item_id
+  - name: gcs_parquet_consumer

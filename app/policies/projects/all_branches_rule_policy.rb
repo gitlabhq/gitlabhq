@@ -5,5 +5,6 @@ module Projects
     delegate(:project) { @subject.project }
 
     rule { ~can?(:_read_custom_branch_rule) }.prevent :read_branch_rule
+    rule { ~can?(:_delete_custom_branch_rule) }.prevent :delete_branch_rule
   end
 end

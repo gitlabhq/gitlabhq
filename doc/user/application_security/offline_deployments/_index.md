@@ -182,7 +182,7 @@ template:
 
 | CI/CD variable                            | Description                                   | Default value                     |
 |-------------------------------------------|-----------------------------------------------|-----------------------------------|
-| `SECURE_BINARIES_ANALYZERS`               | Comma-separated list of analyzers to download | `"bandit, brakeman, gosec, ..."` |
+| `SECURE_BINARIES_ANALYZERS`               | Comma-separated list of analyzers to download | `"gitlab-advanced-sast, gitlab-advanced-sast-cpp, gitlab-advanced-sast-ext, ..."` |
 | `SECURE_BINARIES_DOWNLOAD_IMAGES`         | Used to disable jobs                          | `"true"`                          |
 | `SECURE_BINARIES_PUSH_IMAGES`             | Push files to the project registry            | `"true"`                          |
 | `SECURE_BINARIES_SAVE_ARTIFACTS`          | Also save image archives as artifacts         | `"false"`                         |
@@ -198,15 +198,17 @@ If it's not possible to follow the previous method, the images can be transferre
 #!/bin/bash
 set -ux
 
-# Specify needed analyzer images
-analyzers=${SAST_ANALYZERS:-"bandit eslint gosec"}
+# Specify needed analyzer images, as name:version
+analyzers=${SAST_ANALYZERS:-"semgrep:6 spotbugs:5"}
 gitlab=registry.gitlab.com/security-products/
 
-for i in "${analyzers[@]}"
+for i in $analyzers
 do
-  tarname="${i}_2.tar"
-  docker pull $gitlab$i:2
-  docker save $gitlab$i:2 -o ./analyzers/${tarname}
+  name=${i%%:*}
+  version=${i##*:}
+  tarname="${name}_${version}.tar"
+  docker pull $gitlab$name:$version
+  docker save $gitlab$name:$version -o ./analyzers/${tarname}
   chmod +r ./analyzers/${tarname}
 done
 ```
@@ -220,17 +222,20 @@ physical media may be needed for such a transfer:
 #!/bin/bash
 set -ux
 
-# Specify needed analyzer images
-analyzers=${SAST_ANALYZERS:-"bandit eslint gosec"}
+# Specify needed analyzer images, as name:version
+analyzers=${SAST_ANALYZERS:-"semgrep:6 spotbugs:5"}
+gitlab=registry.gitlab.com/security-products/
 registry=$GITLAB_HOST:4567
 
-for i in "${analyzers[@]}"
+for i in $analyzers
 do
-  tarname="${i}_2.tar"
+  name=${i%%:*}
+  version=${i##*:}
+  tarname="${name}_${version}.tar"
   scp ./analyzers/${tarname} ${GITLAB_HOST}:~/${tarname}
   ssh $GITLAB_HOST "sudo docker load -i ${tarname}"
-  ssh $GITLAB_HOST "sudo docker tag $(sudo docker images | grep $i | awk '{print $3}') ${registry}/analyzers/${i}:2"
-  ssh $GITLAB_HOST "sudo docker push ${registry}/analyzers/${i}:2"
+  ssh $GITLAB_HOST "sudo docker tag ${gitlab}${name}:${version} ${registry}/analyzers/${name}:${version}"
+  ssh $GITLAB_HOST "sudo docker push ${registry}/analyzers/${name}:${version}"
 done
 ```
 

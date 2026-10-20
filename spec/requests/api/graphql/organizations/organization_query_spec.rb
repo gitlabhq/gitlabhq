@@ -300,6 +300,37 @@ RSpec.describe 'getting organization information', feature_category: :organizati
         end
       end
 
+      context 'with `sort: "similarity"`' do
+        # `zeta` is the closer match but has the lower ID, so this distinguishes
+        # similarity from the `id_desc` fallback.
+        let_it_be(:closest_match) do
+          create(:group, :private, name: 'zeta', organization: organization) { |g| g.add_developer(user) }
+        end
+
+        let_it_be(:distant_match) do
+          create(:group, :private, name: 'analytics zeta reporting', organization: organization) do |g|
+            g.add_developer(user)
+          end
+        end
+
+        let(:organization_fields) do
+          <<~FIELDS
+            id
+            groups(search: "zeta", allAvailable: false, sort: "similarity") {
+              nodes {
+                fullPath
+              }
+            }
+          FIELDS
+        end
+
+        it 'ranks the closest match first' do
+          request_organization
+
+          expect(groups.pluck('fullPath')).to eq([closest_match.full_path, distant_match.full_path])
+        end
+      end
+
       context 'with negated `ids` argument' do
         let(:organization_fields) do
           <<~FIELDS

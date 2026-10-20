@@ -1,0 +1,4 @@
+---
+name: _delete_protected_branch_rule
+description: Allows deleting branch rules for individual protected branches. This does not allow deleting the "all branches" or "all protected branches" branch rules.
+conditionally_enables: delete_branch_rule

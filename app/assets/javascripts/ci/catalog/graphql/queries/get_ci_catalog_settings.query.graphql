@@ -4,6 +4,7 @@ query getCiCatalogSettings($fullPath: ID!) {
   project(fullPath: $fullPath) {
     id
     isCatalogResource
+    isPublished
     description
   }
 }

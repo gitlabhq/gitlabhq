@@ -7,7 +7,8 @@ import { __, sprintf } from '~/locale';
 import { dimensionsOf, metricsOf } from '../../utils/chart_data';
 import { compactValueFormatterFor, valueFormatterFor } from '../../utils/value_format';
 import { interpolateDescription, unknownPlaceholderError } from './utils/description';
-import { NO_VALUE, TREND_KEYS, statPresentationFor, trendPresentationFor } from './utils/stat';
+import { NO_VALUE, statPresentationFor } from './utils/stat';
+import { TREND_KEYS, trendPresentationFor } from './utils/trend';
 
 const metricValueIn = (data, metric) => (metric ? data?.nodes?.[0]?.[metric.key] : undefined);
 

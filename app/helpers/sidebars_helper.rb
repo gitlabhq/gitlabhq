@@ -87,6 +87,7 @@ module SidebarsHelper
       has_multiple_organizations: user.has_multiple_organizations?,
       show_feature_library_shimmer: show_feature_library_shimmer?,
       ai_search_available: feature_library_ai_search_available?(project: project, group: group),
+      explore_pages_available: feature_catalog_explore_pages_available?(group: group, project: project),
       manage_organization_link: manage_organization_link(user, panel_type)
     })
   end
@@ -221,6 +222,13 @@ module SidebarsHelper
     false
   end
   # rubocop:enable Lint/UnusedMethodArgument
+
+  def feature_catalog_explore_pages_available?(project:, group:)
+    resource = project || group
+    return false unless resource
+
+    Feature.enabled?(:feature_catalog_explore_pages, resource.root_ancestor)
+  end
 
   def fallback_sidebar_panel(nav, context_adds, user = nil)
     # Fallback when panels fail to render:

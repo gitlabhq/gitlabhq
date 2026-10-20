@@ -11,3 +11,4 @@ replication_targets:
     column: traversal_path
     expression_key_columns:
     - namespace_id
+- name: gcs_parquet_consumer

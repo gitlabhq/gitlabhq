@@ -6,3 +6,4 @@ ignored_columns:
 replication_targets:
   - name: clickhouse_main
     target: siphon_ci_runners
+  - name: gcs_parquet_consumer

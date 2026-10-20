@@ -224,6 +224,69 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
       end
     end
 
+    describe 'explore_pages_available' do
+      let(:group) { build_stubbed(:group) }
+
+      context 'when the feature_catalog_explore_pages flag is disabled' do
+        before do
+          stub_feature_flags(feature_catalog_explore_pages: false)
+        end
+
+        it { is_expected.to include(explore_pages_available: false) }
+      end
+
+      context 'when the feature_catalog_explore_pages flag is enabled for the root group' do
+        before do
+          stub_feature_flags(feature_catalog_explore_pages: group)
+        end
+
+        it { is_expected.to include(explore_pages_available: true) }
+
+        context 'without a project or group' do
+          let(:group) { nil }
+
+          it { is_expected.to include(explore_pages_available: false) }
+        end
+      end
+
+      context 'when the flag is enabled for a different group' do
+        before do
+          stub_feature_flags(feature_catalog_explore_pages: build_stubbed(:group))
+        end
+
+        it { is_expected.to include(explore_pages_available: false) }
+      end
+
+      context 'when the resource is under the root group the flag is enabled for' do
+        let(:root_group) { build_stubbed(:group) }
+
+        before do
+          stub_feature_flags(feature_catalog_explore_pages: root_group)
+        end
+
+        context 'with a subgroup' do
+          let(:group) { build_stubbed(:group, parent: root_group) }
+
+          before do
+            allow(group).to receive(:root_ancestor).and_return(root_group)
+          end
+
+          it { is_expected.to include(explore_pages_available: true) }
+        end
+
+        context 'with a project' do
+          let(:group) { nil }
+          let(:project) { build_stubbed(:project) }
+
+          before do
+            allow(project).to receive(:root_ancestor).and_return(root_group)
+          end
+
+          it { is_expected.to include(explore_pages_available: true) }
+        end
+      end
+    end
+
     describe "shortcut links" do
       describe "as the anonymous user" do
         let(:user) { nil }

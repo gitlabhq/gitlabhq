@@ -329,8 +329,15 @@ const (
 // SendGoingAway sends a CloseGoingAway (1001) frame with the given reason to
 // signal the client to reconnect, and marks the connection as closed on success.
 func (w *wsManager) SendGoingAway(reason string) error {
+	return w.SendClose(websocket.CloseGoingAway, reason)
+}
+
+// SendClose sends a close frame with the given code and reason, and marks the
+// connection as closed on success. It uses WriteControl, which unlike
+// WriteMessage is safe to call while another goroutine is writing an action.
+func (w *wsManager) SendClose(code int, reason string) error {
 	deadline := time.Now().Add(wsCloseTimeout)
-	closeMsg := websocket.FormatCloseMessage(websocket.CloseGoingAway, truncateCloseReason(reason))
+	closeMsg := websocket.FormatCloseMessage(code, truncateCloseReason(reason))
 	if err := w.conn.WriteControl(websocket.CloseMessage, closeMsg, deadline); err != nil {
 		return err
 	}
@@ -378,14 +385,7 @@ func truncateCloseReason(s string) string {
 // silently drop the 4400 close and make the client fall back to 1000. Truncate
 // defensively on a UTF-8 boundary to guarantee the frame is sent.
 func (w *wsManager) SendInvalidRequest(reason string) error {
-	deadline := time.Now().Add(wsCloseTimeout)
-	reason = truncateCloseReason(reason)
-	closeMsg := websocket.FormatCloseMessage(closeInvalidRequest, reason)
-	if err := w.conn.WriteControl(websocket.CloseMessage, closeMsg, deadline); err != nil {
-		return err
-	}
-	w.closed.Store(true)
-	return nil
+	return w.SendClose(closeInvalidRequest, reason)
 }
 
 // Close closes the underlying connection, sending CloseNormalClosure (1000) first

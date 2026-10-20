@@ -1,6 +1,6 @@
 ---
-source_checksum: b31816134f219fc7
-distilled_at_sha: 33763b32d1455eacf9cc5a98ba9392e97f853838
+source_checksum: 2c9e0bd0fabb535c
+distilled_at_sha: 0598d6c1b5bb294276c7c644f29291505d54c4c1
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -32,6 +32,8 @@ distilled_at_sha: 33763b32d1455eacf9cc5a98ba9392e97f853838
 - Call `#execute_hooks` on the project or group, passing the payload and the webhook type symbol (for example, `project.execute_hooks(payload, :emoji_hooks)`).
 - Check `#has_active_hooks?` on the project or group before building the payload, because building a payload is expensive; only preload associated data needed for the payload after this check passes.
 - Trigger system-only webhooks (not configurable for projects) through `SystemHooksService` and update `SystemHooksService` to build data for the resource.
+- Pass `organization:` (for example, `organization: project.organization`) when calling `SystemHooksService#execute_hooks` directly, because system hooks run only for events in their own organization (`execute_hooks_for` resolves the organization from the model).
+- Filter by organization in any code that finds, lists, checks for, or delivers system hooks, because data isolation does not scope the `web_hooks` table (it has more than one sharding key).
 - Build the payload immediately after the event and DO NOT reload the object before building it, to avoid race conditions producing inaccurate payloads.
 - Build payloads in-request (not asynchronously via Sidekiq), except when the payload contains only immutable data.
 
@@ -66,6 +68,7 @@ distilled_at_sha: 33763b32d1455eacf9cc5a98ba9392e97f853838
 - Assert the exact number of database queries made to build a payload using `QueryRecorder`, and compare against that count in the spec to prevent unintentional query-count regressions.
 - Assert that the payload has the expected properties.
 - Test the scenarios where the webhook should and should not be triggered.
+- Test organization scoping of system hook code paths with the shared examples in `spec/support/shared_examples/web_hooks/system_hook_organization_isolation_shared_examples.rb`; define `organization` and the required method for each (`system hook delivery scoped to the organization` → `execute_system_hooks`, `system hook presence check scoped to the organization` → `system_hooks_active?`, `system hook listing scoped to the organization` → `listed_system_hook_ids`, `system hook lookup scoped to the organization` → `request_system_hook(hook)`).
 
 ### Code Review
 

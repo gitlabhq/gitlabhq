@@ -38,6 +38,7 @@ describe('WorkItemCard', () => {
   let wrapper;
 
   const findLink = () => wrapper.findByTestId('work-item-link');
+  const findTypeDescription = () => wrapper.findByTestId('work-item-type-description');
   const findTitle = () => wrapper.findComponent(GlTruncate);
   const findReference = () => wrapper.findByTestId('work-item-reference');
   const findTypeIcon = () => wrapper.findComponent(WorkItemTypeIcon);
@@ -110,6 +111,47 @@ describe('WorkItemCard', () => {
 
       expect(findLink().findComponent(GlTruncate).exists()).toBe(true);
       expect(findLink().element.contains(findMetadataRow().element)).toBe(false);
+    });
+  });
+
+  describe('screen reader description', () => {
+    const describedByIds = () => findLink().attributes('aria-describedby').split(' ');
+
+    it('describes the link with the work item type and the reference', () => {
+      createComponent({ item: buildItem({ reference: 'group/project#42' }) });
+
+      const [typeId, referenceId] = describedByIds();
+
+      expect(findTypeDescription().attributes('id')).toBe(typeId);
+      expect(findTypeDescription().text()).toBe('Issue');
+      expect(findReference().attributes('id')).toBe(referenceId);
+      expect(findReference().text()).toBe('group/project#42');
+    });
+
+    describe('when the item has no work item type', () => {
+      it('describes the link with the reference alone', () => {
+        createComponent({ item: buildItem({ workItemType: null }) });
+
+        expect(findTypeDescription().exists()).toBe(false);
+        expect(describedByIds()).toEqual([findReference().attributes('id')]);
+      });
+    });
+  });
+
+  describe('aria-current', () => {
+    it('is not set when the card is not the active item', () => {
+      createComponent();
+
+      expect(findLink().attributes('aria-current')).toBeUndefined();
+    });
+
+    describe('when the card is the active item', () => {
+      it('marks the link as current', () => {
+        const item = buildItem();
+        createComponent({ item, activeItem: item });
+
+        expect(findLink().attributes('aria-current')).toBe('true');
+      });
     });
   });
 

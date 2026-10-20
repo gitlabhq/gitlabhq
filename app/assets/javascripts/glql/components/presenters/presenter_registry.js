@@ -2,6 +2,7 @@ import IterationPresenter from 'ee_else_ce/glql/components/presenters/iteration.
 import StatusPresenter from 'ee_else_ce/glql/components/presenters/status.vue';
 import HealthPresenter from 'ee_else_ce/glql/components/presenters/health.vue';
 
+import { TREND_TYPENAME } from '../../constants';
 import IssuablePresenter from './issuable.vue';
 import MilestonePresenter from './milestone.vue';
 import ProjectPresenter from './project.vue';
@@ -28,6 +29,7 @@ import UrlPresenter from './url.vue';
 import PercentagePresenter from './percentage.vue';
 import NumberPresenter from './number.vue';
 import CreditsPresenter from './credits.vue';
+import TrendPresenter from './trend.vue';
 
 // A registry value is either a Vue component (used for all variants/typenames)
 // or a plain object whose keys are variant names / parent typenames. Vue
@@ -65,6 +67,7 @@ export const presentersByObjectType = {
   CiStage: NamedTextPresenter,
   Group: LinkPresenter,
   DuoWorkflowsModelMetadata: NamedTextPresenter,
+  [TREND_TYPENAME]: TrendPresenter,
 };
 
 // Maps field keys to presenters. Values can be:

@@ -18,3 +18,4 @@ replication_targets:
   - name: clickhouse_main
     target: siphon_users
     priority: 4
+  - name: gcs_parquet_consumer

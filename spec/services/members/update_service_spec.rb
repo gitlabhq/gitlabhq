@@ -102,7 +102,7 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
 
     context 'when members are downgraded to guest' do
       shared_examples 'schedules to delete confidential todos' do
-        it do
+        it 'schedules todo deletion and updates the members to guest' do
           members.each do |member|
             expect(TodosDestroyer::EntityLeaveWorker)
               .to receive(:perform_in)

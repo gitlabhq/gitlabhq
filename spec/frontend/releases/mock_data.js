@@ -1,9 +1,10 @@
-export const generateCatalogSettingsResponse = (isCatalogResource = false) => {
+export const generateCatalogSettingsResponse = (isCatalogResource = false, isPublished = false) => {
   return {
     data: {
       project: {
         id: 'gid://gitlab/Project/149',
         isCatalogResource,
+        isPublished,
         description: '',
       },
     },

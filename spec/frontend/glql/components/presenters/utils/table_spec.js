@@ -1,298 +1,176 @@
 import {
-  TREND_CHANGE_KEY,
-  TREND_PREVIOUS_KEY,
-  hasTemporalDimension,
-  withTrendValues,
+  resolveTrendField,
+  trendColumnFor,
+  withTrendColumn,
 } from '~/glql/components/presenters/utils/table';
+import { TREND_CHANGE_KEY, TREND_KEY } from '~/glql/components/presenters/utils/trend';
 
 const mockLanguageDimension = { key: 'language', label: 'Language', type: 'dimension' };
-const mockProjectDimension = { key: 'project', label: 'Project', type: 'dimension' };
 const mockTotalCountMetric = { key: 'totalCount', label: 'Total count', type: 'metric' };
 
-const mockProject = (name, id = `gid://gitlab/Project/${name}`) => ({
-  __typename: 'Project',
-  id,
-  nameWithNamespace: name,
+describe('resolveTrendField', () => {
+  const mockAliasedMetric = { key: 'Suggestions', field: 'totalCount', type: 'metric' };
+  const mockAcceptanceRateMetric = { key: 'acceptanceRate', type: 'metric' };
+
+  it('defaults to the only metric when none is named', () => {
+    expect(resolveTrendField([mockTotalCountMetric], '')).toEqual({
+      field: mockTotalCountMetric,
+      error: null,
+    });
+  });
+
+  it('resolves to nothing when there is no metric to compare', () => {
+    expect(resolveTrendField([], '')).toEqual({ field: null, error: null });
+  });
+
+  it.each(['Suggestions', 'totalCount'])('matches `%s` on the alias or the base key', (metric) => {
+    expect(resolveTrendField([mockAliasedMetric, mockAcceptanceRateMetric], metric)).toEqual({
+      field: mockAliasedMetric,
+      error: null,
+    });
+  });
+
+  it('reports an error when several metrics are selected and none is named', () => {
+    expect(resolveTrendField([mockTotalCountMetric, mockAcceptanceRateMetric], '')).toEqual({
+      field: null,
+      error: 'table display type requires `trendMetric` when several metrics are selected',
+    });
+  });
+
+  it('reports an error when the named metric is not selected', () => {
+    expect(resolveTrendField([mockTotalCountMetric], 'usersCount')).toEqual({
+      field: null,
+      error: 'Unknown metric for `trendMetric`: `usersCount`.',
+    });
+  });
 });
-const mockUser = (id, name) => ({ __typename: 'UserCore', id, name });
 
-describe('hasTemporalDimension', () => {
-  it('is true when a dimension buckets by date', () => {
-    const mockWeeklyDimension = {
-      key: 'created',
-      type: 'dimension',
-      parameters: { granularity: 'weekly' },
-    };
+describe('trendColumnFor', () => {
+  const mockFields = [mockLanguageDimension, mockTotalCountMetric];
+  const mockData = {
+    nodes: [
+      { language: 'ruby', totalCount: 21 },
+      { language: 'go', totalCount: 10 },
+    ],
+  };
+  const mockComparisonData = { nodes: [{ language: 'ruby', totalCount: 20 }] };
 
-    expect(hasTemporalDimension([mockLanguageDimension, mockWeeklyDimension])).toBe(true);
+  const build = (overrides = {}) =>
+    trendColumnFor({
+      fields: mockFields,
+      data: mockData,
+      comparisonData: mockComparisonData,
+      metric: mockTotalCountMetric,
+      source: 'CodeSuggestions',
+      ...overrides,
+    });
+
+  it('renders the badge config but sorts by the change', () => {
+    expect(build().column).toEqual({
+      key: '__trend',
+      sortKey: '__trendChange',
+      label: 'vs previous period',
+      type: 'metric',
+    });
   });
 
-  it('is false when no dimension has a granularity', () => {
-    expect(hasTemporalDimension([mockLanguageDimension])).toBe(false);
-  });
+  it('builds a badge for a row that pairs, without the "vs prior" suffix', () => {
+    const [ruby] = build().rows;
 
-  it('is false when there are no dimensions', () => {
-    expect(hasTemporalDimension([])).toBe(false);
-  });
-});
-
-describe('withTrendValues', () => {
-  const nodes = [
-    { language: 'ruby', totalCount: 21 },
-    { language: 'python', totalCount: 14 },
-    { language: 'go', totalCount: 10 },
-  ];
-
-  const build = (comparisonNodes, dimensions = [mockLanguageDimension]) =>
-    withTrendValues(nodes, { comparisonNodes, dimensions, metric: mockTotalCountMetric });
-
-  it('materialises the change and the previous value against the matching row', () => {
-    const [ruby] = build([{ language: 'ruby', totalCount: 20 }]);
-
-    expect(ruby[TREND_PREVIOUS_KEY]).toBe(20);
     expect(ruby[TREND_CHANGE_KEY]).toBe(0.05);
-  });
-
-  it('keeps the original row values', () => {
-    const [ruby] = build([{ language: 'ruby', totalCount: 20 }]);
-
-    expect(ruby.language).toBe('ruby');
-    expect(ruby.totalCount).toBe(21);
-  });
-
-  it('records a change of 0 for a row that did not move', () => {
-    const [, python] = build([{ language: 'python', totalCount: 14 }]);
-
-    expect(python[TREND_CHANGE_KEY]).toBe(0);
-  });
-
-  it('matches rows on all dimensions', () => {
-    const twoDimensionNodes = [
-      { project: mockProject('a/b'), language: 'ruby', totalCount: 10 },
-      { project: mockProject('a/c'), language: 'ruby', totalCount: 10 },
-    ];
-
-    const rows = withTrendValues(twoDimensionNodes, {
-      comparisonNodes: [{ project: mockProject('a/c'), language: 'ruby', totalCount: 5 }],
-      dimensions: [mockProjectDimension, mockLanguageDimension],
-      metric: mockTotalCountMetric,
-    });
-
-    expect(rows[0][TREND_PREVIOUS_KEY]).toBe(null);
-    expect(rows[1][TREND_PREVIOUS_KEY]).toBe(5);
-  });
-
-  it('matches the single row of a table with no dimensions', () => {
-    const rows = withTrendValues([{ totalCount: 12 }], {
-      comparisonNodes: [{ totalCount: 6 }],
-      dimensions: [],
-      metric: mockTotalCountMetric,
-    });
-
-    expect(rows[0][TREND_CHANGE_KEY]).toBe(1);
-  });
-
-  it('does not mutate the rows it is given', () => {
-    build([{ language: 'ruby', totalCount: 20 }]);
-
-    expect(nodes[0]).toEqual({ language: 'ruby', totalCount: 21 });
-  });
-
-  describe('when a row has no counterpart in the previous period', () => {
-    it('records the change as unknown rather than as no change', () => {
-      const [, , go] = build([{ language: 'ruby', totalCount: 20 }]);
-
-      expect(go[TREND_PREVIOUS_KEY]).toBe(null);
-      expect(go[TREND_CHANGE_KEY]).toBe(null);
+    expect(ruby[TREND_KEY]).toMatchObject({
+      __typename: '__Trend',
+      text: '5%',
+      variant: 'success',
     });
   });
 
-  describe('when the previous period has no rows at all', () => {
-    it('records every change as unknown', () => {
-      expect(build([]).map((row) => row[TREND_CHANGE_KEY])).toEqual([null, null, null]);
-    });
+  it('gives a row with no counterpart an empty, non-null trend and a null change', () => {
+    const [, go] = build().rows;
 
-    it('records every change as unknown when no comparison is given', () => {
-      const rows = withTrendValues(nodes, {
-        dimensions: [mockLanguageDimension],
-        metric: mockTotalCountMetric,
-      });
-
-      expect(rows.map((row) => row[TREND_CHANGE_KEY])).toEqual([null, null, null]);
-    });
+    expect(go[TREND_KEY]).toEqual({ __typename: '__Trend' });
+    expect(go[TREND_CHANGE_KEY]).toBe(null);
   });
 
-  describe('when the previous value is 0', () => {
-    it('records the change as unknown, because a move away from 0 has no percentage', () => {
-      const [ruby] = build([{ language: 'ruby', totalCount: 0 }]);
-
-      expect(ruby[TREND_PREVIOUS_KEY]).toBe(0);
-      expect(ruby[TREND_CHANGE_KEY]).toBe(null);
-    });
-  });
-
-  describe('when the previous row has no value for the metric', () => {
-    it('records the change as unknown', () => {
-      const [ruby] = build([{ language: 'ruby', totalCount: null }]);
-
-      expect(ruby[TREND_CHANGE_KEY]).toBe(null);
-    });
-  });
-
-  describe('when a dimension value is null', () => {
-    const nullDimensionNodes = [
-      { project: null, language: 'ruby', totalCount: 10 },
-      { project: mockProject('a/b'), language: 'ruby', totalCount: 8 },
-    ];
-    const dimensions = [mockProjectDimension, mockLanguageDimension];
-
-    it('pairs it with the blank row of the previous period, which is the same bucket', () => {
-      const rows = withTrendValues(nullDimensionNodes, {
-        comparisonNodes: [{ project: null, language: 'ruby', totalCount: 5 }],
-        dimensions,
-        metric: mockTotalCountMetric,
-      });
-
-      expect(rows[0][TREND_PREVIOUS_KEY]).toBe(5);
-      expect(rows[0][TREND_CHANGE_KEY]).toBe(1);
-    });
-
-    it('does not pair it with a non-null row', () => {
-      const rows = withTrendValues(nullDimensionNodes, {
-        comparisonNodes: [{ project: mockProject('a/b'), language: 'ruby', totalCount: 5 }],
-        dimensions,
-        metric: mockTotalCountMetric,
-      });
-
-      expect(rows[0][TREND_PREVIOUS_KEY]).toBe(null);
-      expect(rows[1][TREND_PREVIOUS_KEY]).toBe(5);
-    });
-
-    it('does not pair it with a row whose value is the literal Unknown', () => {
-      const rows = withTrendValues([{ project: null, language: 'ruby', totalCount: 10 }], {
-        comparisonNodes: [{ project: 'Unknown', language: 'ruby', totalCount: 5 }],
-        dimensions,
-        metric: mockTotalCountMetric,
-      });
-
-      expect(rows[0][TREND_PREVIOUS_KEY]).toBe(null);
-    });
-  });
-
-  describe('when several rows of a period share a dimension value', () => {
-    const dimensions = [mockProjectDimension];
-
-    it('leaves them unpaired, because neither can be told from the other', () => {
-      const rows = withTrendValues(
-        [
-          { project: null, totalCount: 10 },
-          { project: null, totalCount: 8 },
-          { project: mockProject('a/b'), totalCount: 6 },
+  it.each([
+    ['there is no metric', { metric: null }],
+    ['there is no comparison data', { comparisonData: null }],
+    ['the previous period returned no rows', { comparisonData: { nodes: [] } }],
+    [
+      'a dimension buckets by date',
+      {
+        fields: [
+          { key: 'created', type: 'dimension', parameters: { granularity: 'weekly' } },
+          mockTotalCountMetric,
         ],
-        {
-          comparisonNodes: [
-            { project: null, totalCount: 5 },
-            { project: mockProject('a/b'), totalCount: 3 },
-          ],
-          dimensions,
-          metric: mockTotalCountMetric,
-        },
-      );
+      },
+    ],
+  ])('is null when %s', (_, overrides) => {
+    expect(build(overrides)).toBe(null);
+  });
 
-      expect(rows.map((row) => row[TREND_PREVIOUS_KEY])).toEqual([null, null, 3]);
+  it('reserves an unsortable column with pending trends while the comparison is running', () => {
+    const { column, rows } = build({ comparisonData: null, pending: true });
+
+    expect(column).toMatchObject({ key: '__trend', sortable: false });
+    expect(rows.map((row) => row[TREND_KEY])).toEqual([
+      { __typename: '__Trend', pending: true },
+      { __typename: '__Trend', pending: true },
+    ]);
+  });
+});
+
+describe('withTrendColumn', () => {
+  const mockFields = [mockLanguageDimension, mockTotalCountMetric];
+  const mockData = { nodes: [{ language: 'ruby', totalCount: 21 }] };
+  const mockComparisonData = { nodes: [{ language: 'ruby', totalCount: 20 }] };
+
+  const build = (overrides = {}) =>
+    withTrendColumn({
+      fields: mockFields,
+      data: mockData,
+      comparisonData: mockComparisonData,
+      source: 'CodeSuggestions',
+      ...overrides,
     });
 
-    it('leaves the matching row of the other period unpaired too', () => {
-      const rows = withTrendValues([{ project: null, totalCount: 10 }], {
-        comparisonNodes: [
-          { project: null, totalCount: 5 },
-          { project: null, totalCount: 3 },
-        ],
-        dimensions,
-        metric: mockTotalCountMetric,
-      });
-
-      expect(rows[0][TREND_PREVIOUS_KEY]).toBe(null);
+  it('returns the input untouched without comparison data', () => {
+    expect(build({ comparisonData: null })).toEqual({
+      fields: mockFields,
+      data: mockData,
+      error: null,
     });
   });
 
-  // The three cases raised in review on
-  // https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254539
-  describe('when rows share a display label but are different records', () => {
-    const userDimension = { key: 'user', label: 'User', type: 'dimension' };
-    const alexOne = mockUser('gid://gitlab/User/1', 'Alex Smith');
-    const alexTwo = mockUser('gid://gitlab/User/2', 'Alex Smith');
+  it('appends the trend column and the trend values to the rows', () => {
+    const { fields, data, error } = build();
 
-    it('pairs each row with its own record, not the same-named one', () => {
-      const rows = withTrendValues([{ user: alexOne, totalCount: 10 }], {
-        comparisonNodes: [
-          { user: alexOne, totalCount: 10 },
-          { user: alexTwo, totalCount: 100 },
-        ],
-        dimensions: [userDimension],
-        metric: mockTotalCountMetric,
-      });
-
-      expect(rows[0][TREND_PREVIOUS_KEY]).toBe(10);
-      expect(rows[0][TREND_CHANGE_KEY]).toBe(0);
-    });
-
-    it('does not pair a row with a same-named record that only exists in the previous period', () => {
-      const rows = withTrendValues([{ user: alexOne, totalCount: 10 }], {
-        comparisonNodes: [{ user: alexTwo, totalCount: 100 }],
-        dimensions: [userDimension],
-        metric: mockTotalCountMetric,
-      });
-
-      expect(rows[0][TREND_PREVIOUS_KEY]).toBe(null);
-      expect(rows[0][TREND_CHANGE_KEY]).toBe(null);
-    });
+    expect(fields.map(({ key }) => key)).toEqual(['language', 'totalCount', '__trend']);
+    expect(data.nodes[0]).toMatchObject({ language: 'ruby', [TREND_CHANGE_KEY]: 0.05 });
+    expect(error).toBe(null);
   });
 
-  describe('when a dimension value cannot be identified', () => {
-    const mockNamespace = (fullName) => ({ __typename: 'Namespace', fullName });
+  it('compares the metric the comparison result names', () => {
+    const mockUsersMetric = { key: 'usersCount', label: 'Users', type: 'metric' };
 
-    it('leaves the row unpaired rather than matching it on its label', () => {
-      const rows = withTrendValues([{ project: mockNamespace('Group A'), totalCount: 10 }], {
-        comparisonNodes: [{ project: mockNamespace('Group B'), totalCount: 5 }],
-        dimensions: [mockProjectDimension],
-        metric: mockTotalCountMetric,
-      });
-
-      expect(rows[0][TREND_PREVIOUS_KEY]).toBe(null);
-      expect(rows[0][TREND_CHANGE_KEY]).toBe(null);
+    const { data } = build({
+      fields: [...mockFields, mockUsersMetric],
+      data: { nodes: [{ language: 'ruby', totalCount: 21, usersCount: 6 }] },
+      comparisonData: {
+        metric: 'usersCount',
+        nodes: [{ language: 'ruby', totalCount: 20, usersCount: 4 }],
+      },
     });
 
-    it('leaves it unpaired even against the same unidentified value, unlike a blank', () => {
-      const rows = withTrendValues([{ project: mockNamespace('Group A'), totalCount: 10 }], {
-        comparisonNodes: [{ project: mockNamespace('Group A'), totalCount: 5 }],
-        dimensions: [mockProjectDimension],
-        metric: mockTotalCountMetric,
-      });
-
-      expect(rows[0][TREND_PREVIOUS_KEY]).toBe(null);
-    });
-
-    it('does not pair it with an identifiable row either', () => {
-      const rows = withTrendValues([{ project: mockNamespace('Group A'), totalCount: 10 }], {
-        comparisonNodes: [{ project: mockProject('acme / cli'), totalCount: 5 }],
-        dimensions: [mockProjectDimension],
-        metric: mockTotalCountMetric,
-      });
-
-      expect(rows[0][TREND_PREVIOUS_KEY]).toBe(null);
-    });
+    expect(data.nodes[0][TREND_CHANGE_KEY]).toBe(0.5);
   });
 
-  describe('when the previous period has rows the current period does not', () => {
-    it('ignores them', () => {
-      const rows = build([
-        { language: 'ruby', totalCount: 20 },
-        { language: 'rust', totalCount: 99 },
-      ]);
-
-      expect(rows).toHaveLength(3);
-      expect(rows.map((row) => row.language)).toEqual(['ruby', 'python', 'go']);
+  it('reports a trendMetric it cannot resolve, and adds no column', () => {
+    const { fields, error } = build({
+      comparisonData: { ...mockComparisonData, metric: 'usersCount' },
     });
+
+    expect(fields).toBe(mockFields);
+    expect(error).toBe('Unknown metric for `trendMetric`: `usersCount`.');
   });
 });

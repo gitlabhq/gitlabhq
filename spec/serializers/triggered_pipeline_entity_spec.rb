@@ -15,7 +15,7 @@ RSpec.describe TriggeredPipelineEntity, feature_category: :continuous_integratio
   describe '#as_json' do
     subject { entity.as_json }
 
-    it do
+    it 'includes coverage and the other pipeline fields' do
       is_expected.to(
         include(
           :id, :iid, :active, :coverage, :details, :name, :path, :project,

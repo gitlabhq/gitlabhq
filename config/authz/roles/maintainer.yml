@@ -8,9 +8,12 @@ project:
   permissions: []
   raw_permissions:
   - _cancel_restricted_ci
+  - _delete_custom_branch_rule
+  - _delete_protected_branch_rule
   - _read_custom_branch_rule
   - _read_maintainer_job_artifact
   - _read_protected_branch_rule
+  - _update_protected_branch_rule
   - add_cluster
   - admin_ai_catalog_item
   - admin_ai_catalog_item_consumer

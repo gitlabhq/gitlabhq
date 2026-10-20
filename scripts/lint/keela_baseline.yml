@@ -56,8 +56,6 @@ constants:
   - TRUSTED_BY_LOGOS
   ee/app/models/ai/conversation/thread.rb:
   - MAX_EXPIRATION_PERIOD
-  ee/app/models/concerns/approval_rule_like.rb:
-  - DEFAULT_NAME_FOR_LICENSE_REPORT
   ee/app/models/ee/ci/build.rb:
   - VALIDATE_SCHEMA_VARIABLE_NAME
   ee/app/models/ee/namespace.rb:
@@ -463,7 +461,6 @@ methods:
   - old_path_with_namespace_for
   - default_plan?
   - premium_trial_plan?
-  - ultimate_trial_paid_customer_plan?
   ee/app/models/ee/namespace_statistics.rb:
   - update_wiki_size
   ee/app/models/ee/project.rb:
@@ -536,9 +533,6 @@ methods:
   - self.declarative_policy_class
   ee/app/models/virtual_registries/setting.rb:
   - self.declarative_policy_class
-  ee/app/models/vulnerabilities/finding.rb:
-  - self.counted_by_severity
-  - self.undismissed
 scopes:
   app/models/authn/iam_outbox.rb:
   - l2_undelivered
@@ -696,9 +690,5 @@ scopes:
   ee/app/models/vulnerabilities/finding.rb:
   - by_primary_identifiers
   - eager_load_vulnerability_flags
-  ee/app/models/vulnerabilities/identifier.rb:
-  - with_external_type
   ee/app/models/vulnerabilities/read.rb:
   - with_findings_scanner_identifiers_and_notes
-  ee/app/models/vulnerabilities/statistic.rb:
-  - by_group_excluding_subgroups

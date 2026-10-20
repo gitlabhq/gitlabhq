@@ -16,3 +16,4 @@ replication_targets:
           - id
         source_keys:
           - merge_request_id
+  - name: gcs_parquet_consumer

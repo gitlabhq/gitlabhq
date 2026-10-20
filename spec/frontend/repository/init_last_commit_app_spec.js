@@ -1,4 +1,5 @@
 import { createWrapper } from '@vue/test-utils';
+import { unmountVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import initLastCommitApp from '~/repository/init_last_commit_app';
 import LastCommit from '~/repository/components/last_commit.vue';
 import createRouter from '~/repository/router';
@@ -29,7 +30,7 @@ describe('initLastCommitApp', () => {
   const findLastCommit = () => createWrapper(app).findComponent(LastCommit);
 
   afterEach(() => {
-    app?.$destroy();
+    unmountVueApp(app);
     app = null;
   });
 

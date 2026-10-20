@@ -116,20 +116,22 @@ func (h *Handler) Build() http.Handler {
 			return
 		}
 
-		h.handleWebSocketConnection(w, r, conn, a.DuoWorkflow)
+		h.handleWebSocketConnection(r, conn, a.DuoWorkflow)
 	}, "")
 }
 
-func (h *Handler) handleWebSocketConnection(w http.ResponseWriter, r *http.Request, conn *websocket.Conn, duoWorkflowConfig *api.DuoWorkflow) {
-	runner, err := h.createRunner(newWsManager(conn), duoWorkflowConfig, r)
+func (h *Handler) handleWebSocketConnection(r *http.Request, conn *websocket.Conn, duoWorkflowConfig *api.DuoWorkflow) {
+	ws := newWsManager(conn)
+
+	runner, err := h.createRunner(ws, duoWorkflowConfig, r)
 	if err != nil {
 		logConnectionError(r, transportWebSocket, errorStageInitialization, err)
-		h.handleInitializationError(w, r, conn, err)
+		h.handleInitializationError(r, ws)
 		return
 	}
 
 	h.registerAndExecuteRunner(r, transportWebSocket, runner, func(err error) {
-		h.handleWebSocketExecutionError(r, conn, err)
+		h.handleWebSocketExecutionError(r, ws, err)
 	})
 }
 
@@ -142,9 +144,11 @@ func (h *Handler) createRunner(client clientTransport, duoWorkflowConfig *api.Du
 	return runner, nil
 }
 
-func (h *Handler) handleInitializationError(w http.ResponseWriter, r *http.Request, conn *websocket.Conn, err error) {
-	fail.Request(w, r, fmt.Errorf("failed to initialize agent platform client: %v", err))
-	if closeErr := conn.Close(); closeErr != nil {
+// handleInitializationError reports the failure with a close frame: the
+// connection is already upgraded, so an HTTP error response can't be written.
+func (h *Handler) handleInitializationError(r *http.Request, ws *wsManager) {
+	h.sendCloseMessage(r, ws, websocket.CloseInternalServerErr, "Failed to initialize agent platform client")
+	if closeErr := ws.Close(); closeErr != nil {
 		log.WithRequest(r).WithError(closeErr).Error("failed to close connection")
 	}
 }
@@ -176,26 +180,25 @@ func (h *Handler) registerAndExecuteRunner(r *http.Request, transport string, ru
 	}
 }
 
-func (h *Handler) handleWebSocketExecutionError(r *http.Request, conn *websocket.Conn, err error) {
+func (h *Handler) handleWebSocketExecutionError(r *http.Request, ws *wsManager, err error) {
 	switch {
 	case errors.Is(err, errFailedToAcquireLockError):
 		// We provide the client with specific error details
 		// for this case so it can tell the user about the
 		// conflicting flow
-		h.sendCloseMessage(r, conn, websocket.CloseTryAgainLater, "Failed to acquire lock on workflow")
+		h.sendCloseMessage(r, ws, websocket.CloseTryAgainLater, "Failed to acquire lock on workflow")
 	case errors.Is(err, errUsageQuotaExceededError):
 		// We close the connection with the specific error
 		// so client can process and inform user about the lack
 		// of credits
-		h.sendCloseMessage(r, conn, websocket.ClosePolicyViolation, "Insufficient credits: quota exceeded")
+		h.sendCloseMessage(r, ws, websocket.ClosePolicyViolation, "Insufficient credits: quota exceeded")
 	default:
 		logConnectionError(r, transportWebSocket, errorStageExecution, err)
 	}
 }
 
-func (h *Handler) sendCloseMessage(r *http.Request, conn *websocket.Conn, code int, reason string) {
-	closeMessage := websocket.FormatCloseMessage(code, reason)
-	if err := conn.WriteMessage(websocket.CloseMessage, closeMessage); err != nil {
-		log.WithRequest(r).WithError(err).Error()
+func (h *Handler) sendCloseMessage(r *http.Request, ws *wsManager, code int, reason string) {
+	if err := ws.SendClose(code, reason); err != nil {
+		log.WithRequest(r).WithError(err).Error("failed to send close message")
 	}
 }

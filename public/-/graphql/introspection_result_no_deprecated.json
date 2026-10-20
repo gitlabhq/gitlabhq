@@ -221203,6 +221203,12 @@
               "description": "Callout feature name for work_item_ticket_migration.",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "CI_CATALOG_RELEASE_ALERT",
+              "description": "Callout feature name for ci_catalog_release_alert.",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null

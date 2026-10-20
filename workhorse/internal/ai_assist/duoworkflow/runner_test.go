@@ -2008,6 +2008,45 @@ func TestRunner_Close_waitsForAgentDone(t *testing.T) {
 		}
 	})
 
+	t.Run("stops waiting after the stop timeout", func(t *testing.T) {
+		// DWS never ends the stream, so agentDone is never signaled. Close must
+		// give up and close the stream itself rather than block forever.
+		r := newRunnerWithInFlightAgent(t, true)
+		r.stopWorkflowTimeout = 50 * time.Millisecond
+
+		closeDone := make(chan error, 1)
+		go func() {
+			closeDone <- r.Close()
+		}()
+
+		select {
+		case err := <-closeDone:
+			require.NoError(t, err)
+		case <-time.After(2 * time.Second):
+			t.Fatal("Close should return once the stop timeout has passed")
+		}
+	})
+
+	t.Run("waits only for what is left of the stop timeout", func(t *testing.T) {
+		// stopWorkflow already waited out the timeout for an ack that never came,
+		// so Close must not hold the lock for a second timeout.
+		r := newRunnerWithInFlightAgent(t, true)
+		r.stopWorkflowTimeout = time.Minute
+		r.stop.requestedAt.Store(time.Now().Add(-time.Minute).UnixNano())
+
+		closeDone := make(chan error, 1)
+		go func() {
+			closeDone <- r.Close()
+		}()
+
+		select {
+		case err := <-closeDone:
+			require.NoError(t, err)
+		case <-time.After(2 * time.Second):
+			t.Fatal("Close should not wait again once the stop timeout has passed")
+		}
+	})
+
 	t.Run("does not wait when no stop was requested", func(t *testing.T) {
 		// There is no acknowledgment coming, so waiting would block until the
 		// gRPC stream failed on its own. A workflow that never started because
@@ -2233,7 +2272,7 @@ func TestRunner_HandleWebSocketMessage_AcquiresLock(t *testing.T) {
 	r.lockManager.releaseLock(context.Background(), r.mutex, r.workflowID)
 }
 
-func TestRunner_Execute_ReleasesLock(t *testing.T) {
+func TestRunner_Close_ReleasesLock(t *testing.T) {
 	rdb := initRdb(t)
 
 	mockConn := &mockWebSocketConn{
@@ -2246,7 +2285,10 @@ func TestRunner_Execute_ReleasesLock(t *testing.T) {
 		blockCh: make(chan bool),
 	}
 
-	req := httptest.NewRequest("GET", "/", nil)
+	reqCtx, cancelReq := context.WithCancel(context.Background())
+	req := httptest.NewRequest("GET", "/", nil).WithContext(reqCtx)
+	sm := newTestStreamManager(t, mockWf)
+	sm.originalReq = req
 	r := &runner{
 		originalReq: req,
 		client:      newWsManager(mockConn),
@@ -2254,26 +2296,109 @@ func TestRunner_Execute_ReleasesLock(t *testing.T) {
 			backend:     http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}),
 			originalReq: req,
 		},
-		streamManager: &streamManager{
-			wf:          mockWf,
-			originalReq: req,
-		},
-		lockManager: newWorkflowLockManager(rdb),
-		mcpManager:  &mockMcpManager{},
-		lockFlow:    true,
+		streamManager: sm,
+		lockManager:   newWorkflowLockManager(rdb),
+		mcpManager:    &mockMcpManager{},
+		lockFlow:      true,
 	}
 
-	ctx := context.Background()
-	err := r.Execute(ctx)
+	err := r.Execute(reqCtx)
 
 	// since we block gRPC stream we expect websockets to end with EOF
 	require.Equal(t, "handleClientEvents: failed to read a client event: EOF", err.Error())
 
-	// Verify lock was released (we can acquire it again)
-	mutex, err := r.lockManager.acquireLock(ctx, "execute-test-123", "software_development")
+	// The stream to DWS is still open until Close, so the lock must be held.
+	_, err = r.lockManager.acquireLock(context.Background(), "execute-test-123", "software_development")
+	require.Error(t, err)
+
+	// A caller that went away has canceled the request context, which must
+	// not stop the lock from being released.
+	cancelReq()
+	require.NoError(t, r.Close())
+
+	mutex, err := r.lockManager.acquireLock(context.Background(), "execute-test-123", "software_development")
 	require.NoError(t, err)
 	require.NotNil(t, mutex)
 }
+
+func TestRunner_releaseWorkflowLock(t *testing.T) {
+	rdb := initRdb(t)
+
+	r := &runner{
+		originalReq: httptest.NewRequest("GET", "/", nil),
+		lockManager: newWorkflowLockManager(rdb),
+		lockFlow:    true,
+	}
+
+	// Shutdown can release before the start request has acquired the lock.
+	r.releaseWorkflowLock()
+
+	require.NoError(t, r.acquireWorkflowLock(&pb.StartWorkflowRequest{WorkflowID: "release-test-123"}))
+	require.NotNil(t, r.mutex)
+
+	// A lock acquired after an earlier release is still released, and only once.
+	r.releaseWorkflowLock()
+	require.Nil(t, r.mutex)
+	r.releaseWorkflowLock()
+
+	mutex, err := r.lockManager.acquireLock(context.Background(), "release-test-123", "software_development")
+	require.NoError(t, err)
+	require.NotNil(t, mutex)
+}
+
+func TestRunner_Close_ReleasesLockWhenClosingPanics(t *testing.T) {
+	manager := newWorkflowLockManager(initRdb(t))
+	mutex, err := manager.acquireLock(context.Background(), "close-panic-test", "software_development")
+	require.NoError(t, err)
+
+	req := httptest.NewRequest("GET", "/", nil)
+	sm := newTestStreamManager(t, &mockWorkflowStream{})
+	sm.originalReq = req
+	r := &runner{
+		originalReq:   req,
+		client:        newWsManager(&mockWebSocketConn{}),
+		streamManager: sm,
+		mcpManager:    &panickingMcpManager{},
+		lockManager:   manager,
+		lockFlow:      true,
+		workflowID:    "close-panic-test",
+		mutex:         mutex,
+	}
+
+	require.Panics(t, func() { _ = r.Close() })
+
+	_, err = manager.acquireLock(context.Background(), "close-panic-test", "software_development")
+	require.NoError(t, err, "the lock should be released even though Close panicked")
+}
+
+type panickingMcpManager struct {
+	mockMcpManager
+}
+
+func (*panickingMcpManager) Close() error { panic("close failed") }
+
+func TestRunner_keepaliveClient_ReturnsWithoutInterval(t *testing.T) {
+	r := &runner{client: &noKeepaliveTransport{wsManager: newWsManager(&mockWebSocketConn{})}}
+
+	// Called directly, so a panic from time.NewTicker(0) surfaces here instead
+	// of crashing the test binary from a goroutine. The context never ends, so
+	// returning at all means no ticker was started.
+	require.NotPanics(t, func() {
+		r.keepaliveClient(context.Background(), make(chan error, 1))
+	})
+}
+
+type noKeepaliveTransport struct {
+	*wsManager
+}
+
+func (*noKeepaliveTransport) KeepaliveInterval() time.Duration { return 0 }
+
+type fastKeepaliveTransport struct {
+	*wsManager
+}
+
+func (*fastKeepaliveTransport) KeepaliveInterval() time.Duration { return 10 * time.Millisecond }
 
 func TestRunner_isUsageQuotaExceededError(t *testing.T) {
 	tests := []struct {
@@ -2344,6 +2469,31 @@ func TestStreamManager_Close(t *testing.T) {
 			require.NoError(t, sm.Close())
 			require.Equal(t, tt.wantCloseSendCalls, wf.closeSendCalls)
 		})
+	}
+}
+
+func TestNewStreamManager_ClosesWorkflowStreamWhenCloudServiceFails(t *testing.T) {
+	server := setupTestServer(t)
+	streamEnded := make(chan struct{})
+	server.execWorkflowHandler = func(stream pb.DuoWorkflow_ExecuteWorkflowServer) error {
+		<-stream.Context().Done()
+		close(streamEnded)
+		return nil
+	}
+
+	cfg := testDuoWorkflowConfig(server)
+	// Port 1 always refuses, so the tracking stream cannot be opened.
+	cfg.CloudServiceForSelfHosted = &api.DuoWorkflowServiceConfig{URI: "localhost:1"}
+
+	sm, err := newStreamManager(httptest.NewRequest(http.MethodGet, "/", nil), cfg)
+	require.Error(t, err)
+	require.Contains(t, err.Error(), "failed to initialize cloud service stream")
+	require.Nil(t, sm)
+
+	select {
+	case <-streamEnded:
+	case <-time.After(5 * time.Second):
+		t.Fatal("the workflow stream should be closed when the cloud service stream fails to open")
 	}
 }
 
@@ -2715,11 +2865,11 @@ func TestRunner_keepaliveClient(t *testing.T) {
 
 		r := &runner{
 			originalReq: httptest.NewRequest("GET", "/duo", nil),
-			client:      newWsManager(wrappedConn),
+			client:      &fastKeepaliveTransport{wsManager: newWsManager(wrappedConn)},
 		}
 
 		errCh := make(chan error, 1)
-		go r.keepaliveClient(ctx, errCh, 10*time.Millisecond)
+		go r.keepaliveClient(ctx, errCh)
 
 		select {
 		case <-pingSent:
@@ -2745,7 +2895,7 @@ func TestRunner_keepaliveClient(t *testing.T) {
 		stopAcked := make(chan struct{})
 		r := &runner{
 			originalReq: req,
-			client:      newWsManager(wrappedConn),
+			client:      &fastKeepaliveTransport{wsManager: newWsManager(wrappedConn)},
 			streamManager: &streamManager{
 				wf:          mockWf,
 				originalReq: req,
@@ -2756,7 +2906,7 @@ func TestRunner_keepaliveClient(t *testing.T) {
 		}
 
 		errCh := make(chan error, 1)
-		go r.keepaliveClient(ctx, errCh, 10*time.Millisecond)
+		go r.keepaliveClient(ctx, errCh)
 
 		// Wait for the StopWorkflow event to be sent, then close stopAcked
 		// so stopWorkflow unblocks and keepaliveClient can send to errCh.
@@ -2767,7 +2917,7 @@ func TestRunner_keepaliveClient(t *testing.T) {
 		stopEvent := mockWf.getSendEvents()[0].GetStopWorkflow()
 		require.NotNil(t, stopEvent)
 		assert.Equal(t, "WORKHORSE_WEBSOCKET_PING_FAILED", stopEvent.Reason)
-		assert.True(t, wsClientOf(t, r).closed.Load())
+		assert.True(t, r.client.(*fastKeepaliveTransport).closed.Load())
 
 		close(stopAcked)
 

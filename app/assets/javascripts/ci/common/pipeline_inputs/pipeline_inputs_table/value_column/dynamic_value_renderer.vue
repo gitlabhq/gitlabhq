@@ -145,17 +145,20 @@ export default {
       return this.isDropdown && this.item.type === INPUT_TYPES.ARRAY;
     },
     toggleText() {
-      if (!this.inputValue?.length) {
+      const value = this.inputValue;
+      const isEmpty = value === '' || (Array.isArray(value) && !value.length);
+
+      if (isEmpty) {
         return __('Select option');
       }
 
       if (this.item.type === INPUT_TYPES.ARRAY) {
-        return this.inputValue.length > 1
-          ? sprintf(__('%{number} options selected'), { number: this.inputValue.length })
-          : this.inputValue[0];
+        return value.length > 1
+          ? sprintf(__('%{number} options selected'), { number: value.length })
+          : String(value[0]);
       }
 
-      return this.inputValue;
+      return String(value);
     },
 
     validationFeedback() {

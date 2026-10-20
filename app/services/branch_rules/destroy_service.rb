@@ -5,7 +5,7 @@ module BranchRules
     private
 
     def authorized?
-      can?(current_user, :destroy_protected_branch, branch_rule)
+      can?(current_user, :delete_branch_rule, branch_rule)
     end
 
     def execute_on_branch_rule

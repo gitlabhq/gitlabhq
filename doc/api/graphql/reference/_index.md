@@ -35845,6 +35845,7 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="aicatalogmcptool-beta"></a>`beta` | [`Boolean!`](#boolean) | Whether the MCP tool is in beta. The AI Catalog shows a Beta badge for beta tools. |
 | <a id="aicatalogmcptool-description"></a>`description` | [`String`](#string) | Description of the MCP tool. |
 | <a id="aicatalogmcptool-icons"></a>`icons` | [`[AiCatalogMcpToolIcon!]!`](#aicatalogmcptoolicon) | Icons advertised for the MCP tool, per the MCP spec icons field. |
 | <a id="aicatalogmcptool-name"></a>`name` | [`ID!`](#id) | Machine-readable name of the MCP tool. |
@@ -76138,6 +76139,7 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenum-branch_rules_tip_callout"></a>`BRANCH_RULES_TIP_CALLOUT` | Callout feature name for branch_rules_tip_callout. |
 | <a id="usercalloutfeaturenameenum-buy_pipeline_minutes_notification_dot"></a>`BUY_PIPELINE_MINUTES_NOTIFICATION_DOT` | Callout feature name for buy_pipeline_minutes_notification_dot. |
 | <a id="usercalloutfeaturenameenum-canary_deployment"></a>`CANARY_DEPLOYMENT` | Callout feature name for canary_deployment. |
+| <a id="usercalloutfeaturenameenum-ci_catalog_release_alert"></a>`CI_CATALOG_RELEASE_ALERT` | Callout feature name for ci_catalog_release_alert. |
 | <a id="usercalloutfeaturenameenum-ci_deprecation_warning_for_types_keyword"></a>`CI_DEPRECATION_WARNING_FOR_TYPES_KEYWORD` | Callout feature name for ci_deprecation_warning_for_types_keyword. |
 | <a id="usercalloutfeaturenameenum-ci_minutes_limit_alert_danger_stage"></a>`CI_MINUTES_LIMIT_ALERT_DANGER_STAGE` | Callout feature name for ci_minutes_limit_alert_danger_stage. |
 | <a id="usercalloutfeaturenameenum-ci_minutes_limit_alert_exceeded_stage"></a>`CI_MINUTES_LIMIT_ALERT_EXCEEDED_STAGE` | Callout feature name for ci_minutes_limit_alert_exceeded_stage. |

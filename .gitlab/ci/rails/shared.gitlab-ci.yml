@@ -242,8 +242,8 @@ include:
     - .use-pg17-es9-ee
     - .rails:rules:run-search-tests
   variables:
-    RSPEC_TAGS: "${RSPEC_DEFAULT_TAGS} --tag elastic --tag elastic_delete_by_query --tag elastic_clean --tag elasticsearch_settings_enabled --tag elastic_helpers --tag elasticsearch_adapter"
-    RSPEC_DRY_RUN_TAGS: "elastic elastic_delete_by_query elastic_clean elasticsearch_settings_enabled elastic_helpers elasticsearch_adapter"
+    RSPEC_TAGS: "${RSPEC_DEFAULT_TAGS} --tag es_service"
+    RSPEC_DRY_RUN_TAGS: "es_service"
 
 .rspec-ee-base-pg17-opensearch-latest:
   extends:

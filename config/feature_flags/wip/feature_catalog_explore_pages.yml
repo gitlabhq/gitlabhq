@@ -1,0 +1,10 @@
+---
+name: feature_catalog_explore_pages
+description: Show the Explore Premium and Explore Ultimate pages in the Feature catalog
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/631003
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/262550
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/634140
+milestone: '19.6'
+group: group::activation
+type: wip
+default_enabled: false

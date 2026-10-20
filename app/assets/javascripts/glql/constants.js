@@ -75,6 +75,10 @@ export const EXECUTION_QUEUE_DASHBOARD = 'glql-queue-dashboard';
 // but the compiler caps the combined total at this number.
 export const MAX_SCOPES = 20;
 
+// The `__typename` of a value a presenter derives rather than one the API returns, so the
+// registry can dispatch it by type. A `__` prefix cannot clash with a GraphQL type name.
+export const TREND_TYPENAME = '__Trend';
+
 export const FIELD_TYPES = {
   ATTRIBUTE: 'attribute',
   DIMENSION: 'dimension',

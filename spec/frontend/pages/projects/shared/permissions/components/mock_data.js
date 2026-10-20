@@ -7,6 +7,7 @@ export const generateCatalogSettingsResponse = (
       project: {
         id: 'gid://gitlab/Project/149',
         isCatalogResource,
+        isPublished: false,
         description,
       },
     },

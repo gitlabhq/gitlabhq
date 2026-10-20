@@ -1,0 +1,4 @@
+---
+name: _update_protected_branch_rule
+description: Allows updating branch rules for individual protected branches. This does not allow updating the "all branches" or "all protected branches" branch rules.
+conditionally_enables: update_branch_rule

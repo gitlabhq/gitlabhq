@@ -11,6 +11,8 @@ import allReleasesQuery from '~/releases/graphql/queries/all_releases.query.grap
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { getSlotFunction } from '~/lib/utils/vue3compat/normalize_render';
 import { historyPushState } from '~/lib/utils/common_utils';
+import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
+import { makeMockUserCalloutDismisser } from 'helpers/mock_user_callout_dismisser';
 import CiCdCatalogWrapper from '~/releases/components/ci_cd_catalog_wrapper.vue';
 import ReleasesIndexApp from '~/releases/components/app_index.vue';
 import ReleaseBlock from '~/releases/components/release_block.vue';
@@ -50,12 +52,16 @@ describe('app_index.vue', () => {
   let singleRelease;
   let noReleases;
   let queryMock;
+  let dismissCallout;
 
   const createComponent = ({
     singleResponse = Promise.resolve(singleRelease),
     fullResponse = Promise.resolve(allReleases),
     isCiCdCatalogProject = false,
+    isPublished = false,
+    shouldShowCallout = true,
   } = {}) => {
+    dismissCallout = jest.fn();
     const handlers = [
       [
         allReleasesQuery,
@@ -80,9 +86,13 @@ describe('app_index.vue', () => {
           // render-function emulation, which misclassifies it.
           compatConfig: { RENDER_FUNCTION: false },
           render() {
-            return getSlotFunction(this)({ isCiCdCatalogProject });
+            return getSlotFunction(this)({ isCiCdCatalogProject, isPublished });
           },
         },
+        UserCalloutDismisser: makeMockUserCalloutDismisser({
+          dismiss: dismissCallout,
+          shouldShowCallout,
+        }),
       },
     });
   };
@@ -113,6 +123,9 @@ describe('app_index.vue', () => {
   const findPagination = () => wrapper.findComponent(ReleasesPagination);
   const findSort = () => wrapper.findComponent(ReleasesSort);
   const findCatalogAlert = () => wrapper.findComponent(GlAlert);
+  const findCalloutDismisser = () => wrapper.findComponent(UserCalloutDismisser);
+
+  const toDescription = (bool) => (bool ? 'does' : 'does not');
   const findNewReleaseTooltip = () => wrapper.findByTestId('new-release-btn-tooltip');
 
   // Tests
@@ -125,8 +138,6 @@ describe('app_index.vue', () => {
     const getSingleRequestLoadedResponse = () => Promise.resolve(singleRelease);
     const getFullRequestLoadedResponse = () => Promise.resolve(allReleases);
     const getLoadedEmptyResponse = () => Promise.resolve(noReleases);
-
-    const toDescription = (bool) => (bool ? 'does' : 'does not');
 
     describe.each`
       description                                                       | singleResponseFn                  | fullResponseFn                  | loadingIndicator | emptyState | alertMessage | releaseCount | pagination
@@ -457,13 +468,29 @@ describe('app_index.vue', () => {
   });
 
   describe('CI/CD Catalog Alert', () => {
+    describe.each`
+      scenario                                   | isCiCdCatalogProject | isPublished | shouldShowCallout | rendered
+      ${'the project is unpublished'}            | ${true}              | ${false}    | ${true}           | ${true}
+      ${'the project is published'}              | ${true}              | ${true}     | ${true}           | ${false}
+      ${'the callout was dismissed'}             | ${true}              | ${false}    | ${false}          | ${false}
+      ${'the project is not a catalog resource'} | ${false}             | ${false}    | ${true}           | ${false}
+    `('when $scenario', ({ isCiCdCatalogProject, isPublished, shouldShowCallout, rendered }) => {
+      beforeEach(async () => {
+        await createComponent({ isCiCdCatalogProject, isPublished, shouldShowCallout });
+      });
+
+      it(`${toDescription(rendered)} render the CI/CD Catalog alert`, () => {
+        expect(findCatalogAlert().exists()).toBe(rendered);
+      });
+    });
+
     describe('when the project is a catalog resource', () => {
       beforeEach(async () => {
         await createComponent({ isCiCdCatalogProject: true });
       });
 
-      it('renders the CI/CD Catalog alert', () => {
-        expect(findCatalogAlert().exists()).toBe(true);
+      it('sets the callout feature name', () => {
+        expect(findCalloutDismisser().props('featureName')).toBe('ci_catalog_release_alert');
       });
 
       it('disables the new release button', () => {
@@ -476,15 +503,21 @@ describe('app_index.vue', () => {
           i18n.catalogResourceReleaseBtnTitle,
         );
       });
+
+      describe('when the alert is dismissed', () => {
+        beforeEach(() => {
+          findCatalogAlert().vm.$emit('dismiss');
+        });
+
+        it('dismisses the callout', () => {
+          expect(dismissCallout).toHaveBeenCalled();
+        });
+      });
     });
 
     describe('when the project is not a catalog resource', () => {
       beforeEach(async () => {
         await createComponent();
-      });
-
-      it('does not render the CI/CD Catalog alert', () => {
-        expect(findCatalogAlert().exists()).toBe(false);
       });
 
       it('enables the new release button', () => {

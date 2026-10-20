@@ -2169,8 +2169,8 @@ GitLab.com runs on Elasticsearch 9. The `rspec-ee * es9` jobs run only the specs
 - `:elasticsearch_adapter`
 
 A spec without one of these tags runs against Elasticsearch 7 only, in the regular `rspec-ee` jobs.
-If you add a new Elasticsearch metadata tag, add it to `RSPEC_TAGS` and `RSPEC_DRY_RUN_TAGS` in
-`.rspec-ee-base-pg17-es9` in `.gitlab/ci/rails/shared.gitlab-ci.yml`.
+`ee/spec/support/elastic.rb` sets `:es_service` on any spec with one of these tags, and the `es9` jobs select on `:es_service`.
+If you add a new Elasticsearch metadata tag, add it to `ES_SERVICE_TAGS` in `ee/spec/support/elastic.rb`.
 
 Most tests for Elasticsearch logic relate to:
 

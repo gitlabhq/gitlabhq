@@ -18135,6 +18135,22 @@
           "description": "An MCP tool dynamically discovered from the GitLab MCP server.",
           "fields": [
             {
+              "name": "beta",
+              "description": "Whether the MCP tool is in beta. The AI Catalog shows a Beta badge for beta tools.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "description",
               "description": "Description of the MCP tool.",
               "args": [],
@@ -438494,6 +438510,12 @@
             {
               "name": "WORK_ITEM_TICKET_MIGRATION",
               "description": "Callout feature name for work_item_ticket_migration.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CI_CATALOG_RELEASE_ALERT",
+              "description": "Callout feature name for ci_catalog_release_alert.",
               "isDeprecated": false,
               "deprecationReason": null
             }

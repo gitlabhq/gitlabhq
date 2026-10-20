@@ -222,11 +222,21 @@ module Gitlab
           end
         end
 
-        class KeyValidator < ActiveModel::EachValidator
-          include LegacyValidationHelpers
+        class StringValidator < ActiveModel::EachValidator
+          def self.validate(value)
+            value.is_a?(String) || value.is_a?(Symbol)
+          end
 
           def validate_each(record, attribute, value)
-            if validate_string(value)
+            unless self.class.validate(value)
+              record.errors.add(attribute, 'should be a string or symbol')
+            end
+          end
+        end
+
+        class KeyValidator < ActiveModel::EachValidator
+          def validate_each(record, attribute, value)
+            if StringValidator.validate(value)
               validate_path(record, attribute, value)
             else
               record.errors.add(attribute, 'should be a string or symbol')
@@ -325,26 +335,25 @@ module Gitlab
         end
 
         class StringOrNestedArrayOfStringsValidator < ActiveModel::EachValidator
-          include LegacyValidationHelpers
           include NestedArrayHelpers
 
           def validate_each(record, attribute, value)
             max_level = options.fetch(:max_level, 1)
 
-            unless validate_string(value) || validate_nested_array(value, max_level) { |item| validate_string(item) }
+            unless StringValidator.validate(value) ||
+                validate_nested_array(value, max_level) { |item| StringValidator.validate(item) }
               record.errors.add(attribute, "should be a string or a nested array of strings up to #{max_level} levels deep")
             end
           end
         end
 
         class NestedArrayOfStringsValidator < ActiveModel::EachValidator
-          include LegacyValidationHelpers
           include NestedArrayHelpers
 
           def validate_each(record, attribute, value)
             max_level = options.fetch(:max_level, 1)
 
-            unless validate_nested_array(value, max_level) { |item| validate_string(item) }
+            unless validate_nested_array(value, max_level) { |item| StringValidator.validate(item) }
               record.errors.add(attribute, "should be an array of strings or a nested array of strings up to #{max_level} levels deep")
             end
           end

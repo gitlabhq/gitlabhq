@@ -472,6 +472,28 @@ func TestWsManager_SendGoingAway(t *testing.T) {
 	}
 }
 
+func TestWsManager_SendClose(t *testing.T) {
+	controlMessages := []struct {
+		msgType int
+		data    []byte
+	}{}
+	conn := &shutdownTrackingConn{
+		mockWebSocketConn: &mockWebSocketConn{},
+		controlMessages:   &controlMessages,
+	}
+	ws := newWsManager(conn)
+
+	require.NoError(t, ws.SendClose(websocket.CloseTryAgainLater, "Failed to acquire lock on workflow"))
+	require.True(t, ws.closed.Load())
+
+	// Close must not send a second close frame after SendClose.
+	require.NoError(t, ws.Close())
+	require.Len(t, controlMessages, 1)
+	require.Equal(t, websocket.CloseMessage, controlMessages[0].msgType)
+	require.Equal(t, websocket.FormatCloseMessage(websocket.CloseTryAgainLater, "Failed to acquire lock on workflow"), controlMessages[0].data)
+	require.Equal(t, 1, conn.closeCalls)
+}
+
 func TestTruncateCloseReason(t *testing.T) {
 	tests := []struct {
 		name  string

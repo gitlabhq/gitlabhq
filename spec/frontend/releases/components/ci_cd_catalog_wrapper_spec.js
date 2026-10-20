@@ -46,6 +46,7 @@ describe('CiCdCatalogWrapper', () => {
 
   const findReleaseButton = () => wrapper.findByTestId('release-button');
   const findSettingsButton = () => wrapper.findByTestId('settings-button');
+  const findPublished = () => wrapper.findByTestId('published');
 
   describe('settings data', () => {
     const scopedSlots = {
@@ -105,6 +106,30 @@ describe('CiCdCatalogWrapper', () => {
           });
         });
       });
+    });
+  });
+
+  describe('isPublished', () => {
+    const scopedSlots = {
+      default: `<div v-if="props.isPublished" data-testid="published"></div>`,
+    };
+
+    beforeEach(() => {
+      catalogReleasesHandler = jest.fn().mockResolvedValue(catalogReleasesResponse);
+    });
+
+    it.each`
+      scenario                         | isPublished
+      ${'the resource is published'}   | ${true}
+      ${'the resource is unpublished'} | ${false}
+    `('passes isPublished as $isPublished when $scenario', async ({ isPublished }) => {
+      catalogSettingsHandler = jest
+        .fn()
+        .mockResolvedValue(generateCatalogSettingsResponse(true, isPublished));
+
+      await createComponent({ scopedSlots });
+
+      expect(findPublished().exists()).toBe(isPublished);
     });
   });
 

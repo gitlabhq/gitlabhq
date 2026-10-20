@@ -11,6 +11,7 @@ import LineChartPresenter from './line_chart.vue';
 import ListPresenter from './list.vue';
 import StatPresenter from './stat.vue';
 import TablePresenter from './table.vue';
+import { withTrendColumn } from './utils/table';
 
 const SUPPORTED_DISPLAY_TYPES = Object.values(DISPLAY_TYPES);
 
@@ -47,7 +48,7 @@ export default {
       default: null,
     },
     /**
-     * True while the comparison query is still running, so a presenter can reserve
+     * True while the comparison query is still running, so the table can reserve
      * room for the trend instead of adding it late.
      */
     comparisonPending: {
@@ -94,6 +95,22 @@ export default {
     listType() {
       return this.displayType === DISPLAY_TYPES.LIST ? 'ul' : 'ol';
     },
+    // The table's input, with the previous period joined in as a trend column.
+    table() {
+      if (this.displayType !== DISPLAY_TYPES.TABLE) return null;
+
+      return withTrendColumn({
+        fields: this.fields,
+        data: this.data,
+        comparisonData: this.comparisonData,
+        comparisonPending: this.comparisonPending,
+        comparisonMetric: this.comparisonMetric,
+        source: this.source,
+      });
+    },
+    trendError() {
+      return this.table?.error ?? null;
+    },
     unsupportedDisplayTypeError() {
       if (SUPPORTED_DISPLAY_TYPES.includes(this.displayType)) return null;
 
@@ -115,18 +132,21 @@ export default {
         if (message) this.$emit('error', new Error(message));
       },
     },
+    trendError: {
+      immediate: true,
+      handler(message) {
+        if (message) this.$emit('error', new Error(message));
+      },
+    },
   },
   DISPLAY_TYPES,
 };
 </script>
 <template>
   <table-presenter
-    v-if="displayType === $options.DISPLAY_TYPES.TABLE"
-    :data="data"
-    :comparison-data="comparisonData"
-    :comparison-pending="comparisonPending"
-    :comparison-metric="comparisonMetric"
-    :fields="fields"
+    v-if="table"
+    :data="table.data"
+    :fields="table.fields"
     :loading="loading"
     :display-config="displayConfig"
     :source="source"

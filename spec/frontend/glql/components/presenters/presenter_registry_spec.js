@@ -9,6 +9,7 @@ import CollectionPresenter from '~/glql/components/presenters/collection.vue';
 import DateBucketPresenter from '~/glql/components/presenters/date_bucket.vue';
 import TierBandPresenter from '~/glql/components/presenters/tier_band.vue';
 import DurationPresenter from '~/glql/components/presenters/duration.vue';
+import TrendPresenter from '~/glql/components/presenters/trend.vue';
 import HtmlPresenter from '~/glql/components/presenters/html.vue';
 import IssuablePresenter from '~/glql/components/presenters/issuable.vue';
 import LabelPresenter from '~/glql/components/presenters/label.vue';
@@ -64,6 +65,13 @@ describe('presenter_registry', () => {
   describe('presenterFor', () => {
     it('returns NullPresenter when the resolved field is null', () => {
       expect(presenterFor({ key: null }, 'key')).toBe(NullPresenter);
+    });
+
+    it.each([
+      ['a known change', { __typename: '__Trend', text: '5%', variant: 'success' }],
+      ['an unknown change', { __typename: '__Trend' }],
+    ])('resolves a trend holding %s to TrendPresenter by its type', (_, trend) => {
+      expect(presenterFor({ __trend: trend }, '__trend')).toBe(TrendPresenter);
     });
 
     describe('typename dispatch (primitive / object types)', () => {

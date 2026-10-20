@@ -65,7 +65,7 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
   subject(:post_query) { post_graphql(query, current_user: user) }
 
   shared_examples 'avoids N+1 queries' do
-    it do
+    it 'does not run more queries after another catalog resource is published' do
       ctx = { current_user: user }
 
       control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do

@@ -3733,6 +3733,16 @@ entry.
 - [Do not assume ListCommits cursor is a raw SHA](https://gitlab.com/gitlab-org/gitlab/-/commit/706c1a0edeebc9b7118d7012c8658c707750f9b0) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245333))
 - [Remove FF dap_instance_network_access_controls](https://gitlab.com/gitlab-org/gitlab/-/commit/e0bcb8b341cbe43d04589404c2a806560e29295f) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244957))
 
+## 19.2.9 (2026-10-20)
+
+### Added (1 change)
+
+- [Allow job, source project claims in ID token sub claims](https://gitlab.com/gitlab-org/gitlab/-/commit/dffe910e2938e17153ebe26e5fc20ddd6389c684) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/259316))
+
+### Changed (1 change)
+
+- [Update gitlab-markup to 2.2.0 and rdoc to 8.1.0](https://gitlab.com/gitlab-org/gitlab/-/commit/856df0cec69a187d4f9e328caccce17e2dcb9fce) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/262716))
+
 ## 19.2.8 (2026-10-07)
 
 ### Fixed (7 changes)
@@ -4840,6 +4850,16 @@ No changes.
 - [Refactor wiki page model tests to improve factory performance](https://gitlab.com/gitlab-org/gitlab/-/commit/dc699f120c26c632556b3b0b9280ec3244f2fc5a) by @gerardo-navarro ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218029))
 - [Remove unused method EE::ProjectsHelper#paid_duo_tier_for_project](https://gitlab.com/gitlab-org/gitlab/-/commit/1a0c188555670d73d5114f0421ede6b25387ccd1) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240524))
 - [Drop `push_rule_id` column from `namespaces` table](https://gitlab.com/gitlab-org/gitlab/-/commit/0cf896e7157b152614205d5979e7cfee40ce83cb) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/238105))
+
+## 19.1.9 (2026-10-20)
+
+### Fixed (1 change)
+
+- [Bump gitlab-shell to 14.56.1](https://gitlab.com/gitlab-org/gitlab/-/commit/40c946ede3c3150267931e74103342e931922917) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/258647))
+
+### Changed (1 change)
+
+- [Update gitlab-markup to 2.2.0 and rdoc to 8.1.0](https://gitlab.com/gitlab-org/gitlab/-/commit/ed9249ef85d5311fc182004ab67ae4a5b358443c) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/262718))
 
 ## 19.1.8 (2026-09-10)
 
@@ -7181,6 +7201,10 @@ No changes.
 - [Sync translations from crowdin (2026-04-09)](https://gitlab.com/gitlab-org/gitlab/-/commit/c6534667f1d65993acc2cda1c1270faef72114ea) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230657))
 - [Fix non-auto-correctable Naming/HeredocDelimiterNaming offenses](https://gitlab.com/gitlab-org/gitlab/-/commit/4eae66671a6afc78181cb1f0e0690e0ab3ed55cb) by @JonstonChan ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230057))
 - [Fix non-auto-correctable API/DescriptionSummary offenses](https://gitlab.com/gitlab-org/gitlab/-/commit/b3eaf6e2b0537ed21ff2332896b45a760a0a9142) by @JonstonChan ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224288))
+
+## 18.11.13 (2026-10-20)
+
+No changes.
 
 ## 18.11.12 (2026-09-22)
 

@@ -1,36 +1,16 @@
 <script>
-import { GlBadge, GlIcon, GlSkeletonLoader, GlTooltipDirective } from '@gitlab/ui';
-import { __, s__, sprintf } from '~/locale';
+import { GlIcon, GlSkeletonLoader } from '@gitlab/ui';
+import { s__, sprintf } from '~/locale';
 import { FIELD_TYPES } from '../../constants';
 import { sortBy } from '../../core/sorter';
-import {
-  baseFieldKeyOf,
-  dimensionsOf,
-  labelWithParameter,
-  metricsOf,
-} from '../../utils/chart_data';
+import { baseFieldKeyOf, labelWithParameter } from '../../utils/chart_data';
 import ThResizable from '../common/th_resizable.vue';
 import FieldPresenter from './field.vue';
 import { listDescriptionError, listDescriptionFor } from './utils/description';
 import { hiddenMetricsError, visibleFieldsOf } from './utils/hidden_metrics';
-import { NO_VALUE, trendPresentationFor } from './utils/stat';
-import { formatChange } from './utils/trend';
-import {
-  TREND_CHANGE_KEY,
-  TREND_PREVIOUS_KEY,
-  hasTemporalDimension,
-  withTrendValues,
-} from './utils/table';
+import { NO_VALUE } from './utils/stat';
 
 const DEFAULT_PAGE_SIZE = 5;
-
-// Rendered when a row has no counterpart in the previous period, so its change is unknown.
-// Kept distinct from a neutral `0%` badge, which means the row was found and did not move.
-const NO_TREND = '—';
-
-// Holds a row's badge config, kept apart from TREND_CHANGE_KEY because only that one is
-// sortable.
-const TREND_CELL_KEY = '__trendCell';
 
 // Sources where a run can happen outside any project, so a null project is a real bucket.
 // Everywhere else (Pipelines, for one) a null project means it was deleted or is unreadable.
@@ -69,14 +49,10 @@ const DIMENSION_NULL_LABELS = {
 export default {
   name: 'TablePresenter',
   components: {
-    GlBadge,
     GlIcon,
     GlSkeletonLoader,
     ThResizable,
     FieldPresenter,
-  },
-  directives: {
-    GlTooltip: GlTooltipDirective,
   },
   inject: {
     getVisualizationTitle: { default: () => () => '' },
@@ -86,21 +62,6 @@ export default {
       required: false,
       type: Object,
       default: () => ({ nodes: [] }),
-    },
-    comparisonData: {
-      required: false,
-      type: Object,
-      default: null,
-    },
-    comparisonPending: {
-      required: false,
-      type: Boolean,
-      default: false,
-    },
-    comparisonMetric: {
-      required: false,
-      type: String,
-      default: null,
     },
     fields: {
       required: false,
@@ -137,31 +98,6 @@ export default {
     pageSize() {
       return typeof this.loading === 'number' ? this.loading : DEFAULT_PAGE_SIZE;
     },
-    dimensions() {
-      return dimensionsOf(this.fields);
-    },
-    metrics() {
-      return metricsOf(this.fields);
-    },
-    // Set by the resolver on the comparison result, or named up front while that result is
-    // pending. Matched against a field's alias or its base key, and optional when the table
-    // selects a single metric.
-    trendMetric() {
-      return this.comparisonData?.metric ?? this.comparisonMetric ?? '';
-    },
-    trendRequested() {
-      return this.comparisonPending || Boolean(this.comparisonData?.nodes?.length);
-    },
-    trendField() {
-      if (!this.trendMetric) return this.metrics.length === 1 ? this.metrics[0] : null;
-
-      return (
-        this.metrics.find(
-          (metric) =>
-            metric.key === this.trendMetric || baseFieldKeyOf(metric) === this.trendMetric,
-        ) ?? null
-      );
-    },
     description() {
       return listDescriptionFor({
         description: this.displayConfig?.description,
@@ -174,46 +110,13 @@ export default {
       const descriptionError = listDescriptionError(this.displayConfig?.description, this.fields);
       if (descriptionError) return descriptionError;
 
-      const hiddenError = hiddenMetricsError(this.displayConfig?.hiddenMetrics, this.fields);
-      if (hiddenError) return hiddenError;
-
-      // Only a panel that asked for a trend can misconfigure one.
-      if (!this.comparisonData) return null;
-
-      if (this.trendMetric && !this.trendField) {
-        return sprintf(__('Unknown metric for `trendMetric`: `%{metric}`.'), {
-          metric: this.trendMetric,
-        });
-      }
-      if (!this.trendMetric && this.metrics.length > 1) {
-        return __('table display type requires `trendMetric` when several metrics are selected');
-      }
-
-      return null;
-    },
-    trendColumn() {
-      if (!this.trendField || !this.trendRequested) return null;
-      if (hasTemporalDimension(this.dimensions)) return null;
-
-      return {
-        key: TREND_CHANGE_KEY,
-        label: s__('Glql|vs previous period'),
-        type: FIELD_TYPES.METRIC,
-      };
+      return hiddenMetricsError(this.displayConfig?.hiddenMetrics, this.fields);
     },
     rows() {
-      if (!this.trendColumn || this.comparisonPending) return this.data.nodes;
-
-      return withTrendValues(this.data.nodes, {
-        comparisonNodes: this.comparisonData.nodes,
-        dimensions: this.dimensions,
-        metric: this.trendField,
-      }).map((row) => ({ ...row, [TREND_CELL_KEY]: this.trendCellFor(row) }));
+      return this.data.nodes;
     },
     columns() {
-      const fields = visibleFieldsOf(this.fields, this.displayConfig?.hiddenMetrics);
-
-      return this.trendColumn ? [...fields, this.trendColumn] : fields;
+      return visibleFieldsOf(this.fields, this.displayConfig?.hiddenMetrics);
     },
   },
   watch: {
@@ -233,9 +136,6 @@ export default {
   methods: {
     baseFieldKeyOf,
     labelWithParameter,
-    isTrendColumn(field) {
-      return field.key === TREND_CHANGE_KEY;
-    },
     isMetricColumn(field) {
       return field.type === FIELD_TYPES.METRIC;
     },
@@ -247,34 +147,18 @@ export default {
 
       return null;
     },
-    trendCellFor(row) {
-      const trend = trendPresentationFor(this.source, this.trendField, {
-        value: row[this.trendField.key],
-        previousValue: row[TREND_PREVIOUS_KEY],
-      });
-      if (!trend) return null;
-
-      const change = row[TREND_CHANGE_KEY];
-
-      return {
-        ...trend,
-        // The column header already names the comparison, so the cell drops the "vs prior"
-        // suffix the stat badge carries. A move away from 0 has no percentage to show.
-        text: change == null ? trend.metaText : formatChange(change),
-      };
+    // A derived column renders one key but sorts by another.
+    sortKeyOf(field) {
+      return field.sortKey ?? field.key;
     },
-    trendCellIn(item) {
-      return item[TREND_CELL_KEY] ?? null;
-    },
-    sortBy(fieldName) {
-      if (fieldName === TREND_CHANGE_KEY && this.comparisonPending) return;
+    sortBy(field) {
+      if (field.sortable === false) return;
 
-      const { options, items } = sortBy(this.items, fieldName, this.sortOptions);
+      const { options, items } = sortBy(this.items, this.sortKeyOf(field), this.sortOptions);
       this.items = items;
       this.sortOptions = options;
     },
   },
-  NO_TREND,
   NO_VALUE,
 };
 </script>
@@ -300,11 +184,11 @@ export default {
               <div
                 :data-testid="`column-${fieldIndex}`"
                 class="gl-l-0 gl-r-0 gl-absolute gl-w-full gl-cursor-pointer gl-truncate gl-bg-default gl-px-5 gl-py-3 hover:gl-bg-subtle"
-                @click="sortBy(field.key)"
+                @click="sortBy(field)"
               >
                 {{ labelWithParameter(field) }}
                 <gl-icon
-                  v-if="sortOptions.fieldName === field.key"
+                  v-if="sortOptions.fieldName === sortKeyOf(field)"
                   :name="sortOptions.ascending ? 'arrow-up' : 'arrow-down'"
                 />
               </div>
@@ -323,27 +207,9 @@ export default {
               :key="field.key"
               class="!gl-border-l-0 !gl-border-r-0 gl-bg-default !gl-px-5 !gl-py-3"
             >
-              <template v-if="isTrendColumn(field)">
-                <div v-if="comparisonPending" data-testid="trend-pending">
-                  <gl-skeleton-loader :width="60" :lines="1" :equal-width-lines="true" />
-                </div>
-                <gl-badge
-                  v-else-if="trendCellIn(item)"
-                  v-gl-tooltip
-                  :title="trendCellIn(item).metaTooltip"
-                  :variant="trendCellIn(item).variant"
-                  :icon="trendCellIn(item).metaIcon"
-                  data-testid="trend-badge"
-                >
-                  {{ trendCellIn(item).text }}
-                </gl-badge>
-                <span v-else class="gl-text-subtle" data-testid="trend-unknown">
-                  {{ $options.NO_TREND }}
-                </span>
-              </template>
               <!-- A metric the user may not read comes back null, not as an error; "None" would read as zero. -->
               <span
-                v-else-if="isMetricColumn(field) && item[field.key] == null"
+                v-if="isMetricColumn(field) && item[field.key] == null"
                 class="gl-text-subtle"
                 data-testid="metric-no-value"
               >

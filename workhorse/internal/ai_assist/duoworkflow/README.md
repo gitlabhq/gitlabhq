@@ -295,7 +295,7 @@ type workflowLockManager struct {
 **Process:**
 
 1. Acquire a distributed lock when workflow starts
-2. Release the lock when workflow ends
+2. Release the lock once the stream to Duo Workflow Service is closed, even when the caller has already gone away. When Duo Workflow Service doesn't acknowledge a stop, the stream is closed and the lock released one stop timeout (10s) after the stop request
 3. Return specific error if lock cannot be acquired
 4. Requires Redis configuration
 
@@ -464,6 +464,7 @@ MCP servers are configured in GitLab Rails and passed to Workhorse:
 ### Connection errors
 
 - **Duo Workflow Service unavailable**: Returns `ErrServerUnavailable` and closes WebSocket
+- **Runner initialization failure**: The WebSocket is closed with `CloseInternalServerErr` (1011), because the connection is already upgraded and cannot carry an HTTP error
 - **MCP server unavailable**: Logs error and continues without MCP tools
 - **Network errors**: Implements gRPC retry logic with exponential backoff
 - **Usage quota exceeded**: gRPC `RESOURCE_EXHAUSTED` with `USAGE_QUOTA_EXCEEDED` message is translated to `errUsageQuotaExceededError`; the WebSocket is closed with `ClosePolicyViolation`

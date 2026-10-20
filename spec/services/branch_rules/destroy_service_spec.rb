@@ -19,7 +19,7 @@ RSpec.describe BranchRules::DestroyService, feature_category: :source_code_manag
       # We need to stub the call inside the nested services first
       allow(Ability).to receive(:allowed?).and_return(true)
       allow(Ability)
-        .to receive(:allowed?).with(user, :destroy_protected_branch, branch_rule)
+        .to receive(:allowed?).with(user, :delete_branch_rule, branch_rule)
         .and_return(action_allowed)
     end
 

@@ -1,83 +1,135 @@
-import { trendChangeFor } from './trend';
-
-// Reserved keys for the derived trend column. A compiled GLQL field key comes from query
-// text, which cannot produce these, so they can never collide with a real field.
-export const TREND_CHANGE_KEY = '__trendChange';
-export const TREND_PREVIOUS_KEY = '__trendPrevious';
-
-// An object dimension value carrying no `id` names a record that exists but cannot be told
-// from another of its kind, so a row holding one never pairs. An absent value is different:
-// it is the query's own NULL bucket, so it keeps an ordinary key and pairs like any other.
-const UNIDENTIFIED = Symbol('unidentified');
-
-// Identity, deliberately not the display label: two distinct records can share a label (two
-// users named "Alex Smith"), and pairing on the label compares one against the other.
-const identityOf = (value) => {
-  if (value == null) return null;
-  if (typeof value !== 'object') return String(value);
-
-  return value.id ?? UNIDENTIFIED;
-};
-
-// Null when the row holds a value nothing can name, which has to short-circuit: JSON renders
-// a symbol as null too, so an absent value would otherwise key alike. It keeps an absent
-// value apart from any string that reads like one.
-const rowKeyOf = (node, dimensions) => {
-  const identities = dimensions.map((dimension) => identityOf(node[dimension.key]));
-  if (identities.includes(UNIDENTIFIED)) return null;
-
-  return JSON.stringify(identities);
-};
-
-// Unidentified rows are left out, so their null key is never a count anything can match.
-const rowKeyCountsOf = (nodes, dimensions) =>
-  nodes.reduce((counts, node) => {
-    const key = rowKeyOf(node, dimensions);
-    if (key === null) return counts;
-
-    return counts.set(key, (counts.get(key) ?? 0) + 1);
-  }, new Map());
+import { __, s__, sprintf } from '~/locale';
+import { FIELD_TYPES, TREND_TYPENAME } from '../../../constants';
+import { baseFieldKeyOf, dimensionsOf, metricsOf } from '../../../utils/chart_data';
+import {
+  TREND_CHANGE_KEY,
+  TREND_KEY,
+  TREND_PREVIOUS_KEY,
+  formatChange,
+  hasTemporalDimension,
+  trendPresentationFor,
+  withTrendValues,
+} from './trend';
 
 /**
- * True when any dimension buckets by date. Bucket values are different dates in the shifted
- * window, so joining the two periods on dimension values matches nothing. Comparing a bucket
- * against the same bucket one period back is the engine's job (`lagged_count`), not ours.
+ * Resolves the metric the trend column compares. `trendMetric` is matched against a field's
+ * alias or its base key, and is optional when a single metric is selected.
  */
-export const hasTemporalDimension = (dimensions) =>
-  dimensions.some((dimension) => Boolean(dimension?.parameters?.granularity));
+export const resolveTrendField = (metrics, trendMetric) => {
+  if (!trendMetric) {
+    if (metrics.length > 1) {
+      return {
+        field: null,
+        error: __('table display type requires `trendMetric` when several metrics are selected'),
+      };
+    }
 
-/**
- * Pairs each row with its counterpart in the previous period and materialises the change in
- * `metric` onto a copy of the row.
- *
- * A row pairs only when its identity belongs to it alone in both periods. One blank row is
- * still a bucket of its own — `project` is null for every flow started outside a project —
- * so it keeps its trend; several are a crowd nothing can be picked out of, which is what a
- * `group` dimension produces for namespaces it cannot resolve.
- *
- * The change lands on the row itself so the table can sort by it through the ordinary field
- * sorter. Rows with no counterpart get null, which reads as "unknown" rather than "no change"
- * and sorts last. Note the previous-period result is fetched once and never paginated, so a
- * row past its extent is legitimately unknown too.
- */
-export const withTrendValues = (nodes, { comparisonNodes = [], dimensions, metric }) => {
-  const currentCounts = rowKeyCountsOf(nodes, dimensions);
-  const previousCounts = rowKeyCountsOf(comparisonNodes, dimensions);
+    return { field: metrics[0] ?? null, error: null };
+  }
 
-  const previousByRowKey = new Map();
-  comparisonNodes.forEach((node) => {
-    const key = rowKeyOf(node, dimensions);
-    if (previousCounts.get(key) === 1) previousByRowKey.set(key, node[metric.key]);
+  const field =
+    metrics.find(
+      (metric) => metric.key === trendMetric || baseFieldKeyOf(metric) === trendMetric,
+    ) ?? null;
+  const error = field
+    ? null
+    : sprintf(__('Unknown metric for `trendMetric`: `%{metric}`.'), { metric: trendMetric });
+
+  return { field, error };
+};
+
+// Never null: `presenterFor` sends a null value to NullPresenter, which reads "None", while an
+// unknown change has to read as a dash, kept distinct from a neutral `0%` badge. Typed, so the
+// registry sends either one to TrendPresenter.
+const rowTrendFor = (source, metric, row) => {
+  const trend = trendPresentationFor(source, metric, {
+    value: row[metric.key],
+    previousValue: row[TREND_PREVIOUS_KEY],
   });
+  if (!trend) return { __typename: TREND_TYPENAME };
 
-  return nodes.map((node) => {
-    const key = rowKeyOf(node, dimensions);
-    const previousValue = (currentCounts.get(key) === 1 ? previousByRowKey.get(key) : null) ?? null;
+  const change = row[TREND_CHANGE_KEY];
 
+  return {
+    __typename: TREND_TYPENAME,
+    ...trend,
+    // The column header already names the comparison, so the badge drops the "vs prior"
+    // suffix the stat badge carries. A move away from 0 has no percentage to show.
+    text: change == null ? trend.metaText : formatChange(change),
+  };
+};
+
+// Not an unknown trend: whether the row has a counterpart is not known yet.
+const PENDING_TREND = { __typename: TREND_TYPENAME, pending: true };
+
+/**
+ * Derives the table's previous-period column and the rows it reads from, or null when there
+ * is nothing to compare. The column renders the badge config but sorts by the change. While
+ * the comparison is `pending`, the column is reserved so it does not pop in later.
+ */
+export const trendColumnFor = ({ fields, data, comparisonData, pending, metric, source }) => {
+  if (!metric || !(pending || comparisonData?.nodes?.length)) return null;
+
+  const dimensions = dimensionsOf(fields);
+  if (hasTemporalDimension(dimensions)) return null;
+
+  const column = {
+    key: TREND_KEY,
+    sortKey: TREND_CHANGE_KEY,
+    label: s__('Glql|vs previous period'),
+    type: FIELD_TYPES.METRIC,
+  };
+
+  if (pending) {
     return {
-      ...node,
-      [TREND_PREVIOUS_KEY]: previousValue,
-      [TREND_CHANGE_KEY]: trendChangeFor(node[metric.key], previousValue),
+      // Not sortable until the comparison lands, since every change is still unknown.
+      column: { ...column, sortable: false },
+      rows: data.nodes.map((row) => ({ ...row, [TREND_KEY]: PENDING_TREND })),
     };
+  }
+
+  const rows = withTrendValues(data.nodes, {
+    comparisonNodes: comparisonData.nodes,
+    dimensions,
+    metric,
+  }).map((row) => ({ ...row, [TREND_KEY]: rowTrendFor(source, metric, row) }));
+
+  return { column, rows };
+};
+
+/**
+ * Joins the previous period into a table's input as a column of its own, so the table renders
+ * and sorts it like any other. `error` is set when the panel's `trendMetric` cannot be
+ * resolved. While the comparison is `pending`, `comparisonMetric` names the metric it will
+ * describe. Once the engine compares periods itself, this step goes away.
+ */
+export const withTrendColumn = ({
+  fields,
+  data,
+  comparisonData,
+  comparisonPending = false,
+  comparisonMetric = null,
+  source,
+}) => {
+  if (!comparisonData && !comparisonPending) return { fields, data, error: null };
+
+  // The resolver sets `metric` on the comparison result.
+  const { field: metric, error: trendMetricError } = resolveTrendField(
+    metricsOf(fields),
+    comparisonData?.metric ?? comparisonMetric ?? '',
+  );
+  // A comparison that fails or is dropped never lands, so reporting while it is pending would
+  // flash an error that then disappears.
+  const error = comparisonData ? trendMetricError : null;
+  const trend = trendColumnFor({
+    fields,
+    data,
+    comparisonData,
+    pending: comparisonPending,
+    metric,
+    source,
   });
+  if (!trend) return { fields, data, error };
+
+  return { fields: [...fields, trend.column], data: { ...data, nodes: trend.rows }, error };
 };
