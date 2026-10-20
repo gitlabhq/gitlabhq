@@ -1222,30 +1222,6 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
           end
         end
       end
-
-      context 'when allow_quarantine is false' do
-        subject { client.list_new_commits(revisions, allow_quarantine: false) }
-
-        it 'ignores the quarantine and walks reachability from refs' do
-          expect_next_instance_of(Gitaly::CommitService::Stub) do |service|
-            expect(service).not_to receive(:list_all_commits)
-            expect(service).not_to receive(:check_objects_exist)
-
-            expect(service).to receive(:list_commits) do |request, _opts|
-              expect(request.revisions.to_a)
-                .to eq(revisions + %w[--not --glob=refs/heads/*])
-
-              instance_double(
-                GRPC::ActiveCall::Operation,
-                execute: [Gitaly::ListCommitsResponse.new(commits: gitaly_commits)],
-                trailing_metadata: {}
-              )
-            end
-          end
-
-          expect(subject).to eq(expected_commits)
-        end
-      end
     end
 
     context 'without hook environment' do
@@ -1257,27 +1233,6 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
       end
 
       it_behaves_like 'a #list_commits message'
-
-      context 'when allow_quarantine is false' do
-        subject { client.list_new_commits(revisions, allow_quarantine: false) }
-
-        it 'walks reachability from refs instead of --not --all' do
-          expect_next_instance_of(Gitaly::CommitService::Stub) do |service|
-            expect(service).to receive(:list_commits) do |request, _opts|
-              expect(request.revisions.to_a)
-                .to eq(revisions + %w[--not --glob=refs/heads/*])
-
-              instance_double(
-                GRPC::ActiveCall::Operation,
-                execute: [Gitaly::ListCommitsResponse.new(commits: gitaly_commits)],
-                trailing_metadata: {}
-              )
-            end
-          end
-
-          expect(subject).to eq(expected_commits)
-        end
-      end
     end
   end
 
