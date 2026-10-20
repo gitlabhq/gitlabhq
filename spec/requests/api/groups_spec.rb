@@ -4206,6 +4206,25 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
   end
 
   describe "POST /groups/:id/share" do
+    context 'when the group is scheduled for deletion' do
+      let_it_be(:group_owner) { create(:user) }
+      let_it_be_with_reload(:pending_deletion_group) { create(:group, owners: group_owner) }
+      let_it_be(:pending_shared_with_group) { create(:group, :private, developers: group_owner) }
+
+      before do
+        ::Groups::MarkForDeletionService.new(pending_deletion_group, group_owner).execute
+      end
+
+      it 'refuses to share the group with a group' do
+        expect do
+          post api("/groups/#{pending_deletion_group.id}/share", group_owner),
+            params: { group_id: pending_shared_with_group.id, group_access: Gitlab::Access::DEVELOPER }
+        end.not_to change { pending_deletion_group.shared_with_group_links.count }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
     shared_examples 'shares group with group' do
       let_it_be(:admin_mode) { false }
 

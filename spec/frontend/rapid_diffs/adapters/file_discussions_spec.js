@@ -2,6 +2,7 @@ import { nextTick } from 'vue';
 import { setActivePinia } from 'pinia';
 import { resetHTMLFixture, setHTMLFixture } from 'helpers/fixtures';
 import { createFileDiscussionsAdapter } from '~/rapid_diffs/adapters/file_discussions';
+import { toggleFileAdapter } from '~/rapid_diffs/adapters/toggle_file';
 import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
 import { useDiffDiscussions } from '~/rapid_diffs/stores/diff_discussions';
 import { useDiscussions } from '~/notes/store/discussions';
@@ -244,6 +245,42 @@ describe('fileDiscussionsAdapter', () => {
     await nextTick();
     expect(store.discussionForms).toHaveLength(1);
     expect(store.discussionForms[0].position.position_type).toBe('file');
+  });
+
+  it('expands a collapsed file so the comment form is visible', async () => {
+    setHTMLFixture(`
+      <diff-file data-file-data='${JSON.stringify({
+        viewer: 'text_inline',
+        old_path: oldPath,
+        new_path: newPath,
+      })}'>
+        <div data-collapsed="true">
+          <button disabled aria-disabled="true" data-click="fileComment"></button>
+          <details data-file-body></details>
+          <div data-file-discussions></div>
+        </div>
+      </diff-file>
+    `);
+    getDiffFile().mount({
+      adapterConfig: { text_inline: [createFileDiscussionsAdapter(store), toggleFileAdapter] },
+      appData,
+      unobserve: jest.fn(),
+    });
+    const fileRoot = getDiffFile().firstElementChild;
+    expect(fileRoot.dataset.collapsed).toBe('true');
+
+    let event;
+    const button = getDiffFile().querySelector('[data-click="fileComment"]');
+    button.addEventListener('click', (e) => {
+      event = e;
+    });
+    button.click();
+    getDiffFile().onClick(event);
+    await nextTick();
+
+    expect(fileRoot.dataset.collapsed).toBeUndefined();
+    expect(fileRoot.querySelector('[data-file-body]').open).toBe(true);
+    expect(store.discussionForms).toHaveLength(1);
   });
 
   it('cleans up on removal', async () => {

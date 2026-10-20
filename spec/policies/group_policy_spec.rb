@@ -283,6 +283,54 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     end
   end
 
+  describe 'pending deletion abilities' do
+    let_it_be(:user) { create(:user) }
+    let(:pending_deletion_abilities) { Authz::PermissionGroups::Internal.get('group:archived').permissions }
+
+    subject(:policy) { described_class.new(user, pending_deletion_group) }
+
+    shared_examples 'prevents pending deletion abilities' do
+      it 'prevents abilities defined in pending_deletion_abilities' do
+        expect_disallowed(*pending_deletion_abilities)
+      end
+    end
+
+    context 'when group itself is scheduled for deletion' do
+      let_it_be_with_reload(:pending_deletion_group) { create(:group, owners: user) }
+
+      before_all do
+        # The service enqueues a notification mailer, which the before_all transaction rejects.
+        Sidekiq::Worker.skipping_transaction_check do
+          ::Groups::MarkForDeletionService.new(pending_deletion_group, user).execute
+        end
+      end
+
+      it_behaves_like 'prevents pending deletion abilities'
+    end
+
+    context 'when ancestor group is scheduled for deletion' do
+      let_it_be_with_reload(:parent_group) { create(:group, owners: user) }
+      let_it_be(:pending_deletion_group) { create(:group, parent: parent_group) }
+
+      before_all do
+        # The service enqueues a notification mailer, which the before_all transaction rejects.
+        Sidekiq::Worker.skipping_transaction_check do
+          ::Groups::MarkForDeletionService.new(parent_group, user).execute
+        end
+      end
+
+      it_behaves_like 'prevents pending deletion abilities'
+    end
+
+    context 'when group is not scheduled for deletion' do
+      let_it_be(:pending_deletion_group) { create(:group, owners: user) }
+
+      it 'allows write and delete abilities' do
+        expect_allowed(:invite_group_members, :destroy_issue, :destroy_package, :delete_custom_emoji)
+      end
+    end
+  end
+
   describe 'remove_group' do
     let(:policy) { described_class.new(current_user, group) }
 

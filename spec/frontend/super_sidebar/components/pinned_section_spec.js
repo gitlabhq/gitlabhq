@@ -380,6 +380,10 @@ describe('PinnedSection component', () => {
       expect(wrapper.findComponent(MenuSection).props('boldTitle')).toBe(true);
     });
 
+    it('reveals the chevron only on hover or focus', () => {
+      expect(wrapper.findComponent(MenuSection).props('revealChevronOnHover')).toBe(true);
+    });
+
     it('labels the pinned list with the category title', () => {
       expect(findList().attributes('aria-label')).toBe('Code');
     });
@@ -399,6 +403,10 @@ describe('PinnedSection component', () => {
 
     it('does not render the header in a heavier font weight', () => {
       expect(wrapper.findComponent(MenuSection).props('boldTitle')).toBe(false);
+    });
+
+    it('always shows the chevron', () => {
+      expect(wrapper.findComponent(MenuSection).props('revealChevronOnHover')).toBe(false);
     });
   });
 });

@@ -51,6 +51,8 @@ module API
           note: params[:body],
           confidential: params[:confidential]
         }.compact
+        opts[:scope_validator] =
+          ::Gitlab::Auth::ScopeValidator.new(current_user, Gitlab::Auth::RequestAuthenticator.new(request))
         parent = noteable_parent(noteable)
         project = parent if parent.is_a?(Project)
 
@@ -59,6 +61,8 @@ module API
         process_note_creation_result(note) do
           present_single_note(note, noteable, noteable_class)
         end
+      rescue QuickActions::InterpretService::QuickActionsNotAllowedError => error
+        forbidden!(error.message)
       end
 
       def resolve_note(noteable, note_id, resolved, noteable_class = nil)

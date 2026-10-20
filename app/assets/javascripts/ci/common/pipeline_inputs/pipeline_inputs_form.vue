@@ -239,7 +239,8 @@ export default {
           if (matchingRule) {
             const options = matchingRule.options || [];
             const ruleIndex = input.rules.indexOf(matchingRule);
-            const ruleChanged = input.lastMatchedRuleIndex !== ruleIndex;
+            const isInitialEvaluation = !input.rulesEvaluated && input.savedValue !== undefined;
+            const ruleChanged = !isInitialEvaluation && input.lastMatchedRuleIndex !== ruleIndex;
             const hasOptions = options.length > 0;
             const valueInOptions = Array.isArray(input.value)
               ? input.value.every((value) => options.includes(value))
@@ -250,7 +251,7 @@ export default {
             if (hasOptions && valueInOptions) {
               value = input.value;
             } else if (!hasOptions && !ruleChanged) {
-              value = input.value;
+              value = input.value ?? matchingRule.default ?? '';
             }
 
             processed.push({
@@ -335,6 +336,7 @@ export default {
     initializeInputs(inputs) {
       if (!inputs) return;
       this.inputs = cloneDeep(inputs);
+      this.syncRuleInputs();
 
       this.selectedInputNames = this.inputs
         .filter((input) => input.isSelected && !input.hasRules)
@@ -343,6 +345,18 @@ export default {
       this.$emit('update-inputs-metadata', {
         totalAvailable: this.inputs.length,
         totalModified: this.modifiedInputs.length,
+      });
+    },
+    syncRuleInputs() {
+      if (!this.hasDynamicRules) return;
+
+      const processed = this.processedInputs;
+
+      this.inputs = this.inputs.map((input, index) => {
+        if (!input.hasRules) return input;
+
+        const { value, lastMatchedRuleIndex } = processed[index];
+        return { ...input, value, lastMatchedRuleIndex, rulesEvaluated: true };
       });
     },
     formatInputValue(input) {
@@ -362,6 +376,7 @@ export default {
     },
     handleInputsUpdated(updatedInput) {
       this.updateInputs(updatedInput);
+      this.syncRuleInputs();
       this.emitEvents();
     },
     updateInputs(updatedInput) {
@@ -396,6 +411,7 @@ export default {
       });
 
       this.selectedInputNames = items;
+      this.syncRuleInputs();
 
       // Emit events for inputs that had selection changes
       if (selectionChangedInputs.length > 0) {
@@ -414,6 +430,7 @@ export default {
       }));
 
       this.selectedInputNames = [];
+      this.syncRuleInputs();
       this.emitEvents();
     },
     handleSearch(searchTerm) {

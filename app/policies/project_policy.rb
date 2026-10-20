@@ -60,8 +60,8 @@ class ProjectPolicy < BasePolicy
   desc "Project is archived"
   condition(:archived, scope: :subject, score: 0) { project.self_or_ancestors_archived? }
 
-  desc "Project is scheduled for deletion"
-  condition(:deletion_scheduled, scope: :subject) { project.marked_for_deletion_at.present? }
+  desc "Project or one of its ancestors is scheduled for deletion"
+  condition(:deletion_scheduled, scope: :subject) { project.scheduled_for_deletion_in_hierarchy_chain? }
 
   desc "Project pipeline variables minimum override role is in a privileged state"
   condition(:project_pipeline_override_role_privileged) { project.pipeline_override_role_privileged? }

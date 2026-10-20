@@ -429,6 +429,24 @@ $command-palette-spacing: px-to-rem(14px);
   }
 }
 
+// Touch devices can't hover, so only hide the category chevron where hover exists.
+@media (hover: hover) {
+  .super-sidebar-category-toggle {
+    .gl-nav-item-chevron {
+      @include gl-prefers-reduced-motion-transition;
+      transition: opacity .1s linear;
+      opacity: 0;
+    }
+
+    &:hover,
+    &:focus-visible {
+      .gl-nav-item-chevron {
+        opacity: 1;
+      }
+    }
+  }
+}
+
 .show-on-focus-or-hover--context {
   .show-on-focus-or-hover--target {
     opacity: 0;

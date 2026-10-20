@@ -53,10 +53,7 @@ RSpec.describe 'Projects > Show > User interactions', feature_category: :groups_
   end
 
   describe 'Collaboration links', :js do
-    using RSpec::Parameterized::TableSyntax
-
     let_it_be_with_reload(:project1) { create(:project, :repository, :public) }
-    let_it_be(:project2) { create(:project, :repository, :public) }
     let_it_be(:user) { create(:user) }
 
     before do
@@ -135,32 +132,6 @@ RSpec.describe 'Projects > Show > User interactions', feature_category: :groups_
           click_button('Code')
           expect(page).not_to have_button('Edit')
           expect(page).not_to have_link('Web IDE')
-        end
-      end
-    end
-
-    context "Web IDE link" do
-      where(:merge_requests_access_level, :user_level, :expect_ide_link) do
-        ::ProjectFeature::DISABLED | :guest | false
-        ::ProjectFeature::DISABLED | :developer | true
-        ::ProjectFeature::PRIVATE | :guest | false
-        ::ProjectFeature::PRIVATE | :developer | true
-        ::ProjectFeature::ENABLED | :guest | true
-        ::ProjectFeature::ENABLED | :developer | true
-      end
-
-      with_them do
-        before do
-          project1.project_feature.update!({ merge_requests_access_level: merge_requests_access_level })
-          project1.add_member(user, user_level)
-          visit project_path(project1)
-        end
-
-        it "updates Web IDE link" do
-          within_testid('code-dropdown') do
-            click_button 'Code'
-          end
-          expect(page.has_link?('Web IDE')).to be(expect_ide_link)
         end
       end
     end

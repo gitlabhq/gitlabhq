@@ -3,22 +3,21 @@
 module Notes
   class UpdateService < BaseService
     def execute(note)
-      return note unless note.editable? && params.present?
+      return note unless note.editable? && params.except(:scope_validator).present?
 
       old_mentioned_users = note.mentioned_users(current_user).to_a
       self.old_note_body = note.note
 
-      note.assign_attributes(params)
+      note.assign_attributes(params.except(:scope_validator))
 
       return note unless note.valid?
-
-      track_note_edit_usage(note)
 
       only_commands = false
 
       quick_actions_service = QuickActionsService.new(project, current_user)
       if quick_actions_service.supported?(note)
-        content, update_params, message, command_names = quick_actions_service.execute(note, {})
+        content, update_params, message, command_names =
+          quick_actions_service.execute(note, { scope_validator: params[:scope_validator] })
 
         return note if wants_to_convert_to_internal_note?(note, update_params)
 
@@ -31,6 +30,7 @@ module Notes
         note.quick_actions_status = status
       end
 
+      track_note_edit_usage(note)
       update_note(note, only_commands)
       note.save
 

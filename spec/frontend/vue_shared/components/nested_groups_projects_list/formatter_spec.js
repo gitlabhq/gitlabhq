@@ -64,7 +64,8 @@ describe('formatGraphQLGroupsAndProjects', () => {
       accessLevel: {
         integerValue: 50,
       },
-      availableActions: ['copy-id', 'edit', 'transfer', 'restore', 'leave', 'delete-immediately'],
+      // No transfer: this fixture group is scheduled for deletion, which prevents change_group.
+      availableActions: ['copy-id', 'edit', 'restore', 'leave', 'delete-immediately'],
       childrenLoading: false,
       hasChildren: true,
       relativeWebUrl: `/gitlab/${firstMockGroup.fullPath}`,
@@ -81,7 +82,8 @@ describe('formatGraphQLGroupsAndProjects', () => {
       accessLevel: {
         integerValue: 50,
       },
-      availableActions: ['copy-id', 'edit', 'transfer'],
+      // No transfer: this project's group is scheduled for deletion, preventing change_namespace.
+      availableActions: ['copy-id', 'edit'],
       customProperty: mockProject.nameWithNamespace,
       relativeWebUrl: `/gitlab/${mockProject.fullPath}`,
     });

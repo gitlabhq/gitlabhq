@@ -285,21 +285,18 @@ describe('ExtendedDashboardPanel', () => {
         });
       });
 
-      it('renders the footer slot content', () => {
-        expect(wrapper.findByTestId('panel-footer-slot').exists()).toBe(true);
+      it("renders the footer content in the panel's footer slot", () => {
+        expect(findFooter().find('[data-testid="panel-footer-slot"]').exists()).toBe(true);
       });
 
       it('renders the body slot alongside it', () => {
         expect(wrapper.findByTestId('panel-body-slot').exists()).toBe(true);
       });
 
-      // The visualization scrolls and the footer stays put, so the grow wrapper owns the
-      // overflow and the footer must not shrink.
-      it('gives the body the remaining space and keeps the footer at its own height', () => {
+      it('fills the panel body with a wrapper that does the scrolling', () => {
         expect(findBodyWrapper().classes()).toEqual(
-          expect.arrayContaining(['gl-min-h-0', 'gl-grow', 'gl-overflow-y-auto']),
+          expect.arrayContaining(['gl-h-full', 'gl-overflow-y-auto']),
         );
-        expect(findFooter().classes()).toContain('gl-shrink-0');
       });
 
       // A scrollable region has to be reachable by keyboard, or content the footer
@@ -353,8 +350,6 @@ describe('ExtendedDashboardPanel', () => {
       });
     });
 
-    // The footer lives inside GlDashboardPanel's body slot, so it would otherwise
-    // depend on a body slot being passed too.
     describe('when only a footer slot is provided', () => {
       beforeEach(() => {
         createWrapper({

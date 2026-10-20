@@ -1,0 +1,7 @@
+---
+name: _delete_subgroup
+description: Private permission that gates deleting a group that has a parent
+  group. The group policy combines this permission with a parent group check
+  to enable the public remove_group permission. Must not be checked directly
+  at enforcement points.
+conditionally_enables: remove_group

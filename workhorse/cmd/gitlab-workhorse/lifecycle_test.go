@@ -75,7 +75,7 @@ func TestServeAndWaitServesThenShutsDown(t *testing.T) {
 	testhelper.ConfigureSecret()
 	goleakOptions := append(testhelper.GoleakOptions(),
 		goleak.IgnoreCurrent(),
-		// Other tests in this package keep cached Gitaly/Orbit gRPC
+		// Other tests in this package keep cached Gitaly gRPC
 		// connections open until TestMain teardown; ignore their reconnect
 		// goroutines so this check stays scoped to serveAndWait.
 		goleak.IgnoreTopFunction("google.golang.org/grpc.(*addrConn).resetTransportAndUnlock"),

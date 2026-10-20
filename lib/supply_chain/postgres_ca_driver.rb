@@ -6,7 +6,14 @@ module SupplyChain
       @project = project
     end
 
+    def signing_certificate_id
+      signing_certificate.id
+    end
+
+    private
+
     # Set by fetch_ca/provision_ca! while RootCaDriver#ca_certificate resolves the CA.
+    # Private so the record, and with it the CA private key, never leaves the driver.
     def signing_certificate
       return @signing_certificate if @signing_certificate
 
@@ -14,8 +21,6 @@ module SupplyChain
 
       @signing_certificate
     end
-
-    private
 
     def fetch_ca
       certificate_record = find_active_certificate

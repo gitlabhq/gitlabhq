@@ -425,6 +425,79 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
   end
 
+  context 'when ancestor group is scheduled for deletion' do
+    let_it_be(:group_owner) { create(:user) }
+    let_it_be_with_reload(:pending_deletion_group) { create(:group, owners: group_owner) }
+    let_it_be_with_reload(:group_project) do
+      create(:project, group: pending_deletion_group, developers: developer, maintainers: maintainer)
+    end
+
+    let(:current_user) { maintainer }
+
+    before_all do
+      # The service enqueues a notification mailer, which the before_all transaction rejects.
+      Sidekiq::Worker.skipping_transaction_check do
+        ::Groups::MarkForDeletionService.new(pending_deletion_group, group_owner).execute
+      end
+    end
+
+    shared_examples 'ancestor group deletion scheduled project behavior' do
+      it 'disallows write operations' do
+        expect_disallowed(*%i[
+          create_issue create_merge_request_in create_merge_request_from
+          push_code create_wiki create_deployment create_pipeline
+          update_pipeline create_pipeline_schedule create_environment
+          create_release update_release create_package
+          rename_project admin_project_member invite_project_members
+        ])
+      end
+
+      it 'allows read operations' do
+        expect_allowed(*%i[
+          read_project download_code read_issue read_merge_request
+          read_wiki read_deployment read_pipeline read_environment
+          read_release read_package
+        ])
+      end
+    end
+
+    context 'when project is in a group scheduled for deletion' do
+      let(:project) { group_project }
+
+      subject(:policy) { described_class.new(current_user, project) }
+
+      it_behaves_like 'ancestor group deletion scheduled project behavior'
+    end
+
+    context 'when project is in a subgroup of a group scheduled for deletion' do
+      let_it_be(:subgroup) { create(:group, parent: pending_deletion_group) }
+      let_it_be(:subgroup_project) do
+        create(:project, group: subgroup, developers: developer, maintainers: maintainer)
+      end
+
+      let(:project) { subgroup_project }
+
+      subject(:policy) { described_class.new(current_user, project) }
+
+      it_behaves_like 'ancestor group deletion scheduled project behavior'
+    end
+
+    context 'when project is not in a group scheduled for deletion' do
+      let_it_be(:other_group) { create(:group) }
+      let_it_be(:other_project) do
+        create(:project, group: other_group, developers: developer, maintainers: maintainer)
+      end
+
+      let(:project) { other_project }
+
+      subject(:policy) { described_class.new(current_user, project) }
+
+      it 'allows read and write operations' do
+        expect_allowed(:create_issue, :push_code, :create_merge_request_in, :create_wiki)
+      end
+    end
+  end
+
   context 'builds feature' do
     context 'when builds are disabled' do
       let(:current_user) { owner }

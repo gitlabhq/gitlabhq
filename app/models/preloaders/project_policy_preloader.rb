@@ -15,6 +15,7 @@ module Preloaders
         associations: {
           creator: [],
           organization: [],
+          project_namespace: [],
           group: :route,
           namespace: [:owner, :namespace_settings_with_ancestors_inherited_settings]
         }

@@ -40,11 +40,15 @@ RSpec.describe 'Organizations (GraphQL fixtures)', feature_category: :organizati
     let_it_be(:user, freeze: false) { create(:user, organization: organization, organizations: []) }
 
     let_it_be(:group_user, freeze: false) { create(:user, organization: organization) }
-    let_it_be(:group, freeze: false) do
+    let_it_be(:group_scheduled_for_deletion, freeze: false) do
       create(:group_with_deletion_schedule, :deletion_scheduled, organization: organization, owners: [group_user])
     end
 
-    let_it_be(:groups, freeze: false) { create_list(:group, 2, organization: organization).prepend(group) }
+    let_it_be(:groups, freeze: false) do
+      create_list(:group, 2, organization: organization).prepend(group_scheduled_for_deletion)
+    end
+
+    let_it_be(:group) { groups.last }
 
     let_it_be(:projects, freeze: false) do
       groups.map do |group|
@@ -76,6 +80,7 @@ RSpec.describe 'Organizations (GraphQL fixtures)', feature_category: :organizati
 
     before_all do
       group.add_owner(current_user)
+      group_scheduled_for_deletion.add_owner(current_user)
     end
 
     before do
@@ -151,8 +156,11 @@ RSpec.describe 'Organizations (GraphQL fixtures)', feature_category: :organizati
     describe 'organization groups' do
       let_it_be_with_reload(:current_user) { create(:user, organization: organization, organizations: [organization]) }
 
+      # The first group in this fixture has to be owned and scheduled for deletion: the frontend
+      # formatter specs read nodes[0] and expect access level 50 with restore and
+      # delete-immediately actions.
       before_all do
-        group.add_owner(current_user)
+        group_scheduled_for_deletion.add_owner(current_user)
       end
 
       base_input_path = 'organizations/shared/graphql/queries/'

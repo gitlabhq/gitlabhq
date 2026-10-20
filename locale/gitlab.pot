@@ -2291,9 +2291,6 @@ msgstr ""
 msgid "A CI/CD pipeline must run and be successful before merge."
 msgstr ""
 
-msgid "A Gitpod configured Webapplication in Spring and Java"
-msgstr ""
-
 msgid "A Let's Encrypt SSL certificate can not be obtained until your domain is verified."
 msgstr ""
 
@@ -2310,15 +2307,6 @@ msgid "A WebAuthn device, named %{codeOpen}%{device_name}%{codeClose}, was regis
 msgstr ""
 
 msgid "A basic folder structure and sample files for a CI/CD components project."
-msgstr ""
-
-msgid "A basic folder structure of a Laravel application, to help you get started."
-msgstr ""
-
-msgid "A basic page and serverless function that uses AWS Lambda, AWS API Gateway, and GitLab Pages"
-msgstr ""
-
-msgid "A basic template for developing Linux programs using Kotlin Native"
 msgstr ""
 
 msgid "A compatible runner is available."
@@ -2429,12 +2417,6 @@ msgstr ""
 msgid "A personal access token, named %{token_name}, has been revoked."
 msgstr ""
 
-msgid "A project boilerplate for Salesforce App development with Salesforce Developer tools"
-msgstr ""
-
-msgid "A project boilerplate for Tencent Serverless Framework that uses Next.js SSR"
-msgstr ""
-
 msgid "A project containing issues for each audit inquiry in the HIPAA Audit Protocol published by the U.S. Department of Health & Human Services"
 msgstr ""
 
@@ -2451,9 +2433,6 @@ msgid "A quarterly reconciliation is due on %{date}"
 msgstr ""
 
 msgid "A ready-to-go template for use with Android apps"
-msgstr ""
-
-msgid "A ready-to-go template for use with iOS Swift apps"
 msgstr ""
 
 msgid "A rebase is already in progress."
@@ -11586,9 +11565,6 @@ msgid "An example project for managing Kubernetes clusters integrated with GitLa
 msgstr ""
 
 msgid "An example project that shows off the best practices for setting up GitLab for your own organization, including sample issues, merge requests, and milestones"
-msgstr ""
-
-msgid "An example showing how to use Jsonnet with GitLab dynamic child pipelines"
 msgstr ""
 
 msgid "An export is already running or queued for this project. Please try again once it's done."
@@ -42382,9 +42358,6 @@ msgstr ""
 msgid "Go Back"
 msgstr ""
 
-msgid "Go Micro is a framework for micro service development"
-msgstr ""
-
 msgid "Go back"
 msgstr ""
 
@@ -68298,22 +68271,7 @@ msgstr ""
 msgid "ProjectTemplates|GitLab Cluster Management"
 msgstr ""
 
-msgid "ProjectTemplates|Gitpod/Spring Petclinic"
-msgstr ""
-
-msgid "ProjectTemplates|Go Micro"
-msgstr ""
-
 msgid "ProjectTemplates|HIPAA Audit Protocol"
-msgstr ""
-
-msgid "ProjectTemplates|Jsonnet for Dynamic Child Pipelines"
-msgstr ""
-
-msgid "ProjectTemplates|Kotlin Native for Linux"
-msgstr ""
-
-msgid "ProjectTemplates|Laravel Framework"
 msgstr ""
 
 msgid "ProjectTemplates|Learn how to %{linkStart}contribute to the built-in templates%{linkEnd}."
@@ -68349,25 +68307,13 @@ msgstr ""
 msgid "ProjectTemplates|Ruby on Rails"
 msgstr ""
 
-msgid "ProjectTemplates|SalesforceDX"
-msgstr ""
-
 msgid "ProjectTemplates|Sample GitLab Project"
-msgstr ""
-
-msgid "ProjectTemplates|Serverless Framework/JS"
 msgstr ""
 
 msgid "ProjectTemplates|Spring"
 msgstr ""
 
 msgid "ProjectTemplates|TYPO3 Distribution"
-msgstr ""
-
-msgid "ProjectTemplates|Tencent Serverless Framework/NextjsSSR"
-msgstr ""
-
-msgid "ProjectTemplates|iOS (Swift)"
 msgstr ""
 
 msgid "ProjectToolCoverageDetails|Manage configuration"

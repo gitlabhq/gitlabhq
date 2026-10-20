@@ -1,4 +1,4 @@
-description: Permissions that are disabled when a group is archived
+description: Permissions that are disabled when a group is archived or pending deletion
 permissions:
   - _delete_authored_timelog
   - activate_group_member
@@ -12,6 +12,7 @@ permissions:
   - admin_epic
   - admin_epic_board
   - admin_epic_board_list
+  - admin_group_member
   - admin_integrations
   - admin_issue
   - admin_issue_board
@@ -27,6 +28,7 @@ permissions:
   - admin_namespace
   - admin_note
   - admin_package
+  - admin_parent_link
   - admin_pipeline
   - admin_protected_environments
   - admin_push_rules
@@ -39,6 +41,7 @@ permissions:
   - admin_web_hook
   - admin_wiki
   - admin_work_item
+  - admin_work_item_link
   - award_achievement
   - award_emoji
   - bulk_admin_epic
@@ -53,6 +56,7 @@ permissions:
   - create_custom_emoji
   - create_deploy_token
   - create_epic
+  - create_group_link
   - create_incident
   - create_iteration
   - create_iteration_cadence
@@ -74,11 +78,18 @@ permissions:
   - create_vulnerability_export
   - create_wiki
   - delete_achievement
+  - delete_custom_emoji
   - delete_label
   - delete_note
   - delete_timelog
   - destroy_deploy_token
   - destroy_epic
+  - destroy_issue
+  - destroy_package
+  - destroy_saved_replies
+  - destroy_upload
+  - destroy_user_achievement
+  - destroy_wiki
   - import_projects
   - invite_group_members
   - manage_merge_request_settings

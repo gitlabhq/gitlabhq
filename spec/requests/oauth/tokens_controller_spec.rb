@@ -517,6 +517,109 @@ RSpec.describe Oauth::TokensController, feature_category: :system_access do
     end
   end
 
+  describe 'POST /oauth/token for a granular application', :aggregate_failures do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:oauth_application) do
+      create(:oauth_application, :granular, boundary: Authz::Boundary.for(group), permissions: :read_group)
+    end
+
+    let_it_be_with_reload(:consent_grant) do
+      create(:oauth_consent_grant, user: user, application: oauth_application,
+        boundary: Authz::Boundary.for(group), permissions: :read_group)
+    end
+
+    let(:boundary) { Authz::Boundary.for(group) }
+    let(:client_params) { { client_id: oauth_application.uid, client_secret: oauth_application.secret } }
+
+    def minted_token
+      OauthAccessToken.by_token(response.parsed_body['access_token'])
+    end
+
+    context 'when exchanging an authorization code' do
+      let_it_be(:oauth_access_grant) do
+        create(:oauth_access_grant, resource_owner_id: user.id, application: oauth_application,
+          organization: user.organization, scopes: 'granular')
+      end
+
+      it 'mints a token carrying only the granular scope whose permissions resolve through the consent grant' do
+        post '/oauth/token', params: client_params.merge(
+          grant_type: 'authorization_code',
+          redirect_uri: oauth_application.redirect_uri,
+          code: oauth_access_grant.plaintext_token
+        )
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.parsed_body['scope']).to eq('granular')
+        expect(minted_token).to be_granular
+        expect(minted_token.granular_scopes).to match_array(consent_grant.granular_scopes)
+        expect(minted_token.permitted_for_boundary?(boundary, :read_group)).to be(true)
+      end
+    end
+
+    context 'when refreshing' do
+      let(:oauth_token) do
+        create(:oauth_access_token, :granular, resource_owner: user, application: oauth_application,
+          use_refresh_token: true)
+      end
+
+      def refresh(extra_params = {})
+        post '/oauth/token', params: client_params.merge(
+          grant_type: 'refresh_token', refresh_token: oauth_token.plaintext_refresh_token
+        ).merge(extra_params)
+      end
+
+      it 'keeps the granular scope when no scope is requested' do
+        refresh
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.parsed_body['scope']).to eq('granular')
+        expect(minted_token).to be_granular
+        expect(minted_token.granular_scopes).to match_array(consent_grant.granular_scopes)
+        expect(oauth_token.reload).to be_revoked
+      end
+
+      it 'rejects widening the scope' do
+        refresh(scope: 'granular api')
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(response.parsed_body['error']).to eq('invalid_scope')
+      end
+
+      it 'rejects swapping to a legacy scope' do
+        refresh(scope: 'api')
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(response.parsed_body['error']).to eq('invalid_scope')
+      end
+
+      it 'resolves no permissions once the consent grant is revoked' do
+        consent_grant.revoked!
+
+        refresh
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(minted_token).to be_granular
+        expect(minted_token.granular_scopes).to be_empty
+        expect(minted_token.permitted_for_boundary?(boundary, :read_group)).to be(false)
+      end
+
+      context 'when the application does not list the granular scope' do
+        let_it_be(:oauth_application) { create(:oauth_application, scopes: 'api') }
+
+        # Doorkeeper intersects the old token scopes with the application scopes on refresh, so declaring
+        # granular scopes must also add the granular scope to the application
+        it 'refreshes into a token without any scope' do
+          refresh
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(minted_token.scopes.to_a).to be_empty
+          expect(minted_token).not_to be_granular
+        end
+      end
+    end
+  end
+
   describe 'POST /oauth/token when the client_id is missing', feature_category: :system_access do
     let(:docs_anchor) { 'reuse-a-single-oauth-application' }
 

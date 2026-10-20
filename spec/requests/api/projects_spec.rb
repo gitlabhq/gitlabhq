@@ -200,6 +200,9 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       end
 
       it 'avoids N + 1 queries', :use_sql_query_cache do
+        # Warm up so one-off first-request queries don't inflate the control and hide an N+1
+        get api(path, current_user)
+
         control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
           get api(path, current_user)
         end
@@ -369,7 +372,9 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
           create(:project, :public, group: create(:group))
         end
 
-        it_behaves_like 'projects response without N + 1 queries', 3 do
+        # Each group adds root namespace settings, SAML provider and organization lookups:
+        # https://gitlab.com/gitlab-org/gitlab/-/work_items/634473
+        it_behaves_like 'projects response without N + 1 queries', 4 do
           let(:current_user) { user }
           let(:additional_project) { create(:project, :public, group: create(:group)) }
         end
@@ -4276,6 +4281,26 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       group.add_developer(group_user)
     end
 
+    context 'when the project is in a group scheduled for deletion' do
+      let_it_be(:group_owner) { create(:user) }
+      let_it_be_with_reload(:pending_deletion_group) { create(:group, owners: group_owner) }
+      let_it_be_with_reload(:pending_deletion_project) { create(:project, group: pending_deletion_group) }
+      let_it_be(:shared_with_group) { create(:group, :private, developers: group_owner) }
+
+      before do
+        ::Groups::MarkForDeletionService.new(pending_deletion_group, group_owner).execute
+      end
+
+      it 'refuses to share the project with a group' do
+        expect do
+          post api("/projects/#{pending_deletion_project.id}/share", group_owner),
+            params: { group_id: shared_with_group.id, group_access: Gitlab::Access::DEVELOPER }
+        end.not_to change { ProjectGroupLink.count }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
     it "shares project with group" do
       expires_at = 10.days.from_now.to_date
 
@@ -4791,6 +4816,25 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       expect(project4).to be_persisted
       expect(project_member2).to be_persisted
       expect(project_member).to be_persisted
+    end
+
+    context 'when the project is in a group scheduled for deletion' do
+      let_it_be(:group_owner) { create(:user) }
+      let_it_be_with_reload(:pending_deletion_group) { create(:group, owners: group_owner) }
+      let_it_be_with_reload(:pending_deletion_project) do
+        create(:project, group: pending_deletion_group, name: 'Original name')
+      end
+
+      before do
+        ::Groups::MarkForDeletionService.new(pending_deletion_group, group_owner).execute
+      end
+
+      it 'refuses to rename the project' do
+        put api("/projects/#{pending_deletion_project.id}", group_owner), params: { name: 'Renamed' }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(pending_deletion_project.reload.name).to eq('Original name')
+      end
     end
 
     it_behaves_like 'PUT request permissions for admin mode' do

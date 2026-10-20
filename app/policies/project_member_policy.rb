@@ -25,12 +25,17 @@ class ProjectMemberPolicy < BasePolicy
     prevent :destroy_project_member
   end
 
-  rule { ~project_bot & can?(:admin_project_member) }.policy do
-    enable :update_project_member
-    enable :destroy_project_member
+  # Not gated on admin_project_member, which read-only (archived or pending deletion) projects
+  # prevent: they block adding members, but removing them must keep working.
+  condition(:can_remove_project_members) do
+    can?(:destroy_project_member, @subject.project)
   end
 
-  rule { project_bot & can?(:admin_project_member) }.enable :destroy_project_bot_member
+  rule { ~project_bot & can?(:admin_project_member) }.enable :update_project_member
+
+  rule { ~project_bot & can_remove_project_members }.enable :destroy_project_member
+
+  rule { project_bot & can_remove_project_members }.enable :destroy_project_bot_member
 
   rule { target_is_self }.policy do
     enable :destroy_project_member

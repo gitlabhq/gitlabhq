@@ -199,5 +199,39 @@ RSpec.describe WorkItemPolicy, :aggregate_failures, feature_category: :team_plan
       end
     end
   end
+
+  context 'when the namespace is read-only' do
+    let_it_be(:group_owner) { create(:user) }
+    let_it_be_with_reload(:pending_deletion_group) { create(:group, owners: group_owner) }
+    let_it_be(:member) { create(:user, developer_of: pending_deletion_group) }
+    let_it_be(:pending_deletion_project) { create(:project, group: pending_deletion_group) }
+    let_it_be(:archived_project) { create(:project, :archived, developers: member) }
+
+    before_all do
+      # The service enqueues a notification mailer, which the before_all transaction rejects.
+      Sidekiq::Worker.skipping_transaction_check do
+        ::Groups::MarkForDeletionService.new(pending_deletion_group, group_owner).execute
+      end
+    end
+
+    it 'disallows linking work items in an archived project' do
+      work_item = create(:work_item, project: archived_project)
+
+      expect(permissions(member, work_item)).to be_disallowed(:admin_work_item_link, :admin_parent_link)
+    end
+
+    it 'disallows linking work items in a project whose group is scheduled for deletion' do
+      work_item = create(:work_item, project: pending_deletion_project)
+
+      expect(permissions(member, work_item)).to be_disallowed(:admin_work_item_link, :admin_parent_link)
+    end
+
+    it 'disallows linking group level work items in a group scheduled for deletion', if: Gitlab.ee? do
+      stub_licensed_features(epics: true)
+      work_item = create(:work_item, :group_level, namespace: pending_deletion_group)
+
+      expect(permissions(member, work_item)).to be_disallowed(:admin_work_item_link, :admin_parent_link)
+    end
+  end
 end
 # rubocop:enable Layout/LineLength

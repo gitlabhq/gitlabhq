@@ -22,7 +22,13 @@ module MergeRequests
       return unless user
 
       # rubocop: disable CodeReuse/ActiveRecord -- doesn't seem useful to move to model
-      merge_requests = MergeRequest.id_in(merge_request_ids).preload(target_project: :project_feature)
+      merge_requests = MergeRequest.id_in(merge_request_ids).preload(
+        target_project: [
+          :project_feature,
+          :project_namespace,
+          { namespace: :namespace_settings_with_ancestors_inherited_settings }
+        ]
+      )
       # rubocop: enable CodeReuse/ActiveRecord
 
       projects = merge_requests.map(&:target_project).uniq

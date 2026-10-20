@@ -93,6 +93,7 @@ describe('MenuSection component', () => {
         createWrapper({ title: 'Asdf' }, { expanded: true }, { isIconOnly: true });
         expect(findNavItem().props('isIconOnly')).toBe(true);
         expect(findCollapse().classes()).toContain('gl-hidden');
+        expect(findCollapse().props('visible')).toBe(true);
       });
     });
 
@@ -105,6 +106,7 @@ describe('MenuSection component', () => {
         await nextTick();
 
         expect(findCollapse().classes()).not.toContain('gl-hidden');
+        expect(findCollapse().props('visible')).toBe(true);
       });
     });
 
@@ -166,6 +168,21 @@ describe('MenuSection component', () => {
       createWrapper({ title: 'Asdf' });
 
       expect(findTitleLabel().classes()).not.toContain('gl-font-bold');
+    });
+  });
+
+  describe('revealChevronOnHover prop', () => {
+    it('marks the header as the hover context when true', () => {
+      createWrapper({ title: 'Asdf' }, { revealChevronOnHover: true });
+
+      expect(findNavItem().classes()).toContain('super-sidebar-category-toggle');
+      expect(wrapper.findByTestId('nav-item-chevron').exists()).toBe(true);
+    });
+
+    it('does not mark the header as the hover context by default', () => {
+      createWrapper({ title: 'Asdf' });
+
+      expect(findNavItem().classes()).not.toContain('super-sidebar-category-toggle');
     });
   });
 

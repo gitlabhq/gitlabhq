@@ -107,6 +107,7 @@ project:
   - destroy_deploy_token
   - destroy_deployment
   - destroy_package
+  - destroy_project_member
   - destroy_protected_branch
   - destroy_release
   - destroy_resource_access_tokens

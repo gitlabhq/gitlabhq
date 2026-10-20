@@ -40,6 +40,7 @@ description: Automatically open merge requests to fix vulnerable dependencies.
 - Support in the triage and remediation profile [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253780) in GitLab 19.4 [with a feature flag](../../../administration/feature_flags/_index.md) named `triage_and_remediation_profile`. Enabled by default.
 - Feature flag `enable_dependency_bump_breaking_changes`
   [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/604558) in GitLab 19.4.
+- Runner tags for auto-remediation jobs [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/627504) in GitLab 19.6.
 
 {{< /history >}}
 
@@ -72,10 +73,10 @@ Prerequisites:
   [supported package manager](#supported-package-managers).
 - A dependency scanning auto-remediation profile must be attached to the project. For
   instructions, see [dependency scanning auto-remediation profile](../configuration/security_configuration_profiles.md#dependency-scanning-auto-remediation-profile).
-- The runner must accept untagged jobs.
-  GitLab generates the auto-remediation job without [tags](../../../ci/yaml/_index.md#tags),
-  and does not use the project's `.gitlab-ci.yml` configuration for it, so `default:tags`
-  does not apply.
+- The runner must accept untagged jobs, unless you
+  [set runner tags](#set-runner-tags-for-auto-remediation-jobs) on the profile.
+  GitLab generates the auto-remediation job itself and does not use the project's
+  `.gitlab-ci.yml` configuration for it, so [`default:tags`](../../../ci/yaml/_index.md#tags) does not apply.
 - The runner must allow privileged mode.
   The auto-remediation job uses a `docker:28-dind` service.
   For more information, see [use Docker to build Docker images](../../../ci/docker/using_docker_build.md).
@@ -132,6 +133,70 @@ run concurrently across the Sidekiq fleet. Use the
 `security_update_scheduler_max_concurrency`
 [application setting](../../../api/settings.md) to set the cap. The default is `30`,
 and the value is capped at `200`. Set the value to `0` to pause scheduling.
+
+## Set runner tags for auto-remediation jobs
+
+If your runner fleet uses tags, you can tag the auto-remediation job so that only
+runners with matching tags pick it up. By default, the job is untagged.
+GitLab-recommended profiles cannot be edited, so you must create your own profile.
+
+Prerequisites:
+
+- The Security Manager, Maintainer, or Owner role for the group.
+
+To set runner tags:
+
+1. Create a dependency scanning auto-remediation profile with the
+   `securityScanProfileCreate` mutation and set `runnerTags`:
+
+   ```graphql
+   mutation {
+     securityScanProfileCreate(input: {
+       namespaceId: "gid://gitlab/Group/123",
+       scanType: DEPENDENCY_SCANNING_POST_PROCESSING,
+       name: "Auto-remediation on tagged runners",
+       description: "Runs auto-remediation jobs on runners tagged docker and linux",
+       triggers: [
+         {
+           triggerType: SBOM_INGESTED,
+           configuration: {
+             dependencyScanningPostProcessing: {
+               autoRemediation: {
+                 runnerTags: ["docker", "linux"]
+               }
+             }
+           }
+         }
+       ]
+     }) {
+       scanProfile {
+         id
+         name
+       }
+       errors
+     }
+   }
+   ```
+
+   Settings you do not specify keep their default values.
+
+1. Attach the profile to your projects or groups. For instructions, see
+   [apply a profile with the GraphQL API](../configuration/security_configuration_profiles.md#apply-a-profile-with-the-graphql-api).
+
+To change the tags later, update your profile with the `securityScanProfileUpdate` mutation.
+The update replaces the profile's triggers and their settings, so include every trigger
+and setting you want to keep, not only `runnerTags`.
+
+The `runnerTags` setting has these limits:
+
+- Up to 20 tags.
+- Each tag is 1 to 255 characters long.
+- Tags cannot be duplicated.
+- Tags cannot contain commas, quotes (`"` or `'`), or `$`.
+- Tags cannot start or end with a space.
+
+The automated triage and remediation profile accepts the same field under
+`triageAndRemediation.sbomIngested.autoRemediation.runnerTags`.
 
 ## Supported package managers
 

@@ -54,6 +54,14 @@ GitLab reconfigures itself each time the container starts.
 For more configuration options in GitLab, see the
 [configuration documentation](https://docs.gitlab.com/omnibus/settings/configuration/).
 
+## Custom user and group IDs
+
+By default, Docker installations ignore the `uid` and `gid` settings in `gitlab.rb`, such as `user['uid']` or `postgresql['gid']`.
+The Docker image creates its service users and groups with fixed IDs when the image is built, and `gitlab-ctl reconfigure` doesn't change them.
+For the IDs the image uses, see the [Docker setup script](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/master/docker/assets/setup).
+
+If you need to customize service UIDs or GIDs, use a Linux package installation and follow the instructions to [specify numeric user and group identifiers](https://docs.gitlab.com/omnibus/settings/configuration/#specify-numeric-user-and-group-identifiers).
+
 ## Pre-configure Docker container
 
 You can pre-configure the GitLab Docker image by adding the environment variable

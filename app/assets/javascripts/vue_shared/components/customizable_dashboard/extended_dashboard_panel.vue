@@ -155,30 +155,27 @@ export default {
     @dropdown-open="dropdownOpen = true"
     @dropdown-closed="dropdownOpen = false"
   >
-    <template v-if="glSlots().body || glSlots().footer" #body>
-      <!-- TODO: remove once https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/work_items/3629 adds a real #footer slot.
-           GlDashboardPanel has none, so the body is split to keep the footer pinned. -->
-      <div v-if="glSlots().footer" class="gl-flex gl-h-full gl-flex-col">
-        <!-- Focusable while it scrolls: a keyboard user has no other way to reach
-             content the footer has pushed out of view. Both sizes are observed because
-             either the panel or its content can grow. -->
-        <div
-          ref="bodyContent"
-          v-gl-resize-observer="updateBodyOverflows"
-          class="dashboard-panel-body gl-min-h-0 gl-grow gl-overflow-y-auto"
-          :tabindex="bodyOverflows ? 0 : null"
-          data-testid="panel-body-content"
-        >
-          <div v-gl-resize-observer="updateBodyOverflows" data-testid="panel-body-content-inner">
-            <slot name="body"></slot>
-          </div>
-        </div>
-        <div class="gl-mt-3 gl-shrink-0" data-testid="panel-footer">
-          <!-- @slot Content pinned below the panel body. -->
-          <slot name="footer"></slot>
+    <template v-if="glSlots().body" #body>
+      <!-- GlDashboardPanel's body container isn't focusable, so this wrapper does the scrolling
+           and is a tab stop while it overflows. Otherwise keyboard users can't reach content
+           the footer pushes out of view. Both sizes are observed, since either can grow. -->
+      <div
+        v-if="glSlots().footer"
+        ref="bodyContent"
+        v-gl-resize-observer="updateBodyOverflows"
+        class="dashboard-panel-body gl-h-full gl-overflow-y-auto"
+        :tabindex="bodyOverflows ? 0 : null"
+        data-testid="panel-body-content"
+      >
+        <div v-gl-resize-observer="updateBodyOverflows" data-testid="panel-body-content-inner">
+          <slot name="body"></slot>
         </div>
       </div>
       <slot v-else name="body"></slot>
+    </template>
+    <template v-if="glSlots().footer" #footer>
+      <!-- @slot Content pinned below the panel body. -->
+      <slot name="footer"></slot>
     </template>
     <template v-if="glSlots().filters" #filters>
       <slot name="filters"></slot>

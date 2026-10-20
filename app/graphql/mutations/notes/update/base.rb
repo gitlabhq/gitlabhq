@@ -27,7 +27,7 @@ module Mutations
           updated_note = ::Notes::UpdateService.new(
             note.project,
             current_user,
-            note_params(note, args)
+            note_params(note, args).merge(scope_validator: context[:scope_validator])
           ).execute(note)
 
           {
@@ -35,6 +35,8 @@ module Mutations
             errors: updated_note.destroyed? ? [] : errors_on_object(updated_note),
             quick_actions_status: updated_note.destroyed? ? nil : updated_note.quick_actions_status&.to_h
           }
+        rescue QuickActions::InterpretService::QuickActionsNotAllowedError => error
+          raise_resource_not_available_error!(error.message)
         end
 
         private

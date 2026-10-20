@@ -63,9 +63,6 @@
 - message: "TypeError: Cannot read properties of null (reading 'close')"
   specs:
   - spec/features/projects/ci/editor_spec.rb
-- message: "TypeError: Cannot read properties of undefined (reading 'push')"
-  specs:
-  - spec/features/dashboard/issues_spec.rb
 - message: "Error sending the query 'apiFuzzingCiConfiguration' ServerError: Response not successful: Received status code 500"
   specs:
   - ee/spec/features/user_sees_active_nav_items_spec.rb

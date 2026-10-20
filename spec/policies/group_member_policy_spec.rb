@@ -125,6 +125,28 @@ RSpec.describe GroupMemberPolicy do
     specify { expect_disallowed(:read_group, :destroy_project_bot_member) }
   end
 
+  context 'with owner removing a bot member from a read-only group' do
+    let(:current_user) { owner }
+    let(:bot) { create(:user, :project_bot) }
+    let(:membership) { bot.members.first }
+
+    before do
+      group.add_developer(bot)
+    end
+
+    context 'when group is scheduled for deletion' do
+      let(:group) { create(:group, :private, :deletion_scheduled) }
+
+      specify { expect_allowed(:destroy_project_bot_member) }
+    end
+
+    context 'when group is archived' do
+      let(:group) { create(:group, :private, :archived) }
+
+      specify { expect_allowed(:destroy_project_bot_member) }
+    end
+  end
+
   context 'with owner' do
     let(:current_user) { owner }
 

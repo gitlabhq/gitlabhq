@@ -69,11 +69,17 @@ module CacheMarkdownField
 
   def refresh_markdown_cache!
     updates = refresh_markdown_cache
-    if updates.present? && save_markdown(updates)
-      # save_markdown updates DB columns directly, so compute and save mentions
-      # by calling store_mentions! or we end-up with missing mentions although those
-      # would appear in the notes, descriptions, etc in the UI
-      store_mentions! if store_mentions? && mentionable_attributes_changed?(updates)
+    return unless updates.present? && markdown_cache_persistable?
+
+    # save_markdown updates DB columns directly, so compute and save mentions
+    # here or we end-up with missing mentions although those would appear in the
+    # notes, descriptions, etc in the UI.
+    mentions = mentions_to_store if store_mentions? && mentionable_attributes_changed?(updates)
+    return save_markdown(updates) unless mentions
+    return save_markdown(updates) && write_mentions!(*mentions) if store_mentions_after_commit?
+
+    self.class.transaction do
+      save_markdown(updates) && write_mentions!(*mentions)
     end
   end
 
@@ -170,6 +176,13 @@ module CacheMarkdownField
   end
 
   def store_mentions!
+    mentions = mentions_to_store
+    return unless mentions
+
+    write_mentions!(*mentions)
+  end
+
+  def mentions_to_store
     # We can only store mentions if the mentionable is a database object
     return unless self.is_a?(ApplicationRecord)
 
@@ -186,6 +199,10 @@ module CacheMarkdownField
     references[:mentioned_groups_ids] = refs.mentioned_group_ids.presence
     references[:mentioned_projects_ids] = refs.mentioned_project_ids.presence
 
+    [identifier, references]
+  end
+
+  def write_mentions!(identifier, references)
     if references.compact.any?
       user_mention_class.upsert(references.merge(identifier), unique_by: identifier.compact.keys)
     else

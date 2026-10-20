@@ -80,6 +80,93 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
       sign_in(user)
     end
 
+    context 'with file path' do
+      include_context 'with ambiguous refs for controllers'
+
+      let(:ref_type) { nil }
+      let(:do_request) { get project_commits_path(project, id, ref_type: ref_type) }
+
+      before do
+        do_request
+      end
+
+      context 'when the ref is ambiguous' do
+        let(:id) { 'ambiguous_ref/README.md' }
+
+        context 'when the ref_type is nil' do
+          let(:ref_type) { nil }
+
+          it 'flags the ref as ambiguous' do
+            expect(response.body).to have_css('#js-ambiguous-ref-modal[data-ambiguous="true"]')
+          end
+        end
+
+        context 'when the ref_type is empty' do
+          let(:ref_type) { '' }
+
+          it 'flags the ref as ambiguous' do
+            expect(response.body).to have_css('#js-ambiguous-ref-modal[data-ambiguous="true"]')
+          end
+        end
+
+        context 'when the ref_type is present' do
+          let(:ref_type) { 'heads' }
+
+          it 'does not flag the ref as ambiguous' do
+            expect(response.body).to have_css('#js-ambiguous-ref-modal[data-ambiguous="false"]')
+          end
+        end
+      end
+
+      context 'when the ref is not ambiguous' do
+        let(:id) { 'master/README.md' }
+
+        it 'does not flag the ref as ambiguous' do
+          expect(response.body).to have_css('#js-ambiguous-ref-modal[data-ambiguous="false"]')
+        end
+      end
+
+      context 'valid branch, valid file' do
+        let(:id) { 'master/README.md' }
+
+        it 'is successful' do
+          expect(response).to be_successful
+        end
+      end
+
+      context 'HEAD, valid file' do
+        let(:id) { 'HEAD/README.md' }
+
+        it 'is successful' do
+          expect(response).to be_successful
+        end
+      end
+
+      context 'valid branch, invalid file' do
+        let(:id) { 'master/invalid-path.rb' }
+
+        it 'redirects to the tree root' do
+          expect(response).to redirect_to project_tree_path(project, 'master', '/')
+        end
+      end
+
+      context 'invalid branch, valid file' do
+        let(:id) { 'invalid-branch/README.md' }
+
+        it 'returns not found' do
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'branch with invalid format, valid file' do
+        let(:id) { 'branch with space/README.md' }
+
+        it 'returns not found' do
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+
     context 'valid branch, whitespace-only file that exists' do
       let_it_be_with_reload(:project) { create(:project, :repository, maintainers: user) }
 

@@ -265,6 +265,8 @@ function processInput(input, savedInputsMap, preselectAllInputs) {
     value: hasSavedValue ? savedInputsMap[input.name] : input.default,
     isSelected: hasSavedValue || preselectAllInputs,
     hasRules: Boolean(input.rules?.length),
+    lastMatchedRuleIndex: null,
+    rulesEvaluated: false,
   };
 }
 

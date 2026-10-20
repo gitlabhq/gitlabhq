@@ -80,6 +80,13 @@ export default {
       required: false,
       default: false,
     },
+    // Hides the chevron until the header is hovered or keyboard-focused, on devices
+    // that can hover. Touch devices always show it.
+    revealChevronOnHover: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     asyncCount: {
       type: Object,
       required: false,
@@ -114,6 +121,7 @@ export default {
     computedLinkClasses() {
       return {
         'with-mouse-over-flyout': this.isMouseOverFlyout,
+        'super-sidebar-category-toggle': this.revealChevronOnHover,
       };
     },
     isActive() {
@@ -302,6 +310,7 @@ export default {
       @nav-pin-keydown-esc="handleClickOutside"
     />
 
+    <!-- Hide with a class, not `visible`: GlCollapse's transitions set inline `display`. -->
     <gl-collapse
       v-if="!disclosure"
       :id="itemId"

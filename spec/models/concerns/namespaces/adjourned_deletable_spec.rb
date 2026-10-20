@@ -207,6 +207,15 @@ RSpec.describe Namespaces::AdjournedDeletable, feature_category: :groups_and_pro
           sibling2.ancestor_scheduled_for_deletion?
         end.not_to exceed_query_limit(control)
       end
+
+      context 'when the chain is preloaded as not scheduled for deletion' do
+        it 'returns an empty array without querying the database' do
+          group = create(:group, parent: create(:group))
+          group.namespace_settings_with_ancestors_inherited_settings
+
+          expect { expect(group.ancestor_scheduled_for_deletion?).to be(false) }.not_to exceed_query_limit(0)
+        end
+      end
     end
   end
 

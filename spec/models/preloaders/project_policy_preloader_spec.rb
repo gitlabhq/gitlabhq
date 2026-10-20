@@ -39,6 +39,14 @@ RSpec.describe Preloaders::ProjectPolicyPreloader do
     expect { authorize_all_projects(user, pristine_projects) }.not_to exceed_query_limit(control)
   end
 
+  it 'preloads project_namespace for the deletion state check' do
+    projects = base_projects.to_a
+
+    preload_projects_for_policy(user, projects)
+
+    expect(projects.map { |project| project.association(:project_namespace).loaded? }).to all(be(true))
+  end
+
   def authorize_all_projects(current_user, project_list = base_projects)
     project_list.each { |project| current_user.can?(:read_project, project) }
   end

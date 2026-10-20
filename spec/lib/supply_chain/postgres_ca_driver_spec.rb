@@ -24,7 +24,7 @@ RSpec.describe SupplyChain::PostgresCaDriver, :freeze_time, feature_category: :a
 
       it 'returns the certificate and stores an active record scoped to the project' do
         cert = driver.ca_certificate
-        record = driver.signing_certificate
+        record = SupplyChain::SigningCertificate.find(driver.signing_certificate_id)
 
         expect(cert).to be_a(OpenSSL::X509::Certificate)
         expect(record).to be_a(SupplyChain::SigningCertificate)
@@ -54,7 +54,7 @@ RSpec.describe SupplyChain::PostgresCaDriver, :freeze_time, feature_category: :a
 
       it 'stores a private key matching the certificate' do
         cert = driver.ca_certificate
-        key = OpenSSL::PKey.read(driver.signing_certificate.private_key)
+        key = OpenSSL::PKey.read(SupplyChain::SigningCertificate.find(driver.signing_certificate_id).private_key)
 
         expect(cert.check_private_key(key)).to be(true)
       end
@@ -82,7 +82,7 @@ RSpec.describe SupplyChain::PostgresCaDriver, :freeze_time, feature_category: :a
         expect { expect(driver.ca_certificate.to_pem).to eq(existing.certificate) }
           .not_to change { SupplyChain::SigningCertificate.count }
 
-        expect(driver.signing_certificate).to eq(existing)
+        expect(driver.signing_certificate_id).to eq(existing.id)
       end
     end
 
@@ -134,9 +134,10 @@ RSpec.describe SupplyChain::PostgresCaDriver, :freeze_time, feature_category: :a
 
       it 'ignores it and provisions a new active certificate' do
         driver.ca_certificate
+        record = SupplyChain::SigningCertificate.find(driver.signing_certificate_id)
 
-        expect(driver.signing_certificate).not_to eq(inactive)
-        expect(driver.signing_certificate).to be_active
+        expect(record).not_to eq(inactive)
+        expect(record).to be_active
       end
     end
 
@@ -196,39 +197,44 @@ RSpec.describe SupplyChain::PostgresCaDriver, :freeze_time, feature_category: :a
     end
   end
 
-  describe '#signing_certificate' do
+  describe '#signing_certificate_id' do
     it 'provisions the CA when called first' do
-      expect { driver.signing_certificate }.to change { SupplyChain::SigningCertificate.count }.by(1)
+      expect { driver.signing_certificate_id }.to change { SupplyChain::SigningCertificate.count }.by(1)
     end
 
     it 'memoizes the record' do
-      driver.signing_certificate
+      driver.signing_certificate_id
 
       expect(driver).not_to receive(:find_active_certificate)
 
-      driver.signing_certificate
+      driver.signing_certificate_id
     end
 
     it 'does not cache a rejected certificate' do
       unusable_certificate
 
-      expect { driver.signing_certificate }.to raise_error(described_class::InvalidCaCertificate)
+      expect { driver.signing_certificate_id }.to raise_error(described_class::InvalidCaCertificate)
 
       unusable_certificate.update_columns(active: false)
       replacement = create(:supply_chain_signing_certificate, project: project)
 
-      expect(driver.signing_certificate).to eq(replacement)
+      expect(driver.signing_certificate_id).to eq(replacement.id)
     end
 
     it 'switches to a replacement certificate on the next CA lookup' do
-      original = driver.signing_certificate
-      original.update_columns(active: false)
+      SupplyChain::SigningCertificate.find(driver.signing_certificate_id).update_columns(active: false)
       replacement = create(:supply_chain_signing_certificate, project: project)
 
       replacement_ca = driver.ca_certificate
 
       expect(replacement_ca.to_pem).to eq(replacement.certificate)
-      expect(driver.signing_certificate).to eq(replacement)
+      expect(driver.signing_certificate_id).to eq(replacement.id)
+    end
+  end
+
+  describe '#signing_certificate' do
+    it 'is private so the CA private key never leaves the driver' do
+      expect(described_class.private_instance_methods(false)).to include(:signing_certificate)
     end
   end
 

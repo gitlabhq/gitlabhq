@@ -27,7 +27,13 @@ class GroupMemberPolicy < BasePolicy
     prevent :destroy_group_member
   end
 
-  rule { project_bot & can?(:admin_group_member) }.enable :destroy_project_bot_member
+  # Not gated on admin_group_member, which read-only (archived or pending deletion) groups
+  # prevent: they block adding members, but removing them must keep working.
+  condition(:can_remove_group_members) do
+    can?(:destroy_group_member, @subject.group)
+  end
+
+  rule { project_bot & can_remove_group_members }.enable :destroy_project_bot_member
 
   # Project bot members must be managed via :destroy_project_bot_member and
   # the access-token revoke flow, not via the regular member update/destroy

@@ -1,5 +1,5 @@
 import Vue, { watch } from 'vue';
-import { MOUNTED } from '~/rapid_diffs/adapter_events';
+import { EXPAND_FILE, MOUNTED } from '~/rapid_diffs/adapter_events';
 import DiffFileDiscussions from '~/rapid_diffs/app/discussions/diff_file_discussions.vue';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 
@@ -97,6 +97,8 @@ export const createFileDiscussionsAdapter = (store) => ({
   clicks: {
     fileComment() {
       const { oldPath, newPath, diffRefs } = this.data;
+      // Expand first; otherwise the form mounts inside the collapsed body and stays hidden.
+      this.trigger(EXPAND_FILE);
       const existingFormId = store.addNewFileDiscussionForm({ oldPath, newPath, diffRefs });
       if (existingFormId) focusForm(existingFormId);
     },

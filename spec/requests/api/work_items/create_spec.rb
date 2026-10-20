@@ -189,6 +189,13 @@ RSpec.describe API::WorkItems::Create, feature_category: :portfolio_management d
     end
 
     context 'with hierarchy feature (parent work item)' do
+      before do
+        # Worst case (~107, including the throttled token and user activity writes) plus a
+        # 1-query buffer. Includes one query from the ProjectPolicy scheduled-for-deletion
+        # condition, which goes away with https://gitlab.com/groups/gitlab-org/-/work_items/21607.
+        allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(108)
+      end
+
       it 'creates a work item with a parent using the parent ID' do
         post api(api_request_path, user), params: {
           title: 'Child task',

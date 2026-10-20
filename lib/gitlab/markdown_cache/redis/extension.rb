@@ -44,6 +44,10 @@ module Gitlab
 
         private
 
+        def markdown_cache_persistable?
+          true
+        end
+
         def save_markdown(updates)
           markdown_store.save(updates)
         end

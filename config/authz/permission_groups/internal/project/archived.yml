@@ -23,8 +23,10 @@ permissions:
   - admin_note
   - admin_package
   - admin_pages
+  - admin_parent_link
   - admin_pipeline
   - admin_pipeline_schedule
+  - admin_project_member
   - admin_release
   - admin_snippet
   - admin_software_license_policy
@@ -34,6 +36,7 @@ permissions:
   - admin_vulnerability
   - admin_vulnerability_feedback
   - admin_wiki
+  - admin_work_item_link
   - award_emoji
   - change_namespace
   - create_approvers
@@ -46,6 +49,7 @@ permissions:
   - create_environment
   - create_feature_flag
   - create_feature_flags_client
+  - create_group_link
   - create_incident
   - create_issue
   - create_issue_board
@@ -103,12 +107,14 @@ permissions:
   - destroy_vulnerability
   - destroy_vulnerability_feedback
   - destroy_wiki
+  - invite_project_members
   - manage_trigger
   - modify_security_policy
   - move_design
   - push_code
   - push_code_to_protected_branches
   - push_to_delete_protected_branch
+  - rename_project
   - request_access
   - resolve_note
   - update_approvers

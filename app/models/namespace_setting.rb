@@ -52,7 +52,11 @@ class NamespaceSetting < ApplicationRecord
       )
     ) THEN true
     ELSE #{table_name}.archived
-    END AS archived
+    END AS archived,
+    EXISTS (
+      SELECT 1 FROM group_deletion_schedules gds
+      WHERE gds.group_id = ANY(namespaces.traversal_ids)
+    ) AS self_or_ancestors_deletion_scheduled
     SQL
       .joins(:namespace)
   }
@@ -161,6 +165,14 @@ class NamespaceSetting < ApplicationRecord
       .order(:namespace_id)
       .limit(limit)
       .pluck(:namespace_id)
+  end
+
+  # Only selected by .with_ancestors_inherited_settings. Returns nil otherwise so callers
+  # can fall back to querying instead of mistaking a missing column for "not scheduled".
+  def self_or_ancestors_deletion_scheduled
+    return unless has_attribute?(:self_or_ancestors_deletion_scheduled)
+
+    self[:self_or_ancestors_deletion_scheduled]
   end
 
   def prevent_sharing_groups_outside_hierarchy

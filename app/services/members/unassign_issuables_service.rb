@@ -4,6 +4,13 @@ module Members
   class UnassignIssuablesService
     attr_reader :user, :entity, :requesting_user
 
+    # The update services below run ProjectPolicy per issuable. Without these the archived and
+    # scheduled-for-deletion conditions walk the namespace chain once per project.
+    PROJECT_POLICY_PRELOADS = [
+      :project_namespace,
+      { namespace: :namespace_settings_with_ancestors_inherited_settings }
+    ].freeze
+
     # @param [User] user user whose membership is being deleted from entity
     # @param [Group, Project] entity
     # @param [User] requesting_user user who initiated the membership deletion of `user`
@@ -33,7 +40,10 @@ module Members
         .for_assignee(user)
         .in_projects(project_ids)
         .each_batch(column: :issue_id) do |assignees|
-          assignees.each do |assignee|
+          # rubocop: disable CodeReuse/ActiveRecord -- preload for the policy checks below
+          batch = assignees.preload(issue: { project: PROJECT_POLICY_PRELOADS }).to_a
+          # rubocop: enable CodeReuse/ActiveRecord
+          batch.each do |assignee|
             issue = assignee.issue
             next unless issue
 
@@ -55,7 +65,10 @@ module Members
         .for_assignee(user)
         .in_projects(project_ids)
         .each_batch(column: :merge_request_id) do |assignees|
-          assignees.each do |assignee|
+          # rubocop: disable CodeReuse/ActiveRecord -- preload for the policy checks below
+          batch = assignees.preload(merge_request: { target_project: PROJECT_POLICY_PRELOADS }).to_a
+          # rubocop: enable CodeReuse/ActiveRecord
+          batch.each do |assignee|
             merge_request = assignee.merge_request
             next unless merge_request
 

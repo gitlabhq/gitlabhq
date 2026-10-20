@@ -995,6 +995,21 @@ describe('IssuableItem', () => {
     });
   });
 
+  describe('when the list has no full path', () => {
+    beforeEach(() => {
+      wrapper = createComponent({ fullPath: '', showCheckbox: false });
+    });
+
+    it('visits the issuable URL once when the title is clicked', () => {
+      wrapper
+        .findComponentByTestId('issuable-title-link')
+        .vm.$emit('click', new MouseEvent('click'));
+
+      expect(visitUrl).toHaveBeenCalledTimes(1);
+      expect(visitUrl).toHaveBeenCalledWith(mockIssuable.webUrl);
+    });
+  });
+
   it('renders draft status for draft merge requests', () => {
     // Note: this is gated by the `showMergeRequestStatusDraft` feature flag currently
     wrapper = createComponent({

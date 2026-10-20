@@ -32,7 +32,6 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/imageresizer"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/metrics"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/oauthproxy"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/orbit"
 	proxypkg "gitlab.com/gitlab-org/gitlab/workhorse/internal/proxy"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/queueing"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/ratelimitcache"
@@ -281,7 +280,7 @@ func WithSuccessTracking(tracker *healthcheck.SuccessTracker) ProxyOption {
 	}
 }
 
-func buildProxy(backend *url.URL, version string, rt http.RoundTripper, cfg config.Config, dependencyProxyInjector *dependencyproxy.Injector, api *apipkg.API, opts ...ProxyOption) http.Handler {
+func buildProxy(backend *url.URL, version string, rt http.RoundTripper, cfg config.Config, dependencyProxyInjector *dependencyproxy.Injector, opts ...ProxyOption) http.Handler {
 	proxier := proxypkg.NewProxy(backend, version, rt)
 
 	// Apply optional middleware
@@ -302,9 +301,6 @@ func buildProxy(backend *url.URL, version string, rt http.RoundTripper, cfg conf
 		sendurl.SendURL,
 		imageresizer.NewResizer(cfg),
 		dependencyProxyInjector,
-	}
-	if api != nil {
-		injecters = append(injecters, orbit.NewSendQuery(api, version))
 	}
 
 	return senddata.SendData(
@@ -335,7 +331,7 @@ func configureRoutes(u *upstream) {
 		proxyOpts = append(proxyOpts, WithSuccessTracking(u.healthCheckServer.GetSuccessTracker()))
 	}
 
-	proxy := buildProxy(u.Backend, u.Version, signingTripper, u.Config, dependencyProxyInjector, api, proxyOpts...)
+	proxy := buildProxy(u.Backend, u.Version, signingTripper, u.Config, dependencyProxyInjector, proxyOpts...)
 	cableProxy := proxypkg.NewProxy(u.CableBackend, u.Version, u.CableRoundTripper)
 
 	dwHandler := duoworkflow.NewHandler(api, u.rdb, u, string(u.URLPrefix), u.TrustedForwardedHosts...)
@@ -824,7 +820,7 @@ func allowedProxy(proxy http.Handler, dependencyProxyInjector *dependencyproxy.I
 	if u.CircuitBreakerConfig.Enabled {
 		roundTripperRateLimitCache := ratelimitcache.NewRoundTripper(u.RoundTripper, u.rdb)
 
-		return buildProxy(u.Backend, u.Version, roundTripperRateLimitCache, u.Config, dependencyProxyInjector, nil)
+		return buildProxy(u.Backend, u.Version, roundTripperRateLimitCache, u.Config, dependencyProxyInjector)
 	}
 
 	return proxy

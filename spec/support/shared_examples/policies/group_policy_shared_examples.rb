@@ -21,22 +21,9 @@ RSpec.shared_examples 'group archiving abilities' do
     end
   end
 
-  shared_examples 'allows destroy actions' do
-    it 'allows destroy actions on archived features' do
-      destroy_abilities.each do |feature|
-        expect(policy).to be_allowed(feature) if policy.respond_to?(:"#{feature}")
-      end
-    end
-  end
-
-  shared_examples 'archived but not marked for deletion' do
+  shared_examples 'read-only group' do
     it_behaves_like 'prevents archived abilities'
     it_behaves_like 'prevents destroy actions'
-  end
-
-  shared_examples 'archived and marked for deletion' do
-    it_behaves_like 'prevents archived abilities'
-    it_behaves_like 'allows destroy actions'
   end
 
   context 'when group is archived but not marked for deletion' do
@@ -44,7 +31,7 @@ RSpec.shared_examples 'group archiving abilities' do
       group.namespace_settings.update!(archived: true)
     end
 
-    it_behaves_like 'archived but not marked for deletion'
+    it_behaves_like 'read-only group'
   end
 
   context 'when group is archived and marked for deletion' do
@@ -53,7 +40,7 @@ RSpec.shared_examples 'group archiving abilities' do
       group.update!(state: :deletion_in_progress)
     end
 
-    it_behaves_like 'archived and marked for deletion'
+    it_behaves_like 'read-only group'
   end
 
   context 'when group ancestor is archived' do
@@ -63,7 +50,7 @@ RSpec.shared_examples 'group archiving abilities' do
       group.parent.namespace_settings.update!(archived: true)
     end
 
-    it_behaves_like 'archived but not marked for deletion'
+    it_behaves_like 'read-only group'
   end
 
   context 'when group ancestor is marked for deletion' do
@@ -74,6 +61,6 @@ RSpec.shared_examples 'group archiving abilities' do
       group.parent.update!(state: :deletion_in_progress)
     end
 
-    it_behaves_like 'archived and marked for deletion'
+    it_behaves_like 'read-only group'
   end
 end

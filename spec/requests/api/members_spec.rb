@@ -1081,12 +1081,43 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
         # `plans` table INSERT and todos resolution) plus a 1-query buffer, so it stays
         # tight enough to catch a future regression instead of masking it.
         # See: https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/44271
-        allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(110)
+        # Plus a constant few from the ProjectPolicy scheduled-for-deletion condition reading
+        # the namespace chain, which goes away with https://gitlab.com/groups/gitlab-org/-/work_items/21607.
+        allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(119)
       end
     end
 
     it_behaves_like 'POST /:source_type/:id/members', 'group' do
       let(:source) { group }
+    end
+  end
+
+  describe 'POST /:source_type/:id/members when the source is scheduled for deletion' do
+    let_it_be(:group_owner) { create(:user) }
+    let_it_be(:invitee) { create(:user) }
+    let_it_be_with_reload(:pending_deletion_group) { create(:group, owners: group_owner) }
+    let_it_be_with_reload(:pending_deletion_project) { create(:project, group: pending_deletion_group) }
+
+    before do
+      ::Groups::MarkForDeletionService.new(pending_deletion_group, group_owner).execute
+    end
+
+    it 'refuses to add a member to the group' do
+      expect do
+        post api("/groups/#{pending_deletion_group.id}/members", group_owner),
+          params: { user_id: invitee.id, access_level: Gitlab::Access::DEVELOPER }
+      end.not_to change { pending_deletion_group.members.count }
+
+      expect(response).to have_gitlab_http_status(:forbidden)
+    end
+
+    it 'refuses to add a member to a project in the group' do
+      expect do
+        post api("/projects/#{pending_deletion_project.id}/members", group_owner),
+          params: { user_id: invitee.id, access_level: Gitlab::Access::DEVELOPER }
+      end.not_to change { pending_deletion_project.members.count }
+
+      expect(response).to have_gitlab_http_status(:forbidden)
     end
   end
 

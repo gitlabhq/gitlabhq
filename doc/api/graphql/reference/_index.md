@@ -22727,6 +22727,7 @@ Fields:
 | <a id="aiflowtriggertypeconnection-edges"></a>`edges` | [`[AiFlowTriggerTypeEdge]`](#aiflowtriggertypeedge) | A list of edges. |
 | <a id="aiflowtriggertypeconnection-nodes"></a>`nodes` | [`[AiFlowTriggerType]`](#aiflowtriggertype) | A list of nodes. |
 | <a id="aiflowtriggertypeconnection-pageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+| <a id="aiflowtriggertypeconnection-runstats"></a>`runStats` {{< icon name="warning-solid" >}} | [`AiFlowTriggerRunStats`](#aiflowtriggerrunstats) | Introduced in GitLab 19.6. Status: Experiment. Statistics of the runs created in the last 30 days by all flow triggers in the collection, not only the current page. |
 
 ##### Fields with arguments
 
@@ -36181,6 +36182,17 @@ Fields:
 | <a id="aiflowscheduletype-project"></a>`project` | [`Project!`](#project) | Project of the flow schedule. |
 | <a id="aiflowscheduletype-updatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the flow schedule was last updated. |
 
+### `AiFlowTriggerDailyRunCount`
+
+Number of runs of a flow trigger created on one UTC day.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aiflowtriggerdailyruncount-date"></a>`date` | [`Date!`](#date) | UTC day the runs were created on. |
+| <a id="aiflowtriggerdailyruncount-runs"></a>`runs` | [`Int!`](#int) | Number of runs created on the day. |
+
 ### `AiFlowTriggerLastRun`
 
 Details of the most recent run of a flow trigger.
@@ -36193,6 +36205,21 @@ Fields:
 | <a id="aiflowtriggerlastrun-finishedat"></a>`finishedAt` | [`Time`](#time) | Timestamp of when the run finished, or null if the run is not finished. |
 | <a id="aiflowtriggerlastrun-startedat"></a>`startedAt` | [`Time!`](#time) | Timestamp of when the run started. |
 | <a id="aiflowtriggerlastrun-status"></a>`status` | [`AiFlowTriggerRunStatus!`](#aiflowtriggerrunstatus) | Status of the run. |
+
+### `AiFlowTriggerRunStats`
+
+Statistics of the runs of a flow trigger created in the last 30 days.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aiflowtriggerrunstats-dailyvolume"></a>`dailyVolume` | [`[AiFlowTriggerDailyRunCount!]!`](#aiflowtriggerdailyruncount) | Number of runs created on each UTC day. Days without runs are omitted. |
+| <a id="aiflowtriggerrunstats-failedruns"></a>`failedRuns` | [`Int!`](#int) | Number of runs that failed. |
+| <a id="aiflowtriggerrunstats-finishedruns"></a>`finishedRuns` | [`Int!`](#int) | Number of runs that finished successfully. |
+| <a id="aiflowtriggerrunstats-mediandurationseconds"></a>`medianDurationSeconds` | [`Float`](#float) | Median time in seconds from creation to last update of runs that finished, failed, or were stopped. Null if no run has ended. |
+| <a id="aiflowtriggerrunstats-stoppedruns"></a>`stoppedRuns` | [`Int!`](#int) | Number of runs that were stopped. |
+| <a id="aiflowtriggerrunstats-totalruns"></a>`totalRuns` | [`Int!`](#int) | Number of runs. |
 
 ### `AiFlowTriggerType`
 
@@ -36218,6 +36245,7 @@ Fields:
 | <a id="aiflowtriggertype-precondition"></a>`precondition` {{< icon name="warning-solid" >}} | [`JSON`](#json) | Introduced in GitLab 18.11. Status: Experiment. Enforced filter conditions from the foundational flow definition. |
 | <a id="aiflowtriggertype-project"></a>`project` | [`Project`](#project) | Project of the flow trigger. Null for group flow triggers. |
 | <a id="aiflowtriggertype-readymergerequestsonfinish"></a>`readyMergeRequestsOnFinish` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.6. Status: Experiment. Indicates whether merge requests created by a session that a work item event of the AI flow trigger started are marked as ready when the session finishes. Applies only when the `ai_flow_trigger_status_on_finish` and `ai_flow_trigger_chaining` feature flags are enabled, and only to work items in a project. Requires the `work_item` event type. The work item filter must match all its rules, and have one top-level `action` rule `in` `["status_changed"]` and one top-level `status.name` rule `in` a list of status names. |
+| <a id="aiflowtriggertype-runstats"></a>`runStats` {{< icon name="warning-solid" >}} | [`AiFlowTriggerRunStats`](#aiflowtriggerrunstats) | Introduced in GitLab 19.6. Status: Experiment. Statistics of the runs of the flow trigger created in the last 30 days. |
 | <a id="aiflowtriggertype-runningcount"></a>`runningCount` {{< icon name="warning-solid" >}} | [`Int!`](#int) | Introduced in GitLab 19.6. Status: Experiment. Number of sessions of the flow trigger that are created or running. |
 | <a id="aiflowtriggertype-sessions"></a>`sessions` {{< icon name="warning-solid" >}} | [`DuoWorkflowConnection`](#duoworkflowconnection) | Introduced in GitLab 19.6. Status: Experiment. Sessions started by the flow trigger, newest first. Returns sessions for only one flow trigger per request. |
 | <a id="aiflowtriggertype-statusonfinish"></a>`statusOnFinish` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.6. Status: Experiment. Name of the work item status to set when a session that a work item event of the AI flow trigger started finishes. Applies only when the `ai_flow_trigger_status_on_finish` and `ai_flow_trigger_chaining` feature flags are enabled, and only to work items in a project. Requires the `work_item` event type. The work item filter must match all its rules, and have one top-level `action` rule `in` `["status_changed"]` and one top-level `status.name` rule `in` a list of status names. |

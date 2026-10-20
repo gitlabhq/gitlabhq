@@ -496,6 +496,15 @@ class Namespace < ApplicationRecord
     self_and_ancestors(skope: Namespace).archived.exists?
   end
 
+  # Mirrors self_or_ancestors_archived?: reads the column computed by
+  # NamespaceSetting.with_ancestors_inherited_settings, so a preloaded collection answers this
+  # without a query per namespace.
+  def preloaded_self_or_ancestors_deletion_scheduled
+    return unless association(:namespace_settings_with_ancestors_inherited_settings).loaded?
+
+    namespace_settings_with_ancestors_inherited_settings&.self_or_ancestors_deletion_scheduled
+  end
+
   def ancestors_archived?
     ancestors.archived.exists?
   end

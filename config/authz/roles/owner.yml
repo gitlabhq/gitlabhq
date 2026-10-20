@@ -121,7 +121,6 @@ group:
   - delete_secrets_manager_enrollment
   - delete_secrets_permission
   - delete_service_account
-  - delete_subgroup
   - delete_virtual_registry_cleanup_policy
   - deprovision_secrets_manager
   - destroy_deploy_token

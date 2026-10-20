@@ -358,7 +358,11 @@ If the user who scheduled the project deletion loses access to the project befor
 (for example, by leaving the project, having their role downgraded, or being banned from the project),
 the deletion job instead restores the project, and the project is no longer scheduled for deletion.
 
-When a project is marked for deletion, scheduled CI/CD pipelines stop running.
+When a project is marked for deletion, scheduled CI/CD pipelines stop running, and the project
+becomes read-only.
+You can still view its contents, but you cannot add members, create or delete content, or share it
+with other groups.
+To make the project writable again, [restore it](#restore-a-project).
 
 > [!warning]
 > If the user who scheduled the project deletion regains Owner role or administrator access before the job runs, then the job removes the project permanently.

@@ -160,6 +160,26 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects do
           expect(results[other_child.id].archived).to be false
         end
       end
+
+      context 'when a namespace is scheduled for deletion' do
+        before do
+          create(:group_deletion_schedule, group: child_group)
+        end
+
+        it 'marks it and its descendants as self_or_ancestors_deletion_scheduled' do
+          results = namespaces_with_ancestors_inherited_settings.index_by(&:namespace_id)
+
+          expect(results[root_group.id].self_or_ancestors_deletion_scheduled).to be false
+          expect(results[child_group.id].self_or_ancestors_deletion_scheduled).to be true
+          expect(results[grandchild_group.id].self_or_ancestors_deletion_scheduled).to be true
+        end
+      end
+    end
+
+    describe '#self_or_ancestors_deletion_scheduled' do
+      it 'returns nil when not loaded through .with_ancestors_inherited_settings' do
+        expect(namespace_settings.self_or_ancestors_deletion_scheduled).to be_nil
+      end
     end
 
     describe '.next_namespace_ids' do

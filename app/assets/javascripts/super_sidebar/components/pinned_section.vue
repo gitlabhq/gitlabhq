@@ -188,6 +188,7 @@ export default {
     :has-flyout="hasFlyout"
     :headerless="headerless"
     :bold-title="Boolean(groupItem)"
+    :reveal-chevron-on-hover="Boolean(groupItem)"
     :async-count="asyncCount"
     @collapse-toggle="expanded = $event"
     @pin-remove="onPinRemove"

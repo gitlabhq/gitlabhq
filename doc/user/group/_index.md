@@ -361,7 +361,11 @@ You can also delete a group from the groups dashboard:
 This action adds a background job to schedule a group for deletion. On GitLab.com, the group is deleted after 30 days. On GitLab Self-Managed,
 you can modify the retention period through the [instance settings](../../administration/settings/visibility_and_access_controls.md#deletion-protection).
 
-When a group is scheduled for deletion, scheduled CI/CD pipelines stop running.
+When a group is scheduled for deletion, scheduled CI/CD pipelines stop running, and the group,
+its subgroups, and its projects become read-only.
+You can still view their contents, but you cannot add members, create or delete content, or share
+them with other groups.
+To make them writable again, [restore the group](#restore-a-group).
 
 If the user who scheduled the group deletion loses access to the group (for example, by leaving the group, having their role downgraded, or being banned from the group) before the deletion occurs,
 the deletion job instead restores the group, and the group is no longer scheduled for deletion.

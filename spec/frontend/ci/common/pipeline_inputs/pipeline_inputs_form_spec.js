@@ -54,6 +54,8 @@ const expectedInputs = [
     rules: null,
     isSelected: false,
     hasRules: false,
+    lastMatchedRuleIndex: null,
+    rulesEvaluated: false,
   },
   {
     name: 'api_token',
@@ -67,6 +69,8 @@ const expectedInputs = [
     rules: null,
     isSelected: false,
     hasRules: false,
+    lastMatchedRuleIndex: null,
+    rulesEvaluated: false,
   },
   {
     name: 'tags',
@@ -80,6 +84,8 @@ const expectedInputs = [
     rules: null,
     isSelected: false,
     hasRules: false,
+    lastMatchedRuleIndex: null,
+    rulesEvaluated: false,
   },
 ];
 
@@ -1026,6 +1032,258 @@ describe('PipelineInputsForm', () => {
 
       expect(getInputByName('instance_type').value).toBe('e2-small');
       expect(getInputByName('instance_type').options).toEqual(['e2-small', 'e2-medium']);
+    });
+  });
+
+  describe('dynamic rules with saved inputs', () => {
+    beforeEach(() => {
+      pipelineInputsHandler = jest.fn().mockResolvedValue(mockPipelineInputsWithRules);
+    });
+
+    it('seeds a rule-driven input without options from the saved value on load', async () => {
+      await createComponent({
+        props: {
+          savedInputs: [
+            { name: 'cloud_provider', value: 'custom' },
+            { name: 'instance_type', value: 'my-saved-instance' },
+          ],
+        },
+      });
+
+      const instanceType = getInputByName('instance_type');
+
+      expect(instanceType.isSelected).toBe(true);
+      expect(instanceType.options).toEqual([]);
+      expect(instanceType.value).toBe('my-saved-instance');
+    });
+
+    it('keeps the saved value when it is one of the matching rule options', async () => {
+      await createComponent({
+        props: {
+          savedInputs: [
+            { name: 'cloud_provider', value: 'gcp' },
+            { name: 'instance_type', value: 'e2-medium' },
+          ],
+        },
+      });
+
+      expect(getInputByName('instance_type').options).toEqual(['e2-small', 'e2-medium']);
+      expect(getInputByName('instance_type').value).toBe('e2-medium');
+    });
+
+    it('falls back to the rule default when the saved value is not a valid option', async () => {
+      await createComponent({
+        props: {
+          savedInputs: [
+            { name: 'cloud_provider', value: 'gcp' },
+            { name: 'instance_type', value: 'no-longer-valid' },
+          ],
+        },
+      });
+
+      expect(getInputByName('instance_type').value).toBe('e2-small');
+    });
+
+    it('still resets to the rule default when the controlling input changes after load', async () => {
+      await createComponent({
+        props: {
+          savedInputs: [
+            { name: 'cloud_provider', value: 'custom' },
+            { name: 'instance_type', value: 'my-saved-instance' },
+          ],
+        },
+      });
+
+      expect(getInputByName('instance_type').value).toBe('my-saved-instance');
+
+      findInputsTable().vm.$emit('update', {
+        ...getInputByName('cloud_provider'),
+        value: 'gcp',
+      });
+      await nextTick();
+
+      expect(getInputByName('instance_type').value).toBe('e2-small');
+      expect(getInputByName('instance_type').options).toEqual(['e2-small', 'e2-medium']);
+    });
+
+    it('resets to the rule default when the controlling input changes to a rule without options', async () => {
+      await createComponent({
+        props: {
+          savedInputs: [
+            { name: 'cloud_provider', value: 'gcp' },
+            { name: 'instance_type', value: 'e2-medium' },
+          ],
+        },
+      });
+
+      expect(getInputByName('instance_type').value).toBe('e2-medium');
+
+      findInputsTable().vm.$emit('update', {
+        ...getInputByName('cloud_provider'),
+        value: 'custom',
+      });
+      await nextTick();
+
+      expect(getInputByName('instance_type').options).toEqual([]);
+      expect(getInputByName('instance_type').value).toBe('');
+    });
+
+    it('resets to the rule default when a rule matches again after none matched', async () => {
+      const initialInputs = [
+        {
+          name: 'mode',
+          type: 'STRING',
+          description: 'Operating mode',
+          required: false,
+          default: 'ModeA',
+          options: ['ModeA', 'ModeB', 'ModeC'],
+          regex: null,
+          rules: null,
+        },
+        {
+          name: 'config_file',
+          type: 'STRING',
+          description: 'Configuration file',
+          required: false,
+          default: '',
+          options: [],
+          regex: null,
+          rules: [
+            {
+              conditionTree: { field: 'mode', operator: 'equals', value: 'ModeB', children: null },
+              options: null,
+              default: 'config_modeb.json',
+            },
+            {
+              conditionTree: { field: 'mode', operator: 'equals', value: 'ModeC', children: null },
+              options: null,
+              default: 'config_modec.json',
+            },
+          ],
+        },
+      ];
+
+      await createComponent({
+        props: {
+          initialInputs,
+          queryRef: '',
+          savedInputs: [
+            { name: 'mode', value: 'ModeB' },
+            { name: 'config_file', value: 'my-config.json' },
+          ],
+        },
+      });
+
+      expect(getInputByName('config_file').value).toBe('my-config.json');
+
+      findInputsTable().vm.$emit('update', { ...getInputByName('mode'), value: 'ModeA' });
+      await nextTick();
+
+      expect(getInputByName('config_file').isSelected).toBe(false);
+      expect(getInputByName('config_file').value).toBe('');
+
+      findInputsTable().vm.$emit('update', { ...getInputByName('mode'), value: 'ModeC' });
+      await nextTick();
+
+      expect(getInputByName('config_file').value).toBe('config_modec.json');
+    });
+
+    it('preserves boolean false value when rule has no options and rule unchanged', async () => {
+      const initialInputs = [
+        {
+          name: 'environment',
+          type: 'STRING',
+          description: 'Environment',
+          required: false,
+          default: 'production',
+          options: ['development', 'production'],
+          regex: null,
+          rules: null,
+        },
+        {
+          name: 'enable_feature',
+          type: 'BOOLEAN',
+          description: 'Enable feature flag',
+          required: false,
+          default: true,
+          options: [],
+          regex: null,
+          rules: [
+            {
+              conditionTree: {
+                field: 'environment',
+                operator: 'equals',
+                value: 'production',
+                children: null,
+              },
+              options: null,
+              default: true,
+            },
+          ],
+        },
+      ];
+
+      await createComponent({
+        props: {
+          initialInputs,
+          queryRef: '',
+          savedInputs: [
+            { name: 'environment', value: 'production' },
+            { name: 'enable_feature', value: false },
+          ],
+        },
+      });
+
+      expect(getInputByName('enable_feature').value).toBe(false);
+    });
+
+    it('preserves number zero value when rule has no options and rule unchanged', async () => {
+      const initialInputs = [
+        {
+          name: 'environment',
+          type: 'STRING',
+          description: 'Environment',
+          required: false,
+          default: 'production',
+          options: ['development', 'production'],
+          regex: null,
+          rules: null,
+        },
+        {
+          name: 'threshold',
+          type: 'NUMBER',
+          description: 'Threshold value',
+          required: false,
+          default: 10,
+          options: [],
+          regex: null,
+          rules: [
+            {
+              conditionTree: {
+                field: 'environment',
+                operator: 'equals',
+                value: 'production',
+                children: null,
+              },
+              options: null,
+              default: 10,
+            },
+          ],
+        },
+      ];
+
+      await createComponent({
+        props: {
+          initialInputs,
+          queryRef: '',
+          savedInputs: [
+            { name: 'environment', value: 'production' },
+            { name: 'threshold', value: 0 },
+          ],
+        },
+      });
+
+      expect(getInputByName('threshold').value).toBe(0);
     });
   });
 

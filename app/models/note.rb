@@ -853,7 +853,7 @@ class Note < ApplicationRecord
     self.namespace_id = nil
   end
 
-  # Markdown cache refresh writes via update_columns, bypassing the
+  # Markdown cache refresh writes via update_all, bypassing the
   # ensure_namespace_id callback. Fold the sharding-key repair into the same
   # write so legacy dual-key rows are ready for the future single-key invariant.
   # See https://gitlab.com/gitlab-org/gitlab/-/issues/601435

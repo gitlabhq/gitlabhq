@@ -20,7 +20,7 @@ RSpec.describe Email do
   describe 'relationships' do
     subject { build(:email) }
 
-    it do
+    it 'belongs to banned_user through user_id' do
       is_expected.to belong_to(:banned_user).class_name('::Users::BannedUser')
         .with_foreign_key('user_id').inverse_of(:emails)
     end

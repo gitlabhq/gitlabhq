@@ -56,7 +56,7 @@ RSpec.describe 'Mailer previews', :with_trial_types, feature_category: :shared d
   end
 
   with_them do
-    it do
+    it 'returns a mail message' do
       issue_link = pending_failures["#{preview.name}##{email}"]
       pending "See #{issue_link}" if issue_link
 

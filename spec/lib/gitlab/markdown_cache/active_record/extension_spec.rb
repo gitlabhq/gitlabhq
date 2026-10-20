@@ -224,26 +224,164 @@ RSpec.describe Gitlab::MarkdownCache::ActiveRecord::Extension, feature_category:
   end
 
   describe '#refresh_markdown_cache!' do
-    before do
-      thing.title = updated_markdown
+    let(:thing) { persisted_row_at_version(nil) }
+
+    def row_in_database
+      klass.find(thing.id)
     end
 
     it 'skips saving if not persisted' do
-      expect(thing).to receive(:persisted?).and_return(false)
-      expect(thing).not_to receive(:update_columns)
+      allow(thing).to receive(:persisted?).and_return(false)
+      expect(thing).not_to receive(:save_markdown)
 
       thing.refresh_markdown_cache!
     end
 
     it 'saves the changes' do
-      expect(thing).to receive(:persisted?).and_return(true)
+      expect(thing.refresh_markdown_cache!).to be(true)
 
-      expect(thing).to receive(:update_columns)
-                         .with({ "title_html" => updated_html,
-                                 "description_html" => "",
-                                 "cached_markdown_version" => cache_version })
+      expect(row_in_database).to have_attributes(
+        title_html: html,
+        description_html: '',
+        cached_markdown_version: cache_version
+      )
+    end
 
+    it 'leaves the record without pending changes' do
       thing.refresh_markdown_cache!
+
+      expect(thing.changed?).to be(false)
+    end
+
+    context 'when the markdown has changed in the database since the record was loaded' do
+      before do
+        klass.where(id: thing.id).update_all(title: updated_markdown, title_html: updated_html)
+      end
+
+      it 'does not overwrite the newer HTML' do
+        expect(thing.refresh_markdown_cache!).to be(false)
+
+        expect(row_in_database).to have_attributes(
+          title: updated_markdown,
+          title_html: updated_html,
+          cached_markdown_version: nil
+        )
+      end
+
+      context 'for the version upgrade counter' do
+        let(:perform_upgrade) { thing.refresh_markdown_cache! }
+
+        it_behaves_like 'a version upgrade count', expected_kind: nil
+      end
+    end
+
+    context 'when the row has moved past the write version since the record was loaded' do
+      before do
+        klass.where(id: thing.id).update_all(cached_markdown_version: cache_version + 1)
+      end
+
+      it 'does not regress the cached_markdown_version' do
+        expect(thing.refresh_markdown_cache!).to be(false)
+
+        expect(row_in_database.cached_markdown_version).to eq(cache_version + 1)
+      end
+    end
+
+    context 'when the row is at the write version with its HTML cleared' do
+      let(:thing) { persisted_row_at_version(cache_version).tap { |row| row.update_columns(title_html: nil) } }
+
+      it 'rewrites the HTML' do
+        expect(thing.refresh_markdown_cache!).to be(true)
+
+        expect(row_in_database.title_html).to eq(html)
+      end
+    end
+
+    context 'when the markdown has unsaved changes' do
+      before do
+        thing.title = updated_markdown
+      end
+
+      it 'does not persist HTML rendered from the unsaved markdown' do
+        expect(thing).not_to receive(:save_markdown)
+
+        thing.refresh_markdown_cache!
+
+        expect(row_in_database).to have_attributes(title_html: html, cached_markdown_version: nil)
+      end
+
+      it 'persists the rendered HTML with the markdown when the record is saved' do
+        thing.refresh_markdown_cache!
+        thing.save!
+
+        expect(row_in_database).to have_attributes(
+          title: updated_markdown,
+          title_html: updated_html,
+          cached_markdown_version: cache_version
+        )
+      end
+    end
+
+    context 'when another markdown field has unsaved changes' do
+      before do
+        thing.description = updated_markdown
+      end
+
+      it 'persists every rendered field with the markdown when the record is saved' do
+        Banzai::Renderer.render_field(thing, :title)
+        thing.save!
+
+        row = row_in_database
+
+        expect(row).to have_attributes(
+          description: updated_markdown,
+          description_html: Banzai::Renderer.cacheless_render_field(row, :description),
+          cached_markdown_version: cache_version
+        )
+      end
+    end
+  end
+
+  describe 'storing mentions on #refresh_markdown_cache!' do
+    let_it_be(:user) { create(:user, :with_namespace) }
+    let_it_be(:other_user) { create(:user, :with_namespace) }
+
+    let(:note) do
+      created = create(:note_on_issue, project: project, note: "hey @#{user.username}")
+      created.update_columns(cached_markdown_version: nil)
+
+      Note.find(created.id)
+    end
+
+    def mentioned_users_ids
+      IssueUserMention.where(note_id: note.id).pick(:mentioned_users_ids)
+    end
+
+    it 'writes the mentions in the same transaction as the cached HTML' do
+      IssueUserMention.where(note_id: note.id).delete_all
+      open_transactions = Note.connection.open_transactions
+
+      expect(note).to receive(:write_mentions!).and_wrap_original do |original, *args|
+        expect(Note.connection.open_transactions).to be > open_transactions
+
+        original.call(*args)
+      end
+
+      note.refresh_markdown_cache!
+
+      expect(mentioned_users_ids).to eq([user.id])
+    end
+
+    context 'when the note has been edited since it was loaded' do
+      before do
+        Note.find(note.id).update!(note: "hey @#{other_user.username}")
+      end
+
+      it 'keeps the mentions from the edit' do
+        note.refresh_markdown_cache!
+
+        expect(mentioned_users_ids).to eq([other_user.id])
+      end
     end
   end
 
@@ -304,10 +442,10 @@ RSpec.describe Gitlab::MarkdownCache::ActiveRecord::Extension, feature_category:
       thing.update_column(:cached_markdown_version, nil)
     end
 
-    it 'does not save the generated HTML' do
-      expect(thing).to receive(:update_columns)
-
+    it 'saves the generated HTML' do
       thing.refresh_markdown_cache!
+
+      expect(thing.reload.cached_markdown_version).to eq(cache_version)
     end
 
     # A persisted row with a nil version is a rare anomaly (legacy/imported/

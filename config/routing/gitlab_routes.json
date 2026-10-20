@@ -10071,11 +10071,6 @@
     "dottedExample": "/api/v4/internal/orbit/project/john.doe/repository/tree"
   },
   {
-    "template": "/api/:version/internal/orbit/redaction",
-    "example": "/api/v4/internal/orbit/redaction",
-    "acceptsFormat": true
-  },
-  {
     "template": "/api/:version/internal/org_mover/cancel_maintenance",
     "example": "/api/v4/internal/org_mover/cancel_maintenance",
     "acceptsFormat": true

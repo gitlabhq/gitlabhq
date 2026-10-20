@@ -543,4 +543,180 @@ RSpec.describe Oauth::AuthorizationsController, :with_current_organization, feat
 
     it_behaves_like 'a controller request enforcing organization maintenance mode'
   end
+
+  describe 'granular applications' do
+    let_it_be(:group) { create(:group) }
+    let_it_be_with_reload(:application) do
+      create(:oauth_application, :granular, scopes: 'api', redirect_uri: 'http://example.com',
+        boundary: Authz::Boundary.for(group), permissions: :read_group)
+    end
+
+    let(:params) do
+      {
+        client_id: application.uid,
+        response_type: 'code',
+        scope: 'api',
+        redirect_uri: application.redirect_uri,
+        state: SecureRandom.hex
+      }
+    end
+
+    def active_grant
+      Authz::OauthConsentGrant.active_for_user_and_application(user.id, application.id)
+    end
+
+    def latest_code
+      OauthAccessGrant.where(resource_owner_id: user.id, application_id: application.id).order(:id).last
+    end
+
+    def stub_failing_consent_service
+      allow_next_instance_of(Authz::OauthConsentGrants::CreateService) do |service|
+        allow(service).to receive(:execute).and_return(ServiceResponse.error(message: 'boom', reason: :invalid))
+      end
+    end
+
+    describe 'GET #new' do
+      it 'forces the granular scope on the consent screen without recording a grant', :aggregate_failures do
+        get oauth_authorization_path, params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to render_template('doorkeeper/authorizations/new')
+        expect(response.body).to include('value="granular"')
+        expect(response.body).not_to include('value="api"')
+        expect(active_grant).to be_nil
+      end
+
+      it 'prefers the granular scope over the MCP scope' do
+        get oauth_authorization_path, params: params.merge(resource: 'https://gitlab.example.com/api/v4/mcp')
+
+        expect(response.body).to include('value="granular"')
+        expect(response.body).not_to include('value="mcp"')
+      end
+
+      context 'when the application is trusted' do
+        before do
+          application.update!(trusted: true)
+        end
+
+        it 'records a trusted auto-grant with the declared scopes and redirects', :aggregate_failures do
+          expect { get oauth_authorization_path, params: params }.to change { Authz::OauthConsentGrant.count }.by(1)
+
+          expect(response).to render_template('doorkeeper/authorizations/redirect')
+          expect(active_grant).to be_trusted_auto_grant
+          expect(active_grant.granular_scopes)
+            .to contain_exactly(have_attributes(namespace: group, permissions: ['read_group']))
+          expect(latest_code.scopes.to_a).to eq(['granular'])
+        end
+
+        it 'reuses the active grant on later authorizations' do
+          create(:oauth_consent_grant, user: user, application: application, source: :trusted_auto_grant)
+
+          expect { get oauth_authorization_path, params: params }.not_to change { Authz::OauthConsentGrant.count }
+
+          expect(response).to render_template('doorkeeper/authorizations/redirect')
+        end
+
+        it 'renders an error when the grant cannot be recorded', :aggregate_failures do
+          stub_failing_consent_service
+
+          expect { get oauth_authorization_path, params: params }.not_to change { OauthAccessGrant.count }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(response).to render_template('doorkeeper/authorizations/error')
+          expect(response.body).to include(I18n.t('doorkeeper.errors.messages.granular_consent_failed'))
+        end
+      end
+
+      context 'with a matching granular token for a confidential application' do
+        before do
+          create(:oauth_access_token, :granular, resource_owner: user, application: application)
+        end
+
+        it 'shows the consent screen when no active grant exists' do
+          get oauth_authorization_path, params: params
+
+          expect(response).to render_template('doorkeeper/authorizations/new')
+        end
+
+        it 'skips the consent screen when an active grant exists' do
+          create(:oauth_consent_grant, user: user, application: application)
+
+          get oauth_authorization_path, params: params
+
+          expect(response).to render_template('doorkeeper/authorizations/redirect')
+        end
+      end
+
+      context 'when the granular_oauth_tokens feature flag is disabled' do
+        before do
+          stub_feature_flags(granular_oauth_tokens: false)
+        end
+
+        it 'keeps the requested legacy scope and records no consent grant', :aggregate_failures do
+          expect { get oauth_authorization_path, params: params }.not_to change { Authz::OauthConsentGrant.count }
+
+          expect(response).to render_template('doorkeeper/authorizations/new')
+          expect(response.body).to include('value="api"')
+          expect(response.body).not_to include('value="granular"')
+        end
+      end
+    end
+
+    describe 'POST #create' do
+      it 'records a doorkeeper grant copying the declared scopes and issues a granular code', :aggregate_failures do
+        post oauth_authorization_path, params: params
+
+        expect(response).to have_gitlab_http_status(:found)
+        expect(active_grant).to be_doorkeeper
+        expect(active_grant.granular_scopes).to contain_exactly(
+          have_attributes(namespace: group, permissions: ['read_group'], organization_id: user.organization_id)
+        )
+        expect(latest_code.scopes.to_a).to eq(['granular'])
+        expect(response.location).to include("code=#{latest_code.plaintext_token}")
+      end
+
+      it 'replaces the active grant on a new consent' do
+        previous_grant = create(:oauth_consent_grant, user: user, application: application)
+
+        post oauth_authorization_path, params: params
+
+        expect(previous_grant.reload).to be_revoked
+        expect(active_grant).not_to eq(previous_grant)
+      end
+
+      context 'when the grant cannot be recorded' do
+        before do
+          stub_failing_consent_service
+        end
+
+        it 'renders an error and issues no code', :aggregate_failures do
+          expect { post oauth_authorization_path, params: params }.not_to change { OauthAccessGrant.count }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(response).to render_template('doorkeeper/authorizations/error')
+          expect(response.body).to include(I18n.t('doorkeeper.errors.messages.granular_consent_failed'))
+        end
+
+        it 'does not audit an authorization' do
+          expect(::Gitlab::Audit::Auditor).not_to receive(:audit)
+            .with(hash_including(name: 'user_authorized_oauth_application'))
+
+          post oauth_authorization_path, params: params
+        end
+      end
+
+      context 'when the granular_oauth_tokens feature flag is disabled' do
+        before do
+          stub_feature_flags(granular_oauth_tokens: false)
+        end
+
+        it 'issues a legacy code and records no consent grant', :aggregate_failures do
+          expect { post oauth_authorization_path, params: params }.not_to change { Authz::OauthConsentGrant.count }
+
+          expect(response).to have_gitlab_http_status(:found)
+          expect(latest_code.scopes.to_a).to eq(['api'])
+        end
+      end
+    end
+  end
 end

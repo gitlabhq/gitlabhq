@@ -124,7 +124,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   condition(:archived, scope: :subject) { @subject.self_or_ancestors_archived? }
   condition(:group_scheduled_for_deletion, scope: :subject) { @subject.scheduled_for_deletion_in_hierarchy_chain? }
 
-  rule { archived }.policy do
+  rule { archived | group_scheduled_for_deletion }.policy do
     prevent(*Authz::PermissionGroups::Internal.get('group:archived').permissions)
   end
 
@@ -138,14 +138,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   rule { admin }.policy do
     enable(*Authz::Role.get(:admin).permissions(:group))
-  end
-
-  rule { archived & ~group_scheduled_for_deletion }.policy do
-    prevent :delete_custom_emoji
-    prevent :destroy_issue
-    prevent :destroy_package
-    prevent :destroy_upload
-    prevent :destroy_user_achievement
   end
 
   rule { can?(:read_group) & design_management_enabled }.policy do

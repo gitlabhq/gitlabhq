@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Diffs::StatsComponent do
+RSpec.describe Diffs::StatsComponent, feature_category: :source_code_management do
   include RepoHelpers
 
   subject(:component) do

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::BuildPendingState, feature_category: :continuous_integration do
   describe 'associations' do
-    it do
+    it 'belongs to a build through build_id, as the inverse of its pending_state' do
       is_expected.to belong_to(:build).class_name('Ci::Build').with_foreign_key(:build_id).inverse_of(:pending_state)
     end
   end

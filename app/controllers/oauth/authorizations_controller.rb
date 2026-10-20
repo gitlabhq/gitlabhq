@@ -16,12 +16,10 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
   before_action :enforce_organization_maintenance_mode
   before_action :add_gon_variables
   before_action :verify_confirmed_email!, :verify_admin_allowed!
-  # rubocop: disable Rails/LexicallyScopedActionFilter -- :create is defined in Doorkeeper::AuthorizationsController
   before_action :validate_pkce_for_dynamic_applications, only: [:new, :create]
   before_action :explain_missing_dynamic_client, only: [:new, :create]
   after_action :audit_oauth_authorization, only: [:create]
   after_action :stamp_authorizing_user_on_dynamic_application, only: [:create]
-  # rubocop: enable Rails/LexicallyScopedActionFilter
 
   layout 'minimal'
 
@@ -29,7 +27,11 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
   # include the call to session.delete
   def new
     if pre_auth.authorizable?
-      if skip_authorization? || (matching_token? && pre_auth.client.application.confidential?)
+      if skip_authorization? || reauthorize_without_consent?
+        if pre_auth.client.application.trusted? && granular_application? && !trusted_granular_consent_grant?
+          return render_granular_consent_error
+        end
+
         auth = authorize_with_sanctioned_write
         parsed_redirect_uri = URI.parse(auth.redirect_uri)
         session.delete(:user_return_to)
@@ -45,12 +47,60 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
     end
   end
 
+  # Overridden from Doorkeeper::AuthorizationsController to record the consent
+  # grant of a granular application before the authorization code is issued
+  def create
+    return super unless granular_application? && pre_auth.authorizable?
+    return super if record_granular_consent(source: :doorkeeper)
+
+    render_granular_consent_error
+    @authorize_response = pre_auth.error_response
+  end
+
   private
 
+  # Trusted applications never see the consent screen, so their grant is recorded here
+  def trusted_granular_consent_grant?
+    active_consent_grant.present? || record_granular_consent(source: :trusted_auto_grant)
+  end
+
+  def reauthorize_without_consent?
+    return false unless matching_token? && pre_auth.client.application.confidential?
+
+    !granular_application? || active_consent_grant.present?
+  end
+
+  def record_granular_consent(source:)
+    with_sanctioned_write do
+      Authz::OauthConsentGrants::CreateService.new(
+        user: current_user, application: doorkeeper_application, source: source, ip_address: request.remote_ip
+      ).execute
+    end.success?
+  end
+
+  def render_granular_consent_error
+    pre_auth.error = :granular_consent_failed
+    render "doorkeeper/authorizations/error", status: :bad_request
+  end
+
+  def granular_application?
+    Feature.enabled?(:granular_oauth_tokens, current_user) && doorkeeper_application&.granular?
+  end
+  strong_memoize_attr :granular_application?
+
+  def active_consent_grant
+    Authz::OauthConsentGrant.active_for_user_and_application(current_user.id, doorkeeper_application.id)
+  end
+  strong_memoize_attr :active_consent_grant
+
   def authorize_with_sanctioned_write
+    with_sanctioned_write { authorization.authorize }
+  end
+
+  def with_sanctioned_write(&block)
     Gitlab::Database::QueryAnalyzers::PreventWritesOnGet.allow_write_on_get(
-      url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/608670'
-    ) { authorization.authorize }
+      url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/608670', &block
+    )
   end
 
   # doorkeeper-openid_connect >= 1.10 lets `prompt=none` silently skip
@@ -147,8 +197,11 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
     # Force the appropriate MCP scope for MCP server requests and dynamic MCP applications.
     # This ensures that even if a client requests other scopes, dynamic MCP applications
     # are restricted to the correct scope only, regardless of what was requested.
+    # Applications that declare granular scopes mint tokens carrying only the granular marker.
     # rubocop:disable Rails/StrongParams -- In-place writes to params consumed by Doorkeeper's pre_auth via super
-    if resource_is_mcp_orbit_server? || should_force_scope_for_dynamic_app?(Gitlab::Auth::MCP_ORBIT_SCOPE)
+    if granular_application?
+      params[:scope] = Gitlab::Auth::GRANULAR_SCOPE.to_s
+    elsif resource_is_mcp_orbit_server? || should_force_scope_for_dynamic_app?(Gitlab::Auth::MCP_ORBIT_SCOPE)
       params[:scope] = Gitlab::Auth::MCP_ORBIT_SCOPE.to_s
     elsif resource_is_mcp_server? || should_force_scope_for_dynamic_app?(Gitlab::Auth::MCP_SCOPE)
       params[:scope] = Gitlab::Auth::MCP_SCOPE.to_s

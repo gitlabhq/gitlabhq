@@ -135,7 +135,7 @@ module SupplyChain
         key_path: imported[:key_path],
         password: imported[:password],
         certificate_path: certificate_path,
-        signing_certificate_id: driver.signing_certificate.id
+        signing_certificate_id: driver.signing_certificate_id
       )
     rescue SupplyChain::RootCaDriver::Error => e
       raise LocalCaSigningError, "Unable to prepare local CA signing material: #{e.message}"

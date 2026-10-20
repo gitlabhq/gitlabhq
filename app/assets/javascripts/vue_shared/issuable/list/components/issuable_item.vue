@@ -350,6 +350,7 @@ export default {
     navigateToIssuable() {
       if (!this.fullPath) {
         visitUrl(this.issuableLinkHref);
+        return;
       }
       const shouldRouterNav = canRouterNav({
         fullPath: this.fullPath,

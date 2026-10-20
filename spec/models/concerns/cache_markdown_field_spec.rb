@@ -236,6 +236,7 @@ RSpec.describe CacheMarkdownField, :clean_gitlab_redis_cache, feature_category: 
       end
 
       it 'saves the changes' do
+        allow(thing).to receive(:markdown_cache_persistable?).and_return(true)
         expect(thing)
           .to receive(:save_markdown)
           .with({ "description_html" => updated_html, "title_html" => "", "cached_markdown_version" => cache_version })

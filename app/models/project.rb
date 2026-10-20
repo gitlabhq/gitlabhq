@@ -4273,9 +4273,12 @@ class Project < ApplicationRecord
   end
 
   # Overriding of Namespaces::AdjournedDeletable method
+  # Callers iterating projects should preload namespace: :namespace_settings_with_ancestors_inherited_settings,
+  # so a preloaded `false` for the namespace chain skips the query.
   override :ancestors_scheduled_for_deletion
   def ancestors_scheduled_for_deletion
     return [] unless namespace.is_a?(Group)
+    return [] if association(:namespace).loaded? && namespace.preloaded_self_or_ancestors_deletion_scheduled == false
 
     cache_key = "ancestors_scheduled_for_deletion:#{namespace.traversal_ids.join(',')}"
 

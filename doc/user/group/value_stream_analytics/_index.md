@@ -15,7 +15,7 @@ title: Value stream analytics
 Value stream analytics calculates the duration of every stage of your software development process.
 You can measure how much time it takes to go from an idea to production by tracking merge request or issue events.
 
-You can configure value stream analytics for groups and projects in a group namespace.
+You can configure value stream analytics for groups and projects.
 
 Use value stream analytics to identify:
 
@@ -128,6 +128,8 @@ Value stream analytics supports the following events:
 - Merge request last build started
 - Merge request merged
 - Merge request reviewer first assigned
+
+Label events are not available for projects in a personal namespace, because the label must belong to a group.
 
 You can share your ideas or feedback about stage events in
 [issue 520962](https://gitlab.com/gitlab-org/gitlab/-/issues/520962).

@@ -1268,6 +1268,37 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#preloaded_self_or_ancestors_deletion_scheduled' do
+    let_it_be_with_reload(:parent) { create(:group) }
+    let_it_be_with_reload(:namespace) { create(:group, parent: parent) }
+
+    it 'returns nil when namespace_settings_with_ancestors_inherited_settings is not loaded' do
+      expect(namespace.preloaded_self_or_ancestors_deletion_scheduled).to be_nil
+    end
+
+    context 'when namespace_settings_with_ancestors_inherited_settings is loaded' do
+      it 'returns false when no namespace in the chain is scheduled for deletion' do
+        namespace.namespace_settings_with_ancestors_inherited_settings
+
+        expect(namespace.preloaded_self_or_ancestors_deletion_scheduled).to be(false)
+      end
+
+      it 'returns true when an ancestor is scheduled for deletion' do
+        create(:group_deletion_schedule, group: parent)
+        namespace.namespace_settings_with_ancestors_inherited_settings
+
+        expect(namespace.preloaded_self_or_ancestors_deletion_scheduled).to be(true)
+      end
+
+      it 'returns nil when namespace_settings is missing' do
+        namespace.namespace_settings.destroy!
+        namespace.reload.namespace_settings_with_ancestors_inherited_settings
+
+        expect(namespace.preloaded_self_or_ancestors_deletion_scheduled).to be_nil
+      end
+    end
+  end
+
   describe '#ancestors_archived?' do
     let(:grandparent) { create(:group) }
     let(:parent) { create(:group, parent: grandparent) }

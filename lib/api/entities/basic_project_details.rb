@@ -52,7 +52,7 @@ module API
         # as `:topics` are defined as: `has_many :topics, through: :project_topics`
         # N+1 is solved then by using `subject.topics.map(&:name)`
         # MR describing the solution: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/20555
-        projects_relation.preload(:project_feature, :route)
+        projects_relation.preload(:project_feature, :route, :project_namespace)
                          .preload(:import_state, :topics)
                          .preload(:auto_devops)
                          .preload(namespace: [:route, :owner, :namespace_settings_with_ancestors_inherited_settings])

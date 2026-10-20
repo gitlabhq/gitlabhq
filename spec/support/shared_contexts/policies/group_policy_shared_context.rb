@@ -161,7 +161,7 @@ RSpec.shared_context 'GroupPolicy context' do
         change_visibility_level
         create_subgroup
         destroy_issue
-        delete_subgroup
+        _delete_subgroup
         edit_billing
         manage_merge_request_settings
         read_billing

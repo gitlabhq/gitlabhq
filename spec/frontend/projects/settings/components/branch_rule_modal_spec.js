@@ -97,6 +97,30 @@ describe('BranchRuleModal', () => {
     expect(findBranchRuleListbox().props('items')).toEqual([]);
   });
 
+  describe('when the user cannot list protectable branches', () => {
+    beforeEach(async () => {
+      await createComponent({
+        queryHandler: jest.fn().mockResolvedValue({
+          data: {
+            project: {
+              id: 'gid://gitlab/Project/1',
+              protectableBranches: null,
+              __typename: 'Project',
+            },
+          },
+        }),
+      });
+      await findBranchRuleListbox().vm.$emit('search', 'my-branch');
+      await nextTick();
+    });
+
+    it('still offers to create a branch rule for the typed name', () => {
+      expect(findBranchRuleListbox().props('items')).toContainEqual(
+        expect.objectContaining({ text: 'Create branch rule', value: 'my-branch' }),
+      );
+    });
+  });
+
   describe('search functionality', () => {
     beforeEach(async () => {
       await createComponent();
