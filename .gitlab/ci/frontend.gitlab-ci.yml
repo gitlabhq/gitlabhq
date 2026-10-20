@@ -573,6 +573,11 @@ jest-integration vue3:
   extends:
     - jest-integration
     - .vue3
+  variables:
+    # Under Vue 3 the single in-band Jest process lets its heap sit at 3.5-4.3 GB for
+    # dozens of suites before collecting. With the global 5 GB cap it can reach the
+    # cap mid-suite and die on ineffective mark-compacts; a lower cap collects earlier.
+    NODE_OPTIONS: --max-old-space-size=4096
 
 jest-snapshot-vue3:
   extends:

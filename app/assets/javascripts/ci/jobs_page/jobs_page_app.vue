@@ -56,7 +56,8 @@ export default {
         };
       },
       error(error) {
-        this.error = this.$options.i18n.jobsFetchErrorMsg;
+        // GraphQL errors explain invalid filter combinations, such as name with the Trigger kind
+        this.error = error.graphQLErrors?.[0]?.message || this.$options.i18n.jobsFetchErrorMsg;
         reportToSentry(this.$options.name, error);
       },
       result({ data }) {

@@ -39,7 +39,10 @@ module Mcp
             }
           },
           annotations: {
-            readOnlyHint: true
+            title: 'List groups',
+            readOnlyHint: true,
+            idempotentHint: true,
+            openWorldHint: false
           }
         }
 

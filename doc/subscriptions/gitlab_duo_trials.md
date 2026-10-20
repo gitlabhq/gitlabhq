@@ -54,16 +54,9 @@ Prerequisites:
 
 - You must have the Owner role for a top-level group that has an active paid Premium subscription. Indirect ownership through group membership is not sufficient.
 
-To start a GitLab Duo Pro trial on GitLab.com:
+To start a GitLab Duo Pro trial on GitLab.com, reach out to your Sales contact.
 
-1. In the top bar, select **Search or go to** and find your group.
-1. In the left sidebar, select **Settings** > **Billing**.
-1. Select **Start a free GitLab Duo Pro trial**.
-1. Complete the fields.
-1. Select **Continue**.
-1. If prompted, select the group that the trial should be applied to.
-1. Select **Activate my trial**.
-1. [Assign seats](subscription-add-ons.md#assign-gitlab-duo-seats) to the users who need access.
+After the trial starts, [assign seats](subscription-add-ons.md#assign-gitlab-duo-seats) to the users who need access.
 
 {{< /tab >}}
 

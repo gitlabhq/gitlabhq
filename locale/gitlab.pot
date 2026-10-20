@@ -6097,10 +6097,19 @@ msgstr ""
 msgid "AdminAIPoweredFeatures|Configure available models"
 msgstr ""
 
+msgid "AdminAIPoweredFeatures|Deep"
+msgstr ""
+
 msgid "AdminAIPoweredFeatures|Default model"
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|Disabled"
+msgstr ""
+
+msgid "AdminAIPoweredFeatures|Efficient review, limited context"
+msgstr ""
+
+msgid "AdminAIPoweredFeatures|Extensive analysis, more context"
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|Feature"
@@ -6140,6 +6149,9 @@ msgid "AdminAIPoweredFeatures|Select a model"
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|Select all models"
+msgstr ""
+
+msgid "AdminAIPoweredFeatures|Standard"
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|This is the currently selected model for Agentic Chat, which is always available to users. To remove it from the list, select a different model."
@@ -10211,6 +10223,9 @@ msgid "Ai|I have posted my response as an [internal note](%{url}) (visible to pr
 msgstr ""
 
 msgid "Ai|The task could not be completed. Details are posted in an [internal note](%{url}) (visible to project members)."
+msgstr ""
+
+msgid "Ai|These quick actions were not applied: %{commands}"
 msgstr ""
 
 msgid "Ai|[View session](%{url})"
@@ -32335,13 +32350,31 @@ msgstr ""
 msgid "DuoAgentPlatform|%{linkStart}Session%{linkEnd} by %{agentName} on behalf of %{initiatorName}"
 msgstr ""
 
-msgid "DuoAgentPlatform|%{linkStart}Session%{linkEnd} by %{agentName} triggered by %{initiatorName}"
+msgid "DuoAgentPlatform|%{linkStart}Session%{linkEnd} by %{agentName} triggered by GitLab"
+msgstr ""
+
+msgid "DuoAgentPlatform|%{linkStart}Session%{linkEnd} by %{agentName} triggered by a schedule"
+msgstr ""
+
+msgid "DuoAgentPlatform|%{linkStart}Session%{linkEnd} by %{agentName} triggered by a verification check"
+msgstr ""
+
+msgid "DuoAgentPlatform|%{linkStart}Session%{linkEnd} by %{agentName} triggered by another session"
 msgstr ""
 
 msgid "DuoAgentPlatform|%{linkStart}Session%{linkEnd} on behalf of %{initiatorName}"
 msgstr ""
 
-msgid "DuoAgentPlatform|%{linkStart}Session%{linkEnd} triggered by %{initiatorName}"
+msgid "DuoAgentPlatform|%{linkStart}Session%{linkEnd} triggered by GitLab"
+msgstr ""
+
+msgid "DuoAgentPlatform|%{linkStart}Session%{linkEnd} triggered by a schedule"
+msgstr ""
+
+msgid "DuoAgentPlatform|%{linkStart}Session%{linkEnd} triggered by a verification check"
+msgstr ""
+
+msgid "DuoAgentPlatform|%{linkStart}Session%{linkEnd} triggered by another session"
 msgstr ""
 
 msgid "DuoAgentPlatform|%{linkStart}What are flows?%{linkEnd}"
@@ -33777,6 +33810,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Failed to fetch flow types"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Failed to fetch run statistics."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Failed to fetch triggers"
 msgstr ""
 
@@ -33891,6 +33927,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|List files"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Median duration"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Modify plan"
 msgstr ""
 
@@ -33999,10 +34038,16 @@ msgstr ""
 msgid "DuoAgentsPlatform|Run only when the work item changes to one of the selected statuses. Leave empty to run on any status change."
 msgstr ""
 
+msgid "DuoAgentsPlatform|Run volume, last 30 days"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Run when"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Run when something happens in the project."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Runs"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Save changes"
@@ -34128,6 +34173,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Status changed to %{statusNames}"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Success rate"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Summarize the failing jobs."
 msgstr ""
 
@@ -34156,6 +34204,9 @@ msgid "DuoAgentsPlatform|The trigger could not be created. Try again."
 msgstr ""
 
 msgid "DuoAgentsPlatform|The trigger could not be updated. Try again."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Total runs"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Trigger actions"
@@ -35236,46 +35287,13 @@ msgstr ""
 msgid "DuoProDiscover|Write secure code faster and save time with Code Suggestions in more than 20 languages, available in your favorite IDE."
 msgstr ""
 
-msgid "DuoProTrial|Chat within the IDE"
-msgstr ""
-
-msgid "DuoProTrial|Code Explanation"
-msgstr ""
-
-msgid "DuoProTrial|Code Refactoring"
-msgstr ""
-
-msgid "DuoProTrial|Code completion and code generation with Code Suggestions"
-msgstr ""
-
-msgid "DuoProTrial|GitLab Duo Pro is designed to make teams more efficient throughout the software development lifecycle with:"
-msgstr ""
-
-msgid "DuoProTrial|GitLab Duo Pro is only available for purchase for Premium and Ultimate users."
-msgstr ""
-
-msgid "DuoProTrial|Organizational user controls"
-msgstr ""
-
 msgid "DuoProTrial|Sign in with a different account"
-msgstr ""
-
-msgid "DuoProTrial|Start your free GitLab Duo Pro trial"
-msgstr ""
-
-msgid "DuoProTrial|Test Generation"
 msgstr ""
 
 msgid "DuoProTrial|To start a GitLab Duo trial, you must have the Owner role of a top-level group that has an active subscription or trial."
 msgstr ""
 
-msgid "DuoProTrial|We just need some additional information to activate your trial."
-msgstr ""
-
 msgid "DuoProTrial|You do not have access to trial GitLab Duo"
-msgstr ""
-
-msgid "DuoProTrial|You have successfully started a Duo Pro trial that will expire on %{exp_date}. To give members access to new GitLab Duo Pro features, %{assign_link_start}assign them%{assign_link_end} to GitLab Duo Pro seats."
 msgstr ""
 
 msgid "DuoSAST|Turn on SAST false positive detection"
@@ -51559,6 +51577,9 @@ msgstr ""
 msgid "Manual Variables"
 msgstr ""
 
+msgid "ManualVariables|The variables for this pipeline are unavailable because the pipeline variables file is missing."
+msgstr ""
+
 msgid "ManualVariables|There are no manually-specified variables for this pipeline"
 msgstr ""
 
@@ -65014,6 +65035,18 @@ msgid "Policy project doesn't exist"
 msgstr ""
 
 msgid "Policy store"
+msgstr ""
+
+msgid "PolicyEnforcedSetting|Also governed by %{policyNames}."
+msgstr ""
+
+msgid "PolicyEnforcedSetting|Setting managed by policy"
+msgstr ""
+
+msgid "PolicyEnforcedSetting|This setting does not comply with the policy %{policyName}."
+msgstr ""
+
+msgid "PolicyEnforcedSetting|This setting is managed by the policy %{policyName} and cannot be changed here."
 msgstr ""
 
 msgid "PolicyRuleMultiSelect|%{firstLabel} %{moreLabel}"
@@ -79760,6 +79793,9 @@ msgstr ""
 msgid "SecurityProfiles|Apply profile to enable"
 msgstr ""
 
+msgid "SecurityProfiles|Automated Triage and Remediation"
+msgstr ""
+
 msgid "SecurityProfiles|Awaiting first pipeline"
 msgstr ""
 
@@ -79845,6 +79881,9 @@ msgstr ""
 msgid "SecurityProfiles|Only a project maintainer or owner can apply or disable profiles."
 msgstr ""
 
+msgid "SecurityProfiles|Opens fix merge requests, flags likely false positives, and adds risk context across code, dependencies, and secrets."
+msgstr ""
+
 msgid "SecurityProfiles|Pipeline job: #%{jobId}"
 msgstr ""
 
@@ -79924,6 +79963,9 @@ msgid "SecurityProfiles|View job #%{jobId}"
 msgstr ""
 
 msgid "SecurityProfiles|What are configuration profiles?"
+msgstr ""
+
+msgid "SecurityProfiles|What is Automated Triage and Remediation?"
 msgstr ""
 
 msgid "SecurityProfiles|What is SAST?"
@@ -84075,9 +84117,6 @@ msgid "Start a Free Ultimate Trial"
 msgstr ""
 
 msgid "Start a review"
-msgstr ""
-
-msgid "Start a trial"
 msgstr ""
 
 msgid "Start another thread"

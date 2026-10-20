@@ -109,6 +109,12 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteAttachmentsImporter, feature_
       let(:record) { create(:release, project: project, description: text) }
 
       it_behaves_like 'updates record description'
+
+      it 'deletes each downloaded attachment' do
+        expect(downloader_stub).to receive(:delete).exactly(4).times
+
+        importer.execute
+      end
     end
 
     context 'when importing issue attachments' do
@@ -201,9 +207,28 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteAttachmentsImporter, feature_
 
         it 'keeps the original link and does not upload the String' do
           expect(UploadService).not_to receive(:new)
+          expect(downloader_stub).to receive(:delete)
 
           expect { importer.execute }.not_to raise_error
           expect(record.reload.note).to eq(text)
+        end
+      end
+
+      context 'when the downloader fails to initialize' do
+        let(:text) { "![img](#{user_attachment_url})" }
+        let(:record) { create(:note, project: project, note: text) }
+        let(:download_error) do
+          Gitlab::GithubImport::AttachmentsDownloader::DownloadError.new('Invalid attachment URL')
+        end
+
+        before do
+          allow(Gitlab::GithubImport::AttachmentsDownloader).to receive(:new)
+            .with(user_attachment_url, options: options, web_endpoint: web_endpoint)
+            .and_raise(download_error)
+        end
+
+        it 'raises the original error' do
+          expect { importer.execute }.to raise_error(download_error)
         end
       end
 
@@ -329,7 +354,7 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteAttachmentsImporter, feature_
             allow(FileUtils).to receive(:mv).and_return(true)
 
             allow(File).to receive(:open).with(
-              a_string_matching(/\.mov/), 'rb').and_return(tmp_stub_video_with_ext)
+              a_string_matching(/\.mov/), 'rb').and_yield(tmp_stub_video_with_ext)
 
             allow(UploadService).to receive_message_chain(:new, :execute).and_return(uploader_hash)
 
@@ -341,6 +366,8 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteAttachmentsImporter, feature_
             expect(importer).to receive(:update_ghe_video_path).with(tmp_stub_video).at_least(:once).and_call_original
 
             importer.execute
+
+            expect(FileUtils).to have_received(:mv).with(tmp_stub_video.path, "#{tmp_stub_video.path}.mov")
           end
 
           it 'changes standalone attachment link to correct markdown' do
@@ -380,7 +407,7 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteAttachmentsImporter, feature_
             allow(FileUtils).to receive(:mv).and_return(true)
 
             allow(File).to receive(:open).with(
-              a_string_matching(/\.mp4/), 'rb').and_return(tmp_stub_video_with_ext)
+              a_string_matching(/\.mp4/), 'rb').and_yield(tmp_stub_video_with_ext)
 
             allow(UploadService).to receive_message_chain(:new, :execute).and_return(uploader_hash)
 
@@ -392,6 +419,8 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteAttachmentsImporter, feature_
             expect(importer).to receive(:update_ghe_video_path).with(tmp_stub_video).at_least(:once).and_call_original
 
             importer.execute
+
+            expect(FileUtils).to have_received(:mv).with(tmp_stub_video.path, "#{tmp_stub_video.path}.mp4")
           end
 
           it 'changes standalone attachment link to correct markdown' do
@@ -431,7 +460,7 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteAttachmentsImporter, feature_
             allow(FileUtils).to receive(:mv).and_return(true)
 
             allow(File).to receive(:open).with(
-              a_string_matching(/\.webm/), 'rb').and_return(tmp_stub_video_with_ext)
+              a_string_matching(/\.webm/), 'rb').and_yield(tmp_stub_video_with_ext)
 
             allow(UploadService).to receive_message_chain(:new, :execute).and_return(uploader_hash)
 
@@ -443,6 +472,8 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteAttachmentsImporter, feature_
             expect(importer).to receive(:update_ghe_video_path).with(tmp_stub_video).at_least(:once).and_call_original
 
             importer.execute
+
+            expect(FileUtils).to have_received(:mv).with(tmp_stub_video.path, "#{tmp_stub_video.path}.webm")
           end
 
           it 'changes standalone attachment link to correct markdown' do
@@ -481,9 +512,6 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteAttachmentsImporter, feature_
             allow(Mime::Type).to receive(:lookup).with('video/avi').and_return(mime_type_double)
             allow(FileUtils).to receive(:mv).and_return(true)
 
-            allow(File).to receive(:open).with(
-              a_string_matching(/\.avi/), 'rb').and_return(tmp_stub_video_with_ext)
-
             allow(UploadService).to receive_message_chain(:new, :execute).and_return(uploader_hash)
 
             allow(client).to receive_message_chain(:octokit, :access_token).and_return(access_token)
@@ -500,6 +528,33 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteAttachmentsImporter, feature_
             importer.execute
             record.reload
             expect(record.note).to include("/uploads/test-secret/video")
+          end
+        end
+
+        context 'when the attachment has no extension and is not a video' do
+          let(:text) { "![img](#{ghe_image_url})" }
+          let(:record) { create(:note, project: project, note: text) }
+          let(:tmp_stub_file) { Tempfile.create('image-attachment') }
+
+          before do
+            allow(Gitlab::GithubImport::AttachmentsDownloader).to receive(:new)
+              .with(ghe_image_url, options: options, web_endpoint: web_endpoint)
+              .and_return(downloader_stub)
+            allow(downloader_stub).to receive(:perform).and_return(tmp_stub_file)
+            allow(downloader_stub).to receive(:delete)
+
+            allow(Marcel::MimeType).to receive(:for).with(Pathname.new(tmp_stub_file.path)).and_return('image/png')
+            allow(FileUtils).to receive(:mv)
+
+            allow(UploadService).to receive_message_chain(:new, :execute)
+              .and_return({ url: '/uploads/test-secret/image-attachment' })
+          end
+
+          it 'uploads the file from its original path without renaming it' do
+            importer.execute
+
+            expect(FileUtils).not_to have_received(:mv)
+            expect(record.reload.note).to eq('![img](/uploads/test-secret/image-attachment)')
           end
         end
         # rubocop:enable RSpec/MultipleMemoizedHelpers

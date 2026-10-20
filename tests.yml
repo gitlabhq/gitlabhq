@@ -356,6 +356,16 @@ mapping:
   - source: '(?<prefix>ee/)?lib/sidebars/(?<rest>.+)\.rb'
     test: '%{prefix}spec/features/**/{navbar,sidebar}_spec.rb'
 
+  # The Feature catalog drift spec compares the CE catalog with the group and project sidebars,
+  # whose tiers come from each licensed feature's plan
+  - source:
+      - 'lib/onboarding/feature_library/catalog(/.+)?\.rb'
+      - '(ee/)?lib/(ee/)?sidebars/(groups|projects)/.+\.rb'
+      - 'ee/app/models/gitlab_subscriptions/features\.rb'
+      - 'lib/sidebars/menu_item\.rb'
+      - 'ee/lib/ee/sidebars/menu\.rb'
+    test: 'ee/spec/lib/onboarding/feature_library/catalog_drift_spec.rb'
+
   # See https://gitlab.com/gitlab-org/gitlab/-/issues/466068#note_2131393513
   - source: 'ee/app/policies/ee/group_policy\.rb'
     test: 'ee/spec/features/groups/groups_security_credentials_spec.rb'
@@ -446,10 +456,6 @@ mapping:
       - 'ee/spec/features/gitlab_subscriptions/trials/creation_*_spec.rb'
       - ee/spec/features/gitlab_subscriptions/trials/access_denied_spec.rb
       - ee/spec/features/trials/lead_creation_form_validation_spec.rb
-
-  # duo pro trials
-  - source: 'ee/app/controllers/gitlab_subscriptions/trials/duo_pro_controller\.rb'
-    test: 'ee/spec/features/gitlab_subscriptions/trials/duo_pro/*_spec.rb'
 
   # duo enterprise trials
   - source: 'ee/app/controllers/gitlab_subscriptions/trials/duo_enterprise_controller\.rb'

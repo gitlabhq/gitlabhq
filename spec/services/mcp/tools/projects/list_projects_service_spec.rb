@@ -17,7 +17,9 @@ RSpec.describe Mcp::Tools::Projects::ListProjectsService, feature_category: :mcp
     end
 
     it 'is marked read-only' do
-      expect(described_class.version_metadata('0.1.0')[:annotations]).to eq({ readOnlyHint: true })
+      expect(described_class.version_metadata('0.1.0')[:annotations]).to eq(
+        { title: 'List projects', readOnlyHint: true, idempotentHint: true, openWorldHint: false }
+      )
     end
 
     it 'locks the description' do

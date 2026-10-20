@@ -15,6 +15,7 @@ import {
   VISIBILITY_LEVEL_PUBLIC_INTEGER,
 } from '~/visibility_level/constants';
 import ConfirmDanger from '~/vue_shared/components/confirm_danger/confirm_danger.vue';
+import PolicyEnforcedSetting from '~/vue_shared/components/settings/policy_enforced_setting.vue';
 
 const defaultProps = {
   currentSettings: {
@@ -238,6 +239,55 @@ describe('Settings Panel', () => {
       });
 
       expect(findRequestAccessEnabledInput().exists()).toBe(false);
+    });
+
+    describe('request access policy enforcement', () => {
+      const enforcement = {
+        mode: 'enforce',
+        policy: { name: 'Lock request access', webPath: '/groups/acme/-/security/policy_store/7' },
+        message: null,
+      };
+
+      const findRequestAccessCheckbox = () =>
+        wrapper.findComponent(PolicyEnforcedSetting).findComponent(GlFormCheckbox);
+
+      it('passes the request access rows to the wrapper', () => {
+        wrapper = mountComponent({
+          currentSettings: { visibilityLevel: VISIBILITY_LEVEL_INTERNAL_INTEGER },
+          requestAccessEnforcements: [enforcement],
+        });
+
+        expect(wrapper.findComponent(PolicyEnforcedSetting).props('enforcements')).toEqual([
+          enforcement,
+        ]);
+      });
+
+      it('disables the checkbox when a policy enforces the setting and the flag is on', () => {
+        wrapper = mountComponent({
+          currentSettings: { visibilityLevel: VISIBILITY_LEVEL_INTERNAL_INTEGER },
+          requestAccessEnforcements: [enforcement],
+          glFeatures: { policyStoreSettingEnforcement: true },
+          stubs: { GlCard, PolicyEnforcedSetting },
+        });
+
+        expect(findRequestAccessCheckbox().props('disabled')).toBe(true);
+        expect(wrapper.findByTestId('policy-enforced-setting-lock').exists()).toBe(true);
+        expect(
+          wrapper.find(`#${findRequestAccessCheckbox().attributes('aria-describedby')}`).exists(),
+        ).toBe(true);
+        expect(wrapper.find('label button').exists()).toBe(false);
+      });
+
+      it('keeps the checkbox enabled when the flag is off', () => {
+        wrapper = mountComponent({
+          currentSettings: { visibilityLevel: VISIBILITY_LEVEL_INTERNAL_INTEGER },
+          requestAccessEnforcements: [enforcement],
+          stubs: { GlCard, PolicyEnforcedSetting },
+        });
+
+        expect(findRequestAccessCheckbox().props('disabled')).toBe(false);
+        expect(findRequestAccessCheckbox().attributes('aria-describedby')).toBeUndefined();
+      });
     });
 
     it('does not require confirmation if the visibility is reduced', async () => {

@@ -61,6 +61,7 @@ describe('PipelineStageDropdown', () => {
   const findCiIcon = () => wrapper.findComponent(CiIcon);
   const findDropdownButton = () => wrapper.findComponent(GlButton);
   const findDropdownGroupJobs = () => wrapper.findComponentByTestId('passed-jobs');
+  const findFailedJobsGroup = () => wrapper.findComponentByTestId('failed-jobs');
   const findJobDropdownItems = () => wrapper.findAllComponents(JobDropdownItem);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findStageDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
@@ -228,6 +229,24 @@ describe('PipelineStageDropdown', () => {
 
     it('renders failed jobs title', () => {
       expect(wrapper.findByText('Failed jobs').exists()).toBe(true);
+    });
+
+    it('passes a non-null group to the failed jobs group', () => {
+      expect(findFailedJobsGroup().props('group')).toEqual({
+        name: 'Failed jobs',
+        items: [{ text: 'test_job_2' }],
+      });
+    });
+
+    it('removes the failed jobs group when the failed job is retried', async () => {
+      mockSubscription.next({
+        data: { ciStageUpdated: { ...stageJobUpdated, name: 'test_job_2' } },
+      });
+      await waitForPromises();
+
+      expect(findFailedJobsGroup().exists()).toBe(false);
+      expect(findDropdownGroupJobs().props('bordered')).toBe(false);
+      expect(findJobDropdownItems()).toHaveLength(2);
     });
 
     it('renders divider', () => {

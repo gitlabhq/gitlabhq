@@ -17,7 +17,10 @@ module Mcp
           required: []
         },
         annotations: {
-          readOnlyHint: true
+          title: 'Get MCP server version',
+          readOnlyHint: true,
+          idempotentHint: true,
+          openWorldHint: false
         }
       }
 

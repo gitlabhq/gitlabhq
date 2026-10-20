@@ -229,5 +229,78 @@ RSpec.describe 'Query', feature_category: :shared do
         end
       end
     end
+
+    context 'with the pipeline mini graph stage jobs query' do
+      let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+      let_it_be(:stage) { create(:ci_stage, pipeline: pipeline, name: 'test') }
+
+      let(:query) do
+        get_graphql_query_as_string('ci/pipeline_mini_graph/graphql/queries/get_pipeline_stage_jobs.query.graphql')
+      end
+
+      let(:job_nodes) { graphql_data_at(:ci_pipeline_stage, :jobs, :nodes) }
+
+      def create_jobs
+        create(:ci_build, :manual, ci_stage: stage, pipeline: pipeline)
+        create(:ci_bridge, :success, ci_stage: stage, pipeline: pipeline)
+        create(:generic_commit_status, :success, ci_stage: stage, pipeline: pipeline)
+      end
+
+      def post_with_legacy_pat
+        post_graphql(query, current_user: create(:user, developer_of: project), variables: { id: stage.to_global_id })
+      end
+
+      def post_with_granular_pat(permissions)
+        assignables = permissions.map { |p| ::Authz::PermissionGroups::Assignable.for_permission(p).first.name }
+        pat = create(:granular_pat, user: create(:user, developer_of: project),
+          boundary: ::Authz::Boundary.for(project), permissions: assignables.uniq)
+
+        post_graphql(query, token: { personal_access_token: pat }, variables: { id: stage.to_global_id })
+      end
+
+      before_all do
+        create_jobs
+      end
+
+      it 'logs the number of jobs as connection nodes' do
+        expect(Gitlab::GraphqlLogger).to receive(:info)
+          .with(a_hash_including(Labkit::Fields::GRAPHQL_CONNECTION_NODES => 3))
+
+        post_with_legacy_pat
+
+        expect(job_nodes.size).to eq(3)
+      end
+
+      it 'does not run more queries for more jobs' do
+        post_with_legacy_pat
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) { post_with_legacy_pat }
+
+        create_jobs
+
+        expect { post_with_legacy_pat }.not_to exceed_all_query_limit(control)
+        expect(job_nodes.size).to eq(6)
+      end
+
+      context 'with a granular personal access token' do
+        let(:permissions) { %i[read_pipeline_stage read_job] }
+
+        it 'does not run more queries for more jobs' do
+          post_with_granular_pat(permissions)
+          control = ActiveRecord::QueryRecorder.new(skip_cached: false) { post_with_granular_pat(permissions) }
+
+          create_jobs
+
+          expect { post_with_granular_pat(permissions) }.not_to exceed_all_query_limit(control)
+          expect(job_nodes.size).to eq(6)
+        end
+
+        it 'returns no jobs when the token cannot read jobs' do
+          post_with_granular_pat(%i[read_pipeline_stage])
+
+          expect(graphql_data_at(:ci_pipeline_stage, :id)).to eq(stage.to_global_id.to_s)
+          expect(job_nodes).to be_empty
+        end
+      end
+    end
   end
 end

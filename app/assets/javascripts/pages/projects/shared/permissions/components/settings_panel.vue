@@ -11,6 +11,7 @@ import {
 } from '@gitlab/ui';
 import SecretManagerSettings from 'ee_component/pages/projects/shared/permissions/secrets_manager/secrets_manager_settings.vue';
 import ConfirmDanger from '~/vue_shared/components/confirm_danger/confirm_danger.vue';
+import PolicyEnforcedSetting from '~/vue_shared/components/settings/policy_enforced_setting.vue';
 import settingsMixin from 'ee_else_ce/pages/projects/shared/permissions/mixins/settings_pannel_mixin';
 import { __, s__ } from '~/locale';
 import {
@@ -133,6 +134,7 @@ export default {
     GlFormSelect,
     GlToggle,
     ConfirmDanger,
+    PolicyEnforcedSetting,
     SecretManagerSettings,
     BotAccessSettings,
     OtherProjectSettings: defineAsyncComponent(
@@ -332,6 +334,11 @@ export default {
       type: Number,
       required: false,
       default: null,
+    },
+    requestAccessEnforcements: {
+      type: Array,
+      required: false,
+      default: () => [],
     },
   },
   emits: ['confirm'],
@@ -587,19 +594,27 @@ export default {
         </span>
         <div class="gl-mt-4">
           <strong class="gl-block">{{ s__('ProjectSettings|Additional options') }}</strong>
-          <label
+          <policy-enforced-setting
             v-if="visibilityLevel !== $options.VISIBILITY_LEVEL_PRIVATE_INTEGER"
-            class="gl-mb-0 gl-font-normal gl-leading-28"
+            :enforcements="requestAccessEnforcements"
           >
-            <input
-              :value="requestAccessEnabled"
-              type="hidden"
-              name="project[request_access_enabled]"
-            />
-            <gl-form-checkbox v-model="requestAccessEnabled">
-              {{ s__('ProjectSettings|Users can request access') }}
-            </gl-form-checkbox>
-          </label>
+            <template #default="{ disabled, describedBy }">
+              <label class="gl-mb-0 gl-font-normal gl-leading-28">
+                <input
+                  :value="requestAccessEnabled"
+                  type="hidden"
+                  name="project[request_access_enabled]"
+                />
+                <gl-form-checkbox
+                  v-model="requestAccessEnabled"
+                  :disabled="disabled"
+                  :aria-describedby="describedBy"
+                >
+                  {{ s__('ProjectSettings|Users can request access') }}
+                </gl-form-checkbox>
+              </label>
+            </template>
+          </policy-enforced-setting>
           <label
             v-if="visibilityLevel !== $options.VISIBILITY_LEVEL_PUBLIC_INTEGER"
             class="gl-mb-0 gl-block gl-font-normal gl-leading-28"

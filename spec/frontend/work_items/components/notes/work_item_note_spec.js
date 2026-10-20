@@ -115,6 +115,7 @@ describe('Work Item Note', () => {
     assignees = mockAssignees,
     workItemByIidResponseHandler = workItemResponseHandler,
     provideData = {},
+    props = {},
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemNote, {
       propsData: {
@@ -129,6 +130,7 @@ describe('Work Item Note', () => {
         uploadsPath: '/test-project-path/uploads',
         autocompleteDataSources: {},
         assignees,
+        ...props,
       },
       provide: provideData,
       stubs: {
@@ -156,6 +158,52 @@ describe('Work Item Note', () => {
       ]),
     });
   };
+
+  describe('discussion resolution', () => {
+    it.each`
+      isFirstNote | isDiscussionResolvable | hasReplies | canResolve
+      ${true}     | ${true}                | ${false}   | ${true}
+      ${true}     | ${true}                | ${true}    | ${true}
+      ${true}     | ${false}               | ${false}   | ${false}
+      ${true}     | ${false}               | ${true}    | ${false}
+      ${false}    | ${true}                | ${false}   | ${false}
+      ${false}    | ${true}                | ${true}    | ${false}
+    `(
+      'passes canResolve=$canResolve for first note=$isFirstNote, resolvable=$isDiscussionResolvable, replies=$hasReplies',
+      ({ isFirstNote, isDiscussionResolvable, hasReplies, canResolve }) => {
+        createComponent({ isFirstNote, props: { isDiscussionResolvable, hasReplies } });
+
+        expect(findNoteActions().props('canResolve')).toBe(canResolve);
+      },
+    );
+
+    describe.each([false, true])(
+      'when a single-comment discussion is resolved=%s',
+      (isResolved) => {
+        beforeEach(() => {
+          createComponent({
+            isFirstNote: true,
+            props: {
+              isDiscussionResolvable: true,
+              isDiscussionResolved: isResolved,
+              hasReplies: false,
+            },
+          });
+        });
+
+        it('keeps the resolution action available and forwards the toggle event', () => {
+          expect(findNoteActions().props()).toMatchObject({
+            canResolve: true,
+            isResolved,
+          });
+
+          findNoteActions().vm.$emit('resolve');
+
+          expect(wrapper.emitted('resolve')).toEqual([[]]);
+        });
+      },
+    );
+  });
 
   describe('when editing', () => {
     beforeEach(() => {
@@ -737,8 +785,8 @@ end`;
       sessionId: 'gid://gitlab/Ai::DuoWorkflows::Workflow/42',
       agentName: 'Developer Agent',
       agentCatalogWebPath: '/-/ai/catalog/agents/3',
-      initiatorType: 'USER',
-      initiator: { label: '@nokafor', webPath: '/nokafor' },
+      triggerSource: 'HUMAN',
+      user: { id: 'gid://gitlab/User/7', username: 'nokafor', webPath: '/nokafor' },
       userPermissions: { readDuoWorkflow: true },
     };
 
@@ -814,8 +862,8 @@ end`;
           sessionId: 'gid://gitlab/Ai::DuoWorkflows::Workflow/42',
           agentName: 'Developer Agent',
           agentCatalogWebPath: '/-/ai/catalog/agents/3',
-          initiatorType: 'USER',
-          initiator: { label: '@nokafor', webPath: '/nokafor' },
+          triggerSource: 'HUMAN',
+          user: { id: 'gid://gitlab/User/7', username: 'nokafor', webPath: '/nokafor' },
           userPermissions: { readDuoWorkflow: true },
         });
       });

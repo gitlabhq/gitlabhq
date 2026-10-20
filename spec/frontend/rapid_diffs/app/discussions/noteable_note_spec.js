@@ -521,8 +521,8 @@ describe('NoteableNote', () => {
       session_id: 'gid://gitlab/Ai::DuoWorkflows::Workflow/42',
       agent_name: 'Developer Agent',
       agent_catalog_web_path: '/-/ai/catalog/agents/3',
-      initiator_type: 'USER',
-      initiator: { label: '@nokafor', web_path: '/nokafor' },
+      trigger_source: 'HUMAN',
+      user: { id: 'gid://gitlab/User/7', username: 'nokafor', web_path: '/nokafor' },
       user_permissions: { read_duo_workflow: true },
     };
 
@@ -573,8 +573,8 @@ describe('NoteableNote', () => {
           sessionId: 'gid://gitlab/Ai::DuoWorkflows::Workflow/42',
           agentName: 'Developer Agent',
           agentCatalogWebPath: '/-/ai/catalog/agents/3',
-          initiatorType: 'USER',
-          initiator: { label: '@nokafor', webPath: '/nokafor' },
+          triggerSource: 'HUMAN',
+          user: { id: 'gid://gitlab/User/7', username: 'nokafor', webPath: '/nokafor' },
           userPermissions: { readDuoWorkflow: true },
         });
       });

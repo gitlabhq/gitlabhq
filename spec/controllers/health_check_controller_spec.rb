@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe HealthCheckController, :request_store, :use_clean_rails_memory_store_caching do
+RSpec.describe HealthCheckController, :request_store, :use_clean_rails_memory_store_caching, feature_category: :error_budgets do
   include StubENV
 
   let(:xml_response) { Hash.from_xml(response.body)['hash'] }

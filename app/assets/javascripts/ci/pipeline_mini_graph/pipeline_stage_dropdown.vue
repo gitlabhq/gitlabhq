@@ -92,6 +92,13 @@ export default {
     failedJobs() {
       return this.stageJobs.filter((job) => job.detailedStatus.group === FAILED_STATUS);
     },
+    failedJobsGroup() {
+      // Jobs render through the default slot; `items` only satisfies the group prop validator.
+      return {
+        name: s__('Pipelines|Failed jobs'),
+        items: this.failedJobs.map(({ name }) => ({ text: name })),
+      };
+    },
     hasFailedJobs() {
       return Boolean(this.failedJobs.length);
     },
@@ -240,12 +247,13 @@ export default {
         </gl-disclosure-dropdown-group>
       </template>
       <template v-else>
-        <gl-disclosure-dropdown-group v-if="hasFailedJobs" class="gl-text-left">
-          <template #group-label
-            ><span class="gl-inline-block gl-w-full gl-text-left">{{
-              s__('Pipelines|Failed jobs')
-            }}</span></template
-          >
+        <gl-disclosure-dropdown-group
+          v-if="hasFailedJobs"
+          key="failed-jobs"
+          :group="failedJobsGroup"
+          class="gl-text-left"
+          data-testid="failed-jobs"
+        >
           <job-dropdown-item
             v-for="job in failedJobs"
             :key="job.id"
@@ -255,6 +263,7 @@ export default {
         </gl-disclosure-dropdown-group>
         <gl-disclosure-dropdown-group
           v-if="hasPassedJobs"
+          key="passed-jobs"
           :bordered="hasFailedJobs"
           data-testid="passed-jobs"
         >

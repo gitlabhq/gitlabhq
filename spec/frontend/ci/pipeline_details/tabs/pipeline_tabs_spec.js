@@ -29,6 +29,7 @@ describe('The Pipeline Tabs', () => {
     totalJobCount: 10,
     testsCount: 123,
     manualVariablesCount: 0,
+    manualVariablesFileMissing: false,
     displayPipelineVariables: false,
     canReadVariables: false,
   };
@@ -86,6 +87,18 @@ describe('The Pipeline Tabs', () => {
         createComponent({ displayPipelineVariables: true, canReadVariables: true });
 
         expect(findManualVariablesTab().exists()).toBe(true);
+      });
+
+      it('renders manual variables tab without a badge when the variables file is missing', () => {
+        createComponent({
+          manualVariablesCount: NaN,
+          manualVariablesFileMissing: true,
+          displayPipelineVariables: true,
+          canReadVariables: true,
+        });
+
+        expect(findManualVariablesTab().exists()).toBe(true);
+        expect(findManualVariablesBadge().exists()).toBe(false);
       });
 
       it('does not renders manual variables tab when unauthorized', () => {

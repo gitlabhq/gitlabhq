@@ -13,7 +13,10 @@ module Mcp
         register_version '0.1.0', {
           toolset: :core,
           annotations: {
-            readOnlyHint: true
+            title: 'Search GitLab',
+            readOnlyHint: true,
+            idempotentHint: true,
+            openWorldHint: false
           }
         }
 

@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import EmptyState from './empty_state.vue';
 import VariableTable from './variable_table.vue';
 import getManualVariablesQuery from './graphql/queries/get_manual_variables.query.graphql';
@@ -8,10 +8,11 @@ export default {
   name: 'ManualVariablesApp',
   components: {
     EmptyState,
+    GlAlert,
     GlLoadingIcon,
     VariableTable,
   },
-  inject: ['manualVariablesCount', 'projectPath', 'pipelineIid'],
+  inject: ['manualVariablesCount', 'manualVariablesFileMissing', 'projectPath', 'pipelineIid'],
   apollo: {
     variables: {
       query: getManualVariablesQuery,
@@ -50,7 +51,14 @@ export default {
 
 <template>
   <div>
-    <div v-if="shouldShowManualVariables" class="manual-variables-table">
+    <gl-alert v-if="manualVariablesFileMissing" variant="danger" :dismissible="false">
+      {{
+        s__(
+          'ManualVariables|The variables for this pipeline are unavailable because the pipeline variables file is missing.',
+        )
+      }}
+    </gl-alert>
+    <div v-else-if="shouldShowManualVariables" class="manual-variables-table">
       <gl-loading-icon v-if="loading" />
       <variable-table v-else :variables="variables" />
     </div>

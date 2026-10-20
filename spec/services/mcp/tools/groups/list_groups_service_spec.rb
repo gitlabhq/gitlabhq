@@ -17,7 +17,9 @@ RSpec.describe Mcp::Tools::Groups::ListGroupsService, feature_category: :mcp_ser
     end
 
     it 'is marked read-only' do
-      expect(described_class.version_metadata('0.1.0')[:annotations]).to eq({ readOnlyHint: true })
+      expect(described_class.version_metadata('0.1.0')[:annotations]).to eq(
+        { title: 'List groups', readOnlyHint: true, idempotentHint: true, openWorldHint: false }
+      )
     end
 
     it 'locks the description' do

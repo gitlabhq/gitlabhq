@@ -26,7 +26,7 @@ module Projects
         has_test_report: pipeline.has_test_reports?,
         tests_count: pipeline.accessible_test_report_summary(current_user).total[:count],
         manual_variables_count: manual_variables_count,
-        manual_variables_unavailable: manual_variables_count.nil?.to_s,
+        manual_variables_file_missing: manual_variables_count.nil?.to_s,
         can_read_variables: can?(current_user, :read_pipeline_variable, pipeline).to_s,
         display_pipeline_variables: pipeline.project.ci_display_pipeline_variables?.to_s
       }

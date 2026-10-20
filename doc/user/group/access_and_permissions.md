@@ -118,6 +118,7 @@ list of security implications when accessing GitLab from a disallowed IP address
   GitLab Self-Managed instances should use `gitlab-sshd` with
   [PROXY protocol](../../administration/operations/gitlab_sshd.md#proxy-protocol-support) enabled.
 - IP restrictions apply to Git clone operations performed by CI/CD jobs, except on GitLab.com hosted runners.
+  Git LFS object downloads are always subject to IP restrictions, including on GitLab.com hosted runners.
 - IP restrictions do not apply to runner registration. If a runner outside the allowed ranges
   picks up a job, the job fails with the error
   `This job could not be executed because group IP address restrictions are enabled, and the runner's IP address is not in the allowed range.`
@@ -132,6 +133,11 @@ On GitLab.com, group IP address restrictions do not block [hosted runners for Gi
 The hosted runner infrastructure is included in the GitLab.com
 [globally-allowed IP address ranges](../../administration/settings/visibility_and_access_controls.md#configure-globally-allowed-ip-address-ranges),
 so hosted runners can run jobs for projects in your group without being added to your group's allowlist.
+
+> [!note]
+> Git LFS object downloads are an exception. A job on a hosted runner can clone the repository, but
+> fetching the repository's Git LFS objects fails when group IP address restrictions are enabled.
+> The fix is proposed in [issue 634546](https://gitlab.com/gitlab-org/gitlab/-/issues/634546).
 
 To prevent hosted runners from running jobs for projects in your group,
 [disable instance runners for the group](../../ci/runners/runners_scope.md#disable-instance-runners-for-a-group)

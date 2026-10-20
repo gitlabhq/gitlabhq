@@ -12,8 +12,11 @@ module Mcp
             'discussion thread. Identify the target with url, or with merge_request_iid or work_item_iid ' \
             'plus its project_id or group_id',
           annotations: {
+            title: 'Add comment',
             readOnlyHint: false,
-            destructiveHint: false
+            destructiveHint: false,
+            idempotentHint: false,
+            openWorldHint: false
           },
           input_schema: {
             type: 'object',

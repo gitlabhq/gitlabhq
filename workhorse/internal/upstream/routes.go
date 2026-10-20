@@ -78,6 +78,10 @@ const (
 	apiProjectPattern    = apiPattern + `v4/projects/[^/]+` // API: Projects can be encoded via group%2Fsubgroup%2Fproject
 	apiGroupPattern      = apiPattern + `v4/groups/[^/]+`
 	apiTopicPattern      = apiPattern + `v4/topics`
+	// Path segments can't start with '-' (Gitlab::PathRegex::PATH_START_CHAR), so /-/create/<ref>/dir/uploads doesn't match.
+	// Optional '-/' matches /groups/<path>/-/uploads and /<project>/-/uploads; both also work under /o/<org>/.
+	// /<project>/-/uploads has no Rails route today; keep matching it in case project uploads move under /-/ (gitlab-org/gitlab#407579).
+	uploadsPattern       = `^/([^/-][^/]*/){2,}(-/)?uploads\z`
 	snippetUploadPattern = `^/uploads/personal_snippet`
 	userUploadPattern    = `^/uploads/user`
 	importPattern        = `^/import/`
@@ -681,7 +685,7 @@ func configureRoutes(u *upstream) {
 
 		// Uploads
 		u.route("POST",
-			newRoute(projectPattern+`uploads\z`, "project_uploads", railsBackend), mimeMultipartUploader),
+			newRoute(uploadsPattern, "project_uploads", railsBackend), mimeMultipartUploader),
 		u.route("POST",
 			newRoute(snippetUploadPattern, "personal_snippet_uploads", railsBackend), mimeMultipartUploader),
 		u.route("POST",

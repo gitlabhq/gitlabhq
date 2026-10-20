@@ -32,7 +32,9 @@ RSpec.describe Mcp::Tools::Labels::SearchService, feature_category: :mcp_server 
     end
 
     it 'is annotated read-only with no destructiveHint' do
-      expect(service.annotations).to eq({ readOnlyHint: true })
+      expect(service.annotations).to eq(
+        { title: 'Search labels', readOnlyHint: true, idempotentHint: true, openWorldHint: false }
+      )
     end
   end
 

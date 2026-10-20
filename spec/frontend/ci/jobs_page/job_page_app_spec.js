@@ -153,6 +153,18 @@ describe('Job table app', () => {
       expect(findTable().exists()).toBe(false);
     });
 
+    it('should show the GraphQL error message if the jobs query returns one', async () => {
+      const message = 'Filtering by name is not supported for trigger jobs.';
+      const graphqlErrorHandler = jest.fn().mockResolvedValue({ errors: [{ message }] });
+
+      createComponent({ handler: graphqlErrorHandler, mountFn: mount });
+
+      await waitForPromises();
+
+      expect(findAlert().text()).toBe(message);
+      expect(findTable().exists()).toBe(false);
+    });
+
     it('should show an alert if there is an error fetching the jobs count data', async () => {
       createComponent({ handler: successHandler, countHandler: failedHandler });
 

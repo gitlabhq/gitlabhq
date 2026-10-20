@@ -61153,7 +61153,7 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="project-jobs-kind"></a>`kind` | [`CiJobKind`](#cijobkind) | Filter jobs by kind. |
-| <a id="project-jobs-name"></a>`name` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 17.11. Status: Experiment. Filter jobs by name. |
+| <a id="project-jobs-name"></a>`name` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 17.11. Status: Experiment. Filter jobs by name. Only applies to build jobs. |
 | <a id="project-jobs-pipelineiid"></a>`pipelineIid` | [`String`](#string) | Filter jobs by the internal pipeline ID (iid). |
 | <a id="project-jobs-sources"></a>`sources` {{< icon name="warning-solid" >}} | [`[CiJobSource!]`](#cijobsource) | Introduced in GitLab 17.7. Status: Experiment. Filter jobs by source. |
 | <a id="project-jobs-statuses"></a>`statuses` | [`[CiJobStatus!]`](#cijobstatus) | Filter jobs by status. |
@@ -70592,6 +70592,7 @@ AI features that can be configured through the Duo self-hosted feature settings.
 | <a id="aifeatures-resolve_vulnerability"></a>`RESOLVE_VULNERABILITY` | Resolve vulnerability feature setting. |
 | <a id="aifeatures-review_merge_request"></a>`REVIEW_MERGE_REQUEST` | Review merge request feature setting. |
 | <a id="aifeatures-review_merge_request_dap"></a>`REVIEW_MERGE_REQUEST_DAP` | Review merge request dap feature setting. |
+| <a id="aifeatures-review_merge_request_dap_deep"></a>`REVIEW_MERGE_REQUEST_DAP_DEEP` | Review merge request dap deep feature setting. |
 | <a id="aifeatures-risk_classification"></a>`RISK_CLASSIFICATION` | Risk classification feature setting. |
 | <a id="aifeatures-sast_vulnerability_fp_detection"></a>`SAST_VULNERABILITY_FP_DETECTION` | Sast vulnerability fp detection feature setting. |
 | <a id="aifeatures-sast_vulnerability_resolution"></a>`SAST_VULNERABILITY_RESOLUTION` | Sast vulnerability resolution feature setting. |
@@ -70748,6 +70749,7 @@ AI features that can be configured through the Model Selection feature settings.
 | <a id="aimodelselectionfeatures-resolve_vulnerability"></a>`RESOLVE_VULNERABILITY` | Resolve vulnerability feature setting. |
 | <a id="aimodelselectionfeatures-review_merge_request"></a>`REVIEW_MERGE_REQUEST` | Review merge request feature setting. |
 | <a id="aimodelselectionfeatures-review_merge_request_dap"></a>`REVIEW_MERGE_REQUEST_DAP` | Review merge request dap feature setting. |
+| <a id="aimodelselectionfeatures-review_merge_request_dap_deep"></a>`REVIEW_MERGE_REQUEST_DAP_DEEP` | Review merge request dap deep feature setting. |
 | <a id="aimodelselectionfeatures-risk_classification"></a>`RISK_CLASSIFICATION` | Risk classification feature setting. |
 | <a id="aimodelselectionfeatures-sast_vulnerability_fp_detection"></a>`SAST_VULNERABILITY_FP_DETECTION` | Sast vulnerability fp detection feature setting. |
 | <a id="aimodelselectionfeatures-sast_vulnerability_resolution"></a>`SAST_VULNERABILITY_RESOLUTION` | Sast vulnerability resolution feature setting. |

@@ -74,16 +74,17 @@ module QuickActions
     # Similar to `execute` except also tries to extract any quick actions from original_text,
     # and if found removes them from the main list of quick actions.
     def execute_with_original_text(new_text, quick_action_target, only: nil, original_text: nil)
+      # Quick actions already in original_text are not applied again, so only added ones are checked.
+      self.original_commands = original_text ? extractor.extract_commands(original_text, only: only).last : []
+
       sanitized_new_text, new_command_params, execution_messages, command_names = execute(
         new_text, quick_action_target, only: only
       )
 
       if original_text
-        _, original_command_params = self.class.new(
-          container: container,
-          current_user: current_user,
-          params: params
-        ).execute(original_text, quick_action_target, only: only)
+        original_service = self.class.new(container: container, current_user: current_user, params: params)
+        original_service.original_commands = original_commands
+        _, original_command_params = original_service.execute(original_text, quick_action_target, only: only)
 
         new_command_params = (new_command_params.to_a - original_command_params.to_a).to_h if original_command_params
       end
@@ -103,6 +104,10 @@ module QuickActions
       commands = explain_commands(commands)
       [content, commands]
     end
+
+    protected
+
+    attr_accessor :original_commands
 
     private
 
@@ -247,7 +252,7 @@ module QuickActions
     def check_quick_actions_availability(_command_names); end
 
     def extract_updates(commands)
-      check_quick_actions_availability(command_names(commands))
+      check_quick_actions_availability(command_names(commands - Array(original_commands)))
 
       commands.each do |name, arg|
         definition = self.class.definition_by_name(name)

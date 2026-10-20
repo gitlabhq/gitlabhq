@@ -48,6 +48,8 @@ To create a new application for your user:
    - The OAuth 2 Client Secret, accessible by selecting **Copy** in the **Secret** field.
    - The **Renew secret** function. Use this function to generate and copy a new secret for this application. Renewing a secret prevents the existing application from functioning until the credentials are updated.
 
+1. [Configure your client application](#configure-your-client-application).
+
 ## Create a group-owned application
 
 To create a new application for a group:
@@ -62,6 +64,8 @@ To create a new application for a group:
    - The OAuth 2 Client ID in the **Application ID** field.
    - The OAuth 2 Client Secret, accessible by selecting **Copy** in the **Secret** field.
    - The **Renew secret** function. Use this function to generate and copy a new secret for this application. Renewing a secret prevents the existing application from functioning until the credentials are updated.
+
+1. [Configure your client application](#configure-your-client-application).
 
 ## Create an instance-wide application
 
@@ -81,9 +85,27 @@ To create an application for your GitLab instance:
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Applications**.
 1. Select **New application**.
+1. [Configure your client application](#configure-your-client-application).
 
 When creating an application in the **Admin** area, mark it as **trusted**.
 The user authorization step is automatically skipped for this application.
+
+## Configure your client application
+
+After you create an application, configure your client with the application ID,
+the secret, and the following endpoints. Replace `gitlab.example.com` with
+`gitlab.com` or the URL of your GitLab instance.
+
+| Endpoint         | URL                                                           | Use |
+|------------------|---------------------------------------------------------------|-----|
+| Authorization    | `https://gitlab.example.com/oauth/authorize`                  | All applications. |
+| Token            | `https://gitlab.example.com/oauth/token`                      | All applications. |
+| User information | `https://gitlab.example.com/oauth/userinfo`                   | Requires the `openid` scope. |
+| Discovery        | `https://gitlab.example.com/.well-known/openid-configuration` | Clients that support OpenID Connect (OIDC) discovery can read the other endpoints from this URL. |
+
+For more information about OIDC, see [GitLab as OpenID Connect identity provider](openid_connect_provider.md#settings-discovery).
+
+For details about each authorization flow, see [OAuth 2.0 identity provider API](../api/oauth2.md).
 
 ## View all authorized applications
 

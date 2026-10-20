@@ -5261,11 +5261,6 @@
     "acceptsFormat": true
   },
   {
-    "template": "/-/trials/duo_pro",
-    "example": "/-/trials/duo_pro",
-    "acceptsFormat": true
-  },
-  {
     "template": "/-/trials/duo_pro/new",
     "example": "/-/trials/duo_pro/new",
     "acceptsFormat": true
@@ -24549,12 +24544,6 @@
     "example": "/o/foo/-/trials/duo_enterprise/new",
     "acceptsFormat": true,
     "dottedExample": "/o/john.doe/-/trials/duo_enterprise/new"
-  },
-  {
-    "template": "/o/:organization_path/-/trials/duo_pro",
-    "example": "/o/foo/-/trials/duo_pro",
-    "acceptsFormat": true,
-    "dottedExample": "/o/john.doe/-/trials/duo_pro"
   },
   {
     "template": "/o/:organization_path/-/trials/duo_pro/new",

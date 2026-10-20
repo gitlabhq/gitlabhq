@@ -22849,6 +22849,12 @@
               "description": "Risk classification feature setting",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "REVIEW_MERGE_REQUEST_DAP_DEEP",
+              "description": "Review merge request dap deep feature setting",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null
@@ -28434,6 +28440,12 @@
             {
               "name": "RISK_CLASSIFICATION",
               "description": "Risk classification feature setting",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "REVIEW_MERGE_REQUEST_DAP_DEEP",
+              "description": "Review merge request dap deep feature setting",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -344229,7 +344241,7 @@
                 },
                 {
                   "name": "name",
-                  "description": "Filter jobs by name. Introduced in GitLab 17.11: Status: Experiment.",
+                  "description": "Filter jobs by name. Only applies to build jobs. Introduced in GitLab 17.11: Status: Experiment.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",

@@ -6013,6 +6013,12 @@ No changes.
 - [Quarantine flaky expose_job_artifacts_in_mr_spec.rb](https://gitlab.com/gitlab-org/gitlab/-/commit/0131444c50a0135906c1d13ccba129c5d8c695e7) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/233934))
 - [Fix non-auto-correctable Style/NumberedParameters offenses](https://gitlab.com/gitlab-org/gitlab/-/commit/9a3ba532c9715bcdfd07fd54cf434c7fcd256229) by @JonstonChan ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227367))
 
+## 19.0.10 (2026-10-20)
+
+### Changed (1 change)
+
+- [Update gitlab-markup to 2.2.0 and rdoc to 8.1.0](https://gitlab.com/gitlab-org/gitlab/-/commit/28ee38b3bdac21207000669cd03d04c9be7c9fe0) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/262719))
+
 ## 19.0.9 (2026-09-22)
 
 ### Security (6 changes)

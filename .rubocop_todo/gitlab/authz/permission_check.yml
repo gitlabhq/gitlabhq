@@ -663,7 +663,6 @@ Gitlab/Authz/PermissionCheck:
     - 'ee/lib/api/project_push_rule.rb'
     - 'ee/lib/api/protected_environments.rb'
     - 'ee/lib/api/saml_group_links.rb'
-    - 'ee/lib/api/virtual_registries/cleanup/policies.rb'
     - 'ee/lib/api/vulnerabilities.rb'
     - 'ee/lib/bulk_imports/groups/pipelines/iterations_pipeline.rb'
     - 'ee/lib/ee/api/entities/group.rb'

@@ -22,6 +22,73 @@ RSpec.describe Gitlab::GithubImport::AttachmentsDownloader, feature_category: :i
 
         expect(File.exist?(file.path)).to be(true)
       end
+
+      it 'returns a closed file pointing at the downloaded content' do
+        file = downloader.perform
+
+        expect(file).to be_a(File)
+        expect(file).to be_closed
+        expect(File.read(file.path)).to eq(chunk_double.to_s)
+      end
+    end
+
+    context 'when the download raises' do
+      let(:opened_files) { [] }
+
+      before do
+        allow(File).to receive(:open).and_call_original
+        allow(File).to receive(:open).with(anything, 'wb').and_wrap_original do |original, *args, &block|
+          original.call(*args) do |file|
+            opened_files << file
+            block.call(file)
+          end
+        end
+      end
+
+      shared_examples 'closes the file and removes the temp directory' do |error_class|
+        it 'closes the file before removing the temp directory' do
+          expect(downloader).to receive(:delete).and_wrap_original do |original|
+            expect(opened_files.sole).to be_closed
+            original.call
+          end
+
+          expect { downloader.perform }.to raise_error(error_class)
+          expect(Dir.exist?(File.dirname(opened_files.sole.path))).to be(false)
+        end
+      end
+
+      context 'with a non retriable error code' do
+        let(:chunk_double) { instance_double(HTTParty::ResponseFragment, code: 404, http_response: {}) }
+
+        it_behaves_like 'closes the file and removes the temp directory', described_class::NotRetriableError
+      end
+
+      context 'with a retriable error code' do
+        let(:chunk_double) { instance_double(HTTParty::ResponseFragment, code: 500, http_response: {}) }
+
+        it_behaves_like 'closes the file and removes the temp directory', described_class::DownloadError
+      end
+
+      context 'when rate limited' do
+        let(:http_response) { instance_double(Net::HTTPTooManyRequests, :[] => '60') }
+        let(:chunk_double) { instance_double(HTTParty::ResponseFragment, code: 429, http_response: http_response) }
+
+        it_behaves_like 'closes the file and removes the temp directory', Gitlab::GithubImport::RateLimitError
+      end
+
+      context 'when file size exceeds limit' do
+        subject(:downloader) { described_class.new(file_url, file_size_limit: 1.byte) }
+
+        it_behaves_like 'closes the file and removes the temp directory', described_class::DownloadError
+      end
+
+      context 'with an error raised outside the streaming block' do
+        before do
+          allow(Gitlab::HTTP).to receive(:perform_request).and_raise(Errno::ECONNRESET)
+        end
+
+        it_behaves_like 'closes the file and removes the temp directory', Errno::ECONNRESET
+      end
     end
 
     context 'when file shares multiple hard links' do

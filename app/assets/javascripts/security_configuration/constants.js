@@ -159,6 +159,7 @@ export const SCAN_PROFILE_TYPE_SECRET_DETECTION = 'SECRET_DETECTION';
 export const SCAN_PROFILE_TYPE_SAST = 'SAST';
 export const SCAN_PROFILE_TYPE_DEPENDENCY_SCANNING = 'DEPENDENCY_SCANNING';
 export const SCAN_PROFILE_TYPE_BUSINESS_LOGIC = 'BUSINESS_LOGIC';
+export const SCAN_PROFILE_TYPE_TRIAGE_AND_REMEDIATION = 'TRIAGE_AND_REMEDIATION';
 
 export const SCAN_TRIGGER_DEFINITIONS = {
   GIT_PUSH_EVENT: {
@@ -255,6 +256,15 @@ export const SCAN_PROFILE_CATEGORIES = {
       'SecurityProfiles|Uses an AI agent to find business logic vulnerabilities in your source code, like missing authorization, broken object-level access, and mass assignment. %{linkStart}Learn more%{linkEnd}.',
     ),
     helpLink: helpPagePath('/user/application_security/business_logic_scanning/_index'),
+  },
+  [SCAN_PROFILE_TYPE_TRIAGE_AND_REMEDIATION]: {
+    name: s__('SecurityProfiles|Automated Triage and Remediation'),
+    displayName: s__('SecurityProfiles|Automated Triage and Remediation'),
+    label: 'ATR',
+    helpTitle: s__('SecurityProfiles|What is Automated Triage and Remediation?'),
+    helpDescription: s__(
+      'SecurityProfiles|Opens fix merge requests, flags likely false positives, and adds risk context across code, dependencies, and secrets.',
+    ),
   },
 };
 

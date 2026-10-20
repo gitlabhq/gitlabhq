@@ -8,7 +8,10 @@ module Mcp
           toolset: :wikis,
           description: 'List wiki pages in a GitLab project or group.',
           annotations: {
-            readOnlyHint: true
+            title: 'List wiki pages',
+            readOnlyHint: true,
+            idempotentHint: true,
+            openWorldHint: false
           },
           input_schema: {
             type: 'object',

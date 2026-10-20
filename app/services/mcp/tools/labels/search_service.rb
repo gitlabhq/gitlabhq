@@ -10,7 +10,10 @@ module Mcp
           toolset: :core,
           description: 'Search labels in a GitLab project or group',
           annotations: {
-            readOnlyHint: true
+            title: 'Search labels',
+            readOnlyHint: true,
+            idempotentHint: true,
+            openWorldHint: false
           },
           input_schema: {
             type: 'object',
@@ -35,7 +38,12 @@ module Mcp
 
         register_version '0.2.0', {
           description: 'Search labels in a GitLab project or group by multiple terms',
-          annotations: { readOnlyHint: true },
+          annotations: {
+            title: 'Search labels',
+            readOnlyHint: true,
+            idempotentHint: true,
+            openWorldHint: false
+          },
           toolset: :core,
           input_schema: {
             type: 'object',

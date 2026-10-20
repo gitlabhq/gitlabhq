@@ -1,0 +1,10 @@
+---
+name: policy_store_setting_enforcement
+description: Show when a project setting is governed by a Policy Store settings enforcement policy, disabling it in enforce mode and warning in warn mode
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/631256
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/259197
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/631790
+milestone: '19.6'
+group: group::policy engine
+type: wip
+default_enabled: false

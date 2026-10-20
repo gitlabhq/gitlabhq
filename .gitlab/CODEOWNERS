@@ -813,6 +813,9 @@ Dangerfile
 /spec/models/onboarding/
 /app/services/onboarding/
 /spec/services/onboarding/
+/lib/onboarding/feature_library/
+/spec/lib/onboarding/feature_library/
+/ee/spec/lib/onboarding/feature_library/
 /app/controllers/registrations_controller.rb
 /spec/controllers/registrations_controller_spec.rb
 /app/controllers/registrations/

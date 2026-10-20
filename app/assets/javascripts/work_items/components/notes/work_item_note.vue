@@ -212,7 +212,7 @@ export default {
       return this.canReply && this.isFirstNote;
     },
     canResolve() {
-      return this.isDiscussionResolvable && this.isFirstNote && this.hasReplies;
+      return this.isDiscussionResolvable && this.isFirstNote;
     },
     noteHeaderClass() {
       return {

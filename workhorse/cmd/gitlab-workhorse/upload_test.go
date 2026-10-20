@@ -250,6 +250,55 @@ func TestAcceleratedUpload(t *testing.T) {
 	}
 }
 
+func TestUploadsRouteAuthorization(t *testing.T) {
+	tests := []struct {
+		resource      string
+		attachmentURL bool // true: authorized via <resource>/authorize
+	}{
+		{"/group/project/uploads", true},
+		{"/my-group/my-project/uploads", true},
+		{"/group/subgroup/project/uploads", true},
+		{"/groups/group/-/uploads", true},
+		{"/groups/group/subgroup/-/uploads", true},
+		{"/o/organization/group/project/uploads", true},
+		{"/o/organization/group/subgroup/project/uploads", true},
+		{"/o/organization/groups/group/-/uploads", true},
+		{"/o/organization/groups/group/subgroup/-/uploads", true},
+		{"/o/org-/my-group-/my-project-/uploads", true},
+		{"/o/org-/groups/my-group-/-/uploads", true},
+		{"/group/project/-/create/main/directory/uploads", false},
+		{"/group/project/-/create_dir/main/directory/uploads", false},
+		{"/group/project/-/blob/main/directory/uploads", false},
+		{"/group/subgroup/project/-/create/main/directory/uploads", false},
+		{"/o/organization/group/project/-/create/main/directory/uploads", false},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.resource, func(t *testing.T) {
+			authorized := false
+			ts := signedUploadTestServer(t, func(r *http.Request) {
+				authorized = true
+				want := authorizeUploadPath
+				if tt.attachmentURL {
+					want = tt.resource + authorizeSuffix
+				}
+				assert.Equal(t, want, r.URL.Path)
+			}, nil)
+			ws := startWorkhorseServer(t, ts.URL)
+
+			reqBody, contentType, err := multipartBodyWithFile()
+			require.NoError(t, err)
+
+			resp, err := http.Post(ws.URL+tt.resource, contentType, reqBody)
+			require.NoError(t, err)
+			defer resp.Body.Close()
+
+			require.True(t, authorized)
+			require.Equal(t, http.StatusOK, resp.StatusCode)
+		})
+	}
+}
+
 func verifyUploadFields(t *testing.T, fields map[string]string, hashSet string) {
 	t.Helper()
 

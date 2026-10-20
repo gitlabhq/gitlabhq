@@ -44,6 +44,7 @@ export default {
     'totalJobCount',
     'testsCount',
     'manualVariablesCount',
+    'manualVariablesFileMissing',
     'displayPipelineVariables',
     'canReadVariables',
   ],
@@ -59,7 +60,7 @@ export default {
     },
     manualVariablesEnabled() {
       return (
-        isNumeric(this.manualVariablesCount) &&
+        (isNumeric(this.manualVariablesCount) || this.manualVariablesFileMissing) &&
         this.displayPipelineVariables &&
         this.canReadVariables
       );
@@ -163,7 +164,9 @@ export default {
       >
         <template #title>
           <span class="gl-mr-2">{{ $options.i18n.tabs.manualVariables }}</span>
-          <gl-badge data-testid="manual-variables-counter">{{ manualVariablesCount }}</gl-badge>
+          <gl-badge v-if="!manualVariablesFileMissing" data-testid="manual-variables-counter">{{
+            manualVariablesCount
+          }}</gl-badge>
           <gl-badge
             v-if="!isDismissedNewTab"
             data-testid="manual-variables-new-badge"

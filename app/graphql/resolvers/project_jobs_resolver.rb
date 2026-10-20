@@ -21,7 +21,7 @@ module Resolvers
     argument :name, GraphQL::Types::String,
       required: false,
       experiment: { milestone: '17.11' },
-      description: 'Filter jobs by name.'
+      description: 'Filter jobs by name. Only applies to build jobs.'
 
     argument :sources, [::Types::Ci::JobSourceEnum],
       required: false,
@@ -37,6 +37,14 @@ module Resolvers
       description: 'Filter jobs by the internal pipeline ID (iid).'
 
     alias_method :project, :object
+
+    def ready?(**args)
+      if args[:name].to_s.present? && args[:kind] == ::Ci::Bridge
+        raise Gitlab::Graphql::Errors::ArgumentError, 'Filtering by name is not supported for trigger jobs.'
+      end
+
+      super
+    end
 
     def resolve_with_lookahead(**args)
       @kind = args[:kind]

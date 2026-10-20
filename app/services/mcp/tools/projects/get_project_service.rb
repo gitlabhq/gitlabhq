@@ -24,7 +24,10 @@ module Mcp
             }
           },
           annotations: {
-            readOnlyHint: true
+            title: 'Get project',
+            readOnlyHint: true,
+            idempotentHint: true,
+            openWorldHint: false
           }
         }
 

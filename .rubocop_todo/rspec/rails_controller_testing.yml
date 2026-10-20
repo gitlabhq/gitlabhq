@@ -5,7 +5,6 @@ RSpec/RailsControllerTesting:
     - 'ee/spec/controllers/admin/applications_controller_spec.rb'
     - 'ee/spec/controllers/admin/audit_logs_controller_spec.rb'
     - 'ee/spec/controllers/admin/push_rules_controller_spec.rb'
-    - 'ee/spec/controllers/admin/role_promotion_requests_controller_spec.rb'
     - 'ee/spec/controllers/admin/users_controller_spec.rb'
     - 'ee/spec/controllers/concerns/ee/enforces_admin_authentication_spec.rb'
     - 'ee/spec/controllers/ee/admin/sessions_controller_spec.rb'

@@ -52,16 +52,16 @@ check the [visibility of your pipelines](../pipelines/settings.md#change-which-u
 
 To add an SSH key to your project, add the key as a [file type CI/CD variable](../variables/_index.md#for-a-project):
 
-1. Set **Visibility** to **Visible**.
+1. Set {{< ui text="Visibility" >}} to {{< ui text="CiVariables|Visible" >}}.
 
    > [!note]
-   > The visibility setting must be **Visible** because SSH keys contain whitespace characters,
-   > and **Masked** or **Masked and hidden** variables cannot contain whitespace characters.
+   > The visibility setting must be {{< ui text="CiVariables|Visible" >}} because SSH keys contain whitespace characters,
+   > and {{< ui text="CiVariables|Masked" >}} or {{< ui text="CiVariables|Masked and hidden" >}} variables cannot contain whitespace characters.
    > Never run a command like `cat` or `tee` on the variable because the SSH key is not masked
    > if it appears in the job log.
 
-1. In the **Key** text box, enter the name of the variable. For example, `SSH_PRIVATE_KEY`.
-1. In the **Value** text box, paste the private key content.
+1. In the {{< ui text="Key" >}} text box, enter the name of the variable. For example, `SSH_PRIVATE_KEY`.
+1. In the {{< ui text="Value" >}} text box, paste the private key content.
    The value must end with a newline (`LF` character).
    To add a newline, press <kbd>Enter</kbd> or <kbd>Return</kbd> at the end of the last line
    before saving.
@@ -178,11 +178,11 @@ ssh-keyscan 10.0.2.2
 
 Add the hosts to your project as a [file type CI/CD variable](#add-an-ssh-key-as-a-file-type-variable), except:
 
-- Use `SSH_KNOWN_HOSTS` as the **Key**.
-- Use the output of `ssh-keyscan` as the **Value**.
+- Use `SSH_KNOWN_HOSTS` as the {{< ui text="Key" >}}.
+- Use the output of `ssh-keyscan` as the {{< ui text="Value" >}}.
 
 If you must connect to multiple servers, all the server host keys
-must be collected in the **Value** of the variable, one key per line.
+must be collected in the {{< ui text="Value" >}} of the variable, one key per line.
 
 > [!note]
 > By using a file type CI/CD variable instead of `ssh-keyscan` directly inside
@@ -232,11 +232,11 @@ Unable to create masked variable because: The value cannot contain the
 following characters: whitespace characters.
 ```
 
-This issue occurs when the variable **Visibility** is set to **Masked** or **Masked and hidden**.
+This issue occurs when the variable {{< ui text="Visibility" >}} is set to {{< ui text="CiVariables|Masked" >}} or {{< ui text="CiVariables|Masked and hidden" >}}.
 Masked variables must be a single line with no spaces, but SSH keys contain whitespace characters
 that are incompatible with masking.
 
-To resolve this issue, set **Visibility** to **Visible** when you
+To resolve this issue, set {{< ui text="Visibility" >}} to {{< ui text="CiVariables|Visible" >}} when you
 [add the SSH key as a file type variable](#add-an-ssh-key-as-a-file-type-variable).
 File type variables are not exposed in job logs, which provides an additional layer of protection
 for the key value.

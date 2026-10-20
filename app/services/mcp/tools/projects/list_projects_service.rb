@@ -45,7 +45,10 @@ module Mcp
             }
           },
           annotations: {
-            readOnlyHint: true
+            title: 'List projects',
+            readOnlyHint: true,
+            idempotentHint: true,
+            openWorldHint: false
           }
         }
 

@@ -32,7 +32,10 @@ module Mcp
             }
           },
           annotations: {
-            readOnlyHint: true
+            title: 'Get user',
+            readOnlyHint: true,
+            idempotentHint: true,
+            openWorldHint: false
           }
         }
 

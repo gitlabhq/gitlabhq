@@ -57,6 +57,9 @@ module Gitlab
 
         validate_symlink
         file
+      rescue StandardError
+        delete
+        raise
       end
 
       def delete
@@ -97,30 +100,27 @@ module Gitlab
       end
 
       def download_from(url)
-        file = File.open(filepath, 'wb')
+        # Block form closes the handle on every exit; callers reopen by path.
+        File.open(filepath, 'wb') do |file|
+          Gitlab::HTTP.perform_request(Net::HTTP::Get, url, stream_body: true) do |chunk|
+            next if REDIRECT_STATUS_CODES.include?(chunk.code)
 
-        Gitlab::HTTP.perform_request(Net::HTTP::Get, url, stream_body: true) do |chunk|
-          next if REDIRECT_STATUS_CODES.include?(chunk.code)
+            raise_rate_limit_error(chunk) if rate_limited?(chunk)
 
-          raise_rate_limit_error(chunk) if rate_limited?(chunk)
+            if NON_RETRIABLE_ERROR_CODES.include?(chunk.code)
+              raise NotRetriableError, "Error downloading attachment. Error code: #{chunk.code}"
+            end
 
-          if NON_RETRIABLE_ERROR_CODES.include?(chunk.code)
-            raise NotRetriableError, "Error downloading attachment. Error code: #{chunk.code}"
+            if chunk.code != SUCCESS_STATUS_CODE
+              raise DownloadError, "Error downloading attachment. Error code: #{chunk.code}"
+            end
+
+            file.write(chunk)
+            validate_size!(file.size)
           end
 
-          if chunk.code != SUCCESS_STATUS_CODE
-            raise DownloadError, "Error downloading attachment. Error code: #{chunk.code}"
-          end
-
-          file.write(chunk)
-          validate_size!(file.size)
-        rescue AttachmentsDownloader::NotRetriableError, AttachmentsDownloader::DownloadError,
-          Gitlab::GithubImport::RateLimitError
-          delete
-          raise
+          file
         end
-
-        file
       end
 
       def rate_limited?(response)

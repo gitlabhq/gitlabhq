@@ -233,6 +233,25 @@ describe('Work Item Discussion', () => {
       },
     };
 
+    describe.each([false, true])('when a single-comment discussion is resolved=%s', (resolved) => {
+      beforeEach(() => {
+        createComponent({
+          discussion: { ...mockWorkItemDiscussion, resolved },
+        });
+      });
+
+      it('toggles resolution without adding a reply', () => {
+        findThreadAtIndex(0).vm.$emit('resolve');
+
+        expect(toggleWorkItemResolveDiscussionHandler).toHaveBeenCalledWith({
+          id: mockWorkItemDiscussion.id,
+          resolve: !resolved,
+        });
+        expect(findAllThreads()).toHaveLength(1);
+        expect(findWorkItemAddNote().exists()).toBe(false);
+      });
+    });
+
     it('Resolved discussion is not expanded on default', () => {
       createComponent({
         discussion: resolvedDiscussion,

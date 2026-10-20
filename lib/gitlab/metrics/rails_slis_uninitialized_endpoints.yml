@@ -198,7 +198,6 @@
 - "GET /api/:version/usage_data/service_ping"
 - "GET /api/:version/users/:id/keys/:key_id"
 - "GET /api/scim/:version/application/Users/:id"
-- "GitlabSubscriptions::Trials::DuoProController#create"
 - "Groups::Analytics::CoverageReportsController#index"
 - "Groups::Analytics::CycleAnalytics::ValueStreamsController#create"
 - "Groups::Analytics::CycleAnalytics::ValueStreamsController#destroy"

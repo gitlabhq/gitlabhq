@@ -155,11 +155,13 @@ module Gitlab
           return attachment.url if file.is_a?(String)
 
           # for ghe imports check on filetype to add ext to video attachments
-          file = update_ghe_video_path(file) unless web_endpoint == ::Octokit::Default.web_endpoint
+          filepath = web_endpoint == ::Octokit::Default.web_endpoint ? file.path : update_ghe_video_path(file)
 
-          uploader = UploadService.new(project, file, FileUploader).execute
+          uploader = File.open(filepath, 'rb') { |f| UploadService.new(project, f, FileUploader).execute }
 
           uploader.to_h[:url]
+        ensure
+          downloader&.delete
         end
 
         def options
@@ -200,10 +202,9 @@ module Gitlab
 
         def update_ghe_video_path(file)
           filepath = file.path
-          return file if File.extname(filepath).present?
+          return filepath if File.extname(filepath).present?
 
           mime_type = Marcel::MimeType.for(Pathname.new(filepath))
-          return file unless mime_type.start_with?('video/')
 
           extension = case mime_type
                       when 'video/quicktime' then '.mov'
@@ -211,11 +212,11 @@ module Gitlab
                       when 'video/webm' then '.webm'
                       end
 
-          return file if extension.blank?
+          return filepath if extension.blank?
 
-          new_path = "#{filepath}.#{extension}"
+          new_path = "#{filepath}#{extension}"
           FileUtils.mv(filepath, new_path)
-          File.open(new_path, 'rb')
+          new_path
         end
       end
     end

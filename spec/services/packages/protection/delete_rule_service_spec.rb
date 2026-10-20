@@ -11,7 +11,7 @@ RSpec.describe Packages::Protection::DeleteRuleService, '#execute', feature_cate
 
   shared_examples 'a successful service response with side effect' do
     it_behaves_like 'returning a success service response' do
-      it do
+      it 'returns no errors and the package protection rule in the payload' do
         is_expected.to have_attributes(
           errors: be_blank,
           payload: { package_protection_rule: package_protection_rule }
@@ -27,7 +27,7 @@ RSpec.describe Packages::Protection::DeleteRuleService, '#execute', feature_cate
       it { is_expected.to have_attributes(payload: { package_protection_rule: nil }) }
     end
 
-    it do
+    it 'does not delete the package protection rule' do
       expect { subject }.not_to change { Packages::Protection::Rule.count }
 
       expect { package_protection_rule.reload }.not_to raise_error

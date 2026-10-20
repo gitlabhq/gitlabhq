@@ -1508,10 +1508,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/fonts/-/fonts-1.3.1.tgz#dd335ed25cb33927abc1d80dfbfa31fc93e9bd15"
   integrity sha512-/7Q5Sy9Q3pmutV/1EgURm3iDZtV0HcE4nTwFpHLCrGDdxQ3pNv6SdujzeJExnfiI5Y+1FGfOvKwOlmiVuyDtzA==
 
-"@gitlab/frontend-tests@0.1.2":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@gitlab/frontend-tests/-/frontend-tests-0.1.2.tgz#111054420773039527296dcfff765fd4e1c19a91"
-  integrity sha512-Gl3MLTnAvifvNxviHKsXr/obyQG1p3jyBpE5lSdNFqhP03TQUWkVT7fP8fOhD/sP4wUlftOLBwNq2o/Y4fTbTg==
+"@gitlab/frontend-tests@0.1.3":
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/@gitlab/frontend-tests/-/frontend-tests-0.1.3.tgz#92a067494fb70bb806ec840f35cea9d3140a128b"
+  integrity sha512-Z3w6lm3eGNaAU2VlGyctUbXLriarFOZRvaKHS03kKi6wXbBEExDt1Ve3/K4i0+4CP3ZF8OAS63psiNLygf5VXQ==
   dependencies:
     "@whatwg-node/fetch" "^0.10.11"
 

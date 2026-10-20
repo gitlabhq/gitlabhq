@@ -135,6 +135,24 @@ RSpec.describe Resolvers::ProjectJobsResolver, feature_category: :continuous_int
           it { is_expected.to contain_exactly(successful_build, successful_build_two, failed_build, pending_build) }
         end
 
+        context 'when filtering for bridge jobs by name' do
+          let(:args) { { kind: 'BRIDGE', name: 'Bridge' } }
+
+          it 'returns an argument error' do
+            expect_graphql_error_to_be_created(
+              Gitlab::Graphql::Errors::ArgumentError, 'Filtering by name is not supported for trigger jobs.'
+            ) do
+              resolve_jobs(args)
+            end
+          end
+        end
+
+        context 'when filtering for build jobs by name' do
+          let(:args) { { kind: 'BUILD', name: 'Three' } }
+
+          it { is_expected.to contain_exactly(failed_build, pending_build) }
+        end
+
         context 'without kind argument' do
           it { is_expected.to contain_exactly(successful_build, successful_build_two, failed_build, pending_build) }
         end

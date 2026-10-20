@@ -10,19 +10,20 @@
             "object",
             "null"
           ],
-          "patternProperties": {
+          "properties": {
             "default": {
               "type": [
                 "array",
                 "boolean",
-                "integer",
-                "string"
+                "number",
+                "string",
+                "null"
               ]
             },
             "regex": {
               "type": "string"
             },
-            "^type$": {
+            "type": {
               "type": "string"
             }
           }

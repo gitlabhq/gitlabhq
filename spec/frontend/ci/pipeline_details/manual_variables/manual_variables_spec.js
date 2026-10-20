@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import ManualVariablesApp from '~/ci/pipeline_details/manual_variables/manual_variables.vue';
@@ -21,11 +21,12 @@ describe('ManualVariableApp', () => {
     return createMockApollo(requestHandlers);
   };
 
-  const createComponent = ({ variables = [] } = {}) => {
+  const createComponent = ({ variables = [], manualVariablesFileMissing = false } = {}) => {
     mockResolver.mockResolvedValue(mockManualVariableConnection(variables));
     wrapper = shallowMount(ManualVariablesApp, {
       provide: {
         manualVariablesCount: variables.length,
+        manualVariablesFileMissing,
         projectPath: 'root/ci-project',
         pipelineIid: '1',
       },
@@ -33,6 +34,7 @@ describe('ManualVariableApp', () => {
     });
   };
 
+  const findAlert = () => wrapper.findComponent(GlAlert);
   const findEmptyState = () => wrapper.findComponent(EmptyState);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findVariableTable = () => wrapper.findComponent(VariableTable);
@@ -62,6 +64,18 @@ describe('ManualVariableApp', () => {
 
       expect(findLoadingIcon().exists()).toBe(false);
       expect(findVariableTable().exists()).toBe(true);
+    });
+  });
+
+  describe('when the variables file is missing', () => {
+    it('renders an alert without querying the variables', () => {
+      createComponent({ manualVariablesFileMissing: true });
+
+      expect(findAlert().text()).toBe(
+        'The variables for this pipeline are unavailable because the pipeline variables file is missing.',
+      );
+      expect(findEmptyState().exists()).toBe(false);
+      expect(mockResolver).not.toHaveBeenCalled();
     });
   });
 });

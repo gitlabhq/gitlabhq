@@ -41,6 +41,7 @@ export const createAppOptions = (selector, apolloProvider, router) => {
     securityPoliciesPath,
     testsCount,
     manualVariablesCount,
+    manualVariablesFileMissing,
     canReadVariables,
     displayPipelineVariables,
   } = dataset;
@@ -86,6 +87,7 @@ export const createAppOptions = (selector, apolloProvider, router) => {
       securityPoliciesPath,
       testsCount,
       manualVariablesCount: Number.parseInt(manualVariablesCount, 10),
+      manualVariablesFileMissing: parseBoolean(manualVariablesFileMissing),
       canReadVariables: parseBoolean(canReadVariables),
       displayPipelineVariables: parseBoolean(displayPipelineVariables),
     },

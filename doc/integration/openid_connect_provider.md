@@ -45,7 +45,7 @@ If your client can import OIDC settings from a discovery URL, GitLab provides en
 this information:
 
 - For GitLab.com, use `https://gitlab.com/.well-known/openid-configuration`.
-- For GitLab Self-Managed, use `https://<your-gitlab-instance>/.well-known/openid-configuration`
+- For GitLab Self-Managed and GitLab Dedicated, use `https://<your-gitlab-instance>/.well-known/openid-configuration`.
 
 ## Shared information
 

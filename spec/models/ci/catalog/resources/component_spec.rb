@@ -52,6 +52,35 @@ RSpec.describe Ci::Catalog::Resources::Component, feature_category: :pipeline_co
       end
     end
 
+    context 'when an input has a `null` default' do
+      it 'returns no errors' do
+        component.spec = { inputs: { tags: { type: 'array', default: nil } } }
+
+        expect(component).to be_valid
+      end
+    end
+
+    context 'when a number input has a float default' do
+      it 'returns no errors' do
+        component.spec = { inputs: { ratio: { type: 'number', default: 1.5 } } }
+
+        expect(component).to be_valid
+      end
+    end
+
+    context 'when an input has an invalid `default` type' do
+      it 'returns errors' do
+        component.spec = { inputs: { website: { default: { key: 'value' } } } }
+
+        aggregate_failures do
+          expect(component).to be_invalid
+          expect(component.errors.full_messages).to contain_exactly(
+            'Spec must be a valid json schema'
+          )
+        end
+      end
+    end
+
     context 'when `spec` contains a valid `inputs_order`' do
       it 'returns no errors' do
         component.spec = {

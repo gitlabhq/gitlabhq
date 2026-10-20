@@ -377,10 +377,14 @@ To create a thread:
 - Resolvable threads for epics:
   - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/458818) in GitLab 17.5. [The new look for epics](../group/epics/_index.md#epics-as-work-items) must be enabled.
   - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/468310) in GitLab 18.1.
+- Resolvable threads with no replies in work items [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/632312) in GitLab 19.6.
 
 {{< /history >}}
 
 When a conversation is complete, you can resolve the thread. Resolved threads are collapsed, but users can still add comments.
+
+You can resolve a thread before anyone replies to it.
+You can't resolve a standard comment until someone replies to it and it becomes a thread.
 
 Resolved threads can be reopened later by any user who has permission to resolve threads. To reopen a resolved thread, expand the thread and select **Reopen thread**.
 
