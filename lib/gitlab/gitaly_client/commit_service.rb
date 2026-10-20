@@ -361,9 +361,9 @@ module Gitlab
       end
 
       # List all commits which are new in the repository. If commits have been pushed into the repo
-      def list_new_commits(revisions, allow_quarantine: true)
+      def list_new_commits(revisions)
         git_env = Gitlab::Git::HookEnv.all(@gitaly_repo.gl_repository)
-        if allow_quarantine && git_env['GIT_OBJECT_DIRECTORY_RELATIVE'].present?
+        if git_env['GIT_OBJECT_DIRECTORY_RELATIVE'].present?
           # If we have a quarantine environment, then we can optimize the check
           # by doing a ListAllCommitsRequest. Instead of walking through
           # references, we just walk through all quarantined objects, which is
@@ -407,8 +407,7 @@ module Gitlab
 
           quarantined_commits
         else
-          globs = allow_quarantine ? %w[--not --all] : %w[--not --glob=refs/heads/*]
-          list_commits(Array.wrap(revisions) + globs)
+          list_commits(Array.wrap(revisions) + %w[--not --all])
         end
       end
 
