@@ -1,6 +1,6 @@
 ---
 stage: Fulfillment
-group: Utilization
+group: Usage Visibility
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: View and manage your credit usage.
 title: GitLab Credits dashboard
@@ -30,7 +30,7 @@ Customers Portal users linked to the billing account:
 
 You can access the dashboard in the Customers Portal and in GitLab.
 On GitLab Dedicated, the dashboard is available in the Customers Portal and to instance administrators.
-Group-level and personal credit usage views are available on GitLab.com only.
+Group and personal credit usage views are available on GitLab.com only.
 
 > [!note]
 > Usage data is not displayed in real time.
@@ -172,13 +172,16 @@ To display it, you must enable this setting for your [group](../user/group/manag
 
 {{< /history >}}
 
-Credit consumption can be triggered by either a human user or a non-human subject
-(for example, an AI feature like the SAST False Positive Detection Flow).
+Credits are consumed by either a human or a non-human subject, depending on how the feature runs,
+and are billed differently.
+For more information, see [billing subjects for credit usage](gitlab_credits.md#billing-subjects-for-credit-usage).
 
 To help you identify where credits are consumed, the **Usage by user** tab
 on the GitLab Credits dashboard displays an **Automated flow** badge next to
 the rows that represent non-human subjects.
 Rows without the badge represent human users.
+A human user's row can also include usage from flows they started, even though that usage
+is billed to the namespace.
 
 The display of the **Automated flow** badge is controlled by the setting **Display GitLab Credits user data**,
 which is available for [groups](../user/group/manage.md#display-gitlab-credits-user-data)
@@ -209,7 +212,7 @@ The following cap types are available:
 
 When on-demand usage in the current billing period reaches or exceeds the configured cap,
 all credit-based features
-are suspended for all users on that subscription or instance, and GitLab sends an email notification to billing account managers. For user-level caps,
+are suspended for all users on that subscription or instance, and GitLab sends an email notification to billing account managers. For user caps,
 only the individual user who reached their cap is suspended.
 
 Flat user caps and per-user override caps apply to usage beyond a user's included allocation.
@@ -239,24 +242,24 @@ GraphQL mutations.
 
 How the cap value is applied then depends on the cap type:
 
-- A subscription-level cap applies to on-demand usage only. The cap is the amount of on-demand usage allowed across the subscription, in addition to every user's included credits.
+- A subscription cap applies to on-demand usage only. The cap is the amount of on-demand usage allowed across the subscription, in addition to every user's included credits.
 - A per-user cap applies to a user's total usage, including their included credits, for usage the user triggers directly. A user can therefore consume up to whichever is larger: their included allocation, or their cap.
 
 > [!note]
 > Usage from [GitLab Duo Agent Platform flows](../user/duo_agent_platform/_index.md)
-> that run under a service account is billed to the namespace, not to the user,
+> that run as a service account is billed to the namespace, not to the user,
 > and does not count toward the user's flat cap or per-user override.
 > This usage can still appear in the user's **Total credits used**,
 > so their displayed usage can exceed their cap without the user being blocked.
-> To limit this usage, set a subscription-level cap
+> To limit this usage, set a subscription cap
 > or remove the user's GitLab Duo seat.
 
 To control who can use GitLab Duo Agent Platform, [restrict access to GitLab Duo](../administration/gitlab_duo/configure/access_control.md#restrict-access-to-gitlab-duo) based on group membership.
-Access controls change feature access, not credit usage, and do not set a group-level credit cap.
+Access controls change feature access, not credit usage, and do not set a group credit cap.
 
 ### Examples
 
-For a subscription-level cap, consider a subscription that has 10 users, each with 100 included GitLab Credits. The billing account manager sets the subscription-level on-demand cap to `0`.
+For a subscription cap, consider a subscription that has 10 users, each with 100 included GitLab Credits. The billing account manager sets the subscription on-demand cap to `0`.
 
 - A user who has already used all 100 of their included credits is blocked from Agent Platform features immediately (on the next enforcement check), because any further usage would be on-demand.
 - A user who has only used 40 of their included credits can continue using Agent Platform features and consume their remaining 60 included credits. The `0` cap does not apply to them yet.
@@ -266,7 +269,7 @@ For a per-user cap, consider a user that has 24 included GitLab Credits.
 - With a per-user cap of `50`, the user is blocked after 50 credits in total, 26 credits beyond their included allocation.
 - With a per-user cap of `10`, the user is blocked after 24 credits, when their included allocation is exhausted.
 
-### Set a subscription-level usage cap
+### Set a subscription usage cap
 
 Prerequisites:
 
@@ -284,10 +287,10 @@ for the current billing period, the cap is considered reached immediately on
 the next enforcement check.
 
 To disable the cap, turn off the **Set on-demand credit cap** toggle. When disabled,
-no subscription-level on-demand GitLab Credits cap is enforced, and behavior falls back to
+no subscription on-demand credit cap is enforced, and behavior falls back to
 existing billing behavior.
 
-You can use the GraphQL API to [view usage caps](../api/graphql/reference/_index.md#gitlabsubscriptionbudgetcaps) and set a [flat user-level cap](../api/graphql/reference/_index.md#mutationupsertflatusercap) or a [per-user override cap](../api/graphql/reference/_index.md#mutationupsertuserbudgetcapoverrides).
+You can use the GraphQL API to [view usage caps](../api/graphql/reference/_index.md#gitlabsubscriptionbudgetcaps) and set a [flat user cap](../api/graphql/reference/_index.md#mutationupsertflatusercap) or a [per-user override cap](../api/graphql/reference/_index.md#mutationupsertuserbudgetcapoverrides).
 
 ### Manage credit caps
 
@@ -447,7 +450,7 @@ The dashboard does not display which type of cap blocked a user.
 To determine the cap type, use the [GraphQL API](../api/graphql/reference/_index.md#gitlabsubscriptionusageblockedstatus).
 
 The **Usage control status** column displays only per-user caps.
-The subscription-level on-demand cap applies to the entire subscription, not to individual users, and is not listed in this column.
+The subscription on-demand cap applies to the entire subscription, not to individual users, and is not listed in this column.
 
 The status reflects only the usage the user triggers directly.
 Rows with the **Automated flow** badge represent non-human subjects

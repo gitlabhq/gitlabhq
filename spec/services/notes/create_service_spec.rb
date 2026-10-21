@@ -702,6 +702,40 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
             expect(note.quick_actions_status.messages).to eq(['Closed this item.'])
           end
         end
+
+        shared_examples 'reports a failed move command with child type mismatch' do |noteable_description|
+          it "reports a failed move command when the noteable is #{noteable_description}", :aggregate_failures do
+            validation_message = format(
+              _('cannot be changed to %{new_type} with these child item types.'), new_type: 'Task'
+            )
+            target_project = create(:project, maintainers: user)
+            task_child = create(:work_item, :task, project: project)
+            create(:parent_link, work_item_parent: WorkItem.find(issue.id), work_item: task_child)
+            command = "/move #{target_project.full_path} [type:Task]"
+
+            note = described_class.new(project, user, note_params.merge(note: command)).execute
+
+            expect(note.quick_actions_status).to be_error
+            expect(note.quick_actions_status.error_messages).to include(
+              a_string_including(validation_message)
+            )
+            expect(noteable_record.reload).to have_attributes(state: 'opened', moved_to_id: nil)
+          end
+        end
+
+        context 'when the noteable is an issue' do
+          let(:noteable_record) { issue }
+          let(:note_params) { base_opts }
+
+          it_behaves_like 'reports a failed move command with child type mismatch', 'an issue'
+        end
+
+        context 'when the noteable is a work item' do
+          let(:noteable_record) { WorkItem.find(issue.id) }
+          let(:note_params) { { noteable: noteable_record } }
+
+          it_behaves_like 'reports a failed move command with child type mismatch', 'a work item'
+        end
       end
     end
 

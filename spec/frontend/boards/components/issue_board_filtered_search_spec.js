@@ -56,6 +56,11 @@ describe('IssueBoardFilter', () => {
       expect(wrapper.emitted('set-filters')).toHaveLength(1);
     });
 
+    it('emits submit-filters when submit-filters is emitted', () => {
+      findBoardsFilteredSearch().vm.$emit('submit-filters', { milestoneTitle: 'v1' });
+      expect(wrapper.emitted('submit-filters')).toEqual([[{ milestoneTitle: 'v1' }]]);
+    });
+
     it.each`
       isSignedIn
       ${true}

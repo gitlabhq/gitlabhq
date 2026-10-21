@@ -23,6 +23,15 @@ RSpec.describe BulkImports::RelationBatchExportWorker, feature_category: :import
       Gitlab::Cache::Import::Caching.expire(cache_key, 0)
     end
 
+    context 'when user or batch does not exist' do
+      it 'does not raise and returns early' do
+        expect(BulkImports::RelationBatchExportService).not_to receive(:new)
+
+        expect { described_class.new.perform(non_existing_record_id, batch.id) }.not_to raise_error
+        expect { described_class.new.perform(user.id, non_existing_record_id) }.not_to raise_error
+      end
+    end
+
     include_examples 'an idempotent worker' do
       it 'executes RelationBatchExportService' do
         service = instance_double(BulkImports::RelationBatchExportService)

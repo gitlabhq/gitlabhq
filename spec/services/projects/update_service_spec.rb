@@ -550,7 +550,7 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
       context 'when repository has an ambiguous branch named "HEAD"' do
         before do
           allow(project.repository.raw).to receive(:write_ref).and_return(false)
-          allow(project.repository).to receive(:branch_names) { %w[fix master main HEAD] }
+          allow(project.repository).to receive(:branch_names).and_return(%w[fix master main HEAD])
         end
 
         it 'returns an error to the user' do
@@ -1066,7 +1066,7 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
 
       it 'does not save the project with an error if the service denies access' do
         expect(::Gitlab::ExternalAuthorization)
-          .to receive(:access_allowed?).with(user, 'new-label') { false }
+          .to receive(:access_allowed?).with(user, 'new-label').and_return(false)
 
         result = update_project(project, user, { external_authorization_classification_label: 'new-label' })
 
@@ -1076,7 +1076,7 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
 
       it 'saves the new label if the service allows access' do
         expect(::Gitlab::ExternalAuthorization)
-          .to receive(:access_allowed?).with(user, 'new-label') { true }
+          .to receive(:access_allowed?).with(user, 'new-label').and_return(true)
 
         result = update_project(project, user, { external_authorization_classification_label: 'new-label' })
 
@@ -1086,7 +1086,7 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
 
       it 'checks the default label when the classification label was cleared' do
         expect(::Gitlab::ExternalAuthorization)
-          .to receive(:access_allowed?).with(user, 'default_label') { true }
+          .to receive(:access_allowed?).with(user, 'default_label').and_return(true)
 
         update_project(project, user, { external_authorization_classification_label: '' })
 

@@ -253,6 +253,12 @@ tests = [
   },
 
   {
+    explanation: 'EE API routes map to the route tier guardrail',
+    changed_file: 'ee/lib/ee/api/geo.rb',
+    expected: ['ee/spec/lib/api/every_ee_api_endpoint_tier_spec.rb']
+  },
+
+  {
     explanation: 'FOSS mailer previews',
     changed_file: 'app/mailers/previews/notify_preview.rb',
     expected: ['spec/mailers/previews_spec.rb']
@@ -757,6 +763,7 @@ tests = [
     expected: %w[
       spec/requests/api/**/*hook*_spec.rb
       ee/spec/requests/api/**/*hook*_spec.rb
+      ee/spec/lib/api/every_ee_api_endpoint_tier_spec.rb
     ]
   },
 

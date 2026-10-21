@@ -58,7 +58,7 @@ export default {
       required: true,
     },
   },
-  emits: ['set-filters'],
+  emits: ['set-filters', 'submit-filters'],
   computed: {
     tokensCE() {
       const { fetchLabels } = issueBoardFilters(this.$apollo, this.fullPath, this.isGroupBoard);
@@ -212,5 +212,6 @@ export default {
     :is-swimlanes-on="isSwimlanesOn"
     :filters="filters"
     @set-filters="$emit('set-filters', $event)"
+    @submit-filters="$emit('submit-filters', $event)"
   />
 </template>

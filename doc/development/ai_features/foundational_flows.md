@@ -140,6 +140,7 @@ When adding a flow to the `FoundationalFlow` model, you must provide the followi
 | `ai_feature` | String | Yes | Associated AI feature name (typically "duo_agent_platform")            |
 | `agent_privileges` | Array | Yes | Required permissions (see [Agent Privileges](#agent-privileges))        |
 | `pre_approved_agent_privileges` | Array | No | Subset of `agent_privileges` the flow can use without requesting approval. When omitted, all privileges in `agent_privileges` are pre-approved. An explicit empty array pre-approves nothing. See [Agent privileges](#agent-privileges). |
+| `required_agent_privileges` | Array | No | Subset of `agent_privileges` that a background flow needs to start. When omitted, all privileges in `agent_privileges` are required. An explicit empty array means the flow is never blocked at start. See [Agent privileges](#agent-privileges). |
 | `allow_agent_to_request_user` | Boolean | No | Whether the flow can pause to ask its user for input or approval (default: `false`). See [Agent privileges](#agent-privileges). |
 | `avatar` | String | No | Icon filename (must exist in GitLab SVGs)                              |
 | `environment` | String | No | Execution environment: "web", "ambient", or "cli" (default: "ambient") |
@@ -323,6 +324,12 @@ For example, this flow grants read, write, and start-flow privileges but pre-app
 
 Read operations run without approval, while write operations and starting another flow stay granted but require approval.
 The `coding_environment: "none"` value means the flow needs no prepared repository checkout.
+
+On the background surface, a flow does not start when an administrator denies every tool in a privilege group that the flow requires.
+`required_agent_privileges` sets which privileges the flow requires, and must not name a privilege that `agent_privileges` does not grant.
+When `required_agent_privileges` is `nil`, it falls back to `agent_privileges`, so every granted privilege is required.
+Set `required_agent_privileges` when a flow grants privileges that its own toolset does not use.
+For example, the Developer flow grants GitLab and Git privileges to its workspace subagents, but requires only `READ_WRITE_FILES` and `RUN_COMMANDS`.
 
 ### Triggers
 

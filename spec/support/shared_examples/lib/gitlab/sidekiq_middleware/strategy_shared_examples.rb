@@ -229,14 +229,14 @@ RSpec.shared_examples 'deduplicating jobs when scheduling' do |strategy_name|
 
     before do
       allow(fake_duplicate_job).to receive(:delete!)
-      allow(fake_duplicate_job).to receive(:scheduled?) { false }
-      allow(fake_duplicate_job).to receive(:options) { {} }
       allow(fake_duplicate_job).to receive_messages(
+        scheduled?: false,
+        options: {},
         latest_wal_locations: wal_locations,
         idempotency_key: 'abc123',
-        strategy: :until_executed
+        strategy: :until_executed,
+        reschedulable?: false
       )
-      allow(fake_duplicate_job).to receive(:reschedulable?) { false }
     end
 
     it 'updates job hash with dedup_wal_locations' do

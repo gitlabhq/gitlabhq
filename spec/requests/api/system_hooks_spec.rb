@@ -77,6 +77,30 @@ RSpec.describe API::SystemHooks, :with_current_organization, feature_category: :
     it_behaves_like 'PUT webhook API endpoints with a branch filter', ''
   end
 
+  # Organization admins are granted the granular webhook abilities by their role, but this
+  # API authorizes against the instance (no subject), so it must stay instance-admin only.
+  describe 'when the user is an organization admin but not an instance admin', :aggregate_failures do
+    let_it_be(:organization_admin) { create(:user, organizations: []) }
+
+    before_all do
+      create(:organization_owner, organization: current_organization, user: organization_admin)
+    end
+
+    it 'returns 403 for listing hooks' do
+      get api('/hooks', organization_admin)
+
+      expect(response).to have_gitlab_http_status(:forbidden)
+    end
+
+    it 'returns 403 for creating a hook' do
+      expect do
+        post api('/hooks', organization_admin), params: { url: 'http://example.com/new' }
+      end.not_to change { SystemHook.count }
+
+      expect(response).to have_gitlab_http_status(:forbidden)
+    end
+  end
+
   describe 'organization scoping' do
     let(:organization) { current_organization }
 

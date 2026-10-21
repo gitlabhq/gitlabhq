@@ -396,14 +396,4 @@ RSpec.describe Ci::PendingBuild, feature_category: :continuous_integration do
       expect(new_build.reload.queuing_entry.partition_id).to eq ci_testing_partition_id
     end
   end
-
-  it_behaves_like 'cleanup by a loose foreign key' do
-    let!(:parent) { create(:namespace) }
-    let!(:model) { create(:ci_pending_build, namespace: parent) }
-  end
-
-  it_behaves_like 'cleanup by a loose foreign key' do
-    let!(:parent) { create(:project) }
-    let!(:model) { create(:ci_pending_build, project: parent) }
-  end
 end

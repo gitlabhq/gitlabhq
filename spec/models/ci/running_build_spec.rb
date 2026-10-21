@@ -81,13 +81,4 @@ RSpec.describe Ci::RunningBuild, feature_category: :continuous_integration do
       expect(new_build.reload.runtime_metadata.partition_id).to eq ci_testing_partition_id
     end
   end
-
-  describe 'loose foreign keys' do
-    context 'with loose foreign key on projects.id' do
-      it_behaves_like 'cleanup by a loose foreign key' do
-        let!(:parent) { project }
-        let!(:model) { create(:ci_running_build, project: parent) }
-      end
-    end
-  end
 end

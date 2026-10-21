@@ -63,8 +63,18 @@ module BulkImports
 
     # Keep _stage parameter for backwards compatibility.
     def perform(pipeline_tracker_id, _stage, entity_id)
-      @entity = ::BulkImports::Entity.find(entity_id)
-      @pipeline_tracker = ::BulkImports::Tracker.find(pipeline_tracker_id)
+      @entity = ::BulkImports::Entity.find_by_id(entity_id)
+      @pipeline_tracker = ::BulkImports::Tracker.find_by_id(pipeline_tracker_id)
+
+      unless @entity && @pipeline_tracker
+        logger.warn(
+          class: self.class.name,
+          pipeline_tracker_id: pipeline_tracker_id,
+          entity_id: entity_id,
+          message: 'BulkImports::Entity or BulkImports::Tracker not found'
+        )
+        return
+      end
 
       log_extra_metadata_on_done(:pipeline_class, @pipeline_tracker.pipeline_name)
 
@@ -84,8 +94,18 @@ module BulkImports
     end
 
     def perform_failure(pipeline_tracker_id, entity_id, exception)
-      @entity = ::BulkImports::Entity.find(entity_id)
-      @pipeline_tracker = ::BulkImports::Tracker.find(pipeline_tracker_id)
+      @entity = ::BulkImports::Entity.find_by_id(entity_id)
+      @pipeline_tracker = ::BulkImports::Tracker.find_by_id(pipeline_tracker_id)
+
+      unless @entity && @pipeline_tracker
+        logger.warn(
+          class: self.class.name,
+          pipeline_tracker_id: pipeline_tracker_id,
+          entity_id: entity_id,
+          message: 'BulkImports::Entity or BulkImports::Tracker not found'
+        )
+        return
+      end
 
       fail_pipeline(exception)
     end
@@ -144,7 +164,7 @@ module BulkImports
     end
 
     def logger
-      @logger ||= Logger.build.with_tracker(pipeline_tracker)
+      @logger ||= pipeline_tracker ? Logger.build.with_tracker(pipeline_tracker) : Logger.build
     end
 
     def re_enqueue(delay = FILE_EXTRACTION_PIPELINE_PERFORM_DELAY)

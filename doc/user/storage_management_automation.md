@@ -1,6 +1,6 @@
 ---
 stage: Fulfillment
-group: Utilization
+group: Usage Visibility
 info: This page is maintained by Developer Relations, author @dnsmichi, see <https://handbook.gitlab.com/handbook/marketing/developer-relations/developer-advocacy/content/#maintained-documentation>
 title: Automate storage management
 ---

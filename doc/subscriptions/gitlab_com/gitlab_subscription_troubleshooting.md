@@ -1,6 +1,6 @@
 ---
-stage: Fulfillment
-group: Subscription Management
+stage: Monetization
+group: Purchase
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Seat usage, compute minutes, storage limits, renewal info.
 gitlab_dedicated: yes

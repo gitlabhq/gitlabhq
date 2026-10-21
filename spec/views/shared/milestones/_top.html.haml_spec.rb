@@ -9,7 +9,7 @@ RSpec.describe 'shared/milestones/_top.html.haml' do
   let(:milestone) { create(:milestone, project: project) }
 
   before do
-    allow(milestone).to receive(:milestones) { [] }
+    allow(milestone).to receive(:milestones).and_return([])
     allow(milestone).to receive(:milestone) { milestone }
   end
 

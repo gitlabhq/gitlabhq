@@ -103,6 +103,13 @@ describe('BoardTopBar', () => {
       expect(wrapper.emitted('set-filters')).toHaveLength(1);
     });
 
+    it('emits submit-filters when submit-filters is emitted by filtered search', () => {
+      wrapper
+        .findComponent(IssueBoardFilteredSearch)
+        .vm.$emit('submit-filters', { milestoneTitle: 'v1' });
+      expect(wrapper.emitted('submit-filters')).toEqual([[{ milestoneTitle: 'v1' }]]);
+    });
+
     it('emits update-board when update-board is emitted by boards selector', () => {
       findBoardsSelector().vm.$emit('update-board');
       expect(wrapper.emitted('update-board')).toHaveLength(1);

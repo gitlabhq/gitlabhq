@@ -62,7 +62,7 @@ RSpec.shared_context 'container repository delete tags service shared context' d
     Array.wrap(names).each do |name|
       expect_any_instance_of(ContainerRegistry::Client)
         .to receive(:delete_repository_tag_by_digest)
-        .with(repository.path, name) { true }
+        .with(repository.path, name).and_return(true)
     end
   end
 end

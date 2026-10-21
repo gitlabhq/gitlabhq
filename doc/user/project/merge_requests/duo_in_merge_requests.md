@@ -93,8 +93,8 @@ If the initiating user has a GitLab Duo Enterprise seat, GitLab Duo Code Review 
 runs. Both features can run in the same project.
 
 Users with the Owner role for the group can [configure all reviews to use Code Review Flow](#turn-on-code-review-flow-for-gitlab-duo-enterprise-seats),
-regardless of seat type. When Code Review Flow runs, credit usage is attributed to the initiating
-user.
+regardless of seat type. For information about how Code Review Flow usage is billed,
+see [GitLab Credits](../../../subscriptions/gitlab_credits.md#billing-subjects-for-credit-usage).
 
 To determine which feature runs a review, check the merge request's activity feed. Code Review
 Flow starts a review session when it runs. If no review session appears, GitLab Duo Code Review runs

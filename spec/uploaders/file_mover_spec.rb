@@ -84,7 +84,7 @@ RSpec.describe FileMover do
     context 'when tmp uploader is not local storage' do
       before do
         stub_uploads_object_storage(uploader: PersonalFileUploader)
-        allow_any_instance_of(PersonalFileUploader).to receive(:file_storage?) { false }
+        allow_any_instance_of(PersonalFileUploader).to receive(:file_storage?).and_return(false)
       end
 
       after do

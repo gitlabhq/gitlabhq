@@ -21,17 +21,5 @@ RSpec.describe Database::CleanupSyncEventsService, feature_category: :cell do
 
       expect(Namespaces::SyncEvent.all).to match_array(events.last(2))
     end
-
-    context 'when the sync_sec_mirror_tables feature flag is disabled' do
-      before do
-        stub_feature_flags(sync_sec_mirror_tables: false)
-      end
-
-      it 'deletes the events synced to ci' do
-        expect(service.execute).to eq(deleted_events: 2)
-
-        expect(Namespaces::SyncEvent.all).to contain_exactly(events.last)
-      end
-    end
   end
 end

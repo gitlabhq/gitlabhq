@@ -120,6 +120,20 @@ When integrating parallel stream branches into an integration branch, use `git r
 ### Post-integration validation
 After rebasing or merging any set of parallel stream branches into an integration branch, run the project's full validation suite (tests, lint, type-check) before declaring the work complete. Do not move on to the next phase or open an MR until all checks pass. Catching failures per-stream is substantially cheaper than discovering them after all streams are merged.
 
+## Rebasing a stacked MR after its base merges
+
+When a branch's first commits belong to another MR that has since merged (usually squashed, so the SHAs differ), a plain `git rebase origin/master` replays those commits against their own already-merged content and produces phantom conflicts. Replay only the branch's own commits instead:
+
+```sh
+git fetch origin
+git log --oneline --reverse origin/master..<branch>
+git rebase --onto origin/master <last-base-MR-commit> <branch>
+```
+
+The `git log` lists the branch's commits oldest first. The base MR's commits come first; `<last-base-MR-commit>` is the last of them. If unsure, compare against the base MR's commit list. A wrong pick silently drops or duplicates commits.
+
+Then verify the diff is unchanged: `git diff origin/master..HEAD` should match the MR's pre-rebase diff.
+
 ## Maintainer references
 
 - [Branch naming](https://docs.gitlab.com/user/project/repository/branches/#name-your-branch)

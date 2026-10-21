@@ -7,7 +7,7 @@ RSpec.describe 'projects/settings/ci_cd/_autodevops_form' do
 
   before do
     assign :project, project
-    allow(view).to receive(:auto_devops_enabled) { true }
+    allow(view).to receive(:auto_devops_enabled).and_return(true)
   end
 
   it 'renders the autodevops form' do

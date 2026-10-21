@@ -26,6 +26,8 @@ module BulkImports
       @enqueued_at = params['enqueued_at'] || Time.current
       @offline_export_id = offline_export_id
 
+      return unless portable
+
       return if user_contributions_export.completed?
 
       if job_stuck_without_exports?
@@ -47,6 +49,8 @@ module BulkImports
         portable_type: @portable_class,
         offline_export_id: @offline_export_id
       )
+
+      return unless portable
 
       log_and_fail(exception.message.to_s)
     end
@@ -111,7 +115,7 @@ module BulkImports
     end
 
     def portable
-      portable_class.classify.constantize.find(portable_id)
+      portable_class.classify.constantize.find_by_id(portable_id)
     end
     strong_memoize_attr :portable
 

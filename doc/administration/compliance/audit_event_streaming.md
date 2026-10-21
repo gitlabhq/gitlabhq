@@ -319,7 +319,9 @@ GitLab Duo Agent Platform records AI audit events for activity such as:
 - Tool invocations.
 - User inputs.
 
-GitLab always saves these events to the database.
+The [AI audit event storage setting](../../user/ai-governance/ai-audit-events.md#enable-ai-audit-event-storage)
+controls whether GitLab saves these events to the database and writes them to the audit log.
+This setting is off by default.
 
 You can also use a separate setting to control whether GitLab streams AI audit events
 to external destinations. This setting is off by default.
@@ -329,9 +331,8 @@ When AI audit event streaming:
 - Is turned on, GitLab streams AI audit events to all active instance streaming
   destinations. Event type filters, custom HTTP headers, and verification tokens
   apply to AI audit events the same way they apply to other audit events.
-- Is turned off, GitLab still saves AI audit events to the database but does not send them to
-  any external destination. Other audit event types continue to stream according to each
-  destination's configuration.
+- Is turned off, GitLab does not send AI audit events to any external destination.
+  Other audit event types continue to stream according to each destination's configuration.
 
 ### Turn on AI audit event streaming
 

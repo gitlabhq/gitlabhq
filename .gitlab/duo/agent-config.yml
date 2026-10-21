@@ -8,6 +8,11 @@
 image: "registry.gitlab.com/gitlab-org/gitlab-build-images/ci/debian-trixie-slim-ruby-3.3.12-golang-1.25-node-22.23-python-3.12-postgresql-17:rubygems-3.6-git-2.51-lfs-2.9-chrome-151-yarn-1.22-graphicsmagick-1.3.36-poetry-2.2"
 
 setup_script:
+  # UTF-8 locale — the image defaults to POSIX, and pre-push hooks crash on
+  # UTF-8 content without it ("invalid byte sequence in US-ASCII").
+  - export LANG=C.UTF-8
+  - export LC_ALL=C.UTF-8
+
   # SRT sandbox — fail closed, no || true.
   - apt-get update -qq && apt-get install -y -qq bubblewrap socat ripgrep jq
   - npm install -g @anthropic-ai/sandbox-runtime@0.0.77 --ignore-scripts
@@ -53,6 +58,36 @@ setup_script:
   # The gitleaks hook compares config/gitleaks-local.toml against
   # config/gitleaks.toml; regenerate it to keep them in sync.
   - scripts/generate-gitleaks-local-config.sh
+
+  # Gitignored Rails configs — a fresh checkout lacks them, so rspec and
+  # Rails-booting lefthook hooks (e.g. openapi_docs) fail.
+  #
+  # decomposed-sec is the template CI uses for normal rspec jobs (DECOMPOSED_DB
+  # and SEC_DECOMPOSED_DB both default to "true"), so specs behave here the way
+  # they do in CI: separate main, ci and sec databases. The rest of
+  # setup_database_yml is intentionally not mirrored — geo/embedding stay so
+  # rspec-ee works, and the host/username rewrites exist only for CI's docker
+  # service and permission testing, while PostgreSQL here is local as postgres.
+  - cp config/database.yml.decomposed-sec-postgresql config/database.yml
+  # As in scripts/prepare_build.sh: the image ships git under /usr/local/bin.
+  - cp config/gitlab.yml.example config/gitlab.yml
+  - "sed -i 's|bin_path: /usr/bin/git|bin_path: /usr/local/bin/git|' config/gitlab.yml"
+
+  # PostgreSQL and Redis for backend specs — the image ships only the PG
+  # client and the sandbox proxy blocks apt mid-session. Soft-fail so non-DB
+  # sessions stay unaffected; PG trust auth mirrors CI (POSTGRES_HOST_AUTH_METHOD: trust).
+  - |
+    apt-get install -y -qq postgresql-17 redis-server &&
+      sed -i -E 's/^(host[[:space:]]+all[[:space:]]+all[[:space:]]+(127\.0\.0\.1\/32|::1\/128)[[:space:]]+)[^[:space:]]+$/\1trust/' /etc/postgresql/17/main/pg_hba.conf &&
+      # The package postinst may already have started the cluster, in which
+      # case start exits non-zero; restart also picks up the edited pg_hba.conf.
+      { pg_ctlcluster 17 main start || pg_ctlcluster 17 main restart; } &&
+      psql -h localhost -U postgres -d postgres -c 'SELECT 1' &&
+      redis-server --daemonize yes &&
+      # daemonize() forks before the listener is bound, so wait for readiness
+      # instead of racing the first ping.
+      { for _ in 1 2 3 4 5; do redis-cli ping >/dev/null 2>&1 && break; sleep 1; done; redis-cli ping; } ||
+      echo "WARNING: PostgreSQL/Redis setup failed; backend specs cannot run in this session"
 
   - bundle exec lefthook install
 

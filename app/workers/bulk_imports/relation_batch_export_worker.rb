@@ -48,10 +48,10 @@ module BulkImports
     end
 
     def perform(user_id, batch_id)
-      @user = User.find(user_id)
+      @user = User.find_by_id(user_id)
       @batch = BulkImports::ExportBatch.find_by_id(batch_id)
 
-      return unless @batch
+      return unless @user && @batch
       return re_enqueue_job(@user, @batch) if !@batch.started? && max_exports_already_running?
 
       log_extra_metadata_on_done(:relation, @batch.export.relation)

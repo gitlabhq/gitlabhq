@@ -65,7 +65,6 @@ RSpec/VerifiedDoubleReference:
     - 'spec/lib/gitlab/alert_management/payload/prometheus_spec.rb'
     - 'spec/lib/gitlab/analytics/cycle_analytics/base_query_builder_spec.rb'
     - 'spec/lib/gitlab/application_rate_limiter_spec.rb'
-    - 'spec/lib/gitlab/bitbucket_import/importers/issues_importer_spec.rb'
     - 'spec/lib/gitlab/bitbucket_import/importers/pull_requests_importer_spec.rb'
     - 'spec/lib/gitlab/bitbucket_import/parallel_scheduling_spec.rb'
     - 'spec/lib/gitlab/database/background_migration/batched_migration_wrapper_spec.rb'

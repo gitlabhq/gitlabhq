@@ -78,6 +78,10 @@ RSpec.describe 'Database schema',
       ci_build_trace_chunks: %w[project_id],
       ci_builds_runner_session: %w[project_id],
       ci_deleted_objects: %w[project_id],
+      # These entries are removed with their p_ci_builds parent instead of by separate LFKs.
+      # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/262726.
+      ci_pending_builds: %w[project_id namespace_id plan_id runner_machine_id],
+      ci_running_builds: %w[project_id runner_id],
       ci_gitlab_hosted_runner_monthly_usages: %w[root_namespace_id project_id runner_id],
       ci_namespace_monthly_usages: %w[namespace_id],
       ci_pipeline_chat_data: %w[project_id],

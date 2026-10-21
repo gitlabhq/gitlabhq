@@ -61,6 +61,26 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
 
     include_examples 'does not publish WorkItems::WorkItemUpdatedEvent event'
 
+    context 'when validation returns false without adding errors' do
+      before do
+        allow(work_item).to receive(:valid?).and_return(false)
+      end
+
+      it 'returns an error response' do
+        expect(update_work_item[:status]).to eq(:error)
+      end
+    end
+
+    context 'when validation raises an unexpected error' do
+      before do
+        allow(work_item).to receive(:valid?).and_raise(ActiveRecord::StatementInvalid)
+      end
+
+      it 'does not suppress the exception' do
+        expect { update_work_item }.to raise_error(ActiveRecord::StatementInvalid)
+      end
+    end
+
     context 'when applying quick actions' do
       let(:opts) { { description: "/shrug" } }
 
@@ -228,6 +248,53 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
           [{ namespace_id: project.project_namespace.to_gid }, { work_item_id: work_item.id, action: :updated }]
         )
         expect(namespace_events).to eq(namespace_events.uniq)
+      end
+    end
+
+    context 'when model validation and a move both fail' do
+      let_it_be(:target_project) { create(:project, maintainers: developer) }
+      let(:task_child) { create(:work_item, :task, project: project) }
+      let(:opts) do
+        {
+          title: '', target_container: target_project,
+          target_work_item_type_id: build(:work_item_system_defined_type, :task).id
+        }
+      end
+
+      before do
+        create(:parent_link, work_item_parent: work_item, work_item: task_child)
+      end
+
+      it 'returns each error once', :aggregate_failures do
+        validation_message = format(
+          _('cannot be changed to %{new_type} with these child item types.'), new_type: 'Task'
+        )
+        expected_errors = [
+          work_item.errors.full_message(:title, work_item.errors.generate_message(:title, :blank)),
+          "#{WorkItem.human_attribute_name(:work_item_type_id)} #{validation_message}"
+        ]
+
+        expect(update_work_item[:message]).to match_array(expected_errors)
+        expect(update_work_item[:work_item].errors.full_messages).to match_array(expected_errors)
+        expect(work_item.reload).to have_attributes(state: 'opened', moved_to_id: nil)
+      end
+    end
+
+    context 'when source and destination validation errors overlap' do
+      let_it_be(:target_project) { create(:project, developers: developer) }
+      let(:opts) { { title: '', target_container: target_project } }
+
+      it 'returns the validation error once without moving the work item', :aggregate_failures do
+        original_title = work_item.title
+        expected_error = work_item.errors.full_message(:title, work_item.errors.generate_message(:title, :blank))
+
+        result = update_work_item
+
+        expect(result[:status]).to eq(:error)
+        expect(result[:message]).to contain_exactly(expected_error)
+        expect(result[:work_item].errors.full_messages).to contain_exactly(expected_error)
+        expect(work_item.reload).to have_attributes(title: original_title, state: 'opened', moved_to_id: nil)
+        expect(target_project.work_items).to be_empty
       end
     end
 

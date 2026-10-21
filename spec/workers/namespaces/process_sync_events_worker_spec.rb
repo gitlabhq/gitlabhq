@@ -82,24 +82,5 @@ RSpec.describe Namespaces::ProcessSyncEventsWorker, feature_category: :cell do
 
       perform
     end
-
-    context 'when the sync_sec_mirror_tables feature flag is disabled' do
-      before do
-        stub_feature_flags(sync_sec_mirror_tables: false)
-      end
-
-      it 'consumes the events without writing security namespace mirrors' do
-        expect { perform }.to change { Namespaces::SyncEvent.count }.to(0)
-          .and not_change { Security::NamespaceMirror.count }
-      end
-
-      it 'also deletes events that were already marked as synced to ci' do
-        leftover = group1.sync_events.create!(ci_synced: true)
-
-        perform
-
-        expect(Namespaces::SyncEvent.where(id: leftover.id)).to be_empty
-      end
-    end
   end
 end

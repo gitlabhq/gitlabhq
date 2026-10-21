@@ -9,6 +9,7 @@ module RuboCop
       # CE (Community Edition) endpoints are implicitly Free and should not declare a tier.
       # Only literal values are checked. A dynamic value is allowed so that shared CE
       # route definitions can take the tier from an EE-provided entry.
+      # ee/spec/lib/api/every_ee_api_endpoint_tier_spec.rb checks that EE routes declare a tier.
       #
       # @example
       #

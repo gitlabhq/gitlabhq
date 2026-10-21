@@ -366,6 +366,15 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
   end
 
   describe '#perform' do
+    context 'when entity or pipeline tracker does not exist' do
+      it 'does not raise and returns early' do
+        expect(worker).not_to receive(:run)
+
+        expect { worker.perform(non_existing_record_id, 0, entity.id) }.not_to raise_error
+        expect { worker.perform(pipeline_tracker.id, 0, non_existing_record_id) }.not_to raise_error
+      end
+    end
+
     context 'when entity is failed' do
       before do
         entity.update!(status: -1)
@@ -1069,6 +1078,22 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
             )
           )
         end
+      end
+    end
+  end
+
+  describe '#perform_failure' do
+    context 'when entity or pipeline tracker does not exist' do
+      it 'does not raise and returns early' do
+        expect(worker).not_to receive(:fail_pipeline)
+
+        expect do
+          worker.perform_failure(non_existing_record_id, entity.id, StandardError.new)
+        end.not_to raise_error
+
+        expect do
+          worker.perform_failure(pipeline_tracker.id, non_existing_record_id, StandardError.new)
+        end.not_to raise_error
       end
     end
   end

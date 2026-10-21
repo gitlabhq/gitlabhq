@@ -19,14 +19,8 @@ module Database # rubocop:disable Gitlab/BoundedContexts -- existing module that
       end
 
       # The conditions under which a row is fully synced and can be deleted.
-      # Once the feature flag is removed, this is always
-      # `ci_synced AND sec_synced`.
       def synced_conditions
-        if Feature.enabled?(:sync_sec_mirror_tables, :instance, type: :ops)
-          { ci_synced: true, sec_synced: true }
-        else
-          { ci_synced: true }
-        end
+        { ci_synced: true, sec_synced: true }
       end
 
       # Deletes the rows that every active consumer has synced, batched by

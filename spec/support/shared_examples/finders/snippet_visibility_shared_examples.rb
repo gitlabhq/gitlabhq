@@ -316,7 +316,7 @@ RSpec.shared_examples 'snippet visibility' do
       create(:project_snippet, :public, project: project, author: author)
 
       allow(Ability).to receive(:allowed?).and_call_original
-      allow(Ability).to receive(:allowed?).with(author, :read_cross_project) { false }
+      allow(Ability).to receive(:allowed?).with(author, :read_cross_project).and_return(false)
 
       finder = described_class.new(author, organization_id: snippet_org.id)
 

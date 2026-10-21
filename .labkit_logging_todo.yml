@@ -762,6 +762,14 @@ offenses:
   callsite: app/workers/delete_user_worker.rb
   deprecated_field: username
   standard_field: Labkit::Fields::GL_USER_NAME
+- logger_class: Gitlab::BitbucketImport::Logger
+  callsite: app/workers/gitlab/bitbucket_import/stage/import_repository_worker.rb
+  deprecated_field: error
+  standard_field: Labkit::Fields::ERROR_MESSAGE
+- logger_class: Gitlab::BitbucketImport::Logger
+  callsite: app/workers/gitlab/bitbucket_import/stage/import_repository_worker.rb
+  deprecated_field: project_id
+  standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::GithubImport::Logger
   callsite: app/workers/gitlab/github_gists_import/import_gist_worker.rb
   deprecated_field: class

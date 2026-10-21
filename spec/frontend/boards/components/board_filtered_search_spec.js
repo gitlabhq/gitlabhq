@@ -1,4 +1,10 @@
 import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import setWindowLocation from 'helpers/set_window_location_helper';
+import waitForPromises from 'helpers/wait_for_promises';
+import { mockWorkItemTypesConfigurationResponse } from 'ee_else_ce_jest/work_items/mock_data';
 import BoardFilteredSearch from '~/boards/components/board_filtered_search.vue';
 import { updateHistory } from '~/lib/utils/url_utility';
 import {
@@ -17,6 +23,9 @@ import {
 import FilteredSearchBarRoot from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import UserToken from '~/vue_shared/components/filtered_search_bar/tokens/user_token.vue';
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
+import workItemTypesConfigurationQuery from '~/work_items/graphql/work_item_types_configuration.query.graphql';
+
+Vue.use(VueApollo);
 
 jest.mock('~/lib/utils/url_utility', () => ({
   updateHistory: jest.fn(),
@@ -55,8 +64,14 @@ describe('BoardFilteredSearch', () => {
     },
   ];
 
-  const createComponent = ({ initialFilterParams = {}, props = {}, provide = {} } = {}) => {
+  const createComponent = ({
+    initialFilterParams = {},
+    props = {},
+    provide = {},
+    apolloProvider,
+  } = {}) => {
     wrapper = shallowMount(BoardFilteredSearch, {
+      apolloProvider,
       provide: {
         initialFilterParams,
         fullPath: '',
@@ -98,7 +113,7 @@ describe('BoardFilteredSearch', () => {
       });
     });
 
-    it('emits set-filters and updates URL when on-filter is emitted', () => {
+    it('emits submit-filters and updates URL when on-filter is emitted', () => {
       findFilteredSearch().vm.$emit('on-filter', [{ value: { data: '' } }]);
 
       expect(updateHistory).toHaveBeenCalledWith({
@@ -107,7 +122,8 @@ describe('BoardFilteredSearch', () => {
         url: 'http://test.host/',
       });
 
-      expect(wrapper.emitted('set-filters')).toHaveLength(1);
+      expect(wrapper.emitted('submit-filters')).toHaveLength(1);
+      expect(wrapper.emitted('set-filters')).toBeUndefined();
     });
   });
 
@@ -171,7 +187,7 @@ describe('BoardFilteredSearch', () => {
         url: 'http://test.host/?not[author_usernames][]=root&not[author_usernames][]=admin&not[assignee_username][]=root&not[assignee_username][]=admin&not[type][]=INCIDENT&not[type][]=ISSUE',
       });
 
-      expect(wrapper.emitted('set-filters')).toHaveLength(1);
+      expect(wrapper.emitted('submit-filters')).toHaveLength(1);
     });
 
     it('sets the url params for OR (is one of) filters', () => {
@@ -189,7 +205,7 @@ describe('BoardFilteredSearch', () => {
         url: 'http://test.host/?or%5Blabel_name%5D%5B%5D=bug&or%5Blabel_name%5D%5B%5D=feature&or%5Bauthor_username%5D%5B%5D=root&or%5Bauthor_username%5D%5B%5D=admin&or%5Bassignee_username%5D%5B%5D=root&or%5Bassignee_username%5D%5B%5D=admin',
       });
 
-      expect(wrapper.emitted('set-filters')).toHaveLength(1);
+      expect(wrapper.emitted('submit-filters')).toHaveLength(1);
     });
 
     it('serializes a type "is one of" (OR) filter as an encoded array of type[]', () => {
@@ -205,7 +221,7 @@ describe('BoardFilteredSearch', () => {
         url: 'http://test.host/?type%5B%5D=INCIDENT&type%5B%5D=ISSUE',
       });
 
-      expect(wrapper.emitted('set-filters')).toHaveLength(1);
+      expect(wrapper.emitted('submit-filters')).toHaveLength(1);
     });
 
     describe('when assignee is passed a wildcard value', () => {
@@ -349,6 +365,29 @@ describe('BoardFilteredSearch', () => {
     });
   });
 
+  describe('when the Type filter is resolved on load', () => {
+    it.each`
+      urlType    | description
+      ${'1'}     | ${'an ID'}
+      ${'ISSUE'} | ${'a legacy enum'}
+    `('emits set-filters, not submit-filters, when type is $description', async ({ urlType }) => {
+      setWindowLocation(`?type[]=${urlType}`);
+      createComponent({
+        initialFilterParams: { type: [urlType] },
+        apolloProvider: createMockApollo([
+          [
+            workItemTypesConfigurationQuery,
+            jest.fn().mockResolvedValue(mockWorkItemTypesConfigurationResponse),
+          ],
+        ]),
+      });
+      await waitForPromises();
+
+      expect(wrapper.emitted('set-filters')).toHaveLength(1);
+      expect(wrapper.emitted('submit-filters')).toBeUndefined();
+    });
+  });
+
   describe('when iteration is passed a wildcard value with a cadence id', () => {
     const url = (arg) => `http://test.host/?iteration_id=${arg}&iteration_cadence_id=1349`;
 
@@ -377,7 +416,7 @@ describe('BoardFilteredSearch', () => {
         url: expected,
       });
 
-      expect(wrapper.emitted('set-filters')).toStrictEqual([
+      expect(wrapper.emitted('submit-filters')).toStrictEqual([
         [
           {
             iterationCadenceId: '1349',
@@ -417,7 +456,7 @@ describe('BoardFilteredSearch', () => {
         url: 'http://test.host/?custom-field[1]=2',
       });
 
-      expect(wrapper.emitted('set-filters')).toHaveLength(1);
+      expect(wrapper.emitted('submit-filters')).toHaveLength(1);
     });
   });
 
@@ -448,7 +487,7 @@ describe('BoardFilteredSearch', () => {
         url: 'http://test.host/',
       });
 
-      expect(wrapper.emitted('set-filters')).toHaveLength(1);
+      expect(wrapper.emitted('submit-filters')).toHaveLength(1);
     });
   });
 });

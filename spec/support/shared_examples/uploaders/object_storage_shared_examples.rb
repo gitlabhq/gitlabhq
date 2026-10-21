@@ -57,8 +57,10 @@ RSpec.shared_examples "migrates" do |to_store:, from_store: nil|
   it 'can access to the original file during migration' do
     file = subject.file
 
-    allow(subject).to receive(:delete_migrated_file) {} # Remove as a callback of :migrate
-    allow(subject).to receive(:record_upload) {} # Remove as a callback of :store (:record_upload)
+    allow(subject).to receive_messages(
+      delete_migrated_file: nil, # Remove as a callback of :migrate
+      record_upload: nil # Remove as a callback of :store (:record_upload)
+    )
 
     expect(file.exists?).to be_truthy
     expect { migrate(to) }.not_to change { file.exists? }

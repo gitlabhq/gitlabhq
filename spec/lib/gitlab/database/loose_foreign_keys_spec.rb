@@ -6,6 +6,12 @@ RSpec.describe Gitlab::Database::LooseForeignKeys, feature_category: :database d
   subject(:definitions) { described_class.definitions }
 
   describe 'verify all definitions' do
+    it 'does not configure loose foreign keys for transient build tables' do
+      child_tables = definitions.map(&:from_table)
+
+      expect(child_tables).not_to include('ci_pending_builds', 'ci_running_builds')
+    end
+
     it 'all definitions have assigned a known gitlab_schema and on_delete' do
       is_expected.to all(
         have_attributes(

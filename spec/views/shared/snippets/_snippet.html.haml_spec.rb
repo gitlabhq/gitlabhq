@@ -6,8 +6,10 @@ RSpec.describe 'shared/snippets/_snippet.html.haml' do
   let_it_be_with_reload(:snippet) { create(:project_snippet) }
 
   before do
-    allow(view).to receive(:current_application_settings).and_return(Gitlab::CurrentSettings.current_application_settings)
-    allow(view).to receive(:can?) { true }
+    allow(view).to receive_messages(
+      current_application_settings: Gitlab::CurrentSettings.current_application_settings,
+      can?: true
+    )
 
     @noteable_meta_data = Class.new { include Gitlab::NoteableMetadata }.new.noteable_meta_data([snippet], 'Snippet')
   end

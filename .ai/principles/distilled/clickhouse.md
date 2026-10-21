@@ -1,6 +1,6 @@
 ---
-source_checksum: dbbc53aa2afafbf2
-distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
+source_checksum: 097240428ac7b0ad
+distilled_at_sha: 0598d6c1b5bb294276c7c644f29291505d54c4c1
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -28,6 +28,10 @@ distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
 - Name migration files with a `YYYYMMDDHHMMSS_description_of_migration.rb` timestamp prefix and place them in `db/click_house/migrate/`.
 - Implement both `up` and `down` methods in every migration.
 - Commit the schema version marker file generated under `db/click_house/schema_migrations/main/<version>` together with the migration — the `clickhouse:check-schema` CI job fails when a migration is merged without its marker file; if you lack a local ClickHouse instance, run the migration to generate the marker file before committing.
+- Make the statement that starts a background mutation (`MATERIALIZE PROJECTION`, `DROP PROJECTION` with `SETTINGS mutations_sync = 0`) the last statement on that table in the migration where possible; add all columns and projections first.
+- Run every `ALTER` that follows a background mutation on the same table with `execute_when_idle` instead of `execute` — this includes the first `ALTER` on that table in a migration that itself starts a mutation, and `ALTER`s in later migrations (same MR or same deployment) on a table with a mutation still running. Keep the default `timeout:`. A passing pipeline does not prove the order is safe (CI/CD runs a single ClickHouse server, not ClickHouse Cloud), so verify the statement order by reading the migration.
+- DO NOT set `mutations_sync` to `1` or `2` to wait for a mutation on a large table (the HTTP client has a 20-second read timeout) and DO NOT query `system.mutations` in a migration (the `gitlab` user lacks `system` table grants).
+- Use `IF EXISTS` and `IF NOT EXISTS` on every `ADD` and `DROP` statement, because each migration retry reruns the whole `up` method.
 
 ### Dictionaries
 
@@ -41,7 +45,7 @@ distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
 - Use ClickHouse placeholder syntax for variable interpolation to prevent sensitive data from being logged: `sql = 'SELECT * FROM events WHERE id > {min_id:UInt64}'`.
 - Use proper quoting via `ClickHouse::Client::Quoting.quote(...)` for fixed string interpolation assigned to Ruby constants to prevent SQL injection.
 - DO NOT use raw string interpolation for user-controlled or dynamic values in ClickHouse queries.
-- Use `ClickHouse::Client::Query` with named placeholders and a `placeholders` hash for parameterised queries; use the `Subquery` type to compose nested queries safely.
+- Use `ClickHouse::Client::Query` with named placeholders and a `placeholders` hash for parameterized queries; use the `Subquery` type to compose nested queries safely.
 - Use `ClickHouse::Client::QueryBuilder` for queries with multiple filter conditions instead of concatenating query fragments as strings.
 
 ### Data Insertion
@@ -100,9 +104,9 @@ distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
 
 - Wrap user-facing ClickHouse queries with `Gitlab::ApplicationContext.with_context(namespace: ...)` (not `push`) so the `root_namespace_id` is attributed in the `log_comment` sent to ClickHouse; background sync/ingest workers that have no namespace to attribute are exempt.
 
-### Siphon Schema Synchronisation
+### Siphon Schema Synchronization
 
-- When adding a new column to a PostgreSQL table that is synchronised to ClickHouse via Siphon, generate a corresponding ClickHouse migration to add the matching column to the `siphon_`-prefixed table.
+- When adding a new column to a PostgreSQL table that is synchronized to ClickHouse via Siphon, generate a corresponding ClickHouse migration to add the matching column to the `siphon_`-prefixed table.
 - Check `Gitlab::ClickHouse::SiphonGenerator::PG_TYPE_MAP` for the correct ClickHouse type mapping when adding Siphon columns; using the wrong type triggers a CI error.
 - Prefer `LowCardinality` where appropriate and use `Nullable` sparingly — prefer default values over `Nullable` columns in Siphon tables.
 - Always list sensitive columns (tokens, encrypted attributes) in `ignored_columns` in `db/siphon/tables/<table>.yml` — tests fail when such a column is missing from the configuration file.

@@ -117,8 +117,6 @@ Rails/Date:
     - 'spec/lib/gitlab/analytics/cycle_analytics/aggregated/base_query_builder_spec.rb'
     - 'spec/lib/gitlab/analytics/cycle_analytics/aggregated/records_fetcher_spec.rb'
     - 'spec/lib/gitlab/analytics/date_filler_spec.rb'
-    - 'spec/lib/gitlab/bitbucket_import/importers/issue_importer_spec.rb'
-    - 'spec/lib/gitlab/bitbucket_import/importers/issue_notes_importer_spec.rb'
     - 'spec/lib/gitlab/bitbucket_import/importers/pull_request_importer_spec.rb'
     - 'spec/lib/gitlab/bitbucket_import/importers/pull_request_notes_importer_spec.rb'
     - 'spec/lib/gitlab/ci/charts_spec.rb'

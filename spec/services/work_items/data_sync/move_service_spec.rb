@@ -140,6 +140,61 @@ RSpec.describe WorkItems::DataSync::MoveService, feature_category: :team_plannin
           expect(response).to be_success
           expect(new_work_item.work_item_type_id).to eq(incident_type.id)
         end
+
+        context 'when the converted type can have the existing children' do
+          let_it_be_with_reload(:task_child) { create(:work_item, :task, project: project) }
+
+          before do
+            create(:parent_link, work_item_parent: original_work_item, work_item: task_child)
+            stub_feature_flags(cleanup_data_source_work_item_data: false)
+          end
+
+          it 'preserves the hierarchy after converting the issue to an incident', :aggregate_failures do
+            response = service.execute
+            target_parent = response[:work_item]
+            target_child = WorkItem.find(task_child.reload.moved_to_id)
+
+            expect(response).to be_success
+            expect(target_parent.work_item_type_id).to eq(incident_type.id)
+            expect(target_child).to have_attributes(namespace_id: target_namespace.id, state: 'opened')
+            expect(target_child.parent_link.work_item_parent_id).to eq(target_parent.id)
+          end
+        end
+
+        context 'when the converted type cannot have the existing children' do
+          let_it_be_with_reload(:task_child) { create(:work_item, :task, project: project) }
+          let_it_be(:parent_link) do
+            create(:parent_link, work_item_parent: original_work_item, work_item: task_child)
+          end
+
+          let(:target_work_item_type_id) { build(:work_item_system_defined_type, :task).id }
+
+          before do
+            stub_feature_flags(cleanup_data_source_work_item_data: false)
+          end
+
+          it 'rejects the move before mutating either project', :aggregate_failures do
+            response = nil
+            validation_message = format(
+              _('cannot be changed to %{new_type} with these child item types.'), new_type: 'Task'
+            )
+
+            expect { response = service.execute }
+              .to not_change { WorkItem.count }
+              .and not_change { WorkItems::ParentLink.count }
+              .and not_change { Note.where(system: true).count }
+
+            expect(response).to be_error
+            expect(response).to have_attributes(
+              http_status: :unprocessable_entity,
+              message: "#{WorkItem.human_attribute_name(:work_item_type_id)} #{validation_message}"
+            )
+            expect(WorkItem.where(namespace_id: target_namespace.id)).to be_empty
+            expect(original_work_item.reload).to have_attributes(state: 'opened', moved_to_id: nil)
+            expect(task_child.reload).to have_attributes(state: 'opened', moved_to_id: nil)
+            expect(task_child.parent_link).to have_attributes(work_item_parent_id: original_work_item.id)
+          end
+        end
       end
 
       context 'when the type id does not resolve in the target namespace' do

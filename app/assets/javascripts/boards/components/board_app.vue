@@ -1,5 +1,5 @@
 <script>
-import { omit } from 'lodash-es';
+import { isEqual, omit } from 'lodash-es';
 import { parseBoolean } from '@gitlab/frontend-utils';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { historyPushState } from '~/lib/utils/common_utils';
@@ -143,6 +143,37 @@ export default {
       const filterParams = { ...filters };
       this.filterParams = filterParams;
     },
+    submitFilters(filters) {
+      const previousVariables = this.listQueryVariables;
+      this.setFilters(filters);
+
+      if (isEqual(previousVariables, this.listQueryVariables)) {
+        this.refetchBoard();
+      }
+    },
+    refetchBoard() {
+      const typename = this.isIssueBoard ? 'BoardList' : 'EpicList';
+      const itemsFieldName = `${this.issuableType}s`;
+      const countFieldName = this.isIssueBoard ? 'issuesCount' : 'metadata';
+
+      this.$apollo.getClient().refetchQueries({
+        include: [listsQuery[this.issuableType].query],
+        updateCache: (cache) => {
+          Object.keys(this.boardLists).forEach((listId) => {
+            const id = cache.identify({ __typename: typename, id: listId });
+            cache.evict({ id, fieldName: itemsFieldName });
+            cache.evict({ id, fieldName: countFieldName });
+          });
+
+          if (this.isSwimlanesOn) {
+            cache.evict({
+              id: cache.identify({ __typename: 'Board', id: this.boardId }),
+              fieldName: 'epics',
+            });
+          }
+        },
+      });
+    },
     setIsShowingEpicSwimlanes(value) {
       this.isShowingEpicsSwimlanes = value;
       this.saveIsShowingEpicSwimlanes();
@@ -212,6 +243,7 @@ export default {
       :filters="filterParams"
       @switch-board="switchBoard"
       @set-filters="setFilters"
+      @submit-filters="submitFilters"
       @toggle-swimlanes="setIsShowingEpicSwimlanes"
       @update-board="refetchLists"
     />

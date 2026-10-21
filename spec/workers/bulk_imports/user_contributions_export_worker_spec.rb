@@ -17,6 +17,15 @@ RSpec.describe BulkImports::UserContributionsExportWorker, :freeze_time, feature
   end
 
   describe '#perform' do
+    context 'when portable does not exist' do
+      it 'does not raise and returns early' do
+        expect(BulkImports::UserContributionsExportService).not_to receive(:new)
+
+        expect { described_class.new.perform(non_existing_record_id, project.class.name, user.id, offline_export.id) }
+          .not_to raise_error
+      end
+    end
+
     it_behaves_like 'an idempotent worker' do
       before do
         allow(described_class).to receive(:perform_in).twice
@@ -315,6 +324,22 @@ RSpec.describe BulkImports::UserContributionsExportWorker, :freeze_time, feature
 
       expect(user_contributions_export).to be_failed
       expect(user_contributions_export.error.size).to eq(255)
+    end
+
+    context 'when portable does not exist' do
+      it 'tracks exception and does not raise' do
+        job = { 'args' => [non_existing_record_id, project.class.name, user.id, offline_export.id] }
+        exception = StandardError.new('some error')
+
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+          exception,
+          portable_id: non_existing_record_id,
+          portable_type: project.class.name,
+          offline_export_id: offline_export.id
+        )
+
+        expect { described_class.new.perform_failure(job, exception) }.not_to raise_error
+      end
     end
   end
 end

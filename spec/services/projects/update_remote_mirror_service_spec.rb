@@ -293,7 +293,7 @@ RSpec.describe Projects::UpdateRemoteMirrorService, feature_category: :source_co
         end
 
         it 'does nothing if LFS is disabled' do
-          expect(project).to receive(:lfs_enabled?) { false }
+          expect(project).to receive(:lfs_enabled?).and_return(false)
 
           expect_any_instance_of(Lfs::PushService).not_to receive(:execute)
 

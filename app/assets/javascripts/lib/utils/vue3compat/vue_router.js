@@ -1,4 +1,4 @@
-import Vue, { computed } from 'vue';
+import Vue, { computed, isRef } from 'vue';
 import {
   createRouter,
   createMemoryHistory,
@@ -301,8 +301,7 @@ export default class VueRouterCompat {
           return target.options.history;
         }
         const result = target[prop];
-        // eslint-disable-next-line no-underscore-dangle
-        if (result?.__v_isRef) {
+        if (isRef(result)) {
           return result.value;
         }
 

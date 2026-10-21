@@ -224,7 +224,7 @@ Each per-team MR's approval is routed to the SSOT-owning team via the
 generated per-file rules in
 [`.gitlab/CODEOWNERS`](../../.gitlab/CODEOWNERS) (see [Manifest
 schema](#manifest-schema)). The separate tooling MR, which carries only
-the global routing tables (AGENTS.md, CLAUDE.md, SKILL.md), falls back
+the global routing tables (AGENTS.md, SKILL.md), falls back
 to the broad `/.ai/` and `/.claude/` AI-harness owners. The metadata MR
 updates only the frontmatter of principles whose re-distillation produced no
 meaningful changes. It still routes approval to each file's owning team, and
@@ -443,7 +443,7 @@ each opens a merge request that has to be merged in turn:
    sources and opens a per-team MR carrying
    `.ai/principles/distilled/<name>.md`, with approval routed to
    `owner_team` via CODEOWNERS. A separate tooling MR carries the global
-   routing tables (AGENTS.md, CLAUDE.md, SKILL.md).
+   routing tables (AGENTS.md, SKILL.md).
 1. Once the distilled-content and tooling MRs merge, agents (Claude Code,
    OpenCode) can discover and load the principle.
 1. The distilled-content merge then triggers the fence-reconcile job, which

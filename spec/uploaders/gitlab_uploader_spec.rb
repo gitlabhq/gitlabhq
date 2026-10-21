@@ -29,7 +29,7 @@ RSpec.describe GitlabUploader, feature_category: :shared do
   describe '#file_cache_storage?' do
     context 'when file storage is used' do
       before do
-        expect(uploader_class).to receive(:cache_storage) { CarrierWave::Storage::File }
+        expect(uploader_class).to receive(:cache_storage).and_return(CarrierWave::Storage::File)
       end
 
       it { is_expected.to be_file_cache_storage }
@@ -37,7 +37,7 @@ RSpec.describe GitlabUploader, feature_category: :shared do
 
     context 'when is remote storage' do
       before do
-        expect(uploader_class).to receive(:cache_storage) { CarrierWave::Storage::Fog }
+        expect(uploader_class).to receive(:cache_storage).and_return(CarrierWave::Storage::Fog)
       end
 
       it { is_expected.not_to be_file_cache_storage }
@@ -120,12 +120,12 @@ RSpec.describe GitlabUploader, feature_category: :shared do
 
     context 'when trace is stored in Object storage' do
       before do
-        allow(subject).to receive(:file_storage?) { false }
+        allow(subject).to receive(:file_storage?).and_return(false)
       end
 
       context 'when file exists' do
         before do
-          allow(subject).to receive(:url) { 'http://object_storage.com/trace' }
+          allow(subject).to receive(:url).and_return('http://object_storage.com/trace')
         end
 
         it 'returns http io stream' do

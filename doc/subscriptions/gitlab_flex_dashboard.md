@@ -1,6 +1,6 @@
 ---
-stage: Fulfillment
-group: Utilization
+stage: Monetization
+group: Subscription Lifecycle
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: View your GitLab Flex commitment and usage, adjust your reservation, and control your spend.
 title: Flex dashboard

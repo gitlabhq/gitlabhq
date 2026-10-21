@@ -4,7 +4,6 @@ module Gitlab
   module BitbucketImport
     class RefConverter
       REPO_MATCHER = 'https://bitbucket.org/%s'
-      PR_NOTE_ISSUE_NAME_REGEX = "(issues\/.*\/(.*)\\))"
       UNWANTED_NOTE_REF_HTML = "{: data-inline-card='' }"
 
       attr_reader :project
@@ -14,38 +13,36 @@ module Gitlab
       end
 
       def convert_note(note)
-        repo_matcher = REPO_MATCHER % project.import_source
+        repo_url = REPO_MATCHER % project.import_source
+        # A Bitbucket slug can contain letters, digits, `_`, `-` and `.`, so a `.` ends the
+        # repo name only when no slug character follows it. This keeps `repo.git` and
+        # `repo.name` out, but still converts a link that ends a sentence.
+        url_pattern = %r{#{Regexp.escape(repo_url)}(?!\.*[\w-])[^\s)\]]*}
 
-        return note unless note.match?(repo_matcher)
+        return note unless note.match?(url_pattern)
 
-        note = note.gsub(repo_matcher, url_helpers.project_url(project))
-                   .gsub(UNWANTED_NOTE_REF_HTML, '')
-                   .strip
-
-        if note.match?('issues')
-          note.gsub!('issues', '-/issues')
-          note.gsub!("/#{issue_name(note)}", '') if issue_name(note)
-        else
-          note.gsub!('pull-requests', '-/merge_requests')
-          note.gsub!('src', '-/blob')
-          note.gsub!('lines-', 'L')
-        end
-
-        note
+        note.gsub(UNWANTED_NOTE_REF_HTML, '')
+            .gsub(url_pattern) { |url| convert_url(url, repo_url) }
+            .strip
       end
 
       private
 
-      def url_helpers
-        Rails.application.routes.url_helpers
+      # Issues are not imported, so a converted issue link would point to a missing GitLab issue.
+      def convert_url(url, repo_url)
+        path = url.delete_prefix(repo_url)
+
+        return url if path.start_with?('/issues')
+
+        path = path.sub(%r{\A/pull-requests}, '/-/merge_requests')
+                   .sub(%r{\A/src}, '/-/blob')
+                   .sub('#lines-', '#L')
+
+        "#{url_helpers.project_url(project)}#{path}"
       end
 
-      def issue_name(note)
-        match_data = note.match(PR_NOTE_ISSUE_NAME_REGEX)
-
-        return unless match_data
-
-        match_data[2]
+      def url_helpers
+        Rails.application.routes.url_helpers
       end
     end
   end

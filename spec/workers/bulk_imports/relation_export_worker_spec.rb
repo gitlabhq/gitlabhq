@@ -22,6 +22,17 @@ RSpec.describe BulkImports::RelationExportWorker, feature_category: :importers d
   end
 
   describe '#perform' do
+    context 'when user or portable does not exist' do
+      it 'does not raise and returns early' do
+        expect(BulkImports::FileTransfer).not_to receive(:config_for)
+
+        expect { described_class.new.perform(non_existing_record_id, group.id, group.class.name, relation, batched) }
+          .not_to raise_error
+        expect { described_class.new.perform(user.id, non_existing_record_id, group.class.name, relation, batched) }
+          .not_to raise_error
+      end
+    end
+
     include_examples 'an idempotent worker' do
       context 'when export record does not exist' do
         let(:another_group) { create(:group) }
@@ -133,6 +144,16 @@ RSpec.describe BulkImports::RelationExportWorker, feature_category: :importers d
 
     let_it_be_with_reload(:offline_relation_export) do
       create(:bulk_import_export, :offline, group: group, relation: relation, user_id: user.id)
+    end
+
+    context 'when user or portable does not exist' do
+      it 'does not raise and returns early' do
+        job_missing_user = { 'args' => [non_existing_record_id, group.id, group.class.name, relation, batched, {}] }
+        job_missing_group = { 'args' => [user.id, non_existing_record_id, group.class.name, relation, batched, {}] }
+
+        expect { described_class.perform_failure(job_missing_user, StandardError.new) }.not_to raise_error
+        expect { described_class.perform_failure(job_missing_group, StandardError.new) }.not_to raise_error
+      end
     end
 
     shared_examples 'a failed relation export' do

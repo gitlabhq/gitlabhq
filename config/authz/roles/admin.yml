@@ -31,9 +31,11 @@ organization:
   - create_govern_policy
   - create_group
   - create_organization_user
+  - create_webhook
   - delete_govern_policy
   - delete_organization
   - delete_organization_user
+  - delete_webhook
   - read_admin_users
   - read_artifact_registry
   - read_govern_policy
@@ -41,10 +43,13 @@ organization:
   - read_organization_user
   - read_user_access_level
   - read_user_groups
+  - read_webhook
   - read_work_item_type
   - restore_organization
+  - test_webhook
   - transfer_group
   - update_govern_policy
   - update_integration
   - update_organization
   - update_organization_user
+  - update_webhook

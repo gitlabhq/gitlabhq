@@ -11,6 +11,7 @@ module Issues
     end
 
     def execute(issue)
+      @move_errors = nil
       handle_move_between_ids(issue)
 
       change_issue_duplicate(issue)
@@ -119,15 +120,30 @@ module Issues
       move_params = {}
       move_params[:target_work_item_type_id] = target_work_item_type_id if target_work_item_type_id
 
-      ::WorkItems::DataSync::MoveService.new(
+      move_response = ::WorkItems::DataSync::MoveService.new(
         work_item: issue, current_user: current_user, target_namespace: move_service_container,
         params: move_params
-      ).execute[:work_item]
+      ).execute
+
+      return move_response[:work_item] unless move_response.error?
+
+      @move_errors = move_response.errors
+      add_move_errors(issue)
+      issue
     end
 
     private
 
     attr_reader :perform_spam_check
+
+    # Model validation can regenerate an error also returned by the move.
+    def add_move_errors(issue)
+      Array(@move_errors).each do |message|
+        next if issue.errors.full_messages.include?(message)
+
+        issue.errors.add(:base, message)
+      end
+    end
 
     override :after_update
     def after_update(issue, old_associations)

@@ -1468,7 +1468,11 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         context 'for users who does not have the ability to update default_branch_protection`' do
           it 'does not update the attribute', :aggregate_failures do
             allow(Ability).to receive(:allowed?).and_call_original
-            allow(Ability).to receive(:allowed?).with(user1, :update_default_branch_protection, group1) { false }
+            allow(Ability).to receive(:allowed?).with(
+              user1,
+              :update_default_branch_protection,
+              group1
+            ).and_return(false)
 
             subject
 
@@ -3520,7 +3524,10 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         context 'for users who do not have the ability to create a group with `default_branch_protection`' do
           it 'does not create the group with the specified branch protection level', :aggregate_failures do
             allow(Ability).to receive(:allowed?).and_call_original
-            allow(Ability).to receive(:allowed?).with(user3, :create_group_with_default_branch_protection) { false }
+            allow(Ability).to receive(:allowed?).with(
+              user3,
+              :create_group_with_default_branch_protection
+            ).and_return(false)
 
             subject
 

@@ -93,7 +93,7 @@ RSpec.describe Suggestions::CreateService, feature_category: :code_review_workfl
         end
 
         before do
-          allow(note).to receive(:on_text?) { false }
+          allow(note).to receive(:on_text?).and_return(false)
         end
 
         it 'does not try to parse suggestions' do
@@ -119,7 +119,7 @@ RSpec.describe Suggestions::CreateService, feature_category: :code_review_workfl
 
       before do
         expect_next_instance_of(DiffNote) do |diff_note|
-          expect(diff_note).to receive(:latest_diff_file).once { nil }
+          expect(diff_note).to receive(:latest_diff_file).once.and_return(nil)
         end
       end
 

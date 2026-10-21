@@ -23,14 +23,14 @@ RSpec.shared_examples 'can move repository storage' do
     end
 
     it 'raises an error when there is an existing git transfer in progress' do
-      allow(container).to receive(:git_transfer_in_progress?) { true }
+      allow(container).to receive(:git_transfer_in_progress?).and_return(true)
 
       expect { container.set_repository_read_only! }.to raise_error(described_class::RepositoryReadOnlyError, /in progress/)
     end
 
     context 'skip_git_transfer_check is true' do
       it 'makes the project read-only when git transfers are in progress' do
-        allow(container).to receive(:git_transfer_in_progress?) { true }
+        allow(container).to receive(:git_transfer_in_progress?).and_return(true)
 
         expect { container.set_repository_read_only!(skip_git_transfer_check: true) }
           .to change { container.repository_read_only? }

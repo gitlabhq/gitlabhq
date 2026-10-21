@@ -36,6 +36,10 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
 
     context 'when admin mode is enabled', :enable_admin_mode do
       it { expect_allowed(:restore_organization) }
+
+      it 'is granted the granular webhook abilities' do
+        expect_allowed(:read_webhook, :create_webhook, :update_webhook, :delete_webhook, :test_webhook)
+      end
     end
 
     context 'when admin mode is disabled' do
@@ -46,6 +50,7 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
       it { expect_disallowed(:transfer_group) }
       it { expect_disallowed(:update_integration) }
       it { expect_disallowed(:read_artifact_registry) }
+      it { expect_disallowed(:read_webhook, :create_webhook, :update_webhook, :delete_webhook, :test_webhook) }
 
       context 'when the organization is private' do
         it { expect_disallowed(:read_organization) }
@@ -74,6 +79,10 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
     end
 
     it { expect_allowed(:update_organization) }
+
+    it 'is granted the granular webhook abilities' do
+      expect_allowed(:read_webhook, :create_webhook, :update_webhook, :delete_webhook, :test_webhook)
+    end
   end
 
   context 'when the user is not part of the organization' do
@@ -87,6 +96,10 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :organizatio
     it { expect_disallowed(:transfer_group) }
     it { expect_disallowed(:access_organization_admin_area) }
     it { expect_disallowed(:update_integration) }
+
+    it 'is not granted any granular webhook ability' do
+      expect_disallowed(:read_webhook, :create_webhook, :update_webhook, :delete_webhook, :test_webhook)
+    end
 
     context 'when the organization is private' do
       it { expect_disallowed(:read_organization) }

@@ -166,7 +166,6 @@ RSpec/RailsControllerTesting:
     - 'spec/controllers/oauth/device_authorizations_controller_spec.rb'
     - 'spec/controllers/omniauth_callbacks_controller_spec.rb'
     - 'spec/controllers/passwords_controller_spec.rb'
-    - 'spec/controllers/profiles/avatars_controller_spec.rb'
     - 'spec/controllers/profiles/notifications_controller_spec.rb'
     - 'spec/controllers/profiles/preferences_controller_spec.rb'
     - 'spec/controllers/profiles/slacks_controller_spec.rb'

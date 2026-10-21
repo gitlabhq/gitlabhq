@@ -778,6 +778,27 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
     end
   end
 
+  describe '#hierarchy_errors_for_move_to' do
+    it 'checks the existing parent without changing the source', :aggregate_failures do
+      parent = create(:work_item, :issue, project: reusable_project)
+      child = create(:work_item, :task, project: reusable_project)
+      create(:parent_link, work_item_parent: parent, work_item: child)
+
+      errors = child.hierarchy_errors_for_move_to(
+        target_namespace: reusable_project.project_namespace,
+        target_type: build(:work_item_system_defined_type, :issue)
+      )
+
+      validation_message = format(
+        _('cannot be changed to %{new_type} when linked to a parent %{parent_type}.'),
+        new_type: 'issue', parent_type: 'issue'
+      )
+
+      expect(errors).to include("#{described_class.human_attribute_name(:work_item_type_id)} #{validation_message}")
+      expect(child.reload.work_item_type_id).to eq(build(:work_item_system_defined_type, :task).id)
+    end
+  end
+
   describe '#validate_child_restrictions' do
     let_it_be(:project) { create(:project) }
     let_it_be_with_refind(:parent_work_item) { create(:work_item, :issue, project: project) }

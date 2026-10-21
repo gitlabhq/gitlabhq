@@ -72,6 +72,18 @@ module WorkItems
         verify_can_move_work_item(work_item, target_namespace)
       end
 
+      def verify_target_work_item_type
+        response = super
+        return response if response.error?
+
+        hierarchy_errors = work_item.hierarchy_errors_for_move_to(
+          target_namespace: target_namespace, target_type: resolved_target_work_item_type
+        )
+        return response if hierarchy_errors.empty?
+
+        error(hierarchy_errors.to_sentence, :unprocessable_entity)
+      end
+
       def data_sync_action
         return success({ work_item: work_item }) if same_namespace?(target_namespace, work_item)
 

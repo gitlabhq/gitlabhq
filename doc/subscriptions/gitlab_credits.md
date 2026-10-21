@@ -1,6 +1,6 @@
 ---
 stage: Fulfillment
-group: Utilization
+group: Usage Visibility
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Understand how GitLab Credits work and view your credit usage.
 title: GitLab Credits and usage billing
@@ -33,8 +33,6 @@ You are billed for features that are [generally available](../policy/development
 Some pre-release features also incur usage charges. If charges apply, the feature's documentation page notes this.
 
 Billing occurs at the root namespace or top-level group level, not at the project level.
-Credit usage is attributed to the subject who performs the action, regardless of which project they are using the features in.
-A subject is either a human user or a non-human subject (for example, a service account or a bot running an automated flow).
 
 All usage in a root namespace or top-level group is consolidated for billing purposes.
 
@@ -95,9 +93,6 @@ Included credits are not allocated to:
 
 - [Community program subscriptions](community_programs.md)
 - Non-human subjects
-
-Consumption by non-human subjects is billed for top-level groups
-from the monthly commitment pool and on-demand credits in the same usage order as for human users.
 
 For more information about included credits, see [GitLab Promotions Terms & Conditions](https://about.gitlab.com/pricing/terms/).
 
@@ -164,6 +159,22 @@ GitLab Credits are consumed in the following order:
 
 Other credit types, such as One-Time Charge credits, might apply to your subscription.
 For details, contact your account team.
+
+## Billing subjects for credit usage
+
+Credit usage is billed to a subject, regardless of which project they use the feature in.
+
+A subject is either human (a user) or non-human (such as a service account),
+depending on how the feature runs:
+
+- When a user uses a feature directly, such as GitLab Duo Agentic Chat, usage is billed to that user.
+- When a flow runs as a service account with composite identity, usage is billed to the namespace,
+  even if a user started the flow.
+  These flows include foundational flows, such as Code Review Flow, and custom flows.
+  For the full list, see [where composite identity is used](../user/duo_agent_platform/composite_identity.md#where-composite-identity-is-used).
+
+Usage billed to the namespace draws from the monthly commitment pool and on-demand credits,
+in the same usage order as for human users.
 
 ## Usage billing terms
 

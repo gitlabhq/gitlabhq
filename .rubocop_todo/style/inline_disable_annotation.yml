@@ -1545,8 +1545,6 @@ Style/InlineDisableAnnotation:
     - 'lib/gitlab/background_migration/batched_migration_job.rb'
     - 'lib/gitlab/background_migration/redis/backfill_project_pipeline_status_ttl.rb'
     - 'lib/gitlab/background_task.rb'
-    - 'lib/gitlab/bitbucket_import/importers/issue_importer.rb'
-    - 'lib/gitlab/bitbucket_import/importers/issue_notes_importer.rb'
     - 'lib/gitlab/blob_helper.rb'
     - 'lib/gitlab/cache/ci/project_pipeline_status.rb'
     - 'lib/gitlab/cache/request_cache.rb'

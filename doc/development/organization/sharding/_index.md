@@ -67,7 +67,9 @@ The following are examples of a valid sharding key:
     group_id: namespaces
   ```
 
-- (Only for `gitlab_main_user`) The table entries belong only to a user:
+- (Only for `gitlab_main_user`) The table entries belong only to a user.
+  As much as possible, user-scoped data should be limited to only identity,
+  meaning the data that establishes who the user is:
 
   ```yaml
   sharding_key:

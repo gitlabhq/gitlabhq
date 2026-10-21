@@ -97,6 +97,8 @@ For more information, see [composite identity workflow](../../composite_identity
 When a foundational flow creates a merge request, the merge request is attributed to the human user who triggered the flow instead of the service account.
 This is done to adhere to compliance frameworks that require segregation of duties. See [compliance considerations](../../composite_identity.md#compliance-considerations-for-merge-requests).
 
+This attribution does not determine [who is billed for usage](../../../../subscriptions/gitlab_credits.md#billing-subjects-for-credit-usage).
+
 ## Turn foundational flows on or off
 
 You can turn foundational flows on or off:

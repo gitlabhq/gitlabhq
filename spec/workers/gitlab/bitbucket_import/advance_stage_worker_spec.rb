@@ -62,6 +62,12 @@ RSpec.describe Gitlab::BitbucketImport::AdvanceStageWorker, :clean_gitlab_redis_
         worker.perform(project.id, { '123' => 2 }, :finish)
       end
 
+      it 'still resolves the issue stages so in-flight imports can advance' do
+        expect(Gitlab::BitbucketImport::Stage::ImportIssuesWorker).to receive(:perform_async).with(project.id)
+
+        worker.perform(project.id, { '123' => 2 }, :issues)
+      end
+
       it 'raises KeyError when the stage name is invalid' do
         expect { worker.perform(project.id, { '123' => 2 }, :kittens) }
           .to raise_error(KeyError)

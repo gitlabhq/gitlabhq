@@ -3,6 +3,9 @@
 module Gitlab
   module BitbucketImport
     module Stage
+      # Bitbucket Cloud no longer offers an issue API, so issue notes are not imported.
+      # Kept so imports in flight during the deploy can still advance. See
+      # https://gitlab.com/gitlab-org/gitlab/-/work_items/601064
       class ImportIssuesNotesWorker # rubocop:disable Scalability/IdempotentWorker
         include StageMethods
 
@@ -10,17 +13,7 @@ module Gitlab
 
         # project - An instance of Project.
         def import(project)
-          waiter = importer_class.new(project).execute
-
-          AdvanceStageWorker.perform_async(
-            project.id,
-            { waiter.key => waiter.jobs_remaining },
-            :lfs_objects
-          )
-        end
-
-        def importer_class
-          Importers::IssuesNotesImporter
+          AdvanceStageWorker.perform_async(project.id, {}, :lfs_objects)
         end
       end
     end

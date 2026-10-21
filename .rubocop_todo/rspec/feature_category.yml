@@ -588,7 +588,6 @@ RSpec/FeatureCategory:
     - 'spec/controllers/metrics_controller_spec.rb'
     - 'spec/controllers/oauth/authorized_applications_controller_spec.rb'
     - 'spec/controllers/oauth/token_info_controller_spec.rb'
-    - 'spec/controllers/profiles/avatars_controller_spec.rb'
     - 'spec/controllers/profiles/emails_controller_spec.rb'
     - 'spec/controllers/profiles_controller_spec.rb'
     - 'spec/controllers/projects/analytics/cycle_analytics/stages_controller_spec.rb'

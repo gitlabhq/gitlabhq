@@ -1,15 +1,26 @@
 # GitLab AI Instructions
 
 This directory contains modular AI agent instruction files for the GitLab
-project. These files are referenced from `AGENTS.md` (and its identical copy
-`CLAUDE.md`) at the repository root via `.ai/...` paths.
+project. These files are referenced from `AGENTS.md` at the repository root
+via `.ai/...` paths.
 
 ## How It Works
 
-- **`AGENTS.md`** and **`CLAUDE.md`** at the repo root (and optionally at
-  subdirectory levels) are the entry points. They are identical in content —
-  `AGENTS.md` is the source of truth.
-- Each entry point references module files in `.ai/` via `.ai/<module>.md`.
+- **`AGENTS.md`** at the repo root (and optionally at subdirectory levels)
+  is the entry point.
+- Each `AGENTS.md` has a `CLAUDE.md` next to it that contains only the
+  `@AGENTS.md` import. Claude Code skips `AGENTS.md` when a `CLAUDE.md` or
+  `CLAUDE.local.md` exists, so the import keeps one set of instructions for
+  all tools. Put instructions in `AGENTS.md`, not in `CLAUDE.md`. When you
+  add an `AGENTS.md`, add the `CLAUDE.md` too.
+- When you start Claude Code in a subdirectory, the imports in the parent
+  `CLAUDE.md` files are external to the working directory. Approve them when
+  Claude Code asks. Claude Code asks only once per project. If you decline,
+  or if a non-interactive session has no earlier approval, Claude Code does
+  not load the parent instructions. Start scripted runs, such as
+  `claude -p`, at the repository root. A non-interactive session cannot show
+  the approval dialog.
+- The entry point references module files in `.ai/` via `.ai/<module>.md`.
 - The `.ai/*` pattern is gitignored, so you can add personal instruction files
   here without them being committed. Committed modules were added with
   `git add --force`. Files already tracked by git (force-added) will continue
@@ -37,7 +48,7 @@ project. These files are referenced from `AGENTS.md` (and its identical copy
 
 ## How instructions are loaded
 
-- **Root `AGENTS.md` / `CLAUDE.md`**: The Context Loading section routes
+- **Root `AGENTS.md`**: The Context Loading section routes
   task types to the hand-authored topical modules (`.ai/git.md`,
   `.ai/merge-requests.md`, `.ai/ci-cd.md`) and points domain-specific work
   at the `gitlab-coding-principles` skill.
@@ -113,13 +124,13 @@ To add a new shared module that all contributors benefit from:
 
 1. Create the file in `.ai/` (e.g., `.ai/new-module.md`)
 2. Force-add it: `git add --force .ai/new-module.md`
-3. Reference it from `AGENTS.md` and `CLAUDE.md` (keep them identical)
+3. Reference it from `AGENTS.md`
 4. Commit
 
 ## Local Overrides
 
 Create `CLAUDE.local.md` at the repository root for personal customizations.
-Both `AGENTS.md` and `CLAUDE.md` reference it explicitly via `Read @CLAUDE.local.md`,
+`AGENTS.md` references it explicitly via `Read @CLAUDE.local.md`,
 so every agent picks it up. It can in turn reference any additional gitignored
 files you keep in `.ai/` or elsewhere.
 

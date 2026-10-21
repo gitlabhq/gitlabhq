@@ -1,10 +1,6 @@
 ---
 Gitlab/NoFindInWorkers:
   Exclude:
-    - 'app/workers/bulk_imports/pipeline_worker.rb'
-    - 'app/workers/bulk_imports/relation_batch_export_worker.rb'
-    - 'app/workers/bulk_imports/relation_export_worker.rb'
-    - 'app/workers/bulk_imports/user_contributions_export_worker.rb'
     - 'app/workers/concerns/project_import_options.rb'
     - 'app/workers/delete_diff_files_worker.rb'
     - 'app/workers/delete_merged_branches_worker.rb'

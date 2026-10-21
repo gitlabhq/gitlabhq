@@ -30,7 +30,9 @@ module BulkImports
     def self.perform_failure(job, exception)
       user_id, portable_id, portable_type, relation, batched, params = job['args']
       portable = portable(portable_id, portable_type)
-      user = User.find(user_id)
+      user = User.find_by_id(user_id)
+
+      return unless portable && user
 
       offline_export_id = params&.dig('offline_export_id')
 
@@ -54,14 +56,17 @@ module BulkImports
     end
 
     def self.portable(portable_id, portable_class)
-      portable_class.classify.constantize.find(portable_id)
+      portable_class.classify.constantize.find_by_id(portable_id)
     end
 
     # @param params [Hash] optional parameters
     # @option params [Integer] :offline_export_id ID of offline export to which export is related
     def perform(user_id, portable_id, portable_class, relation, batched, params = {})
-      @user = User.find(user_id)
+      @user = User.find_by_id(user_id)
       portable = self.class.portable(portable_id, portable_class)
+
+      return unless @user && portable
+
       config = BulkImports::FileTransfer.config_for(
         portable,
         offline: params['offline_export_id'].present?

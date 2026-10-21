@@ -14,7 +14,7 @@ RSpec.describe 'admin/application_settings/_package_registry' do
   before do
     assign(:application_setting, application_setting)
     allow(view).to receive(:current_user) { admin }
-    allow(view).to receive(:expanded) { true }
+    allow(view).to receive(:expanded).and_return(true)
   end
 
   subject { render partial: 'admin/application_settings/package_registry' }

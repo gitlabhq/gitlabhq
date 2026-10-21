@@ -1,6 +1,6 @@
 ---
 stage: Fulfillment
-group: Provision
+group: Entitlements
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Assign GitLab Duo seats to users using the GraphQL API. Learn prerequisites, queries, mutations, and how to manage add-on seat assignments efficiently.
 title: Assign GitLab Duo seats by using GraphQL

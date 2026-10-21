@@ -5,5 +5,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231205
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/596882
 milestone: '19.0'
 group: group::portfolio planning
-type: wip
-default_enabled: false
+type: beta
+default_enabled: true

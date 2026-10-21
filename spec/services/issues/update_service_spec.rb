@@ -1665,6 +1665,68 @@ RSpec.describe Issues::UpdateService, :mailer, :request_store, feature_category:
 
           update_issue(target_container: target_project, target_work_item_type_id: type_id)
         end
+
+        context 'when the converted type cannot have the issue children' do
+          let(:type_id) { build(:work_item_system_defined_type, :task).id }
+          let(:task_child) { create(:work_item, :task, project: project) }
+
+          before do
+            create(:parent_link, work_item_parent: WorkItem.find(issue.id), work_item: task_child)
+          end
+
+          it 'reports the failed move while preserving an unrelated edit', :aggregate_failures do
+            validation_message = format(
+              _('cannot be changed to %{new_type} with these child item types.'), new_type: 'Task'
+            )
+            update_service = described_class.new(
+              container: project, current_user: user,
+              params: { title: 'Edited title', target_container: target_project, target_work_item_type_id: type_id }
+            )
+
+            result = update_service.execute(issue)
+
+            expect(result.errors.full_messages).to include(
+              "#{WorkItem.human_attribute_name(:work_item_type_id)} #{validation_message}"
+            )
+            expect(issue.reload).to have_attributes(title: 'Edited title', state: 'opened', moved_to_id: nil)
+            expect(task_child.reload.parent_link.work_item_parent_id).to eq(issue.id)
+            expect(WorkItem.where(namespace_id: target_project.project_namespace_id)).to be_empty
+            expect(find_notes('moved')).to be_empty
+            expect(task_child.notes.joins(:system_note_metadata).where(system_note_metadata: { action: 'moved' }))
+              .to be_empty
+          end
+        end
+
+        context 'when the target type is unavailable' do
+          let(:type_id) { non_existing_record_id }
+
+          it 'adds the string move error to the source issue', :aggregate_failures do
+            result = update_issue(target_container: target_project, target_work_item_type_id: type_id)
+
+            expect(result.errors[:base]).to contain_exactly(
+              'Unable to move. The selected work item type is not available in the target namespace.'
+            )
+            expect(issue.reload).to have_attributes(state: 'opened', moved_to_id: nil)
+            expect(WorkItem.where(namespace_id: target_project.project_namespace_id)).to be_empty
+          end
+        end
+      end
+
+      context 'when moving a ticket whose author is unavailable at the destination' do
+        let_it_be(:support_bot) { create(:support_bot) }
+        let_it_be(:target_project) { create(:project, maintainers: user) }
+        let(:issue) do
+          create(:work_item, :ticket, project: project, author: support_bot,
+            service_desk_reply_to: 'user@example.com')
+        end
+
+        it 'adds each validation message rather than an array error', :aggregate_failures do
+          result = update_issue(target_container: target_project)
+
+          expect(result.errors[:base]).to contain_exactly(a_string_matching(/could not be found or is not accessible/))
+          expect(issue.reload).to have_attributes(state: 'opened', moved_to_id: nil)
+          expect(WorkItem.where(namespace_id: target_project.project_namespace_id)).to be_empty
+        end
       end
     end
 

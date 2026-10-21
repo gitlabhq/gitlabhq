@@ -43,7 +43,7 @@ export default {
       required: true,
     },
   },
-  emits: ['set-filters', 'switch-board', 'toggle-swimlanes', 'update-board'],
+  emits: ['set-filters', 'submit-filters', 'switch-board', 'toggle-swimlanes', 'update-board'],
   data() {
     return {
       board: {},
@@ -124,6 +124,7 @@ export default {
           :filters="filters"
           class="gl-min-w-0"
           @set-filters="$emit('set-filters', $event)"
+          @submit-filters="$emit('submit-filters', $event)"
         />
         <epic-board-filtered-search
           v-else
@@ -131,6 +132,7 @@ export default {
           :filters="filters"
           class="gl-min-w-0"
           @set-filters="$emit('set-filters', $event)"
+          @submit-filters="$emit('submit-filters', $event)"
         />
       </div>
       <div class="gl-hidden gl-gap-2 @md/panel:gl-flex">

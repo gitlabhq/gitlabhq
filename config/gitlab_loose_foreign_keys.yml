@@ -228,20 +228,6 @@ ci_namespace_mirrors:
   - table: organizations
     column: organization_id
     on_delete: async_delete
-ci_pending_builds:
-  - table: ci_runner_machines
-    column: runner_machine_id
-    on_delete: async_nullify
-    worker_class: LooseForeignKeys::CiRunnersCleanupCronWorker
-  - table: namespaces
-    column: namespace_id
-    on_delete: async_delete
-  - table: projects
-    column: project_id
-    on_delete: async_delete
-  - table: plans
-    column: plan_id
-    on_delete: async_delete
 ci_pipeline_artifacts:
   - table: projects
     column: project_id
@@ -317,14 +303,6 @@ ci_runners:
   - table: organizations
     column: organization_id
     on_delete: async_delete
-ci_running_builds:
-  - table: projects
-    column: project_id
-    on_delete: async_delete
-  - table: ci_runners
-    column: runner_id
-    on_delete: async_delete
-    worker_class: LooseForeignKeys::CiRunnersCleanupCronWorker
 ci_secure_file_states:
   - table: ci_secure_files
     column: ci_secure_file_id

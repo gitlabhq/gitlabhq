@@ -2283,7 +2283,6 @@
 - './spec/controllers/omniauth_callbacks_controller_spec.rb'
 - './spec/controllers/passwords_controller_spec.rb'
 - './spec/controllers/profiles/accounts_controller_spec.rb'
-- './spec/controllers/profiles/avatars_controller_spec.rb'
 - './spec/controllers/profiles_controller_spec.rb'
 - './spec/controllers/profiles/emails_controller_spec.rb'
 - './spec/controllers/profiles/notifications_controller_spec.rb'

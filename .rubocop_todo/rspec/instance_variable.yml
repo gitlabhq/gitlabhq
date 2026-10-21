@@ -34,7 +34,6 @@ RSpec/InstanceVariable:
     - 'spec/controllers/metrics_controller_spec.rb'
     - 'spec/controllers/omniauth_callbacks_controller_spec.rb'
     - 'spec/controllers/passwords_controller_spec.rb'
-    - 'spec/controllers/profiles/avatars_controller_spec.rb'
     - 'spec/controllers/sessions_controller_spec.rb'
     - 'spec/features/markdown/copy_as_gfm_spec.rb'
     - 'spec/features/markdown/gitlab_flavored_markdown_spec.rb'

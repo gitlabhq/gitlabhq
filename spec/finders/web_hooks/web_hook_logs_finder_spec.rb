@@ -119,5 +119,28 @@ RSpec.describe WebHooks::WebHookLogsFinder, :freeze_time, feature_category: :web
         end
       end
     end
+
+    context 'with a system hook' do
+      let_it_be_with_refind(:organization) { create(:organization) }
+      let_it_be_with_refind(:other_organization) { create(:organization) }
+      let_it_be(:organization_admin) { create(:user) }
+      let_it_be_with_refind(:system_hook) { create(:system_hook, organization: organization) }
+      let_it_be(:system_hook_log) { create(:web_hook_log, web_hook: system_hook, created_at: 10.minutes.ago) }
+
+      before_all do
+        create(:organization_owner, organization: organization, user: organization_admin)
+      end
+
+      it 'returns the logs for an admin of the hook organization' do
+        expect(described_class.new(system_hook, organization_admin).execute).to contain_exactly(system_hook_log)
+      end
+
+      it 'returns no logs for an admin of a different organization' do
+        other_admin = create(:user)
+        create(:organization_owner, organization: other_organization, user: other_admin)
+
+        expect(described_class.new(system_hook, other_admin).execute).to be_empty
+      end
+    end
   end
 end

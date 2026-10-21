@@ -36,16 +36,6 @@ RSpec.shared_examples 'a database sync event table' do |factory|
     it 'requires every consumer column' do
       expect(described_class.synced_conditions).to eq(ci_synced: true, sec_synced: true)
     end
-
-    context 'when the sync_sec_mirror_tables feature flag is disabled' do
-      before do
-        stub_feature_flags(sync_sec_mirror_tables: false)
-      end
-
-      it 'requires only the ci column' do
-        expect(described_class.synced_conditions).to eq(ci_synced: true)
-      end
-    end
   end
 
   describe '.upper_bound_count' do

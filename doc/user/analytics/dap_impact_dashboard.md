@@ -82,16 +82,19 @@ The **Activity summary** section displays the following metrics:
 The **MR cycle time** section displays the following metrics:
 
 - **Cycle time: Duo-created**: Median and 75th percentile time in days from open to merged for merge requests created by GitLab Duo. Includes the number of merged merge requests.
-- **Cycle time: all other**: Median and 75th percentile time in days from open to merged for merge requests not created by GitLab Duo. Includes the number of merged merge requests.
+- **Cycle time: all other**: Median and 75th percentile time in days from open to merged for merge requests that were not created by GitLab Duo and have human authors. Includes the number of merged merge requests.
 
 A merge request is created by GitLab Duo when an Agent Platform session records that it opened the merge request,
 whoever the author is. A merge request that a session was started from, for example to review it, counts as not created by GitLab Duo.
+
+The **all other** metrics exclude merge requests by bots, service accounts, and other non-human users,
+so they compare GitLab Duo with work done by people.
 
 The **Merge request volume** section displays the following metrics:
 
 - **Opened by Duo**: Number of merge requests created by GitLab Duo.
 - **Merged: Duo-created**: Number of merged merge requests created by GitLab Duo.
-- **Merged: all other**: Number of merged merge requests not created by GitLab Duo.
+- **Merged: all other**: Number of merged merge requests that were not created by GitLab Duo and have human authors.
 - **Duo created merge requests by status**: Number of merge requests created by GitLab Duo with current status over the selected period.
 
 The **Capability outcomes** section displays the following metrics:

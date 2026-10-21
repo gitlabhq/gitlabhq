@@ -194,7 +194,7 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
   describe '#file_cache_storage?' do
     context 'when file storage is used' do
       before do
-        expect(uploader_class).to receive(:cache_storage) { CarrierWave::Storage::File }
+        expect(uploader_class).to receive(:cache_storage).and_return(CarrierWave::Storage::File)
       end
 
       it { expect(uploader).to be_file_cache_storage }
@@ -202,7 +202,7 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
 
     context 'when is remote storage' do
       before do
-        expect(uploader_class).to receive(:cache_storage) { CarrierWave::Storage::Fog }
+        expect(uploader_class).to receive(:cache_storage).and_return(CarrierWave::Storage::Fog)
       end
 
       it { expect(uploader).not_to be_file_cache_storage }
@@ -796,7 +796,7 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
 
     context 'when object storage is disabled' do
       before do
-        allow(Gitlab.config.uploads.object_store).to receive(:enabled) { false }
+        allow(Gitlab.config.uploads.object_store).to receive(:enabled).and_return(false)
       end
 
       it_behaves_like 'uses local storage'
@@ -804,12 +804,12 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
 
     context 'when object storage is enabled' do
       before do
-        allow(Gitlab.config.uploads.object_store).to receive(:enabled) { true }
+        allow(Gitlab.config.uploads.object_store).to receive(:enabled).and_return(true)
       end
 
       context 'when direct upload is enabled' do
         before do
-          allow(Gitlab.config.uploads.object_store).to receive(:direct_upload) { true }
+          allow(Gitlab.config.uploads.object_store).to receive(:direct_upload).and_return(true)
         end
 
         context 'uses AWS' do
@@ -963,7 +963,7 @@ RSpec.describe ObjectStorage, :clean_gitlab_redis_shared_state, feature_category
 
       context 'when direct upload is disabled' do
         before do
-          allow(Gitlab.config.uploads.object_store).to receive(:direct_upload) { false }
+          allow(Gitlab.config.uploads.object_store).to receive(:direct_upload).and_return(false)
         end
 
         it_behaves_like 'uses local storage'

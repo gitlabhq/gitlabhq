@@ -430,7 +430,7 @@ pipeline_schedule_worker:
 
 postgres_dynamic_partitions_detach_finalizer:
   class: Database::FinalizePendingDetachPartitionsWorker
-  cron: "17 0-3 * * *"
+  cron: "5,45 23,0-4 * * *"
 
 postgres_dynamic_partitions_dropper:
   class: Database::DropDetachedPartitionsWorker

@@ -58,6 +58,7 @@
 </template>
 
 <script>
+import { markRaw } from 'vue'
 import { ResizeObserver } from 'vue-resize'
 import 'vue-resize/dist/vue-resize.css'
 import { ObserveVisibility } from 'vue-observe-visibility'
@@ -227,17 +228,13 @@ export default {
         item,
         position: 0,
       }
-      const nonReactive = {
-        // FIXME: replace with markRaw in Vue3
-        // See https://gitlab.com/gitlab-org/gitlab/-/issues/395772
-        __v_skip: true,
-
+      const nonReactive = markRaw({
         id: uid++,
         index,
         used: true,
         key,
         type,
-      }
+      })
       Object.defineProperty(view, 'nr', {
         configurable: false,
         value: nonReactive,

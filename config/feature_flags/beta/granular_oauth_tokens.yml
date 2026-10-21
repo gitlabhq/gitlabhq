@@ -3,8 +3,8 @@ name: granular_oauth_tokens
 description: Mints and accepts fine-grained OAuth tokens backed by consent grants for applications that declare granular scopes
 feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/608636
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/260049
-rollout_issue_url:
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/634867
 milestone: '19.5'
 group: group::authorization
-type: wip
+type: beta
 default_enabled: false

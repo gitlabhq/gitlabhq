@@ -15,8 +15,10 @@ module WorkItems
 
     def execute(work_item)
       updated_work_item = super
+      valid_work_item = updated_work_item.valid?
+      add_move_errors(updated_work_item)
 
-      if updated_work_item.valid?
+      if valid_work_item && updated_work_item.errors.empty?
         success(payload(work_item))
       else
         error(updated_work_item.errors.full_messages, :unprocessable_entity, pass_back: payload(updated_work_item))

@@ -1,6 +1,6 @@
 ---
 stage: Fulfillment
-group: Provision
+group: Entitlements
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Activate GitLab Enterprise Edition (EE)
 description: "Activate GitLab Enterprise Edition with an activation code to unlock paid features. Learn to activate your subscription for new, scaled, or offline instances."

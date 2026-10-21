@@ -175,6 +175,11 @@ mapping:
   - source: '(?<prefix>ee/)?app/workers/.+\.rb'
     test: 'spec/workers/every_sidekiq_worker_spec.rb'
 
+  - source:
+      - 'ee/lib/(.+/)?api/.+\.rb'
+      - 'ee/spec/support/api/routes_without_tier\.yml'
+    test: 'ee/spec/lib/api/every_ee_api_endpoint_tier_spec.rb'
+
   # Mailer previews
   - source: '(?<prefix>ee/)?app/mailers/(?<inner_prefix>ee/)?previews/.+\.rb'
     test: 'spec/mailers/previews_spec.rb'

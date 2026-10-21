@@ -30,9 +30,7 @@ module Projects
     private
 
     def sync_classes_by_consumer
-      classes = { ci: ::Ci::ProjectMirror }
-      classes[:sec] = ::Security::ProjectMirror if Feature.enabled?(:sync_sec_mirror_tables, :instance, type: :ops)
-      classes
+      { ci: ::Ci::ProjectMirror, sec: ::Security::ProjectMirror }
     end
   end
 end

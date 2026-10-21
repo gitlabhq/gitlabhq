@@ -66,7 +66,7 @@ export default {
       required: true,
     },
   },
-  emits: ['set-filters'],
+  emits: ['set-filters', 'submit-filters'],
   data() {
     return {
       filterParams: this.initialFilterParams,
@@ -92,7 +92,7 @@ export default {
             this.getFilteredSearchValue,
             this.workItemTypesConfiguration,
           );
-          this.handleFilter(tokens);
+          this.$emit('set-filters', this.applyFilters(tokens));
         }
       },
     },
@@ -516,6 +516,9 @@ export default {
       this.filteredSearchKey += 1;
     },
     handleFilter(filters) {
+      this.$emit('submit-filters', this.applyFilters(filters));
+    },
+    applyFilters(filters) {
       this.filterParams = this.getFilterParams(filters);
 
       updateHistory({
@@ -528,7 +531,7 @@ export default {
         replace: true,
       });
 
-      this.$emit('set-filters', this.formattedFilterParams());
+      return this.formattedFilterParams();
     },
     getFilterParams(filters = []) {
       // A "type is one of" (OR) selection maps to workItemTypeIds, a list on

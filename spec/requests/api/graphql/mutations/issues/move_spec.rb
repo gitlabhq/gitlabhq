@@ -123,6 +123,34 @@ RSpec.describe 'Moving an issue', feature_category: :team_planning do
             expect(target_project.issues.find_by_title(issue.title)).to be_nil
           end
         end
+
+        context 'and the converted type cannot contain an existing task child' do
+          let(:target_work_item_type_id) { build(:work_item_system_defined_type, :task).to_global_id.to_s }
+          let(:task_child) { create(:work_item, :task, project: issue.project) }
+
+          before do
+            create(:parent_link, work_item_parent: WorkItem.find(issue.id), work_item: task_child)
+          end
+
+          it 'rejects the move without changing the hierarchy', :aggregate_failures do
+            validation_message = format(
+              _('cannot be changed to %{new_type} with these child item types.'), new_type: 'Task'
+            )
+
+            expect do
+              post_graphql_mutation(mutation, current_user: user)
+            end.not_to change { WorkItem.count }
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(mutation_response['errors']).to include(
+              a_string_including(validation_message)
+            )
+            expect(issue.reload).to have_attributes(state: 'opened', moved_to_id: nil)
+            expect(task_child.reload).to have_attributes(state: 'opened', moved_to_id: nil)
+            expect(task_child.parent_link.work_item_parent_id).to eq(issue.id)
+            expect(target_project.issues.find_by_title(issue.title)).to be_nil
+          end
+        end
       end
     end
   end

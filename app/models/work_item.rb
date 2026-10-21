@@ -440,6 +440,24 @@ class WorkItem < Issue
     end
   end
 
+  # Isolate the check from pending edits and preserve the source's validation errors.
+  def hierarchy_errors_for_move_to(target_namespace:, target_type:)
+    return [] if target_type.persistable_id == work_item_type_id
+
+    candidate = self.class.find(id)
+    candidate.namespace = target_namespace
+    candidate.work_item_type_id = target_type.persistable_id
+    candidate.hierarchy_type_change_errors
+  end
+
+  protected
+
+  # Check only hierarchy rules so unrelated validation cannot block a move.
+  def hierarchy_type_change_errors
+    allowed_work_item_type_change
+    errors.full_messages
+  end
+
   private
 
   override :parent_link_confidentiality

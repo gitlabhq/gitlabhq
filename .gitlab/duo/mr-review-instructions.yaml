@@ -2154,7 +2154,8 @@ instructions:
       - Ensure every agent session is affected immediately by any change — there is no gradual rollout and no feature flag, so a regression degrades every contributor's agent output at once.
       - Keep instructions actionable: favor concrete `Do X` / `Don't do Y` rules over background prose.
       - DO NOT add redundant or verbose content to instruction files; prefer concise rules and cross-references to avoid displacing useful context and increasing token cost.
-      - Keep `AGENTS.md` and `CLAUDE.md` identical; when a change references a new module, update both entry points together (`AGENTS.md` is the source of truth).
+      - Reference any new module from the root `AGENTS.md`.
+      - Put agent instructions in `AGENTS.md`, not in `CLAUDE.md`; next to each `AGENTS.md`, including a new one, keep a `CLAUDE.md` that contains only the `@AGENTS.md` import, because Claude Code skips `AGENTS.md` when a `CLAUDE.md` or `CLAUDE.local.md` exists. A `CLAUDE.md` under `doc/` also keeps the `markdownlint-disable` and `vale off` comments that the documentation linters need.
       - DO NOT hand-author a rule that can instead be distilled from SSOT documentation; every hand-authored rule risks drifting from the docs it duplicates.
       - Ensure changes to `.ai/` files are approved by the AI harness DRI named in the `Monolith AI harness files` block of `.gitlab/CODEOWNERS`.
 
@@ -2162,7 +2163,7 @@ instructions:
 
       - Verify guidance in `.ai/README.md`, `.ai/ci-cd.md`, `.ai/git.md`, `.ai/merge-requests.md`, and `.ai/code-review.md` is correct and current against the practice it describes.
       - Check for contradictions with other modules and with the distilled principles.
-      - Confirm any new module is referenced from both `AGENTS.md` and `CLAUDE.md`, and that the two entry points remain identical.
+      - Confirm that the root `AGENTS.md` references any new module, and that each `AGENTS.md` has a `CLAUDE.md` next to it with only the `@AGENTS.md` import.
       - Confirm a new shared module was force-added (`git add --force`), because the `.ai/*` pattern is gitignored.
       - Prefer moving durable, broadly applicable guidance into SSOT documentation so it can be distilled, rather than growing hand-authored modules.
 

@@ -88,8 +88,9 @@ auto-fixable — missing files must be created manually.
 
 **Design note — `@` prefix convention:** The `@` prefix in instruction
 files forces AI tools to eagerly read the referenced file on load.
-`CLAUDE.local.md` is the only file referenced this way
-(`@CLAUDE.local.md`). All `.ai/` module references use plain paths (no `@`)
+Two files are referenced this way: `CLAUDE.local.md` (`@CLAUDE.local.md` in
+the root `AGENTS.md`) and `AGENTS.md` (`@AGENTS.md` in each `CLAUDE.md`
+stub). All `.ai/` module references use plain paths (no `@`)
 so agents read them on demand based on task context.
 
 **Implementation note:** The doctor's regex extracts `.ai/` paths without

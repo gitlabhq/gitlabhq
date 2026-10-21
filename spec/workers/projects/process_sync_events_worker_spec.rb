@@ -56,16 +56,5 @@ RSpec.describe Projects::ProcessSyncEventsWorker, feature_category: :cell do
 
       perform
     end
-
-    context 'when the sync_sec_mirror_tables feature flag is disabled' do
-      before do
-        stub_feature_flags(sync_sec_mirror_tables: false)
-      end
-
-      it 'consumes the events without writing security project mirrors' do
-        expect { perform }.to change { Projects::SyncEvent.count }.to(0)
-          .and not_change { Security::ProjectMirror.count }
-      end
-    end
   end
 end

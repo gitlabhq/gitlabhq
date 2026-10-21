@@ -11,7 +11,7 @@ module Gitlab
         private
 
         def import(project)
-          # If a user creates a merge request or issue while the import is in progress,
+          # If a user creates a merge request while the import is in progress,
           # this can lead to an import failure due to IID conflicts.
           # Pre-allocating IIDs prevents this race condition.
           preallocate_iids!(project)
@@ -33,14 +33,6 @@ module Gitlab
             if Gitlab::Import::IidPreallocator.valid_iid_value?(max_pr_iid)
               max_iids[:merge_requests] = max_pr_iid
               cache_max_iid(project, :merge_requests, max_pr_iid)
-            end
-          end
-
-          if !iid_allocated?(project, :issues) && client.issues_available?(repo)
-            max_issue_iid = fetch_last_iid('issue', project) { client.last_issue(repo) }
-            if Gitlab::Import::IidPreallocator.valid_iid_value?(max_issue_iid)
-              max_iids[:issues] = max_issue_iid
-              cache_max_iid(project, :issues, max_issue_iid)
             end
           end
 

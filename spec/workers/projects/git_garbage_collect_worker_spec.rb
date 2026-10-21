@@ -104,7 +104,7 @@ RSpec.describe Projects::GitGarbageCollectWorker, feature_category: :source_code
       end
 
       it 'does nothing if the database is read-only' do
-        allow(Gitlab::Database).to receive(:read_only?) { true }
+        allow(Gitlab::Database).to receive(:read_only?).and_return(true)
         expect(Gitlab::Cleanup::OrphanLfsFileReferences).not_to receive(:new)
 
         subject.perform(*params)

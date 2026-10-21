@@ -30,9 +30,7 @@ module Namespaces
     private
 
     def sync_classes_by_consumer
-      classes = { ci: ::Ci::NamespaceMirror }
-      classes[:sec] = ::Security::NamespaceMirror if Feature.enabled?(:sync_sec_mirror_tables, :instance, type: :ops)
-      classes
+      { ci: ::Ci::NamespaceMirror, sec: ::Security::NamespaceMirror }
     end
   end
 end

@@ -51,7 +51,7 @@ differently:
 - Hand-authored modules: `.ai/README.md`, `.ai/ci-cd.md`,
   `.ai/git.md`, `.ai/merge-requests.md`, and `.ai/code-review.md`.
   Human-written instruction prose, referenced from the repository-root
-  `AGENTS.md` and `CLAUDE.md`.
+  `AGENTS.md`.
 - Distilled principles: `.ai/principles/distilled/*.md`.
   Auto-generated from SSOT documentation on `docs.gitlab.com` by the
   [AI principles distiller](https://gitlab.com/gitlab-org/gitlab/-/blob/master/gems/gitlab-ai-principles-distiller/README.md).
@@ -73,20 +73,24 @@ Apply these to every `.ai/` change, regardless of file category:
 - Remember that every agent session is affected. There is no gradual
   rollout and no feature flag. A regression in an instruction file degrades
   every contributor's agent output immediately.
-- Keep instructions actionable. Favor concrete `Do X` / `Don't do Y`
-  rules over background prose. Vague guidance produces vague agent
+- Flag vague instructions. Ask for concrete `Do X` / `Don't do Y` rules
+  instead of background prose. Vague guidance produces vague agent
   behavior.
-- Mind the token budget. Instruction files are loaded into the agent's
-  context window. Redundant or verbose content displaces useful context
-  and increases cost. Prefer concise rules and cross-references over
-  duplication.
-- Keep `AGENTS.md` and `CLAUDE.md` identical. The repository-root
-  entry points must not diverge. `AGENTS.md` is the source of truth. When
-  a change references a new module, both entry points must be updated
-  together.
-- Avoid dual sources of truth. Prefer distilling a rule from SSOT
-  documentation over hand-authoring it in `.ai/`. Every hand-authored rule
-  is a rule that can drift from the docs it duplicates.
+- Flag redundant or verbose content. Instruction files load into the
+  context window of the agent, so this content displaces useful context
+  and increases cost. Ask for concise rules and cross-references instead
+  of duplication.
+- Flag a new module that the root `AGENTS.md` does not reference.
+- Flag agent instructions in a `CLAUDE.md`. They belong in `AGENTS.md`.
+- Flag an `AGENTS.md` that has no `CLAUDE.md` next to it, and a
+  `CLAUDE.md` that contains more than the `@AGENTS.md` import. Claude Code
+  skips `AGENTS.md` when a `CLAUDE.md` or `CLAUDE.local.md` exists, so the
+  import keeps one set of instructions for all tools. The exception is a
+  `CLAUDE.md` under `doc/`: it also keeps the `markdownlint-disable` and
+  `vale off` comments that the documentation linters need.
+- Flag a dual source of truth. Ask for a rule in SSOT documentation, so
+  the distiller can produce it, instead of a hand-authored rule in `.ai/`.
+  Every hand-authored rule can drift from the docs it duplicates.
 
 ## Checklist by file category
 
@@ -99,8 +103,9 @@ For `.ai/README.md`, `.ai/ci-cd.md`, `.ai/git.md`,
   describes.
 - Check for contradictions with other modules and with the distilled
   principles.
-- Confirm any new module is referenced from both `AGENTS.md` and
-  `CLAUDE.md`, and that the two entry points remain identical.
+- Confirm that the root `AGENTS.md` references any new module, and that
+  each `AGENTS.md` has a `CLAUDE.md` next to it with only the `@AGENTS.md`
+  import.
 - Confirm a new shared module was force-added (`git add --force`), because
   the `.ai/*` pattern is gitignored.
 - Prefer moving durable, broadly applicable guidance into SSOT

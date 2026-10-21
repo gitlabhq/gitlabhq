@@ -163,6 +163,28 @@ RSpec.describe 'Issue board filters', :js, feature_category: :planning_views do
 
         expect(find('[data-testid="board-list"]:nth-child(1)')).to have_selector('.board-card', count: 1)
       end
+
+      context 'when the same filter is submitted again after an issue changes' do
+        let_it_be_with_reload(:moved_issue) { create(:issue, project: project, milestone: milestone_1) }
+
+        before do
+          within('.gl-filtered-search-suggestion-list') do
+            click_on milestone_1.title
+          end
+
+          filter_submit.click
+        end
+
+        it 'refetches the board so the issue that no longer matches drops off', :aggregate_failures do
+          expect(find('[data-testid="board-list"]:nth-child(1)')).to have_selector('.board-card', count: 2)
+
+          moved_issue.update!(milestone: milestone_2)
+          find('.gl-search-box-by-click-search-button').click
+
+          expect(find('[data-testid="board-list"]:nth-child(1)')).to have_selector('.board-card', count: 1)
+          expect(page).to have_no_content(moved_issue.title)
+        end
+      end
     end
 
     describe 'filters by reaction emoji' do
