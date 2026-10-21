@@ -20,6 +20,7 @@ import (
 	"gitlab.com/gitlab-org/gitaly/v19/proto/go/gitalypb"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/headers"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/fail"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
@@ -551,10 +552,11 @@ func copyAuthHeader(httpResponse *http.Response, w http.ResponseWriter) {
 }
 
 // These are internal headers that may be returned by the rails backend. They should not be passed back to the client.
+// Keys use canonical casing because http.Transport canonicalizes response header keys before passResponseBack ranges over them.
 var sensitiveHeaders = map[string]bool{
-	"gitlab-workhorse-send-data": true,
-	"gitlab-sv":                  true,
-	"gitlab-lb":                  true,
+	headers.GitlabWorkhorseSendDataHeader: true,
+	headers.GitlabSvHeader:                true,
+	headers.GitlabLbHeader:                true,
 }
 
 func passResponseBack(httpResponse *http.Response, w http.ResponseWriter, r *http.Request) {

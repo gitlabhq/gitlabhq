@@ -2,6 +2,43 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 19.5.1 (2026-10-20)
+
+### Fixed (7 changes)
+
+- [Return 404 for Orbit archive when repository is missing](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f1a589a035c936a5b9b39bd06280f279c47bccd0) **GitLab Enterprise Edition**
+- [Fix work item change type and child milestone with features field](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2d2816956a64923481a7a0d11f7dcda5d42f97d5)
+- [Cache foundational flow catalog item per request](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e35c680194e3aca10d6720e0fdca2436a9c20ed6) **GitLab Enterprise Edition**
+- [Return 429 when Gitaly rejects GetArchive with ResourceExhausted](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d981ad405a44343b29798bc86fde26be3d4f493b)
+- [Link commit list browse button to the current file path](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9953e45348d26002187185cef9c5dc857c2ad8a6)
+- [Allocate pipeline IID for pipeline execution policy pipelines](https://gitlab.com/gitlab-org/security/gitlab/-/commit/eb0fa72702064f828967823e417dfb984c4bc115) **GitLab Enterprise Edition**
+- [Pin the Baseline date in .browserslistrc](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0a0c92260eb44c63b6667cadc45c6fa93e1f6986)
+
+### Changed (1 change)
+
+- [Update gitlab-markup to 2.2.0 and rdoc to 8.1.0](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0fc0b1b839d5b0478cdba19c7c54b78ddb3c3be3)
+
+### Security (14 changes)
+
+- [Resolve any_merge_request rules from persisted policy rules](https://gitlab.com/gitlab-org/security/gitlab/-/commit/dcb0bcdb28f4ec8c3e98a30f11710bb6de4b46c2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6993)) **GitLab Enterprise Edition**
+- [Roll back only records created by security finding services](https://gitlab.com/gitlab-org/security/gitlab/-/commit/72bf78f9087c1b2663fb8e12b89de6f1fb865321) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6979)) **GitLab Enterprise Edition**
+- [Enforce SAML/LDAP membership lock on member-add paths](https://gitlab.com/gitlab-org/security/gitlab/-/commit/24b7602beb3c758c88a712c3e6c9106835b4b857) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6973)) **GitLab Enterprise Edition**
+- [Escape LDAP email filter value to prevent auth bypass](https://gitlab.com/gitlab-org/security/gitlab/-/commit/663f0cc24f5900287d8e2ef625f3d5220ced97e0) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6972))
+- [Use declared params when listing milestones in the API](https://gitlab.com/gitlab-org/security/gitlab/-/commit/480d6f2656bafa21ae2812ff2340a71cc28e8991) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6968))
+- [Keep project vulnerability reads scoped when filtering by project](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b392a4fcacdaab53d775a011f40b24b020dccdb4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6967)) **GitLab Enterprise Edition**
+- [Gate newWorkItemEmailAddress on write-level token scope](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c23b8bcb75c8ef2407d22202273882f76efae864) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6963))
+- [Build OAuth discovery endpoint URLs from configured instance URL](https://gitlab.com/gitlab-org/security/gitlab/-/commit/bdcb7ea8e9abb585db10f83e5561dd9933db5d17) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6960))
+- [Remove MR title from cached fragment](https://gitlab.com/gitlab-org/security/gitlab/-/commit/49a0d312a2f6cf370fbb1e32e22bb737ee1091bd) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6958))
+- [Enforce admin Duo lock on Amazon Q auto review](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c42191b50b737de592b671acd116535bc704f4ec) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6954)) **GitLab Enterprise Edition**
+- [Strip sensitive workhorse headers using canonical casing](https://gitlab.com/gitlab-org/security/gitlab/-/commit/23616412e2ce0ac9e5d7ff583994c55d93507adf) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6953))
+- [Scan branch-adopted commits in GitGuardian](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8f4fe8214de17abd7705755d45249dd789778303) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6952)) **GitLab Enterprise Edition**
+- [Validate push checks on all ref types](https://gitlab.com/gitlab-org/security/gitlab/-/commit/602eba3f0833f458bf1d902fb3e0b6e9566645c6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6952)) **GitLab Enterprise Edition**
+- [Add feature_enablement_type to Cloud Connector token claims](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c02f64a83901806cea0a3c6085f5150996f87d5e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6951)) **GitLab Enterprise Edition**
+
+### Performance (1 change)
+
+- [Raise Rouge Fallthrough without capturing a backtrace](https://gitlab.com/gitlab-org/security/gitlab/-/commit/317462b88fef30f99318db4442a8c28b4aac0681)
+
 ## 19.5.0 (2026-10-15)
 
 ### Added (306 changes)

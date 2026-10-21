@@ -273,28 +273,27 @@ func TestSendGitAuditEvent(t *testing.T) {
 
 func Test_passResponseBack(t *testing.T) {
 	t.Run("filters out sensitive headers", func(t *testing.T) {
-		sensitiveData := []string{"sensitive-data"}
+		sensitiveData := "sensitive-data"
 		safeData := "safe-data"
 
 		httpResp := &http.Response{
 			StatusCode: http.StatusOK,
 			Body:       io.NopCloser(bytes.NewBufferString("")),
-			Header: http.Header{
-				"gitlab-workhorse-send-data": sensitiveData,
-				"gitlab-sv":                  sensitiveData,
-				"gitlab-lb":                  sensitiveData,
-				"Safe-Header":                []string{safeData},
-			},
+			Header:     http.Header{},
 		}
+		httpResp.Header.Set("Gitlab-Workhorse-Send-Data", sensitiveData)
+		httpResp.Header.Set("Gitlab-Sv", sensitiveData)
+		httpResp.Header.Set("Gitlab-Lb", sensitiveData)
+		httpResp.Header.Set("Safe-Header", safeData)
 
 		w := httptest.NewRecorder()
 		r := httptest.NewRequest("GET", "/", nil)
 
 		passResponseBack(httpResp, w, r)
 
-		require.Empty(t, w.Header().Get("gitlab-workhorse-send-data"))
-		require.Empty(t, w.Header().Get("gitlab-sv"))
-		require.Empty(t, w.Header().Get("gitlab-lb"))
+		require.Empty(t, w.Header().Get("Gitlab-Workhorse-Send-Data"))
+		require.Empty(t, w.Header().Get("Gitlab-Sv"))
+		require.Empty(t, w.Header().Get("Gitlab-Lb"))
 		require.Equal(t, safeData, w.Header().Get("Safe-Header"))
 	})
 }

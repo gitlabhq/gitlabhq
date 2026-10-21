@@ -559,7 +559,6 @@ EE::Project:
   - load_licensed_feature_available
   - loaded_security_scan_profile_for
   - lock_for_confirmation!
-  - lock_memberships_to_ldap_or_saml?
   - mark_as_vulnerable!
   - membership_locked?
   - merge_pipelines_enabled?
@@ -921,7 +920,6 @@ EE::Group:
   - safe_read_repository_read_only_column
   - saml_discovery_token
   - saml_enabled?
-  - saml_group_links_exists?
   - saml_group_sync_available?
   - sbom_occurrences
   - scoped_variables_available?
@@ -944,6 +942,7 @@ EE::Group:
   - update_repository_read_only_column
   - use_elasticsearch?
   - user_cap_reached?
+  - user_exempt_from_cap?
   - users_count
   - users_without_bots
   - virtual_registry_policy_subject

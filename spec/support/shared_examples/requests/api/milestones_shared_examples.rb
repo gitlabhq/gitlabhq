@@ -103,6 +103,96 @@ RSpec.shared_examples 'group and project milestones' do |route_definition|
       expect(json_response.first['id']).to eq milestone.id
     end
 
+    it 'returns a milestone by searching for title only' do
+      get api(route, user), params: { search_title: 'version2' }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response.pluck('id')).to contain_exactly(milestone.id)
+    end
+
+    context 'when filtering by timeframe' do
+      before do
+        milestone.update!(start_date: Date.new(2020, 1, 1), due_date: Date.new(2020, 1, 31))
+      end
+
+      it 'returns milestones containing the given date' do
+        get api(route, user), params: { containing_date: '2020-01-15T00:00:00Z' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.pluck('id')).to contain_exactly(milestone.id)
+      end
+
+      it 'returns milestones within the given start_date and end_date' do
+        get api(route, user), params: { start_date: '2020-01-20T00:00:00Z', end_date: '2020-02-20T00:00:00Z' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.pluck('id')).to contain_exactly(milestone.id)
+      end
+
+      it 'returns 400 when a date filter is invalid' do
+        get api(route, user), params: { containing_date: 'not-a-date' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+
+    context 'when sorting' do
+      let!(:later_milestone) do
+        create(:milestone, project: try(:project), group: try(:group), due_date: Date.new(2020, 2, 10))
+      end
+
+      before do
+        milestone.update!(due_date: Date.new(2020, 1, 10))
+      end
+
+      it 'sorts by due date ascending by default' do
+        get api(route, user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.pluck('id')).to eq([milestone.id, later_milestone.id, closed_milestone.id])
+      end
+
+      it 'sorts by the given order' do
+        get api(route, user), params: { sort: 'due_date_desc' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.pluck('id')).to eq([later_milestone.id, milestone.id, closed_milestone.id])
+      end
+
+      it 'returns 400 when the sort order is not supported' do
+        get api(route, user), params: { sort: 'id_desc' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+
+    context 'when passing project or group IDs outside of the requested parent', :aggregate_failures do
+      using RSpec::Parameterized::TableSyntax
+
+      let_it_be(:other_project) { create(:project, :private) }
+      let_it_be(:other_group) { create(:group, :private) }
+      let_it_be(:other_project_milestone) { create(:milestone, project: other_project) }
+      let_it_be(:other_group_milestone) { create(:milestone, group: other_group) }
+
+      where(:param_name, :other_parent, :as_array) do
+        :project_ids | ref(:other_project) | true
+        :project_ids | ref(:other_project) | false
+        :group_ids   | ref(:other_group)   | true
+        :group_ids   | ref(:other_group)   | false
+      end
+
+      with_them do
+        let(:param_value) { as_array ? [other_parent.id] : other_parent.id }
+
+        it 'returns only milestones from the requested parent' do
+          get api(route, user), params: { param_name => param_value }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.pluck('id')).to contain_exactly(milestone.id, closed_milestone.id)
+        end
+      end
+    end
+
     it_behaves_like 'authorizing granular token permissions', :read_milestone do
       let(:request) do
         get api(route, personal_access_token: pat)
