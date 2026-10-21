@@ -233,7 +233,6 @@ database migrations. On the deploy node:
 
       - The host and port for your database server (non-clustered PostgreSQL).
       - The host and port for your cluster leader if you're running Patroni.
-
    1. Apply the changes:
 
       ```shell

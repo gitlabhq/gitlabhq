@@ -403,9 +403,6 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
       end
 
       context 'for work_items scope' do
-        let_it_be(:task_type) { WorkItems::TypesFramework::Provider.new.find_by_base_type(:task) }
-        let_it_be(:issue_type) { WorkItems::TypesFramework::Provider.new.find_by_base_type(:issue) }
-
         context 'without filtering by type' do
           before do
             create(:work_item, :issue, project: project, title: 'awesome work item')

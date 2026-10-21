@@ -186,10 +186,12 @@ RSpec.describe Issues::BuildService, :request_store, feature_category: :team_pla
     end
 
     describe 'setting issue type' do
+      let_it_be(:issue_type) { build(:work_item_system_defined_type, :issue) }
+
       context 'with a corresponding WorkItem Type' do
         let_it_be(:type_task) { build(:work_item_system_defined_type, :task) }
         let_it_be(:type_task_id) { type_task.id }
-        let_it_be(:type_issue_id) { build(:work_item_system_defined_type, :issue).id }
+        let_it_be(:type_issue_id) { issue_type.id }
         let_it_be(:type_incident_id) { build(:work_item_system_defined_type, :incident).id }
         let(:combined_params) { { work_item_type: type_task, issue_type: 'issue' } }
         let(:work_item_params) { { work_item_type_id: type_task_id } }
@@ -248,7 +250,7 @@ RSpec.describe Issues::BuildService, :request_store, feature_category: :team_pla
           incident_type = build(:work_item_system_defined_type, :incident)
           issue = build_issue(work_item_type_id: incident_type.id)
 
-          expect(issue.work_item_type).to eq(WorkItems::TypesFramework::Provider.new.default_issue_type)
+          expect(issue.work_item_type).to eq(issue_type)
           expect(issue.errors[:work_item_type]).to include(
             s_('WorkItem|could not be found or is not accessible.')
           )
@@ -267,7 +269,7 @@ RSpec.describe Issues::BuildService, :request_store, feature_category: :team_pla
               instance_double(
                 WorkItems::TypesFramework::Provider,
                 fetch_work_item_type: namespaced_type,
-                default_issue_type: WorkItems::TypesFramework::Provider.new.default_issue_type
+                default_issue_type: issue_type
               )
             )
 
@@ -323,7 +325,7 @@ RSpec.describe Issues::BuildService, :request_store, feature_category: :team_pla
               instance_double(
                 WorkItems::TypesFramework::Provider,
                 fetch_work_item_type: namespaced_type,
-                default_issue_type: WorkItems::TypesFramework::Provider.new.default_issue_type
+                default_issue_type: issue_type
               )
             )
 

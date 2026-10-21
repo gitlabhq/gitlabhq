@@ -92,7 +92,7 @@ RSpec.describe API::WorkItems::Update, feature_category: :portfolio_management d
       end
 
       it 'ignores undeclared attributes nested in the feature #security', :aggregate_failures do
-        incident_type = ::WorkItems::TypesFramework::Provider.new.find_by_base_type(:incident)
+        incident_type = build(:work_item_system_defined_type, :incident)
 
         patch api(api_request_path, user), as: :json, params: {
           features: {

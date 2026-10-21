@@ -220,6 +220,7 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
         notify_on_unknown_sign_in: true,
         npm_package_requests_forwarding: true,
         nuget_skip_metadata_url_validation: false,
+        o11y_provisioner_url: '',
         organization_cluster_agent_authorization_enabled: false,
         outbound_local_requests_whitelist: [],
         package_registry_allow_anyone_to_pull_option: true,
@@ -3457,6 +3458,57 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
       expect(setting.background_operations_max_jobs).to eq(10)
       expect(setting.pg_ash_sampling_enabled).to be(false)
       expect(setting.pg_ash_sample_interval_seconds).to eq(1)
+    end
+  end
+
+  describe '#o11y_settings' do
+    # valid json
+    it { is_expected.to allow_value({}).for(:o11y_settings) }
+    it { is_expected.to allow_value({ o11y_provisioner_url: 'https://provisioner.example.com' }).for(:o11y_settings) }
+
+    # invalid json
+    it { is_expected.not_to allow_value({ o11y_provisioner_url: 1 }).for(:o11y_settings) }
+    it { is_expected.not_to allow_value({ o11y_provisioner_url: "https://#{'a' * 256}" }).for(:o11y_settings) }
+    it { is_expected.not_to allow_value({ invalid_key: 'value' }).for(:o11y_settings) }
+
+    describe '#o11y_provisioner_url' do
+      it { is_expected.to allow_value('').for(:o11y_provisioner_url) }
+      it { is_expected.to allow_value('https://provisioner.example.com/api/v1/provision_requests').for(:o11y_provisioner_url) }
+      it { is_expected.not_to allow_value('not a url').for(:o11y_provisioner_url) }
+      it { is_expected.not_to allow_value('ftp://provisioner.example.com').for(:o11y_provisioner_url) }
+      it { is_expected.not_to allow_value('http://provisioner.example.com').for(:o11y_provisioner_url) }
+
+      it 'is stored in o11y_settings' do
+        setting.o11y_provisioner_url = 'https://provisioner.example.com'
+
+        expect(setting.o11y_settings).to eq('o11y_provisioner_url' => 'https://provisioner.example.com')
+      end
+    end
+  end
+
+  describe '#o11y_provisioner_api_key' do
+    let(:api_key) { SecureRandom.hex(32) }
+
+    it { is_expected.to allow_value(nil).for(:o11y_provisioner_api_key) }
+    it { is_expected.to allow_value(api_key).for(:o11y_provisioner_api_key) }
+    it { is_expected.to allow_value('a' * 510).for(:o11y_provisioner_api_key) }
+    it { is_expected.not_to allow_value('a' * 511).for(:o11y_provisioner_api_key) }
+
+    it 'is a sensitive attribute, so audit events and serialization omit it' do
+      expect(described_class.sensitive_attributes).to include(:o11y_provisioner_api_key)
+    end
+
+    it 'encrypts and decrypts the value' do
+      setting.o11y_provisioner_api_key = api_key
+      setting.save!
+
+      encrypted_value = described_class.connection.select_value(
+        "SELECT o11y_provisioner_api_key FROM application_settings WHERE id = #{setting.id}"
+      )
+      expect(encrypted_value).not_to include(api_key)
+
+      setting.reload
+      expect(setting.o11y_provisioner_api_key).to eq(api_key)
     end
   end
 

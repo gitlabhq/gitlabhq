@@ -14,6 +14,9 @@ import {
   branchRuleWithoutDetailsPropsMock,
   squashOptionMockResponse,
   accessLevelsWithDeployKeyMockResponse,
+  groupLevelRuleSquashOptionMock,
+  projectLevelRuleSquashOptionMock,
+  buildSquashOptionMockResponse,
 } from '../mock_data';
 
 Vue.use(VueApollo);
@@ -22,8 +25,11 @@ describe('Branch rule', () => {
   let wrapper;
   const squashOptionMockRequestHandler = jest.fn().mockResolvedValue(squashOptionMockResponse);
 
-  const createComponent = async (props = {}) => {
-    const fakeApollo = createMockApollo([[squashOptionQuery, squashOptionMockRequestHandler]]);
+  const createComponent = async (
+    props = {},
+    { squashOptionHandler = squashOptionMockRequestHandler } = {},
+  ) => {
+    const fakeApollo = createMockApollo([[squashOptionQuery, squashOptionHandler]]);
 
     wrapper = shallowMountExtended(BranchRule, {
       apolloProvider: fakeApollo,
@@ -144,6 +150,40 @@ describe('Branch rule', () => {
 
       await createComponent(branchRuleProps);
       expect(findProtectionDetailsListItems().at(2).text()).toBe('Squash commits: Encourage');
+    });
+
+    describe.each`
+      order                         | nodes
+      ${'group-level rule first'}   | ${[groupLevelRuleSquashOptionMock, projectLevelRuleSquashOptionMock]}
+      ${'project-level rule first'} | ${[projectLevelRuleSquashOptionMock, groupLevelRuleSquashOptionMock]}
+    `('when a group-level and a project-level rule share a name, $order', ({ nodes }) => {
+      const findSquashSettingText = () =>
+        findProtectionDetailsListItems()
+          .wrappers.map((item) => item.text())
+          .find((text) => text.startsWith('Squash commits'));
+
+      const createSameNameComponent = (props) =>
+        createComponent(
+          { name: projectLevelRuleSquashOptionMock.name, ...props },
+          {
+            squashOptionHandler: jest.fn().mockResolvedValue(buildSquashOptionMockResponse(nodes)),
+          },
+        );
+
+      it('renders the squash setting of the project-level rule on its row', async () => {
+        await createSameNameComponent({ ruleId: projectLevelRuleSquashOptionMock.id });
+
+        expect(findSquashSettingText()).toBe('Squash commits: Do not allow');
+      });
+
+      it('does not render a squash setting on the group-level row', async () => {
+        await createSameNameComponent({
+          ruleId: groupLevelRuleSquashOptionMock.id,
+          branchProtection: { ...branchRulePropsMock.branchProtection, isGroupLevel: true },
+        });
+
+        expect(findSquashSettingText()).toBeUndefined();
+      });
     });
   });
 

@@ -21,6 +21,7 @@ GitLab can check your applications for security vulnerabilities.
 - [GitLab advisory database](gitlab_advisory_database/_index.md)
 - [CVE ID requests](cve_id_request.md)
 - [Policies](policies/_index.md)
+- [Dependency firewall](dependency_firewall/_index.md)
 - [Security glossary](terminology/_index.md)
 
 {{< /cards >}}

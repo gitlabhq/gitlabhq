@@ -14,6 +14,13 @@ module Tooling
         \A(?!.*(?:vue3_migration\.yml|/pages/.+/index\.js)\z)
         (?:.*\.(?:vue|js|mjs|ts|scss|css|md)\z|(?:ee/)?app/assets/)
       }x
+      # Regenerated from code and checked by their own CI jobs, not rspec.
+      GENERATED_FILES = %w[
+        locale/gitlab.pot
+        public/-/graphql/introspection_result.json
+        public/-/graphql/introspection_result_no_deprecated.json
+        doc/api/openapi/openapi_v3.yaml
+      ].freeze
       # ClickHouse rejects queries over 256 KiB, so long path lists are queried in batches.
       BATCH_SIZE = 1_000
       # Capture runs about every 2 hours, so 6 hours without a new row means it has stalled.
@@ -34,7 +41,7 @@ module Tooling
       end
 
       def execute
-        relevant = changed_files.reject { |file| IGNORED_FILE_REGEX.match?(file) }
+        relevant = (changed_files - GENERATED_FILES).reject { |file| IGNORED_FILE_REGEX.match?(file) }
         sources, others = relevant.partition { |file| SOURCE_FILE_REGEX.match?(file) }
         own_specs, others = others.partition { |file| SPEC_FILE_REGEX.match?(file) }
 

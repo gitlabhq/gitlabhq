@@ -115,7 +115,6 @@ To create your GitLab Dedicated instance:
       - **Primary region Default**: Use the primary region's key ARN.
       - **Secondary region Default**: Use the replica key ARN (only if you configured a secondary region for Geo).
       - **Backup region Default**: Use the backup region's key ARN. If your backup region is the same as your primary region, use the same key ARN.
-
    1. For each service (**Backup**, **EBS (disks)**, **RDS (database)**, **S3 (object storage)**, **Advanced search**):
       Either leave empty to use the default key for that region, or enter a specific KMS key ARN for that service.
       Service-specific keys must be from the same AWS region as the corresponding default key.

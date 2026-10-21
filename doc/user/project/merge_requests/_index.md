@@ -299,16 +299,18 @@ If that user lacks the correct role, such as in a forked project, the source bra
 {{< /details >}}
 
 Merge requests are often chained together, with one merge request that depends on
-the code added or changed in another merge request. To support small, individual
-merge requests, GitLab can update up to four open merge requests when their
-target branch merges into `main`. For example:
+the code added or changed in another merge request.
+
+To support small, individual merge requests, GitLab can update up to four open merge requests
+that target the same branch. When you merge that branch and delete it, GitLab retargets them
+to the branch you merged into. For example:
 
 - Merge request 1: merge `feature-alpha` into `main`.
 - Merge request 2: merge `feature-beta` into `feature-alpha`.
 
 If these merge requests are open at the same time, and merge request 1 (`feature-alpha`)
-merges into `main`, GitLab updates the destination of merge request 2 from `feature-alpha`
-to `main`.
+merges into `main` and you delete `feature-alpha`, GitLab updates the destination of
+merge request 2 from `feature-alpha` to `main`.
 
 Merge requests with interconnected content updates are usually handled in one of these ways:
 
@@ -317,9 +319,9 @@ Merge requests with interconnected content updates are usually handled in one of
 - Merge request 2 merges into `feature-alpha`. The updated merge request 1, which
   now contains the contents of `feature-alpha` and `feature-beta`, merges into `main`.
 
-This feature works only when a merge request is merged. Selecting **Remove source branch**
-after merging does not retarget open merge requests. This improvement is
-[proposed as a follow-up](https://gitlab.com/gitlab-org/gitlab/-/issues/321559).
+GitLab retargets open merge requests only if you delete the source branch as part of the merge.
+If you delete the source branch after the merge, GitLab does not retarget open merge requests.
+This improvement is proposed in [issue 321559](https://gitlab.com/gitlab-org/gitlab/-/issues/321559).
 
 ## Merge request workflows
 

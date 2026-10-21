@@ -2785,6 +2785,18 @@ Instead of **and/or**, use **or** or re-write the sentence. This rule also appli
 
 Do not use **slave**. Another option is **secondary**. ([Vale](../testing/vale.md) rule: [`InclusiveLanguage.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/InclusiveLanguage.yml))
 
+## stacked diffs
+
+Use **stacked diffs** for the [GitLab CLI feature](../../../user/project/merge_requests/stacked_diffs.md)
+you can use to build a series of dependent changes. When you write about stacked diffs:
+
+- Use **stack** or **stack of diffs** for one stack. Do not use **a stacked diff**.
+- Use **diff** for one item in a stack. Do not use **entry**, **layer**, **revision**, or **stack item**.
+
+When you sync a stack, each diff becomes a merge request, and together they form a
+[stack of merge requests](../../../user/project/merge_requests/reviews/stacked_merge_requests.md).
+This related feature is called **stacked merge requests**. Do not use **stacked diffs** for it.
+
 ## storages
 
 In the context of:

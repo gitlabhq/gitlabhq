@@ -958,11 +958,17 @@ When using variables to add text into translatable strings, several localization
 You can combine translation helper functions to handle complex scenarios that require
 multiple features like namespacing, pluralization, and parameter substitution.
 
+`ns_()` combines namespacing and pluralization.
+Like `n_()`, it does not substitute any values.
+Pass the result to `format()` to substitute the values.
+
 For example:
 
 ```ruby
-   ns_('BulkImport|%{count} placeholder user has been created.', 'BulkImport|%{count} placeholder users have been created.', @success_count)
+format(ns_('BulkImport|%{count} placeholder user has been created.', 'BulkImport|%{count} placeholder users have been created.', @success_count), count: @success_count)
 ```
+
+For more information, see [pluralization in Ruby and HAML](pluralization.md#in-ruby-and-haml).
 
 ## Case transformation in translatable strings
 

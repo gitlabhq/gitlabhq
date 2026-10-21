@@ -22,7 +22,6 @@ require (
 	github.com/hashicorp/golang-lru/v2 v2.0.7
 	github.com/johannesboyne/gofakes3 v1.2.0
 	github.com/jpillora/backoff v1.0.0
-	github.com/mitchellh/copystructure v1.2.0
 	github.com/modelcontextprotocol/go-sdk v1.6.1
 	github.com/prometheus/client_golang v1.24.1
 	github.com/redis/go-redis-entraid v1.0.7
@@ -148,7 +147,6 @@ require (
 	github.com/lightstep/lightstep-tracer-common/golang/gogo v0.0.0-20210210170715-a8dfcb80d3a7 // indirect
 	github.com/lightstep/lightstep-tracer-go v0.26.0 // indirect
 	github.com/lufia/plan9stats v0.0.0-20250317134145-8bc96cf8fc35 // indirect
-	github.com/mitchellh/reflectwalk v1.0.2 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.3-0.20250322232337-35a7c28c31ee // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect

@@ -11,8 +11,7 @@ RSpec.describe 'Namespace.workItemMoveTargets', feature_category: :team_planning
   let_it_be(:source_project) { create(:project, group: source_group) }
   let_it_be(:target_project) { create(:project, group: target_group) }
 
-  let(:provider) { WorkItems::TypesFramework::Provider.new(source_project.project_namespace) }
-  let(:issue_type) { provider.find_by_base_type(:issue) }
+  let(:issue_type) { build(:work_item_system_defined_type, :issue) }
   let(:issue_gid) { issue_type.to_gid.to_s }
 
   let(:query) do

@@ -4,7 +4,7 @@ This deploys a CNG build of the GitLab commit under test onto a job-local
 [k3d](https://k3d.io) cluster inside `docker:dind`, using
 [Caproni](https://gitlab-org.gitlab.io/caproni/) and runs the E2E suite against it.
 
-Six jobs in the existing `test-on-cng` child pipeline run against a Caproni-deployed
+Seven jobs in the existing `test-on-cng` child pipeline run against a Caproni-deployed
 GitLab instance:
 
 - `cng-instance-caproni` (non-blocking) runs `Test::Instance::All`, sharded like `cng-instance`
@@ -15,6 +15,8 @@ GitLab instance:
 - `cng-secrets-manager-caproni` (non-blocking) runs `Test::Integration::SecretsManager` (see [OpenBao](#openbao))
 - `cng-instance-ff-inverse` (blocking) runs `Test::Instance::All` with `QA_FEATURE_FLAGS`
   inverted, and only when a feature flag definition file changes
+- `cng-vue3-rollout` (blocking) runs `Test::Instance::Vue3Rollout` with the
+  `vue3_migrate_jobs` feature flag enabled
 
 The five non-blocking jobs shadow an orchestrator-deployed counterpart and run whenever
 those run. Four of them (`cng-instance-caproni`, `cng-relative-url-caproni`,
@@ -29,8 +31,8 @@ following selection would skip the job on every run.
 The `-caproni` suffix is transitional. It marks a job that shadows an orchestrator-deployed
 one so the two can run side by side and be compared. A job that replaces its counterpart
 outright has nothing left to disambiguate from and takes the plain name, as
-`cng-instance-ff-inverse` does. The suffix goes away entirely once every `cng-` job uses
-Caproni.
+`cng-instance-ff-inverse` and `cng-vue3-rollout` do. The suffix goes away entirely once
+every `cng-` job uses Caproni.
 
 The registry job needs nothing beyond the chart's Gateway route for `registry.<domain>`.
 The registry spec takes its address from `CI_REGISTRY`, so unlike the orchestrator this rig

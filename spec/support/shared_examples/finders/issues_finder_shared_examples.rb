@@ -1002,8 +1002,8 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
 
       context 'filtering by work_item_type_ids' do
         let_it_be(:incident_item) { create(factory, :incident, project: project1) }
-        let_it_be(:incident_type) { WorkItems::TypesFramework::Provider.new.find_by_base_type(:incident) }
-        let_it_be(:issue_type) { WorkItems::TypesFramework::Provider.new.find_by_base_type(:issue) }
+        let_it_be(:incident_type) { build(:work_item_system_defined_type, :incident) }
+        let_it_be(:issue_type) { build(:work_item_system_defined_type, :issue) }
 
         context 'no type ids given' do
           let(:params) { { work_item_type_ids: [] } }

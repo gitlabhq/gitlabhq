@@ -8754,6 +8754,12 @@
               "deprecationReason": null
             },
             {
+              "name": "SKILLGUARD",
+              "description": "Skillguard analyzer.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "SECRET_DETECTION_PIPELINE_BASED",
               "description": "Secret detection analyzer.",
               "isDeprecated": false,
@@ -8857,6 +8863,12 @@
             {
               "name": "BUSINESS_LOGIC",
               "description": "Business logic analyzer.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SKILLGUARD",
+              "description": "Skillguard analyzer.",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -197408,6 +197420,12 @@
               "description": "BUSINESS LOGIC scan report",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "SKILLGUARD",
+              "description": "SKILLGUARD scan report",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null
@@ -197626,6 +197644,12 @@
             {
               "name": "BUSINESS_LOGIC",
               "description": "Business logic scanner",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SKILLGUARD",
+              "description": "Skillguard scanner",
               "isDeprecated": false,
               "deprecationReason": null
             }

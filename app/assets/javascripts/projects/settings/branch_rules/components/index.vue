@@ -143,7 +143,7 @@ export default {
         createAlert({ message: error });
       },
     },
-    squashOption: {
+    squashOptions: {
       query: squashOptionQuery,
       variables() {
         return {
@@ -151,8 +151,7 @@ export default {
         };
       },
       update({ project }) {
-        const squashOptions = project?.branchRules?.nodes || [];
-        return squashOptions.find((option) => option.name === this.branch)?.squashOption || {};
+        return project?.branchRules?.nodes || [];
       },
       skip() {
         return !this.showSquashSetting;
@@ -176,7 +175,7 @@ export default {
       isRuleUpdating: false,
       isAllowForcePushLoading: false,
       isCodeOwnersLoading: false,
-      squashOption: {},
+      squashOptions: [],
     };
   },
   computed: {
@@ -269,6 +268,11 @@ export default {
     },
     showSquashSetting() {
       return this.canReadSquashOption && this.squashOptionsFeatureAvailableForRule;
+    },
+    squashOption() {
+      return (
+        this.squashOptions.find((option) => option.id === this.branchRule?.id)?.squashOption || {}
+      );
     },
     showEditSquashSetting() {
       return this.canUpdateSquashOption && this.squashOptionsFeatureAvailableForRule;
@@ -448,7 +452,7 @@ export default {
             return;
           }
 
-          this.$apollo.queries.squashOption.refetch();
+          this.$apollo.queries.squashOptions.refetch();
         })
         .catch((error) =>
           createAlert({

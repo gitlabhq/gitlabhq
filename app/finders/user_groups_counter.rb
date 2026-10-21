@@ -20,11 +20,11 @@ class UserGroupsCounter
 
   def groups
     Group.for_authorized_group_members(user_ids)
-      .select('namespaces.*, members.user_id as user_id')
+      .select('namespaces.id, members.user_id as user_id')
   end
 
   def project_groups
     Group.for_authorized_project_members(user_ids)
-      .select('namespaces.*, project_authorizations.user_id as user_id')
+      .select('namespaces.id, project_authorizations.user_id as user_id')
   end
 end

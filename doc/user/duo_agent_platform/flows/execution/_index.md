@@ -292,6 +292,10 @@ You also have the option to configure your own runner for flows.
 > from cloud provider pools that cannot be added to your group's IP allowlist. Instead,
 > configure your own group runner at the top-level group.
 
+Prerequisites:
+
+- Your runner must meet the [resource requirements](#runner-resource-requirements).
+
 To configure your own runner for flows:
 
 1. Create an [instance runner](../../../../ci/runners/runners_scope.md) or a group runner assigned to the top-level group. If you want flows to use project runners or group runners assigned to a subgroup, turn off the `duo_runner_restrictions` feature flag (GitLab Self-Managed only).
@@ -318,6 +322,38 @@ To configure your own runner for flows:
    - [Allow outbound connections from the runner](../../../../administration/gitlab_duo/configure/_index.md#allow-connections-from-the-runner) to the Agent Platform.
    - For instances with self-signed certificates in the certificate chain, complete the
      [additional GitLab Duo CLI configuration](../../../gitlab_duo_cli/use.md#certificate-errors).
+
+### Runner resource requirements
+
+The GitLab Duo CLI runs in headless mode in each CI/CD job that executes a flow.
+Each job needs the following resources for the CLI:
+
+| Resource | Minimum      | Recommended  |
+|----------|--------------|--------------|
+| CPU      | 1 vCPU       | 2 vCPU       |
+| Memory   | 512 MiB      | 1 GiB        |
+| Disk     | 500 MiB free | 500 MiB free |
+
+GitLab-hosted runners meet these requirements.
+
+These values cover only the GitLab Duo CLI.
+Each job also needs resources for the following:
+
+- Your project's repository
+- Commands the flow runs, like setup scripts, builds, and tests
+- Large images that the flow reads
+
+A PNG or JPEG file larger than 2 MiB, or wider or taller than 2000 pixels, can use up to 1 GiB of additional memory.
+
+Large repositories and long-running flows use more memory.
+For these flows, use at least the recommended values.
+If a job runs out of memory, it fails with exit code `137`.
+On Kubernetes, the container status is `OOMKilled`.
+
+Flow duration depends mostly on AI model response time, so additional CPU has little effect.
+
+For more information about how these values are measured, see
+[GitLab Duo CLI system requirements](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/cli/app/docs/system-requirements.md).
 
 ### Verify the runner configuration
 

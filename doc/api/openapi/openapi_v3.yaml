@@ -122602,6 +122602,7 @@ components:
           nullable: true
         merge_after:
           type: string
+          format: date-time
           description: Date after which the merge request can be merged. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/510992)
             in GitLab 17.8.
           nullable: true
@@ -122790,6 +122791,7 @@ components:
           nullable: true
         merge_after:
           type: string
+          format: date-time
           description: Date after which the merge request can be merged. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/510992)
             in GitLab 17.8. At least one of `assignee_id`, `assignee_ids`, `reviewer_ids`,
             `description`, `labels`, `add_labels`, `remove_labels`, `milestone_id`,

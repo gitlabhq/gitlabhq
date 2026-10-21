@@ -1068,7 +1068,6 @@ This selection order determines which pipelines contribute to the comparison, es
    Any completed pipelines beyond the tenth newest for a given commit are not examined.
 
 1. The first candidate whose jobs (or child pipelines) produced the required security report artifacts becomes the baseline pipeline.
-
 1. Once the baseline is chosen, GitLab adds the latest completed pipeline of every supported source on the baseline's commit (including scheduled scan execution policy pipelines) and their child pipelines, and combines their security reports.
    This is the only stage at which a scheduled scan execution policy pipeline can contribute to the comparison, and only when it shares a commit with the baseline.
 

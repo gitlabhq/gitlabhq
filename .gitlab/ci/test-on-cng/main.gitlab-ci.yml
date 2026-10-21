@@ -204,10 +204,8 @@ cng-secrets-manager:
 # suite rather than inside the spec, so the test never races with the
 # per-process feature flag cache.
 cng-vue3-rollout:
-  extends:
-    - .cng-test
-    # one example, so the mapping adds nothing
-    - .without-coverband
+  extends: .caproni-test
+  allow_failure: false
   variables:
     QA_SCENARIO: Test::Instance::Vue3Rollout
     QA_RSPEC_TAGS: --tag vue3_rollout

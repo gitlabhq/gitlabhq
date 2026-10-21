@@ -1,5 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import { cloneDeep } from 'lodash-es';
 import { GlCollapsibleListbox, GlModal, GlPopover, GlSprintf } from '@gitlab/ui';
 import { sprintf } from '~/locale';
 import * as util from '~/lib/utils/url_utility';
@@ -321,7 +322,7 @@ describe('View branch rules', () => {
 
     it('closes drawer and refetches data after successful update', async () => {
       await createComponent();
-      jest.spyOn(wrapper.vm.$apollo.queries.squashOption, 'refetch').mockResolvedValue({});
+      jest.spyOn(wrapper.vm.$apollo.queries.squashOptions, 'refetch').mockResolvedValue({});
 
       findSquashSettingSection().vm.$emit('edit');
       await nextTick();
@@ -331,7 +332,57 @@ describe('View branch rules', () => {
       await waitForPromises();
 
       expect(drawer.props('isOpen')).toBe(false);
-      expect(wrapper.vm.$apollo.queries.squashOption.refetch).toHaveBeenCalledTimes(1);
+      expect(wrapper.vm.$apollo.queries.squashOptions.refetch).toHaveBeenCalledTimes(1);
+    });
+
+    describe('when another branch rule with the same name is listed first', () => {
+      const doNotAllowSquashOption = {
+        option: 'Do not allow',
+        helpText: 'Squashing is never performed and the checkbox is hidden.',
+        __typename: 'SquashOption',
+      };
+
+      const buildSquashOptionResponse = (squashOption) => {
+        const response = cloneDeep(squashOptionMockResponse);
+        const { nodes } = response.data.project.branchRules;
+        const [selectedRule] = nodes;
+
+        if (squashOption) selectedRule.squashOption = squashOption;
+        nodes.unshift({
+          ...selectedRule,
+          id: 'gid://gitlab/Projects/BranchRule/10',
+          squashOption: null,
+        });
+
+        return response;
+      };
+
+      it('renders the squash option of the selected branch rule', async () => {
+        await createComponent({
+          squashOptionQueryHandler: jest.fn().mockResolvedValue(buildSquashOptionResponse()),
+        });
+
+        expect(findSquashSettingSection().text()).toContain('Encourage');
+        expect(findSquashSettingsDrawer().props('selectedOption')).toBe('Encourage');
+      });
+
+      it('renders the updated squash option after it is edited', async () => {
+        const squashOptionQueryHandler = jest
+          .fn()
+          .mockResolvedValueOnce(buildSquashOptionResponse())
+          .mockResolvedValue(buildSquashOptionResponse(doNotAllowSquashOption));
+
+        await createComponent({ squashOptionQueryHandler });
+
+        expect(findSquashSettingSection().text()).toContain('Encourage');
+
+        findSquashSettingSection().vm.$emit('edit');
+        await nextTick();
+        findSquashSettingsDrawer().vm.$emit('submit', 'NEVER');
+        await waitForPromises();
+
+        expect(findSquashSettingSection().text()).toContain('Do not allow');
+      });
     });
 
     it('renders squash settings section', () => {

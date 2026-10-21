@@ -1243,7 +1243,6 @@ For more information on Gitaly server configuration, see our
      1. Copy `/etc/gitlab/gitlab-secrets.json` from the Gitaly client to the same path on the Gitaly
         servers and any other Gitaly clients.
      1. [Reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation) on Gitaly servers.
-
    - Method 2:
 
      1. Edit `/etc/gitlab/gitlab.rb`.
@@ -1474,7 +1473,6 @@ Particular attention should be shown to:
      1. Copy `/etc/gitlab/gitlab-secrets.json` from the Gitaly client to the same path on the Gitaly
         servers and any other Gitaly clients.
      1. [Reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation) on Gitaly servers.
-
    - Method 2:
 
      1. Edit `/etc/gitlab/gitlab.rb`.

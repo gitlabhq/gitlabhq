@@ -1433,7 +1433,6 @@ You can view failures in two ways:
      - `json.new_state: failed`
      - `json.job_class_name: <Batched Background Migration job class name>`
      - `json.job_arguments: <Batched Background Migration job class arguments>`
-
   1. Review the `json.exception_class` and `json.exception_message` values to help
      understand why the jobs failed.
 

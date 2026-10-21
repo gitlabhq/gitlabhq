@@ -1,0 +1,12 @@
+---
+api_type:
+attr: o11y_provisioner_api_key
+clusterwide: true
+column: o11y_provisioner_api_key
+db_type: jsonb
+default:
+description:
+encrypted: true
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

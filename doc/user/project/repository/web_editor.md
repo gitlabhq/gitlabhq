@@ -48,17 +48,13 @@ To create a text file in the Web Editor:
 1. Select **Commit changes**.
 1. In the **Commit message** field, enter a reason for the commit.
 1. Choose one of the following options:
-
    - To create a file in the prefilled target branch, select **Commit changes**.
    - To create a file in a new branch and commit changes:
-
      1. Select **Commit to a new branch**.
      1. Enter a branch name.
      1. Ensure the **Create a merge request for this change** checkbox is cleared.
      1. Select **Commit changes**.
-
    - To create a file in a new branch, commit changes, and create a merge request:
-
      1. Select **Commit to a new branch**.
      1. Enter a branch name.
      1. Ensure the **Create a merge request for this change** checkbox is selected.
@@ -98,17 +94,13 @@ To edit a text file in the Web Editor:
 1. Select **Commit changes**.
 1. In the **Commit message** field, enter a reason for the commit.
 1. Choose one of the following options:
-
    - To edit a file from the prefilled target branch, select **Commit changes**.
    - To edit a file from a new branch and commit changes:
-
      1. Select **Commit to a new branch**.
      1. Enter a branch name.
      1. Ensure the **Create a merge request for this change** checkbox is cleared.
      1. Select **Commit changes**.
-
    - To edit a file from a new branch, commit changes, and create a merge request:
-
      1. Select **Commit to a new branch**.
      1. Enter a branch name.
      1. Ensure the **Create a merge request for this change** checkbox is selected.
@@ -180,17 +172,13 @@ To upload a file in the Web Editor:
 1. Drop or upload the file you want to add.
 1. In the **Commit message** field, enter a reason for the commit.
 1. Choose one of the following options:
-
    - To upload a file from the prefilled target branch, select **Commit changes**.
    - To upload a file from a new branch and commit changes:
-
      1. Select **Commit to a new branch**.
      1. Enter a branch name.
      1. Ensure the **Create a merge request for this change** checkbox is cleared.
      1. Select **Commit changes**.
-
    - To upload a file from a new branch, commit changes, and create a merge request:
-
      1. Select **Commit to a new branch**.
      1. Enter a branch name.
      1. Ensure the **Create a merge request for this change** checkbox is selected.
@@ -206,17 +194,13 @@ To delete a file in the Web Editor:
 1. Select **Delete**.
 1. In **Commit message**, enter a reason for the commit.
 1. Choose between the following options:
-
    - To delete a file from the prefilled target branch, select **Commit changes**.
    - To delete a file from a new branch and commit changes:
-
      1. Select **Commit to a new branch**.
      1. Enter a branch name.
      1. Ensure the **Create a merge request for this change** checkbox is cleared.
      1. Select **Commit changes**.
-
    - To delete a file from a new branch, commit changes, and create a merge request:
-
      1. Select **Commit to a new branch**.
      1. Enter a branch name.
      1. Ensure the **Create a merge request for this change** checkbox is selected.
@@ -238,17 +222,13 @@ To replace a file in the Web Editor:
 1. Drop or upload the file you want to upload and replace the existing one.
 1. In **Commit message**, enter a reason for the commit.
 1. Choose between the following options:
-
    - To replace a file from the prefilled target branch, select **Commit changes**.
    - To replace a file from a new branch and commit changes:
-
      1. Select **Commit to a new branch**.
      1. Enter a branch name.
      1. Ensure the **Create a merge request for this change** checkbox is cleared.
      1. Select **Commit changes**.
-
    - To replace a file from a new branch, commit changes, and create a merge request:
-
      1. Select **Commit to a new branch**.
      1. Enter a branch name.
      1. Ensure the **Create a merge request for this change** checkbox is selected.
@@ -297,17 +277,13 @@ To create a directory in the Web Editor:
 1. In the **Directory name** field, enter your directory name.
 1. In **Commit message**, enter a reason for the commit.
 1. Choose between the following options:
-
    - To create a directory from the prefilled target branch, select **Commit changes**.
    - To create a directory from a new branch and commit changes:
-
      1. Select **Commit to a new branch**.
      1. Enter a branch name.
      1. Ensure the **Create a merge request for this change** checkbox is cleared.
      1. Select **Commit changes**.
-
    - To create a directory from a new branch, commit changes, and create a merge request:
-
      1. Select **Commit to a new branch**.
      1. Enter a branch name.
      1. Ensure the **Create a merge request for this change** checkbox is selected.

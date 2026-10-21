@@ -260,7 +260,6 @@ scheduled after the background migration has completed, which could be several r
 
 1. Release `N.M+X`, where `X` is the number of releases the migration was running:
    - [Verify that all existing records are fixed](#check-if-all-records-are-fixed-next-release).
-
    - Cleanup the background migration:
 
      ```ruby

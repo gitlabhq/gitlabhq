@@ -70,7 +70,6 @@ Two controls at the top of the dashboard filter the tiles and most cards:
   - **All agents** (default): GitLab Duo Agent Platform agents and connected agents.
   - **DAP**: GitLab Duo Agent Platform agents.
   - **Connected**: Connected agents.
-
 - **Date range**: **Last 7 days** (default) or **Last 30 days**.
 
 Each card that ignores the date range says so below its list.

@@ -684,7 +684,6 @@ In order to push images to this location:
       Ensure the [gl-service-dev-secure-analyzers-automation](https://gitlab.com/gl-service-dev-secure-analyzers-automation) service account has been explicitly added to the list of accounts `Allowed to create` protected tags. This is required to allow the [`upsert git tag`](https://gitlab.com/gitlab-org/security-products/ci-templates/blob/2a3519d/includes-dev/upsert-git-tag.yml#L35-44) job to create new releases for the analyzer project.
 
    1. Add the wildcard `v*` as a [Protected Branch](../../user/project/repository/branches/protected.md).
-
    1. [`CI/CD` environment variables](../../ci/variables/_index.md)
 
       > [!note]

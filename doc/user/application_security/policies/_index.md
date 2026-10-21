@@ -40,6 +40,8 @@ The following policy types are available:
   - [Scheduled pipeline execution policy](scheduled_pipeline_execution_policies.md). Enforce custom CI/CD jobs on a scheduled cadence across projects, independent of commit activity.
 - [Vulnerability management policy](vulnerability_management_policy.md). Automatically resolve
   vulnerabilities that are no longer detected in the default branch.
+- [Dependency firewall policy](../dependency_firewall/_index.md). Block packages with disallowed
+  licenses, high vulnerability risk, or malicious code before a package manager installs them.
 
 ## Configure the policy scope
 

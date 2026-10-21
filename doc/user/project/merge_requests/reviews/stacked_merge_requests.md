@@ -2,7 +2,7 @@
 stage: AI Coding
 group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-description: Navigate between chained merge requests that build on each other to deliver a feature.
+description: Navigate and merge chained merge requests that build on each other to deliver a feature.
 title: Stacked merge requests
 ---
 
@@ -38,7 +38,8 @@ A stack can contain up to 20 merge requests. If a stack contains more than 20 me
 does not show the stack control.
 
 To create stacked merge requests from the command line, use
-[stacked diffs](../stacked_diffs.md) in the GitLab CLI.
+[stacked diffs](../stacked_diffs.md) in the GitLab CLI. When you run `glab stack sync`,
+each diff in the stack becomes a merge request.
 
 ## Navigate a stack
 
@@ -67,14 +68,14 @@ Only the merge request at the bottom of the stack targets the default branch, so
 Each merge request higher in the stack targets the branch below it, so it can merge only after
 that branch merges.
 
-Bottom-up is the recommended order because when a merge request merges, GitLab automatically sets the default branch as the target for the next one in the stack.
+Bottom-up is the recommended order because when you merge a merge request and delete its source branch, GitLab sets the default branch as the target for the next one in the stack.
 If required, you can merge in a different order. For example, you might want to change the order to apply a fix that a lower merge
 request depends on.
 
 To merge a stack from the bottom up:
 
-1. Merge the bottom merge request into the default branch.
-1. GitLab automatically retargets the next merge request to the default branch.
+1. Merge the bottom merge request into the default branch, then delete its source branch.
+1. GitLab retargets the next merge request to the default branch.
 1. Review and merge the retargeted merge request.
 1. Repeat the previous steps until the stack is empty.
 

@@ -1,0 +1,10 @@
+---
+name: skillguard_analyzer
+description: Gate the SkillGuard AI agent skill scanner surfaces (security configuration, scan profiles, scanners list, security inventory), actored on the top-level group, default off until the scan profile and flow work ships
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/634364
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/263331
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/634364
+milestone: '19.6'
+type: wip
+group: group::security controls
+default_enabled: false

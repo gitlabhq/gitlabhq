@@ -136,7 +136,7 @@ export default {
     <div role="cell" class="gl-flex gl-flex-col gl-items-start gl-gap-2">
       <gl-link
         :href="mergeRequest.webUrl"
-        class="gl-font-bold gl-text-default hover:gl-text-default"
+        class="gl-font-bold gl-text-default gl-wrap-anywhere hover:gl-text-default"
       >
         {{ mergeRequest.title }}
       </gl-link>

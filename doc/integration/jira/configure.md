@@ -78,9 +78,7 @@ To configure your project settings in GitLab:
      - **API token or password**:
        - For Jira Cloud, enter an API token.
        - For Jira Data Center or Jira Server, enter a password.
-
    - **Personal access token** (Jira Data Center and Jira Server only): Enter a Jira personal access token.
-
    - **Jira Cloud service account** (Jira Cloud only):
 
      - **Service account token**: Enter a scoped API token for a Jira Cloud service account.

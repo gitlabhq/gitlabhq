@@ -16,7 +16,8 @@ module Enums # rubocop:disable Gitlab/BoundedContexts -- Existing module
       api_fuzzing: 8,
       cluster_image_scanning: 9,
       # 10..14 are taken by `extended_analyzer_types` and `analyzer_types_for_status` below.
-      business_logic: 15
+      business_logic: 15,
+      skillguard: 16
     }.freeze
 
     ANALYZER_STATUSES = {
@@ -52,11 +53,12 @@ module Enums # rubocop:disable Gitlab/BoundedContexts -- Existing module
       secret_detection: 1,
       container_scanning: 3,
       dependency_scanning: 4,
-      business_logic: 5
+      business_logic: 5,
+      skillguard: 6
     }.freeze
 
     # Scan types executed as an AI flow, not as injected CI jobs.
-    FLOW_BACKED_SCAN_TYPES = %w[business_logic].freeze
+    FLOW_BACKED_SCAN_TYPES = %w[business_logic skillguard].freeze
 
     REMEDIATION_SCAN_PROFILE_TYPES = {
       dependency_scanning_post_processing: 20,

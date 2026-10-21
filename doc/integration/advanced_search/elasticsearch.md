@@ -1193,7 +1193,6 @@ due to large volumes of data being indexed:
 1. Indexing large Git repositories can take a while. To speed up the process, you can [tune for indexing speed](https://www.elastic.co/guide/en/elasticsearch/reference/current/tune-for-indexing-speed.html#tune-for-indexing-speed):
 
    - You can temporarily increase [`refresh_interval`](https://www.elastic.co/docs/api/doc/elasticsearch/operation/operation-indices-refresh).
-
    - You can set the number of replicas to 0. This setting controls the number of copies each primary shard of an index has. Thus, having 0 replicas effectively disables the replication of shards across nodes, which should increase the indexing performance. This is an important trade-off in terms of reliability and query performance. It is important to remember to set the replicas to a considered value after the initial indexing is complete.
 
    You can expect a 20% decrease in indexing time. After the indexing is complete, you can set `refresh_interval` and `number_of_replicas` back to their desired values.

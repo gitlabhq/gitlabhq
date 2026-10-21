@@ -53,7 +53,6 @@ To get started, select the development option that works best for you:
 
     - Minimal configuration required.
     - After the 10 GB image has downloaded, GDK-in-a-box is ready in a few minutes.
-
   - [**Standalone GDK**](configure-dev-env-gdk.md): Install the GDK and its dependencies.
 
     Install the GDK for a fully local development environment.

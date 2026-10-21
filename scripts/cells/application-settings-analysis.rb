@@ -183,6 +183,8 @@ class ApplicationSettingsAnalysis
       namespace_storage_forks_cost_factor
       notes_create_limit
       notes_create_limit_allowlist
+      o11y_provisioner_api_key
+      o11y_settings
       oauth_provider
       observability_settings
       outbound_local_requests_whitelist

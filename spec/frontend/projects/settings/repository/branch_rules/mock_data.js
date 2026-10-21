@@ -91,6 +91,37 @@ export const squashOptionMockResponse = {
   },
 };
 
+export const groupLevelRuleSquashOptionMock = {
+  __typename: 'BranchRule',
+  name: 'production',
+  id: 'gid://gitlab/Projects/BranchRule/4',
+  squashOption: null,
+};
+
+export const projectLevelRuleSquashOptionMock = {
+  __typename: 'BranchRule',
+  name: 'production',
+  id: 'gid://gitlab/Projects/BranchRule/5',
+  squashOption: {
+    option: 'Do not allow',
+    helpText: 'Squashing is never performed and the checkbox is hidden.',
+    __typename: 'SquashOption',
+  },
+};
+
+export const buildSquashOptionMockResponse = (nodes) => ({
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/6',
+      __typename: 'Project',
+      branchRules: {
+        __typename: 'BranchRuleConnection',
+        nodes,
+      },
+    },
+  },
+});
+
 export const branchRulesMockResponse = {
   data: {
     project: {
@@ -197,6 +228,7 @@ export const branchRuleProvideMock = {
 };
 
 export const branchRulePropsMock = {
+  ruleId: 'gid://gitlab/Projects/BranchRule/3',
   name: 'branch-with-$speci@l-#-chars',
   isDefault: true,
   matchingBranchesCount: 1,

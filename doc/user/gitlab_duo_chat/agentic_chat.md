@@ -550,6 +550,97 @@ After you create a conversation with an agent:
 - If you go back to a conversation and the associated agent is no longer available,
   you cannot continue that conversation.
 
+## Web search
+
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219759) in GitLab 18.9 as an [experiment](../../policy/development_stages_support.md#experiment) with a [flag](../../administration/feature_flags/_index.md) named `dap_web_search`. Disabled by default.
+- Group setting to allow web search [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253643) in GitLab 19.4.
+- Audit event for web searches [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/604065) in GitLab 19.5.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+Use web search to ask Chat questions that need current information. Chat finds the answer
+by searching the web and reading web pages. For example, you can ask about the latest version of a package,
+the status of a security advisory, or the documentation for a third-party tool.
+
+When Chat searches the web, the model writes a search query from your conversation and
+sends the query to a search service. The search service depends on the model provider.
+Do not include sensitive information in a conversation that uses web search.
+The search query might include it.
+
+You cannot limit which domains web search can reach.
+[Issue 604066](https://gitlab.com/gitlab-org/gitlab/-/work_items/604066) proposes to add domain allowlists and denylists.
+
+### Allow web search for a group
+
+Allow web search for a top-level group so users in the group can turn on web search
+in their Chat conversations. The setting applies to all subgroups and projects in the group.
+
+Prerequisites:
+
+- You must have the Owner role for the top-level group.
+
+To allow web search for a group:
+
+1. In the top bar, select **Search or go to** and find your top-level group.
+1. In the left sidebar, select **Settings** > **GitLab Duo**.
+1. Select **Change configuration**.
+1. In the **Data and privacy** section, under **Web search**, select the **Allow web search** checkbox.
+1. Select **Save changes**.
+
+To allow web search for a group, you can also [use the API](../../api/groups.md#options-for-ai_settings_attributes)
+to set the `web_search_enabled` attribute.
+
+### Turn on web search in a conversation
+
+Turn on web search in a conversation when you want Chat to search the web for an answer.
+Chat saves the setting with the conversation. When you start a new conversation, web search
+starts with the setting you last chose in your browser.
+
+Prerequisites:
+
+- A group Owner must allow web search for the top-level group.
+
+To turn on web search:
+
+1. In GitLab, open a new or existing Chat conversation.
+1. In the Chat message box, select **Add or enable** ({{< icon name="plus" >}}).
+1. Turn on the **Web search** toggle.
+
+### Search services
+
+The search service that Chat uses depends on the provider of the selected model:
+
+| Model provider | Search service |
+| -------------- | -------------- |
+| Anthropic | The Anthropic web search and web fetch tools. |
+| OpenAI | The OpenAI built-in web search tool. |
+| Google Vertex AI | The web search tool hosted by the model provider, if the model supports one. |
+| Other providers | The Amazon Bedrock AgentCore web search connector, if the AI Gateway is configured to use it. The connector runs in the AWS `us-east-1` region. |
+
+For Anthropic models, Chat can read up to five web pages for each request.
+
+### Audit events
+
+Web search creates the following audit events:
+
+- `web_search_enabled_updated`: A user changes the **Allow web search** setting for a group.
+- `ai_web_search_invoked`: Chat runs a web search.
+
+For more information, see [audit event types](../compliance/audit_event_types.md).
+To view web searches in agent sessions, see [AI audit events](../ai-governance/ai-audit-events.md).
+
 ## Prompt caching
 
 {{< history >}}

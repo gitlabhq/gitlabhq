@@ -109,6 +109,15 @@ RSpec.describe ::Gitlab::Security::ScanConfiguration do
           type: 'business_logic',
           required_permission_to_configure: :configure_security_scanner
         },
+        skillguard: {
+          name: 'SkillGuard',
+          short_name: 'SkillGuard',
+          description: 'Analyze AI agent skill files for security risks, such as prompt injection, ' \
+            'credential exfiltration, and unsafe command execution.',
+          help_path: '/help/user/application_security/_index.md',
+          type: 'skillguard',
+          required_permission_to_configure: :configure_security_scanner
+        },
         sast_advanced: {
           name: 'GitLab Advanced SAST',
           short_name: 'Advanced SAST',

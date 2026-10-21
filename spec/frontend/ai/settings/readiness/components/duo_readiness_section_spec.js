@@ -43,5 +43,12 @@ describe('DuoReadinessSection', () => {
     createComponent({}, { default: '<div data-testid="row">GitLab Duo</div>' });
 
     expect(wrapper.findByTestId('row').text()).toBe('GitLab Duo');
+    expect(wrapper.findByTestId('row').element.parentElement.classList).toContain('gl-border');
+  });
+
+  it('drops the frame for content that draws its own', () => {
+    createComponent({ bordered: false }, { default: '<div data-testid="row">GitLab Duo</div>' });
+
+    expect(wrapper.findByTestId('row').element.parentElement.classList).not.toContain('gl-border');
   });
 });

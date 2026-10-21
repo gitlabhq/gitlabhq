@@ -17,6 +17,17 @@ export default {
       default: 'h2',
       validator: (value) => ['h2', 'h3', 'h4'].includes(value),
     },
+    // Off for content that draws its own frame, such as a table or cards.
+    bordered: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+  },
+  computed: {
+    frameClass() {
+      return this.bordered ? 'gl-border gl-overflow-hidden gl-rounded-lg' : null;
+    },
   },
 };
 </script>
@@ -29,7 +40,7 @@ export default {
     <p v-if="subtitle" class="gl-mb-4 gl-text-subtle" data-testid="readiness-section-subtitle">
       {{ subtitle }}
     </p>
-    <div class="gl-border gl-overflow-hidden gl-rounded-lg">
+    <div :class="frameClass">
       <slot></slot>
     </div>
   </section>

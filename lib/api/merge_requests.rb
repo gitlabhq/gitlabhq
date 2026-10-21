@@ -345,7 +345,7 @@ module API
           optional :allow_collaboration, type: Boolean, desc: 'If `true`, allows commits from members who can merge to the target branch.'
           optional :allow_maintainer_to_push, type: Boolean, as: :allow_collaboration, desc: 'If `true`, allows commits from members who can merge to the target branch. Deprecated. Use `allow_collaboration` instead.'
           optional :squash, type: Grape::API::Boolean, desc: "If `true`, squashes all commits into a single commit on merge. When omitted, defaults to the [project's squash option setting](https://docs.gitlab.com/user/project/merge_requests/squash_and_merge/#configure-squash-options-for-a-project), which can override this value at merge time."
-          optional :merge_after, type: String, desc: 'Date after which the merge request can be merged. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/510992) in GitLab 17.8.'
+          optional :merge_after, type: DateTime, desc: 'Date after which the merge request can be merged. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/510992) in GitLab 17.8.'
 
           use :optional_params_ee
         end

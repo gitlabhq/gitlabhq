@@ -22,8 +22,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-
-	"github.com/mitchellh/copystructure"
 )
 
 const shortSeekBytes = 1024
@@ -74,20 +72,6 @@ func NewHTTPReadSeeker(res *http.Response, client ...*http.Client) *HTTPReadSeek
 		r.c = http.DefaultClient
 	}
 	return r
-}
-
-// Clone clones the reader to enable parallel downloads of ranges
-func (r *HTTPReadSeeker) Clone() (*HTTPReadSeeker, error) {
-	req, err := copystructure.Copy(r.req)
-	if err != nil {
-		return nil, err
-	}
-	return &HTTPReadSeeker{
-		req: req.(*http.Request),
-		res: r.res,
-		r:   nil,
-		c:   r.c,
-	}, nil
 }
 
 // Read reads from the response body. It does a range request if Seek was called before.
@@ -201,11 +185,13 @@ func (r *HTTPReadSeeker) rangeRequest() error {
 	}
 	switch res.StatusCode {
 	case http.StatusRequestedRangeNotSatisfiable:
+		_ = res.Body.Close()
 		return ErrInvalidRange
 	case http.StatusOK:
 		// some servers return 200 OK for bytes=0-
 		if r.pos > 0 ||
 			(etag != "" && etag != res.Header.Get("ETag")) {
+			_ = res.Body.Close()
 			return ErrContentHasChanged
 		}
 		fallthrough

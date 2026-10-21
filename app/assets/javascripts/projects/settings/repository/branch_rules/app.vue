@@ -164,6 +164,7 @@ export default {
         <branch-rule
           v-for="(rule, index) in branchRules"
           :key="`${rule.name}-${index}`"
+          :rule-id="rule.id"
           :name="rule.name"
           :is-default="rule.isDefault"
           :branch-protection="rule.branchProtection"

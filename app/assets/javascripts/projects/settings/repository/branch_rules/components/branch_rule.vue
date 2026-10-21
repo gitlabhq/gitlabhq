@@ -43,7 +43,7 @@ export default {
       },
       update({ project }) {
         const squashOptions = project?.branchRules?.nodes || [];
-        return squashOptions.find((option) => option.name === this.name)?.squashOption;
+        return squashOptions.find((option) => option.id === this.ruleId)?.squashOption;
       },
       error(error) {
         createAlert({ message: error });
@@ -61,6 +61,10 @@ export default {
     groupSettingsRepositoryPath: { default: '' },
   },
   props: {
+    ruleId: {
+      type: String,
+      required: true,
+    },
     name: {
       type: String,
       required: true,

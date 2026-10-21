@@ -2286,7 +2286,24 @@ The syntax is `%{PLACEHOLDER}`.
 | `%{current_ref}`          | `feature-branch`    | Current ref (branch, tag, or commit SHA) being viewed |
 | `%{commit_sha}`           | `ad10e011ce65492322037633ebc054efde37b143` | ID of the most recent commit to the default branch of a project's repository |
 | `%{latest_tag}`           | `v17.10.7-ee`       | Latest tag added to the project's repository |
-| `%{merge_request_iid}`    | `57`                | Project-level IID of a merge request URL. Available only after the merge request is created. |
+| `%{merge_request_iid}`    | `57`                | IID of the merge request in the project. Available only in the description of a merge request, after the merge request is created. |
+
+GitLab replaces placeholders in text, link URLs, and image URLs.
+It doesn't replace placeholders in link or image titles, or in raw HTML blocks like `<table>`.
+In the host of a URL, GitLab replaces only `%{gitlab_server}` and `%{gitlab_pages_domain}`.
+It replaces other placeholders only in the path, query, or fragment of a URL.
+
+If the value of a placeholder is unavailable, for example because you don't have access to the
+project, the placeholder is removed from the rendered text.
+The exception is `%{merge_request_iid}`.
+When no merge request is available, like in a comment or before the merge request is created,
+the placeholder text shows as unchanged.
+
+GitLab replaces placeholders in up to 100 places in each field, like a description or comment.
+Each placeholder in text counts as one. A link or image URL counts as one, no matter how many
+placeholders it contains. Any additional placeholders are shown unchanged.
+
+To display a placeholder without replacing it, put it in a code span or code block.
 
 ## Escape characters
 

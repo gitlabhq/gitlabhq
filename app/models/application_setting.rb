@@ -953,6 +953,21 @@ class ApplicationSetting < ApplicationRecord
 
   validates :clickhouse, json_schema: { filename: "application_setting_clickhouse" }
 
+  jsonb_accessor :o11y_settings,
+    o11y_provisioner_url: [:string, { default: '' }]
+
+  validates :o11y_settings, json_schema: { filename: 'application_setting_o11y_settings', size_limit: 64.kilobytes }
+  validates :o11y_provisioner_url,
+    addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS.merge({ schemes: %w[https] }),
+    allow_blank: true
+
+  encrypts :o11y_provisioner_api_key
+
+  validates :o11y_provisioner_api_key,
+    json_schema: { filename: 'application_setting_o11y_provisioner_api_key', size_limit: 64.kilobytes },
+    allow_nil: true
+  validates :o11y_provisioner_api_key, length: { maximum: 510 }
+
   jsonb_accessor :response_limits,
     max_http_response_size_limit: [:integer, { default: 100 }],
     max_http_decompressed_size: [:integer, { default: 100 }],

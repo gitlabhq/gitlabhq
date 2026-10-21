@@ -1934,6 +1934,9 @@ msgstr ""
 msgid "(open and unassigned)"
 msgstr ""
 
+msgid "(opens in a new tab)"
+msgstr ""
+
 msgid "(optional)"
 msgstr ""
 
@@ -12015,6 +12018,9 @@ msgid "Analytics|You don't have permission to view this data. Ask an owner for a
 msgstr ""
 
 msgid "Analytics|You have insufficient %{linkStart}permissions%{linkEnd} to view this panel."
+msgstr ""
+
+msgid "Analyze AI agent skill files for security risks, such as prompt injection, credential exfiltration, and unsafe command execution."
 msgstr ""
 
 msgid "Analyze CI/CD pipeline metrics and performance"
@@ -32434,6 +32440,9 @@ msgstr ""
 msgid "DuoAgentPlatform|Add a session URL to commits authored by GitLab Duo Agent Platform, so reviewers can trace AI-assisted changes back to the originating session."
 msgstr ""
 
+msgid "DuoAgentPlatform|Additional options for your group."
+msgstr ""
+
 msgid "DuoAgentPlatform|Additional options for your project."
 msgstr ""
 
@@ -32483,6 +32492,9 @@ msgid "DuoAgentPlatform|Agents work now. 1 more step to set up flows."
 msgstr ""
 
 msgid "DuoAgentPlatform|Agents work now. Flows are on, but they won't start until you connect a runner."
+msgstr ""
+
+msgid "DuoAgentPlatform|Agents, chat, and code suggestions."
 msgstr ""
 
 msgid "DuoAgentPlatform|All %{count} are required for full agent and flow support."
@@ -32615,6 +32627,9 @@ msgstr ""
 msgid "DuoAgentPlatform|Experiment. Agents can connect to tools your team already uses, such as Jira or Linear."
 msgstr ""
 
+msgid "DuoAgentPlatform|Experimental and beta features"
+msgstr ""
+
 msgid "DuoAgentPlatform|External agents"
 msgstr ""
 
@@ -32713,6 +32728,9 @@ msgstr ""
 msgid "DuoAgentPlatform|Implementation with GitLab Duo isn't turned on for this project."
 msgstr ""
 
+msgid "DuoAgentPlatform|Includes flows, which run as CI/CD jobs."
+msgstr ""
+
 msgid "DuoAgentPlatform|Indexed %{timeAgo}. Agents get repo-wide context."
 msgstr ""
 
@@ -32744,6 +32762,18 @@ msgid "DuoAgentPlatform|Manage agents"
 msgstr ""
 
 msgid "DuoAgentPlatform|Manage merge requests, issues, and pipelines, and run GitLab Orbit Local from the terminal."
+msgstr ""
+
+msgid "DuoAgentPlatform|Membership rules are set by an administrator for this instance."
+msgstr ""
+
+msgid "DuoAgentPlatform|Membership rules are set on the top-level group. Ask a top-level group Owner to add one."
+msgstr ""
+
+msgid "DuoAgentPlatform|Minimum role for all other Agent Platform features"
+msgstr ""
+
+msgid "DuoAgentPlatform|Minimum role for features that use CI/CD pipelines"
 msgstr ""
 
 msgid "DuoAgentPlatform|Model"
@@ -32976,6 +33006,9 @@ msgstr ""
 msgid "DuoAgentPlatform|User messaged agent"
 msgstr ""
 
+msgid "DuoAgentPlatform|User permissions"
+msgstr ""
+
 msgid "DuoAgentPlatform|Users with the Maintainer or Owner role for a project can create new agents."
 msgstr ""
 
@@ -33019,6 +33052,9 @@ msgid "DuoAgentPlatform|When an agent needs a decision from you, it shows up her
 msgstr ""
 
 msgid "DuoAgentPlatform|Whether users can approve tools for a whole session in the IDE and CLI."
+msgstr ""
+
+msgid "DuoAgentPlatform|Who can use GitLab Duo in this group."
 msgstr ""
 
 msgid "DuoAgentPlatform|You can still set up the other %d step here."
@@ -60344,7 +60380,7 @@ msgstr ""
 msgid "Orbit|Milestone"
 msgstr ""
 
-msgid "Orbit|More rows match this query. Raise the LIMIT to see them."
+msgid "Orbit|More rows match this query. Raise the LIMIT, or use SKIP to get the next page."
 msgstr ""
 
 msgid "Orbit|More syntax"
@@ -60759,6 +60795,9 @@ msgid "Orbit|Show me what you can answer with Orbit that you cannot answer witho
 msgstr ""
 
 msgid "Orbit|Show recent merge requests"
+msgstr ""
+
+msgid "Orbit|Skip this many rows, up to 10,000, to get the next page."
 msgstr ""
 
 msgid "Orbit|Something went wrong"
@@ -77216,6 +77255,9 @@ msgstr ""
 msgid "SecurityInventory|CS"
 msgstr ""
 
+msgid "SecurityInventory|Capabilities"
+msgstr ""
+
 msgid "SecurityInventory|Container scanning"
 msgstr ""
 
@@ -83008,6 +83050,9 @@ msgid "Size limit"
 msgstr ""
 
 msgid "Size limit per repository (MiB)"
+msgstr ""
+
+msgid "SkillGuard"
 msgstr ""
 
 msgid "Skip to input"

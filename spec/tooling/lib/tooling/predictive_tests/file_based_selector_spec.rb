@@ -102,6 +102,27 @@ RSpec.describe Tooling::PredictiveTests::FileBasedSelector, feature_category: :t
     end
   end
 
+  context 'when a generated file changes' do
+    where(:generated_file) do
+      %w[
+        locale/gitlab.pot
+        public/-/graphql/introspection_result.json
+        public/-/graphql/introspection_result_no_deprecated.json
+        doc/api/openapi/openapi_v3.yaml
+      ]
+    end
+
+    with_them do
+      let(:changed_files) { ['app/models/user.rb', generated_file] }
+      let(:rows) { [{ 'source_file' => 'app/models/user.rb', 'test_file' => 'spec/models/user_spec.rb' }] }
+
+      it 'selects the specs from the map' do
+        expect(result.full_suite_reason).to be_nil
+        expect(result.specs).to eq(%w[spec/models/user_spec.rb])
+      end
+    end
+  end
+
   context 'when a file the map cannot judge changes' do
     let(:changed_files) { %w[app/models/user.rb Gemfile.lock] }
 

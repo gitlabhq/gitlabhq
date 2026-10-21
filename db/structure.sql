@@ -14657,6 +14657,8 @@ CREATE TABLE application_settings (
     duo_code_review_approval_counts_enabled boolean DEFAULT false NOT NULL,
     lock_duo_code_review_approval_counts_enabled boolean DEFAULT false NOT NULL,
     project_defaults jsonb DEFAULT '{}'::jsonb NOT NULL,
+    o11y_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
+    o11y_provisioner_api_key jsonb,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
@@ -14714,6 +14716,7 @@ CREATE TABLE application_settings (
     CONSTRAINT check_application_settings_clickhouse_is_hash CHECK ((jsonb_typeof(clickhouse) = 'object'::text)),
     CONSTRAINT check_application_settings_cluster_agents_is_hash CHECK ((jsonb_typeof(cluster_agents) = 'object'::text)),
     CONSTRAINT check_application_settings_code_creation_is_hash CHECK ((jsonb_typeof(code_creation) = 'object'::text)),
+    CONSTRAINT check_application_settings_current_o11y_settings_is_hash CHECK ((jsonb_typeof(o11y_settings) = 'object'::text)),
     CONSTRAINT check_application_settings_database_reindexing_is_hash CHECK ((jsonb_typeof(database_reindexing) = 'object'::text)),
     CONSTRAINT check_application_settings_database_settings_is_hash CHECK ((jsonb_typeof(database_settings) = 'object'::text)),
     CONSTRAINT check_application_settings_diagram_proxy_is_hash CHECK ((jsonb_typeof(diagram_proxy) = 'object'::text)),
@@ -24707,7 +24710,8 @@ CREATE TABLE merge_request_merge_schedules (
     merge_request_id bigint NOT NULL,
     merge_after timestamp with time zone,
     project_id bigint NOT NULL,
-    merge_before timestamp with time zone
+    merge_before timestamp with time zone,
+    CONSTRAINT check_39780e2606 CHECK ((merge_after IS NOT NULL))
 );
 
 CREATE SEQUENCE merge_request_merge_schedules_id_seq
@@ -31691,6 +31695,7 @@ CREATE TABLE security_inventory_filters (
     business_logic smallint DEFAULT 0 NOT NULL,
     triage_capabilities_on smallint DEFAULT 0 NOT NULL,
     triage_capabilities_auto smallint DEFAULT 0 NOT NULL,
+    skillguard smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_aeacee81ba CHECK ((char_length(project_name) <= 255))
 );
 

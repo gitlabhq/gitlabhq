@@ -7,7 +7,7 @@ RSpec.describe API::WorkItems::Create, feature_category: :portfolio_management d
   let_it_be(:group) { create(:group, :private, reporters: user) }
   let_it_be(:project) { create(:project, :private, group: group, reporters: user) }
 
-  let_it_be(:task_type) { ::WorkItems::TypesFramework::Provider.new.find_by_base_type(:task) }
+  let_it_be(:task_type) { build(:work_item_system_defined_type, :task) }
   let_it_be(:label) { create(:label, project: project) }
   let_it_be(:milestone) { create(:milestone, project: project) }
   let_it_be_with_reload(:parent_work_item) { create(:work_item, :issue, project: project) }
@@ -85,7 +85,7 @@ RSpec.describe API::WorkItems::Create, feature_category: :portfolio_management d
       end
 
       it 'ignores undeclared attributes nested in the feature #security' do
-        incident_type = ::WorkItems::TypesFramework::Provider.new.find_by_base_type(:incident)
+        incident_type = build(:work_item_system_defined_type, :incident)
 
         post api(api_request_path, user), as: :json, params: {
           title: 'Described task',

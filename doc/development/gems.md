@@ -324,22 +324,17 @@ to store them in monorepo:
 ### Handling of an existing gems in `vendor/gems`
 
 - For in-house Gems that do not have external repository and are currently stored in `vendor/gems/`:
-
   - For Gems that are used by other repositories:
-
     - We will migrate it into its own repository.
     - We will start or continue publishing them via RubyGems.
     - Those Gems will be referenced via version in `Gemfile` and fetched from RubyGems.
-
   - For Gems that are only used by monorepo:
-
     - We will stop publishing new versions to RubyGems.
     - We will not pull from RubyGems already published versions since there might
       be applications dependent on those.
     - We will move those gems to `gems/`.
     - Those Gems will be referenced via `path:` in `Gemfile`.
 - For `vendor/gems/` that are external and vendored in monorepo:
-
   - We will maintain them in the repository if they require some fixes that cannot be or are not yet upstreamed.
   - It is expected that vendored gems might be published by third-party.
   - Those Gems will not be published by us to RubyGems.

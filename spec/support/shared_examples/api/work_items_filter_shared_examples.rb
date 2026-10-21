@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'work item listing filters' do
-  let_it_be(:task_type, freeze: false) { ::WorkItems::TypesFramework::Provider.new.find_by_base_type(:task) }
+  let_it_be(:task_type, freeze: false) { build(:work_item_system_defined_type, :task) }
   let_it_be_with_reload(:work_item_1) { create_namespace_work_item(namespace_record) }
   let_it_be_with_reload(:work_item_2) { create_namespace_work_item(namespace_record) }
   let_it_be(:namespace_label, freeze: false) { create_label_for_namespace(namespace_record) }
@@ -77,9 +77,7 @@ RSpec.shared_examples 'work item listing filters' do
       it_behaves_like 'contains only matching work items'
 
       context 'when filtering for task and ticket items' do
-        let_it_be(:ticket_type, freeze: false) do
-          ::WorkItems::TypesFramework::Provider.new.find_by_base_type(:ticket)
-        end
+        let_it_be(:ticket_type, freeze: false) { build(:work_item_system_defined_type, :ticket) }
 
         let(:matching) { [work_item_1, work_item_2] }
         let(:params) { { work_item_type_ids: "#{task_type.id},#{ticket_type.id}" } }

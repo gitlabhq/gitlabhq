@@ -122,6 +122,7 @@ module Projects
       def scan_types
         types = Enums::Security.analyzer_types.keys + ::Security::LicenseComplianceJobsFinder.allowed_job_types
         types -= [:business_logic] unless ::Feature.enabled?(:bl_security_analyzer, project.root_ancestor)
+        types -= [:skillguard] unless ::Feature.enabled?(:skillguard_analyzer, project.root_ancestor)
         types
       end
 

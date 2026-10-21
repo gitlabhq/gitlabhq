@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Application settings for GitLab Observability",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "o11y_provisioner_url": {
+      "type": "string",
+      "maxLength": 255,
+      "description": "URL of the Observability provisioner API that creates tenant backends."
+    }
+  }
+}

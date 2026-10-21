@@ -18,7 +18,7 @@ exports[`Merge request dashboard merge request component renders template 1`] = 
     role="cell"
   >
     <gl-link-stub
-      class="gl-font-bold gl-text-default hover:gl-text-default"
+      class="gl-font-bold gl-text-default gl-wrap-anywhere hover:gl-text-default"
     >
       Merge request title
     </gl-link-stub>

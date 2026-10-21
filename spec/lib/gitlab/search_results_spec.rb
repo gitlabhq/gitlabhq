@@ -872,7 +872,7 @@ RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
     end
 
     context 'when filtering work_items by work_item_type_ids' do
-      let(:task_type) { WorkItems::TypesFramework::Provider.new.find_by_base_type(:task) }
+      let(:task_type) { build(:work_item_system_defined_type, :task) }
 
       let_it_be(:task_work_item) { create(:work_item, :task, project: project, title: 'foo task') }
       let_it_be(:issue_work_item) { create(:work_item, project: project, title: 'foo issue') }

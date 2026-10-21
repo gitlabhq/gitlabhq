@@ -754,7 +754,6 @@ Download them with the shared script and its prerequisites, described in
 To copy the advisories to the offline instance:
 
 1. Transfer the output directory to the offline instance.
-
 1. On the offline instance, find the root of the GitLab Rails directory, then copy the advisories into place and update the permissions.
 
    ```shell
@@ -813,7 +812,6 @@ instead of the `v2` directory. Complete the copy step below before the sync job 
 To copy the license data to the offline instance:
 
 1. Transfer the output directory to the offline instance.
-
 1. On the offline instance, find the root of the GitLab Rails directory, then copy the license data into place and update the permissions.
 
    ```shell

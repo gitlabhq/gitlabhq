@@ -234,7 +234,6 @@ Before restoring a backup:
    - Linux package installations on all nodes:
      1. [Reconfigure](../restart_gitlab.md#reconfigure-a-linux-package-installation) the destination GitLab instance.
      1. [Restart](../restart_gitlab.md#restart-a-linux-package-installation) the destination GitLab instance.
-
    - Helm chart (Kubernetes) installations:
 
      1. On all GitLab Linux package nodes, run:

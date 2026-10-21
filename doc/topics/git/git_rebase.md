@@ -79,7 +79,6 @@ To use Git to rebase your branch against the target branch:
 
 1. If merge conflicts exist:
    1. Resolve the conflicts in your editor.
-
    1. Stage the changes:
 
       ```shell

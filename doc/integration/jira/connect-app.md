@@ -105,7 +105,6 @@ To configure the GitLab for Jira Cloud app:
         - **GitLab for Jira (gitlab.com)** if you [installed the app from the Atlassian Marketplace](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?tab=overview&hosting=cloud).
         - **GitLab for Jira (`<gitlab.example.com>`)** if you [installed the app manually](../../administration/settings/jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-manually).
      1. Select the horizontal ellipsis ({{< icon name="ellipsis_h" >}}) and then select **Get started** to configure the integration.
-
    - For instances with legacy app management:
 
      1. Expand **GitLab for Jira**. Depending on how you installed the app, the name of the app is:

@@ -62,7 +62,6 @@ update the extensions installed in your databases. After the upgrade:
 After you complete a major version upgrade:
 
 1. Connect to the GitLab database as a superuser.
-
 1. Confirm all [required extensions](../../install/requirements.md#extensions) are present:
 
    ```sql

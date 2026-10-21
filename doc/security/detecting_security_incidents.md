@@ -68,7 +68,6 @@ Each TLDR detection includes a variety of information:
 The detections are grouped into two types:
 
 - Threat detections: Suspicious or malicious activity recorded in audit events, such as disabled two-factor authentication, new administrator accounts, new deploy keys or project access tokens, and changes to merge request approval or protected branch settings.
-
 - Vulnerability detections: Attempts to exploit known vulnerabilities in GitLab Self-Managed, recorded in application logs.
 
 To use these detections:

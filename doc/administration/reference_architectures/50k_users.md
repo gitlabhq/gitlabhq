@@ -1534,7 +1534,6 @@ To configure the Praefect nodes, on each one:
    must be configured first before the others as follows:
 
    1. In the `/etc/gitlab/gitlab.rb` file, change the `praefect['auto_migrate']` setting value from `false` to `true`
-
    1. To ensure database migrations are only run during reconfigure and not automatically on upgrade, run:
 
    ```shell

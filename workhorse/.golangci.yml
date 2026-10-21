@@ -127,7 +127,6 @@ linters:
             - github.com/BurntSushi/toml
             - github.com/golang/gddo/httputil
             - github.com/grpc-ecosystem/go-grpc-prometheus
-            - github.com/mitchellh/copystructure
             - github.com/jpillora/backoff
             - github.com/sony/gobreaker/v2
             - gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb

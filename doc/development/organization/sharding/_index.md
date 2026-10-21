@@ -470,7 +470,6 @@ The keep file contains code that:
 1. If dry run looks good then run the same command without -d flag:
 
    - `bundle exec gitlab-housekeeper -k Keeps::BackfillDesiredShardingKeySmallTable`
-
    - Running the above command will create an MR with the changes 🎉
 
 > Follow the same methods for large tables and use the large table keep. The only difference is that the table won't have a FK for performance reasons.

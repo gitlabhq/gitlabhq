@@ -589,8 +589,8 @@ RSpec.describe WorkItems::SavedViews::FilterSanitizerService, feature_category: 
     end
 
     describe 'work_item_type_ids validation' do
-      let_it_be(:issue_type) { ::WorkItems::TypesFramework::Provider.new(group).find_by_base_type(:issue) }
-      let_it_be(:task_type) { ::WorkItems::TypesFramework::Provider.new(group).find_by_base_type(:task) }
+      let_it_be(:issue_type) { build(:work_item_system_defined_type, :issue) }
+      let_it_be(:task_type) { build(:work_item_system_defined_type, :task) }
 
       let(:provider) { instance_double(::WorkItems::TypesFramework::Provider) }
 

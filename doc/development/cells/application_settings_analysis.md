@@ -333,6 +333,8 @@ title: Application Settings analysis
 | `notes_create_limit` | `false` | `integer` | `` | `true` | `300` | `true` | `true`| `false` |
 | `notes_create_limit_allowlist` | `false` | `text[]` | `` | `true` | `'{}'::text[]` | `true` | `true`| `false` |
 | `notify_on_unknown_sign_in` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
+| `o11y_provisioner_api_key` | `true` | `jsonb` | `` | `false` | `null` | `true` | `true`| `false` |
+| `o11y_settings` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `true`| `false` |
 | `oauth_provider` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `true`| `false` |
 | `oauth_settings` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `true`| `false` |
 | `observability_backend_ssl_verification_enabled` | `false` | `boolean` | `` | `true` | `true` | `false` | `false`| `false` |

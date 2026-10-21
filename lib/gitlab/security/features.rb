@@ -28,6 +28,15 @@ module Gitlab
             type: 'business_logic',
             required_permission_to_configure: :configure_security_scanner
           },
+          skillguard: {
+            name: _('SkillGuard'),
+            short_name: _('SkillGuard'),
+            description: _('Analyze AI agent skill files for security risks, such as prompt injection, ' \
+              'credential exfiltration, and unsafe command execution.'),
+            help_path: Gitlab::Routing.url_helpers.help_page_path('user/application_security/_index.md'),
+            type: 'skillguard',
+            required_permission_to_configure: :configure_security_scanner
+          },
           sast_advanced: {
             name: _('GitLab Advanced SAST'),
             short_name: _('Advanced SAST'),

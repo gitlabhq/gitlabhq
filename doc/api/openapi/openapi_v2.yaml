@@ -67083,6 +67083,7 @@ definitions:
         description: Squash commits into a single commit when merging.
       merge_after:
         type: string
+        format: date-time
         description: Date after which the merge request can be merged.
       approvals_before_merge:
         type: integer
@@ -67631,6 +67632,7 @@ definitions:
         description: Squash commits into a single commit when merging.
       merge_after:
         type: string
+        format: date-time
         description: Date after which the merge request can be merged.
       approvals_before_merge:
         type: integer

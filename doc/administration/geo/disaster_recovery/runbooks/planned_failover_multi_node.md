@@ -117,7 +117,6 @@ follow these steps to avoid unnecessary data loss:
          - All verification meters reach 100% verified, 0% failures.
          - Database replication lag is 0 ms.
          - The Geo log cursor is up to date (0 events behind).
-
    1. On the secondary site:
       1. In the upper-right corner, select **Admin**.
       1. In the left sidebar, select **Monitoring** > **Background jobs**.

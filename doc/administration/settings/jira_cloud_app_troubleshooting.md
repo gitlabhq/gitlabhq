@@ -100,7 +100,6 @@ Depending on how you installed the app, you might want to check the following:
   <!-- markdownlint-disable MD044 -->
 
   1. In Jira, select the horizontal ellipsis ({{< icon name="ellipsis_h" >}}) beside **Apps** and select **Manage your apps**.
-
   1. Go to the app by using one of these methods:
 
      **For instances with centralized app management**:
@@ -111,7 +110,6 @@ Depending on how you installed the app, you might want to check the following:
      **For instances with legacy app management**:
 
      1. Locate the **GitLab for Jira (gitlab.com)** app, select the chevron ({{< icon name="chevron-right" >}}) and then select **Get started**.
-
   1. Select **Change GitLab version**.
   1. Select **GitLab.com (SaaS)**, then select **Save**.
   1. Select **Change GitLab version** again.

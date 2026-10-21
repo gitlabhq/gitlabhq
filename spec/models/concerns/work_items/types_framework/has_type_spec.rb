@@ -85,9 +85,7 @@ RSpec.describe WorkItems::TypesFramework::HasType, feature_category: :team_plann
       end
 
       it 'defaults to the issue type name' do
-        issue_type = ::WorkItems::TypesFramework::Provider.new.default_issue_type
-
-        expect(work_item.exported_work_item_type).to eq({ 'name' => issue_type.name })
+        expect(work_item.exported_work_item_type).to eq({ 'name' => system_defined_type.name })
       end
     end
   end

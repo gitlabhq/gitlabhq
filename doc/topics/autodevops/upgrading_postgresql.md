@@ -115,7 +115,6 @@ being modified after the database dump is created.
    - `SERVICE_NAME` is the service name obtained in a previous step.
    - `USERNAME` is the username you have configured for PostgreSQL. The default is `user`.
    - `DATABASE_NAME` is usually the environment name.
-
    - When prompted for the database password, the default is `testing-password`.
 
      ```shell

@@ -99,6 +99,7 @@ describe('Branch rules app', () => {
 
     expect(findAllBranchRules().at(0).props()).toEqual(
       expect.objectContaining({
+        ruleId: nodes[0].id,
         name: nodes[0].name,
         branchProtection: expect.objectContaining({ allowForcePush: true }),
       }),
@@ -106,6 +107,7 @@ describe('Branch rules app', () => {
 
     expect(findAllBranchRules().at(1).props()).toEqual(
       expect.objectContaining({
+        ruleId: nodes[1].id,
         name: nodes[1].name,
         branchProtection: expect.objectContaining({ allowForcePush: false }),
       }),

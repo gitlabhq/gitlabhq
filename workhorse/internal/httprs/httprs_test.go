@@ -7,6 +7,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 
@@ -266,4 +267,65 @@ func testHTTPReaderSeeker(t *testing.T, newRS RSFactory) {
 		require.Equal(t, "2570", string(buf))
 		require.Equal(t, 2, r.Requests)
 	})
+}
+
+type closeTrackingBody struct {
+	io.Reader
+	closed bool
+}
+
+func (b *closeTrackingBody) Close() error {
+	b.closed = true
+	return nil
+}
+
+type stubRoundTripper struct {
+	statusCode int
+	header     http.Header
+	body       *closeTrackingBody
+}
+
+func (s *stubRoundTripper) RoundTrip(r *http.Request) (*http.Response, error) {
+	return &http.Response{StatusCode: s.statusCode, Header: s.header, Body: s.body, Request: r}, nil
+}
+
+func TestRangeRequestClosesRejectedResponseBody(t *testing.T) {
+	tests := []struct {
+		name        string
+		statusCode  int
+		etag        string
+		offset      int64
+		expectedErr error
+	}{
+		{name: "416 Requested Range Not Satisfiable", statusCode: http.StatusRequestedRangeNotSatisfiable, etag: `"v1"`, offset: 64, expectedErr: ErrInvalidRange},
+		{name: "200 OK after a seek", statusCode: http.StatusOK, etag: `"v1"`, offset: 64, expectedErr: ErrContentHasChanged},
+		{name: "200 OK with a changed ETag", statusCode: http.StatusOK, etag: `"v2"`, offset: 0, expectedErr: ErrContentHasChanged},
+		{name: "unexpected status", statusCode: http.StatusInternalServerError, etag: `"v1"`, offset: 64, expectedErr: ErrRangeRequestsNotSupported},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			req, err := http.NewRequest("GET", "http://www.example.com", nil)
+			require.NoError(t, err)
+
+			res := &http.Response{Request: req, ContentLength: 128, Header: http.Header{}}
+			res.Header.Set("ETag", `"v1"`)
+
+			body := &closeTrackingBody{Reader: strings.NewReader("rejected")}
+			header := http.Header{}
+			header.Set("ETag", tc.etag)
+			rt := &stubRoundTripper{statusCode: tc.statusCode, header: header, body: body}
+
+			r := NewHTTPReadSeeker(res, &http.Client{Transport: rt})
+			defer r.Close()
+
+			_, err = r.Seek(tc.offset, io.SeekStart)
+			require.NoError(t, err)
+
+			_, err = r.Read(make([]byte, 4))
+			require.ErrorIs(t, err, tc.expectedErr)
+			require.Equal(t, 1, r.Requests)
+			require.True(t, body.closed, "the body of the rejected range response was not closed")
+		})
+	}
 }

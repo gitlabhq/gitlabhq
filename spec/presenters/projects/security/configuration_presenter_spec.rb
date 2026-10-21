@@ -471,6 +471,35 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
       end
     end
 
+    describe 'skillguard' do
+      let(:project) { build_stubbed(:project) }
+      let(:feature) { Gitlab::Json.parse(html_data[:features]).find { |scan| scan['type'] == 'skillguard' } }
+
+      it 'includes skillguard' do
+        expect(feature).not_to be_nil
+      end
+
+      context 'when skillguard_analyzer feature flag is disabled' do
+        before do
+          stub_feature_flags(skillguard_analyzer: false)
+        end
+
+        it 'does not include skillguard' do
+          expect(feature).to be_nil
+        end
+      end
+
+      context 'when skillguard_analyzer feature flag is enabled only for the root namespace' do
+        before do
+          stub_feature_flags(skillguard_analyzer: project.root_ancestor)
+        end
+
+        it 'includes skillguard' do
+          expect(feature).not_to be_nil
+        end
+      end
+    end
+
     def licensed_scan_types
       Enums::Security.analyzer_types.keys + ::Security::LicenseComplianceJobsFinder.allowed_job_types - [:cluster_image_scanning]
     end

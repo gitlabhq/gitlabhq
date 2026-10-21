@@ -61,7 +61,6 @@ When considering a zero-downtime upgrade, be aware that:
   the latest. For example, upgrading from `16.3.2` to `16.4.1` should be safe even if `16.3.3` has been released. You
   should verify the [version-specific upgrade notes](versions/_index.md) relevant to your [upgrade path](upgrade_paths.md) and be
   aware of any required upgrade stops:
-
   - [GitLab 19 upgrade notes](versions/gitlab_19_changes.md)
   - [GitLab 18 upgrade notes](versions/gitlab_18_changes.md)
   - [GitLab 17 upgrade notes](versions/gitlab_17_changes.md)
@@ -210,7 +209,6 @@ Praefect must also perform database migrations to upgrade any existing data. To 
 migrations should run on only one Praefect node. To do this, designate a **Praefect deploy node** that runs the migrations:
 
 1. On the **Praefect deploy node**:
-
    1. Create an empty file at `/etc/gitlab/skip-auto-reconfigure`. This prevents upgrades from running `gitlab-ctl reconfigure`,
       which by default automatically stops GitLab, runs all database migrations, and restarts GitLab:
 
@@ -235,7 +233,6 @@ migrations should run on only one Praefect node. To do this, designate a **Praef
       All migrations should show as applied. Do not proceed to the remaining Praefect nodes until this is confirmed.
 
 1. On all **remaining Praefect nodes**:
-
    1. Create an empty file at `/etc/gitlab/skip-auto-reconfigure`. This prevents upgrades from running `gitlab-ctl reconfigure`,
       which by default automatically stops GitLab, runs all database migrations, and restarts GitLab:
 
@@ -275,7 +272,6 @@ functionality. This section explains the NGINX approach.
 In addition to the previous, Rails is where the main database migrations need to be executed. Like Praefect, the best approach is by using the deploy node. If PgBouncer is currently being used, it also needs to be bypassed as Rails uses an advisory lock when attempting to run a migration to prevent concurrent migrations from running on the same database. These locks are not shared across transactions, resulting in `ActiveRecord::ConcurrentMigrationError` and other issues when running database migrations using PgBouncer in transaction pooling mode.
 
 1. On the **Rails deploy node**:
-
    1. Drain the node of traffic gracefully. You can do this in various ways, but one
       approach is to use NGINX by sending it a `QUIT` signal and then stopping the service.
       As an example, you can do this by using the following shell script:
@@ -304,7 +300,11 @@ In addition to the previous, Rails is where the main database migrations need to
       - If the deploy node is going through PgBouncer to reach the database then
         you must [bypass it](../administration/postgresql/pgbouncer.md#procedure-for-bypassing-pgbouncer)
         and connect directly to the database leader before running migrations.
-      - To find the database leader you can run the following command on any database node - `sudo gitlab-ctl patroni members`.
+      - To find the database leader, run the following command on any database node:
+
+        ```shell
+        sudo gitlab-ctl patroni members
+        ```
 
    1. Run the regular migrations and get the latest code in place:
 
@@ -313,9 +313,7 @@ In addition to the previous, Rails is where the main database migrations need to
       ```
 
    1. Leave this node as-is for now as you come back to run post-deployment migrations later.
-
 1. On every **other Rails node** sequentially:
-
    1. Drain the node of traffic gracefully. You can do this in various ways, but one
       approach is to use NGINX by sending it a `QUIT` signal and then stopping the service.
       As an example, you can do this by using the following shell script:
@@ -349,12 +347,15 @@ In addition to the previous, Rails is where the main database migrations need to
       ```
 
 1. On the **Rails deploy node** run the post-deployment migrations:
-
    1. Ensure the deploy node is still pointing at the database leader directly. If the node
       is going through PgBouncer to reach the database then you must
       [bypass it](../administration/postgresql/pgbouncer.md#procedure-for-bypassing-pgbouncer)
       and connect directly to the database leader before running migrations.
-      - To find the database leader you can run the following command on any database node - `sudo gitlab-ctl patroni members`.
+      To find the database leader, run the following command on any database node:
+
+      ```shell
+      sudo gitlab-ctl patroni members
+      ```
 
    1. Run the post-deployment migrations:
 
@@ -366,8 +367,7 @@ In addition to the previous, Rails is where the main database migrations need to
 
    1. Return the configuration back to normal by setting `gitlab_rails['auto_migrate'] = false` in the
       `/etc/gitlab/gitlab.rb` configuration file.
-      - If PgBouncer is being used make sure to set the database configuration to once again point towards it
-
+      If PgBouncer is being used, make sure to set the database configuration to once again point towards it.
    1. Run through reconfigure once again to reapply the normal configuration and restart:
 
       ```shell
@@ -432,7 +432,6 @@ The upgrade process is the same for both primary and secondary sites. However, y
 #### Rails
 
 1. On the **Rails deploy node**:
-
    1. Drain the node of traffic gracefully. You can do this in various ways, but one
       approach is to use NGINX by sending it a `QUIT` signal and then stopping the service.
       As an example, you can do this by using the following shell script:
@@ -479,7 +478,6 @@ The upgrade process is the same for both primary and secondary sites. However, y
       ```
 
 1. On every **other Rails node** sequentially:
-
    1. Drain the node of traffic gracefully. You can do this in various ways, but one
       approach is to use NGINX by sending it a `QUIT` signal and then stopping the service.
       As an example, you can do this by using the following shell script:
@@ -534,7 +532,11 @@ Finally, head back to the primary site and finish the upgrade by running the pos
       is going through PgBouncer to reach the database then you must
       [bypass it](../administration/postgresql/pgbouncer.md#procedure-for-bypassing-pgbouncer)
       and connect directly to the database leader before running migrations.
-      - To find the database leader you can run the following command on any database node - `sudo gitlab-ctl patroni members`.
+      To find the database leader, run the following command on any database node:
+
+      ```shell
+      sudo gitlab-ctl patroni members
+      ```
 
    1. Run the post-deployment migrations:
 
@@ -550,8 +552,7 @@ Finally, head back to the primary site and finish the upgrade by running the pos
 
    1. Return the configuration back to normal by setting `gitlab_rails['auto_migrate'] = false` in the
       `/etc/gitlab/gitlab.rb` configuration file.
-      - If PgBouncer is being used make sure to set the database configuration to once again point towards it
-
+      If PgBouncer is being used, make sure to set the database configuration to once again point towards it.
    1. Run through reconfigure once again to reapply the normal configuration and restart:
 
       ```shell
@@ -560,7 +561,6 @@ Finally, head back to the primary site and finish the upgrade by running the pos
       ```
 
 1. On the Secondary site's **Rails deploy node** run the post-deployment Geo Tracking migrations:
-
    1. Run the post-deployment Geo Tracking migrations:
 
       ```shell

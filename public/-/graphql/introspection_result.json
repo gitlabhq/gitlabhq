@@ -39044,6 +39044,12 @@
               "deprecationReason": null
             },
             {
+              "name": "SKILLGUARD",
+              "description": "Skillguard analyzer.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "SECRET_DETECTION_PIPELINE_BASED",
               "description": "Secret detection analyzer.",
               "isDeprecated": false,
@@ -39147,6 +39153,12 @@
             {
               "name": "BUSINESS_LOGIC",
               "description": "Business logic analyzer.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SKILLGUARD",
+              "description": "Skillguard analyzer.",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -230462,6 +230474,12 @@
               "deprecationReason": null
             },
             {
+              "name": "SKILLGUARD",
+              "description": "Skillguard feature.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "CLUSTER_RECEPTIVE_AGENTS",
               "description": "Cluster receptive agents feature.",
               "isDeprecated": false,
@@ -403485,6 +403503,12 @@
               "description": "BUSINESS LOGIC scan report",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "SKILLGUARD",
+              "description": "SKILLGUARD scan report",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null
@@ -405409,6 +405433,12 @@
               "description": "Business logic. Introduced in GitLab 19.5: Status: Experiment.",
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
+            },
+            {
+              "name": "SKILLGUARD",
+              "description": "SkillGuard. Introduced in GitLab 19.6: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.6."
             }
           ],
           "possibleTypes": null
@@ -405741,6 +405771,12 @@
             {
               "name": "BUSINESS_LOGIC",
               "description": "Business logic scanner",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SKILLGUARD",
+              "description": "Skillguard scanner",
               "isDeprecated": false,
               "deprecationReason": null
             }

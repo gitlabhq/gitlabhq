@@ -91,7 +91,7 @@ The short description is generated from the `Short` field of the Go command defi
 - Do not duplicate the title.
 - End with a period.
 - For experimental commands, append `(EXPERIMENTAL)` after the sentence.
-  For example: `Create a new stacked diff. (EXPERIMENTAL)`
+  For example: `Create a new stack. (EXPERIMENTAL)`
 
 > [!note]
 > Short descriptions should use verbs consistent with the command grammar

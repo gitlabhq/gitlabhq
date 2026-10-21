@@ -71180,6 +71180,7 @@ Enum for types of analyzers.
 | <a id="analyzertypeenum-secret_detection"></a>`SECRET_DETECTION` | Any kind of secret detection. |
 | <a id="analyzertypeenum-secret_detection_pipeline_based"></a>`SECRET_DETECTION_PIPELINE_BASED` | Secret detection analyzer. |
 | <a id="analyzertypeenum-secret_detection_secret_push_protection"></a>`SECRET_DETECTION_SECRET_PUSH_PROTECTION` | Secret push protection. Managed via project security settings. |
+| <a id="analyzertypeenum-skillguard"></a>`SKILLGUARD` | Skillguard analyzer. |
 
 ### `AnalyzerTypeForStatus`
 
@@ -71203,6 +71204,7 @@ Analyzer types that can appear in project and group analyzer statuses.
 | <a id="analyzertypeforstatus-secret_detection"></a>`SECRET_DETECTION` | Any kind of secret detection. |
 | <a id="analyzertypeforstatus-secret_detection_pipeline_based"></a>`SECRET_DETECTION_PIPELINE_BASED` | Secret detection analyzer. |
 | <a id="analyzertypeforstatus-secret_detection_secret_push_protection"></a>`SECRET_DETECTION_SECRET_PUSH_PROTECTION` | Secret push protection. Managed via project security settings. |
+| <a id="analyzertypeforstatus-skillguard"></a>`SKILLGUARD` | Skillguard analyzer. |
 
 ### `ApiFuzzingScanMode`
 
@@ -73974,6 +73976,7 @@ Licensed features that can be checked for availability on a namespace or project
 | <a id="licensedfeature-self_hosted_models"></a>`SELF_HOSTED_MODELS` | Self hosted models feature. |
 | <a id="licensedfeature-semantic_code_search"></a>`SEMANTIC_CODE_SEARCH` | Semantic code search feature. |
 | <a id="licensedfeature-send_emails_from_admin_area"></a>`SEND_EMAILS_FROM_ADMIN_AREA` | Send emails from admin area feature. |
+| <a id="licensedfeature-skillguard"></a>`SKILLGUARD` | Skillguard feature. |
 | <a id="licensedfeature-smartcard_auth"></a>`SMARTCARD_AUTH` | Smartcard auth feature. |
 | <a id="licensedfeature-ssh_certificates"></a>`SSH_CERTIFICATES` | Ssh certificates feature. |
 | <a id="licensedfeature-ssh_key_expiration_policy"></a>`SSH_KEY_EXPIRATION_POLICY` | Ssh key expiration policy feature. |
@@ -75644,6 +75647,7 @@ Template type for predefined security categories.
 | <a id="securityreporttypeenum-sast_advanced"></a>`SAST_ADVANCED` | SAST ADVANCED scan report. |
 | <a id="securityreporttypeenum-sast_iac"></a>`SAST_IAC` | SAST IAC scan report. |
 | <a id="securityreporttypeenum-secret_detection"></a>`SECRET_DETECTION` | SECRET DETECTION scan report. |
+| <a id="securityreporttypeenum-skillguard"></a>`SKILLGUARD` | SKILLGUARD scan report. |
 
 ### `SecurityScanProfileAdvancedSastPartialScan`
 
@@ -75724,6 +75728,7 @@ Scan profile type.
 | <a id="securityscanprofiletype-dependency_scanning_post_processing"></a>`DEPENDENCY_SCANNING_POST_PROCESSING` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.2. Status: Experiment. Dependency scanning post processing. |
 | <a id="securityscanprofiletype-sast"></a>`SAST` | Sast. |
 | <a id="securityscanprofiletype-secret_detection"></a>`SECRET_DETECTION` | Secret detection. |
+| <a id="securityscanprofiletype-skillguard"></a>`SKILLGUARD` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.6. Status: Experiment. SkillGuard. |
 | <a id="securityscanprofiletype-triage_and_remediation"></a>`TRIAGE_AND_REMEDIATION` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.4. Status: Experiment. Triage and remediation. |
 
 ### `SecurityScanProfileUpgradePolicy`
@@ -75753,6 +75758,7 @@ The type of the security scanner.
 | <a id="securityscannertype-sast_advanced"></a>`SAST_ADVANCED` | SAST advanced scanner. |
 | <a id="securityscannertype-sast_iac"></a>`SAST_IAC` | SAST IaC scanner. |
 | <a id="securityscannertype-secret_detection"></a>`SECRET_DETECTION` | Secret detection scanner. |
+| <a id="securityscannertype-skillguard"></a>`SKILLGUARD` | Skillguard scanner. |
 
 ### `SecurityTrackedRefScope`
 

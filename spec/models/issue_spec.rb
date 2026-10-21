@@ -2163,7 +2163,7 @@ RSpec.describe Issue, feature_category: :team_planning do
       it 'uses the default work item type' do
         non_persisted_issue = build(:issue, work_item_type: nil)
 
-        expect(non_persisted_issue.issue_type).to eq(WorkItems::TypesFramework::Provider.new.default_issue_type.name.downcase)
+        expect(non_persisted_issue.issue_type).to eq(build(:work_item_system_defined_type, :issue).name.downcase)
       end
     end
   end
@@ -2379,7 +2379,7 @@ RSpec.describe Issue, feature_category: :team_planning do
   describe '#work_item_type_with_default' do
     subject { described_class.new.work_item_type_with_default }
 
-    it { is_expected.to eq(WorkItems::TypesFramework::Provider.new.default_issue_type) }
+    it { is_expected.to eq(build(:work_item_system_defined_type, :issue)) }
   end
 
   describe '#update_search_data!' do
@@ -2449,7 +2449,7 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe '#has_widget?' do
-    let(:work_item_type) { create(:work_item_system_defined_type, :task) }
+    let(:work_item_type) { build(:work_item_system_defined_type, :task) }
     let(:issue) { create(:issue, project: reusable_project, work_item_type: work_item_type) }
 
     # Setting a fixed widget here so we don't get a licensed widget from the list as that could break the specs.

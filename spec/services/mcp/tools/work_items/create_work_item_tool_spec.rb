@@ -33,7 +33,7 @@ RSpec.describe Mcp::Tools::WorkItems::CreateWorkItemTool, feature_category: :mcp
 
   describe '#build_variables' do
     let(:issue_type_gid) do
-      WorkItems::TypesFramework::Provider.new(project).find_by_name('Issue').to_global_id.to_s
+      build(:work_item_system_defined_type, :issue).to_global_id.to_s
     end
 
     context 'with minimal params' do

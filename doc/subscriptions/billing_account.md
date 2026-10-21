@@ -148,21 +148,15 @@ To change the billing contact:
 1. Sign in to [Customers Portal](https://customers.gitlab.com/customers/sign_in).
 1. In the left sidebar, select **Billing account settings**.
 1. Scroll to the **Company information** section, then to **Billing contact**.
-
    - To change your billing contact to your subscription contact:
-
      1. Select **Billing contact is the same as subscription contact**.
      1. Select **Save changes**.
-
    - To change your billing contact to a different billing account manager:
-
      1. Clear the **Billing contact is the same as subscription contact** checkbox.
      1. Select a different billing account manager from the **User** dropdown list.
      1. Edit the contact details.
      1. Select **Save changes**.
-
    - To change your billing contact to a custom contact:
-
      1. Clear the **Billing contact is the same as subscription contact** checkbox.
      1. Select **Enter a custom contact** from the **User** dropdown list.
      1. Enter the contact details.
