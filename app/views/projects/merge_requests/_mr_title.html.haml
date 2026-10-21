@@ -5,20 +5,20 @@
 - rapid_diffs_enabled = Feature.enabled?(:rapid_diffs_on_mr_show, current_user, type: :beta)
 - ai_overview_available = ai_overview_available?
 - ai_overview_enabled = ai_overview_enabled?
-- cache_key = [@project, @merge_request, can_update_merge_request, can_reopen_merge_request, are_close_and_open_buttons_hidden, current_user&.preferred_language, "1.4-updated_header", true, hide_gutter_toggle, fluid_layout, Gitlab::CurrentSettings.gitpod_enabled, current_user&.gitpod_enabled, rapid_diffs_enabled, ai_overview_available, ai_overview_enabled, issuable_author_is_current_user(@merge_request), current_user&.require_ssh_key?]
+- cache_key = [@project, @merge_request, can_update_merge_request, can_reopen_merge_request, are_close_and_open_buttons_hidden, current_user&.preferred_language, "1.5-updated_header", true, hide_gutter_toggle, fluid_layout, Gitlab::CurrentSettings.gitpod_enabled, current_user&.gitpod_enabled, rapid_diffs_enabled, ai_overview_available, ai_overview_enabled, issuable_author_is_current_user(@merge_request), current_user&.require_ssh_key?]
 
-= cache(cache_key, expires_in: 1.day) do
-  - if @merge_request.closed_or_merged_without_fork?
-    = render Pajamas::AlertComponent.new(alert_options: { class: 'gl-mb-5' },
-      variant: :danger,
-      dismissible: false) do |c|
-      - c.with_body do
-        = _('The source project of this merge request has been removed.')
+- if @merge_request.closed_or_merged_without_fork?
+  = render Pajamas::AlertComponent.new(alert_options: { class: 'gl-mb-5' },
+    variant: :danger,
+    dismissible: false) do |c|
+    - c.with_body do
+      = _('The source project of this merge request has been removed.')
 
-  .detail-page-header.gl-flex.gl-pt-3.gl-gap-3.gl-flex-wrap.gl-mb-3{ class: "@sm/panel:gl-flex-nowrap @sm/panel:gl-mb-0 #{'is-merge-request' unless fluid_layout}" }
-    %h1.title.gl-heading-1.gl-self-center.gl-mb-0.gl-flex-1.gl-wrap-anywhere{ data: { testid: 'title-content' } }
-      = markdown_field(@merge_request, :title)
+.detail-page-header.gl-flex.gl-pt-3.gl-gap-3.gl-flex-wrap.gl-mb-3{ class: "@sm/panel:gl-flex-nowrap @sm/panel:gl-mb-0 #{'is-merge-request' unless fluid_layout}" }
+  %h1.title.gl-heading-1.gl-self-center.gl-mb-0.gl-flex-1.gl-wrap-anywhere{ data: { testid: 'title-content' } }
+    = markdown_field(@merge_request, :title)
 
+  = cache(cache_key, expires_in: 1.day) do
     .gl-flex.gl-flex-row.gl-gap-3.gl-w-full.js-issuable-actions{ class: "@sm/panel:gl-w-auto" }
       = render_if_exists "projects/merge_requests/conflicts/resolve_with_ai", merge_request: @merge_request
       - if rapid_diffs_enabled

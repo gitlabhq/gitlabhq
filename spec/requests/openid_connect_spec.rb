@@ -311,7 +311,7 @@ RSpec.describe 'OpenID Connect requests', feature_category: :system_access do
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['issuer']).to eq('http://localhost')
-      expect(json_response['jwks_uri']).to eq('http://www.example.com/oauth/discovery/keys')
+      expect(json_response['jwks_uri']).to eq('http://localhost/oauth/discovery/keys')
       expect(json_response['scopes_supported']).to match_array expected_scopes
     end
 
@@ -321,7 +321,7 @@ RSpec.describe 'OpenID Connect requests', feature_category: :system_access do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['issuer']).to eq('http://localhost')
-        expect(json_response['jwks_uri']).to eq('http://www.example.com/oauth/discovery/keys')
+        expect(json_response['jwks_uri']).to eq('http://localhost/oauth/discovery/keys')
         expect(json_response['scopes_supported']).to match_array expected_scopes
       end
 

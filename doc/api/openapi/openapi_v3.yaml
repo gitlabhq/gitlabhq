@@ -21202,6 +21202,13 @@ paths:
           type: string
           nullable: true
         in: query
+      - name: search_title
+        required: false
+        description: The search criteria for the title of the milestone
+        schema:
+          type: string
+          nullable: true
+        in: query
       - name: include_parent_milestones
         required: false
         description: 'Deprecated: see `include_ancestors`. Mutually exclusive with
@@ -21235,6 +21242,51 @@ paths:
           type: string
           format: date-time
           nullable: true
+        in: query
+      - name: containing_date
+        required: false
+        description: 'Return milestones where start_date <= containing_date <= due_date.
+          Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
+        schema:
+          type: string
+          format: date-time
+          nullable: true
+        in: query
+      - name: start_date
+        required: false
+        description: 'Return milestones where due_date >= start_date. Requires end_date.
+          Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
+        schema:
+          type: string
+          format: date-time
+          nullable: true
+        in: query
+      - name: end_date
+        required: false
+        description: 'Return milestones where start_date <= end_date. Requires start_date.
+          Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
+        schema:
+          type: string
+          format: date-time
+          nullable: true
+        in: query
+      - name: sort
+        required: false
+        description: Return milestones sorted in the given order
+        schema:
+          type: string
+          enum:
+          - due_date_asc
+          - due_date_desc
+          - start_date_asc
+          - start_date_desc
+          - name_asc
+          - name_desc
+          - created_asc
+          - created_desc
+          - updated_asc
+          - updated_desc
+          default: due_date_asc
         in: query
       - name: page
         required: false
@@ -23900,6 +23952,13 @@ paths:
           type: string
           nullable: true
         in: query
+      - name: search_title
+        required: false
+        description: The search criteria for the title of the milestone
+        schema:
+          type: string
+          nullable: true
+        in: query
       - name: include_parent_milestones
         required: false
         description: 'Deprecated: see `include_ancestors`. Mutually exclusive with
@@ -23933,6 +23992,51 @@ paths:
           type: string
           format: date-time
           nullable: true
+        in: query
+      - name: containing_date
+        required: false
+        description: 'Return milestones where start_date <= containing_date <= due_date.
+          Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
+        schema:
+          type: string
+          format: date-time
+          nullable: true
+        in: query
+      - name: start_date
+        required: false
+        description: 'Return milestones where due_date >= start_date. Requires end_date.
+          Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
+        schema:
+          type: string
+          format: date-time
+          nullable: true
+        in: query
+      - name: end_date
+        required: false
+        description: 'Return milestones where start_date <= end_date. Requires start_date.
+          Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
+        schema:
+          type: string
+          format: date-time
+          nullable: true
+        in: query
+      - name: sort
+        required: false
+        description: Return milestones sorted in the given order
+        schema:
+          type: string
+          enum:
+          - due_date_asc
+          - due_date_desc
+          - start_date_asc
+          - start_date_desc
+          - name_asc
+          - name_desc
+          - created_asc
+          - created_desc
+          - updated_asc
+          - updated_desc
+          default: due_date_asc
         in: query
       - name: page
         required: false
