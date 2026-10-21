@@ -5702,6 +5702,16 @@
   :idempotent: false
   :tags: []
   :queue_namespace:
+- :name: users_cancel_imports_for_blocked_user
+  :worker_name: Users::CancelImportsForBlockedUserWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: users_drop_pipelines_for_blocked_user
   :worker_name: Users::DropPipelinesForBlockedUserWorker
   :feature_category: :continuous_integration

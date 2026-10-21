@@ -2215,6 +2215,41 @@ paths:
               "$ref": "#/components/schemas/postApiV4OrbitQueryNameRequest"
       x-gitlab-tier: premium
       x-gitlab-lifecycle: beta
+  "/api/v4/orbit/context":
+    post:
+      operationId: postApiV4OrbitContext
+      summary: Get entity context
+      description: Resolves one Orbit token to a PostgreSQL summary and, optionally,
+        its graph neighborhood. Requests that reach token resolution count against
+        the orbit_query rate limit; with expand, they run at most one billable graph
+        query. Requires a JSON request body.
+      tags:
+      - Orbit
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesOrbitContext"
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+        '429':
+          description: Too many requests
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/postApiV4OrbitContextRequest"
+      x-gitlab-tier: premium
+      x-gitlab-lifecycle: experiment
   "/api/v4/orbit/query/templates":
     get:
       operationId: getApiV4OrbitQueryTemplates
@@ -84455,6 +84490,39 @@ components:
           type: string
           format: date-time
           example: '2026-07-22T11:42:00Z'
+    APIEntitiesOrbitContextEntity:
+      type: object
+      properties:
+        token:
+          type: string
+          example: MergeRequest[123]
+        resolved_token:
+          type: string
+          example: MergeRequest[123]
+        type:
+          type: string
+          example: MergeRequest
+        id:
+          type: string
+          example: '123'
+        found:
+          type: boolean
+        summary:
+          type: object
+        error:
+          type: object
+        expansion:
+          type: object
+    APIEntitiesOrbitContext:
+      type: object
+      properties:
+        version:
+          type: string
+          example: 1.1.0
+        entities:
+          type: array
+          items:
+            "$ref": "#/components/schemas/APIEntitiesOrbitContextEntity"
     APIEntitiesOrbitSkillSummary:
       type: object
       properties:
@@ -103309,6 +103377,30 @@ components:
           type: string
           description: Optional frontend source subtype (e.g. code_intelligence)
           nullable: true
+    postApiV4OrbitContextRequest:
+      type: object
+      properties:
+        tokens:
+          type: array
+          items:
+            type: string
+          description: 'Exactly one token: Type[id], a GID, an instance URL, path!iid,
+            path#iid, or path&iid (epic)'
+          nullable: true
+        expand:
+          oneOf:
+          - type: boolean
+            default: false
+          description: Attach the graph neighborhood of the entity
+        response_format:
+          type: string
+          enum:
+          - raw
+          - llm
+          description: 'Response format: raw or llm'
+          default: raw
+      required:
+      - tokens
     postApiV4JobsIdSbomScansAuthorizeRequest:
       type: object
       properties:

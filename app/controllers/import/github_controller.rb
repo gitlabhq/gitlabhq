@@ -39,6 +39,7 @@ class Import::GithubController < Import::BaseController
       session[access_token_key] = token.token
       session[refresh_credentials_key] = Gitlab::GithubImport::OauthClient.refresh_credentials(token).stringify_keys
       session[oauth_token_key] = true
+      store_user_credential(token)
       redirect_to status_import_url
     end
   end
@@ -314,6 +315,17 @@ class Import::GithubController < Import::BaseController
     session[oauth_token_key].present?
   end
   helper_method :oauth_token?
+
+  def store_user_credential(token)
+    return unless ::Feature.enabled?(:github_continuous_import, current_user)
+
+    provider_host = Gitlab::Utils.parse_url(provider_url)&.host
+    return if provider_host.blank?
+
+    Import::Github::StoreUserCredentialService
+      .new(current_user, token, provider_host: provider_host)
+      .execute
+  end
 
   def access_params
     token_params = { github_access_token: session[access_token_key] }

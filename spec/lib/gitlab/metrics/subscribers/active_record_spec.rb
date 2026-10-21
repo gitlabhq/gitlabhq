@@ -208,7 +208,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
     end
 
     shared_examples 'logs transaction info' do
-      it do
+      it 'increments the main transaction count and records its durations' do
         expect { subscriber.transaction(event) }
           .to change { ::Gitlab::Metrics::Subscribers::ActiveRecord.db_counter_payload[:db_main_txn_count] }.by(1)
         expect(::Gitlab::Metrics::Subscribers::ActiveRecord.db_counter_payload[:db_main_txn_duration_s]).to be >= 0
@@ -217,7 +217,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
     end
 
     shared_examples 'captures max transaction duration in request store' do
-      it do
+      it 'stores the main transaction duration in the request store' do
         subscriber.transaction(event)
 
         expect(::Gitlab::SafeRequestStore[:txn_duration]['main']).to be >= 0

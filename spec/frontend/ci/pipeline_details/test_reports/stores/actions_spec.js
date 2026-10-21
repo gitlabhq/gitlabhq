@@ -4,7 +4,7 @@ import { TEST_HOST } from 'helpers/test_constants';
 import testAction from 'helpers/vuex_action_helper';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { HTTP_STATUS_OK, HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import * as actions from '~/ci/pipeline_details/stores/test_reports/actions';
 import * as types from '~/ci/pipeline_details/stores/test_reports/mutation_types';
 
@@ -144,6 +144,139 @@ describe('Actions TestReports Store', () => {
         [{ type: types.TOGGLE_LOADING }],
         [],
       );
+    });
+  });
+
+  describe('set search term', () => {
+    it('sets searchTerm', () => {
+      const searchTerm = 'my test';
+
+      return testAction(
+        actions.setSearchTerm,
+        searchTerm,
+        state,
+        [{ type: types.SET_SEARCH_TERM, payload: searchTerm }],
+        [],
+      );
+    });
+  });
+
+  describe('set search scope', () => {
+    it('sets searchScope', () => {
+      const scope = 'all';
+
+      return testAction(
+        actions.setSearchScope,
+        scope,
+        state,
+        [{ type: types.SET_SEARCH_SCOPE, payload: scope }],
+        [],
+      );
+    });
+  });
+
+  describe('fetch all suites', () => {
+    let allSuitesState;
+    let suite0;
+    let suite1;
+
+    beforeEach(() => {
+      suite0 = {
+        name: 'rspec unit',
+        hasFullSuite: false,
+        build_ids: [1],
+      };
+      suite1 = {
+        name: 'jest unit',
+        hasFullSuite: false,
+        build_ids: [2],
+      };
+      allSuitesState = {
+        ...state,
+        testReports: {
+          test_suites: [suite0, suite1],
+        },
+      };
+    });
+
+    it('fetches every suite and marks them as fully loaded', () => {
+      mock
+        .onGet(suiteEndpoint, { params: { build_ids: [1] } })
+        .replyOnce(HTTP_STATUS_OK, suite0, {})
+        .onGet(suiteEndpoint, { params: { build_ids: [2] } })
+        .replyOnce(HTTP_STATUS_OK, suite1, {});
+
+      return testAction(
+        actions.fetchAllSuites,
+        undefined,
+        allSuitesState,
+        [
+          { type: types.SET_LOADING_ALL_SUITES, payload: true },
+          {
+            type: types.SET_ALL_SUITES,
+            payload: [
+              { ...suite0, hasFullSuite: true },
+              { ...suite1, hasFullSuite: true },
+            ],
+          },
+          { type: types.SET_FETCHED_ALL_SUITES, payload: true },
+          { type: types.SET_LOADING_ALL_SUITES, payload: false },
+        ],
+        [],
+      );
+    });
+
+    describe('when every suite has already been fetched', () => {
+      it('does nothing', () => {
+        return testAction(
+          actions.fetchAllSuites,
+          undefined,
+          { ...allSuitesState, hasFetchedAllSuites: true },
+          [],
+          [],
+        );
+      });
+    });
+
+    describe('while a fetch is already in progress', () => {
+      it('does nothing', () => {
+        return testAction(
+          actions.fetchAllSuites,
+          undefined,
+          { ...allSuitesState, isLoadingAllSuites: true },
+          [],
+          [],
+        );
+      });
+    });
+
+    describe('when a suite fails to load', () => {
+      beforeEach(() => {
+        mock
+          .onGet(suiteEndpoint, { params: { build_ids: [1] } })
+          .replyOnce(HTTP_STATUS_OK, suite0, {})
+          .onGet(suiteEndpoint, { params: { build_ids: [2] } })
+          .replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+      });
+
+      it('keeps the summary-only entry for the failing suite and alerts the user', async () => {
+        await testAction(
+          actions.fetchAllSuites,
+          undefined,
+          allSuitesState,
+          [
+            { type: types.SET_LOADING_ALL_SUITES, payload: true },
+            { type: types.SET_ALL_SUITES, payload: [{ ...suite0, hasFullSuite: true }, suite1] },
+            { type: types.SET_FETCHED_ALL_SUITES, payload: true },
+            { type: types.SET_LOADING_ALL_SUITES, payload: false },
+          ],
+          [],
+        );
+
+        expect(createAlert).toHaveBeenCalledWith({
+          message: 'Some test suites could not be loaded and are excluded from search results.',
+        });
+      });
     });
   });
 });

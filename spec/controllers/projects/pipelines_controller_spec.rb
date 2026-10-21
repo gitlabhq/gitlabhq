@@ -26,6 +26,11 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to render_template :show
     end
+
+    it_behaves_like 'pushes frontend feature flag', :junit_test_report_search do
+      let(:make_request) { get param, params: { namespace_id: project.namespace, project_id: project, id: pipeline } }
+      let(:feature_args) { [project] }
+    end
   end
 
   describe 'GET index.json' do
@@ -283,6 +288,12 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
   describe 'GET #show' do
     def get_pipeline_html
       get :show, params: { namespace_id: project.namespace, project_id: project, id: pipeline }, format: :html
+    end
+
+    it_behaves_like 'pushes frontend feature flag', :junit_test_report_search do
+      let(:pipeline) { create(:ci_pipeline, project: project) }
+      let(:make_request) { get_pipeline_html }
+      let(:feature_args) { [project] }
     end
 
     context 'when the project is public' do
@@ -631,6 +642,11 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to render_template :show
+      end
+
+      it_behaves_like 'pushes frontend feature flag', :junit_test_report_search do
+        let(:make_request) { get :failures, params: { namespace_id: project.namespace, project_id: project, id: pipeline } }
+        let(:feature_args) { [project] }
       end
     end
 

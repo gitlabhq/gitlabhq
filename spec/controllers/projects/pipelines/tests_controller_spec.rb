@@ -164,6 +164,46 @@ RSpec.describe Projects::Pipelines::TestsController, feature_category: :continuo
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
+
+    context 'when rate limiting' do
+      let(:suite_name) { 'test' }
+
+      context 'when authenticated' do
+        it_behaves_like 'rate limited endpoint', rate_limit_key: :test_report_show do
+          let(:current_user) { user }
+
+          def request
+            get_tests_show_json([])
+          end
+
+          def request_with_second_scope
+            sign_in(create(:user))
+
+            get_tests_show_json([])
+          end
+        end
+      end
+
+      context 'when unauthenticated' do
+        before do
+          sign_out(user)
+        end
+
+        it_behaves_like 'rate limited endpoint', rate_limit_key: :test_report_show_unauthenticated,
+          use_second_scope: false do
+          def request
+            get_tests_show_json([])
+          end
+        end
+
+        it 'uses the request IP as the rate limiting scope' do
+          expect(::Gitlab::ApplicationRateLimiter)
+            .to receive(:throttled?).with(:test_report_show_unauthenticated, scope: { ip: request.ip })
+
+          get_tests_show_json([])
+        end
+      end
+    end
   end
 
   def get_tests_summary_json

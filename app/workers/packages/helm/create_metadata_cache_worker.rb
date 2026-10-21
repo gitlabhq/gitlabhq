@@ -12,7 +12,7 @@ module Packages
       queue_namespace :package_repositories
       feature_category :package_registry
 
-      deduplicate :until_executing
+      deduplicate :until_executed, if_deduplicated: :reschedule_once
       idempotent!
 
       def perform(project_id, channel)

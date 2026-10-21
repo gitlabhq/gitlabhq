@@ -26,11 +26,40 @@ module Gitlab
         \z
       }x
 
+      # Layouts that live in the artifacts bucket but are not job artifacts. They are never checked here.
+      UNCHECKED_FILE_PATH_REGEXPS = {
+        # <sha256_prefix>/<sha256_prefix>/<sha256_hash>/pipelines/<pipeline_id>/artifacts/<artifact_id>/<filename>
+        pipeline_artifact: %r{\A[0-9a-f]{2}/[0-9a-f]{2}/[0-9a-f]{64}/pipelines/\d+/artifacts/\d+/[^/]+\z},
+        # <sha256_prefix>/<sha256_prefix>/<sha256_hash>/@final/<prefix>/<prefix>/<key>, handled by
+        # `gitlab:cleanup:list_orphan_job_artifact_final_objects`
+        final_object: %r{\A[0-9a-f]{2}/[0-9a-f]{2}/[0-9a-f]{64}/@final/[0-9a-f]{2}/[0-9a-f]{2}/[^/]+\z}
+      }.freeze
+
       def initialize(logger: nil)
         super(:artifacts, ::Ci::JobArtifact, logger: logger)
+        @unchecked_counts = Hash.new(0)
+      end
+
+      override :run!
+      def run!(...)
+        super
+
+        log_unchecked_summary
       end
 
       private
+
+      def log_unchecked_summary
+        @unchecked_counts.each do |layout, count|
+          logger.info(message: "Skipped keys of a known layout that this task does not check", layout: layout,
+            count: count)
+        end
+      end
+
+      # @return [Symbol, nil] the name of the known non-job-artifact layout the file path matches
+      def unchecked_layout(file_path)
+        UNCHECKED_FILE_PATH_REGEXPS.find { |_, regexp| file_path.match?(regexp) }&.first
+      end
 
       # @return [Regexp] the expected file path format regexp.
       override :expected_file_path_format_regexp
@@ -52,8 +81,7 @@ module Gitlab
         paths_by_row = file_paths.group_by { |file_path| row_values(file_path) }
         unknown_format = paths_by_row.delete(nil) || []
 
-        # Calling the predicate makes the base class log each unparseable key.
-        unknown_format.each { |file_path| valid_file_path_format?(file_path) }
+        unknown_format.each { |file_path| log_skipped(file_path) }
 
         tracked_rows = tracked_row_values(paths_by_row.keys)
         log_batch(paths_by_row, tracked_rows.to_set)
@@ -61,6 +89,17 @@ module Gitlab
         # An unrecognized path format defaults to "tracked" so that an unknown layout is never
         # deleted.
         paths_by_row.values_at(*tracked_rows).flatten(1) + unknown_format
+      end
+
+      # Known layouts are counted and logged at debug level. Calling the predicate makes the base class
+      # log any other unparseable key.
+      def log_skipped(file_path)
+        layout = unchecked_layout(file_path)
+        return valid_file_path_format?(file_path) unless layout
+
+        @unchecked_counts[layout] += 1
+        logger.debug(message: "Skipping a key of a known layout that this task does not check", file_path: file_path,
+          layout: layout)
       end
 
       # @param file_path [String] a remote file path in this bucket

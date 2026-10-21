@@ -33,7 +33,10 @@ module Gitlab
             short_name: _('SkillGuard'),
             description: _('Analyze AI agent skill files for security risks, such as prompt injection, ' \
               'credential exfiltration, and unsafe command execution.'),
-            help_path: Gitlab::Routing.url_helpers.help_page_path('user/application_security/_index.md'),
+            help_path: Gitlab::Routing.url_helpers.help_page_path(
+              'user/application_security/configuration/security_configuration_profiles.md',
+              anchor: 'skillguard-profile'
+            ),
             type: 'skillguard',
             required_permission_to_configure: :configure_security_scanner
           },

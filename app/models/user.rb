@@ -311,6 +311,7 @@ class User < ApplicationRecord
 
   has_many :bulk_imports
   has_many :import_offline_exports, class_name: 'Import::Offline::Export', dependent: :delete_all
+  has_many :import_user_credentials, class_name: 'Import::UserCredential', dependent: :delete_all
   has_one :namespace_import_user, class_name: 'Import::NamespaceImportUser', inverse_of: :import_user
   has_one :placeholder_user_detail, class_name: 'Import::PlaceholderUserDetail', foreign_key: :placeholder_user_id, inverse_of: :placeholder_user
 
@@ -674,6 +675,7 @@ class User < ApplicationRecord
     after_transition any => :blocked do |user|
       user.run_after_commit do
         Users::DropPipelinesForBlockedUserWorker.perform_async(user.id)
+        Users::CancelImportsForBlockedUserWorker.perform_async(user.id)
       end
     end
 
@@ -691,6 +693,10 @@ class User < ApplicationRecord
       user.create_banned_user
 
       user.invalidate_authored_todo_user_pending_todo_cache_counts
+
+      user.run_after_commit do
+        Users::CancelImportsForBlockedUserWorker.perform_async(user.id)
+      end
 
       if Gitlab.com? # rubocop:disable Gitlab/AvoidGitlabInstanceChecks -- this is always necessary on GitLab.com
         user.run_after_commit do

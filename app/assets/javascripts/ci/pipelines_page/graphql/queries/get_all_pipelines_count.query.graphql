@@ -8,7 +8,7 @@ query getAllPipelinesCount(
   project(fullPath: $fullPath) {
     id
     pipelines(source: $source, ref: $ref, username: $username, status: $status) {
-      count
+      count(limit: 1000)
     }
   }
 }

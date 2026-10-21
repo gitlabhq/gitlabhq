@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::SlashCommands::Presenters::Access do
   shared_examples_for 'displays an error message' do
-    it do
+    it 'returns the error message as an ephemeral response' do
       expect(subject[:text]).to match(error_message)
       expect(subject[:response_type]).to be(:ephemeral)
     end

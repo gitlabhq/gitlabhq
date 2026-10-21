@@ -27,6 +27,31 @@ export default {
     }
   },
 
+  [types.SET_ALL_SUITES](state, suites) {
+    // Reassign the whole array (rather than mutating indices) so the change is
+    // reactive and the global search getters recompute once loading finishes.
+    state.testReports = { ...state.testReports, test_suites: suites };
+  },
+
+  [types.SET_SEARCH_TERM](state, searchTerm) {
+    state.searchTerm = searchTerm;
+    // Any change to the filter invalidates the current page.
+    state.pageInfo = { ...state.pageInfo, page: 1 };
+  },
+
+  [types.SET_SEARCH_SCOPE](state, scope) {
+    state.searchScope = scope;
+    state.pageInfo = { ...state.pageInfo, page: 1 };
+  },
+
+  [types.SET_FETCHED_ALL_SUITES](state, hasFetchedAllSuites) {
+    state.hasFetchedAllSuites = hasFetchedAllSuites;
+  },
+
+  [types.SET_LOADING_ALL_SUITES](state, isLoadingAllSuites) {
+    state.isLoadingAllSuites = isLoadingAllSuites;
+  },
+
   [types.SET_SELECTED_SUITE_INDEX](state, selectedSuiteIndex) {
     Object.assign(state, { selectedSuiteIndex });
   },

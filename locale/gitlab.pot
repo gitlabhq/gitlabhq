@@ -22649,9 +22649,6 @@ msgstr ""
 msgid "ComplianceFrameworks|Save changes to the framework"
 msgstr ""
 
-msgid "ComplianceFrameworks|Saved changes to compliance framework"
-msgstr ""
-
 msgid "ComplianceFrameworks|Scoping"
 msgstr ""
 
@@ -33750,6 +33747,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Delete trigger"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Describe what should happen each time this runs. For example, review open issues labeled bug and open a merge request for the simplest fix."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Description"
 msgstr ""
 
@@ -33858,6 +33858,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Flow or external agent"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Flows and external agents"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Frequency"
 msgstr ""
 
@@ -33912,6 +33915,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Instructions"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Instructions are required."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Instructions cannot exceed %{maxLength} characters."
 msgstr ""
 
@@ -33946,6 +33952,9 @@ msgid "DuoAgentsPlatform|Monthly on day %{dayOfMonth} at %{time}"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Monthly on day %{dayOfMonth} at %{time} %{timezone}"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Name is required."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Needs a decision"
@@ -34005,6 +34014,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Path to configuration file"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Permissions: %{role}"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Plan updated"
 msgstr ""
 
@@ -34015,6 +34027,9 @@ msgid "DuoAgentsPlatform|Read file"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Recent runs"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Recommended"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Remove event"
@@ -34062,6 +34077,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Runs"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Runs with"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Save changes"
 msgstr ""
 
@@ -34072,6 +34090,9 @@ msgid "DuoAgentsPlatform|Scheduled automations do not use composite identity. Th
 msgstr ""
 
 msgid "DuoAgentsPlatform|Scheduled automations do not use composite identity. They run with the service account's %{linkStart}%{role} role%{linkEnd} on this project."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Scheduled runs are unattended and use only service account permissions."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Scheduled triggers do not use composite identity. They run with only the service account's permissions."
@@ -34093,6 +34114,15 @@ msgid "DuoAgentsPlatform|Search for a session"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Search issues"
+msgstr ""
+
+msgid "DuoAgentsPlatform|See safe use guide"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Select a flow or agent"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Select a flow or agent."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Select a service account"
@@ -34306,6 +34336,9 @@ msgid "DuoAgentsPlatform|Weekdays at %{time}"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Weekdays at %{time} %{timezone}"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Weekly dependency check"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Weekly on %{dayOfWeek} at %{time}"
@@ -39006,6 +39039,9 @@ msgstr ""
 msgid "FeatureLibrary|Add custom roles, and invite guests at no cost"
 msgstr ""
 
+msgid "FeatureLibrary|Add epics, weights, multiple assignees, and custom fields"
+msgstr ""
+
 msgid "FeatureLibrary|Add objectives, key results, requirements, test cases, and health status"
 msgstr ""
 
@@ -39089,6 +39125,9 @@ msgstr ""
 msgid "FeatureLibrary|Recommended based on your search"
 msgstr ""
 
+msgid "FeatureLibrary|Register up to 1,000 runners, and run up to 1,500 jobs per pipeline"
+msgstr ""
+
 msgid "FeatureLibrary|Renew subscription"
 msgstr ""
 
@@ -39099,6 +39138,9 @@ msgid "FeatureLibrary|Route incidents through on-call schedules and escalation p
 msgstr ""
 
 msgid "FeatureLibrary|Run AI agents and flows across your work, paid for with GitLab Credits"
+msgstr ""
+
+msgid "FeatureLibrary|Runners"
 msgstr ""
 
 msgid "FeatureLibrary|Scan across files and functions with static application security testing"
@@ -41959,6 +42001,9 @@ msgid "GithubImport|To connect to GitHub repositories, you must first authorize 
 msgstr ""
 
 msgid "GithubImport|To import GitHub repositories, you must first authorize GitLab to access your GitHub repositories."
+msgstr ""
+
+msgid "GithubImport|To import with updates on, authorize GitHub again."
 msgstr ""
 
 msgid "GithubImport|Use a classic GitHub personal access token with the following scopes:"
@@ -86392,6 +86437,9 @@ msgstr ""
 msgid "TestReports|Copy test name to rerun locally"
 msgstr ""
 
+msgid "TestReports|Filter by test name or class"
+msgstr ""
+
 msgid "TestReports|Job artifacts are expired"
 msgstr ""
 
@@ -86404,7 +86452,25 @@ msgstr ""
 msgid "TestReports|Learn more about pipeline test reports"
 msgstr ""
 
+msgid "TestReports|No test cases match your search."
+msgstr ""
+
 msgid "TestReports|No test cases were found in the test report."
+msgstr ""
+
+msgid "TestReports|Search all jobs"
+msgstr ""
+
+msgid "TestReports|Search results (%{count})"
+msgstr ""
+
+msgid "TestReports|Showing results from %{name}"
+msgstr ""
+
+msgid "TestReports|Showing results from all jobs"
+msgstr ""
+
+msgid "TestReports|Some test suites could not be loaded and are excluded from search results."
 msgstr ""
 
 msgid "TestReports|Sort by %{label}"
@@ -86428,7 +86494,13 @@ msgstr ""
 msgid "TestReports|There was an error fetching the summary."
 msgstr ""
 
+msgid "TestReports|There was an error fetching the test cases."
+msgstr ""
+
 msgid "TestReports|There was an error fetching the test suite."
+msgstr ""
+
+msgid "TestReports|This pipeline has %{count} jobs. Search results will include tests from all jobs."
 msgstr ""
 
 msgid "TestReports|You can configure your job to use unit test reports, and GitLab displays a report here and in the related merge request."

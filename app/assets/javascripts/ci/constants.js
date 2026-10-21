@@ -7,6 +7,7 @@ export const BUTTON_TOOLTIP_CANCEL = __('Cancel the running pipeline');
 export const BUTTON_TOOLTIP_DELETE = __('Delete the pipeline');
 
 export const FILTER_TAG_IDENTIFIER = 'tag';
+export const FILTER_USERNAME_IDENTIFIER = 'username';
 
 export const JOB_GRAPHQL_ERRORS = {
   jobMutationErrorText: __('There was an error running the job. Please try again.'),

@@ -3,6 +3,8 @@
 module Organizations
   module Transfer
     class UserAgentDetailsService
+      include Organizations::Transfer::Concerns::MissingRecordHandling
+
       ISSUE_BATCH_SIZE = 1_000
       SNIPPET_BATCH_SIZE = 1_000
 
@@ -13,16 +15,21 @@ module Organizations
       end
 
       def execute
+        error = missing_record_error
+        return error if error
+
         unless group.root?
           Gitlab::AppLogger.warn(
             message: 'Skipping user_agent_details transfer: group is not a root group',
             group_id: group.id
           )
-          return
+          return ServiceResponse.error(message: 'Group is not a root group.', reason: :not_root_group)
         end
 
         transfer_issue_details
         transfer_project_snippet_details
+
+        ServiceResponse.success
       end
 
       private

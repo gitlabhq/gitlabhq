@@ -16,6 +16,7 @@ import { mapState, mapGetters, mapActions } from 'vuex';
 import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 import { __, s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import { WRAP_SYMBOLS } from '../stores/test_reports/constants';
 import TestCaseDetails from './test_case_details.vue';
 
 export const i18n = {
@@ -63,7 +64,7 @@ export default {
   methods: {
     ...mapActions('testReports', ['setPage']),
   },
-  wrapSymbols: ['::', '#', '.', '_', '-', '/', '\\'],
+  wrapSymbols: WRAP_SYMBOLS,
   i18n,
   learnMorePath: helpPagePath('ci/testing/unit_test_reports', {
     anchor: 'view-test-results-in-pipelines',

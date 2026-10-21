@@ -58,6 +58,61 @@ RSpec.describe Gitlab::Cleanup::RemoteArtifacts, feature_category: :geo_replicat
       end
     end
 
+    context 'with paths of known layouts that are not job artifacts' do
+      let(:hash_path) { '4e/07/4e07408562bedb8b60ce05c1decfe3ad16b72230967de01f640b7e4729b49fce' }
+      let(:pipeline_artifact_path) { "#{hash_path}/pipelines/1/artifacts/2/code_coverage.json" }
+      let(:final_object_path) { "#{hash_path}/@final/c0/5a/e53e6eccd1a7fa8a6585f863cc6ea707edcd44a4cea913adcaea" }
+      let(:file_paths) { [pipeline_artifact_path, final_object_path] }
+      let(:logger) { instance_double(Logger, debug: nil, info: nil) }
+      let(:cleaner) { described_class.new(logger: logger) }
+
+      it 'reports them as tracked so that they are never deleted' do
+        expect(tracked_paths).to contain_exactly(pipeline_artifact_path, final_object_path)
+      end
+
+      it 'does not log them as an unexpected format' do
+        tracked_paths
+
+        expect(logger).not_to have_received(:info).with(hash_including(message: /doesn't match the expected format/))
+      end
+
+      it 'logs each one with its layout' do
+        tracked_paths
+
+        expect(logger).to have_received(:debug).with(
+          hash_including(file_path: pipeline_artifact_path, layout: :pipeline_artifact))
+        expect(logger).to have_received(:debug).with(
+          hash_including(file_path: final_object_path, layout: :final_object))
+      end
+
+      context 'when running the cleaner' do
+        let(:remote_files) do
+          file_paths.map { |path| instance_double(Fog::AWS::Storage::File, key: path) }
+        end
+
+        before do
+          remote_directory = Struct.new(:files).new(files: remote_files)
+          allow(cleaner).to receive(:remote_directory).and_return(remote_directory)
+        end
+
+        it 'logs a count per layout when the run ends' do
+          cleaner.run!
+
+          expect(logger).to have_received(:info).with(hash_including(layout: :pipeline_artifact, count: 1))
+          expect(logger).to have_received(:info).with(hash_including(layout: :final_object, count: 1))
+        end
+
+        it 'never copies or destroys them' do
+          remote_files.each do |file|
+            expect(file).not_to receive(:copy)
+            expect(file).not_to receive(:destroy)
+          end
+
+          cleaner.run!(dry_run: false)
+        end
+      end
+    end
+
     context 'with a non-ASCII filename' do
       let(:file_paths) { [artifact.reload.file.path] }
 

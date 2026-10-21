@@ -52,3 +52,23 @@ export const addIconStatus = (testCase) => ({
   icon: iconForTestStatus(testCase.status),
   formattedTime: formattedTime(testCase.execution_time),
 });
+
+/**
+ * Filters test cases by a search term, matching case-insensitively against the
+ * `classname` and `name` fields (the two fields shown as "Suite" and "Name").
+ * An empty term returns the list unchanged.
+ * @param {Array} testCases
+ * @param {String} searchTerm
+ * @returns {Array} - the matching test cases
+ */
+export const filterTestCases = (testCases = [], searchTerm = '') => {
+  const term = searchTerm.trim().toLowerCase();
+  if (!term) {
+    return testCases;
+  }
+
+  return testCases.filter(
+    ({ classname = '', name = '' }) =>
+      classname.toLowerCase().includes(term) || name.toLowerCase().includes(term),
+  );
+};

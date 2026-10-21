@@ -1,8 +1,7 @@
 <script>
 import { GlLink, GlModal, GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
-import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 import { CREATE_EXPERIMENT_HELP_PATH, MLFLOW_USAGE_MODAL_ID } from '../constants';
 
 export default {
@@ -11,7 +10,7 @@ export default {
     GlModal,
     GlSprintf,
     GlLink,
-    ClipboardButton,
+    SimpleCopyButton,
   },
   inject: ['mlflowTrackingUrl'],
   computed: {
@@ -31,11 +30,6 @@ export default {
           `client.create_experiment(name="<your_experiment_name>", tags={'key': 'value'})`,
         ].join('\n'),
       };
-    },
-  },
-  methods: {
-    copyInstructions() {
-      copyToClipboard(this.instruction.cmd, this.$refs.copyButton?.$el);
     },
   },
   MLFLOW_USAGE_MODAL_ID,
@@ -60,12 +54,10 @@ export default {
         data-testid="preview-code"
       >
         <code class="gl-grow">{{ instruction.cmd }}</code>
-        <clipboard-button
-          ref="copyButton"
+        <simple-copy-button
           category="tertiary"
           :text="instruction.cmd"
           :title="__('Copy to clipboard')"
-          @click="copyInstructions"
         />
       </pre>
     </div>

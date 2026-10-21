@@ -62635,6 +62635,7 @@ Fields:
 | <a id="projectcompliancerequirementstatus-compliancerequirement"></a>`complianceRequirement` | [`ComplianceRequirement!`](#compliancerequirement) | Requirement of the compliance status. |
 | <a id="projectcompliancerequirementstatus-failcount"></a>`failCount` | [`Int!`](#int) | Total no. of failed compliance controls for the requirement. |
 | <a id="projectcompliancerequirementstatus-id"></a>`id` | [`ID!`](#id) | Compliance requirement status ID. |
+| <a id="projectcompliancerequirementstatus-notapplicablecount"></a>`notApplicableCount` | [`Int!`](#int) | Total no. of not applicable compliance controls for the requirement. |
 | <a id="projectcompliancerequirementstatus-passcount"></a>`passCount` | [`Int!`](#int) | Total no. of passed compliance controls for the requirement. |
 | <a id="projectcompliancerequirementstatus-pendingcount"></a>`pendingCount` | [`Int!`](#int) | Total no. of pending compliance controls for the requirement. |
 | <a id="projectcompliancerequirementstatus-project"></a>`project` | [`Project!`](#project) | Project of the compliance status. |
@@ -64102,6 +64103,7 @@ Fields:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="requirementcontrolcoverage-failed"></a>`failed` | [`Int!`](#int) | Number of controls that failed compliance checks. |
+| <a id="requirementcontrolcoverage-notapplicable"></a>`notApplicable` | [`Int!`](#int) | Number of controls not applicable to the project. |
 | <a id="requirementcontrolcoverage-passed"></a>`passed` | [`Int!`](#int) | Number of controls that passed compliance checks. |
 | <a id="requirementcontrolcoverage-pending"></a>`pending` | [`Int!`](#int) | Number of controls pending evaluation. |
 
@@ -64114,6 +64116,7 @@ Fields:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="requirementcoverage-failed"></a>`failed` | [`Int!`](#int) | Count of failed requirements. |
+| <a id="requirementcoverage-notapplicable"></a>`notApplicable` | [`Int!`](#int) | Count of requirements with only not applicable controls. |
 | <a id="requirementcoverage-passed"></a>`passed` | [`Int!`](#int) | Count of passed requirements. |
 | <a id="requirementcoverage-pending"></a>`pending` | [`Int!`](#int) | Count of pending requirements. |
 

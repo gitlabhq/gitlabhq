@@ -14,6 +14,10 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action :disable_query_limiting, only: [:create, :retry]
   before_action :pipeline, except: [:index, :new, :create, :charts]
   before_action :set_pipeline_path, only: [:show]
+  before_action only: [:show, :builds, :failures, :test_report, :manual_variables] do
+    push_frontend_feature_flag(:junit_test_report_search, project)
+  end
+
   before_action :authorize_read_pipeline!
   before_action :authorize_read_build!, only: [:index]
   before_action :authorize_read_build_on_pipeline!, only: [:show]

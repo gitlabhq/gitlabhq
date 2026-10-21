@@ -56,6 +56,8 @@ RSpec.describe Organizations::Transfer::CiRunnersService, :aggregate_failures, f
   end
 
   describe '#execute' do
+    it_behaves_like 'an organization transfer service handling missing records'
+
     it 'updates organization_id for group runners' do
       execute
 

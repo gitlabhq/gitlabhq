@@ -28,7 +28,6 @@ import getTopLevelGroupsQuery from '~/explore/analytics_dashboards/graphql/get_t
 import searchNamespacesGlobalQuery from '~/explore/analytics_dashboards/graphql/search_namespaces_global.query.graphql';
 import getScopeNamespaceQuery from '~/explore/analytics_dashboards/graphql/get_scope_namespace.query.graphql';
 import getFrecentGroupsQuery from '~/explore/analytics_dashboards/graphql/get_frecent_groups.query.graphql';
-import getOrganizationGroupQuery from '~/explore/analytics_dashboards/graphql/get_organization_group.query.graphql';
 
 Vue.use(VueApollo);
 
@@ -42,7 +41,6 @@ describe('ScopePicker', () => {
   let globalSearchRequestHandler;
   let scopeNamespaceRequestHandler;
   let frecentGroupsRequestHandler;
-  let organizationGroupRequestHandler;
 
   const groupFullPath = 'gitlab-org';
   const closeListbox = jest.fn();
@@ -313,18 +311,6 @@ describe('ScopePicker', () => {
   const respondWithFrecentGroups = (frecentGroups = []) =>
     jest.fn().mockResolvedValue({ data: { frecentGroups } });
 
-  // Empty nodes are how the connection reports a group the page's organization does not hold.
-  const respondWithOrganizationGroup = (groups = []) =>
-    jest.fn().mockResolvedValue({
-      data: {
-        organization: {
-          __typename: 'Organization',
-          id: 'gid://gitlab/Organizations::Organization/1',
-          groups: { __typename: 'GroupConnection', nodes: groups },
-        },
-      },
-    });
-
   const subgroupProjectsPage = (projects = mockSubgroupProjects, endCursor = null) => ({
     data: {
       group: {
@@ -381,7 +367,6 @@ describe('ScopePicker', () => {
     globalSearchHandler = respondWithGlobalSearch(),
     scopeNamespaceHandler = respondWithScopeNamespace(),
     frecentGroupsHandler = respondWithFrecentGroups(),
-    organizationGroupHandler = respondWithOrganizationGroup(),
     props = {},
     listeners = {},
     provide = {},
@@ -391,7 +376,6 @@ describe('ScopePicker', () => {
     globalSearchRequestHandler = globalSearchHandler;
     scopeNamespaceRequestHandler = scopeNamespaceHandler;
     frecentGroupsRequestHandler = frecentGroupsHandler;
-    organizationGroupRequestHandler = organizationGroupHandler;
 
     wrapper = shallowMountExtended(ScopePicker, {
       apolloProvider: createMockApollo([
@@ -400,7 +384,6 @@ describe('ScopePicker', () => {
         [searchNamespacesGlobalQuery, globalSearchRequestHandler],
         [getScopeNamespaceQuery, scopeNamespaceRequestHandler],
         [getFrecentGroupsQuery, frecentGroupsRequestHandler],
-        [getOrganizationGroupQuery, organizationGroupRequestHandler],
       ]),
       propsData: { multiSelect: true, ...props },
       listeners,
@@ -2159,17 +2142,12 @@ describe('ScopePicker', () => {
       beforeEach(async () => {
         createWrapper({
           frecentGroupsHandler: respondWithFrecentGroups(mockFrecentGroups),
-          organizationGroupHandler: respondWithOrganizationGroup([asFrecentGroup(mockAcme)]),
         });
         await waitForPromises();
       });
 
       it('asks for the frecent groups', () => {
         expect(frecentGroupsRequestHandler).toHaveBeenCalled();
-      });
-
-      it('validates that the most frecentGroup is in the organization', () => {
-        expect(organizationGroupRequestHandler).toHaveBeenCalledWith({ ids: [mockAcme.id] });
       });
 
       it('names the most frecent group on the toggle', () => {
@@ -2189,7 +2167,6 @@ describe('ScopePicker', () => {
       const { events, listeners } = recordEvents();
       createWrapper({
         frecentGroupsHandler: respondWithFrecentGroups(mockFrecentGroups),
-        organizationGroupHandler: respondWithOrganizationGroup([asFrecentGroup(mockAcme)]),
         listeners,
       });
       await waitForPromises();
@@ -2209,7 +2186,6 @@ describe('ScopePicker', () => {
 
       it('does not send a request for the frecent group', () => {
         expect(frecentGroupsRequestHandler).not.toHaveBeenCalled();
-        expect(organizationGroupRequestHandler).not.toHaveBeenCalled();
       });
 
       it('keeps what the param named', () => {
@@ -2223,33 +2199,7 @@ describe('ScopePicker', () => {
         await waitForPromises();
       });
 
-      it('has nothing to check against the organization', () => {
-        expect(organizationGroupRequestHandler).not.toHaveBeenCalled();
-      });
-
       it('leaves the picker empty, for the page to show its empty state', () => {
-        expectEmptyState();
-      });
-
-      it('emits no change', () => {
-        expect(wrapper.emitted('change')).toBeUndefined();
-      });
-
-      it('emits ready', () => {
-        expectReadyOnce();
-      });
-    });
-
-    describe('when the page organization does not hold the most frecent group', () => {
-      beforeEach(async () => {
-        createWrapper({
-          frecentGroupsHandler: respondWithFrecentGroups(mockFrecentGroups),
-          organizationGroupHandler: respondWithOrganizationGroup([]),
-        });
-        await waitForPromises();
-      });
-
-      it('leaves the picker empty rather than falling to the next frecent group', () => {
         expectEmptyState();
       });
 
@@ -2266,7 +2216,6 @@ describe('ScopePicker', () => {
       beforeEach(async () => {
         createWrapper({
           frecentGroupsHandler: respondWithFrecentGroups(mockFrecentGroups),
-          organizationGroupHandler: respondWithOrganizationGroup([asFrecentGroup(mockAcme)]),
         });
         await waitForPromises();
 
@@ -2276,7 +2225,6 @@ describe('ScopePicker', () => {
       it('stays empty rather than deriving the default again', () => {
         expectEmptyState();
         expect(frecentGroupsRequestHandler).toHaveBeenCalledTimes(1);
-        expect(organizationGroupRequestHandler).toHaveBeenCalledTimes(1);
       });
 
       it('emits the cleared selection', async () => {
@@ -2290,7 +2238,6 @@ describe('ScopePicker', () => {
       const lookup = deferFrecentGroups();
       createWrapper({
         frecentGroupsHandler: lookup.handler,
-        organizationGroupHandler: respondWithOrganizationGroup([asFrecentGroup(mockAcme)]),
       });
       await waitForPromises();
 
@@ -2307,28 +2254,6 @@ describe('ScopePicker', () => {
     describe('when the frecent groups query fails', () => {
       beforeEach(async () => {
         createWrapper({ frecentGroupsHandler: rejecting() });
-        await waitForPromises();
-      });
-
-      it('logs the error to sentry', () => {
-        expect(sentryBrowserWrapper.captureException).toHaveBeenCalledWith(error);
-      });
-
-      it('leaves the picker empty', () => {
-        expectEmptyState();
-      });
-
-      it('emits ready', () => {
-        expectReadyOnce();
-      });
-    });
-
-    describe('when the organization check fails', () => {
-      beforeEach(async () => {
-        createWrapper({
-          frecentGroupsHandler: respondWithFrecentGroups(mockFrecentGroups),
-          organizationGroupHandler: rejecting(),
-        });
         await waitForPromises();
       });
 
@@ -2514,11 +2439,12 @@ describe('ScopePicker', () => {
 
     describe('when the most frecent group denies one', () => {
       beforeEach(async () => {
+        // The picker's lists and the frecent query share one cache entry per group.
+        const deniedAcme = { ...mockAcme, userPermissions: groupPermissions(false) };
+
         createWrapper({
-          frecentGroupsHandler: respondWithFrecentGroups([mockAcme]),
-          organizationGroupHandler: respondWithOrganizationGroup([
-            { ...mockAcme, userPermissions: groupPermissions(false) },
-          ]),
+          topLevelGroupsHandler: respondWithTopLevelGroups([deniedAcme]),
+          frecentGroupsHandler: respondWithFrecentGroups([deniedAcme]),
           props: { requirePermissions },
         });
         await waitForPromises();
@@ -2537,8 +2463,7 @@ describe('ScopePicker', () => {
     describe('when the permission of the most frecent group is unknown', () => {
       beforeEach(async () => {
         createWrapper({
-          frecentGroupsHandler: respondWithFrecentGroups([mockAcme]),
-          organizationGroupHandler: respondWithOrganizationGroup([
+          frecentGroupsHandler: respondWithFrecentGroups([
             { ...mockAcme, userPermissions: groupPermissions(null) },
           ]),
           props: { requirePermissions },

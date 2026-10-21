@@ -1,19 +1,18 @@
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
+import { pinia } from '~/pinia/instance';
 import ContributorsGraphs from './components/contributors.vue';
-import { createStore } from './stores';
 
 export default () => {
   const el = document.querySelector('.js-contributors-graph');
 
   if (!el) return null;
 
-  const { projectGraphPath, projectBranch, defaultBranch, projectId, commitsPath } = el.dataset;
-  const store = createStore(defaultBranch);
+  const { projectGraphPath, projectBranch, projectId, commitsPath } = el.dataset;
 
   return initVueApp({
     el,
     name: 'ContributorsGraphsRoot',
-    store,
+    pinia,
     component: ContributorsGraphs,
     props: {
       endpoint: projectGraphPath,

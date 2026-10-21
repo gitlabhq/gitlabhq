@@ -16,6 +16,7 @@ import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
 import PipelinesTable from '~/ci/common/pipelines_table.vue';
 import {
   FILTER_TAG_IDENTIFIER,
+  FILTER_USERNAME_IDENTIFIER,
   PIPELINE_ID_KEY,
   PIPELINE_IID_KEY,
   RAW_TEXT_WARNING,
@@ -184,7 +185,7 @@ export default {
           return !this.pipelines?.projectId || this.pipelines?.list?.length === 0;
         },
         updateQuery(
-          previousData,
+          _previousData,
           {
             subscriptionData: {
               data: { ciPipelineStatusesUpdated },
@@ -215,7 +216,9 @@ export default {
               this.fetchNewPipeline(updatedId);
             }
           }
-          return previousData;
+          // Return undefined so Apollo skips the cache write: entities are refreshed
+          // separately, and the cached list can be partial during a refetch.
+          return undefined;
         },
       },
     },
@@ -533,7 +536,9 @@ export default {
         // can fetch all trigger authors
         if (
           filter.type &&
-          filter.value.data !== ANY_TRIGGER_AUTHOR &&
+          !(
+            filter.type === FILTER_USERNAME_IDENTIFIER && filter.value.data === ANY_TRIGGER_AUTHOR
+          ) &&
           filter.type !== FILTER_TAG_IDENTIFIER
         ) {
           newFilterParams[filter.type] = filter.value.data;
@@ -558,7 +563,10 @@ export default {
       this.pagination = { ...DEFAULT_PAGINATION };
 
       updateHistory({
-        url: setUrlParams({ ...this.filterParams, scope: this.scope }, window.location.href, true),
+        url: setUrlParams(
+          { ...this.filterParams, scope: this.scope },
+          { url: window.location.href, clearParams: true },
+        ),
       });
     },
     transformFilterParams(filterParams) {

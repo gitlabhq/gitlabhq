@@ -6,7 +6,7 @@ module Users
 
     DestroyError = Class.new(StandardError)
 
-    handles_removal_of :project_authorization_reverifications, :oauth_consent_grants
+    handles_removal_of :project_authorization_reverifications, :oauth_consent_grants, :import_user_credentials
 
     attr_accessor :current_user
 

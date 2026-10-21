@@ -2,10 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import { GlModal } from '@gitlab/ui';
 import MlflowUsageModal from '~/ml/experiment_tracking/routes/experiments/index/components/mlflow_usage_modal.vue';
 import { MLFLOW_USAGE_MODAL_ID } from '~/ml/experiment_tracking/routes/experiments/index/constants';
-import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
-
-jest.mock('~/lib/utils/copy_to_clipboard');
+import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 
 let wrapper;
 
@@ -27,7 +24,7 @@ const createWrapper = () => {
 
 const findModal = () => wrapper.findComponent(GlModal);
 const findCmd = () => findModal().find('code');
-const findCopyButton = () => findModal().findComponent(ClipboardButton);
+const findCopyButton = () => findModal().findComponent(SimpleCopyButton);
 
 describe('ml/experiment_tracking/routes/experiments/index/components/mlflow_usage_modal.vue', () => {
   beforeEach(() => {
@@ -53,12 +50,7 @@ describe('ml/experiment_tracking/routes/experiments/index/components/mlflow_usag
     it('renders the button correctly', () => {
       expect(findCopyButton().props('text')).toBe(command);
       expect(findCopyButton().props('title')).toBe('Copy to clipboard');
-    });
-
-    it('copies the code to the clipboard on click', async () => {
-      await findCopyButton().vm.$emit('click');
-
-      expect(copyToClipboard).toHaveBeenCalledWith(command, findCopyButton().element);
+      expect(findCopyButton().props('category')).toBe('tertiary');
     });
   });
 });

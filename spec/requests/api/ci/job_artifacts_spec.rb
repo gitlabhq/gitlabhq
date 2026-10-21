@@ -8,6 +8,7 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
   include Ci::JobTokenScopeHelpers
 
   include HttpIOHelpers
+  include WorkhorseHelpers
 
   let_it_be_with_reload(:project) do
     create(:project, :repository, public_builds: false)
@@ -274,10 +275,14 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(response.headers.to_h)
-            .to include('Content-Type' => 'application/json', 'Gitlab-Workhorse-Send-Data' => /artifacts-entry/)
+            .to include('Content-Type' => 'application/json')
           expect(response.headers.to_h)
             .not_to include('Gitlab-Workhorse-Detect-Content-Type' => 'true')
           expect(response.parsed_body).to be_empty
+
+          type, params = workhorse_send_data
+          expect(type).to eq('artifacts-entry')
+          expect(Base64.decode64(params['Entry'])).to eq(artifact)
         end
 
         context 'when artifacts are locked' do
@@ -941,10 +946,13 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
           expect(response).to have_gitlab_http_status(:ok)
           expect(response.headers.to_h).to include(
             'Content-Type' => 'application/json',
-            'Gitlab-Workhorse-Send-Data' => /artifacts-entry/,
             'Gitlab-Workhorse-Detect-Content-Type' => 'true'
           )
           expect(response.parsed_body).to be_empty
+
+          type, params = workhorse_send_data
+          expect(type).to eq('artifacts-entry')
+          expect(Base64.decode64(params['Entry'])).to eq(artifact)
         end
 
         it_behaves_like 'authorizing granular token permissions', :download_job_artifact do

@@ -1,5 +1,6 @@
 import { GlCollapsibleListbox, GlLoadingIcon, GlKeysetPagination } from '@gitlab/ui';
 import { createMockSubscription } from 'mock-apollo-client';
+import { print } from 'graphql';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import Visibility from 'visibilityjs';
@@ -9,6 +10,7 @@ import { mockTracking } from 'helpers/tracking_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import waitForPromises from 'helpers/wait_for_promises';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
 import PipelinesApp from '~/ci/pipelines_page/pipelines_app.vue';
@@ -394,6 +396,29 @@ describe('Pipelines App', () => {
       });
     });
 
+    it('limits the All tab count to its display threshold', async () => {
+      const limitedCountHandler = jest.fn().mockResolvedValue({
+        data: {
+          project: {
+            ...mockPipelinesCount.data.project,
+            pipelines: { ...mockPipelinesCount.data.project.pipelines, count: 1001 },
+          },
+        },
+      });
+
+      createComponent({
+        requestHandlers: [
+          [getPipelinesQuery, successHandler],
+          [getAllPipelinesCountQuery, limitedCountHandler],
+        ],
+      });
+
+      await waitForPromises();
+
+      expect(print(getAllPipelinesCountQuery)).toContain('count(limit: 1000)');
+      expect(findTabs().props('tabs')[0].count).toBe('1,000+');
+    });
+
     it.each`
       scope         | params
       ${'all'}      | ${{ scope: null }}
@@ -485,6 +510,44 @@ describe('Pipelines App', () => {
   });
 
   describe('pipelines filtered search', () => {
+    it('removes a cleared status from the URL while preserving the ref filter', async () => {
+      setWindowLocation(`${TEST_HOST}/?status=failed&ref=main&scope=all`);
+      createComponent({ props: { params: { status: 'failed', ref: 'main' } } });
+      await waitForPromises();
+
+      findFilteredSearch().vm.$emit('filter-pipelines', [
+        { type: 'ref', value: { data: 'main', operator: '=' } },
+      ]);
+      await waitForPromises();
+
+      expect(Object.fromEntries(new URL(window.location.href).searchParams)).toEqual({
+        ref: 'main',
+        scope: 'all',
+      });
+      expect(successHandler.mock.lastCall[0]).not.toHaveProperty('status');
+      expect(countHandler).toHaveBeenLastCalledWith({ fullPath: 'gitlab-org/gitlab', ref: 'main' });
+    });
+
+    it('preserves a ref called Any while omitting the Any trigger author', async () => {
+      createComponent();
+      await waitForPromises();
+
+      findFilteredSearch().vm.$emit('filter-pipelines', [
+        { type: 'ref', value: { data: 'Any', operator: '=' } },
+        { type: 'username', value: { data: 'Any', operator: '=' } },
+      ]);
+      await waitForPromises();
+
+      expect(findFilteredSearch().props('params')).toEqual({ ref: 'Any' });
+      expect(successHandler).toHaveBeenLastCalledWith(expect.objectContaining({ ref: 'Any' }));
+      expect(successHandler.mock.lastCall[0]).not.toHaveProperty('username');
+      expect(countHandler).toHaveBeenLastCalledWith({
+        fullPath: 'gitlab-org/gitlab',
+        ref: 'Any',
+      });
+      expect(new URL(window.location.href).searchParams.get('ref')).toBe('Any');
+    });
+
     describe('getInitialFilterParams / validated params', () => {
       it('uses getInitialFilterParams with props params and passes result to filtered search', async () => {
         const propsParams = { status: 'failed' };
@@ -792,6 +855,55 @@ describe('Pipelines App', () => {
 
       expect(subscriptionHandler).not.toHaveBeenCalled();
     });
+
+    it.each(['status', 'page'])(
+      'keeps the pending %s query intact when the subscription sends its initial null result',
+      async (change) => {
+        let resolvePipelines;
+        const pendingPipelines = new Promise((resolve) => {
+          resolvePipelines = resolve;
+        });
+        const pipelinesHandler = jest
+          .fn()
+          .mockResolvedValueOnce(mockGetPipelinesResponse)
+          .mockReturnValueOnce(pendingPipelines);
+
+        createComponent({
+          requestHandlers: [
+            [getPipelinesQuery, pipelinesHandler],
+            [getAllPipelinesCountQuery, countHandler],
+          ],
+        });
+        await waitForPromises();
+
+        if (change === 'page') {
+          findPagination().vm.$emit('next');
+        } else {
+          findFilteredSearch().vm.$emit('filter-pipelines', [
+            { type: 'status', value: { data: 'failed', operator: '=' } },
+          ]);
+        }
+        await waitForPromises();
+
+        expect(pipelinesHandler).toHaveBeenCalledTimes(2);
+        expect(findLoadingIcon().exists()).toBe(true);
+
+        const writeQuerySpy = jest.spyOn(apolloProvider.defaultClient.cache, 'writeQuery');
+        mockSubscription.next({ data: { ciPipelineStatusesUpdated: null } });
+        await waitForPromises();
+
+        expect(writeQuerySpy).not.toHaveBeenCalled();
+        expect(findLoadingIcon().exists()).toBe(true);
+        resolvePipelines(mockGetPipelinesResponse);
+        await waitForPromises();
+
+        expect(findLoadingIcon().exists()).toBe(false);
+        expect(findTable().props('pipelines')).toEqual(
+          mockGetPipelinesResponse.data.project.pipelines.nodes,
+        );
+        expect(createAlert).not.toHaveBeenCalled();
+      },
+    );
 
     it('calls debounced batch query when subscription fires for visible pipelines', async () => {
       createComponent({

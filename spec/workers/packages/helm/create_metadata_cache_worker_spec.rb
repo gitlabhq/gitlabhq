@@ -3,6 +3,16 @@
 require 'spec_helper'
 
 RSpec.describe Packages::Helm::CreateMetadataCacheWorker, feature_category: :package_registry do
+  describe 'deduplication strategy' do
+    it 'uses the `until_executed` strategy' do
+      expect(described_class.get_deduplicate_strategy).to eq(:until_executed)
+    end
+
+    it 'reschedules once if deduplicated' do
+      expect(described_class.get_deduplication_options).to include(if_deduplicated: :reschedule_once)
+    end
+  end
+
   describe '#perform', :aggregate_failures do
     let_it_be(:package) { create(:helm_package) }
 

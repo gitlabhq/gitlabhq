@@ -154,8 +154,7 @@ export const stripWhitespaceFromQuery = (url, path) => {
     return url;
   }
 
-  const decoded = decodeURIComponent(params);
-  const paramsObj = queryToObject(decoded, {
+  const paramsObj = queryToObject(params, {
     preservePlusForKeys: GRAPHQL_GET_QUERY_PARAM_KEYS,
   });
 

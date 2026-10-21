@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Go::VersionFinder do
+RSpec.describe Packages::Go::VersionFinder, feature_category: :package_registry do
   let_it_be(:user) { create :user }
   let_it_be(:project) { create :project_empty_repo, creator: user, path: 'my-go-lib' }
 

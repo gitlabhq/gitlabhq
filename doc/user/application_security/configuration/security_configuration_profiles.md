@@ -210,6 +210,35 @@ Turn on **Allow flow execution**, **Allow foundational flows**, and the **Busine
 For more information about prerequisites and what the scan finds, see
 [business logic scanning](../business_logic_scanning/_index.md).
 
+### SkillGuard profile
+
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/634364) in GitLab 19.6 [with a feature flag](../../../administration/feature_flags/_index.md) named `skillguard_analyzer`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the
+> history.
+
+The SkillGuard profile uses an AI agent to find security risks in the AI agent skill files in your
+repository, such as `SKILL.md`, `CLAUDE.md`, and `AGENTS.md`. It reports risks like prompt injection,
+credential exfiltration, and unsafe command execution. When you attach the profile to a project, the
+scan turns on for that project.
+
+The scan runs when a merge request's head pipeline succeeds. It does not run on default branch
+pipelines. If the project has no CI/CD pipelines, no merge request scans run.
+
+SkillGuard publishes its findings as a SAST report, so they appear in the vulnerability report
+alongside other scanners' findings.
+
 ### View details about a profile
 
 To view technical details about the secret detection profile:

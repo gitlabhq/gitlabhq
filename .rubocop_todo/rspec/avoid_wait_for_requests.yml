@@ -105,7 +105,6 @@ RSpec/AvoidWaitForRequests:
     - 'ee/spec/features/projects/quality/test_case_show_spec.rb'
     - 'ee/spec/features/projects/requirements_management/requirements_list_spec.rb'
     - 'ee/spec/features/projects/security/user_creates_on_demand_scan_spec.rb'
-    - 'ee/spec/features/projects/security/vulnerability_report_spec.rb'
     - 'ee/spec/features/projects/settings/branch_rules/branch_rule_details_spec.rb'
     - 'ee/spec/features/projects/settings/branch_rules/branch_rules_listing_spec.rb'
     - 'ee/spec/features/projects/settings/disable_merge_trains_setting_spec.rb'

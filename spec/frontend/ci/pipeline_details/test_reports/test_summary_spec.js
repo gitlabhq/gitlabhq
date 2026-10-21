@@ -10,7 +10,6 @@ describe('Test reports summary', () => {
     test_suites: [testSuite],
   } = testReports;
 
-  const backButton = () => wrapper.find('.js-back-button');
   const totalTests = () => wrapper.find('.js-total-tests');
   const failedTests = () => wrapper.find('.js-failed-tests');
   const erroredTests = () => wrapper.find('.js-errored-tests');
@@ -19,7 +18,6 @@ describe('Test reports summary', () => {
 
   const defaultProps = {
     report: testSuite,
-    showBack: false,
   };
 
   const createComponent = (props) => {
@@ -30,30 +28,6 @@ describe('Test reports summary', () => {
       },
     });
   };
-
-  describe('should not render', () => {
-    beforeEach(() => {
-      createComponent();
-    });
-
-    it('a back button by default', () => {
-      expect(backButton().exists()).toBe(false);
-    });
-  });
-
-  describe('should render', () => {
-    beforeEach(() => {
-      createComponent();
-    });
-
-    it('a back button and emit on-back-click event', () => {
-      createComponent({
-        showBack: true,
-      });
-
-      expect(backButton().exists()).toBe(true);
-    });
-  });
 
   describe('when a report is supplied', () => {
     beforeEach(() => {

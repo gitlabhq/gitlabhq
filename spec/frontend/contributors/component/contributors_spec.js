@@ -1,10 +1,12 @@
 import MockAdapter from 'axios-mock-adapter';
 import { GlFormSelect } from '@gitlab/ui';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import { createTestingPinia } from '@pinia/testing';
+import { PiniaVuePlugin } from 'pinia';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import Contributors from '~/contributors/components/contributors.vue';
-import { createStore } from '~/contributors/stores';
+import { useContributors } from '~/contributors/stores';
 import { MASTER_CHART_HEIGHT } from '~/contributors/constants';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_OK } from '~/lib/utils/http_status';
@@ -23,8 +25,11 @@ jest.mock('~/lib/utils/url_utility', () => ({
   setUrlFragment: jest.fn(),
 }));
 
+Vue.use(PiniaVuePlugin);
+
 let wrapper;
 let mock;
+let pinia;
 const endpoint = 'contributors/-/graphs';
 const branch = 'main';
 const chartData = [
@@ -67,7 +72,8 @@ const createWrapper = () => {
   jest.spyOn(axios, 'get');
   mock.onGet(endpoint, { params: { with_stats: true } }).reply(HTTP_STATUS_OK, chartStatsData);
   mock.onGet(endpoint).reply(HTTP_STATUS_OK, chartData);
-  const store = createStore();
+  pinia = createTestingPinia({ stubActions: false });
+  useContributors();
 
   wrapper = shallowMountExtended(Contributors, {
     propsData: {
@@ -76,7 +82,7 @@ const createWrapper = () => {
       projectId,
       commitsPath,
     },
-    store,
+    pinia,
   });
 };
 

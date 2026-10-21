@@ -14,7 +14,6 @@ import {
   EXPLORE_DASHBOARD_MEASURE_SCOPE_RESOLVED,
 } from '~/performance/constants';
 import getFrecentGroupsQuery from '../graphql/get_frecent_groups.query.graphql';
-import getOrganizationGroupQuery from '../graphql/get_organization_group.query.graphql';
 import getSubgroupProjectsQuery from '../graphql/get_subgroup_projects.query.graphql';
 import getTopLevelGroupsQuery from '../graphql/get_top_level_groups.query.graphql';
 import searchNamespacesGlobalQuery from '../graphql/search_namespaces_global.query.graphql';
@@ -100,7 +99,6 @@ export default {
       isSearching: false,
       isLoadingMoreSearchResults: false,
       frecentGroup: null,
-      validatedFrecentGroup: null,
       // A default is only derived for a load that named no scope, and only until the user picks
       // something: deriving it again would put a group back after they cleared it.
       skipDefaultScope: this.initialPaths.length > 0,
@@ -112,33 +110,14 @@ export default {
       query: getFrecentGroupsQuery,
       update: ({ frecentGroups }) => frecentGroups?.[0] ?? null,
       result() {
-        if (!this.frecentGroup) this.completeInitialLoad();
+        // A default the dashboard cannot read would only fill every panel with errors.
+        if (this.frecentGroup && !this.isRestricted(this.frecentGroup)) {
+          this.selectResolvedNamespace(this.frecentGroup);
+        }
+        this.completeInitialLoad();
       },
       skip() {
         return this.skipDefaultScope;
-      },
-      error(error) {
-        captureException(error);
-        this.completeInitialLoad();
-      },
-    },
-    validatedFrecentGroup: {
-      query: getOrganizationGroupQuery,
-      variables() {
-        return { ids: this.frecentGroup ? [this.frecentGroup.id] : [] };
-      },
-      update({ organization }) {
-        const group = organization?.groups?.nodes?.[0];
-
-        // A default the dashboard cannot read would only fill every panel with errors.
-        return group && !this.isRestricted(group) ? group : null;
-      },
-      result() {
-        this.selectResolvedNamespace(this.validatedFrecentGroup);
-        this.completeInitialLoad();
-      },
-      skip() {
-        return !this.frecentGroup;
       },
       error(error) {
         captureException(error);

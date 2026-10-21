@@ -1050,7 +1050,6 @@ export default {
     'ee/app/assets/javascripts/group_settings/graphql/group_stale_runner_pruning.query.graphql',
     'ee/app/assets/javascripts/group_settings/graphql/set_group_stale_runner_pruning.mutation.graphql',
     'ee/app/assets/javascripts/groups/settings/compliance_frameworks/graphql/queries/create_compliance_framework.mutation.graphql',
-    'ee/app/assets/javascripts/groups/settings/compliance_frameworks/graphql/queries/update_compliance_framework.mutation.graphql',
     'ee/app/assets/javascripts/groups/settings/work_items/custom_fields/create_custom_field.mutation.graphql',
     'ee/app/assets/javascripts/groups/settings/work_items/custom_fields/custom_field_archive.mutation.graphql',
     'ee/app/assets/javascripts/groups/settings/work_items/custom_fields/custom_field_unarchive.mutation.graphql',

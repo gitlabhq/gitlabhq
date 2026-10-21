@@ -896,6 +896,7 @@ Grants the ability to read Orbit data the token owner can access in GitLab. Grou
 | Read | User | `GET` | `/orbit/status` |
 | Read | User | `GET` | `/orbit/tools` |
 | Read | User | `POST` | `/orbit/agent/commands/:name` |
+| Read | User | `POST` | `/orbit/context` |
 | Read | User | `POST` | `/orbit/mcp` |
 | Read | User | `POST` | `/orbit/query` |
 | Read | User | `POST` | `/orbit/query/:name` |

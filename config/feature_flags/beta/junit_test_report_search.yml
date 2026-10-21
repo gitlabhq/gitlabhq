@@ -1,0 +1,10 @@
+---
+name: junit_test_report_search
+description: Filter JUnit test report cases by name or class
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/213691
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251061
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/631716
+milestone: '19.5'
+group: group::pipeline execution
+type: beta
+default_enabled: false

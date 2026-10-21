@@ -69,6 +69,23 @@ describe('stripWhitespaceFromQuery', () => {
     const varsParam = processed.match(/variables=([^&]+)/)?.[1];
     expect(decodeURIComponent(varsParam)).toBe(variablesWithPlus);
   });
+
+  it.each(['100% ready', 'build&ref=main', 'literal%2Fvalue', 'тест 🧪 + "release" / \\ # ?'])(
+    'preserves the exact variable value %s in a GET request',
+    (value) => {
+      const query = 'query {\n  x\n}';
+      const params = `query=${encodeURIComponent(query)}&variables=${encodeURIComponent(
+        JSON.stringify({ value }),
+      )}`;
+      const processed = new URL(
+        stripWhitespaceFromQuery(`${defaultPath}?${params}`, defaultPath),
+        window.location.origin,
+      );
+
+      expect(JSON.parse(processed.searchParams.get('variables'))).toEqual({ value });
+      expect(processed.searchParams.get('query')).toBe('query { x }');
+    },
+  );
 });
 
 describe('typePolicies', () => {

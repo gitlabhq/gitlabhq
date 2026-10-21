@@ -23033,6 +23033,32 @@ CREATE SEQUENCE import_sync_repository_states_id_seq
 
 ALTER SEQUENCE import_sync_repository_states_id_seq OWNED BY import_sync_repository_states.id;
 
+CREATE TABLE import_user_credentials (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    provider_account_xid bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    expires_at timestamp with time zone,
+    refresh_token_expires_at timestamp with time zone,
+    provider smallint NOT NULL,
+    access_token jsonb NOT NULL,
+    refresh_token jsonb,
+    provider_host text NOT NULL,
+    scopes text,
+    CONSTRAINT check_306f23f9ad CHECK ((char_length(scopes) <= 255)),
+    CONSTRAINT check_56aa5c3349 CHECK ((char_length(provider_host) <= 255))
+);
+
+CREATE SEQUENCE import_user_credentials_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE import_user_credentials_id_seq OWNED BY import_user_credentials.id;
+
 CREATE TABLE incident_management_escalation_policies (
     id bigint NOT NULL,
     project_id bigint NOT NULL,
@@ -38029,6 +38055,8 @@ ALTER TABLE ONLY import_sync_repositories ALTER COLUMN id SET DEFAULT nextval('i
 
 ALTER TABLE ONLY import_sync_repository_states ALTER COLUMN id SET DEFAULT nextval('import_sync_repository_states_id_seq'::regclass);
 
+ALTER TABLE ONLY import_user_credentials ALTER COLUMN id SET DEFAULT nextval('import_user_credentials_id_seq'::regclass);
+
 ALTER TABLE ONLY incident_management_escalation_policies ALTER COLUMN id SET DEFAULT nextval('incident_management_escalation_policies_id_seq'::regclass);
 
 ALTER TABLE ONLY incident_management_escalation_rules ALTER COLUMN id SET DEFAULT nextval('incident_management_escalation_rules_id_seq'::regclass);
@@ -41664,6 +41692,9 @@ ALTER TABLE ONLY import_sync_repositories
 
 ALTER TABLE ONLY import_sync_repository_states
     ADD CONSTRAINT import_sync_repository_states_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY import_user_credentials
+    ADD CONSTRAINT import_user_credentials_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY incident_management_oncall_shifts
     ADD CONSTRAINT inc_mgmnt_no_overlapping_oncall_shifts EXCLUDE USING gist (rotation_id WITH =, tstzrange(starts_at, ends_at, '[)'::text) WITH &&);
@@ -46542,6 +46573,8 @@ CREATE UNIQUE INDEX idx_import_sync_external_objects_on_note_id ON import_sync_e
 CREATE UNIQUE INDEX idx_import_sync_external_objects_on_repository_kind_provider ON import_sync_external_objects USING btree (import_sync_repository_id, kind, provider_object_xid);
 
 CREATE UNIQUE INDEX idx_import_sync_repository_states_on_repository_and_domain ON import_sync_repository_states USING btree (import_sync_repository_id, domain);
+
+CREATE UNIQUE INDEX idx_import_user_credentials_on_user_provider_host_account ON import_user_credentials USING btree (user_id, provider, provider_host, provider_account_xid);
 
 CREATE INDEX idx_incident_management_pending_alert_escalations_on_project_id ON ONLY incident_management_pending_alert_escalations USING btree (project_id);
 
@@ -59047,6 +59080,9 @@ ALTER TABLE ONLY deploy_tokens
 
 ALTER TABLE ONLY namespace_template_settings
     ADD CONSTRAINT fk_51da239f1a FOREIGN KEY (file_template_project_id) REFERENCES projects(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY import_user_credentials
+    ADD CONSTRAINT fk_51e0d06e65 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ml_models
     ADD CONSTRAINT fk_51e87f7c50_new FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

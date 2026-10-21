@@ -13,9 +13,12 @@ import {
 } from '~/lib/utils/url_utility';
 import EmptyState from '~/ci/pipeline_details/test_reports/empty_state.vue';
 import TestReports from '~/ci/pipeline_details/test_reports/test_reports.vue';
-import TestSummary from '~/ci/pipeline_details/test_reports/test_summary.vue';
 import TestSummaryTable from '~/ci/pipeline_details/test_reports/test_summary_table.vue';
 import * as getters from '~/ci/pipeline_details/stores/test_reports/getters';
+import {
+  SEARCH_SCOPE_SUITE,
+  SEARCH_SCOPE_ALL,
+} from '~/ci/pipeline_details/stores/test_reports/constants';
 
 Vue.use(Vuex);
 
@@ -34,18 +37,27 @@ describe('Test reports app', () => {
   const loadingSpinner = () => wrapper.findComponent(GlLoadingIcon);
   const testsDetail = () => wrapper.findByTestId('tests-detail');
   const emptyState = () => wrapper.findComponent(EmptyState);
-  const testSummary = () => wrapper.findComponent(TestSummary);
   const testSummaryTable = () => wrapper.findComponent(TestSummaryTable);
+  const searchInput = () => wrapper.findComponentByTestId('test-cases-search');
+  const backButton = () => wrapper.findComponent('.js-back-button');
 
   const actionSpies = {
     fetchTestSuite: jest.fn(),
     fetchSummary: jest.fn(),
+    fetchAllSuites: jest.fn(),
     setSelectedSuiteIndex: jest.fn(),
     removeSelectedSuiteIndex: jest.fn(),
     setPage: jest.fn(),
+    setSearchTerm: jest.fn(),
+    setSearchScope: jest.fn(),
   };
 
-  const createComponent = ({ state = {} } = {}) => {
+  beforeEach(() => {
+    getParameterValues.mockReturnValue([]);
+    Object.values(actionSpies).forEach((spy) => spy.mockClear());
+  });
+
+  const createComponent = ({ state = {}, glFeatures = {} } = {}) => {
     store = new Vuex.Store({
       modules: {
         testReports: {
@@ -54,6 +66,11 @@ describe('Test reports app', () => {
             isLoading: false,
             selectedSuiteIndex: null,
             testReports,
+            searchTerm: '',
+            searchScope: SEARCH_SCOPE_SUITE,
+            pageInfo: { page: 1, perPage: 20 },
+            hasFetchedAllSuites: false,
+            isLoadingAllSuites: false,
             ...state,
           },
           actions: actionSpies,
@@ -69,6 +86,12 @@ describe('Test reports app', () => {
     wrapper = extendedWrapper(
       shallowMount(TestReports, {
         store,
+        provide: {
+          glFeatures: {
+            junitTestReportSearch: true,
+            ...glFeatures,
+          },
+        },
       }),
     );
   };
@@ -110,6 +133,20 @@ describe('Test reports app', () => {
     it('shows tests details', () => {
       expect(testsDetail().exists()).toBe(true);
     });
+
+    it('renders the search input', () => {
+      expect(searchInput().exists()).toBe(true);
+    });
+  });
+
+  describe('when feature flag is disabled', () => {
+    beforeEach(() => {
+      createComponent({ glFeatures: { junitTestReportSearch: false } });
+    });
+
+    it('does not render the search input', () => {
+      expect(searchInput().exists()).toBe(false);
+    });
   });
 
   describe('when a job name is provided as a query parameter', () => {
@@ -148,6 +185,14 @@ describe('Test reports app', () => {
         url: undefined,
       });
     });
+
+    it('resets search scope to suite and clears search term', () => {
+      expect(actionSpies.setSearchScope).toHaveBeenCalledWith(
+        expect.anything(Object),
+        SEARCH_SCOPE_SUITE,
+      );
+      expect(actionSpies.setSearchTerm).toHaveBeenCalledWith(expect.anything(Object), '');
+    });
   });
 
   describe('when clicking back to summary', () => {
@@ -162,7 +207,7 @@ describe('Test reports app', () => {
           },
         },
       });
-      testSummary().vm.$emit('on-back-click');
+      backButton().vm.$emit('click');
     });
 
     it('should call removeSelectedSuiteIndex, updateHistory and setPage', () => {
@@ -174,6 +219,106 @@ describe('Test reports app', () => {
         url: undefined,
       });
       expect(actionSpies.setPage).toHaveBeenCalledWith(expect.anything(Object), 1);
+    });
+
+    it('should reset search scope to all and clear search term', () => {
+      expect(actionSpies.setSearchScope).toHaveBeenCalledWith(
+        expect.anything(Object),
+        SEARCH_SCOPE_ALL,
+      );
+      expect(actionSpies.setSearchTerm).toHaveBeenCalledWith(expect.anything(Object), '');
+    });
+  });
+
+  describe('search functionality', () => {
+    describe('when searching from summary view', () => {
+      beforeEach(() => {
+        createComponent();
+        searchInput().vm.$emit('input', 'mytest');
+      });
+
+      it('calls setSearchTerm with the input value', () => {
+        expect(actionSpies.setSearchTerm).toHaveBeenCalledWith(expect.anything(), 'mytest');
+      });
+
+      it('calls setSearchScope with "all"', () => {
+        expect(actionSpies.setSearchScope).toHaveBeenCalledWith(
+          expect.anything(),
+          SEARCH_SCOPE_ALL,
+        );
+      });
+    });
+
+    describe('when searching from a drilled-in suite view', () => {
+      beforeEach(() => {
+        createComponent({ state: { selectedSuiteIndex: 0 } });
+        searchInput().vm.$emit('input', 'mytest');
+      });
+
+      it('calls setSearchTerm with the input value', () => {
+        expect(actionSpies.setSearchTerm).toHaveBeenCalledWith(expect.anything(), 'mytest');
+      });
+
+      it('calls setSearchScope with "suite"', () => {
+        expect(actionSpies.setSearchScope).toHaveBeenCalledWith(
+          expect.anything(),
+          SEARCH_SCOPE_SUITE,
+        );
+      });
+    });
+
+    describe('when searching from a drilled-in suite view and search scope is already "all"', () => {
+      beforeEach(() => {
+        createComponent({
+          state: {
+            selectedSuiteIndex: 0,
+            searchScope: SEARCH_SCOPE_ALL,
+          },
+        });
+        searchInput().vm.$emit('input', 'mytest');
+      });
+
+      it('does not reset search scope to "suite"', () => {
+        expect(actionSpies.setSearchScope).toHaveBeenCalledWith(
+          expect.anything(),
+          SEARCH_SCOPE_ALL,
+        );
+      });
+    });
+
+    describe('when search term is empty', () => {
+      describe('when in summary view', () => {
+        beforeEach(() => {
+          createComponent({ state: { searchTerm: 'existing' } });
+          searchInput().vm.$emit('input', '');
+        });
+
+        it('calls setSearchTerm with an empty string', () => {
+          expect(actionSpies.setSearchTerm).toHaveBeenCalledWith(expect.anything(), '');
+        });
+
+        it('does not call setSearchScope', () => {
+          expect(actionSpies.setSearchScope).not.toHaveBeenCalled();
+        });
+      });
+
+      describe('when in drilled-in suite view', () => {
+        beforeEach(() => {
+          createComponent({ state: { selectedSuiteIndex: 0, searchTerm: 'existing' } });
+          searchInput().vm.$emit('input', '');
+        });
+
+        it('calls setSearchTerm with an empty string', () => {
+          expect(actionSpies.setSearchTerm).toHaveBeenCalledWith(expect.anything(), '');
+        });
+
+        it('resets search scope to suite', () => {
+          expect(actionSpies.setSearchScope).toHaveBeenCalledWith(
+            expect.anything(),
+            SEARCH_SCOPE_SUITE,
+          );
+        });
+      });
     });
   });
 });

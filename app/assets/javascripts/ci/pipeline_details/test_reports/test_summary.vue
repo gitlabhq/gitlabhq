@@ -1,12 +1,10 @@
 <script>
-import { GlButton, GlProgressBar } from '@gitlab/ui';
-import { __ } from '~/locale';
+import { GlProgressBar } from '@gitlab/ui';
 import { formattedTime } from '../stores/test_reports/utils';
 
 export default {
   name: 'TestSummary',
   components: {
-    GlButton,
     GlProgressBar,
   },
   props: {
@@ -14,17 +12,8 @@ export default {
       type: Object,
       required: true,
     },
-    showBack: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
-  emits: ['on-back-click'],
   computed: {
-    heading() {
-      return this.report.name || __('Summary');
-    },
     successPercentage() {
       // Returns a full number when the decimals equal .00.
       // Otherwise returns a float to two decimal points
@@ -56,29 +45,11 @@ export default {
       return 'success';
     },
   },
-  methods: {
-    onBackClick() {
-      this.$emit('on-back-click');
-    },
-  },
 };
 </script>
 
 <template>
   <div>
-    <div class="gl-mt-3 gl-flex gl-w-full gl-items-center">
-      <gl-button
-        v-if="showBack"
-        size="small"
-        class="js-back-button gl-mr-3"
-        icon="chevron-lg-left"
-        :aria-label="__('Go back')"
-        @click="onBackClick"
-      />
-
-      <h4>{{ heading }}</h4>
-    </div>
-
     <div class="gl-mt-3 gl-flex gl-w-full gl-flex-col @md/panel:gl-flex-row">
       <div class="gl-flex gl-basis-1/2 gl-justify-between">
         <span class="js-total-tests gl-grow">{{

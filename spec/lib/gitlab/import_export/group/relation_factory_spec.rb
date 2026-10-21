@@ -211,7 +211,7 @@ RSpec.describe Gitlab::ImportExport::Group::RelationFactory, :clean_gitlab_redis
       }
     end
 
-    it do
+    it 'does not create an object' do
       expect(created_object).to be_nil
     end
   end

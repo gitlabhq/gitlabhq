@@ -4,7 +4,7 @@ import { map } from 'lodash-es';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
 import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
-import { TRACKING_CATEGORIES } from '../../constants';
+import { FILTER_USERNAME_IDENTIFIER, TRACKING_CATEGORIES } from '../../constants';
 import PipelineBranchNameToken from '../tokens/pipeline_branch_name_token.vue';
 import PipelineSourceToken from '../tokens/pipeline_source_token.vue';
 import PipelineStatusToken from '../tokens/pipeline_status_token.vue';
@@ -13,7 +13,7 @@ import PipelineTriggerAuthorToken from '../tokens/pipeline_trigger_author_token.
 
 export default {
   name: 'PipelinesFilteredSearch',
-  userType: 'username',
+  userType: FILTER_USERNAME_IDENTIFIER,
   branchType: 'ref',
   tagType: 'tag',
   statusType: 'status',

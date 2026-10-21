@@ -355693,6 +355693,22 @@
               "deprecationReason": null
             },
             {
+              "name": "notApplicableCount",
+              "description": "Total no. of not applicable compliance controls for the requirement.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "passCount",
               "description": "Total no. of passed compliance controls for the requirement.",
               "args": [],
@@ -389445,6 +389461,22 @@
               "deprecationReason": null
             },
             {
+              "name": "notApplicable",
+              "description": "Number of controls not applicable to the project.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "passed",
               "description": "Number of controls that passed compliance checks.",
               "args": [],
@@ -389490,6 +389522,22 @@
             {
               "name": "failed",
               "description": "Count of failed requirements.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "notApplicable",
+              "description": "Count of requirements with only not applicable controls.",
               "args": [],
               "type": {
                 "kind": "NON_NULL",

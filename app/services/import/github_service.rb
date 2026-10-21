@@ -46,7 +46,7 @@ module Import
         current_user,
         type: provider,
         **access_params
-      ).execute(extra_project_attrs.merge(refresh_credentials_attrs(access_params)))
+      ).execute(extra_project_attrs.deep_merge(refresh_credentials_attrs(access_params)))
     end
 
     def repo

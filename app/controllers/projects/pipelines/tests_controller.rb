@@ -6,6 +6,7 @@ module Projects
       urgency :low, [:show, :summary]
 
       before_action :authorize_read_build!
+      before_action :check_test_report_show_rate_limit!, only: [:show]
       before_action :validate_test_reports!, only: [:show]
       before_action :check_requested_builds!, only: [:show]
 
@@ -32,6 +33,14 @@ module Projects
       end
 
       private
+
+      def check_test_report_show_rate_limit!
+        if current_user
+          check_rate_limit!(:test_report_show, scope: { user: current_user })
+        else
+          check_rate_limit!(:test_report_show_unauthenticated, scope: { ip: request.ip })
+        end
+      end
 
       def validate_test_reports!
         render json: { errors: 'Test report artifacts not found' }, status: :not_found unless pipeline.has_test_reports?

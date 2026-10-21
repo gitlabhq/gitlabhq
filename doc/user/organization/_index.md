@@ -58,11 +58,11 @@ To create an organization from an existing top-level group:
 1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Advanced**.
 1. In the **Create an organization** section, select **Create organization**.
-1. In the **Create your Organizations** confirmation dialog, select the group you want to create an organization with, then select **Continue**.
+1. Optional. To change the default name of your organization, select **Edit organization name** ({{< icon name="pencil" >}}) and enter a name. You can change the name as needed in the next step.
 1. Optional. If you have the Owner role for multiple top-level groups, in the
    **Assign top-level groups** confirmation dialog, drag those groups into the organization container.
    Groups you do not assign are not included.
-   Select **Continue**.
+1. Select **Continue**.
 1. In the **Confirm your organization** confirmation dialog, review the proposed structure.
 1. Select **Confirm**.
 

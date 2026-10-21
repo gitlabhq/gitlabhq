@@ -1,4 +1,11 @@
-import { formatFilePath, formattedTime } from '~/ci/pipeline_details/stores/test_reports/utils';
+import {
+  formatFilePath,
+  formattedTime,
+  addIconStatus,
+  filterTestCases,
+  iconForTestStatus,
+} from '~/ci/pipeline_details/stores/test_reports/utils';
+import { testStatus } from '~/ci/pipeline_details/constants';
 
 describe('Test reports utils', () => {
   describe('formatFilePath', () => {
@@ -76,6 +83,49 @@ describe('Test reports utils', () => {
       it('should return time in days', () => {
         const result = formattedTime(86600);
         expect(result).toBe('1d 3m 20s');
+      });
+    });
+  });
+
+  describe('addIconStatus', () => {
+    it('should add icon and formattedTime to a test case', () => {
+      const testCase = { status: testStatus.SUCCESS, execution_time: 1 };
+
+      expect(addIconStatus(testCase)).toEqual({
+        ...testCase,
+        icon: iconForTestStatus(testStatus.SUCCESS),
+        formattedTime: formattedTime(1),
+      });
+    });
+  });
+
+  describe('filterTestCases', () => {
+    const testCases = [
+      { classname: 'FooSuite', name: 'renders correctly' },
+      { classname: 'BarSuite', name: 'handles errors' },
+    ];
+
+    describe('when the search term is empty', () => {
+      it('returns all test cases', () => {
+        expect(filterTestCases(testCases, '')).toEqual(testCases);
+      });
+    });
+
+    describe('when searching by classname', () => {
+      it('matches case-insensitively', () => {
+        expect(filterTestCases(testCases, 'foosuite')).toEqual([testCases[0]]);
+      });
+    });
+
+    describe('when searching by name', () => {
+      it('matches case-insensitively', () => {
+        expect(filterTestCases(testCases, 'ERRORS')).toEqual([testCases[1]]);
+      });
+    });
+
+    describe('when nothing matches', () => {
+      it('returns an empty array', () => {
+        expect(filterTestCases(testCases, 'nope')).toEqual([]);
       });
     });
   });

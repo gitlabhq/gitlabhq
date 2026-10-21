@@ -254,7 +254,7 @@ db:invalidate-old-pipeline-results:
       optional: true
     - !reference [.repo-from-artifacts, needs]
   script:
-    - |
-      git fetch "$CI_REPOSITORY_URL" "+$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME:refs/remotes/origin/$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"
-      export MOST_RECENT_COMMIT_TIMESTAMP="$(git log origin/$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME --pretty=format:"%at" | head -n 1)"
-      bundle exec ruby scripts/database/mark_pipeline_comments.rb $CI_MERGE_REQUEST_IID $MOST_RECENT_COMMIT_TIMESTAMP
+    # The script resolves the source branch tip itself, with a shallow fetch, and only once
+    # it has found a note that could be invalidated. Most runs find none, so fetching here
+    # spent a full-depth fetch of the branch on every run to read one timestamp.
+    - bundle exec ruby scripts/database/mark_pipeline_comments.rb $CI_MERGE_REQUEST_IID

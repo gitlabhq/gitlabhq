@@ -73,6 +73,8 @@ RSpec.describe Import::GithubController, feature_category: :importers do
           allow(client).to receive_message_chain(:auth_code, :get_token)
             .and_return(OAuth2::AccessToken.from_hash(client, oauth_token_response))
         end
+        allow(Import::Github::StoreUserCredentialService).to receive(:new)
+          .and_return(instance_double(Import::Github::StoreUserCredentialService, execute: ServiceResponse.success))
         session[:github_auth_state_key] = valid_auth_state
       end
 
@@ -113,6 +115,61 @@ RSpec.describe Import::GithubController, feature_category: :importers do
             'expires_at' => Time.current.to_i + 28800,
             'refresh_token_expires_at' => Time.current.to_i + 15897600
           )
+        end
+      end
+
+      it 'stores the OAuth credential for the user' do
+        get :callback, params: { state: valid_auth_state }
+
+        expect(Import::Github::StoreUserCredentialService).to have_received(:new)
+          .with(user, having_attributes(token: token), provider_host: 'github.com')
+      end
+
+      context 'when GitHub Enterprise is configured' do
+        before do
+          allow(Gitlab::Auth::OAuth::Provider).to receive(:config_for).with('github').and_return(
+            Gitlab::Configs::Options.build('app_id' => 'id', 'app_secret' => 'secret', 'url' => 'https://ghe.example.com/')
+          )
+        end
+
+        it 'stores the OAuth credential for the GitHub Enterprise host' do
+          get :callback, params: { state: valid_auth_state }
+
+          expect(Import::Github::StoreUserCredentialService).to have_received(:new)
+            .with(user, anything, provider_host: 'ghe.example.com')
+        end
+      end
+
+      context 'when the configured GitHub URL has no host' do
+        where(:url) { ['ghe.example.com', 'https://ghe.example.com:port'] }
+
+        with_them do
+          before do
+            allow(Gitlab::Auth::OAuth::Provider).to receive(:config_for).with('github').and_return(
+              Gitlab::Configs::Options.build('app_id' => 'id', 'app_secret' => 'secret', 'url' => url)
+            )
+          end
+
+          it 'does not store the OAuth credential' do
+            get :callback, params: { state: valid_auth_state }
+
+            expect(Import::Github::StoreUserCredentialService).not_to have_received(:new)
+            expect(controller).to redirect_to(status_import_github_url)
+          end
+        end
+      end
+
+      context 'when github_continuous_import is disabled' do
+        before do
+          stub_feature_flags(github_continuous_import: false)
+        end
+
+        it 'does not store the OAuth credential' do
+          expect(Import::Github::StoreUserCredentialService).not_to receive(:new)
+
+          get :callback, params: { state: valid_auth_state }
+
+          expect(session[:github_access_token]).to eq(token)
         end
       end
 

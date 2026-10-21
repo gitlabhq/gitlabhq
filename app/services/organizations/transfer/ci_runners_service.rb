@@ -4,6 +4,7 @@ module Organizations
   module Transfer
     class CiRunnersService
       include Organizations::Transfer::Concerns::OrganizationUpdater
+      include Organizations::Transfer::Concerns::MissingRecordHandling
 
       def initialize(group:, old_organization:, new_organization:)
         @group = group
@@ -12,6 +13,9 @@ module Organizations
       end
 
       def execute
+        error = missing_record_error
+        return error if error
+
         group_ids = Ci::NamespaceMirror.by_group_and_descendants(group.id).select(:namespace_id)
         project_ids = Ci::ProjectMirror.by_namespace_id(group_ids).select(:project_id)
 
@@ -20,6 +24,8 @@ module Organizations
 
         transfer_runners(group_runners)
         transfer_runners(project_runners)
+
+        ServiceResponse.success
       end
 
       private

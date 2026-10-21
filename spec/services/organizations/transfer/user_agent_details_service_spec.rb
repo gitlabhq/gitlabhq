@@ -23,6 +23,8 @@ RSpec.describe Organizations::Transfer::UserAgentDetailsService, :aggregate_fail
   end
 
   describe '#execute' do
+    it_behaves_like 'an organization transfer service handling missing records'
+
     it 'moves details for issues in the group' do
       detail = create(:user_agent_detail,
         subject: create(:issue, project: project), organization: old_organization)
@@ -162,7 +164,7 @@ RSpec.describe Organizations::Transfer::UserAgentDetailsService, :aggregate_fail
     # by_root_id resolves any namespace to its root, so without the root? guard a subgroup would
     # sweep the whole hierarchy including its siblings.
     context 'when given a subgroup instead of a root group' do
-      it 'does nothing and logs' do
+      it 'does nothing, logs and returns an error' do
         detail = create(:user_agent_detail,
           subject: create(:issue, project: nested_project), organization: old_organization)
         sibling_detail = create(:user_agent_detail,
@@ -172,12 +174,14 @@ RSpec.describe Organizations::Transfer::UserAgentDetailsService, :aggregate_fail
           hash_including(message: 'Skipping user_agent_details transfer: group is not a root group')
         )
 
-        described_class.new(
+        result = described_class.new(
           group: subgroup,
           old_organization: old_organization,
           new_organization: new_organization
         ).execute
 
+        expect(result).to be_error
+        expect(result.reason).to eq(:not_root_group)
         expect(detail.reload.organization_id).to eq(old_organization.id)
         expect(sibling_detail.reload.organization_id).to eq(old_organization.id)
       end

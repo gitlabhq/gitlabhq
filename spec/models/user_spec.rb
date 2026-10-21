@@ -235,6 +235,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     it { is_expected.to have_one(:phone_number_validation) }
     it { is_expected.to have_one(:banned_user) }
     it { is_expected.to have_one(:placeholder_user_detail).class_name('Import::PlaceholderUserDetail') }
+    it { is_expected.to have_many(:import_user_credentials).class_name('Import::UserCredential').dependent(:delete_all) }
     it { is_expected.to have_many(:snippets).dependent(:destroy) }
     it { is_expected.to have_many(:members) }
     it { is_expected.to have_many(:member_namespaces) }
@@ -4208,6 +4209,12 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       user.block!
     end
 
+    it 'enqueues Users::CancelImportsForBlockedUserWorker' do
+      expect(Users::CancelImportsForBlockedUserWorker).to receive(:perform_async).with(user.id)
+
+      user.block!
+    end
+
     context 'when user has active CI pipeline schedules' do
       let_it_be(:schedule) { create(:ci_pipeline_schedule, active: true, owner: user) }
 
@@ -4282,6 +4289,20 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
         user.deactivate
 
         expect(user.reload.deactivated?).to be_falsy
+      end
+    end
+  end
+
+  describe 'state transitions that do not cancel imports' do
+    let_it_be_with_refind(:user) { create(:user) }
+
+    where(:transition) { %i[ldap_block! deactivate! block_pending_approval!] }
+
+    with_them do
+      it 'does not enqueue Users::CancelImportsForBlockedUserWorker' do
+        expect(Users::CancelImportsForBlockedUserWorker).not_to receive(:perform_async)
+
+        user.public_send(transition)
       end
     end
   end
@@ -4364,6 +4385,12 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       it 'creates a BannedUser record' do
         expect { user.ban }.to change { Users::BannedUser.count }.by(1)
         expect(Users::BannedUser.last.user_id).to eq(user.id)
+      end
+
+      it 'enqueues Users::CancelImportsForBlockedUserWorker' do
+        expect(Users::CancelImportsForBlockedUserWorker).to receive(:perform_async).with(user.id)
+
+        user.ban!
       end
 
       context 'when the user authored todos' do

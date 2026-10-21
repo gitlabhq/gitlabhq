@@ -111,4 +111,53 @@ describe('Mutations TestReports Store', () => {
       expect(mockState.isLoading).toEqual(expectedState.isLoading);
     });
   });
+
+  describe('set search term', () => {
+    it('should set searchTerm and reset the current page', () => {
+      mockState.pageInfo.page = 3;
+
+      mutations[types.SET_SEARCH_TERM](mockState, 'my test');
+
+      expect(mockState.searchTerm).toBe('my test');
+      expect(mockState.pageInfo.page).toBe(1);
+    });
+  });
+
+  describe('set search scope', () => {
+    it('should set searchScope and reset the current page', () => {
+      mockState.pageInfo.page = 3;
+
+      mutations[types.SET_SEARCH_SCOPE](mockState, 'all');
+
+      expect(mockState.searchScope).toBe('all');
+      expect(mockState.pageInfo.page).toBe(1);
+    });
+  });
+
+  describe('set all suites', () => {
+    it('should replace test_suites with the fully loaded suites', () => {
+      mockState.testReports = { ...testReports };
+      const suites = testReports.test_suites.map((suite) => ({ ...suite, hasFullSuite: true }));
+
+      mutations[types.SET_ALL_SUITES](mockState, suites);
+
+      expect(mockState.testReports.test_suites).toEqual(suites);
+    });
+  });
+
+  describe('set fetched all suites', () => {
+    it('should set hasFetchedAllSuites', () => {
+      mutations[types.SET_FETCHED_ALL_SUITES](mockState, true);
+
+      expect(mockState.hasFetchedAllSuites).toBe(true);
+    });
+  });
+
+  describe('set loading all suites', () => {
+    it('should set isLoadingAllSuites', () => {
+      mutations[types.SET_LOADING_ALL_SUITES](mockState, true);
+
+      expect(mockState.isLoadingAllSuites).toBe(true);
+    });
+  });
 });

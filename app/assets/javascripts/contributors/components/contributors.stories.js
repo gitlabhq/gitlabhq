@@ -1,12 +1,11 @@
-import { withVuexStore } from 'storybook_addons/vuex_store';
-import { parsedData } from '../stores/getters';
+import { pinia } from '~/pinia/instance';
+import { useContributors } from '../stores';
 import { generateRawData } from './stories_utils';
 import Contributors from './contributors.vue';
 
 export default {
   component: Contributors,
   title: 'contributors/contributors',
-  decorators: [withVuexStore],
   args: {
     commitsPath: '/gitlab-org/gitlab/-/commits/master?ref_type=heads',
     endpoint: '/gitlab-org/gitlab/-/graphs/master?format=json&ref_type=heads',
@@ -16,25 +15,23 @@ export default {
 };
 
 const createStoryWithState = ({ state = {} }) => {
-  return (args, { argTypes, createVuexStore }) => ({
-    components: { Contributors },
-    props: Object.keys(argTypes),
-    template: '<contributors v-bind="$props" />',
-    store: createVuexStore({
-      state: {
-        chartData: generateRawData(200, 8),
-        loading: false,
-        ...state,
-      },
-      getters: {
-        showChart: () => true,
-        parsedData,
-      },
-      actions: {
-        fetchChartData: () => true,
-      },
-    }),
-  });
+  return (args, { argTypes }) => {
+    const store = useContributors(pinia);
+    store.$reset();
+    store.$patch({
+      chartData: generateRawData(200, 8),
+      loading: false,
+      ...state,
+    });
+    store.fetchChartData = () => Promise.resolve(true);
+
+    return {
+      components: { Contributors },
+      props: Object.keys(argTypes),
+      pinia,
+      template: '<contributors v-bind="$props" />',
+    };
+  };
 };
 
 const defaultState = {

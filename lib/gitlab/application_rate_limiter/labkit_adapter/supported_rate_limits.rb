@@ -1000,6 +1000,20 @@ module Gitlab
               period: 1.day,
               action: :limit
             ),
+            test_report_show: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_test_report_shows_by_user',
+              characteristics: %i[user],
+              limit: 60,
+              period: 1.minute,
+              action: :limit
+            ),
+            test_report_show_unauthenticated: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_test_report_shows_by_ip',
+              characteristics: %i[ip],
+              limit: 60,
+              period: 1.minute,
+              action: :limit
+            ),
             token_exchange: ::Labkit::RateLimit::Rule.new(
               name: 'limit_token_exchanges_by_user',
               characteristics: %i[user],

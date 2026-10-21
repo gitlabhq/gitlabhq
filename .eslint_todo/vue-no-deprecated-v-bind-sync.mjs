@@ -3,7 +3,6 @@
  */
 export default {
   files: [
-    'ee/app/assets/javascripts/groups/settings/compliance_frameworks/components/edit_form.vue',
     'ee/app/assets/javascripts/security_orchestration/components/policy_editor/editor_layout.vue',
   ],
   rules: {

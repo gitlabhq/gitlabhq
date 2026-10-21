@@ -61,7 +61,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'ee/spec/features/projects/quality/test_case_list_spec.rb'
     - 'ee/spec/features/projects/quality/test_case_show_spec.rb'
     - 'ee/spec/features/projects/requirements_management/requirements_list_spec.rb'
-    - 'ee/spec/features/projects/security/vulnerability_report_spec.rb'
     - 'ee/spec/features/projects/settings/disable_merge_trains_setting_spec.rb'
     - 'ee/spec/features/projects/settings/ee/service_desk_setting_spec.rb'
     - 'ee/spec/features/projects/settings/merge_request_approvals_settings_spec.rb'

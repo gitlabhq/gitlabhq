@@ -2,13 +2,13 @@
 <script>
 import { GlButton, GlFormSelect, GlLoadingIcon } from '@gitlab/ui';
 import { debounce } from 'lodash-es';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions, mapState, mapGetters } from 'vuex';
+import { mapActions, mapState } from 'pinia';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { getDatesInRange, toISODateFormat } from '~/lib/utils/datetime_utility';
 import { __, s__ } from '~/locale';
 import RefSelector from '~/vue_shared/components/ref/components/ref_selector.vue';
 import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/vue_shared/components/ref/constants';
+import { useContributors } from '../stores';
 import { xAxisLabelFormatter } from '../utils';
 import { MASTER_CHART_HEIGHT } from '../constants';
 import ContributorAreaChart from './contributor_area_chart.vue';
@@ -76,8 +76,13 @@ export default {
     };
   },
   computed: {
-    ...mapState(['loading', 'statsLoading', 'statsLoaded']),
-    ...mapGetters(['showChart', 'parsedData']),
+    ...mapState(useContributors, [
+      'loading',
+      'statsLoading',
+      'statsLoaded',
+      'showChart',
+      'parsedData',
+    ]),
     contributionMetricOptions() {
       return [
         { value: CONTRIBUTION_METRIC_COMMITS, text: s__('ContributionAnalytics|Commits') },
@@ -212,7 +217,7 @@ export default {
     this.fetchChartData(this.endpoint);
   },
   methods: {
-    ...mapActions(['fetchChartData', 'fetchChartStats']),
+    ...mapActions(useContributors, ['fetchChartData', 'fetchChartStats']),
     datesToChartData(dates) {
       return this.xAxisRange.map((date) => [date, dates[date] || 0]);
     },

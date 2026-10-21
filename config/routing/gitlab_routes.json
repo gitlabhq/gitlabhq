@@ -10551,6 +10551,11 @@
     "dottedExample": "/api/v4/orbit/agent/commands/john.doe"
   },
   {
+    "template": "/api/:version/orbit/context",
+    "example": "/api/v4/orbit/context",
+    "acceptsFormat": true
+  },
+  {
     "template": "/api/:version/orbit/graph_status",
     "example": "/api/v4/orbit/graph_status",
     "acceptsFormat": true

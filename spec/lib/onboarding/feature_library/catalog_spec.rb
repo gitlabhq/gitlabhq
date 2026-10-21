@@ -84,7 +84,7 @@ RSpec.describe Onboarding::FeatureLibrary::Catalog, feature_category: :onboardin
 
     it 'points every entry at an existing docs page' do
       missing = (nav_items + capabilities).map(&:docs_path).reject do |path|
-        Rails.root.join('doc', path).exist?
+        Rails.root.join('doc', path.split('#').first).exist?
       end
 
       expect(missing).to be_empty
