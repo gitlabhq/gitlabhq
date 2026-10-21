@@ -3,6 +3,9 @@ import { GlModal } from '@gitlab/ui';
 import MlflowUsageModal from '~/ml/experiment_tracking/routes/experiments/index/components/mlflow_usage_modal.vue';
 import { MLFLOW_USAGE_MODAL_ID } from '~/ml/experiment_tracking/routes/experiments/index/constants';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
+
+jest.mock('~/lib/utils/copy_to_clipboard');
 
 let wrapper;
 
@@ -53,11 +56,9 @@ describe('ml/experiment_tracking/routes/experiments/index/components/mlflow_usag
     });
 
     it('copies the code to the clipboard on click', async () => {
-      const copySpy = jest.spyOn(navigator.clipboard, 'writeText');
-
       await findCopyButton().vm.$emit('click');
 
-      expect(copySpy).toHaveBeenCalledWith(command);
+      expect(copyToClipboard).toHaveBeenCalledWith(command, findCopyButton().element);
     });
   });
 });

@@ -102,7 +102,8 @@ module Mcp
           tool = Mcp::Tools::WorkItems::GetSavedViewTool.new(
             current_user: current_user,
             params: arguments,
-            version: version
+            version: version,
+            access_token: access_token
           )
 
           tool.execute
@@ -115,7 +116,8 @@ module Mcp
               filters: saved_view['filters'] || {},
               sort: saved_view['sort']
             ),
-            version: version
+            version: version,
+            access_token: access_token
           )
 
           result = tool.execute

@@ -43,15 +43,14 @@ RSpec.describe Mcp::Tools::Jobs::GetJobService, feature_category: :mcp_server do
           byte_offset: {
             type: 'integer',
             minimum: 0,
-            description: "Byte offset to start reading the job's log from. Only applies when include is log. " \
-              'Default is 0.'
+            description: "Byte offset to start reading the job's log from. Only applies when include is log."
           },
           byte_limit: {
             type: 'integer',
             minimum: 1,
             maximum: 500.kilobytes,
-            description: "Maximum number of bytes of the job's log to return. Only applies when include is " \
-              "log. Default and max is #{500.kilobytes}."
+            description: "Maximum number of bytes of the job's log to return; maximum is #{500.kilobytes}. " \
+              'Only applies when include is log.'
           }
         },
         required: %w[id job_id]

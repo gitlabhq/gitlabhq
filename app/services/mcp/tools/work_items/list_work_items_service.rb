@@ -39,7 +39,7 @@ module Mcp
               state: {
                 type: 'string',
                 enum: %w[opened closed all],
-                description: 'Filter by state. Default is all.'
+                description: 'Filter by state.'
               },
               search: {
                 type: 'string',
@@ -104,7 +104,7 @@ module Mcp
               sort: {
                 type: 'string',
                 enum: SORT_VALUES,
-                description: 'Sort order. Default is CREATED_DESC.'
+                description: 'Sort order.'
               },
               **Mcp::Tools::Concerns::CursorPagination.input_schema_params(items: 'work items')
             }

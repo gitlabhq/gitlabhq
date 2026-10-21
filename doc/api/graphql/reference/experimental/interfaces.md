@@ -26,12 +26,12 @@ information, see the [GraphQL interface documentation](https://graphql.org/learn
 
 ## `AccessLevelInterface`
 
-### Implementations {.no_toc}
+### `AccessLevelInterface` implementations {.no_toc}
 
 - [`ContainerProtectionAccessLevel`](objects.md#containerprotectionaccesslevel)
 - [`ContainerProtectionTagRule`](objects.md#containerprotectiontagrule)
 
-### Fields {.no_toc}
+### `AccessLevelInterface` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -43,14 +43,14 @@ information, see the [GraphQL interface documentation](https://graphql.org/learn
 
 An AI catalog item.
 
-### Implementations {.no_toc}
+### `AiCatalogItem` implementations {.no_toc}
 
 - [`AiCatalogAgent`](objects.md#aicatalogagent)
 - [`AiCatalogFlow`](objects.md#aicatalogflow)
 - [`AiCatalogSkill`](objects.md#aicatalogskill)
 - [`AiCatalogThirdPartyFlow`](objects.md#aicatalogthirdpartyflow)
 
-### Fields {.no_toc}
+### `AiCatalogItem` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -62,6 +62,7 @@ An AI catalog item.
 | `effectiveVersion` | [`AiCatalogItemVersion`](#aicatalogitemversion) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Version of the item in effect for the given namespace, falling back to the latest version when none is in effect. In a project namespace, resolves to the project configuration pinned version when enabled, otherwise the latest version. In a group namespace, resolves to the group configuration pinned version when enabled, otherwise the latest version. In the global namespace, always resolves to the latest version. <br><br> <strong>Arguments for `effectiveVersion`:</strong> <dl><dt>`groupId` ([`GroupID`](scalars.md#groupid))</dt><dd>Global ID of the group to return the effective version for.</dd><dt>`projectId` ([`ProjectID`](scalars.md#projectid))</dt><dd>Global ID of the project to return the effective version for.</dd></dl> |
 | `foundational` | [`Boolean!`](scalars.md#boolean) | Whether the item is a foundational item. |
 | `foundationalFlowReference` | [`String`](scalars.md#string) | Foundational flow reference. |
+| `hasDirectProjectConfigurationsInGroup` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.6.<br/><br/>Whether any project in the group has its own configuration of the item. Returns `null` when the user cannot enable items for the group, or the group is not a top-level group. This field can only be resolved for one AiCatalogItem in any single request. <br><br> <strong>Arguments for `hasDirectProjectConfigurationsInGroup`:</strong> <dl><dt>`groupId` ([`GroupID!`](scalars.md#groupid))</dt><dd>Global ID of the group.</dd></dl> |
 | `id` | [`ID!`](scalars.md#id) | ID of the item. |
 | `isEnabledInManagedByProject` | [`Boolean!`](scalars.md#boolean) | Whether the item is enabled in the project it is managed by. This field can only be resolved for one AiCatalogItem in any single request. |
 | `itemType` | [`AiCatalogItemType!`](enums.md#aicatalogitemtype) | Type of the item. |
@@ -85,14 +86,14 @@ An AI catalog item.
 
 An AI catalog item version.
 
-### Implementations {.no_toc}
+### `AiCatalogItemVersion` implementations {.no_toc}
 
 - [`AiCatalogAgentVersion`](objects.md#aicatalogagentversion)
 - [`AiCatalogFlowVersion`](objects.md#aicatalogflowversion)
 - [`AiCatalogSkillVersion`](objects.md#aicatalogskillversion)
 - [`AiCatalogThirdPartyFlowVersion`](objects.md#aicatalogthirdpartyflowversion)
 
-### Fields {.no_toc}
+### `AiCatalogItemVersion` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -109,12 +110,12 @@ An AI catalog item version.
 
 ## `AlertManagementIntegration`
 
-### Implementations {.no_toc}
+### `AlertManagementIntegration` implementations {.no_toc}
 
 - [`AlertManagementHttpIntegration`](objects.md#alertmanagementhttpintegration)
 - [`AlertManagementPrometheusIntegration`](objects.md#alertmanagementprometheusintegration)
 
-### Fields {.no_toc}
+### `AlertManagementIntegration` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -128,12 +129,12 @@ An AI catalog item version.
 
 ## `AmazonS3ConfigurationInterface`
 
-### Implementations {.no_toc}
+### `AmazonS3ConfigurationInterface` implementations {.no_toc}
 
 - [`AmazonS3ConfigurationType`](objects.md#amazons3configurationtype)
 - [`InstanceAmazonS3ConfigurationType`](objects.md#instanceamazons3configurationtype)
 
-### Fields {.no_toc}
+### `AmazonS3ConfigurationInterface` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -146,12 +147,12 @@ An AI catalog item version.
 
 ## `AuditEventStreamingDestinationInterface`
 
-### Implementations {.no_toc}
+### `AuditEventStreamingDestinationInterface` implementations {.no_toc}
 
 - [`GroupAuditEventStreamingDestination`](objects.md#groupauditeventstreamingdestination)
 - [`InstanceAuditEventStreamingDestination`](objects.md#instanceauditeventstreamingdestination)
 
-### Fields {.no_toc}
+### `AuditEventStreamingDestinationInterface` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -165,11 +166,11 @@ An AI catalog item version.
 
 ## `BaseDiscussionInterface`
 
-### Implementations {.no_toc}
+### `BaseDiscussionInterface` implementations {.no_toc}
 
 - [`Discussion`](objects.md#discussion)
 
-### Fields {.no_toc}
+### `BaseDiscussionInterface` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -183,12 +184,12 @@ An AI catalog item version.
 
 ## `BaseHeaderInterface`
 
-### Implementations {.no_toc}
+### `BaseHeaderInterface` implementations {.no_toc}
 
 - [`AuditEventStreamingHeader`](objects.md#auditeventstreamingheader)
 - [`AuditEventsStreamingInstanceHeader`](objects.md#auditeventsstreaminginstanceheader)
 
-### Fields {.no_toc}
+### `BaseHeaderInterface` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -199,11 +200,11 @@ An AI catalog item version.
 
 ## `BaseNoteInterface`
 
-### Implementations {.no_toc}
+### `BaseNoteInterface` implementations {.no_toc}
 
 - [`Note`](objects.md#note)
 
-### Fields {.no_toc}
+### `BaseNoteInterface` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -224,12 +225,12 @@ An AI catalog item version.
 
 ## `CiJobInterface`
 
-### Implementations {.no_toc}
+### `CiJobInterface` implementations {.no_toc}
 
 - [`CiJob`](objects.md#cijob)
 - [`CiJobMinimalAccess`](objects.md#cijobminimalaccess)
 
-### Fields {.no_toc}
+### `CiJobInterface` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -282,7 +283,7 @@ An AI catalog item version.
 
 ## `CiVariable`
 
-### Implementations {.no_toc}
+### `CiVariable` implementations {.no_toc}
 
 - [`CiGroupVariable`](objects.md#cigroupvariable)
 - [`CiInstanceVariable`](objects.md#ciinstancevariable)
@@ -290,7 +291,7 @@ An AI catalog item version.
 - [`CiProjectVariable`](objects.md#ciprojectvariable)
 - [`PipelineScheduleVariable`](objects.md#pipelineschedulevariable)
 
-### Fields {.no_toc}
+### `CiVariable` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -304,13 +305,13 @@ An AI catalog item version.
 
 Represents signing information for a commit.
 
-### Implementations {.no_toc}
+### `CommitSignature` implementations {.no_toc}
 
 - [`GpgSignature`](objects.md#gpgsignature)
 - [`SshSignature`](objects.md#sshsignature)
 - [`X509Signature`](objects.md#x509signature)
 
-### Fields {.no_toc}
+### `CommitSignature` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -320,7 +321,7 @@ Represents signing information for a commit.
 
 ## `CurrentUserTodos`
 
-### Implementations {.no_toc}
+### `CurrentUserTodos` implementations {.no_toc}
 
 - [`BoardEpic`](objects.md#boardepic)
 - [`Design`](objects.md#design)
@@ -330,7 +331,7 @@ Represents signing information for a commit.
 - [`MergeRequest`](objects.md#mergerequest)
 - [`WorkItemWidgetCurrentUserTodos`](objects.md#workitemwidgetcurrentusertodos)
 
-### Fields {.no_toc}
+### `CurrentUserTodos` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -338,12 +339,12 @@ Represents signing information for a commit.
 
 ## `CustomDashboardInterface`
 
-### Implementations {.no_toc}
+### `CustomDashboardInterface` implementations {.no_toc}
 
 - [`CustomDashboard`](objects.md#customdashboard)
 - [`CustomSystemDashboard`](objects.md#customsystemdashboard)
 
-### Fields {.no_toc}
+### `CustomDashboardInterface` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -357,12 +358,12 @@ Represents signing information for a commit.
 
 ## `CustomRoleInterface`
 
-### Implementations {.no_toc}
+### `CustomRoleInterface` implementations {.no_toc}
 
 - [`AdminMemberRole`](objects.md#adminmemberrole)
 - [`MemberRole`](objects.md#memberrole)
 
-### Fields {.no_toc}
+### `CustomRoleInterface` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -371,12 +372,12 @@ Represents signing information for a commit.
 
 ## `DependencyInterface`
 
-### Implementations {.no_toc}
+### `DependencyInterface` implementations {.no_toc}
 
 - [`Dependency`](objects.md#dependency)
 - [`DependencyAggregation`](objects.md#dependencyaggregation)
 
-### Fields {.no_toc}
+### `DependencyInterface` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -395,12 +396,12 @@ Represents signing information for a commit.
 
 ## `DesignFields`
 
-### Implementations {.no_toc}
+### `DesignFields` implementations {.no_toc}
 
 - [`Design`](objects.md#design)
 - [`DesignAtVersion`](objects.md#designatversion)
 
-### Fields {.no_toc}
+### `DesignFields` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -417,13 +418,13 @@ Represents signing information for a commit.
 
 ## `Entry`
 
-### Implementations {.no_toc}
+### `Entry` implementations {.no_toc}
 
 - [`Blob`](objects.md#blob)
 - [`Submodule`](objects.md#submodule)
 - [`TreeEntry`](objects.md#treeentry)
 
-### Fields {.no_toc}
+### `Entry` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -436,12 +437,12 @@ Represents signing information for a commit.
 
 ## `EntryInterface`
 
-### Implementations {.no_toc}
+### `EntryInterface` implementations {.no_toc}
 
 - [`ContainerUpstreamCacheEntry`](objects.md#containerupstreamcacheentry)
 - [`MavenUpstreamCacheEntry`](objects.md#mavenupstreamcacheentry)
 
-### Fields {.no_toc}
+### `EntryInterface` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -460,12 +461,12 @@ Represents signing information for a commit.
 
 ## `Eventable`
 
-### Implementations {.no_toc}
+### `Eventable` implementations {.no_toc}
 
 - [`BoardEpic`](objects.md#boardepic)
 - [`Epic`](objects.md#epic)
 
-### Fields {.no_toc}
+### `Eventable` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -475,13 +476,13 @@ Represents signing information for a commit.
 
 Defines the common fields for all expressions.
 
-### Implementations {.no_toc}
+### `ExpressionInterface` implementations {.no_toc}
 
 - [`BooleanExpression`](objects.md#booleanexpression)
 - [`IntegerExpression`](objects.md#integerexpression)
 - [`StringExpression`](objects.md#stringexpression)
 
-### Fields {.no_toc}
+### `ExpressionInterface` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -490,12 +491,12 @@ Defines the common fields for all expressions.
 
 ## `ExternalAuditEventDestinationInterface`
 
-### Implementations {.no_toc}
+### `ExternalAuditEventDestinationInterface` implementations {.no_toc}
 
 - [`ExternalAuditEventDestination`](objects.md#externalauditeventdestination)
 - [`InstanceExternalAuditEventDestination`](objects.md#instanceexternalauditeventdestination)
 
-### Fields {.no_toc}
+### `ExternalAuditEventDestinationInterface` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -508,12 +509,12 @@ Defines the common fields for all expressions.
 
 ## `GoogleCloudLoggingConfigurationInterface`
 
-### Implementations {.no_toc}
+### `GoogleCloudLoggingConfigurationInterface` implementations {.no_toc}
 
 - [`GoogleCloudLoggingConfigurationType`](objects.md#googlecloudloggingconfigurationtype)
 - [`InstanceGoogleCloudLoggingConfigurationType`](objects.md#instancegooglecloudloggingconfigurationtype)
 
-### Fields {.no_toc}
+### `GoogleCloudLoggingConfigurationInterface` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -528,12 +529,12 @@ Defines the common fields for all expressions.
 
 Returns either a "Group" type for users with :read_group permission, or a "GroupMinimalAccess" type for users with only :read_group_metadata permission.
 
-### Implementations {.no_toc}
+### `GroupInterface` implementations {.no_toc}
 
 - [`Group`](objects.md#group)
 - [`GroupMinimalAccess`](objects.md#groupminimalaccess)
 
-### Fields {.no_toc}
+### `GroupInterface` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -547,11 +548,11 @@ Returns either a "Group" type for users with :read_group permission, or a "Group
 
 ## `LabelInterface`
 
-### Implementations {.no_toc}
+### `LabelInterface` implementations {.no_toc}
 
 - [`Label`](objects.md#label)
 
-### Fields {.no_toc}
+### `LabelInterface` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -564,13 +565,13 @@ Returns either a "Group" type for users with :read_group permission, or a "Group
 
 ## `MarkdownPaths`
 
-### Implementations {.no_toc}
+### `MarkdownPaths` implementations {.no_toc}
 
 - [`GroupNamespaceMarkdownPaths`](objects.md#groupnamespacemarkdownpaths)
 - [`ProjectNamespaceMarkdownPaths`](objects.md#projectnamespacemarkdownpaths)
 - [`UserNamespaceMarkdownPaths`](objects.md#usernamespacemarkdownpaths)
 
-### Fields {.no_toc}
+### `MarkdownPaths` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -580,14 +581,14 @@ Returns either a "Group" type for users with :read_group permission, or a "Group
 
 ## `MemberInterface`
 
-### Implementations {.no_toc}
+### `MemberInterface` implementations {.no_toc}
 
 - [`GroupMember`](objects.md#groupmember)
 - [`PendingGroupMember`](objects.md#pendinggroupmember)
 - [`PendingProjectMember`](objects.md#pendingprojectmember)
 - [`ProjectMember`](objects.md#projectmember)
 
-### Fields {.no_toc}
+### `MemberInterface` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -602,13 +603,13 @@ Returns either a "Group" type for users with :read_group permission, or a "Group
 
 ## `NamespaceMetadata`
 
-### Implementations {.no_toc}
+### `NamespaceMetadata` implementations {.no_toc}
 
 - [`GroupNamespaceMetadata`](objects.md#groupnamespacemetadata)
 - [`ProjectNamespaceMetadata`](objects.md#projectnamespacemetadata)
 - [`UserNamespaceMetadata`](objects.md#usernamespacemetadata)
 
-### Fields {.no_toc}
+### `NamespaceMetadata` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -621,13 +622,13 @@ Returns either a "Group" type for users with :read_group permission, or a "Group
 
 ## `NamespacesLinkPaths`
 
-### Implementations {.no_toc}
+### `NamespacesLinkPaths` implementations {.no_toc}
 
 - [`GroupNamespaceLinks`](objects.md#groupnamespacelinks)
 - [`ProjectNamespaceLinks`](objects.md#projectnamespacelinks)
 - [`UserNamespaceLinks`](objects.md#usernamespacelinks)
 
-### Fields {.no_toc}
+### `NamespacesLinkPaths` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -659,7 +660,7 @@ Returns either a "Group" type for users with :read_group permission, or a "Group
 
 ## `NoteableInterface`
 
-### Implementations {.no_toc}
+### `NoteableInterface` implementations {.no_toc}
 
 - [`AlertManagementAlert`](objects.md#alertmanagementalert)
 - [`BoardEpic`](objects.md#boardepic)
@@ -675,7 +676,7 @@ Returns either a "Group" type for users with :read_group permission, or a "Group
 - [`Vulnerability`](objects.md#vulnerability)
 - [`WikiPage`](objects.md#wikipage)
 
-### Fields {.no_toc}
+### `NoteableInterface` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -685,7 +686,7 @@ Returns either a "Group" type for users with :read_group permission, or a "Group
 
 ## `OrchestrationPolicy`
 
-### Implementations {.no_toc}
+### `OrchestrationPolicy` implementations {.no_toc}
 
 - [`ApprovalPolicy`](objects.md#approvalpolicy)
 - [`PipelineExecutionPolicy`](objects.md#pipelineexecutionpolicy)
@@ -695,7 +696,7 @@ Returns either a "Group" type for users with :read_group permission, or a "Group
 - [`SecurityPolicyType`](objects.md#securitypolicytype)
 - [`VulnerabilityManagementPolicy`](objects.md#vulnerabilitymanagementpolicy)
 
-### Fields {.no_toc}
+### `OrchestrationPolicy` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -714,12 +715,12 @@ Returns either a "Group" type for users with :read_group permission, or a "Group
 
 Represents metadata associated with a Package file.
 
-### Implementations {.no_toc}
+### `PackageFileMetadata` implementations {.no_toc}
 
 - [`ConanFileMetadata`](objects.md#conanfilemetadata)
 - [`HelmFileMetadata`](objects.md#helmfilemetadata)
 
-### Fields {.no_toc}
+### `PackageFileMetadata` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -728,12 +729,12 @@ Represents metadata associated with a Package file.
 
 ## `PendingMemberInterface`
 
-### Implementations {.no_toc}
+### `PendingMemberInterface` implementations {.no_toc}
 
 - [`PendingGroupMember`](objects.md#pendinggroupmember)
 - [`PendingProjectMember`](objects.md#pendingprojectmember)
 
-### Fields {.no_toc}
+### `PendingMemberInterface` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -755,12 +756,12 @@ Represents metadata associated with a Package file.
 
 ## `PipelineInterface`
 
-### Implementations {.no_toc}
+### `PipelineInterface` implementations {.no_toc}
 
 - [`Pipeline`](objects.md#pipeline)
 - [`PipelineMinimalAccess`](objects.md#pipelineminimalaccess)
 
-### Fields {.no_toc}
+### `PipelineInterface` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -773,12 +774,12 @@ Represents metadata associated with a Package file.
 
 ## `ProjectInterface`
 
-### Implementations {.no_toc}
+### `ProjectInterface` implementations {.no_toc}
 
 - [`Project`](objects.md#project)
 - [`ProjectMinimalAccess`](objects.md#projectminimalaccess)
 
-### Fields {.no_toc}
+### `ProjectInterface` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -793,14 +794,14 @@ Represents metadata associated with a Package file.
 
 ## `RegistryInterface`
 
-### Implementations {.no_toc}
+### `RegistryInterface` implementations {.no_toc}
 
 - [`ContainerRegistry`](objects.md#containerregistry)
 - [`ContainerRegistryDetails`](objects.md#containerregistrydetails)
 - [`MavenRegistry`](objects.md#mavenregistry)
 - [`MavenRegistryDetails`](objects.md#mavenregistrydetails)
 
-### Fields {.no_toc}
+### `RegistryInterface` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -811,14 +812,14 @@ Represents metadata associated with a Package file.
 
 ## `RegistryUpstreamInterface`
 
-### Implementations {.no_toc}
+### `RegistryUpstreamInterface` implementations {.no_toc}
 
 - [`ContainerRegistryUpstreamWithRegistry`](objects.md#containerregistryupstreamwithregistry)
 - [`ContainerRegistryUpstreamWithUpstream`](objects.md#containerregistryupstreamwithupstream)
 - [`MavenRegistryUpstreamWithRegistry`](objects.md#mavenregistryupstreamwithregistry)
 - [`MavenRegistryUpstreamWithUpstream`](objects.md#mavenregistryupstreamwithupstream)
 
-### Fields {.no_toc}
+### `RegistryUpstreamInterface` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -827,12 +828,12 @@ Represents metadata associated with a Package file.
 
 ## `ResolvableInterface`
 
-### Implementations {.no_toc}
+### `ResolvableInterface` implementations {.no_toc}
 
 - [`Discussion`](objects.md#discussion)
 - [`Note`](objects.md#note)
 
-### Fields {.no_toc}
+### `ResolvableInterface` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -843,13 +844,13 @@ Represents metadata associated with a Package file.
 
 ## `RoleInterface`
 
-### Implementations {.no_toc}
+### `RoleInterface` implementations {.no_toc}
 
 - [`AdminMemberRole`](objects.md#adminmemberrole)
 - [`MemberRole`](objects.md#memberrole)
 - [`StandardRole`](objects.md#standardrole)
 
-### Fields {.no_toc}
+### `RoleInterface` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -860,11 +861,11 @@ Represents metadata associated with a Package file.
 
 ## `RuleInterface`
 
-### Implementations {.no_toc}
+### `RuleInterface` implementations {.no_toc}
 
 - [`MavenUpstreamRule`](objects.md#mavenupstreamrule)
 
-### Fields {.no_toc}
+### `RuleInterface` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -876,12 +877,12 @@ Represents metadata associated with a Package file.
 
 ## `Service`
 
-### Implementations {.no_toc}
+### `Service` implementations {.no_toc}
 
 - [`BaseService`](objects.md#baseservice)
 - [`JiraService`](objects.md#jiraservice)
 
-### Fields {.no_toc}
+### `Service` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -891,13 +892,13 @@ Represents metadata associated with a Package file.
 
 ## `TerraformModuleMetadataSharedFields`
 
-### Implementations {.no_toc}
+### `TerraformModuleMetadataSharedFields` implementations {.no_toc}
 
 - [`TerraformModuleMetadataExample`](objects.md#terraformmodulemetadataexample)
 - [`TerraformModuleMetadataRoot`](objects.md#terraformmodulemetadataroot)
 - [`TerraformModuleMetadataSubmodule`](objects.md#terraformmodulemetadatasubmodule)
 
-### Fields {.no_toc}
+### `TerraformModuleMetadataSharedFields` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -908,12 +909,12 @@ Represents metadata associated with a Package file.
 
 ## `TimeboxReportInterface`
 
-### Implementations {.no_toc}
+### `TimeboxReportInterface` implementations {.no_toc}
 
 - [`Iteration`](objects.md#iteration)
 - [`Milestone`](objects.md#milestone)
 
-### Fields {.no_toc}
+### `TimeboxReportInterface` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -921,7 +922,7 @@ Represents metadata associated with a Package file.
 
 ## `Todoable`
 
-### Implementations {.no_toc}
+### `Todoable` implementations {.no_toc}
 
 - [`AddOnUser`](objects.md#addonuser)
 - [`AlertManagementAlert`](objects.md#alertmanagementalert)
@@ -950,7 +951,7 @@ Represents metadata associated with a Package file.
 - [`WikiPage`](objects.md#wikipage)
 - [`WorkItem`](objects.md#workitem)
 
-### Fields {.no_toc}
+### `Todoable` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -959,14 +960,14 @@ Represents metadata associated with a Package file.
 
 ## `UpstreamInterface`
 
-### Implementations {.no_toc}
+### `UpstreamInterface` implementations {.no_toc}
 
 - [`ContainerUpstream`](objects.md#containerupstream)
 - [`ContainerUpstreamDetails`](objects.md#containerupstreamdetails)
 - [`MavenUpstream`](objects.md#mavenupstream)
 - [`MavenUpstreamDetails`](objects.md#mavenupstreamdetails)
 
-### Fields {.no_toc}
+### `UpstreamInterface` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -981,7 +982,7 @@ Represents metadata associated with a Package file.
 
 Representation of a GitLab user.
 
-### Implementations {.no_toc}
+### `User` implementations {.no_toc}
 
 - [`AddOnUser`](objects.md#addonuser)
 - [`AutocompletedUser`](objects.md#autocompleteduser)
@@ -992,7 +993,7 @@ Representation of a GitLab user.
 - [`MergeRequestReviewer`](objects.md#mergerequestreviewer)
 - [`UserCore`](objects.md#usercore)
 
-### Fields {.no_toc}
+### `User` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -1058,12 +1059,12 @@ Representation of a GitLab user.
 
 ## `VulnerabilityStatisticInterface`
 
-### Implementations {.no_toc}
+### `VulnerabilityStatisticInterface` implementations {.no_toc}
 
 - [`VulnerabilityNamespaceStatisticType`](objects.md#vulnerabilitynamespacestatistictype)
 - [`VulnerabilityStatisticType`](objects.md#vulnerabilitystatistictype)
 
-### Fields {.no_toc}
+### `VulnerabilityStatisticInterface` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -1078,14 +1079,14 @@ Representation of a GitLab user.
 
 ## `WorkItemCustomFieldValue`
 
-### Implementations {.no_toc}
+### `WorkItemCustomFieldValue` implementations {.no_toc}
 
 - [`WorkItemDateFieldValue`](objects.md#workitemdatefieldvalue)
 - [`WorkItemNumberFieldValue`](objects.md#workitemnumberfieldvalue)
 - [`WorkItemSelectFieldValue`](objects.md#workitemselectfieldvalue)
 - [`WorkItemTextFieldValue`](objects.md#workitemtextfieldvalue)
 
-### Fields {.no_toc}
+### `WorkItemCustomFieldValue` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -1093,7 +1094,7 @@ Representation of a GitLab user.
 
 ## `WorkItemWidget`
 
-### Implementations {.no_toc}
+### `WorkItemWidget` implementations {.no_toc}
 
 - [`WorkItemWidgetAgentPlan`](objects.md#workitemwidgetagentplan)
 - [`WorkItemWidgetAiSession`](objects.md#workitemwidgetaisession)
@@ -1122,6 +1123,7 @@ Representation of a GitLab user.
 - [`WorkItemWidgetNotifications`](objects.md#workitemwidgetnotifications)
 - [`WorkItemWidgetParticipants`](objects.md#workitemwidgetparticipants)
 - [`WorkItemWidgetProgress`](objects.md#workitemwidgetprogress)
+- [`WorkItemWidgetRequester`](objects.md#workitemwidgetrequester)
 - [`WorkItemWidgetRequirementLegacy`](objects.md#workitemwidgetrequirementlegacy)
 - [`WorkItemWidgetSeverity`](objects.md#workitemwidgetseverity)
 - [`WorkItemWidgetStartAndDueDate`](objects.md#workitemwidgetstartandduedate)
@@ -1132,7 +1134,7 @@ Representation of a GitLab user.
 - [`WorkItemWidgetVulnerabilities`](objects.md#workitemwidgetvulnerabilities)
 - [`WorkItemWidgetWeight`](objects.md#workitemwidgetweight)
 
-### Fields {.no_toc}
+### `WorkItemWidget` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -1140,7 +1142,7 @@ Representation of a GitLab user.
 
 ## `WorkItemWidgetDefinition`
 
-### Implementations {.no_toc}
+### `WorkItemWidgetDefinition` implementations {.no_toc}
 
 - [`WorkItemWidgetDefinitionAssignees`](objects.md#workitemwidgetdefinitionassignees)
 - [`WorkItemWidgetDefinitionCustomFields`](objects.md#workitemwidgetdefinitioncustomfields)
@@ -1152,7 +1154,7 @@ Representation of a GitLab user.
 - [`WorkItemWidgetDefinitionStatus`](objects.md#workitemwidgetdefinitionstatus)
 - [`WorkItemWidgetDefinitionWeight`](objects.md#workitemwidgetdefinitionweight)
 
-### Fields {.no_toc}
+### `WorkItemWidgetDefinition` fields {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |

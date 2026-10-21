@@ -31,7 +31,7 @@ workflow. Use the summary below to choose the method that fits your project.
 
 Scans the CycloneDX SBOM artifacts produced in your pipeline by the Dependency
 Scanning analyzer against the [GitLab advisory database](../gitlab_advisory_database/_index.md) and
-[GitLab malware advisories](../gitlab_advisory_database/_index.md#gitlab-malware-advisories).
+[GitLab malware advisories](../gitlab_advisory_database/_index.md#gitlab-advisories-for-malware).
 This is the recommended method for new projects and the long-term direction for
 dependency scanning in GitLab.
 
@@ -48,7 +48,7 @@ For details, see [Dependency Scanning using SBOM](dependency_scanning_sbom/_inde
 
 Continuously rescans the SBOM components from your default branch's latest
 successful pipeline whenever the [GitLab advisory database](../gitlab_advisory_database/_index.md) or
-[GitLab malware advisories](../gitlab_advisory_database/_index.md#gitlab-malware-advisories) are updated, so newly disclosed
+[GitLab malware advisories](../gitlab_advisory_database/_index.md#gitlab-advisories-for-malware) are updated, so newly disclosed
 vulnerabilities surface without re-running a pipeline.
 
 For details, see [Continuous Dependency Scanning](continuous_dependency_scanning/_index.md).
@@ -69,7 +69,7 @@ For details, see the [legacy dependency scanning page](legacy_dependency_scannin
 ### Analyze dependencies for behaviors (Libbehave)
 
 An experiment that analyzes the runtime behavior of your dependencies to surface
-suspicious or malicious activity beyond known CVEs.
+suspicious or malicious activity beyond known vulnerabilities.
 
 For details, see [Analyze dependencies for behaviors](experiment_libbehave_dependency.md).
 
@@ -78,7 +78,7 @@ For details, see [Analyze dependencies for behaviors](experiment_libbehave_depen
 | Method                             | Status               | Trigger            | Best for                                                   |
 | ---------------------------------- | -------------------- | ------------------ | ---------------------------------------------------------- |
 | Dependency Scanning using SBOM     | General Availability | Pipeline           | New projects, SBOM-first workflows                         |
-| Continuous Dependency Scanning     | General Availability | Advisory DB update | Catching newly disclosed CVEs without re-running pipelines |
+| Continuous Dependency Scanning     | General Availability | Advisory DB update | Catching newly disclosed vulnerabilities without re-running pipelines |
 | Dependency Scanning with Gemnasium | Deprecated (17.9)    | Pipeline           | Existing projects pending migration                        |
 | Analyze dependencies for behaviors | Experiment           | Pipeline           | Detecting malicious package behavior                       |
 
@@ -91,8 +91,3 @@ failure and provide fixes to resolve it.
 
 For more information, see
 [agentic breaking change resolution (for dependency bumps)](agentic-breaking-change-resolution.md).
-
-## Contributing to the vulnerability database
-
-To find a vulnerability, you can search the [`GitLab advisory database`](https://advisories.gitlab.com/).
-You can also [submit new vulnerabilities](https://gitlab.com/gitlab-org/security-products/gemnasium-db/blob/master/CONTRIBUTING.md).

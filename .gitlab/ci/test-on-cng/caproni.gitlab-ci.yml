@@ -43,11 +43,13 @@
         sleep 5
       done
       section_end "gitlab_ready"
-    - $CI_PROJECT_DIR/qa/caproni/scripts/seed_admin_token.rb
+    # One call for every seeder the job needs: each call boots Rails in the toolbox pod
     - |
+      seeders="admin_token"
       if [ "${QA_SCENARIO}" = "Test::Integration::OAuth" ]; then
-        $CI_PROJECT_DIR/qa/caproni/scripts/seed_oidc_application.rb
+        seeders="${seeders} oidc_application"
       fi
+      $CI_PROJECT_DIR/qa/caproni/scripts/seed.rb ${seeders}
     # Read back, not pre-created: Caproni has no pre-install hook
     - |
       export GITLAB_ADMIN_PASSWORD="$(caproni -c "${CAPRONI_CONFIG}" kubectl -n ${NAMESPACE} \

@@ -13,7 +13,8 @@ information, see the [GraphQL input types documentation](https://graphql.org/lea
 
 
 <% if input_object.arguments.present? %>
-### Arguments {.no_toc}
+<%= section_heading(input_object, 'arguments') %>
+
 
 <%= docs_render 'arguments_table', arguments: input_object.arguments %>
 

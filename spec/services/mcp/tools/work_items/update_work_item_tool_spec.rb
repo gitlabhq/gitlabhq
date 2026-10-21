@@ -11,7 +11,7 @@ RSpec.describe Mcp::Tools::WorkItems::UpdateWorkItemTool, feature_category: :mcp
   let_it_be_with_reload(:work_item) { create(:work_item, :issue, project: project, title: 'Original title') }
 
   let(:params) { { project_id: project.id.to_s, work_item_iid: work_item.iid } }
-  let(:tool) { described_class.new(current_user: user, params: params) }
+  let(:tool) { described_class.new(current_user: user, params: params, access_token: nil) }
 
   before_all do
     project.add_developer(user)
@@ -275,7 +275,7 @@ RSpec.describe Mcp::Tools::WorkItems::UpdateWorkItemTool, feature_category: :mcp
         { project_id: project.id.to_s, work_item_iid: confidential_work_item.iid, title: 'New title' }
       end
 
-      let(:tool) { described_class.new(current_user: non_member, params: params) }
+      let(:tool) { described_class.new(current_user: non_member, params: params, access_token: nil) }
 
       it 'raises with the same message as a nonexistent work item' do
         expect { tool.execute }
@@ -287,7 +287,7 @@ RSpec.describe Mcp::Tools::WorkItems::UpdateWorkItemTool, feature_category: :mcp
       let_it_be(:non_member) { create(:user) }
 
       let(:params) { { project_id: project.id.to_s, work_item_iid: work_item.iid, title: 'New title' } }
-      let(:tool) { described_class.new(current_user: non_member, params: params) }
+      let(:tool) { described_class.new(current_user: non_member, params: params, access_token: nil) }
 
       it 'returns the same uniform not-found error', :aggregate_failures do
         result = tool.execute

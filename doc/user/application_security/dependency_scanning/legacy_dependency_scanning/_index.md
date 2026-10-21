@@ -62,6 +62,11 @@ By default, dependency scanning analyzes all dependencies in your code, includin
 development, and transitive (nested) dependencies. You can optionally exclude development
 dependencies from scanning.
 
+> [!note]
+> Unlike [dependency scanning using SBOM](../dependency_scanning_sbom/_index.md) and continuous vulnerability scanning,
+> the Gemnasium analyzer uses the [legacy GitLab advisory database](../../gitlab_advisory_database/_index.md#legacy-gitlab-advisory-database),
+> which excludes proprietary advisories.
+
 - <i class="fa-youtube-play" aria-hidden="true"></i> For an overview, see [Dependency scanning - Advanced Security Testing](https://www.youtube.com/watch?v=TBnfbGk4c4o)<!-- Video published on 2024-04-06 -->
 - <i class="fa-youtube-play" aria-hidden="true"></i> For an interactive reading and how-to demo of this dependency scanning documentation, see [How to use dependency scanning tutorial hands-on GitLab Application Security part 3](https://www.youtube.com/watch?v=ii05cMbJ4xQ)<!-- Video published on 2023-09-19 -->
 - <i class="fa-youtube-play" aria-hidden="true"></i> For other interactive reading and how-to demos, see [Get Started With GitLab Application Security Playlist](https://www.youtube.com/playlist?list=PL05JrBw4t0KrUrjDoefSkgZLx5aJYFaF9)<!-- Video published on 2023-09-19 -->
@@ -719,7 +724,7 @@ Prerequisites:
 - Administrator access.
 - A GitLab Runner with the `docker` or `kubernetes` executor
 - Local copies of the dependency scanning analyzer images
-- Access to the [GitLab advisory database](https://gitlab.com/gitlab-org/security-products/gemnasium-db)
+- Access to the GitLab advisory database
 - Access to the [Package Metadata Database](../../../../topics/offline/package-metadata-database.md)
 
 #### Local copies of analyzer images
@@ -758,8 +763,7 @@ To use dependency scanning with all [supported languages and frameworks](#suppor
 
 #### Access to the GitLab advisory database
 
-The [GitLab advisory database](https://gitlab.com/gitlab-org/security-products/gemnasium-db) is the
-source of vulnerability data used by the `gemnasium`, `gemnasium-maven`, and `gemnasium-python`
+The GitLab advisory database is the source of vulnerability data used by the `gemnasium`, `gemnasium-maven`, and `gemnasium-python`
 analyzers. The Docker images of these analyzers include a clone of the database.
 The clone is synchronized with the database before starting a scan,
 to ensure the analyzers have the latest vulnerability data.
@@ -1499,8 +1503,3 @@ Follow these best practices when you build projects that use CocoaPods for depen
 1. After you update your Podfile, run `pod install` to install dependencies and update your workspace.
 
 Remember to always run `pod install` after updating your Podfile to ensure all dependencies are properly installed and the workspace is updated.
-
-## Contributing to the vulnerability database
-
-To find a vulnerability, you can search the [`GitLab advisory database`](https://advisories.gitlab.com/).
-You can also [submit new vulnerabilities](https://gitlab.com/gitlab-org/security-products/gemnasium-db/blob/master/CONTRIBUTING.md).

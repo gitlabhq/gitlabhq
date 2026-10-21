@@ -29,14 +29,14 @@ in a GraphQL document. For more information, see the
 
 Marks an element of a GraphQL schema as no longer supported.
 
-### Locations {.no_toc}
+### `deprecated` locations {.no_toc}
 
 - `ARGUMENT_DEFINITION`
 - `ENUM_VALUE`
 - `FIELD_DEFINITION`
 - `INPUT_FIELD_DEFINITION`
 
-### Arguments {.no_toc}
+### `deprecated` arguments {.no_toc}
 
 | Name | Type | Description | Default |
 | ---- | ---- | ----------- | ------- |
@@ -46,12 +46,12 @@ Marks an element of a GraphQL schema as no longer supported.
 
 Marks a field as introduced in a specific version. Fields tagged with the current milestone or a later one return null when the field is absent from the schema.
 
-### Locations {.no_toc}
+### `gl_introduced` locations {.no_toc}
 
 - `FIELD`
 - `INLINE_FRAGMENT`
 
-### Arguments {.no_toc}
+### `gl_introduced` arguments {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -61,14 +61,14 @@ Marks a field as introduced in a specific version. Fields tagged with the curren
 
 Declares the granular personal access token permissions required to access a field or type, along with the authorization boundary (project, group, user, or instance) those permissions apply to. A field or type can also opt out of granular token authorization by giving a skip reason.
 
-### Locations {.no_toc}
+### `granularScope` locations {.no_toc}
 
 - `FIELD_DEFINITION`
 - `OBJECT`
 
 This is a repeatable directive and can be used with different arguments at the same location.
 
-### Arguments {.no_toc}
+### `granularScope` arguments {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -83,13 +83,13 @@ This is a repeatable directive and can be used with different arguments at the s
 
 Directs the executor to include this field or fragment only when the `if` argument is true.
 
-### Locations {.no_toc}
+### `include` locations {.no_toc}
 
 - `FIELD`
 - `FRAGMENT_SPREAD`
 - `INLINE_FRAGMENT`
 
-### Arguments {.no_toc}
+### `include` arguments {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -99,7 +99,7 @@ Directs the executor to include this field or fragment only when the `if` argume
 
 Requires that exactly one field must be supplied and that field must not be `null`.
 
-### Locations {.no_toc}
+### `oneOf` locations {.no_toc}
 
 - `INPUT_OBJECT`
 
@@ -107,13 +107,13 @@ Requires that exactly one field must be supplied and that field must not be `nul
 
 Directs the executor to skip this field or fragment when the `if` argument is true.
 
-### Locations {.no_toc}
+### `skip` locations {.no_toc}
 
 - `FIELD`
 - `FRAGMENT_SPREAD`
 - `INLINE_FRAGMENT`
 
-### Arguments {.no_toc}
+### `skip` arguments {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
@@ -123,11 +123,11 @@ Directs the executor to skip this field or fragment when the `if` argument is tr
 
 Exposes a URL that specifies the behavior of this scalar.
 
-### Locations {.no_toc}
+### `specifiedBy` locations {.no_toc}
 
 - `SCALAR`
 
-### Arguments {.no_toc}
+### `specifiedBy` arguments {.no_toc}
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |

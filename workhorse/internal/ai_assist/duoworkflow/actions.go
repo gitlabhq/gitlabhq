@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"net"
 	"net/http"
 	"strconv"
 	"strings"
@@ -43,16 +42,12 @@ const httpRequestTimeout = 5 * time.Second
 type runHTTPActionHandler struct {
 	backend                   http.Handler
 	token                     string
-	originalReq               *http.Request
+	session                   *session
 	shouldTimeoutHTTPRequests bool
 	// relativeURLRoot is GitLab's URL prefix (e.g. "/gitlab/"), empty at the
 	// domain root. DWS sends unprefixed action paths, so it must be prepended
 	// before re-entering the upstream router.
 	relativeURLRoot string
-	// workflowID is set by the runner after StartWorkflowRequest is received
-	// and is forwarded as the X-Gitlab-Duo-Workflow-Id header so the GitLab
-	// API can correlate tool-originated traffic with the originating workflow.
-	workflowID string
 	// clientType and clientName identify the client that opened the websocket,
 	// as resolved by Rails in the connection config. Forwarded on every action
 	// so the events those calls fire attribute to that client, not to Workhorse.
@@ -161,7 +156,7 @@ func (a *runHTTPActionHandler) Execute(ctx context.Context, action *pb.Action) (
 
 	method := action.GetRunHTTPRequest().Method
 
-	logger := log.WithContextFields(a.originalReq.Context(), log.Fields{
+	logger := a.session.logger().WithFields(log.Fields{
 		"path":       action.GetRunHTTPRequest().Path,
 		"method":     method,
 		"request_id": action.GetRequestID(),
@@ -271,8 +266,9 @@ func (a *runHTTPActionHandler) buildRequest(ctx context.Context, action *pb.Acti
 	req.Header.Set("Gitlab-Workhorse", version.GetApplicationVersion())
 	req.Header.Set(secret.RequestHeader, tokenString)
 
-	if a.workflowID != "" {
-		req.Header.Set("X-Gitlab-Duo-Workflow-Id", a.workflowID)
+	// Lets the GitLab API correlate tool-originated traffic with the workflow.
+	if workflowID := a.session.WorkflowID(); workflowID != "" {
+		req.Header.Set("X-Gitlab-Duo-Workflow-Id", workflowID)
 	}
 
 	if a.clientType != "" {
@@ -283,15 +279,8 @@ func (a *runHTTPActionHandler) buildRequest(ctx context.Context, action *pb.Acti
 		req.Header.Set("X-Gitlab-Client-Name", a.clientName)
 	}
 
-	if clientIP, _, splitHostErr := net.SplitHostPort(a.originalReq.RemoteAddr); splitHostErr == nil {
-		// If we aren't the first proxy retain prior X-Forwarded-For information as a comma+space separated list and fold multiple headers into one.
-		var header string
-		if prior, ok := a.originalReq.Header["X-Forwarded-For"]; ok {
-			header = strings.Join(prior, ", ") + ", " + clientIP
-		} else {
-			header = clientIP
-		}
-		req.Header.Set("X-Forwarded-For", header)
+	if a.session.forwardedFor != "" {
+		req.Header.Set("X-Forwarded-For", a.session.forwardedFor)
 	}
 
 	return req, nil

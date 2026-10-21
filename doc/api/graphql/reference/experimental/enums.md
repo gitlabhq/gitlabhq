@@ -164,6 +164,15 @@ Possible flow configuration types for AI Catalog agents.
 | ----- | ----------- |
 | `CHAT` | Chat flow configuration. |
 
+## `AiCatalogGroupItemEnabledBy`
+
+Ways an AI Catalog item can be enabled in a group.
+
+| Value | Description |
+| ----- | ----------- |
+| `INHERITANCE` | Enabled for all projects in the group through group inheritance. Only top-level groups can enable items this way. Matches no items unless the `ai_catalog_group_inherited_consumers` feature flag is enabled. |
+| `PROJECT_DIRECT` | Enabled directly in any descendant project in the group. |
+
 ## `AiCatalogItemConsumerKind`
 
 The type of configured AI catalog item.
@@ -391,6 +400,41 @@ Possible event types for flow triggers.
 | `SCHEDULED` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Flow trigger scheduled event. |
 | `WORK_ITEM` | Flow trigger work_item event. |
 
+## `AiFlowTriggerKind`
+
+Kinds of flow triggers.
+
+| Value | Description |
+| ----- | ----------- |
+| `EVENT` | Flow trigger that runs when an event occurs. |
+| `SCHEDULED` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.6.<br/><br/>Flow trigger that runs on a schedule. |
+
+## `AiFlowTriggerRunStatus`
+
+Status of a flow trigger run.
+
+| Value | Description |
+| ----- | ----------- |
+| `AWAITING_INPUT` | Run is paused or waiting for input or approval. |
+| `CANCELED` | Run was stopped before it finished. |
+| `FAILED` | Run failed. |
+| `PENDING` | Run has been created and has not started. |
+| `RUNNING` | Run is in progress. |
+| `SUCCEEDED` | Run finished successfully. |
+
+## `AiFlowTriggerSort`
+
+Values for sorting AI flow triggers.
+
+| Value | Description |
+| ----- | ----------- |
+| `CREATED_ASC` | Created at ascending order. |
+| `CREATED_DESC` | Created at descending order. |
+| `NAME_ASC` | Name by ascending order. |
+| `NAME_DESC` | Name by descending order. |
+| `UPDATED_ASC` | Updated at ascending order. |
+| `UPDATED_DESC` | Updated at descending order. |
+
 ## `AiFlowsMetadataClientType`
 
 Client surface requesting Duo Agent Platform flow metadata.
@@ -567,6 +611,7 @@ Type of AI usage event.
 | `AGENT_PLATFORM_SESSION_STARTED` | Agent platform session was started. |
 | `AGENT_PLATFORM_SESSION_STOPPED` | Agent platform session was stopped. |
 | `AI_DUO_MESSAGING_FEEDBACK_SUBMITTED` | Feedback was submitted on a Duo agent response in a messaging surface. |
+| `APPROVE_MERGE_REQUEST_DUO_CODE_REVIEW` | Duo Code Review approved a merge request. |
 | `ASSIGN_DUO_SUGGESTED_REVIEWER` | Duo suggested reviewers were added as reviewers to a merge request. |
 | `CLICK_DUO_AGENTIC_SUBSCRIPTION_EXPIRED_LEARN_MORE` | User clicked learn more on Duo Agent Platform subscription expired state. |
 | `CLICK_DUO_AGENTIC_SUBSCRIPTION_EXPIRED_UPGRADE` | User clicked upgrade on Duo Agent Platform subscription expired state. |
@@ -635,6 +680,8 @@ Values for sorting AI user metrics.
 | `AI_CATALOG_TOTAL_COUNT_DESC` | Ai Catalog total event count in descending order. |
 | `AI_DUO_MESSAGING_FEEDBACK_SUBMITTED_ASC` | Ai Duo Messaging Feedback Submitted event count in ascending order. |
 | `AI_DUO_MESSAGING_FEEDBACK_SUBMITTED_DESC` | Ai Duo Messaging Feedback Submitted event count in descending order. |
+| `APPROVE_MERGE_REQUEST_DUO_CODE_REVIEW_ASC` | Approve Merge Request Duo Code Review event count in ascending order. |
+| `APPROVE_MERGE_REQUEST_DUO_CODE_REVIEW_DESC` | Approve Merge Request Duo Code Review event count in descending order. |
 | `ASSIGN_DUO_SUGGESTED_REVIEWER_ASC` | Assign Duo Suggested Reviewer event count in ascending order. |
 | `ASSIGN_DUO_SUGGESTED_REVIEWER_DESC` | Assign Duo Suggested Reviewer event count in descending order. |
 | `CHAT_TOTAL_COUNT_ASC` | Chat total event count in ascending order. |
@@ -2394,6 +2441,7 @@ Type of a dependency firewall policy rule.
 | ----- | ----------- |
 | `LICENSE` | Rule matching on package licenses. |
 | `MALICIOUS` | Rule matching on packages flagged as malicious. |
+| `PACKAGE_VERSION` | Rule matching on an exact package name and version. |
 | `RISK_SEVERITY` | Rule matching on vulnerability counts per severity level. |
 | `VULNERABILITY` | Rule matching on package vulnerabilities. |
 
@@ -2507,7 +2555,7 @@ Detailed representation of whether a GitLab merge request can be merged.
 | `LOCKED_LFS_FILES` | Merge request includes locked LFS files. |
 | `LOCKED_PATHS` | Merge request includes locked paths. |
 | `MERGEABLE` | Branch can be merged. |
-| `MERGE_TIME` | Merge request may not be merged until after the specified time. |
+| `MERGE_TIME` | Merge request may not be merged outside the specified time frame. |
 | `NEED_REBASE` | Merge request needs to be rebased. |
 | `NOT_APPROVED` | Merge request must be approved before merging. |
 | `NOT_OPEN` | Merge request must be open before merging. |
@@ -2721,6 +2769,19 @@ Values for sorting Duo Workflows.
 | `created_desc` | Deprecated in GitLab 13.5. Renamed. Use `CREATED_DESC` instead. |
 | `updated_asc` | Deprecated in GitLab 13.5. Renamed. Use `UPDATED_ASC` instead. |
 | `updated_desc` | Deprecated in GitLab 13.5. Renamed. Use `UPDATED_DESC` instead. |
+
+## `EmojiSkinTone`
+
+Default skin tone for emoji that have skin tone variants.
+
+| Value | Description |
+| ----- | ----------- |
+| `DARK` | Dark skin tone. |
+| `DEFAULT` | No skin tone. Emoji keep their default yellow. |
+| `LIGHT` | Light skin tone. |
+| `MEDIUM` | Medium skin tone. |
+| `MEDIUM_DARK` | Medium-dark skin tone. |
+| `MEDIUM_LIGHT` | Medium-light skin tone. |
 
 ## `EntryType`
 
@@ -3070,6 +3131,10 @@ Trigger that started a policy evaluation.
 | `DEPLOYMENT_PROMOTED` | Evaluation was triggered by the `deployment_promoted` operation. |
 | `DEPLOYMENT_REQUESTED` | Evaluation was triggered by the `deployment_requested` operation. |
 | `ENVIRONMENT_ADVANCED` | Evaluation was triggered by the `environment_advanced` operation. |
+| `PROJECT_AFTER_CREATE` | Evaluation was triggered by the `project.after_create` operation. |
+| `PROJECT_AFTER_TRANSFER` | Evaluation was triggered by the `project.after_transfer` operation. |
+| `PROJECT_BEFORE_SETTINGS_UPDATE` | Evaluation was triggered by the `project.before_settings_update` operation. |
+| `PROJECT_SCHEDULED_SETTINGS_DRIFT_CHECK` | Evaluation was triggered by the `project.scheduled_settings_drift_check` operation. |
 
 ## `GovernPolicyEvaluationVerdict`
 
@@ -4012,6 +4077,15 @@ Confidence tier derived from a merge request risk confidence score.
 | `MEDIUM` | Medium confidence. |
 | `VERY_HIGH` | Very high confidence. |
 
+## `MergeRequestRiskContributionKind`
+
+What made a contribution to a merge request risk score.
+
+| Value | Description |
+| ----- | ----------- |
+| `DOMAIN` | Risk domain the classification flagged as touched. |
+| `SIGNAL` | Signal measured from the merge request. |
+
 ## `MergeRequestRiskTier`
 
 Risk tier derived from a merge request risk score.
@@ -4367,6 +4441,18 @@ Indexing phase of Orbit data.
 | `SYNCING` | Indexing is in progress. |
 | `UNKNOWN` | Indexing phase is unknown. |
 
+## `OrbitIndexingState`
+
+Indexing state of Orbit data.
+
+| Value | Description |
+| ----- | ----------- |
+| `FAILED` | Indexing failed. |
+| `INDEXING` | Indexing is in progress. |
+| `NOT_STARTED` | Indexing has not started. |
+| `READY` | Indexing is complete. |
+| `UNKNOWN` | Indexing state is unknown. |
+
 ## `OrbitTrialState`
 
 State of the Orbit trial for a top-level group.
@@ -4385,6 +4471,7 @@ Reason the current user cannot turn Orbit on for a group.
 | Value | Description |
 | ----- | ----------- |
 | `FORBIDDEN` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>User lacks permission to turn Orbit on for the group. |
+| `PURCHASE_REQUIRED` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.6.<br/><br/>Group must purchase Orbit before it can be turned on, because no trial can start. |
 | `TRIAL_ENDED` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Trial has ended, so Orbit can no longer be turned on. |
 | `TRIAL_REQUIRED` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Group must start a trial before Orbit can be turned on. |
 | `UNAVAILABLE` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Trial status could not be read from CustomersDot. |
@@ -5352,6 +5439,15 @@ Controls GitLab Advanced SAST diff-based scanning.
 | `DIFFERENTIAL` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Enable diff-based scanning. |
 | `DISABLED` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Disable diff-based scanning. |
 
+## `SecurityScanProfileAttachMode`
+
+Attach mode for security scan profiles.
+
+| Value | Description |
+| ----- | ----------- |
+| `APPEND` | Adds the profile alongside existing profiles of the same type. |
+| `REPLACE` | Replaces existing profiles of the same type on the target projects. |
+
 ## `SecurityScanProfileDependencyResolutionJob`
 
 Dependency resolution job that can be disabled.
@@ -5894,6 +5990,7 @@ Name of the feature that the callout is for.
 | `WEB_IDE_CI_ENVIRONMENTS_GUIDANCE` | Callout feature name for web_ide_ci_environments_guidance. |
 | `WORK_ITEM_DECISION_LOG_POPOVER` | Callout feature name for work_item_decision_log_popover. |
 | `WORK_ITEM_EPIC_FEEDBACK` | Callout feature name for work_item_epic_feedback. |
+| `WORK_ITEM_TICKET_MIGRATION` | Callout feature name for work_item_ticket_migration. |
 
 ## `UserEventFilter`
 
@@ -5909,6 +6006,16 @@ Filter for user activity events.
 | `PUSH` | Push events. |
 | `TEAM` | Team events. |
 | `WIKI` | Wiki page events. |
+
+## `UserFirstDayOfWeek`
+
+First day of the week in calendars and date pickers.
+
+| Value | Description |
+| ----- | ----------- |
+| `MONDAY` | Monday. |
+| `SATURDAY` | Saturday. |
+| `SUNDAY` | Sunday. |
 
 ## `UserGroupCalloutFeatureName`
 
@@ -6636,6 +6743,7 @@ Type of a work item widget.
 | `NOTIFICATIONS` | Notifications widget. |
 | `PARTICIPANTS` | Participants widget. |
 | `PROGRESS` | Progress widget. |
+| `REQUESTER` | Requester widget. |
 | `REQUIREMENT_LEGACY` | Requirement Legacy widget. |
 | `SEVERITY` | Severity widget. |
 | `START_AND_DUE_DATE` | Start And Due Date widget. |

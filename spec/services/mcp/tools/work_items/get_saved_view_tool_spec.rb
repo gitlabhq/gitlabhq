@@ -8,7 +8,7 @@ RSpec.describe Mcp::Tools::WorkItems::GetSavedViewTool, feature_category: :mcp_s
 
   let(:saved_view_id) { 'gid://gitlab/WorkItems::SavedViews::SavedView/1' }
   let(:params) { { group_id: group.id.to_s, saved_view_id: saved_view_id } }
-  let(:tool) { described_class.new(current_user: user, params: params) }
+  let(:tool) { described_class.new(current_user: user, params: params, access_token: nil) }
 
   before_all do
     group.add_developer(user)

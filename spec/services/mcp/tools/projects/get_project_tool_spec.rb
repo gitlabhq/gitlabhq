@@ -7,7 +7,7 @@ RSpec.describe Mcp::Tools::Projects::GetProjectTool, feature_category: :mcp_serv
   let_it_be(:project) { create(:project, :public, :repository) }
 
   let(:params) { { project_id: project.id.to_s } }
-  let(:tool) { described_class.new(current_user: user, params: params) }
+  let(:tool) { described_class.new(current_user: user, params: params, access_token: nil) }
 
   before_all do
     project.add_developer(user)
@@ -112,7 +112,7 @@ RSpec.describe Mcp::Tools::Projects::GetProjectTool, feature_category: :mcp_serv
       let(:params) { { project_id: private_project.id.to_s } }
 
       context 'when the caller is not a member' do
-        let(:tool) { described_class.new(current_user: non_member, params: params) }
+        let(:tool) { described_class.new(current_user: non_member, params: params, access_token: nil) }
 
         it 'uses the same wording as a missing project so existence cannot be inferred' do
           expect { tool.execute }.to raise_error(StandardError, /not found or inaccessible/)

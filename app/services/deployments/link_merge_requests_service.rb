@@ -80,7 +80,7 @@ module Deployments
 
     def link_all_merged_merge_requests
       merge_requests =
-        project.merge_requests.merged.by_target_branch(deployment.ref)
+        project.merge_requests.merged.by_target_branch(target_branches)
 
       deployment.link_merge_requests(merge_requests)
     end
@@ -114,6 +114,13 @@ module Deployments
       merge_request_diffs = MergeRequestDiff.by_head_commit_sha(commits).by_project_id(project.id)
 
       project.merge_requests.merged.by_latest_merge_request_diffs(merge_request_diffs)
+    end
+
+    def target_branches
+      return deployment.ref unless deployment.tag?
+      return [] unless project.repository.ancestor?(deployment.sha, project.repository.head_commit&.sha)
+
+      project.default_branch
     end
 
     def project

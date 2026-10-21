@@ -8,7 +8,7 @@ RSpec.describe Mcp::Tools::MergeRequests::SaveMergeRequestReviewTool, feature_ca
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
 
   let(:arguments) { {} }
-  let(:tool) { described_class.new(current_user: user, params: arguments, version: '0.1.0') }
+  let(:tool) { described_class.new(current_user: user, params: arguments, version: '0.1.0', access_token: nil) }
 
   before_all do
     project.add_developer(user)

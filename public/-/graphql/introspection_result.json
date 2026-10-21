@@ -184430,6 +184430,30 @@
               "description": "Evaluation was triggered by the `deployment_promoted` operation.",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "PROJECT_BEFORE_SETTINGS_UPDATE",
+              "description": "Evaluation was triggered by the `project.before_settings_update` operation.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "PROJECT_SCHEDULED_SETTINGS_DRIFT_CHECK",
+              "description": "Evaluation was triggered by the `project.scheduled_settings_drift_check` operation.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "PROJECT_AFTER_CREATE",
+              "description": "Evaluation was triggered by the `project.after_create` operation.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "PROJECT_AFTER_TRANSFER",
+              "description": "Evaluation was triggered by the `project.after_transfer` operation.",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null
@@ -240329,6 +240353,18 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 16.2."
             },
             {
+              "name": "mergeSource",
+              "description": "Merge request or pushed commit that caused the merge request to be marked as merged. Null when the merge request is not merged, was merged in GitLab, or has no recorded source. Introduced in GitLab 19.6: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "MergeRequestMergeSource",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.6."
+            },
+            {
               "name": "mergeStatus",
               "description": "Status of the merge request. Deprecated in GitLab 14.0: Renamed.",
               "args": [],
@@ -252965,6 +253001,41 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "WorkItem",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "MergeRequestMergeSource",
+          "description": "Merge request or pushed commit that caused a merge request to be marked as merged.",
+          "fields": [
+            {
+              "name": "commitSha",
+              "description": "SHA of the pushed commit that included the changes. Null when merged through a merge request.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "mergeRequest",
+              "description": "Merge request whose merge included the changes. Null when merged by a pushed commit, or when the current user cannot read the merge request.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "MergeRequest",
                 "ofType": null
               },
               "isDeprecated": false,

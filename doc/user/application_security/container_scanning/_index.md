@@ -53,7 +53,7 @@ GitLab integrates with the [Trivy](https://github.com/aquasecurity/trivy) securi
 | [UBI Image Support](#fips-enabled-images) | {{< yes >}} | {{< yes >}} |
 | Support for Trivy | {{< yes >}} | {{< yes >}} |
 | [End-of-life Operating System Detection](#end-of-life-operating-system-detection) | {{< yes >}} | {{< yes >}} |
-| Inclusion of GitLab advisory database | Limited to the time-delayed content from GitLab [advisories-community](https://gitlab.com/gitlab-org/advisories-community/) project | Yes - all the latest content from [Gemnasium DB](https://gitlab.com/gitlab-org/security-products/gemnasium-db) |
+| Inclusion of the legacy GitLab advisory database | {{< no >}} | {{< yes >}} |
 | Presentation of Report data in Merge Request and Security tab of the CI pipeline job | {{< no >}} | {{< yes >}} |
 | [Solutions for vulnerabilities (auto-remediation)](#solutions-for-vulnerabilities-auto-remediation) | {{< no >}} | {{< yes >}} |
 | Support for the [vulnerability allow list](#vulnerability-allowlisting) | {{< no >}} | {{< yes >}} |
@@ -1000,7 +1000,7 @@ Unlike regular container scanning, the scan results do not include a security re
 
 When security findings are identified, GitLab populates the vulnerability report with these findings. Vulnerabilities can be viewed under the **Container registry vulnerabilities** tab of the vulnerability report page.
 
-Container scanning for registry populates the vulnerability report only when a new advisory is published to the [GitLab advisory database](../gitlab_advisory_database/_index.md).
+Container scanning for registry populates the vulnerability report only when a new advisory is published.
 Support for populating the vulnerability report with all present advisory data, instead of only newly-detected data, is proposed in [epic 11219](https://gitlab.com/groups/gitlab-org/-/epics/11219).
 
 > [!warning]
@@ -1083,7 +1083,7 @@ The images use data from upstream advisory databases:
 - Amazon Linux Security Center
 - Arch Linux Security Tracker
 - SUSE CVRF
-- CWE Advisories
+- CVE Advisories
 - Debian Security Bug Tracker
 - GitHub Security Advisory
 - Go Vulnerability Database
@@ -1096,15 +1096,8 @@ The images use data from upstream advisory databases:
 - Rocky Linux UpdateInfo
 - Ubuntu CVE Tracker (only data sources from mid 2021 and later)
 
-In addition to the sources provided by these scanners, GitLab maintains the following vulnerability databases:
-
-- The proprietary [GitLab advisory database](https://gitlab.com/gitlab-org/security-products/gemnasium-db).
-- The open source [GitLab advisory database (Open Source Edition)](https://gitlab.com/gitlab-org/advisories-community).
-
-In the GitLab Ultimate tier, the data from the GitLab advisory database is merged in to augment the
-data from the external sources. In the GitLab Premium and Free tiers, the data from the GitLab
-advisory database (Open Source Edition) is merged in to augment the data from the external sources.
-This augmentation only applies to the analyzer images for the Trivy scanner.
+In the GitLab Ultimate tier, the analyzer images for the Trivy scanner also include data from the
+[legacy GitLab advisory database](../gitlab_advisory_database/_index.md#legacy-gitlab-advisory-database).
 
 Database update information for other analyzers is available in the
 [maintenance table](../detect/vulnerability_scanner_maintenance.md).

@@ -74,7 +74,8 @@ RSpec.describe Mcp::Tools::Users::GetUserService, feature_category: :mcp_server 
       expect(Mcp::Tools::Users::GetUserTool).to receive(:new).with(
         current_user: current_user,
         params: params[:arguments],
-        version: '0.1.0'
+        version: '0.1.0',
+        access_token: nil
       ).and_call_original
 
       service.execute(request: request, params: params)

@@ -59,7 +59,7 @@ GitLab cannot recommend a remediation for malware the way it can for a CVE.
 The affected versions of the package are malicious rather than vulnerable, so no fixed version
 exists.
 Malware findings are based on
-[GitLab malware advisories](../gitlab_advisory_database/_index.md#gitlab-malware-advisories).
+[GitLab malware advisories](../gitlab_advisory_database/_index.md#gitlab-advisories-for-malware).
 
 If the scanner determined the vulnerability to be a false positive, an alert is shown above the
 **Risk** section. If GitLab Duo identified the vulnerability as a possible false positive, the

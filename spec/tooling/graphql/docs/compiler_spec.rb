@@ -283,6 +283,15 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
         expect(compiled_doc.doc).not_to include("\n\n\n"), "#{compiled_doc.filename} has a run of blank lines"
       end
     end
+
+    it 'has unique headings, so heading anchors do not depend on their order' do
+      pages.each do |compiled_doc|
+        headings = compiled_doc.doc.gsub(/^```.*?^```\n/m, '').scan(/^\#{2,6} (.+)$/).flatten
+        duplicates = headings.tally.select { |_, count| count > 1 }.keys
+
+        expect(duplicates).to be_empty, "#{compiled_doc.filename} has duplicate headings: #{duplicates.join(', ')}"
+      end
+    end
   end
 
   describe 'the mutations page' do
@@ -301,14 +310,14 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
 
           **Input type:** `ObjectCreateInput`
 
-          ### Arguments {.no_toc}
+          ### `objectCreate` arguments {.no_toc}
 
           | Name | Type | Description |
           | ---- | ---- | ----------- |
           | `name` | [`String!`](scalars.md#string) | Name of the object. |
           | `options` | [`InputObject`](input_objects.md#inputobject) | Options for the object. |
 
-          ### Fields {.no_toc}
+          ### `objectCreate` fields {.no_toc}
 
           | Name | Type | Description |
           | ---- | ---- | ----------- |
@@ -326,7 +335,7 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
 
           **Input type:** `MutationWithoutArgumentsInput`
 
-          ### Fields {.no_toc}
+          ### `mutationWithoutArguments` fields {.no_toc}
 
           | Name | Type | Description |
           | ---- | ---- | ----------- |
@@ -381,7 +390,7 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
 
           **Returns:** [`Object`](objects.md#object)
 
-          ### Arguments {.no_toc}
+          ### `findObject` arguments {.no_toc}
 
           | Name | Type | Description |
           | ---- | ---- | ----------- |
@@ -408,7 +417,7 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
     end
 
     it 'omits the arguments section for a connection query with only pagination arguments' do
-      expect(section('objects')).not_to include('### Arguments')
+      expect(section('objects')).not_to include('### `objects` arguments')
     end
 
     it 'lists only the non-pagination arguments of a connection query' do
@@ -457,7 +466,7 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
 
           **Implements:** [`ExampleInterface`](interfaces.md#exampleinterface)
 
-          ### Fields {.no_toc}
+          ### `Object` fields {.no_toc}
 
           | Name | Type | Description |
           | ---- | ---- | ----------- |
@@ -513,7 +522,7 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
     it 'renders a connection with extra fields beyond the standard set' do
       section = doc[/## `ObjectWithExtraConnection`.*?(?=\n## )/m]
 
-      expect(section).to include('### Extra fields {.no_toc}')
+      expect(section).to include('### `ObjectWithExtraConnection` extra fields {.no_toc}')
       expect(section).to include('| `total` | [`Int`](scalars.md#int) | Total count. |')
     end
 
@@ -522,7 +531,7 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
         <<~MD
           ## `ObjectWithoutDescription`
 
-          ### Fields {.no_toc}
+          ### `ObjectWithoutDescription` fields {.no_toc}
         MD
       )
     end
@@ -592,12 +601,12 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
 
           An interface.
 
-          ### Implementations {.no_toc}
+          ### `ExampleInterface` implementations {.no_toc}
 
           - [`AlphaImplementor`](objects.md#alphaimplementor)
           - [`Object`](objects.md#object)
 
-          ### Fields {.no_toc}
+          ### `ExampleInterface` fields {.no_toc}
 
           | Name | Type | Description |
           | ---- | ---- | ----------- |
@@ -617,7 +626,7 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
         <<~MD
           ## `InterfaceWithoutDescription`
 
-          ### Implementations {.no_toc}
+          ### `InterfaceWithoutDescription` implementations {.no_toc}
         MD
       )
     end
@@ -629,7 +638,7 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
 
           An interface without implementations.
 
-          ### Fields {.no_toc}
+          ### `InterfaceWithoutImplementations` fields {.no_toc}
         MD
       )
     end
@@ -659,7 +668,7 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
 
           A union.
 
-          ### Member types {.no_toc}
+          ### `Union` member types {.no_toc}
 
           - [`Object`](objects.md#object)
           - [`ObjectWithoutDescription`](objects.md#objectwithoutdescription)
@@ -678,7 +687,7 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
         <<~MD
           ## `UnionWithoutDescription`
 
-          ### Member types {.no_toc}
+          ### `UnionWithoutDescription` member types {.no_toc}
         MD
       )
     end
@@ -687,7 +696,7 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
       section = doc[/## `UnionWithoutMembers`\n.*?(?=\n## |\z)/m]
 
       expect(section).to include('A union without members.')
-      expect(section).not_to include('### Member types')
+      expect(section).not_to include('### `UnionWithoutMembers` member types')
     end
 
     it 'lists unions in alphabetical order' do
@@ -709,7 +718,7 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
 
           An input object.
 
-          ### Arguments {.no_toc}
+          ### `InputObject` arguments {.no_toc}
 
           | Name | Type | Description | Default |
           | ---- | ---- | ----------- | ------- |
@@ -743,14 +752,14 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
 
           A directive.
 
-          ### Locations {.no_toc}
+          ### `Directive` locations {.no_toc}
 
           - `FIELD`
           - `INLINE_FRAGMENT`
 
           This is a repeatable directive and can be used with different arguments at the same location.
 
-          ### Arguments {.no_toc}
+          ### `Directive` arguments {.no_toc}
 
           | Name | Type | Description |
           | ---- | ---- | ----------- |

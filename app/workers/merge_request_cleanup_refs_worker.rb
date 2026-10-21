@@ -13,9 +13,10 @@ class MergeRequestCleanupRefsWorker
   feature_category :code_review_workflow
   idempotent!
 
-  # Hard-coded to 4 for now. Will be configurable later on via application settings.
-  # This means, there can only be 4 jobs running at the same time at maximum.
+  # At most this many jobs run concurrently. The ops flag raises the cap, for
+  # example while draining a backlog of cleanup schedules.
   MAX_RUNNING_JOBS = 4
+  INCREASED_MAX_RUNNING_JOBS = 6
   FAILURE_THRESHOLD = 3
 
   def perform_work
@@ -51,7 +52,11 @@ class MergeRequestCleanupRefsWorker
   end
 
   def max_running_jobs
-    MAX_RUNNING_JOBS
+    if Feature.enabled?(:increased_merge_request_cleanup_refs_capacity, :instance, type: :ops)
+      INCREASED_MAX_RUNNING_JOBS
+    else
+      MAX_RUNNING_JOBS
+    end
   end
 
   private

@@ -9,7 +9,7 @@ RSpec.describe Mcp::Tools::Wikis::ListWikiPagesTool, feature_category: :mcp_serv
 
   let(:params) { { project_id: project.full_path } }
 
-  subject(:tool) { described_class.new(current_user: user, params: params) }
+  subject(:tool) { described_class.new(current_user: user, params: params, access_token: nil) }
 
   before_all do
     project.add_developer(user)

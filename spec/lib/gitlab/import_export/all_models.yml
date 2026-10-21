@@ -215,6 +215,7 @@ merge_requests:
 - resource_label_events
 - resource_milestone_events
 - resource_state_events
+- merge_source_event
 - resource_iteration_events
 - assignment_events
 - label_links

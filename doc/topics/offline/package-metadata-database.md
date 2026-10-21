@@ -741,7 +741,7 @@ Copy each dataset into place with the steps in its own section:
 > [!note]
 > Besides Ultimate, this feature is available to Premium customers with the dependency firewall add-on.
 
-[GitLab malware advisories](../../user/application_security/gitlab_advisory_database/_index.md#gitlab-malware-advisories) cover known malicious packages found in package registries.
+[GitLab malware advisories](../../user/application_security/gitlab_advisory_database/_index.md#gitlab-advisories-for-malware) cover known malicious packages found in package registries.
 They are distributed by the Package Metadata Database distribution service, so you download them on a machine with
 internet access and copy them to the offline instance.
 Download them with the shared script and its prerequisites, described in

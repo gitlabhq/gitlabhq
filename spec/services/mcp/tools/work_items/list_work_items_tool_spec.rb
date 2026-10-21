@@ -17,7 +17,7 @@ RSpec.describe Mcp::Tools::WorkItems::ListWorkItemsTool, feature_category: :mcp_
   let_it_be(:closed_work_item) { create(:work_item, :closed, project: project, title: 'A closed issue') }
 
   let(:arguments) { {} }
-  let(:tool) { described_class.new(current_user: user, params: arguments, version: '0.1.0') }
+  let(:tool) { described_class.new(current_user: user, params: arguments, version: '0.1.0', access_token: nil) }
 
   before_all do
     project.add_developer(user)
@@ -186,7 +186,8 @@ RSpec.describe Mcp::Tools::WorkItems::ListWorkItemsTool, feature_category: :mcp_
         second_tool = described_class.new(
           current_user: user,
           params: { project_id: project.id.to_s, first: 2, after: first_page['pageInfo']['endCursor'] },
-          version: '0.1.0'
+          version: '0.1.0',
+          access_token: nil
         )
         second_page = second_tool.execute[:structuredContent]
 
@@ -230,7 +231,9 @@ RSpec.describe Mcp::Tools::WorkItems::ListWorkItemsTool, feature_category: :mcp_
       let_it_be(:non_member_user) { create(:user) }
 
       let(:arguments) { { project_id: private_project.id.to_s } }
-      let(:tool) { described_class.new(current_user: non_member_user, params: arguments, version: '0.1.0') }
+      let(:tool) do
+        described_class.new(current_user: non_member_user, params: arguments, version: '0.1.0', access_token: nil)
+      end
 
       it 'denies access' do
         expect { result }.to raise_error(StandardError, /not found or inaccessible/)
@@ -245,7 +248,9 @@ RSpec.describe Mcp::Tools::WorkItems::ListWorkItemsTool, feature_category: :mcp_
       let_it_be(:non_member_user) { create(:user) }
 
       let(:arguments) { { project_id: project.id.to_s } }
-      let(:tool) { described_class.new(current_user: non_member_user, params: arguments, version: '0.1.0') }
+      let(:tool) do
+        described_class.new(current_user: non_member_user, params: arguments, version: '0.1.0', access_token: nil)
+      end
 
       it 'omits it from the result' do
         titles = result[:structuredContent]['work_items'].pluck('title')

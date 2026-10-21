@@ -7,7 +7,7 @@ RSpec.describe Mcp::Tools::Repositories::Branches::AddBranchTool, feature_catego
   let_it_be(:project) { create(:project, :repository, maintainers: [user]) }
 
   let(:params) { { project_id: project.full_path, branch: 'my-feature', ref: 'master' } }
-  let(:tool) { described_class.new(current_user: user, params: params) }
+  let(:tool) { described_class.new(current_user: user, params: params, access_token: nil) }
 
   describe 'versioning' do
     it 'registers version using VERSIONS constant' do
@@ -214,7 +214,7 @@ RSpec.describe Mcp::Tools::Repositories::Branches::AddBranchTool, feature_catego
 
     context 'when the user cannot push code' do
       let_it_be(:outsider) { create(:user, reporter_of: project) }
-      let(:tool) { described_class.new(current_user: outsider, params: params) }
+      let(:tool) { described_class.new(current_user: outsider, params: params, access_token: nil) }
 
       it 'returns an error' do
         result = tool.execute

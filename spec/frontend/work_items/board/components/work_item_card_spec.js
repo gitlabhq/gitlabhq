@@ -112,6 +112,30 @@ describe('WorkItemCard', () => {
       expect(findLink().findComponent(GlTruncate).exists()).toBe(true);
       expect(findLink().element.contains(findMetadataRow().element)).toBe(false);
     });
+
+    it('sets the id the side panel focuses on close', () => {
+      createComponent();
+
+      expect(findLink().attributes('id')).toBe('listItem-group/1');
+    });
+
+    describe('when the item is from another namespace', () => {
+      beforeEach(() => {
+        createComponent({
+          item: buildItem({
+            namespace: {
+              __typename: 'Project',
+              id: 'gid://gitlab/Project/2',
+              fullPath: 'other/project',
+            },
+          }),
+        });
+      });
+
+      it('uses that namespace in the id', () => {
+        expect(findLink().attributes('id')).toBe('listItem-other/project/1');
+      });
+    });
   });
 
   describe('screen reader description', () => {

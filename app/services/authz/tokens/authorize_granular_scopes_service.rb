@@ -10,6 +10,16 @@ module Authz
       BOUNDARY_TYPE_ORDER = { project: 0, group: 1, user: 2, instance: 3 }.freeze
       NOT_FOUND_MESSAGE = '404 Not Found'
 
+      def self.access_denied_message(token:, permissions:, boundary_type: nil)
+        labels = permissions.map do |permission|
+          assignable = Authz::PermissionGroups::Assignable.preferred_for_permission(permission)
+          "#{assignable.resource_name}: #{assignable.action.titleize}"
+        end.uniq.sort.join(', ')
+
+        "Access denied: This operation requires a fine-grained #{token.class.model_name.human.downcase} " \
+          "with the following #{[boundary_type, 'permissions'].compact.join(' ')}: [#{labels}]."
+      end
+
       def initialize(boundaries:, permissions:, token:)
         @boundaries = Array(boundaries).compact_blank
         @permissions = Array(permissions).map(&:to_sym)
@@ -143,14 +153,12 @@ module Authz
 
       def access_denied_error
         boundary = denied_boundary
-        perms = boundary_evaluations[boundary][:missing].map do |permission|
-          assignable = Authz::PermissionGroups::Assignable.preferred_for_permission(permission)
-          "#{assignable.resource_name}: #{assignable.action.titleize}"
-        end.uniq.sort.join(', ')
+        missing = boundary_evaluations[boundary][:missing]
         ::ServiceResponse.error(
-          message: "Access denied: This operation requires a fine-grained #{token_type} " \
-            "with the following #{boundary.type_label} permissions: [#{perms}].",
-          payload: { denied_permissions: boundary_evaluations[boundary][:missing] }
+          message: self.class.access_denied_message(
+            token: token, permissions: missing, boundary_type: boundary.type_label
+          ),
+          payload: { denied_permissions: missing }
         )
       end
 

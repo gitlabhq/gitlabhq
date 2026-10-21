@@ -8,7 +8,7 @@ RSpec.describe Mcp::Tools::Pipelines::GetPipelineTool, :request_store, feature_c
   let_it_be(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', status: :success, source: :push) }
 
   let(:params) { { id: project.full_path, pipeline_id: pipeline.id } }
-  let(:tool) { described_class.new(current_user: user, params: params) }
+  let(:tool) { described_class.new(current_user: user, params: params, access_token: nil) }
 
   describe 'versioning' do
     it 'registers version 0.1.0' do
@@ -301,11 +301,13 @@ RSpec.describe Mcp::Tools::Pipelines::GetPipelineTool, :request_store, feature_c
       end
 
       it 'does not run one artifact query per job' do
-        baseline = ActiveRecord::QueryRecorder.new { described_class.new(current_user: user, params: params).execute }
+        baseline = ActiveRecord::QueryRecorder.new do
+          described_class.new(current_user: user, params: params, access_token: nil).execute
+        end
 
         create_list(:ci_build, 3, :success, :artifacts, pipeline: pipeline)
 
-        expect { described_class.new(current_user: user, params: params).execute }
+        expect { described_class.new(current_user: user, params: params, access_token: nil).execute }
           .not_to exceed_query_limit(baseline)
       end
 
@@ -368,7 +370,7 @@ RSpec.describe Mcp::Tools::Pipelines::GetPipelineTool, :request_store, feature_c
       let_it_be(:builds_private_project) { create(:project, :public, :builds_private) }
       let_it_be(:hidden_pipeline) { create(:ci_pipeline, project: builds_private_project) }
 
-      let(:tool) { described_class.new(current_user: create(:user), params: params) }
+      let(:tool) { described_class.new(current_user: create(:user), params: params, access_token: nil) }
       let(:params) { { id: builds_private_project.full_path, pipeline_id: hidden_pipeline.id } }
 
       it 'reports not_found, as for a missing pipeline', :aggregate_failures do
@@ -398,7 +400,7 @@ RSpec.describe Mcp::Tools::Pipelines::GetPipelineTool, :request_store, feature_c
       let_it_be(:private_pipeline) { create(:ci_pipeline, project: private_project) }
 
       let(:params) { { id: private_project.full_path, pipeline_id: private_pipeline.id } }
-      let(:tool) { described_class.new(current_user: outsider, params: params) }
+      let(:tool) { described_class.new(current_user: outsider, params: params, access_token: nil) }
 
       it 'returns a non-leaky project-not-found error' do
         result = tool.execute
@@ -414,7 +416,7 @@ RSpec.describe Mcp::Tools::Pipelines::GetPipelineTool, :request_store, feature_c
       let_it_be(:hidden_pipeline) { create(:ci_pipeline, project: builds_private_project) }
 
       let(:params) { { id: builds_private_project.full_path, pipeline_id: hidden_pipeline.id } }
-      let(:tool) { described_class.new(current_user: outsider, params: params) }
+      let(:tool) { described_class.new(current_user: outsider, params: params, access_token: nil) }
 
       it 'returns a pipeline-not-found error, because the project is readable but its pipelines are not' do
         result = tool.execute

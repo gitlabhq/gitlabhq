@@ -7,7 +7,7 @@ RSpec.describe Mcp::Tools::Commits::ListCommitsTool, feature_category: :mcp_serv
   let_it_be(:project) { create(:project, :public, :repository) }
 
   let(:params) { { project_id: project.id.to_s } }
-  let(:tool) { described_class.new(current_user: user, params: params) }
+  let(:tool) { described_class.new(current_user: user, params: params, access_token: nil) }
 
   def result_shas(result)
     result[:structuredContent]['nodes'].map { |node| node['sha'] }
@@ -199,7 +199,9 @@ RSpec.describe Mcp::Tools::Commits::ListCommitsTool, feature_category: :mcp_serv
 
         it 'returns fewer commits than the unfiltered list', :aggregate_failures do
           filtered = tool.execute[:structuredContent]['nodes']
-          unfiltered = described_class.new(current_user: user, params: { project_id: project.id.to_s })
+          unfiltered = described_class.new(
+            current_user: user, params: { project_id: project.id.to_s }, access_token: nil
+          )
             .execute[:structuredContent]['nodes']
 
           expect(filtered).not_to be_empty
@@ -254,7 +256,7 @@ RSpec.describe Mcp::Tools::Commits::ListCommitsTool, feature_category: :mcp_serv
       let(:params) { { project_id: private_project.id.to_s } }
 
       context 'when the caller is not a member' do
-        let(:tool) { described_class.new(current_user: non_member, params: params) }
+        let(:tool) { described_class.new(current_user: non_member, params: params, access_token: nil) }
 
         it 'denies access rather than listing commits' do
           expect { tool.execute }.to raise_error(StandardError, /not found or inaccessible/)
@@ -301,7 +303,9 @@ RSpec.describe Mcp::Tools::Commits::ListCommitsTool, feature_category: :mcp_serv
       let_it_be(:private_project) { create(:project, :repository, :private) }
       let_it_be(:guest) { create(:user, guest_of: private_project) }
 
-      let(:tool) { described_class.new(current_user: guest, params: { project_id: private_project.full_path }) }
+      let(:tool) do
+        described_class.new(current_user: guest, params: { project_id: private_project.full_path }, access_token: nil)
+      end
 
       it 'reports unauthorized', :aggregate_failures do
         result = tool.execute

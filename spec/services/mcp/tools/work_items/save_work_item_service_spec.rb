@@ -186,8 +186,19 @@ RSpec.describe Mcp::Tools::WorkItems::SaveWorkItemService, feature_category: :mc
         expect(Mcp::Tools::WorkItems::CreateWorkItemTool).to receive(:new).with(
           current_user: user,
           params: params[:arguments],
-          version: '0.1.0'
+          version: '0.1.0',
+          access_token: nil
         ).and_call_original
+
+        service.execute(request: request, params: params)
+      end
+
+      it 'passes the access token to the selected tool' do
+        access_token = create(:personal_access_token, user: user)
+        service.set_cred(current_user: user, access_token: access_token)
+
+        expect(Mcp::Tools::WorkItems::CreateWorkItemTool).to receive(:new)
+          .with(hash_including(access_token: access_token)).and_call_original
 
         service.execute(request: request, params: params)
       end
@@ -415,7 +426,8 @@ RSpec.describe Mcp::Tools::WorkItems::SaveWorkItemService, feature_category: :mc
         expect(Mcp::Tools::WorkItems::CreateWorkItemTool).to receive(:new).with(
           current_user: user,
           params: params[:arguments].except(:url, :work_item_iid),
-          version: '0.1.0'
+          version: '0.1.0',
+          access_token: nil
         ).and_call_original
 
         result = nil
@@ -472,7 +484,8 @@ RSpec.describe Mcp::Tools::WorkItems::SaveWorkItemService, feature_category: :mc
         expect(Mcp::Tools::WorkItems::UpdateWorkItemTool).to receive(:new).with(
           current_user: user,
           params: params[:arguments],
-          version: '0.1.0'
+          version: '0.1.0',
+          access_token: nil
         ).and_call_original
 
         service.execute(request: request, params: params)
@@ -501,7 +514,8 @@ RSpec.describe Mcp::Tools::WorkItems::SaveWorkItemService, feature_category: :mc
         expect(Mcp::Tools::WorkItems::UpdateWorkItemTool).to receive(:new).with(
           current_user: user,
           params: params[:arguments],
-          version: '0.1.0'
+          version: '0.1.0',
+          access_token: nil
         ).and_call_original
 
         service.execute(request: request, params: params)
@@ -517,7 +531,8 @@ RSpec.describe Mcp::Tools::WorkItems::SaveWorkItemService, feature_category: :mc
         expect(Mcp::Tools::WorkItems::UpdateWorkItemTool).to receive(:new).with(
           current_user: user,
           params: params[:arguments],
-          version: '0.1.0'
+          version: '0.1.0',
+          access_token: nil
         ).and_call_original
 
         result = nil

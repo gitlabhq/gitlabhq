@@ -8,7 +8,7 @@ RSpec.describe Mcp::Tools::Pipelines::SavePipelineTool, feature_category: :mcp_s
   let_it_be(:pipeline) { create(:ci_pipeline, project: project, ref: 'master') }
 
   let(:params) { { project_id: project.full_path, ref: 'master' } }
-  let(:tool) { described_class.new(current_user: user, params: params) }
+  let(:tool) { described_class.new(current_user: user, params: params, access_token: nil) }
 
   before_all do
     project.add_developer(user)

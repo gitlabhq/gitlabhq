@@ -71,6 +71,9 @@ class MergeRequest < ApplicationRecord
   # MR: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214072
   has_one :merge_head_diff,
     -> { merge_head }, inverse_of: false, class_name: 'MergeRequestDiff'
+  has_one :merge_source_event,
+    -> { merged.where('source_merge_request_id IS NOT NULL OR source_commit IS NOT NULL').order(id: :desc) },
+    class_name: 'ResourceStateEvent', inverse_of: :merge_request
   has_one :cleanup_schedule, inverse_of: :merge_request
   has_one :predictions, inverse_of: :merge_request
   delegate :suggested_reviewers, to: :predictions
@@ -2613,6 +2616,10 @@ class MergeRequest < ApplicationRecord
         resource_state_events.find_by(state: :merged)&.created_at ||
         notes.system.reorder(nil).find_by(note: 'merged')&.created_at
     end
+  end
+
+  def merge_source
+    merge_source_event if merged?
   end
 
   def can_be_cherry_picked?

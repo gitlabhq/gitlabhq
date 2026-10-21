@@ -1,0 +1,8 @@
+---
+name: increased_merge_request_cleanup_refs_capacity
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/262679
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/634152
+milestone: '19.6'
+type: ops
+group: group::code review
+default_enabled: false

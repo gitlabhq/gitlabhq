@@ -73,7 +73,7 @@ RSpec.describe Mcp::Tools::Pipelines::SavePipelineService, feature_category: :mc
                   variable_type: {
                     type: 'string',
                     enum: %w[env_var file],
-                    description: 'Type of the variable. Defaults to env_var.'
+                    description: 'Type of the variable.'
                   }
                 },
                 required: %w[key value]

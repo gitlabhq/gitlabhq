@@ -39,19 +39,18 @@ module Mcp
               page: {
                 type: 'integer',
                 minimum: 1,
-                description: "Page number to retrieve. Default is #{DEFAULT_PAGE}."
+                description: 'Page number to retrieve.'
               },
               per_page: {
                 type: 'integer',
                 minimum: 1,
                 maximum: MAX_PER_PAGE,
-                description: "Releases to return per page. Default is #{DEFAULT_PER_PAGE}, " \
-                  "maximum is #{MAX_PER_PAGE}."
+                description: "Releases to return per page; maximum is #{MAX_PER_PAGE}."
               },
               state: {
                 type: 'string',
                 description: 'Filter by release state. released covers releases already out, ' \
-                  "upcoming covers releases scheduled for a future date. Default is #{DEFAULT_STATE}.",
+                  'upcoming covers releases scheduled for a future date.',
                 enum: STATES
               }
             }

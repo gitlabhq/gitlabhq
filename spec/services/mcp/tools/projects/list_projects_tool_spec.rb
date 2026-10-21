@@ -17,7 +17,7 @@ RSpec.describe Mcp::Tools::Projects::ListProjectsTool, feature_category: :mcp_se
   end
 
   let(:params) { {} }
-  let(:tool) { described_class.new(current_user: user, params: params) }
+  let(:tool) { described_class.new(current_user: user, params: params, access_token: nil) }
 
   def result_full_paths(result)
     result[:structuredContent]['nodes'].map { |node| node['fullPath'] }
@@ -228,7 +228,7 @@ RSpec.describe Mcp::Tools::Projects::ListProjectsTool, feature_category: :mcp_se
     end
 
     it 'unwraps project ids on the subgroup-recursive group branch too' do
-      result = described_class.new(current_user: user, params: { group_id: group.full_path }).execute
+      result = described_class.new(current_user: user, params: { group_id: group.full_path }, access_token: nil).execute
 
       expect(result[:structuredContent]['nodes'].map { |p| p['id'] }).to all(be_an(Integer))
     end

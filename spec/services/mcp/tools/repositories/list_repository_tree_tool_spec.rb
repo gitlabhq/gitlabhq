@@ -13,7 +13,7 @@ RSpec.describe Mcp::Tools::Repositories::ListRepositoryTreeTool, feature_categor
   end
 
   let(:params) { { project_id: project.id.to_s } }
-  let(:tool) { described_class.new(current_user: user, params: params) }
+  let(:tool) { described_class.new(current_user: user, params: params, access_token: nil) }
 
   def result_entries(result)
     result[:structuredContent]['entries']
@@ -182,7 +182,9 @@ RSpec.describe Mcp::Tools::Repositories::ListRepositoryTreeTool, feature_categor
         expect(first_page[:structuredContent]['pageInfo']['hasNextPage']).to be(true)
 
         cursor = first_page[:structuredContent]['pageInfo']['endCursor']
-        second_page = described_class.new(current_user: user, params: params.merge(after: cursor)).execute
+        second_page = described_class.new(
+          current_user: user, params: params.merge(after: cursor), access_token: nil
+        ).execute
 
         expect(second_page[:structuredContent]['pageInfo']['hasNextPage']).to be(false)
         expect(result_paths(first_page) + result_paths(second_page)).to match_array(
@@ -286,7 +288,7 @@ RSpec.describe Mcp::Tools::Repositories::ListRepositoryTreeTool, feature_categor
       context 'when the caller is a member with code access' do
         let_it_be(:member) { create(:user) }
 
-        let(:tool) { described_class.new(current_user: member, params: params) }
+        let(:tool) { described_class.new(current_user: member, params: params, access_token: nil) }
 
         before_all do
           private_project.add_developer(member)

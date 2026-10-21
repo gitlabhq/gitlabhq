@@ -65,6 +65,38 @@ RSpec.describe Deployments::UpdateEnvironmentService, feature_category: :continu
       service.execute
     end
 
+    it 'does not link merge requests for a branch deployment' do
+      expect(Deployments::LinkMergeRequestsService).not_to receive(:new)
+
+      service.execute
+    end
+
+    context 'when the deployment is from a tag' do
+      before do
+        deployment.update!(tag: true)
+      end
+
+      it 'links merge requests before it updates their metrics' do
+        linker = instance_double(Deployments::LinkMergeRequestsService)
+        allow(Deployments::LinkMergeRequestsService).to receive(:new).with(deployment).and_return(linker)
+
+        expect(linker).to receive(:execute).ordered
+        expect(deployment).to receive(:update_merge_request_metrics!).ordered
+
+        service.execute
+      end
+
+      context 'when the environment is not production' do
+        let(:environment_name) { 'staging' }
+
+        it 'does not link merge requests' do
+          expect(Deployments::LinkMergeRequestsService).not_to receive(:new)
+
+          service.execute
+        end
+      end
+    end
+
     it 'returns the deployment' do
       expect(subject.execute).to eq(deployment)
     end

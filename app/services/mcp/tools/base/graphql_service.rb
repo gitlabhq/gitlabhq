@@ -16,7 +16,7 @@ module Mcp
         override :set_cred
         def set_cred(current_user: nil, access_token: nil)
           @current_user = current_user
-          _ = access_token # access_token is not used in GraphqlService
+          @access_token = access_token
         end
 
         override :execute
@@ -46,7 +46,8 @@ module Mcp
           tool = graphql_tool_class.new(
             current_user: current_user,
             params: arguments,
-            version: version
+            version: version,
+            access_token: access_token
           )
 
           tool.execute

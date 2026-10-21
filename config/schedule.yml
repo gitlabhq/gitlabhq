@@ -480,9 +480,11 @@ resource_access_tokens_inactive_tokens_deletion_cron_worker:
   class: ResourceAccessTokens::InactiveTokensDeletionCronWorker
   cron: "0 0 * * *"
 
+# An arbitrary minute off the top of the hour and off the 5-minute grid,
+# where most other cron workers fire, to spread scheduler load.
 schedule_merge_request_cleanup_refs_worker:
   class: ScheduleMergeRequestCleanupRefsWorker
-  cron: "* * * * *"
+  cron: "17 * * * *"
 
 schedule_migrate_external_diffs_worker:
   class: ScheduleMigrateExternalDiffsWorker

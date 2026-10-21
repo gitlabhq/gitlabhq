@@ -13,7 +13,8 @@ in a GraphQL document. For more information, see the
 <%= description(directive) %>
 
 
-### Locations {.no_toc}
+<%= section_heading(directive, 'locations') %>
+
 
 <% directive.locations.each do |location| %>
 - `<%= location %>`
@@ -24,7 +25,8 @@ This is a repeatable directive and can be used with different arguments at the s
 <% end %>
 
 <% if directive.arguments.present? %>
-### Arguments {.no_toc}
+<%= section_heading(directive, 'arguments') %>
+
 
 <%= docs_render 'arguments_table', arguments: directive.arguments %>
 

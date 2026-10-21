@@ -11,8 +11,6 @@ export default {
   dragHandleClass: BOARD_COLUMN_DRAG_HANDLE_CLASS,
   noDragClass: BOARD_COLUMN_NO_DRAG_CLASS,
   i18n: {
-    collapse: __('Collapse'),
-    expand: __('Expand'),
     actions: s__('WorkItemBoard|Column actions'),
     hideList: s__('WorkItemBoard|Hide list'),
     moveLeft: s__('WorkItemBoard|Move left'),
@@ -78,6 +76,11 @@ export default {
       required: false,
       default: false,
     },
+    focusCreateButton: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   emits: ['toggle-collapse', 'move-column', 'hide-column', 'create-item'],
   computed: {
@@ -88,7 +91,10 @@ export default {
       return decorationIconStyle(this.decoration);
     },
     toggleLabel() {
-      return this.collapsed ? this.$options.i18n.expand : this.$options.i18n.collapse;
+      const label = this.collapsed
+        ? s__('WorkItemBoard|Expand %{columnName} column')
+        : s__('WorkItemBoard|Collapse %{columnName} column');
+      return sprintf(label, { columnName: this.value.name }, false);
     },
     countLabel() {
       if (this.count <= BOARD_COLUMN_COUNT_LIMIT) {
@@ -145,6 +151,13 @@ export default {
     },
     actionItems() {
       return [...this.hideActionItems, ...this.moveActionItems];
+    },
+  },
+  watch: {
+    focusCreateButton(shouldFocus) {
+      if (shouldFocus) {
+        this.$nextTick(() => this.$refs.createButton?.$el.focus());
+      }
     },
   },
 };
@@ -214,6 +227,7 @@ export default {
       />
       <gl-button
         v-if="canCreateWorkItem"
+        ref="createButton"
         v-gl-tooltip
         category="tertiary"
         size="small"

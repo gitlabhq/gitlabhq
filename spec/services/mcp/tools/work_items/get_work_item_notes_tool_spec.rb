@@ -12,7 +12,7 @@ RSpec.describe Mcp::Tools::WorkItems::GetWorkItemNotesTool, feature_category: :m
   let_it_be(:note2) { create(:note, noteable: work_item, project: project, author: user, note: 'Second comment') }
 
   let(:params) { { project_id: project.id.to_s, work_item_iid: work_item.iid } }
-  let(:tool) { described_class.new(current_user: user, params: params) }
+  let(:tool) { described_class.new(current_user: user, params: params, access_token: nil) }
 
   before_all do
     project.add_developer(user)

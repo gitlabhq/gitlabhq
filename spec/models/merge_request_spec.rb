@@ -5632,6 +5632,71 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
+  describe '#merge_source' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:merge_request) { create(:merge_request, :merged, source_project: project) }
+    let_it_be(:source_merge_request) { create(:merge_request, :merged, :unique_branches, source_project: project) }
+
+    subject { merge_request.reload.merge_source }
+
+    context 'when merged through another merge request' do
+      let_it_be(:event) do
+        create(:resource_state_event, merge_request: merge_request, state: :merged,
+          source_merge_request: source_merge_request)
+      end
+
+      it { is_expected.to eq(event) }
+    end
+
+    context 'when merged by a pushed commit' do
+      let_it_be(:event) do
+        create(:resource_state_event, merge_request: merge_request, state: :merged, source_commit: 'abcd1234')
+      end
+
+      it { is_expected.to eq(event) }
+    end
+
+    context 'when merged in GitLab' do
+      before_all do
+        create(:resource_state_event, merge_request: merge_request, state: :merged)
+      end
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when another state event has a source' do
+      before_all do
+        create(:resource_state_event, merge_request: merge_request, state: :closed, source_commit: 'abcd1234')
+        create(:resource_state_event, merge_request: merge_request, state: :merged)
+      end
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when the merge request is not merged' do
+      let_it_be(:merge_request) { create(:merge_request, :closed, :unique_branches, source_project: project) }
+
+      before_all do
+        create(:resource_state_event, merge_request: merge_request, state: :closed, source_commit: 'abcd1234')
+      end
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when the state events are preloaded' do
+      let_it_be(:event) do
+        create(:resource_state_event, merge_request: merge_request, state: :merged,
+          source_merge_request: source_merge_request)
+      end
+
+      it 'does not query again' do
+        preloaded = described_class.preload(merge_source_event: :source_merge_request).find(merge_request.id)
+
+        expect { preloaded.merge_source.source_merge_request }.not_to exceed_query_limit(0)
+      end
+    end
+  end
+
   describe '#merged_at' do
     context 'when MR is not merged' do
       let(:merge_request) { create(:merge_request, :closed) }

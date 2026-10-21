@@ -7,12 +7,13 @@ RSpec.describe Mcp::Tools::Base::GraphqlService, feature_category: :mcp_server d
 
   let(:test_graphql_tool_class) do
     Class.new do
-      attr_reader :current_user, :params, :version
+      attr_reader :current_user, :params, :version, :access_token
 
-      def initialize(current_user:, params:, version: nil)
+      def initialize(current_user:, params:, version: nil, access_token: nil)
         @current_user = current_user
         @params = params
         @version = version
+        @access_token = access_token
       end
 
       def execute
@@ -91,11 +92,11 @@ RSpec.describe Mcp::Tools::Base::GraphqlService, feature_category: :mcp_server d
   end
 
   describe '#set_cred' do
-    it 'sets current_user' do
+    it 'sets current_user and access_token' do
       service.set_cred(current_user: user, access_token: 'test_token_123')
 
       expect(service.instance_variable_get(:@current_user)).to eq(user)
-      expect(service.instance_variable_get(:@access_token)).to be_nil
+      expect(service.instance_variable_get(:@access_token)).to eq('test_token_123')
     end
   end
 
@@ -261,22 +262,25 @@ RSpec.describe Mcp::Tools::Base::GraphqlService, feature_category: :mcp_server d
   end
 
   describe '#execute_graphql_tool' do
+    let(:access_token) { build_stubbed(:personal_access_token, user: user) }
+
     before do
-      service.set_cred(current_user: user)
+      service.set_cred(current_user: user, access_token: access_token)
     end
 
-    it 'instantiates GraphQL tool with current_user, params and version' do
+    it 'instantiates GraphQL tool with current_user, params, version and access_token' do
       expect(test_graphql_tool_class).to receive(:new).with(
         current_user: user,
         params: { test_param: 'value' },
-        version: '0.1.0'
+        version: '0.1.0',
+        access_token: access_token
       ).and_call_original
 
       service.send(:execute_graphql_tool, { test_param: 'value' })
     end
 
     it 'calls execute on the GraphQL tool' do
-      tool_instance = test_graphql_tool_class.new(current_user: user, params: {}, version: '0.1.0')
+      tool_instance = test_graphql_tool_class.new(current_user: user, params: {}, version: '0.1.0', access_token: nil)
       allow(test_graphql_tool_class).to receive(:new).and_return(tool_instance)
       expect(tool_instance).to receive(:execute)
 
@@ -322,7 +326,8 @@ RSpec.describe Mcp::Tools::Base::GraphqlService, feature_category: :mcp_server d
         expect(test_graphql_tool_class).to receive(:new).with(
           current_user: user,
           params: { test: 'v1' },
-          version: '0.1.0'
+          version: '0.1.0',
+          access_token: nil
         ).and_call_original
 
         service_v1.send(:execute_graphql_tool, { test: 'v1' })
@@ -335,7 +340,8 @@ RSpec.describe Mcp::Tools::Base::GraphqlService, feature_category: :mcp_server d
         expect(test_graphql_tool_class).to receive(:new).with(
           current_user: user,
           params: { test: 'v2' },
-          version: '0.2.0'
+          version: '0.2.0',
+          access_token: nil
         ).and_call_original
 
         service_v2.send(:execute_graphql_tool, { test: 'v2' })

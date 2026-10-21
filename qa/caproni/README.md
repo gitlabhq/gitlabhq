@@ -60,6 +60,7 @@ names the upstream issue that would retire it. They are not the intended pattern
 | `manifests/oidc-consumer/` | Kustomization for the consumer's `gitlab-omniauth-consumer` provider secret |
 | `scripts/install-caproni.sh` | Fetches and checksum-verifies the Caproni binary at `CAPRONI_VERSION` |
 | `scripts/write_local_config.rb` | Generates `caproni.local.yaml`: the CI domain, plus the fragments a job opts into |
+| `scripts/seed.rb` | Runs several seeders in one `gitlab-rails runner`, so Rails boots once, for example `scripts/seed.rb admin_token oidc_application` |
 | `scripts/seed_admin_token.rb` | Seeds the admin PAT the E2E suite authenticates with |
 | `scripts/seed_oidc_application.rb` | Registers the consumer's client ID and secret on the primary as a Doorkeeper application |
 | `scripts/save-cluster-logs.sh` | Pod and event log bundle for failure diagnosis |

@@ -72,8 +72,18 @@ RSpec.describe MergeRequestCleanupRefsWorker, feature_category: :code_review_wor
   end
 
   describe '#max_running_jobs' do
-    it 'returns the value of MAX_RUNNING_JOBS' do
-      expect(worker.max_running_jobs).to eq(described_class::MAX_RUNNING_JOBS)
+    it 'returns the value of INCREASED_MAX_RUNNING_JOBS' do
+      expect(worker.max_running_jobs).to eq(described_class::INCREASED_MAX_RUNNING_JOBS)
+    end
+
+    context 'when increased_merge_request_cleanup_refs_capacity is disabled' do
+      before do
+        stub_feature_flags(increased_merge_request_cleanup_refs_capacity: false)
+      end
+
+      it 'returns the value of MAX_RUNNING_JOBS' do
+        expect(worker.max_running_jobs).to eq(described_class::MAX_RUNNING_JOBS)
+      end
     end
   end
 

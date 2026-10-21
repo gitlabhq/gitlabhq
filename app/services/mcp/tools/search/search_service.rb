@@ -83,7 +83,6 @@ module Mcp
           sort_description = <<~DESC.strip
             Specify the sort direction for results. Works with order_by parameter
             - Allowed values: asc, desc
-            - Default: desc
           DESC
 
           properties_hash = {

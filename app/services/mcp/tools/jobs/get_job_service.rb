@@ -48,15 +48,14 @@ module Mcp
               byte_offset: {
                 type: 'integer',
                 minimum: MIN_BYTE_OFFSET,
-                description: "Byte offset to start reading the job's log from. Only applies when include is log. " \
-                  "Default is #{MIN_BYTE_OFFSET}."
+                description: "Byte offset to start reading the job's log from. Only applies when include is log."
               },
               byte_limit: {
                 type: 'integer',
                 minimum: 1,
                 maximum: MAX_BYTE_LIMIT,
-                description: "Maximum number of bytes of the job's log to return. Only applies when include is " \
-                  "log. Default and max is #{MAX_BYTE_LIMIT}."
+                description: "Maximum number of bytes of the job's log to return; maximum is #{MAX_BYTE_LIMIT}. " \
+                  "Only applies when include is log."
               }
             },
             required: %w[id job_id]

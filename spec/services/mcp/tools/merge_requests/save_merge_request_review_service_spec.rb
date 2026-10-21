@@ -81,7 +81,7 @@ RSpec.describe Mcp::Tools::MergeRequests::SaveMergeRequestReviewService, feature
           internal: {
             type: 'boolean',
             description: 'Mark the note as internal, visible only to users who can see internal ' \
-              'notes (create_note). Default is false.'
+              'notes (create_note).'
           },
           resolved: {
             type: 'boolean',
@@ -153,7 +153,7 @@ RSpec.describe Mcp::Tools::MergeRequests::SaveMergeRequestReviewService, feature
           },
           summary_internal: {
             type: 'boolean',
-            description: 'Mark the summary note as internal (submit_review). Default is false.'
+            description: 'Mark the summary note as internal (submit_review).'
           },
           sha: {
             type: 'string',

@@ -42,7 +42,7 @@ The Package Metadata Database holds four datasets:
 | Licenses           | License data for package versions.                    | License scanning |
 | Advisories         | Security advisories for package versions.             | Dependency scanning, continuous vulnerability scanning, and container scanning for registry |
 | CVE enrichment     | The EPSS score and KEV status of vulnerabilities.     | [Vulnerability risk assessment data](../vulnerabilities/risk_assessment_data.md) |
-| Malware advisories | Known malicious packages found in package registries. | [GitLab malware advisories](../gitlab_advisory_database/_index.md#gitlab-malware-advisories) |
+| Malware advisories | Known malicious packages found in package registries. | Dependency scanning, continuous vulnerability scanning, and merge request approval policies. For more information, see [GitLab advisories for malware](../gitlab_advisory_database/_index.md#gitlab-advisories-for-malware). |
 
 By default, GitLab synchronizes data for all package registry types.
 To synchronize less data, clear the package registry types that you do not use in the

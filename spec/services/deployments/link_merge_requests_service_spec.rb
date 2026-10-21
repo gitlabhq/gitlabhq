@@ -317,5 +317,47 @@ RSpec.describe Deployments::LinkMergeRequestsService, feature_category: :continu
       expect(deploy.merge_requests).to include(mr1, mr2)
       expect(deploy.merge_requests).not_to include(mr3)
     end
+
+    context 'when the deployment is for a tag' do
+      let(:environment) { create(:environment, project: project) }
+      let!(:merged_into_default_branch) do
+        create(:merge_request, :merged, source_project: project, target_project: project,
+          source_branch: 'in-tag', target_branch: project.default_branch)
+      end
+
+      let!(:merged_into_other_branch) do
+        create(:merge_request, :merged, source_project: project, target_project: project,
+          source_branch: 'other-branch', target_branch: 'foo')
+      end
+
+      it 'links merged merge requests targeting the default branch when it contains the tag commit' do
+        behind_head = project.repository.commits(project.default_branch, limit: 2).last
+        deploy = create(:deployment, :success, project: project, environment: environment, ref: 'v1.1.0', tag: true,
+          sha: behind_head.id)
+
+        described_class.new(deploy).link_all_merged_merge_requests
+
+        expect(deploy.merge_requests).to contain_exactly(merged_into_default_branch)
+      end
+
+      it 'links nothing when the repository has no head commit' do
+        deploy = create(:deployment, :success, project: project, environment: environment, ref: 'v1.1.0', tag: true,
+          sha: project.commit(project.default_branch).id)
+        allow(project.repository).to receive(:head_commit).and_return(nil)
+
+        described_class.new(deploy).link_all_merged_merge_requests
+
+        expect(deploy.merge_requests).to be_empty
+      end
+
+      it 'links nothing when the default branch does not contain the tag commit' do
+        deploy = create(:deployment, :success, project: project, environment: environment, ref: 'v1.1.0', tag: true,
+          sha: project.commit('feature').id)
+
+        described_class.new(deploy).link_all_merged_merge_requests
+
+        expect(deploy.merge_requests).to be_empty
+      end
+    end
   end
 end

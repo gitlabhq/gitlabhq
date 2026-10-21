@@ -9,6 +9,10 @@ module Mcp
 
         QUERIES_ROOT = Rails.root.join('app/graphql/queries/mcp').freeze
         IMPORT_PATTERN = %r{^#\s*import "\./(?<path>[^"]+)"$}
+        HIDDEN_DENIAL_REASONS = [
+          ::Mcp::Tools::Base::Response::Reason::NOT_FOUND,
+          ::Mcp::Tools::Base::Response::Reason::UNAUTHORIZED
+        ].freeze
 
         def self.load_graphql(relative_path)
           query = read_graphql_file(relative_path)
@@ -24,11 +28,12 @@ module Mcp
           File.read(QUERIES_ROOT.join(relative_path))
         end
 
-        attr_reader :current_user, :params
+        attr_reader :current_user, :params, :access_token
 
-        def initialize(current_user:, params:, version: nil)
+        def initialize(current_user:, params:, access_token:, version: nil)
           @current_user = current_user
           @params = params
+          @access_token = access_token
           initialize_version(version)
         end
 
@@ -54,20 +59,46 @@ module Mcp
         end
 
         def execute
+          denied_earlier = ::Current.granular_denied_permissions
+          ::Current.granular_denied_permissions = nil
+
           result = GitlabSchema.execute(
             graphql_operation_for_version,
             variables: build_variables_for_version,
             context: execution_context
           )
+          denied = Array(::Current.granular_denied_permissions)
 
-          process_result(result)
+          response = process_result(result)
+          return granular_denied_error(denied) if denied.any? && hides_denial?(response)
+
+          response
+        ensure
+          ::Current.add_granular_denied_permissions(denied_earlier)
         end
 
         private
 
+        def hides_denial?(response)
+          ::Mcp::Tools::Base::Response.error?(response) &&
+            HIDDEN_DENIAL_REASONS.include?(response[:reason])
+        end
+
+        # GraphQL turns a granular token denial on a query into null data, which tools report as not found.
+        # Denials are recorded only after the boundary visibility check, so hidden projects and groups stay hidden.
+        def granular_denied_error(permissions)
+          ::Mcp::Tools::Base::Response.error(
+            ::Authz::Tokens::AuthorizeGranularScopesService.access_denied_message(
+              token: access_token, permissions: permissions
+            ),
+            reason: ::Mcp::Tools::Base::Response::Reason::UNAUTHORIZED
+          )
+        end
+
         def execution_context
           {
             current_user: current_user,
+            access_token: access_token,
             is_sessionless_user: false,
             mcp_tool: mcp_tool_identifier
           }

@@ -214,7 +214,7 @@ The dependency scanning report is:
 
 Dependency scanning identifies malicious packages when it ingests a CycloneDX SBOM. GitLab
 compares the components in the SBOM against
-[GitLab malware advisories](../../gitlab_advisory_database/_index.md#gitlab-malware-advisories),
+[GitLab malware advisories](../../gitlab_advisory_database/_index.md#gitlab-advisories-for-malware),
 in addition to the usual security advisories. A match creates a vulnerability.
 
 A malicious package finding means the package itself is harmful, rather than containing a defect
@@ -234,11 +234,11 @@ These vulnerabilities always have `Critical` severity. Malware advisories state 
 rather than deriving it from a Common Vulnerability Scoring System (CVSS) score.
 
 Each vulnerability has an identifier in the form `GLAM-<year>-<month>-<sequence>`, for example
-`GLAM-2026-09-00138`. It does not carry a Common Vulnerabilities and Exposures (CVE) identifier.
+`GLAM-2026-09-00138`.
 
 Malware advisories cover fewer package types than dependency scanning supports generally. For the
 full list, see
-[Supported package types](../../gitlab_advisory_database/_index.md#supported-package-types).
+[Supported package types](../../gitlab_advisory_database/_index.md#supported-package-types-for-malware-advisories).
 
 This feature is available with GitLab Ultimate and has no separate setting to turn on. It follows
 your project's existing dependency scanning configuration. On GitLab Self-Managed, the package

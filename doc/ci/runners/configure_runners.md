@@ -467,6 +467,7 @@ globally or for individual jobs:
 - [`GIT_CLEAN_FLAGS`](#git-clean-flags)
 - [`GIT_FETCH_EXTRA_FLAGS`](#git-fetch-extra-flags)
 - [`GIT_CLONE_EXTRA_FLAGS`](#git-clone-extra-flags)
+- [`GIT_LFS_PULL_FLAGS`](#git-lfs-pull-flags)
 - [`GIT_SUBMODULE_UPDATE_FLAGS`](#git-submodule-update-flags)
 - [`GIT_SUBMODULE_FORCE_HTTPS`](#rewrite-submodule-urls-to-https)
 - [`GIT_LFS_SKIP_SMUDGE`](#skip-git-lfs-objects)
@@ -689,6 +690,66 @@ variables:
 ```
 
 If `GIT_CLONE_EXTRA_FLAGS` is not specified, `git clone` uses only the default flags.
+
+### Git LFS pull flags
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/7417) in GitLab Runner 19.6.
+
+{{< /history >}}
+
+Use the `GIT_LFS_PULL_FLAGS` variable to control the behavior of `git lfs pull`.
+You can set it globally or for each job in the [`variables`](../yaml/_index.md#variables) section.
+
+`GIT_LFS_PULL_FLAGS` accepts all options of the
+[`git lfs pull`](https://github.com/git-lfs/git-lfs/blob/main/docs/man/git-lfs-pull.adoc) command.
+The flags are appended to the `git lfs pull` command that the runner runs for the repository after
+checkout, and for each submodule when [`GIT_SUBMODULE_STRATEGY`](#git-submodule-strategy) is set to
+`normal` or `recursive`. In a submodule, patterns are relative to the root of that submodule, not the
+root of the parent repository. An `--include` pattern for paths in the parent repository can exclude
+all Git LFS objects in a submodule.
+
+Use this variable to fetch only the Git LFS objects that a job needs. Jobs that skip large
+objects need less disk space on the runner and check out faster.
+
+If `GIT_LFS_PULL_FLAGS` is:
+
+- Not specified, the runner runs `git lfs pull` without additional flags.
+- Given the value `none`, the runner runs `git lfs pull` without additional flags. Use `none` in a
+  job to clear a value that is set globally.
+
+Files that the flags exclude stay in the working directory as Git LFS pointer files. A job that
+reads one of these files gets a small text file, not the file contents.
+
+For example, to fetch only the Git LFS objects under `assets/` and skip everything under `videos/`:
+
+```yaml
+build:
+  variables:
+    GIT_LFS_PULL_FLAGS: --include=assets/** --exclude=videos/**
+  script:
+    - ls -al assets/
+```
+
+The previous configuration results in the runner calling `git lfs pull` this way:
+
+```shell
+git lfs pull --include='assets/**' --exclude='videos/**'
+```
+
+The runner splits the value of `GIT_LFS_PULL_FLAGS` on whitespace, so patterns that contain
+spaces are not supported. To give more than one pattern, separate them with commas, for example,
+`--include=assets/**,docs/**`. Do not put quotes around patterns in `GIT_LFS_PULL_FLAGS`. The quotes
+become part of the pattern, and the pattern does not match any files.
+
+This variable has no effect when:
+
+- [`GIT_LFS_SKIP_SMUDGE`](#skip-git-lfs-objects) is set to `true`, because the runner skips
+  `git lfs pull`.
+- [`GIT_CHECKOUT`](#git-checkout) is set to `false`, because the runner does not check out the
+  repository or its submodules.
+- [`GIT_STRATEGY`](#git-strategy) is set to `none` or `empty`.
 
 ### Sync or exclude specific submodules from CI jobs
 

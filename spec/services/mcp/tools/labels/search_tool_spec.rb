@@ -8,7 +8,7 @@ RSpec.describe Mcp::Tools::Labels::SearchTool, feature_category: :mcp_server do
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:label) { create(:label, project: project, title: 'label') }
   let(:params) { { full_path: project.full_path, is_project: true, search: 'label' } }
-  let(:tool) { described_class.new(current_user: user, params: params, version: '0.1.0') }
+  let(:tool) { described_class.new(current_user: user, params: params, version: '0.1.0', access_token: nil) }
 
   before_all do
     project.add_developer(user)
@@ -283,7 +283,7 @@ RSpec.describe Mcp::Tools::Labels::SearchTool, feature_category: :mcp_server do
     let_it_be(:second_label) { create(:label, project: project, title: 'backend') }
     let_it_be(:overlapping_label) { create(:label, project: project, title: 'backend-label') }
     let(:params) { { full_path: project.full_path, is_project: true, search: %w[label backend] } }
-    let(:tool) { described_class.new(current_user: user, params: params, version: '0.2.0') }
+    let(:tool) { described_class.new(current_user: user, params: params, version: '0.2.0', access_token: nil) }
 
     it 'executes each term with the version 0.2.0 operation' do
       allow(GitlabSchema).to receive(:execute).and_call_original
@@ -310,11 +310,23 @@ RSpec.describe Mcp::Tools::Labels::SearchTool, feature_category: :mcp_server do
       )
     end
 
+    it 'passes the access token to each per-term search' do
+      access_token = create(:personal_access_token, user: user)
+      allow(GitlabSchema).to receive(:execute).and_call_original
+
+      described_class.new(current_user: user, params: params, version: '0.2.0', access_token: access_token).execute
+
+      expect(GitlabSchema).to have_received(:execute)
+        .with(anything, variables: anything, context: hash_including(access_token: access_token)).twice
+    end
+
     it 'runs a repeated term only once' do
       allow(GitlabSchema).to receive(:execute).and_call_original
       duplicate_params = params.merge(search: %w[label label])
 
-      result = described_class.new(current_user: user, params: duplicate_params, version: '0.2.0').execute
+      result = described_class.new(
+        current_user: user, params: duplicate_params, version: '0.2.0', access_token: nil
+      ).execute
 
       expect(result[:isError]).to be(false)
       expect(GitlabSchema).to have_received(:execute).once
@@ -325,7 +337,7 @@ RSpec.describe Mcp::Tools::Labels::SearchTool, feature_category: :mcp_server do
 
       it 'returns the same labels as the scalar version' do
         old_result = described_class.new(
-          current_user: user, params: params.merge(search: 'label'), version: '0.1.0'
+          current_user: user, params: params.merge(search: 'label'), version: '0.1.0', access_token: nil
         ).execute
 
         expect(tool.execute).to eq(old_result)

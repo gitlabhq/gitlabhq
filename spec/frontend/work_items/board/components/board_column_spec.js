@@ -183,6 +183,17 @@ describe.each([
 
       expect(wrapper.emitted('create-item')).toEqual([[mockStatus]]);
     });
+
+    describe('when the create button should take focus', () => {
+      beforeEach(async () => {
+        createComponent({ props: { canCreateWorkItem: true, focusCreateButton: true } });
+        await waitForPromises();
+      });
+
+      it('passes focusCreateButton to ColumnHeader', () => {
+        expect(findColumnHeader().props('focusCreateButton')).toBe(true);
+      });
+    });
   });
 
   describe('collapsed state', () => {
@@ -437,6 +448,17 @@ describe.each([
       expect(wrapper.emitted('card-move-to-position')).toEqual([
         [{ workItemId: nodes[0].id, oldIndex: 0, newIndex: 2 }],
       ]);
+    });
+  });
+
+  describe('card list', () => {
+    beforeEach(async () => {
+      createComponent();
+      await waitForPromises();
+    });
+
+    it('names the card list after the column', () => {
+      expect(findDraggable().attributes('aria-label')).toBe('To do');
     });
   });
 

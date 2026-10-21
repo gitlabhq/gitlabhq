@@ -342,17 +342,17 @@ In this example:
 
 Use the `is_malicious` scanner attribute to block merge requests when a scan detects a package
 listed in the
-[GitLab malware advisories](../gitlab_advisory_database/_index.md#gitlab-malware-advisories).
+[GitLab malware advisories](../gitlab_advisory_database/_index.md#gitlab-advisories-for-malware).
 Malicious findings carry immediate risk, so they are always treated as violations, even when a
 finding does not match the other criteria in the rule. The rule blocks a malicious finding even when
 the finding is dismissed, or falls outside the `severity_levels` and `vulnerability_states` filters.
 
 The `is_malicious` attribute is valid only for the `dependency_scanning` and `container_scanning`
-scanners. Malicious findings are identified by a `GLAM-` identifier rather than the `CVE` or `CWE`
-identifiers used for other vulnerabilities. Malware advisories cover only the package types
+scanners. Malicious findings have a `GLAM-` identifier.
+Malware advisories cover only the package types
 supported by dependency scanning, so `container_scanning` scanners do not produce malicious
 findings. For the full list of supported package types, see
-[supported package types](../gitlab_advisory_database/_index.md#supported-package-types).
+[supported package types](../gitlab_advisory_database/_index.md#supported-package-types-for-malware-advisories).
 
 When you set `is_malicious: true` on a scanner, the rule evaluates that scanner as an `OR`
 condition. A merge request is in violation when malware is detected, when a finding matches the

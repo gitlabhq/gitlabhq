@@ -42,7 +42,7 @@ module Deployments
       end
 
       if environment_saved
-        deployment.update_merge_request_metrics! unless environment.stopped?
+        update_merge_request_metrics unless environment.stopped?
       else
         # If there is a validation error on environment update, such as
         # the external URL is malformed, the error message is recorded for debugging purpose.
@@ -57,6 +57,12 @@ module Deployments
     end
 
     private
+
+    def update_merge_request_metrics
+      LinkMergeRequestsService.new(deployment).execute if deployment.tag? && environment.production?
+
+      deployment.update_merge_request_metrics!
+    end
 
     def environment_options
       options&.dig(:environment) || {}

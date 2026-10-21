@@ -175,7 +175,7 @@ Different agents record different details:
 Sessions from Externally Connected Agents (ECAs) appear on the AI Governance dashboard when the **Show** control
 is set to **All agents** (the default) or **Connected**:
 
-- The **Most recent sessions** card names each session after its agent. For example, **Cursor (glab)**
+- The **Recent agent sessions** card names each session after its agent. For example, **Cursor (glab)**
   or **Claude Code (glab)**.
 - The **Most used agents** card lists each connected agent with the number of machines and users
   that ran it. For example, **2 machines · 2 users**.

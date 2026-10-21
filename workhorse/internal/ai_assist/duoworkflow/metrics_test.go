@@ -47,9 +47,9 @@ func newTestStreamManager(t *testing.T, wf workflowStream) *streamManager {
 	require.NoError(t, err)
 
 	return &streamManager{
-		wf:          wf,
-		client:      client,
-		originalReq: httptest.NewRequest(http.MethodGet, "/", nil),
+		wf:      wf,
+		client:  client,
+		session: newSession(httptest.NewRequest(http.MethodGet, "/", nil)),
 	}
 }
 
@@ -150,7 +150,7 @@ func TestSessionsTotal(t *testing.T) {
 	before := counterValue(t, sessionsTotal)
 
 	r := httptest.NewRequest(http.MethodGet, "/", nil)
-	sm, err := newStreamManager(r, testDuoWorkflowConfig(server))
+	sm, err := newStreamManager(newSession(r), testDuoWorkflowConfig(server))
 	require.NoError(t, err)
 	defer sm.Close() //nolint:errcheck
 

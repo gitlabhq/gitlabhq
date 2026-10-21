@@ -25,7 +25,8 @@ module Mcp
             result = self.class.new(
               current_user: current_user,
               params: params.merge(search: term),
-              version: version
+              version: version,
+              access_token: access_token
             ).execute
 
             break if result[:isError]

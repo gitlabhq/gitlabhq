@@ -643,6 +643,18 @@ RSpec.describe Mcp::Tools::Repositories::AddCommitService, feature_category: :mc
         .to raise_error(ArgumentError, 'URL must identify a project')
     end
 
+    it 'passes the access token to the blobs tool' do
+      access_token = build_stubbed(:personal_access_token, user: user)
+      service.set_cred(current_user: user, access_token: access_token)
+
+      expect(Mcp::Tools::Repositories::BlobsTool).to receive(:new)
+        .with(hash_including(access_token: access_token))
+        .and_return(instance_double(Mcp::Tools::Repositories::BlobsTool, execute: blob_result))
+      expect(service).to receive(:execute_graphql_tool).and_return(Mcp::Tools::Base::Response.success([]))
+
+      service.send(:perform_v0_1_0, base_arguments)
+    end
+
     it 'reads from branch, not start_branch, when branch already exists' do
       base_arguments[:start_branch] = 'nonexistent-start-branch'
 

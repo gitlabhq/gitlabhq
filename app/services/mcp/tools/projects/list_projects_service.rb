@@ -38,7 +38,7 @@ module Mcp
               archived: {
                 type: 'string',
                 description: 'Filter by archived state: only returns archived projects, include ' \
-                  'returns both, exclude returns only non-archived projects (default).',
+                  'returns both, exclude returns only non-archived projects.',
                 enum: %w[only include exclude]
               },
               **Mcp::Tools::Concerns::CursorPagination.input_schema_params(items: 'projects')

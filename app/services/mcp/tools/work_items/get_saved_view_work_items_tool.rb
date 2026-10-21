@@ -33,7 +33,7 @@ module Mcp
 
         attr_reader :unsupported_filters
 
-        def initialize(current_user:, params:, version: nil)
+        def initialize(current_user:, params:, access_token:, version: nil)
           super
           @unsupported_filters = []
         end

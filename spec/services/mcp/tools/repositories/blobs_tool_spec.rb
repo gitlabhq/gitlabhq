@@ -10,7 +10,7 @@ RSpec.describe Mcp::Tools::Repositories::BlobsTool, feature_category: :mcp_serve
     { project_id: project.full_path, paths: ['README.md'], ref: project.default_branch }
   end
 
-  let(:tool) { described_class.new(current_user: user, params: params) }
+  let(:tool) { described_class.new(current_user: user, params: params, access_token: nil) }
 
   describe '#build_variables' do
     it 'builds variables for a project blob read' do
@@ -80,7 +80,7 @@ RSpec.describe Mcp::Tools::Repositories::BlobsTool, feature_category: :mcp_serve
         { project_id: restricted_project.full_path, paths: ['README.md'], ref: restricted_project.default_branch }
       end
 
-      let(:tool) { described_class.new(current_user: outsider, params: params) }
+      let(:tool) { described_class.new(current_user: outsider, params: params, access_token: nil) }
 
       it 'raises before executing GraphQL' do
         expect { tool.execute }.to raise_error(StandardError, /not found or inaccessible/)

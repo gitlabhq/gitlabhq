@@ -20,7 +20,7 @@ RSpec.describe Mcp::Tools::MergeRequests::ListMergeRequestsTool, feature_categor
   end
 
   let(:params) { { project_id: project.id.to_s } }
-  let(:tool) { described_class.new(current_user: user, params: params) }
+  let(:tool) { described_class.new(current_user: user, params: params, access_token: nil) }
 
   def result_iids(result)
     result[:structuredContent]['nodes'].map { |node| node['iid'] }
@@ -321,7 +321,7 @@ RSpec.describe Mcp::Tools::MergeRequests::ListMergeRequestsTool, feature_categor
       let(:params) { { project_id: private_project.id.to_s } }
 
       context 'when the caller is not a member' do
-        let(:tool) { described_class.new(current_user: non_member, params: params) }
+        let(:tool) { described_class.new(current_user: non_member, params: params, access_token: nil) }
 
         it 'raises the same message as for a missing project, preventing enumeration' do
           expect { tool.execute }
@@ -389,7 +389,7 @@ RSpec.describe Mcp::Tools::MergeRequests::ListMergeRequestsTool, feature_categor
         let(:params) { { group_id: private_group.id.to_s } }
 
         context 'when the caller is not a member' do
-          let(:tool) { described_class.new(current_user: non_member, params: params) }
+          let(:tool) { described_class.new(current_user: non_member, params: params, access_token: nil) }
 
           it 'raises the same message as for a missing group, preventing enumeration' do
             expect { tool.execute }

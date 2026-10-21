@@ -57,8 +57,7 @@ module Mcp
               },
               internal: {
                 type: 'boolean',
-                description: 'Mark note as internal (visible only to members with at least the Reporter role)',
-                default: false
+                description: 'Mark note as internal (visible only to members with at least the Reporter role)'
               },
               discussion_id: {
                 type: 'string',

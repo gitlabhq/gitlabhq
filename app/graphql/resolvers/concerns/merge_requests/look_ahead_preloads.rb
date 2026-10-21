@@ -28,6 +28,7 @@ module MergeRequests
         approved_by: [:approved_by_users],
         merge_after: [:merge_schedule],
         merge_before: [:merge_schedule],
+        merge_source: [{ merge_source_event: :source_merge_request }],
         mergeable: [:merge_schedule],
         detailed_merge_status: [:merge_schedule, :latest_merge_request_diff],
         mergeability_checks: [

@@ -8817,7 +8817,7 @@ msgstr ""
 msgid "AiGovernance|Failed to load session distribution."
 msgstr ""
 
-msgid "AiGovernance|Failed to load tool calls by risk."
+msgid "AiGovernance|Failed to load tool calls by action."
 msgstr ""
 
 msgid "AiGovernance|Failed to load tool calls."
@@ -8868,13 +8868,10 @@ msgstr ""
 msgid "AiGovernance|Most active developers using agents"
 msgstr ""
 
-msgid "AiGovernance|Most recent sessions"
-msgstr ""
-
-msgid "AiGovernance|Most risky skills"
-msgstr ""
-
 msgid "AiGovernance|Most used agents"
+msgstr ""
+
+msgid "AiGovernance|Most vulnerable skills"
 msgstr ""
 
 msgid "AiGovernance|No MCP servers found."
@@ -8919,10 +8916,10 @@ msgstr ""
 msgid "AiGovernance|Overrides group"
 msgstr ""
 
-msgid "AiGovernance|Projects with the most active agent sessions"
+msgid "AiGovernance|Read"
 msgstr ""
 
-msgid "AiGovernance|Read"
+msgid "AiGovernance|Recent agent sessions"
 msgstr ""
 
 msgid "AiGovernance|Rules"
@@ -8973,10 +8970,7 @@ msgstr ""
 msgid "AiGovernance|This tool can invoke shell commands including git, curl, and file operations. It may bypass restrictions set on other tools."
 msgstr ""
 
-msgid "AiGovernance|Tool calls by risk"
-msgstr ""
-
-msgid "AiGovernance|Tool calls by risk level"
+msgid "AiGovernance|Tool calls by action"
 msgstr ""
 
 msgid "AiGovernance|Tool management"
@@ -8985,7 +8979,10 @@ msgstr ""
 msgid "AiGovernance|Tool name"
 msgstr ""
 
-msgid "AiGovernance|Top tools used by agents"
+msgid "AiGovernance|Top projects by agent sessions"
+msgstr ""
+
+msgid "AiGovernance|Top tools by calls"
 msgstr ""
 
 msgid "AiGovernance|Total number of agent sessions"
@@ -9021,10 +9018,10 @@ msgstr ""
 msgid "AiGovernance|View all projects"
 msgstr ""
 
-msgid "AiGovernance|View all skills"
+msgid "AiGovernance|View all users"
 msgstr ""
 
-msgid "AiGovernance|View all users"
+msgid "AiGovernance|View all vulnerable skills"
 msgstr ""
 
 msgid "AiGovernance|View tool management"
@@ -97144,10 +97141,16 @@ msgstr ""
 msgid "WorkItemBoard|Card actions"
 msgstr ""
 
+msgid "WorkItemBoard|Collapse %{columnName} column"
+msgstr ""
+
 msgid "WorkItemBoard|Column actions"
 msgstr ""
 
 msgid "WorkItemBoard|Drop here to move item."
+msgstr ""
+
+msgid "WorkItemBoard|Expand %{columnName} column"
 msgstr ""
 
 msgid "WorkItemBoard|Hide list"
@@ -97284,6 +97287,11 @@ msgstr ""
 
 msgid "WorkItemDecisionLog|Decision log"
 msgstr ""
+
+msgid "WorkItemDecisionLog|Decision log, %d decision"
+msgid_plural "WorkItemDecisionLog|Decision log, %d decisions"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "WorkItemDecisionLog|Decisions show up here once an open question gets answered or a comment is marked as a decision. Each one keeps the background behind it and a link back to where it was made."
 msgstr ""

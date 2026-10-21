@@ -1,6 +1,7 @@
 <script>
 import { GlLink, GlModal, GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import { CREATE_EXPERIMENT_HELP_PATH, MLFLOW_USAGE_MODAL_ID } from '../constants';
 
@@ -34,8 +35,7 @@ export default {
   },
   methods: {
     copyInstructions() {
-      // eslint-disable-next-line no-restricted-properties
-      navigator.clipboard.writeText(this.instruction.cmd);
+      copyToClipboard(this.instruction.cmd, this.$refs.copyButton?.$el);
     },
   },
   MLFLOW_USAGE_MODAL_ID,
@@ -61,6 +61,7 @@ export default {
       >
         <code class="gl-grow">{{ instruction.cmd }}</code>
         <clipboard-button
+          ref="copyButton"
           category="tertiary"
           :text="instruction.cmd"
           :title="__('Copy to clipboard')"

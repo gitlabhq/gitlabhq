@@ -1,4 +1,5 @@
-import { GlIcon } from '@gitlab/ui';
+import { GlButton, GlIcon } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import ColumnHeader from '~/work_items/board/components/column_header.vue';
@@ -24,17 +25,17 @@ describe('ColumnHeader', () => {
   const DRAG_HANDLE_CLASS = 'js-board-column-drag-handle';
   const findCreateButton = () => wrapper.findComponentByTestId('column-create-item');
 
-  const createComponent = ({ props = {} } = {}) => {
+  const createComponent = ({ props = {}, stubs = {}, attachTo, directives } = {}) => {
     wrapper = shallowMountExtended(ColumnHeader, {
+      attachTo,
+      stubs,
       propsData: {
         value: mockStatus,
         decoration: { type: 'icon', name: 'status-waiting', color: '#737278' },
         count: 5,
         ...props,
       },
-      directives: {
-        GlTooltip: createMockDirective('gl-tooltip'),
-      },
+      directives,
     });
   };
 
@@ -56,6 +57,7 @@ describe('ColumnHeader', () => {
             name: 'A long status name that is truncated in the board header',
           },
         },
+        directives: { GlTooltip: createMockDirective('gl-tooltip') },
       });
     });
 
@@ -119,6 +121,30 @@ describe('ColumnHeader', () => {
       createComponent({ props: { controlsId: 'board-column-body-42' } });
 
       expect(findCollapseToggle().attributes('aria-controls')).toBe('board-column-body-42');
+    });
+
+    describe.each`
+      collapsed | label
+      ${false}  | ${'Collapse To do column'}
+      ${true}   | ${'Expand To do column'}
+    `('when collapsed is $collapsed', ({ collapsed, label }) => {
+      beforeEach(() => {
+        createComponent({ props: { collapsed } });
+      });
+
+      it(`names the toggle "${label}" so it says which column it controls`, () => {
+        expect(findCollapseToggle().attributes('aria-label')).toBe(label);
+      });
+    });
+
+    describe('when the column name has an apostrophe', () => {
+      beforeEach(() => {
+        createComponent({ props: { value: { ...mockStatus, name: "Won't do" } } });
+      });
+
+      it('keeps the apostrophe as typed in the toggle name', () => {
+        expect(findCollapseToggle().attributes('aria-label')).toBe("Collapse Won't do column");
+      });
     });
   });
 
@@ -232,6 +258,38 @@ describe('ColumnHeader', () => {
       findCreateButton().vm.$emit('click');
 
       expect(wrapper.emitted('create-item')).toHaveLength(1);
+    });
+
+    describe('when focusCreateButton turns on', () => {
+      beforeEach(async () => {
+        createComponent({
+          props: { canCreateWorkItem: true },
+          stubs: { GlButton },
+          attachTo: document.body,
+        });
+        await wrapper.setProps({ focusCreateButton: true });
+        await nextTick();
+      });
+
+      it('focuses the create button', () => {
+        expect(document.activeElement).toBe(findCreateButton().element);
+      });
+    });
+
+    describe('when focusCreateButton turns off', () => {
+      beforeEach(async () => {
+        createComponent({
+          props: { canCreateWorkItem: true, focusCreateButton: true },
+          stubs: { GlButton },
+          attachTo: document.body,
+        });
+        await wrapper.setProps({ focusCreateButton: false });
+        await nextTick();
+      });
+
+      it('does not move focus', () => {
+        expect(document.activeElement).toBe(document.body);
+      });
     });
   });
 

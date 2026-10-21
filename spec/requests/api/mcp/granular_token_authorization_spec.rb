@@ -50,6 +50,68 @@ RSpec.describe 'MCP granular token authorization', feature_category: :mcp_server
     end
   end
 
+  context 'with a GraphQL tool' do
+    let(:tool_params) { { name: 'get_project', arguments: { project_id: project.full_path } } }
+
+    it_behaves_like 'a tool enforcing granular token permissions', %i[read_project read_code]
+
+    it 'reports the missing permission' do
+      expect(tool_result['content'].first['text']).to include('Access denied: This operation requires')
+    end
+
+    context 'with a legacy token' do
+      let(:pat) { create(:personal_access_token, user: user, scopes: [:mcp]) }
+
+      it 'runs the tool when the group does not enforce fine-grained tokens' do
+        expect(tool_result['isError']).to be(false)
+      end
+
+      context 'when the group enforces fine-grained tokens' do
+        before do
+          stub_feature_flags(granular_personal_access_tokens_enforcement_saas: group)
+          ::NamespaceSetting.find_by!(namespace_id: group.id)
+            .update!(enforce_granular_tokens: true, granular_tokens_enforced_after: Date.current)
+        end
+
+        it 'reports the missing permission' do
+          expect(tool_result['isError']).to be(true)
+          expect(tool_result['content'].first['text']).to include('Access denied: This operation requires')
+        end
+      end
+    end
+
+    context 'when the user cannot read the project' do
+      let_it_be(:other_project) { create(:project, :private) }
+      let(:tool_params) { { name: 'get_project', arguments: { project_id: other_project.full_path } } }
+
+      it 'does not reveal the project' do
+        expect(tool_result['isError']).to be(true)
+        expect(tool_result['content'].first['text']).to include('not found')
+        expect(tool_result['content'].first['text']).not_to include('Access denied')
+      end
+    end
+  end
+
+  context 'with a GraphQL mutation tool' do
+    let(:branch_name) { "mcp-branch-#{SecureRandom.hex(4)}" }
+    let(:tool_params) do
+      { name: 'add_branch', arguments: { project_id: project.full_path, branch: branch_name, ref: 'master' } }
+    end
+
+    it_behaves_like 'a tool enforcing granular token permissions', %i[create_branch read_branch read_code]
+
+    it 'does not create the branch' do
+      tool_result
+
+      expect(project.repository.find_branch(branch_name)).to be_nil
+    end
+
+    it 'reports the missing project permissions' do
+      expect(tool_result['content'].first['text'])
+        .to include('Access denied: This operation requires', 'with the following project permissions')
+    end
+  end
+
   context 'with a custom tool' do
     let(:tool_params) { { name: 'list_releases', arguments: { project_id: project.full_path } } }
 

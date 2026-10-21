@@ -11,7 +11,7 @@ RSpec.describe Mcp::Tools::Commits::GetCommitTool, feature_category: :mcp_server
   end
 
   let(:params) { { project_id: project.id.to_s, commit_sha: commit.sha } }
-  let(:tool) { described_class.new(current_user: user, params: params) }
+  let(:tool) { described_class.new(current_user: user, params: params, access_token: nil) }
 
   before_all do
     project.add_developer(user)
@@ -163,7 +163,7 @@ RSpec.describe Mcp::Tools::Commits::GetCommitTool, feature_category: :mcp_server
       let_it_be(:private_project) { create(:project, :repository, :private) }
       let_it_be(:guest) { create(:user, guest_of: private_project) }
 
-      let(:tool) { described_class.new(current_user: guest, params: params) }
+      let(:tool) { described_class.new(current_user: guest, params: params, access_token: nil) }
       let(:params) { { project_id: private_project.full_path, commit_sha: private_project.commit.sha } }
 
       it 'reports unauthorized with the commit-not-found message', :aggregate_failures do

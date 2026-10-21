@@ -42,6 +42,7 @@ func TestRoundTripper_RoundTrip(t *testing.T) {
 				"Authorization":   "Bearer test-token",
 				"X-Custom-Header": "custom-value",
 			},
+			session: newSession(httptest.NewRequest("GET", "/", nil)),
 		}
 
 		req := httptest.NewRequest("GET", "http://example.com", nil)
@@ -70,9 +71,9 @@ func TestRoundTripper_RoundTrip(t *testing.T) {
 		originalReq.RemoteAddr = "192.0.2.1:1234"
 
 		rt := &roundTripper{
-			next:        &mockTransportFunc{fn: transportFunc},
-			headers:     map[string]string{},
-			originalReq: originalReq,
+			next:    &mockTransportFunc{fn: transportFunc},
+			headers: map[string]string{},
+			session: newSession(originalReq),
 		}
 
 		req := httptest.NewRequest("GET", "http://example.com", nil)
@@ -100,9 +101,9 @@ func TestRoundTripper_RoundTrip(t *testing.T) {
 		originalReq.Header.Set("X-Forwarded-For", "10.0.0.1")
 
 		rt := &roundTripper{
-			next:        &mockTransportFunc{fn: transportFunc},
-			headers:     map[string]string{},
-			originalReq: originalReq,
+			next:    &mockTransportFunc{fn: transportFunc},
+			headers: map[string]string{},
+			session: newSession(originalReq),
 		}
 
 		req := httptest.NewRequest("GET", "http://example.com", nil)
@@ -129,9 +130,9 @@ func TestRoundTripper_RoundTrip(t *testing.T) {
 		originalReq.RemoteAddr = "invalid-address"
 
 		rt := &roundTripper{
-			next:        &mockTransportFunc{fn: transportFunc},
-			headers:     map[string]string{},
-			originalReq: originalReq,
+			next:    &mockTransportFunc{fn: transportFunc},
+			headers: map[string]string{},
+			session: newSession(originalReq),
 		}
 
 		req := httptest.NewRequest("GET", "http://example.com", nil)
@@ -156,6 +157,7 @@ func TestRoundTripper_RoundTrip(t *testing.T) {
 		rt := &roundTripper{
 			next:    &mockTransportFunc{fn: transportFunc},
 			headers: map[string]string{},
+			session: newSession(httptest.NewRequest("GET", "/", nil)),
 		}
 
 		req := httptest.NewRequest("GET", "http://example.com", nil)
@@ -185,6 +187,7 @@ func TestRoundTripper_RoundTrip(t *testing.T) {
 		rt := &roundTripper{
 			next:    &mockTransportFunc{fn: transportFunc},
 			headers: map[string]string{},
+			session: newSession(httptest.NewRequest("GET", "/", nil)),
 		}
 
 		req := httptest.NewRequest("GET", "http://example.com", nil)
@@ -199,7 +202,7 @@ func TestRoundTripper_RoundTrip(t *testing.T) {
 		assert.Equal(t, strings.Repeat("x", ActionResponseBodyLimit), string(body))
 	})
 
-	t.Run("includes X-Duo-Workflow-Session-Id after SetWorkflowID", func(t *testing.T) {
+	t.Run("includes X-Duo-Workflow-Session-Id once the workflow ID is set", func(t *testing.T) {
 		var capturedRequest *http.Request
 		var transportFunc = func(req *http.Request) (*http.Response, error) {
 			capturedRequest = req
@@ -210,14 +213,14 @@ func TestRoundTripper_RoundTrip(t *testing.T) {
 			}, nil
 		}
 
-		state := &workflowState{}
+		sess := newSession(httptest.NewRequest("GET", "/", nil))
 		rt := &roundTripper{
-			next:     &mockTransportFunc{fn: transportFunc},
-			headers:  map[string]string{},
-			workflow: state,
+			next:    &mockTransportFunc{fn: transportFunc},
+			headers: map[string]string{},
+			session: sess,
 		}
 
-		// Before SetWorkflowID — header should be absent
+		// Before the workflow ID is set — header should be absent
 		req := httptest.NewRequest("GET", "http://example.com", nil)
 		r, err := rt.RoundTrip(req)
 		require.NoError(t, err)
@@ -225,49 +228,13 @@ func TestRoundTripper_RoundTrip(t *testing.T) {
 		assert.Empty(t, capturedRequest.Header.Get("X-Duo-Workflow-Session-Id"))
 
 		// After setting workflowID — header should be present
-		state.SetWorkflowID("test-workflow-id-123")
+		sess.setWorkflowID("test-workflow-id-123")
 
 		req = httptest.NewRequest("GET", "http://example.com", nil)
 		r, err = rt.RoundTrip(req)
 		require.NoError(t, err)
 		require.NoError(t, r.Body.Close())
 		assert.Equal(t, "test-workflow-id-123", capturedRequest.Header.Get("X-Duo-Workflow-Session-Id"))
-	})
-}
-
-func TestManager_SetWorkflowID(t *testing.T) {
-	t.Run("sets workflowID via shared state", func(t *testing.T) {
-		state := &workflowState{}
-		m := &manager{workflow: state}
-
-		m.SetWorkflowID("workflow-abc")
-		assert.Equal(t, "workflow-abc", state.WorkflowID())
-	})
-
-	t.Run("shared state is visible to roundTripper", func(t *testing.T) {
-		var captured *http.Request
-		state := &workflowState{}
-		rt := &roundTripper{
-			next: &mockTransportFunc{fn: func(req *http.Request) (*http.Response, error) {
-				captured = req
-				return &http.Response{StatusCode: 200, Body: http.NoBody, Header: make(http.Header)}, nil
-			}},
-			headers:  map[string]string{},
-			workflow: state,
-		}
-
-		state.SetWorkflowID("workflow-abc")
-
-		req := httptest.NewRequest("GET", "http://example.com", nil)
-		r, err := rt.RoundTrip(req)
-		require.NoError(t, err)
-		require.NoError(t, r.Body.Close())
-		assert.Equal(t, "workflow-abc", captured.Header.Get("X-Duo-Workflow-Session-Id"))
-	})
-
-	t.Run("no-op on nil manager", func(_ *testing.T) {
-		var m *manager
-		m.SetWorkflowID("workflow-abc") // should not panic
 	})
 }
 
@@ -289,7 +256,7 @@ func TestNewMcpManager(t *testing.T) {
 			},
 		}
 
-		mgr, err := newMcpManager(nil, req, servers)
+		mgr, err := newMcpManager(nil, newSession(req), servers)
 
 		require.NoError(t, err)
 		require.NotNil(t, mgr)
@@ -323,7 +290,7 @@ func TestNewMcpManager(t *testing.T) {
 			},
 		}
 
-		mgr, err := newMcpManager(nil, req, servers)
+		mgr, err := newMcpManager(nil, newSession(req), servers)
 
 		require.NoError(t, err)
 		require.NotNil(t, mgr)
@@ -348,7 +315,7 @@ func TestNewMcpManager(t *testing.T) {
 			},
 		}
 
-		mgr, err := newMcpManager(nil, req, servers)
+		mgr, err := newMcpManager(nil, newSession(req), servers)
 
 		require.NoError(t, err)
 		require.NotNil(t, mgr)
@@ -375,7 +342,7 @@ func TestNewMcpManager(t *testing.T) {
 			},
 		}
 
-		mgr, err := newMcpManager(nil, req, servers)
+		mgr, err := newMcpManager(nil, newSession(req), servers)
 
 		require.NoError(t, err)
 		require.NotNil(t, mgr)
@@ -402,7 +369,7 @@ func TestNewMcpManager(t *testing.T) {
 			},
 		}
 
-		mgr, err := newMcpManager(nil, req, servers)
+		mgr, err := newMcpManager(nil, newSession(req), servers)
 
 		require.NoError(t, err)
 		require.NotNil(t, mgr)
@@ -426,7 +393,7 @@ func TestNewMcpManager(t *testing.T) {
 			},
 		}
 
-		mgr, err := newMcpManager(nil, req, servers)
+		mgr, err := newMcpManager(nil, newSession(req), servers)
 
 		require.NoError(t, err)
 		require.NotNil(t, mgr)
@@ -453,7 +420,7 @@ func TestNewMcpManager(t *testing.T) {
 			},
 		}
 
-		mgr, err := newMcpManager(rails, req, servers)
+		mgr, err := newMcpManager(rails, newSession(req), servers)
 
 		require.NoError(t, err)
 		require.NotNil(t, mgr)
@@ -465,7 +432,7 @@ func TestNewMcpManager(t *testing.T) {
 
 		servers := map[string]api.McpServerConfig{}
 
-		mgr, err := newMcpManager(nil, req, servers)
+		mgr, err := newMcpManager(nil, newSession(req), servers)
 
 		require.Error(t, err)
 		require.Nil(t, mgr)
@@ -492,7 +459,7 @@ func TestNewMcpManager(t *testing.T) {
 			},
 		}
 
-		mgr, err := newMcpManager(nil, req, servers)
+		mgr, err := newMcpManager(nil, newSession(req), servers)
 
 		require.Error(t, err)
 		require.NotNil(t, mgr)
@@ -608,7 +575,7 @@ func TestManager_CallTool(t *testing.T) {
 			},
 		}
 
-		mgr, err := newMcpManager(nil, req, servers)
+		mgr, err := newMcpManager(nil, newSession(req), servers)
 		require.NoError(t, err)
 
 		action := &pb.Action{
@@ -692,7 +659,7 @@ func TestManager_CallTool(t *testing.T) {
 			},
 		}
 
-		mgr, err := newMcpManager(nil, req, servers)
+		mgr, err := newMcpManager(nil, newSession(req), servers)
 		require.NoError(t, err)
 
 		action := &pb.Action{
@@ -730,7 +697,7 @@ func TestManager_CallTool(t *testing.T) {
 			},
 		}
 
-		mgr, err := newMcpManager(nil, req, servers)
+		mgr, err := newMcpManager(nil, newSession(req), servers)
 		require.NoError(t, err)
 
 		action := &pb.Action{
@@ -767,7 +734,7 @@ func TestManager_Close(t *testing.T) {
 			},
 		}
 
-		mgr, err := newMcpManager(nil, req, servers)
+		mgr, err := newMcpManager(nil, newSession(req), servers)
 		require.NoError(t, err)
 
 		err = mgr.Close()
@@ -938,7 +905,7 @@ func TestBuildSession(t *testing.T) {
 			Headers: map[string]string{},
 		}
 
-		session, err := buildSession(nil, req, "server-name", serverCfg, &workflowState{})
+		session, err := buildSession(nil, newSession(req), "server-name", serverCfg)
 
 		require.NoError(t, err)
 		require.NotNil(t, session)
@@ -954,7 +921,7 @@ func TestBuildSession(t *testing.T) {
 			Headers: map[string]string{},
 		}
 
-		session, err := buildSession(nil, req, "test-server", serverCfg, &workflowState{})
+		session, err := buildSession(nil, newSession(req), "test-server", serverCfg)
 
 		require.Error(t, err)
 		require.Nil(t, session)
@@ -977,7 +944,7 @@ func TestManager_addTools(t *testing.T) {
 			},
 		}
 
-		mgr, err := newMcpManager(nil, req, servers)
+		mgr, err := newMcpManager(nil, newSession(req), servers)
 
 		require.NoError(t, err)
 		require.NotNil(t, mgr)
@@ -1039,7 +1006,7 @@ func TestManager_addTools(t *testing.T) {
 			},
 		}
 
-		mgr, err := newMcpManager(nil, req, servers)
+		mgr, err := newMcpManager(nil, newSession(req), servers)
 
 		require.Error(t, err)
 		require.NotNil(t, mgr)
@@ -1068,7 +1035,7 @@ func TestBuildSession_orbitRouting(t *testing.T) {
 			PreApprovedTools: &tools,
 		}
 
-		session, err := buildSession(rails, req, "orbit", serverCfg, &workflowState{})
+		session, err := buildSession(rails, newSession(req), "orbit", serverCfg)
 
 		require.NoError(t, err)
 		require.NotNil(t, session)
@@ -1090,7 +1057,7 @@ func TestBuildSession_orbitRouting(t *testing.T) {
 			Headers: map[string]string{"Authorization": "Bearer test-token"},
 		}
 
-		session, err := buildSession(rails, req, "gitlab", serverCfg, &workflowState{})
+		session, err := buildSession(rails, newSession(req), "gitlab", serverCfg)
 
 		require.NoError(t, err)
 		require.NotNil(t, session)
@@ -1116,7 +1083,7 @@ func TestBuildSession_signsInternalRequestsWithWorkhorseJWT(t *testing.T) {
 			rails := api.NewAPI(apiURL, "test-version", http.DefaultTransport)
 			req := httptest.NewRequest("GET", "/test", nil)
 
-			session, err := buildSession(rails, req, serverName, api.McpServerConfig{}, &workflowState{})
+			session, err := buildSession(rails, newSession(req), serverName, api.McpServerConfig{})
 			require.NoError(t, err)
 			require.NotNil(t, session)
 
@@ -1151,10 +1118,10 @@ func TestBuildSession_sendsWorkflowIDOnlyToInternalServers(t *testing.T) {
 
 			rails := api.NewAPI(apiURL, "test-version", http.DefaultTransport)
 			req := httptest.NewRequest("GET", "/test", nil)
-			state := &workflowState{}
-			state.SetWorkflowID("workflow-123")
+			sess := newSession(req)
+			sess.setWorkflowID("workflow-123")
 
-			session, err := buildSession(rails, req, tt.serverName, api.McpServerConfig{URL: server.URL}, state)
+			session, err := buildSession(rails, sess, tt.serverName, api.McpServerConfig{URL: server.URL})
 			require.NoError(t, err)
 			require.NotNil(t, session)
 
@@ -1216,7 +1183,7 @@ func TestNewMcpManager_orbitAndGitlabServers(t *testing.T) {
 		_ = gitlabServer
 		_ = orbitServer
 
-		mgr, err := newMcpManager(rails, req, servers)
+		mgr, err := newMcpManager(rails, newSession(req), servers)
 
 		require.NoError(t, err)
 		require.NotNil(t, mgr)
@@ -1254,7 +1221,7 @@ func TestManager_addTools_propagatesTrustedFlag(t *testing.T) {
 			},
 		}
 
-		mgr, err := newMcpManager(nil, req, servers)
+		mgr, err := newMcpManager(nil, newSession(req), servers)
 
 		require.NoError(t, err)
 		require.NotNil(t, mgr)
@@ -1278,7 +1245,7 @@ func TestManager_addTools_propagatesTrustedFlag(t *testing.T) {
 			},
 		}
 
-		mgr, err := newMcpManager(nil, req, servers)
+		mgr, err := newMcpManager(nil, newSession(req), servers)
 
 		require.NoError(t, err)
 		require.NotNil(t, mgr)
@@ -1310,7 +1277,7 @@ func TestManager_addTools_propagatesTrustedFlag(t *testing.T) {
 			},
 		}
 
-		mgr, err := newMcpManager(nil, req, servers)
+		mgr, err := newMcpManager(nil, newSession(req), servers)
 
 		require.NoError(t, err)
 		require.NotNil(t, mgr)
@@ -1380,7 +1347,7 @@ func TestNewMcpManager_SetsUpServersConcurrently(t *testing.T) {
 		"server2": {URL: newServer("tool2").URL},
 	}
 
-	mgr, err := newMcpManager(nil, httptest.NewRequest("GET", "/test", nil), servers)
+	mgr, err := newMcpManager(nil, newSession(httptest.NewRequest("GET", "/test", nil)), servers)
 
 	require.NoError(t, err)
 	require.Len(t, mgr.tools, serverCount)
@@ -1397,7 +1364,7 @@ func TestNewMcpManager_OrdersToolsByServerName(t *testing.T) {
 	// Map iteration order is random, so repeat to catch an order that
 	// depends on it.
 	for range 5 {
-		mgr, err := newMcpManager(nil, httptest.NewRequest("GET", "/test", nil), servers)
+		mgr, err := newMcpManager(nil, newSession(httptest.NewRequest("GET", "/test", nil)), servers)
 		require.NoError(t, err)
 
 		var names []string
@@ -1426,7 +1393,7 @@ func TestNewMcpManager_ReusesConnectionsToExternalServers(t *testing.T) {
 	servers := map[string]api.McpServerConfig{"external": {URL: server.URL}}
 
 	for range 2 {
-		mgr, err := newMcpManager(nil, httptest.NewRequest("GET", "/test", nil), servers)
+		mgr, err := newMcpManager(nil, newSession(httptest.NewRequest("GET", "/test", nil)), servers)
 		require.NoError(t, err)
 		require.NoError(t, mgr.Close())
 	}

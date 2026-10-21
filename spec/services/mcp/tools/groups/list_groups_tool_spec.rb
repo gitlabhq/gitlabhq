@@ -17,7 +17,7 @@ RSpec.describe Mcp::Tools::Groups::ListGroupsTool, feature_category: :mcp_server
   end
 
   let(:params) { {} }
-  let(:tool) { described_class.new(current_user: user, params: params) }
+  let(:tool) { described_class.new(current_user: user, params: params, access_token: nil) }
 
   def result_full_paths(result)
     result[:structuredContent]['nodes'].map { |node| node['fullPath'] }

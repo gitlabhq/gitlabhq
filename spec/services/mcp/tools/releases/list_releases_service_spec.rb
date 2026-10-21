@@ -44,18 +44,18 @@ RSpec.describe Mcp::Tools::Releases::ListReleasesService, feature_category: :mcp
           page: {
             type: 'integer',
             minimum: 1,
-            description: 'Page number to retrieve. Default is 1.'
+            description: 'Page number to retrieve.'
           },
           per_page: {
             type: 'integer',
             minimum: 1,
             maximum: 100,
-            description: 'Releases to return per page. Default is 20, maximum is 100.'
+            description: 'Releases to return per page; maximum is 100.'
           },
           state: {
             type: 'string',
             description: 'Filter by release state. released covers releases already out, ' \
-              'upcoming covers releases scheduled for a future date. Default is released.',
+              'upcoming covers releases scheduled for a future date.',
             enum: %w[released upcoming all]
           }
         }

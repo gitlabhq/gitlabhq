@@ -8,7 +8,7 @@ RSpec.describe Mcp::Tools::MergeRequests::AcceptMergeRequestTool, feature_catego
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
 
   let(:arguments) { { project_id: project.id.to_s, merge_request_iid: merge_request.iid, sha: 'abc123' } }
-  let(:tool) { described_class.new(current_user: user, params: arguments, version: '0.1.0') }
+  let(:tool) { described_class.new(current_user: user, params: arguments, version: '0.1.0', access_token: nil) }
 
   describe 'versioning' do
     it 'targets the mergeRequestAccept mutation', :aggregate_failures do

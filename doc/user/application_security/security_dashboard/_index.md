@@ -270,7 +270,7 @@ To view details:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/259541) in GitLab 19.5 [with a feature flag](../../../administration/feature_flags/_index.md) named `security_dashboard_mttr_chart`. Disabled by default.
-- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/work_items/626729) in GitLab 19.6.
+- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/263600) in GitLab 19.6.
 
 {{< /history >}}
 

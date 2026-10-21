@@ -50,7 +50,7 @@ RSpec.describe Mcp::Tools::Base::GraphqlTool, feature_category: :mcp_server do
     end
   end
 
-  let(:tool) { test_tool_class.new(current_user: user, params: params) }
+  let(:tool) { test_tool_class.new(current_user: user, params: params, access_token: nil) }
 
   describe '.load_graphql' do
     it 'reads a real query file and returns a frozen string' do
@@ -83,7 +83,7 @@ RSpec.describe Mcp::Tools::Base::GraphqlTool, feature_category: :mcp_server do
     end
 
     context 'when version is specified' do
-      let(:tool) { test_tool_class.new(current_user: user, params: params, version: '1.0.0') }
+      let(:tool) { test_tool_class.new(current_user: user, params: params, version: '1.0.0', access_token: nil) }
 
       it 'uses the specified version' do
         expect(tool.version).to eq('1.0.0')
@@ -93,8 +93,16 @@ RSpec.describe Mcp::Tools::Base::GraphqlTool, feature_category: :mcp_server do
     context 'when invalid version is specified' do
       it 'raises ArgumentError' do
         expect do
-          test_tool_class.new(current_user: user, params: params, version: '99.99.99')
+          test_tool_class.new(current_user: user, params: params, version: '99.99.99', access_token: nil)
         end.to raise_error(ArgumentError, 'Version 99.99.99 not found. Available: 1.0.0, 2.0.0')
+      end
+    end
+
+    context 'when access_token is omitted' do
+      it 'raises ArgumentError' do
+        expect do
+          test_tool_class.new(current_user: user, params: params)
+        end.to raise_error(ArgumentError, /missing keyword: :access_token/)
       end
     end
   end
@@ -108,7 +116,7 @@ RSpec.describe Mcp::Tools::Base::GraphqlTool, feature_category: :mcp_server do
           def build_variables
             {}
           end
-        end.new(current_user: user, params: params)
+        end.new(current_user: user, params: params, access_token: nil)
       end
 
       it 'raises NotImplementedError' do
@@ -135,7 +143,7 @@ RSpec.describe Mcp::Tools::Base::GraphqlTool, feature_category: :mcp_server do
           def build_variables
             {}
           end
-        end.new(current_user: user, params: params)
+        end.new(current_user: user, params: params, access_token: nil)
       end
 
       it 'raises NotImplementedError' do
@@ -159,7 +167,7 @@ RSpec.describe Mcp::Tools::Base::GraphqlTool, feature_category: :mcp_server do
             operation_name: 'test',
             graphql_operation: 'query { test }'
           }
-        end.new(current_user: user, params: params)
+        end.new(current_user: user, params: params, access_token: nil)
       end
 
       it 'raises NotImplementedError' do
@@ -241,10 +249,84 @@ RSpec.describe Mcp::Tools::Base::GraphqlTool, feature_category: :mcp_server do
         variables: { input: { projectPath: 'gitlab-org/gitlab' } },
         context: {
           current_user: user,
+          access_token: nil,
           is_sessionless_user: false,
           mcp_tool: nil
         }
       )
+    end
+
+    context 'with an access token' do
+      let(:access_token) { build_stubbed(:personal_access_token, user: user) }
+      let(:tool) { test_tool_class.new(current_user: user, params: params, access_token: access_token) }
+
+      it 'passes the access token in the GraphQL context' do
+        tool.execute
+
+        expect(GitlabSchema).to have_received(:execute)
+          .with(anything, variables: anything, context: hash_including(access_token: access_token))
+      end
+    end
+
+    context 'when the granular token is denied during execution' do
+      let(:access_token) { build_stubbed(:personal_access_token, user: user) }
+      let(:tool) { test_tool_class.new(current_user: user, params: params, access_token: access_token) }
+      let(:denied_result) { { 'data' => { 'testMutation' => nil } } }
+
+      before do
+        allow(::Mcp::Tools::Base::Response).to receive(:error).and_call_original
+        allow(GitlabSchema).to receive(:execute) do
+          ::Current.add_granular_denied_permissions([:read_project])
+          denied_result
+        end
+      end
+
+      it 'returns an access denied error naming the missing permissions' do
+        expect(tool.execute).to include(
+          isError: true,
+          reason: :unauthorized,
+          content: [{
+            type: 'text',
+            text: 'Access denied: This operation requires a fine-grained personal access token ' \
+              'with the following permissions: [Project: Read].'
+          }]
+        )
+      end
+
+      context 'when permissions were denied earlier in the request' do
+        before do
+          ::Current.add_granular_denied_permissions(%i[read_project read_code])
+        end
+
+        it 'still reports the permission denied during this execution' do
+          expect(tool.execute).to include(isError: true, reason: :unauthorized)
+        end
+
+        it 'keeps the earlier denials recorded' do
+          tool.execute
+
+          expect(::Current.granular_denied_permissions).to contain_exactly(:read_project, :read_code)
+        end
+      end
+
+      context 'when the tool error is not a not found or unauthorized error' do
+        let(:denied_result) { { 'errors' => [{ 'message' => 'Access denied: project permissions' }] } }
+
+        it 'returns the tool error' do
+          expect(tool.execute).to include(
+            isError: true,
+            content: [{ type: 'text', text: 'Access denied: project permissions' }]
+          )
+        end
+      end
+
+      context 'when the tool still returns data' do
+        let(:denied_result) { graphql_result }
+
+        it 'returns the successful response' do
+          expect(tool.execute).to eq(success_response)
+        end
+      end
     end
 
     it 'uses version-specific GraphQL operation' do
@@ -402,8 +484,8 @@ RSpec.describe Mcp::Tools::Base::GraphqlTool, feature_category: :mcp_server do
     end
 
     context 'with different versions' do
-      let(:tool_v1) { test_tool_class.new(current_user: user, params: params, version: '1.0.0') }
-      let(:tool_v2) { test_tool_class.new(current_user: user, params: params, version: '2.0.0') }
+      let(:tool_v1) { test_tool_class.new(current_user: user, params: params, version: '1.0.0', access_token: nil) }
+      let(:tool_v2) { test_tool_class.new(current_user: user, params: params, version: '2.0.0', access_token: nil) }
 
       let(:graphql_result_v1) do
         {
@@ -432,7 +514,8 @@ RSpec.describe Mcp::Tools::Base::GraphqlTool, feature_category: :mcp_server do
         tool_v2_with_params = test_tool_class.new(
           current_user: user,
           params: params_v2,
-          version: '2.0.0'
+          version: '2.0.0',
+          access_token: nil
         )
 
         allow(GitlabSchema).to receive(:execute).and_return(graphql_result)
@@ -455,8 +538,8 @@ RSpec.describe Mcp::Tools::Base::GraphqlTool, feature_category: :mcp_server do
 
   describe 'versioning integration' do
     it 'supports multiple versions with different operations' do
-      tool_v1 = test_tool_class.new(current_user: user, params: params, version: '1.0.0')
-      tool_v2 = test_tool_class.new(current_user: user, params: params, version: '2.0.0')
+      tool_v1 = test_tool_class.new(current_user: user, params: params, version: '1.0.0', access_token: nil)
+      tool_v2 = test_tool_class.new(current_user: user, params: params, version: '2.0.0', access_token: nil)
 
       operation_v1 = tool_v1.graphql_operation
       operation_v2 = tool_v2.graphql_operation
@@ -468,7 +551,7 @@ RSpec.describe Mcp::Tools::Base::GraphqlTool, feature_category: :mcp_server do
     end
 
     it 'uses latest version by default' do
-      default_tool = test_tool_class.new(current_user: user, params: params)
+      default_tool = test_tool_class.new(current_user: user, params: params, access_token: nil)
 
       expect(default_tool.version).to eq('2.0.0')
       expect(default_tool.graphql_operation).to include('result { id title description }')

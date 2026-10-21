@@ -32,6 +32,20 @@ RSpec.describe ::Authz::Tokens::AuthorizeGranularScopesService, feature_category
     end
   end
 
+  describe '.access_denied_message' do
+    it 'names the token type and missing permissions' do
+      expect(described_class.access_denied_message(token: token, permissions: %i[read_project create_member_role]))
+        .to eq('Access denied: This operation requires a fine-grained personal access token ' \
+          'with the following permissions: [Member Role: Create, Project: Read].')
+    end
+
+    it 'names the boundary type when given' do
+      expect(described_class.access_denied_message(token: token, permissions: [:read_project], boundary_type: 'group'))
+        .to eq('Access denied: This operation requires a fine-grained personal access token ' \
+          'with the following group permissions: [Project: Read].')
+    end
+  end
+
   describe '#initialize' do
     context 'when the passed boundary is not an Authz::Boundary' do
       let(:boundary) { build(:project) }

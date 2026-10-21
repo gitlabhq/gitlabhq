@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"sync"
 	"time"
 
 	redsync "github.com/go-redsync/redsync/v4"
@@ -20,9 +21,14 @@ const (
 	// flow might be locked for 2 hours.
 	workflowLockTimeout = 2 * time.Hour
 	workflowLockPrefix  = "workhorse:duoworkflow:lock:"
+	lockReleaseTimeout  = 5 * time.Second
 )
 
-var errLockIsUnavailable = errors.New("acquireLock: lock is inavailable")
+var (
+	errLockIsUnavailable        = errors.New("acquireLock: lock is unavailable")
+	errFailedToAcquireLockError = errors.New("handleClientEvents: failed to acquire lock")
+	errNoWorkflowID             = errors.New("handleClientEvent: no workflow ID provided in StartWorkflowRequest")
+)
 
 type workflowLockManager struct {
 	rs  *redsync.Redsync
@@ -92,4 +98,71 @@ func (m *workflowLockManager) releaseLock(ctx context.Context, mutex *redsync.Mu
 	}
 
 	logger.Info("Released workflow lock")
+}
+
+// workflowLease is the lock one run holds on its workflow, from the start
+// request until the run ends. A lease without a lock manager does nothing,
+// which is how locking is disabled.
+type workflowLease struct {
+	manager *workflowLockManager
+
+	mu         sync.Mutex
+	mutex      *redsync.Mutex
+	workflowID string
+}
+
+func newWorkflowLease(manager *workflowLockManager) *workflowLease {
+	return &workflowLease{manager: manager}
+}
+
+func (l *workflowLease) enabled() bool {
+	return l != nil && l.manager != nil
+}
+
+// acquire locks workflowID. It fails when the ID is missing or another run
+// holds the lock; on a transient Redis error the run proceeds without one.
+func (l *workflowLease) acquire(ctx context.Context, workflowID string, workflowDefinition string) error {
+	if !l.enabled() {
+		return nil
+	}
+
+	if workflowID == "" {
+		return errNoWorkflowID
+	}
+
+	mutex, err := l.manager.acquireLock(ctx, workflowID, workflowDefinition)
+	if err != nil && !errors.Is(err, errLockIsUnavailable) {
+		return errFailedToAcquireLockError
+	}
+
+	l.mu.Lock()
+	defer l.mu.Unlock()
+
+	l.mutex = mutex
+	l.workflowID = workflowID
+
+	return nil
+}
+
+// release releases the lock if it is still held, so Shutdown and Close don't
+// both release it. Cancellation is detached from ctx, which is already
+// canceled when the caller has gone.
+func (l *workflowLease) release(ctx context.Context) {
+	if !l.enabled() {
+		return
+	}
+
+	l.mu.Lock()
+	mutex, workflowID := l.mutex, l.workflowID
+	l.mutex = nil
+	l.mu.Unlock()
+
+	if mutex == nil {
+		return
+	}
+
+	ctx, cancel := context.WithTimeout(context.WithoutCancel(ctx), lockReleaseTimeout)
+	defer cancel()
+
+	l.manager.releaseLock(ctx, mutex, workflowID)
 }

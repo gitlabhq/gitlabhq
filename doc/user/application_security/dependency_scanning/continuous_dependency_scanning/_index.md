@@ -16,7 +16,7 @@ description: How GitLab detects new vulnerabilities for application dependencies
 Continuous vulnerability scanning (CVS) for dependency scanning looks for security vulnerabilities in your project's dependencies without requiring a new pipeline to run. CVS compares their component names and versions against two sources:
 
 - The latest [security advisories](#security-advisories) identify package versions with known vulnerabilities.
-- [GitLab malware advisories](../../gitlab_advisory_database/_index.md#gitlab-malware-advisories) identify package versions known to be malicious.
+- [GitLab malware advisories](../../gitlab_advisory_database/_index.md#gitlab-advisories-for-malware) identify package versions known to be malicious.
 
 A pipeline must run at least once on the default branch to register your project's components through a CycloneDX SBOM. After that, CVS runs as advisories are published, without further pipeline executions, until your dependencies change.
 
@@ -119,10 +119,5 @@ On GitLab Self-Managed, you can [choose package registry metadata to synchronize
 
 Current data sources for security advisories include:
 
-- [GitLab advisory database](../../gitlab_advisory_database/_index.md) (hosted in the [`gemnasium-db`](https://gitlab.com/gitlab-org/security-products/gemnasium-db) repository, a legacy name)
-- [GitLab malware advisories](../../gitlab_advisory_database/_index.md#gitlab-malware-advisories), a private database of packages known to be malicious
-
-### Contributing to the vulnerability database
-
-To find a vulnerability, you can search the [`GitLab advisory database`](https://advisories.gitlab.com/).
-You can also [submit new vulnerabilities](https://gitlab.com/gitlab-org/security-products/gemnasium-db/blob/master/CONTRIBUTING.md).
+- [GitLab advisory database](../../gitlab_advisory_database/_index.md)
+- [GitLab malware advisories](../../gitlab_advisory_database/_index.md#gitlab-advisories-for-malware), a private database of packages known to be malicious

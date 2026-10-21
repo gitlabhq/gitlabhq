@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"net/http"
 	"strings"
 	"sync"
 
@@ -50,7 +49,7 @@ type streamManager struct {
 	client             *Client
 	cloudServiceClient *Client
 	cloudServiceStream selfHostedWorkflowStream
-	originalReq        *http.Request
+	session            *session
 	sendMu             sync.Mutex
 
 	// teardownReason reports what workhorse recorded as the cause for the
@@ -67,16 +66,16 @@ func (sm *streamManager) teardownReasonLabel() string {
 	return sm.teardownReason().String()
 }
 
-func newStreamManager(r *http.Request, cfg *api.DuoWorkflow) (*streamManager, error) {
-	userAgent := r.Header.Get("User-Agent")
-	clientName := r.Header.Get("X-Gitlab-Client-Name")
+func newStreamManager(sess *session, cfg *api.DuoWorkflow) (*streamManager, error) {
+	userAgent := sess.req.Header.Get("User-Agent")
+	clientName := sess.req.Header.Get("X-Gitlab-Client-Name")
 
 	client, err := NewClient(cfg.Service, userAgent, clientName)
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize client: %v", err)
 	}
 
-	wf, err := client.ExecuteWorkflow(r.Context())
+	wf, err := client.ExecuteWorkflow(sess.Context())
 	if err != nil {
 		closeErr := client.Close()
 		return nil, fmt.Errorf("failed to initialize stream: %w", errors.Join(err, closeErr))
@@ -92,7 +91,7 @@ func newStreamManager(r *http.Request, cfg *api.DuoWorkflow) (*streamManager, er
 			return nil, fmt.Errorf("failed to initialize cloud service client: %w", errors.Join(err, client.Close()))
 		}
 
-		cloudServiceStream, err = cloudServiceClient.TrackSelfHostedExecuteWorkflow(r.Context())
+		cloudServiceStream, err = cloudServiceClient.TrackSelfHostedExecuteWorkflow(sess.Context())
 		if err != nil {
 			closeErr := errors.Join(cloudServiceClient.Close(), client.Close())
 			return nil, fmt.Errorf("failed to initialize cloud service stream: %w", errors.Join(err, closeErr))
@@ -104,7 +103,7 @@ func newStreamManager(r *http.Request, cfg *api.DuoWorkflow) (*streamManager, er
 		client:             client,
 		cloudServiceClient: cloudServiceClient,
 		cloudServiceStream: cloudServiceStream,
-		originalReq:        r,
+		session:            sess,
 	}, nil
 }
 
@@ -112,7 +111,7 @@ func (sm *streamManager) Send(event *pb.ClientEvent) error {
 	sm.sendMu.Lock()
 	defer sm.sendMu.Unlock()
 
-	log.WithContextFields(sm.originalReq.Context(), log.Fields{
+	sm.session.logger().WithFields(log.Fields{
 		"payload_size": proto.Size(event),
 		"event_type":   fmt.Sprintf("%T", event.Response),
 		"request_id":   event.GetActionResponse().GetRequestID(),
@@ -136,7 +135,7 @@ func (sm *streamManager) Close() error {
 	var workflowErr error
 	// Skip the half-close once the caller is gone: grpc-go is already resetting
 	// the stream, and an END_STREAM that wins that race shows DWS a clean EOF.
-	if sm.originalReq.Context().Err() == nil {
+	if sm.session.Context().Err() == nil {
 		workflowErr = sm.wf.CloseSend()
 	}
 

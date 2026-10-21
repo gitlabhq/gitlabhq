@@ -7,7 +7,7 @@ module MergeRequests
 
       def initialize(merge_request:, precomputed_results: nil)
         @merge_request = merge_request
-        @passed_results = precomputed_results
+        @precomputed_results = precomputed_results
       end
 
       def execute
@@ -24,7 +24,7 @@ module MergeRequests
 
       private
 
-      attr_reader :merge_request, :passed_results
+      attr_reader :merge_request, :precomputed_results
 
       def preparing?
         merge_request.preparing?
@@ -37,16 +37,6 @@ module MergeRequests
       def unchecked?
         merge_request.unchecked?
       end
-
-      # Passed by GraphQL when it resolves `mergeabilityChecks` alongside this
-      # field, so the suite is not executed twice in the same request.
-      def precomputed_results
-        return unless Feature.enabled?(:reuse_mergeability_check_results, merge_request.project,
-          type: :gitlab_com_derisk)
-
-        passed_results
-      end
-      strong_memoize_attr :precomputed_results
 
       def unsuccessful_check
         results =

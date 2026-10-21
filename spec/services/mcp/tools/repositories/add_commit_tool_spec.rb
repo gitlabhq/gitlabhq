@@ -26,7 +26,7 @@ RSpec.describe Mcp::Tools::Repositories::AddCommitTool, feature_category: :mcp_s
     }
   end
 
-  let(:tool) { described_class.new(current_user: user, params: params) }
+  let(:tool) { described_class.new(current_user: user, params: params, access_token: nil) }
 
   describe 'versioning' do
     it 'registers the commitCreate mutation' do
@@ -95,7 +95,11 @@ RSpec.describe Mcp::Tools::Repositories::AddCommitTool, feature_category: :mcp_s
   describe 'start_project' do
     let_it_be(:start_project) { create(:project, :public, :repository) }
 
-    let(:tool) { described_class.new(current_user: user, params: params.merge(start_project: start_project_path)) }
+    let(:tool) do
+      described_class.new(
+        current_user: user, params: params.merge(start_project: start_project_path), access_token: nil
+      )
+    end
 
     context 'with a project the governance lookup resolves' do
       let(:start_project_path) { start_project.full_path }

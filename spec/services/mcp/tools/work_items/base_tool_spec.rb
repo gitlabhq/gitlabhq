@@ -39,7 +39,7 @@ RSpec.describe Mcp::Tools::WorkItems::BaseTool, feature_category: :mcp_server do
     end
   end
 
-  let(:tool) { test_tool_class.new(current_user: user, params: params) }
+  let(:tool) { test_tool_class.new(current_user: user, params: params, access_token: nil) }
 
   before_all do
     project.add_developer(user)

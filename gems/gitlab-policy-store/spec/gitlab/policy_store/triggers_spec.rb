@@ -14,8 +14,20 @@ RSpec.describe Gitlab::PolicyStore::Triggers do
       )
     end
 
-    it "catalogues exactly the canonical types, so the catalogue can neither drift ahead nor lag behind" do
-      expect(described_class::ALL.map { |trigger| trigger[:id] }).to eq(described_class::TYPES)
+    it "catalogues only canonical types, so authoring cannot outrun the persisted vocabulary" do
+      expect(described_class::ALL.map { |trigger| trigger[:id] } - described_class::TYPES).to be_empty
+    end
+  end
+
+  describe "::TYPES" do
+    it "holds each id once, in the order of the Govern enums" do
+      expect(described_class::TYPES).to eq(
+        %w[
+          deployment_requested environment_advanced deployment_promoted
+          project.before_settings_update project.scheduled_settings_drift_check
+          project.after_create project.after_transfer
+        ]
+      )
     end
 
     it "is frozen down to each trigger, so no caller can mutate the catalogue" do

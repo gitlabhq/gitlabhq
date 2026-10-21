@@ -157,12 +157,12 @@ module Mcp
           {
             per_page: {
               type: 'integer',
-              description: 'Number of items to list per page. (default: 20)',
+              description: 'Number of items to list per page.',
               minimum: 1
             },
             page: {
               type: 'integer',
-              description: 'Page number to retrieve. (default: 1)',
+              description: 'Page number to retrieve.',
               minimum: 1
             }
           }

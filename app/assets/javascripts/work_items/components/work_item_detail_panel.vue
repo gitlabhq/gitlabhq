@@ -255,8 +255,10 @@ export default {
         }, 100);
       }
     },
-    handleKeydown({ key }) {
-      if (key === 'Escape' && this.open) {
+    handleKeydown({ key, target }) {
+      // A modal can be torn down before this listener runs, which defeats the
+      // `modal-open` check in handleClose, so check where the key came from instead.
+      if (key === 'Escape' && this.open && !target.closest?.('.modal')) {
         this.handleClose();
       }
     },

@@ -60,7 +60,7 @@ RSpec.describe Mcp::Tools::Projects::ListProjectsService, feature_category: :mcp
           archived: {
             type: 'string',
             description: 'Filter by archived state: only returns archived projects, include ' \
-              'returns both, exclude returns only non-archived projects (default).',
+              'returns both, exclude returns only non-archived projects.',
             enum: %w[only include exclude]
           },
           after: {
@@ -132,7 +132,8 @@ RSpec.describe Mcp::Tools::Projects::ListProjectsService, feature_category: :mcp
       expect(Mcp::Tools::Projects::ListProjectsTool).to receive(:new).with(
         current_user: user,
         params: params[:arguments],
-        version: '0.1.0'
+        version: '0.1.0',
+        access_token: nil
       ).and_call_original
 
       service.execute(request: request, params: params)

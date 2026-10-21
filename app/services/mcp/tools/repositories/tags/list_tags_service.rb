@@ -50,8 +50,7 @@ module Mcp
                   type: 'integer',
                   minimum: 1,
                   maximum: MAX_FIRST,
-                  description: "Number of tags to return. Default is #{DEFAULT_FIRST}, " \
-                    "maximum is #{MAX_FIRST}."
+                  description: "Number of tags to return; maximum is #{MAX_FIRST}."
                 }
               }
             }

@@ -135,6 +135,12 @@ module Tooling
           field.arguments_without_pagination.present?
         end
 
+        # A subsection heading that names its item, such as "### `User` fields",
+        # so every anchor on a page is unique.
+        def section_heading(item, title)
+          "### #{name(item)} #{title} {.no_toc}"
+        end
+
         def docs_render(partial, **args)
           template = "shared/#{partial}"
           Renderer.new(template: template, locals: args.merge(page: current_page)).execute
@@ -151,7 +157,7 @@ module Tooling
           extra = extra_connection_fields(type)
 
           if extra.present?
-            parts << "### Extra fields {.no_toc}\n\n" \
+            parts << "#{section_heading(type, 'extra fields')}\n\n" \
               "This connection has additional fields beyond the " \
               "[standard connection fields](#standard-connection-fields).\n\n" \
               "#{docs_render('fields_table', fields: extra)}"
@@ -172,7 +178,7 @@ module Tooling
             parts << "**Implements:** #{links}"
           end
 
-          parts << "### Fields {.no_toc}\n\n#{docs_render('fields_table', fields: type.fields)}"
+          parts << "#{section_heading(type, 'fields')}\n\n#{docs_render('fields_table', fields: type.fields)}"
           parts
         end
 
@@ -185,10 +191,10 @@ module Tooling
 
           if implementations.present?
             links = implementations.map { |implementation| "- #{item_link(implementation)}" }
-            parts << "### Implementations {.no_toc}\n\n#{links.join("\n")}"
+            parts << "#{section_heading(interface, 'implementations')}\n\n#{links.join("\n")}"
           end
 
-          parts << "### Fields {.no_toc}\n\n#{docs_render('fields_table', fields: interface.fields)}"
+          parts << "#{section_heading(interface, 'fields')}\n\n#{docs_render('fields_table', fields: interface.fields)}"
           parts
         end
 
@@ -201,7 +207,7 @@ module Tooling
 
           if members.present?
             links = members.map { |member| "- #{item_link(member)}" }
-            parts << "### Member types {.no_toc}\n\n#{links.join("\n")}"
+            parts << "#{section_heading(union, 'member types')}\n\n#{links.join("\n")}"
           end
 
           parts
@@ -214,7 +220,7 @@ module Tooling
           parts << "**Returns:** #{type(query)}"
 
           if documented_arguments?(query)
-            parts << "### Arguments {.no_toc}\n\n" \
+            parts << "#{section_heading(query, 'arguments')}\n\n" \
               "#{docs_render('arguments_table', arguments: query.arguments_without_pagination)}"
           end
 
@@ -228,10 +234,12 @@ module Tooling
           parts << "**Input type:** `#{mutation.input_object_name}`"
 
           if mutation.arguments.present?
-            parts << "### Arguments {.no_toc}\n\n#{docs_render('arguments_table', arguments: mutation.arguments)}"
+            parts << "#{section_heading(mutation, 'arguments')}\n\n" \
+              "#{docs_render('arguments_table', arguments: mutation.arguments)}"
           end
 
-          parts << "### Fields {.no_toc}\n\n#{docs_render('fields_table', fields: mutation.return_fields)}"
+          parts << "#{section_heading(mutation, 'fields')}\n\n" \
+            "#{docs_render('fields_table', fields: mutation.return_fields)}"
           parts
         end
 

@@ -18,7 +18,7 @@ RSpec.describe Mcp::Tools::Notes::SaveNoteTool, feature_category: :mcp_server do
   end
 
   let(:params) { { project_id: project.id.to_s, merge_request_iid: merge_request.iid, body: 'Test comment' } }
-  let(:tool) { described_class.new(current_user: user, params: params) }
+  let(:tool) { described_class.new(current_user: user, params: params, access_token: nil) }
 
   before_all do
     project.add_developer(user)
@@ -302,7 +302,7 @@ RSpec.describe Mcp::Tools::Notes::SaveNoteTool, feature_category: :mcp_server do
 
     it 'creates a comment on a work item', :aggregate_failures do
       params = { project_id: project.id.to_s, work_item_iid: work_item.iid, body: 'Test comment' }
-      result = described_class.new(current_user: user, params: params).execute
+      result = described_class.new(current_user: user, params: params, access_token: nil).execute
 
       expect(result[:isError]).to be(false)
       expect(result[:structuredContent]['note']['body']).to eq('Test comment')

@@ -143,11 +143,29 @@ RSpec.describe Mcp::Tools::WorkItems::GetSavedViewWorkItemsService, feature_cate
       allow(work_items_tool).to receive_messages(execute: work_items_success, unsupported_filters: [])
     end
 
+    context 'with an access token' do
+      let(:access_token) { build_stubbed(:personal_access_token, user: user) }
+
+      before do
+        service.set_cred(current_user: user, access_token: access_token)
+      end
+
+      it 'passes the access token to both tools' do
+        expect(Mcp::Tools::WorkItems::GetSavedViewTool).to receive(:new)
+          .with(hash_including(access_token: access_token))
+        expect(Mcp::Tools::WorkItems::GetSavedViewWorkItemsTool).to receive(:new)
+          .with(hash_including(access_token: access_token))
+
+        service.send(:perform_v0_1_0, arguments)
+      end
+    end
+
     it 'executes saved view tool with correct arguments' do
       expect(Mcp::Tools::WorkItems::GetSavedViewTool).to receive(:new).with(
         current_user: user,
         params: arguments,
-        version: '0.1.0'
+        version: '0.1.0',
+        access_token: nil
       )
 
       service.send(:perform_v0_1_0, arguments)
@@ -160,7 +178,8 @@ RSpec.describe Mcp::Tools::WorkItems::GetSavedViewWorkItemsService, feature_cate
           filters: saved_view_data['filters'],
           sort: saved_view_data['sort']
         ),
-        version: '0.1.0'
+        version: '0.1.0',
+        access_token: nil
       )
 
       service.send(:perform_v0_1_0, arguments)

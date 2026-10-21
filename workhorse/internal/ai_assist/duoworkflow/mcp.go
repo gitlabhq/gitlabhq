@@ -7,11 +7,9 @@ import (
 	"fmt"
 	"io"
 	"maps"
-	"net"
 	"net/http"
 	"reflect"
 	"slices"
-	"strings"
 	"sync"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
@@ -41,23 +39,6 @@ var externalMcpTransport = transport.NewRestrictedTransport(func(t *http.Transpo
 	t.MaxIdleConnsPerHost = externalMcpMaxIdleConnsPerHost
 })
 
-type workflowState struct {
-	mu         sync.RWMutex
-	workflowID string
-}
-
-func (s *workflowState) WorkflowID() string {
-	s.mu.RLock()
-	defer s.mu.RUnlock()
-	return s.workflowID
-}
-
-func (s *workflowState) SetWorkflowID(id string) {
-	s.mu.Lock()
-	s.workflowID = id
-	s.mu.Unlock()
-}
-
 type serverSession struct {
 	name    string
 	cfg     api.McpServerConfig
@@ -74,7 +55,6 @@ type mcpManager interface {
 	CallTool(context.Context, *pb.Action) (*pb.ClientEvent, error)
 	Tools() []*pb.McpTool
 	PreApprovedTools() []string
-	SetWorkflowID(string)
 	Close() error
 }
 
@@ -83,15 +63,13 @@ type manager struct {
 	preApprovedTools   []string
 	toolSessionsByName map[string]*toolSession
 	serverSessions     []*serverSession
-	workflow           *workflowState
 }
 
 type roundTripper struct {
-	internal    bool
-	next        http.RoundTripper
-	headers     map[string]string
-	originalReq *http.Request
-	workflow    *workflowState
+	internal bool
+	next     http.RoundTripper
+	headers  map[string]string
+	session  *session
 }
 
 type limitedReadCloser struct {
@@ -104,10 +82,7 @@ func (lrc *limitedReadCloser) Close() error {
 }
 
 func (t *roundTripper) setWorkflowHeader(r *http.Request) {
-	if t.workflow == nil {
-		return
-	}
-	if wfID := t.workflow.WorkflowID(); wfID != "" {
+	if wfID := t.session.WorkflowID(); wfID != "" {
 		r.Header.Set("X-Duo-Workflow-Session-Id", wfID)
 
 		// Rails attributes the call to the workflow through this header, as for RunHTTPRequest
@@ -125,16 +100,8 @@ func (t *roundTripper) RoundTrip(r *http.Request) (*http.Response, error) {
 	r.Header.Set("User-Agent", "GitLab-Workhorse-Mcp-Client")
 	t.setWorkflowHeader(r)
 
-	if t.originalReq != nil {
-		if clientIP, _, splitHostErr := net.SplitHostPort(t.originalReq.RemoteAddr); splitHostErr == nil {
-			var header string
-			if prior, ok := t.originalReq.Header["X-Forwarded-For"]; ok {
-				header = strings.Join(prior, ", ") + ", " + clientIP
-			} else {
-				header = clientIP
-			}
-			r.Header.Set("X-Forwarded-For", header)
-		}
+	if t.session.forwardedFor != "" {
+		r.Header.Set("X-Forwarded-For", t.session.forwardedFor)
 	}
 
 	resp, err := t.next.RoundTrip(r)
@@ -155,12 +122,10 @@ func (t *roundTripper) RoundTrip(r *http.Request) (*http.Response, error) {
 	return resp, err
 }
 
-func newMcpManager(rails *api.API, r *http.Request, servers map[string]api.McpServerConfig) (*manager, error) {
+func newMcpManager(rails *api.API, sess *session, servers map[string]api.McpServerConfig) (*manager, error) {
 	if len(servers) == 0 {
 		return nil, fmt.Errorf("the list of server configs is empty")
 	}
-
-	state := &workflowState{}
 
 	// Servers are set up concurrently, so the session starts after the slowest
 	// server rather than after all of them in turn. Results are merged in name
@@ -179,14 +144,13 @@ func newMcpManager(rails *api.API, r *http.Request, servers map[string]api.McpSe
 				}
 			}()
 
-			setups[i] = setupServer(rails, r, serverName, servers[serverName], state)
+			setups[i] = setupServer(rails, sess, serverName, servers[serverName])
 		})
 	}
 	wg.Wait()
 
 	manager := &manager{
 		toolSessionsByName: make(map[string]*toolSession),
-		workflow:           state,
 	}
 
 	var errs []error
@@ -215,13 +179,13 @@ type serverSetup struct {
 	err     error
 }
 
-func setupServer(rails *api.API, r *http.Request, serverName string, serverCfg api.McpServerConfig, state *workflowState) serverSetup {
-	session, err := buildSession(rails, r, serverName, serverCfg, state)
+func setupServer(rails *api.API, sess *session, serverName string, serverCfg api.McpServerConfig) serverSetup {
+	session, err := buildSession(rails, sess, serverName, serverCfg)
 	if err != nil {
 		return serverSetup{err: fmt.Errorf("failed to initialize MCP session %s: %v", serverName, err)}
 	}
 
-	tools, err := session.session.ListTools(r.Context(), &mcp.ListToolsParams{})
+	tools, err := session.session.ListTools(sess.Context(), &mcp.ListToolsParams{})
 	if err != nil {
 		return serverSetup{session: session, err: fmt.Errorf("failed to list tools %s: %v", serverName, err)}
 	}
@@ -229,7 +193,7 @@ func setupServer(rails *api.API, r *http.Request, serverName string, serverCfg a
 	return serverSetup{session: session, tools: tools}
 }
 
-func buildSession(rails *api.API, r *http.Request, serverName string, serverCfg api.McpServerConfig, state *workflowState) (*serverSession, error) {
+func buildSession(rails *api.API, sess *session, serverName string, serverCfg api.McpServerConfig) (*serverSession, error) {
 	client := mcp.NewClient(&mcp.Implementation{Name: "mcp-client", Version: "v1.0.0"}, nil)
 
 	var t *mcp.StreamableClientTransport
@@ -252,11 +216,10 @@ func buildSession(rails *api.API, r *http.Request, serverName string, serverCfg 
 	}
 
 	rt := &roundTripper{
-		internal:    internal,
-		next:        nextTransport,
-		headers:     serverCfg.Headers,
-		originalReq: r,
-		workflow:    state,
+		internal: internal,
+		next:     nextTransport,
+		headers:  serverCfg.Headers,
+		session:  sess,
 	}
 
 	t = &mcp.StreamableClientTransport{
@@ -269,7 +232,7 @@ func buildSession(rails *api.API, r *http.Request, serverName string, serverCfg 
 		DisableStandaloneSSE: true,
 	}
 
-	session, err := client.Connect(r.Context(), t, nil)
+	session, err := client.Connect(sess.Context(), t, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -350,14 +313,6 @@ func (m *manager) PreApprovedTools() []string {
 	}
 
 	return m.preApprovedTools
-}
-
-func (m *manager) SetWorkflowID(id string) {
-	if m == nil || m.workflow == nil {
-		return
-	}
-
-	m.workflow.SetWorkflowID(id)
 }
 
 func (m *manager) CallTool(ctx context.Context, action *pb.Action) (*pb.ClientEvent, error) {

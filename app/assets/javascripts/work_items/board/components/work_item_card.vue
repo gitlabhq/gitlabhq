@@ -125,6 +125,9 @@ export default {
         getIdFromGraphQLId(this.item.id) === getIdFromGraphQLId(this.activeItem.id)
       );
     },
+    linkId() {
+      return `listItem-${this.item.namespace.fullPath}/${getIdFromGraphQLId(this.item.id)}`;
+    },
     labels() {
       return findLabelsWidget(this.item)?.labels?.nodes ?? [];
     },
@@ -285,6 +288,7 @@ export default {
                Without gl-content-[''] the stretched link's ::after, and with it the card focus ring and click area, disappears on focus. -->
           <!-- eslint-disable tailwindcss/no-arbitrary-value -- gl-content-[''] is needed, see the comment above -->
           <a
+            :id="linkId"
             :href="item.webPath"
             :aria-current="isActive ? 'true' : undefined"
             :aria-describedby="cardDescribedBy"

@@ -12,7 +12,7 @@ RSpec.describe Mcp::Tools::WorkItems::GetWorkItemTool, feature_category: :mcp_se
   let_it_be(:work_item) { create(:work_item, project: project, title: 'An issue', description: 'Body') }
 
   let(:arguments) { {} }
-  let(:tool) { described_class.new(current_user: user, params: arguments, version: '0.1.0') }
+  let(:tool) { described_class.new(current_user: user, params: arguments, version: '0.1.0', access_token: nil) }
 
   before_all do
     project.add_developer(user)
@@ -275,7 +275,9 @@ RSpec.describe Mcp::Tools::WorkItems::GetWorkItemTool, feature_category: :mcp_se
       context 'when the caller cannot read internal notes' do
         let_it_be(:non_member) { create(:user) }
 
-        let(:tool) { described_class.new(current_user: non_member, params: arguments, version: '0.1.0') }
+        let(:tool) do
+          described_class.new(current_user: non_member, params: arguments, version: '0.1.0', access_token: nil)
+        end
 
         it 'leaves out internal notes', :aggregate_failures do
           expect(note_bodies).to include('Thread start', 'A single comment')
@@ -326,7 +328,9 @@ RSpec.describe Mcp::Tools::WorkItems::GetWorkItemTool, feature_category: :mcp_se
       let_it_be(:non_member) { create(:user) }
 
       let(:arguments) { { project_id: project.id.to_s, work_item_iid: confidential_work_item.iid } }
-      let(:tool) { described_class.new(current_user: non_member, params: arguments, version: '0.1.0') }
+      let(:tool) do
+        described_class.new(current_user: non_member, params: arguments, version: '0.1.0', access_token: nil)
+      end
 
       it 'raises with the same message as a nonexistent work item' do
         expect { result }.to raise_error(forbidden_error, /not found/)

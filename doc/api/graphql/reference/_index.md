@@ -52948,6 +52948,7 @@ Fields:
 | <a id="mergerequest-mergeerror"></a>`mergeError` | [`String`](#string) | Error message due to a merge error. |
 | <a id="mergerequest-mergeongoing"></a>`mergeOngoing` | [`Boolean!`](#boolean) | Indicates if a merge is currently occurring. |
 | <a id="mergerequest-mergerequestdiffs"></a>`mergeRequestDiffs` {{< icon name="warning-solid" >}} | [`MergeRequestDiffConnection`](#mergerequestdiffconnection) | Introduced in GitLab 16.2. Status: Experiment. Diff versions of a merge request. |
+| <a id="mergerequest-mergesource"></a>`mergeSource` {{< icon name="warning-solid" >}} | [`MergeRequestMergeSource`](#mergerequestmergesource) | Introduced in GitLab 19.6. Status: Experiment. Merge request or pushed commit that caused the merge request to be marked as merged. Null when the merge request is not merged, was merged in GitLab, or has no recorded source. |
 | <a id="mergerequest-mergestatus"></a>`mergeStatus` {{< icon name="warning-solid" >}} | [`String`](#string) | Deprecated in GitLab 14.0. Renamed. Use [`MergeRequest.mergeStatusEnum`](#mergerequest-mergestatusenum) instead. |
 | <a id="mergerequest-mergestatusenum"></a>`mergeStatusEnum` | [`MergeStatus`](#mergestatus) | Merge status of the merge request. |
 | <a id="mergerequest-mergetraincar"></a>`mergeTrainCar` {{< icon name="warning-solid" >}} | [`MergeTrainCar`](#mergetraincar) | Introduced in GitLab 17.2. Status: Experiment. Represents the merge request in a merge train. |
@@ -54297,6 +54298,17 @@ Fields:
 | <a id="mergerequestlinkedworkitem-externalissue"></a>`externalIssue` | [`MergeRequestExternalIssue`](#mergerequestexternalissue) | Linked external issue. |
 | <a id="mergerequestlinkedworkitem-linktype"></a>`linkType` | [`MergeRequestWorkItemLinkType!`](#mergerequestworkitemlinktype) | Type of relationship between the merge request and work item. |
 | <a id="mergerequestlinkedworkitem-workitem"></a>`workItem` | [`WorkItem`](#workitem) | Linked work item. |
+
+### `MergeRequestMergeSource`
+
+Merge request or pushed commit that caused a merge request to be marked as merged.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestmergesource-commitsha"></a>`commitSha` | [`String`](#string) | SHA of the pushed commit that included the changes. Null when merged through a merge request. |
+| <a id="mergerequestmergesource-mergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request whose merge included the changes. Null when merged by a pushed commit, or when the current user cannot read the merge request. |
 
 ### `MergeRequestMergeabilityCheck`
 
@@ -73352,6 +73364,10 @@ Trigger that started a policy evaluation.
 | <a id="governpolicyevaluationtriggertype-deployment_promoted"></a>`DEPLOYMENT_PROMOTED` | Evaluation was triggered by the `deployment_promoted` operation. |
 | <a id="governpolicyevaluationtriggertype-deployment_requested"></a>`DEPLOYMENT_REQUESTED` | Evaluation was triggered by the `deployment_requested` operation. |
 | <a id="governpolicyevaluationtriggertype-environment_advanced"></a>`ENVIRONMENT_ADVANCED` | Evaluation was triggered by the `environment_advanced` operation. |
+| <a id="governpolicyevaluationtriggertype-project_after_create"></a>`PROJECT_AFTER_CREATE` | Evaluation was triggered by the `project.after_create` operation. |
+| <a id="governpolicyevaluationtriggertype-project_after_transfer"></a>`PROJECT_AFTER_TRANSFER` | Evaluation was triggered by the `project.after_transfer` operation. |
+| <a id="governpolicyevaluationtriggertype-project_before_settings_update"></a>`PROJECT_BEFORE_SETTINGS_UPDATE` | Evaluation was triggered by the `project.before_settings_update` operation. |
+| <a id="governpolicyevaluationtriggertype-project_scheduled_settings_drift_check"></a>`PROJECT_SCHEDULED_SETTINGS_DRIFT_CHECK` | Evaluation was triggered by the `project.scheduled_settings_drift_check` operation. |
 
 ### `GovernPolicyEvaluationVerdict`
 

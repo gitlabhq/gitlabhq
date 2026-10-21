@@ -8,7 +8,7 @@ RSpec.describe Mcp::Tools::WorkItems::GetSavedViewWorkItemsTool, feature_categor
   let_it_be(:project) { create(:project, :public, group: group) }
 
   let(:params) { { group_id: group.id.to_s, filters: {}, sort: nil } }
-  let(:tool) { described_class.new(current_user: user, params: params) }
+  let(:tool) { described_class.new(current_user: user, params: params, access_token: nil) }
 
   before_all do
     group.add_developer(user)

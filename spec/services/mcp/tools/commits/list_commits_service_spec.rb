@@ -131,7 +131,8 @@ RSpec.describe Mcp::Tools::Commits::ListCommitsService, feature_category: :mcp_s
       expect(Mcp::Tools::Commits::ListCommitsTool).to receive(:new).with(
         current_user: user,
         params: params[:arguments],
-        version: '0.1.0'
+        version: '0.1.0',
+        access_token: nil
       ).and_call_original
 
       service.execute(request: request, params: params)

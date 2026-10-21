@@ -17,7 +17,7 @@ RSpec.describe Mcp::Tools::MergeRequests::GetMergeRequestNotesTool, feature_cate
   end
 
   let(:params) { { project_id: project.id.to_s, merge_request_iid: merge_request.iid } }
-  let(:tool) { described_class.new(current_user: user, params: params) }
+  let(:tool) { described_class.new(current_user: user, params: params, access_token: nil) }
 
   before_all do
     project.add_developer(user)

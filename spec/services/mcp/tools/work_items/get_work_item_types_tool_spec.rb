@@ -8,7 +8,7 @@ RSpec.describe Mcp::Tools::WorkItems::GetWorkItemTypesTool, feature_category: :m
   let_it_be(:project) { create(:project, :public, group: group) }
 
   let(:params) { { project_id: project.id.to_s } }
-  let(:tool) { described_class.new(current_user: user, params: params) }
+  let(:tool) { described_class.new(current_user: user, params: params, access_token: nil) }
 
   before_all do
     project.add_developer(user)

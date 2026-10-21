@@ -316,6 +316,50 @@ RSpec.describe 'getting merge request listings nested in a project', feature_cat
       include_examples 'N+1 query check'
     end
 
+    context 'when requesting `merge_source`' do
+      let(:requested_fields) { [:iid, 'mergeSource { commitSha mergeRequest { iid } }'] }
+      let(:merge_request_ids) { [merge_request_a.id, merge_request_b.id, merge_request_c.id] }
+
+      before do
+        ::MergeRequest.where(id: merge_request_ids).update_all(state_id: MergeRequest.available_states[:merged])
+        create(:resource_state_event, merge_request: merge_request_a, state: :merged,
+          source_merge_request: merge_request_e)
+        create(:resource_state_event, merge_request: merge_request_b, state: :merged, source_commit: 'abcd1234')
+        create(:resource_state_event, merge_request: merge_request_c, state: :merged,
+          source_merge_request: merge_request_d)
+      end
+
+      include_examples 'N+1 query check'
+
+      it 'exposes the merge source' do
+        execute_query
+
+        expect(results).to contain_exactly(
+          { 'iid' => merge_request_a.iid.to_s,
+            'mergeSource' => { 'commitSha' => nil, 'mergeRequest' => { 'iid' => merge_request_e.iid.to_s } } },
+          { 'iid' => merge_request_b.iid.to_s,
+            'mergeSource' => { 'commitSha' => 'abcd1234', 'mergeRequest' => nil } }
+        )
+      end
+
+      context 'when the source merge request is not readable' do
+        let(:search_params) { { iids: [merge_request_c.iid.to_s] } }
+
+        before do
+          private_merge_request = create(:merge_request, :merged, source_project: create(:project, :private))
+          merge_request_c.resource_state_events.update_all(source_merge_request_id: private_merge_request.id)
+        end
+
+        it 'returns null for the source merge request' do
+          execute_query
+
+          expect(results).to contain_exactly(
+            { 'iid' => merge_request_c.iid.to_s, 'mergeSource' => { 'commitSha' => nil, 'mergeRequest' => nil } }
+          )
+        end
+      end
+    end
+
     context 'when requesting `closed_at`' do
       let(:requested_fields) { [:closed_at] }
       let(:merge_request_ids) { [merge_request_a.id, merge_request_b.id, merge_request_c.id] }

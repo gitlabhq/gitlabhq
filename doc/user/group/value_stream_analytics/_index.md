@@ -163,15 +163,20 @@ The following table gives an overview of the pre-defined stages in value stream 
 
 ### Production environment
 
-Value stream analytics identifies [production environments](../../../ci/environments/_index.md#deployment-tier-of-environments) by looking for project
-[environments](../../../ci/yaml/_index.md#environment) with a name matching any of these patterns:
+Value stream analytics treats an environment as a production environment when its
+[deployment tier](../../../ci/environments/_index.md#deployment-tier-of-environments) is `production`.
+GitLab infers the tier from the environment name, unless you set it with the
+[`deployment_tier` keyword](../../../ci/yaml/_index.md#environmentdeployment_tier).
 
-- `prod` or `prod/*`
-- `production` or `production/*`
+When a production deployment runs from a tag, GitLab sets
+**Merge request first deployed to production** on merge requests that:
 
-These patterns are not case-sensitive.
+- Are merged and have commits in the tag that were not part of the environment's previous deployment.
+- Do not already have this event.
 
-You can change the name of a project environment in your GitLab CI/CD configuration.
+If the environment has no previous deployment, GitLab uses all merged merge requests that
+target the default branch, but only when the default branch contains the tag's commit.
+Otherwise, no merge request gets the event.
 
 ### Example workflow
 

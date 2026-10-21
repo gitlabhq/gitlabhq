@@ -29,7 +29,7 @@ module Mcp
               include: {
                 type: 'array',
                 description: 'Associated facets to fetch inline, one per call. diffs returns aggregate change ' \
-                  'stats and a per-file breakdown by default; set detail=full_patch for raw per-file patch ' \
+                  'stats and a per-file breakdown; set detail=full_patch for raw per-file patch ' \
                   'text or detail=none for summary counts only. conflicts returns raw conflict file content ' \
                   '(Git conflict markers), only when the merge request cannot be merged and the caller can ' \
                   'push to the source branch. diffs, notes, commits, and pipelines support pagination ' \
@@ -47,7 +47,7 @@ module Mcp
               detail: {
                 type: 'string',
                 description: 'Level of diff detail, applies only when diffs is in include. ' \
-                  'none: summary counts only; stats: per-file additions and deletions (default); ' \
+                  'none: summary counts only; stats: per-file additions and deletions; ' \
                   'full_patch: per-file patch text (raw diff), plus the per-file stats.',
                 enum: %w[none stats full_patch]
               },

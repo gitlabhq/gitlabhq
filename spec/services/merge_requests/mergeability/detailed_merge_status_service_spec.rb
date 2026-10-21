@@ -43,22 +43,6 @@ RSpec.describe ::MergeRequests::Mergeability::DetailedMergeStatusService, featur
         ).to eq(:ci_must_pass)
       end
     end
-
-    context 'when the reuse_mergeability_check_results feature flag is disabled' do
-      before do
-        stub_feature_flags(reuse_mergeability_check_results: false)
-      end
-
-      it 'runs its own checks' do
-        results
-
-        expect(merge_request).to receive(:execute_merge_checks)
-          .with(MergeRequest.all_mergeability_checks, any_args)
-          .and_call_original
-
-        described_class.new(merge_request: merge_request, precomputed_results: results).execute
-      end
-    end
   end
 
   shared_examples 'detailed merge status' do

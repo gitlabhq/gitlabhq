@@ -162,7 +162,8 @@ module Mcp
           tool = tool_class(arguments).new(
             current_user: current_user,
             params: arguments,
-            version: version
+            version: version,
+            access_token: access_token
           )
 
           tool.execute

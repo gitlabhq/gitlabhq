@@ -131,6 +131,11 @@ export default {
       required: false,
       default: false,
     },
+    focusCreateButton: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     insertingCard: {
       type: Boolean,
       required: false,
@@ -400,6 +405,7 @@ export default {
       :can-move-right="canMoveRight"
       :can-hide="canHide"
       :can-create-work-item="canCreateWorkItem"
+      :focus-create-button="focusCreateButton"
       @toggle-collapse="$emit('toggle-collapse')"
       @move-column="$emit('move-column', $event)"
       @hide-column="$emit('hide-column')"
@@ -428,6 +434,7 @@ export default {
         item-key="id"
         tag="ul"
         :data-column-value-id="value.id"
+        :aria-label="value.name"
         v-bind="$options.sortableOptions"
         :group="groupConfig"
         :disabled="dragDisabled"

@@ -547,5 +547,19 @@ describe('WorkItemDetailPanel', () => {
 
       expect(wrapper.emitted('close')).toHaveLength(1);
     });
+
+    it('does not close the drawer when Escape is pressed inside a modal', async () => {
+      const modalButton = document.createElement('button');
+      const modal = document.createElement('div');
+      modal.classList.add('modal');
+      modal.appendChild(modalButton);
+      document.body.appendChild(modal);
+
+      modalButton.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+      await nextTick();
+
+      expect(wrapper.emitted('close')).toBeUndefined();
+      modal.remove();
+    });
   });
 });

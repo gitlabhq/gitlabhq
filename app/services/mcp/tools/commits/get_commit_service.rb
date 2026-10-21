@@ -39,8 +39,7 @@ module Mcp
               diff_detail: {
                 type: 'string',
                 description: 'Level of diff detail to return. Applies only when "diff" is in include. ' \
-                  '"stats" returns per-file and summary line counts; "full_patch" returns the patch text. ' \
-                  'Defaults to "stats".',
+                  '"stats" returns per-file and summary line counts; "full_patch" returns the patch text.',
                 enum: %w[stats full_patch]
               },
               **Mcp::Tools::Concerns::CursorPagination.input_schema_params(

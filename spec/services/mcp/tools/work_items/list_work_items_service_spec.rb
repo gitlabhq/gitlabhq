@@ -54,7 +54,7 @@ RSpec.describe Mcp::Tools::WorkItems::ListWorkItemsService, feature_category: :m
             state: {
               type: 'string',
               enum: %w[opened closed all],
-              description: 'Filter by state. Default is all.'
+              description: 'Filter by state.'
             },
             search: {
               type: 'string',
@@ -127,7 +127,7 @@ RSpec.describe Mcp::Tools::WorkItems::ListWorkItemsService, feature_category: :m
                 SEVERITY_ASC SEVERITY_DESC UPDATED_DESC UPDATED_ASC CREATED_DESC CREATED_ASC
                 TITLE_ASC TITLE_DESC
               ],
-              description: 'Sort order. Default is CREATED_DESC.'
+              description: 'Sort order.'
             },
             first: {
               type: 'integer',

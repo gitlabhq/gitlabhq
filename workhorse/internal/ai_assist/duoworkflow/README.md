@@ -17,6 +17,9 @@ The `duoworkflow` package enables GitLab's AI-assisted features (Duo Chat, Duo A
 
 - **handler.go**: HTTP handler for WebSocket connections and graceful shutdown management
 - **runner.go**: Main orchestrator that manages the lifecycle of a single workflow execution
+- **session.go**: State shared by every part of one run: the original request, the run's context, the workflow ID, and the `X-Forwarded-For` value for requests made on the client's behalf
+- **stop_coordinator.go**: The stop handshake with the Duo Workflow Service and the coordination between `Shutdown` and `Close`
+- **teardown.go**: Classifies why a stream ended, for the `teardown_reason` metric label
 - **transport.go**: Defines the `clientTransport` interface, the runner's view of the client that started the workflow
 - **websocket.go**: WebSocket implementation of `clientTransport`, including read deadlines, keepalive pings, and close handling
 - **http_transport.go**: ndjson implementation of `clientTransport`, which streams actions to a caller that executes none of them
@@ -25,7 +28,7 @@ The `duoworkflow` package enables GitLab's AI-assisted features (Duo Chat, Duo A
 - **client.go**: gRPC client for communicating with the Duo Workflow Service
 - **actions.go**: Handler for executing HTTP action requests from the Duo Workflow Service
 - **mcp.go**: Model Context Protocol (MCP) client for tool execution
-- **lock.go**: Distributed workflow locking using Redis
+- **lock.go**: Distributed workflow locking using Redis, and the `workflowLease` a run holds
 - **metrics.go**: Prometheus metrics
 
 ## Core components
@@ -174,18 +177,17 @@ The `runner` orchestrates a single workflow execution:
 
 ```go
 type runner struct {
-	originalReq         *http.Request
+	session             *session
 	httpActionHandler   *runHTTPActionHandler
 	client              clientTransport
-	lockManager         *workflowLockManager
-	workflowID          string
-	mutex               *redsync.Mutex
-	lockFlow            bool
+	lease               *workflowLease
 	serverCapabilities  []string
 	streamManager       *streamManager
 	mcpManager          mcpManager
 	stop                stopCoordinator
 	stopWorkflowTimeout time.Duration
+	started             bool
+	teardown            teardownTracker
 }
 ```
 
@@ -199,9 +201,9 @@ type runner struct {
 
 **Message handling flow:**
 
-1. **Client events** → Unmarshal JSON to Protocol Buffer → Send to gRPC stream
+1. **Client events** → Unmarshal JSON to Protocol Buffer → Send to gRPC stream. Only the first start request on a connection is accepted; a client reconnects to start again
 2. **gRPC actions** → Process action type → Execute action → Send response back to gRPC stream
-3. **Client disconnect** → Send StopWorkflow request → Wait for acknowledgment
+3. **Client disconnect** → Send StopWorkflow request → Wait for acknowledgment. Concurrent stop requests send a single StopWorkflow request and share its acknowledgment
 
 ### Stream manager
 
@@ -213,7 +215,7 @@ type streamManager struct {
     client             *Client
     cloudServiceClient *Client
     cloudServiceStream selfHostedWorkflowStream
-    originalReq        *http.Request
+    session            *session
     sendMu             sync.Mutex
 }
 ```
@@ -233,11 +235,13 @@ The `runHTTPActionHandler` executes HTTP requests to the GitLab API:
 
 ```go
 type runHTTPActionHandler struct {
-    rails       *api.API
-    backend     http.Handler
-    token       string
-    originalReq *http.Request
-    action      *pb.Action
+    backend                   http.Handler
+    token                     string
+    session                   *session
+    shouldTimeoutHTTPRequests bool
+    relativeURLRoot           string
+    clientType                string
+    clientName                string
 }
 ```
 
@@ -295,7 +299,7 @@ type workflowLockManager struct {
 **Process:**
 
 1. Acquire a distributed lock when workflow starts
-2. Release the lock once the stream to Duo Workflow Service is closed, even when the caller has already gone away. When Duo Workflow Service doesn't acknowledge a stop, the stream is closed and the lock released one stop timeout (10s) after the stop request
+2. Release the lock once the stream to Duo Workflow Service is closed, even when the caller has already gone away. When Duo Workflow Service doesn't acknowledge a stop, the stream is closed and the lock released one stop timeout (10s) after the stop request. `Shutdown` and `Close` both release it, and only the first release takes effect
 3. Return specific error if lock cannot be acquired
 4. Requires Redis configuration
 

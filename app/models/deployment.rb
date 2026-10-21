@@ -331,12 +331,10 @@ class Deployment < ApplicationRecord
     # https://gitlab.com/gitlab-org/gitlab/-/issues/628635
     merge_requests = project.merge_requests
                      .join_metrics(project.id)
-                     .where(target_branch: ref, merge_request_metrics: { first_deployed_to_production_at: nil })
+                     .where(merge_request_metrics: { first_deployed_to_production_at: nil })
                      .where("merge_request_metrics.merged_at <= ?", finished_at)
 
-    if previous_deployment
-      merge_requests = merge_requests.where("merge_request_metrics.merged_at >= ?", previous_deployment.finished_at)
-    end
+    merge_requests = tag? ? tag_merge_requests(merge_requests) : branch_merge_requests(merge_requests)
 
     MergeRequest::Metrics
       .where(merge_request_id: merge_requests.select(:id), first_deployed_to_production_at: nil)
@@ -470,6 +468,18 @@ class Deployment < ApplicationRecord
   end
 
   private
+
+  def branch_merge_requests(merge_requests)
+    merge_requests = merge_requests.where(target_branch: ref)
+
+    return merge_requests unless previous_deployment
+
+    merge_requests.where("merge_request_metrics.merged_at >= ?", previous_deployment.finished_at)
+  end
+
+  def tag_merge_requests(merge_requests)
+    merge_requests.where(id: DeploymentMergeRequest.where(deployment_id: id).select(:merge_request_id))
+  end
 
   def update_status!(status)
     case status

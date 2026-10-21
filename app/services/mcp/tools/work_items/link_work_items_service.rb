@@ -57,9 +57,8 @@ module Mcp
               },
               link_type: {
                 type: 'string',
-                description: 'Type of relationship between the work items. Defaults to "relates_to".',
-                enum: %w[relates_to],
-                default: 'relates_to'
+                description: 'Type of relationship between the work items.',
+                enum: %w[relates_to]
               }
             },
             required: ['work_items_ids']

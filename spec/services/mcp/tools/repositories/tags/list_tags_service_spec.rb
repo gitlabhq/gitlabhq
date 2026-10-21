@@ -54,7 +54,7 @@ RSpec.describe Mcp::Tools::Repositories::Tags::ListTagsService, feature_category
             type: 'integer',
             minimum: 1,
             maximum: 100,
-            description: 'Number of tags to return. Default is 20, maximum is 100.'
+            description: 'Number of tags to return; maximum is 100.'
           }
         }
       })

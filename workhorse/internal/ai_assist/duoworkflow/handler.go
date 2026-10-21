@@ -171,7 +171,7 @@ func (h *Handler) registerAndExecuteRunner(r *http.Request, transport string, ru
 	}()
 
 	start := time.Now()
-	if err := runner.Execute(r.Context()); err != nil {
+	if err := runner.Execute(runner.session.Context()); err != nil {
 		log.WithRequest(r).WithError(err).WithFields(log.Fields{
 			"duration_ms": time.Since(start).Milliseconds(),
 		}).Error("error executing workflow")

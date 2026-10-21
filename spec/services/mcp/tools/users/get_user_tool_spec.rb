@@ -7,7 +7,7 @@ RSpec.describe Mcp::Tools::Users::GetUserTool, feature_category: :mcp_server do
   let_it_be(:other_user) { create(:user) }
 
   let(:params) { { username: other_user.username } }
-  let(:tool) { described_class.new(current_user: current_user, params: params) }
+  let(:tool) { described_class.new(current_user: current_user, params: params, access_token: nil) }
 
   describe 'versioning' do
     it 'registers version 0.1.0' do

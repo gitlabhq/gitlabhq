@@ -19,10 +19,10 @@ title: AI Governance Dashboard
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/603776) in GitLab 19.4 in [beta](../../policy/development_stages_support.md) with a [feature flag](../../administration/feature_flags/_index.md) named `ai_governance_dashboard`. Enabled by default.
 - The **Show** control's **All agents** and **Connected** options [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/618950) in GitLab 19.4 [with a feature flag](../../administration/feature_flags/_index.md) named `ai_governance_connected_agents_filter`. Disabled by default.
 - Date range filter with 7-day and 30-day windows [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/610984) in GitLab 19.5.
-- **Total number of tool calls** tile and **Top tools used by agents** card [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/618956) in GitLab 19.5 [with a feature flag](../../administration/feature_flags/_index.md) named `ai_governance_tool_calls`. Enabled by default.
-- **Tool calls by risk** card [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/259004) in GitLab 19.5 [with a feature flag](../../administration/feature_flags/_index.md) named `ai_governance_tool_calls`. Enabled by default.
+- **Total number of tool calls** tile and **Top tools by calls** card [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/618956) in GitLab 19.5 [with a feature flag](../../administration/feature_flags/_index.md) named `ai_governance_tool_calls`. Enabled by default.
+- **Tool calls by action** card [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/259004) in GitLab 19.5 [with a feature flag](../../administration/feature_flags/_index.md) named `ai_governance_tool_calls`. Enabled by default.
 - **Which AI agents developers are using** card [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/629071) in GitLab 19.5 [with a feature flag](../../administration/feature_flags/_index.md) named `ai_governance_dashboard_charts`. Enabled by default.
-- Sessions from connected agents and the audit event count on the **Most recent sessions** card [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/630095) in GitLab 19.5 [with a feature flag](../../administration/feature_flags/_index.md) named `ai_governance_sessions_api`. Enabled by default.
+- Sessions from connected agents and the audit event count on the **Recent agent sessions** card [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/630095) in GitLab 19.5 [with a feature flag](../../administration/feature_flags/_index.md) named `ai_governance_sessions_api`. Enabled by default.
 - The **Show** control's **All agents** and **Connected** options [enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/260271) in GitLab 19.5.
 
 {{< /history >}}
@@ -124,19 +124,19 @@ to more than 100%.
 
 Select **View all agents** to open the group's **Agents** page.
 
-### Top tools used by agents
+### Top tools by calls
 
-The **Top tools used by agents** card lists the 10 tools that agents invoked most
+The **Top tools by calls** card lists the 10 tools that agents invoked most
 often in the selected date range, with the number of calls for each. The card
 follows the **Show** control and the date range.
 
 Select **View tool management** to open the **Tool management** tab, where you set
 what each tool is allowed to do.
 
-### Tool calls by risk
+### Tool calls by action
 
-The **Tool calls by risk** card shows a ring chart of the tool calls in the
-selected date range, grouped by the risk level of the tool, as set in
+The **Tool calls by action** card shows a ring chart of the tool calls in the
+selected date range, grouped by the action type of the tool, as set in
 **Tool management**:
 
 - **Read**
@@ -145,13 +145,13 @@ selected date range, grouped by the risk level of the tool, as set in
 - **Unclassified**, for tools that the tool registry does not know.
 
 The total number of calls is in the center of the chart. The legend shows each
-level's share.
+action's share.
 
 Select **View tool registry** to open the **Tool management** tab.
 
-### Most recent sessions
+### Recent agent sessions
 
-The **Most recent sessions** card lists the latest agent sessions, newest first.
+The **Recent agent sessions** card lists the latest agent sessions, newest first.
 It ignores the date range. It follows the **Show** control.
 
 The card lists sessions from GitLab Duo and from connected agents. Each row
@@ -176,9 +176,9 @@ The **Most active developers using agents** card shows the top users by agent se
 over the selected date range. Use this to understand which developers are most
 actively using AI agents.
 
-### Projects with the most active agent sessions
+### Top projects by agent sessions
 
-The **Projects with the most active agent sessions** card shows the top projects
+The **Top projects by agent sessions** card shows the top projects
 by agent session count over the selected date range. Use this to identify which
 projects have the highest volume of AI agent activity.
 

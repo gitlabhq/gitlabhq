@@ -234,7 +234,8 @@ module Mcp
             params: arguments.slice(:project_id, :url).merge(
               paths: paths,
               ref: partial_edit_ref(arguments)
-            )
+            ),
+            access_token: access_token
           ).execute
         end
 

@@ -19,7 +19,7 @@ RSpec.describe Mcp::Tools::WorkItems::LinkWorkItemsTool, feature_category: :mcp_
     }
   end
 
-  let(:tool) { described_class.new(current_user: user, params: params) }
+  let(:tool) { described_class.new(current_user: user, params: params, access_token: nil) }
 
   before_all do
     project.add_developer(user)
@@ -214,7 +214,7 @@ RSpec.describe Mcp::Tools::WorkItems::LinkWorkItemsTool, feature_category: :mcp_
         }
       end
 
-      let(:tool) { described_class.new(current_user: guest, params: params) }
+      let(:tool) { described_class.new(current_user: guest, params: params, access_token: nil) }
 
       it 'still points at the cross-parent escape hatch, and keeps the forbidden category' do
         expect { tool.build_variables }.to raise_error(

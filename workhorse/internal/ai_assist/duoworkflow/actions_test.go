@@ -90,9 +90,9 @@ func TestRunHttpActionHandler_Execute(t *testing.T) {
 		originalReq.RemoteAddr = testRemoteAddr
 
 		handler := &runHTTPActionHandler{
-			backend:     http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { server.Config.Handler.ServeHTTP(w, r) }),
-			token:       "test-token",
-			originalReq: originalReq,
+			backend: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { server.Config.Handler.ServeHTTP(w, r) }),
+			token:   "test-token",
+			session: newSession(originalReq),
 		}
 
 		result, err := handler.Execute(context.Background(), action)
@@ -124,11 +124,11 @@ func TestRunHttpActionHandler_Execute(t *testing.T) {
 		originalReq.RemoteAddr = testRemoteAddr
 
 		handler := &runHTTPActionHandler{
-			backend:     http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { server.Config.Handler.ServeHTTP(w, r) }),
-			token:       "test-token",
-			originalReq: originalReq,
-			clientType:  "mobile",
-			clientName:  "gitlab-mobile-ios",
+			backend:    http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { server.Config.Handler.ServeHTTP(w, r) }),
+			token:      "test-token",
+			session:    newSession(originalReq),
+			clientType: "mobile",
+			clientName: "gitlab-mobile-ios",
 		}
 
 		result, err := handler.Execute(context.Background(), action)
@@ -157,9 +157,9 @@ func TestRunHttpActionHandler_Execute(t *testing.T) {
 		originalReq.RemoteAddr = testRemoteAddr
 
 		handler := &runHTTPActionHandler{
-			backend:     http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { server.Config.Handler.ServeHTTP(w, r) }),
-			token:       "test-token",
-			originalReq: originalReq,
+			backend: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { server.Config.Handler.ServeHTTP(w, r) }),
+			token:   "test-token",
+			session: newSession(originalReq),
 		}
 
 		_, err := handler.Execute(context.Background(), action)
@@ -193,9 +193,9 @@ func TestRunHttpActionHandler_Execute(t *testing.T) {
 		originalReq.Header.Set("X-Forwarded-For", "127.0.0.1:3000")
 
 		handler := &runHTTPActionHandler{
-			backend:     createBackendHandler(server.Client(), server.Listener.Addr().String()),
-			token:       "test-token",
-			originalReq: originalReq,
+			backend: createBackendHandler(server.Client(), server.Listener.Addr().String()),
+			token:   "test-token",
+			session: newSession(originalReq),
 		}
 
 		result, err := handler.Execute(context.Background(), action)
@@ -230,9 +230,9 @@ func TestRunHttpActionHandler_Execute(t *testing.T) {
 		}
 
 		handler := &runHTTPActionHandler{
-			backend:     createBackendHandler(server.Client(), server.Listener.Addr().String()),
-			token:       "test-token",
-			originalReq: &http.Request{},
+			backend: createBackendHandler(server.Client(), server.Listener.Addr().String()),
+			token:   "test-token",
+			session: newSession(&http.Request{}),
 		}
 
 		result, err := handler.Execute(context.Background(), action)
@@ -262,9 +262,9 @@ func TestRunHttpActionHandler_Execute(t *testing.T) {
 		}
 
 		handler := &runHTTPActionHandler{
-			backend:     createBackendHandler(server.Client(), server.Listener.Addr().String()),
-			token:       "test-token",
-			originalReq: &http.Request{},
+			backend: createBackendHandler(server.Client(), server.Listener.Addr().String()),
+			token:   "test-token",
+			session: newSession(&http.Request{}),
 		}
 
 		result, err := handler.Execute(context.Background(), action)
@@ -287,9 +287,9 @@ func TestRunHttpActionHandler_Execute(t *testing.T) {
 		}
 
 		handler := &runHTTPActionHandler{
-			backend:     http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}),
-			token:       "test-token",
-			originalReq: &http.Request{},
+			backend: http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}),
+			token:   "test-token",
+			session: newSession(&http.Request{}),
 		}
 
 		result, err := handler.Execute(context.Background(), action)
@@ -319,11 +319,13 @@ func TestRunHttpActionHandler_Execute(t *testing.T) {
 			},
 		}
 
+		sess := newSession(&http.Request{})
+		sess.setWorkflowID("wf-abc-123")
+
 		handler := &runHTTPActionHandler{
-			backend:     createBackendHandler(server.Client(), server.Listener.Addr().String()),
-			token:       "test-token",
-			originalReq: &http.Request{},
-			workflowID:  "wf-abc-123",
+			backend: createBackendHandler(server.Client(), server.Listener.Addr().String()),
+			token:   "test-token",
+			session: sess,
 		}
 
 		_, err := handler.Execute(context.Background(), action)
@@ -350,9 +352,9 @@ func TestRunHttpActionHandler_Execute(t *testing.T) {
 		}
 
 		handler := &runHTTPActionHandler{
-			backend:     createBackendHandler(server.Client(), server.Listener.Addr().String()),
-			token:       "test-token",
-			originalReq: &http.Request{},
+			backend: createBackendHandler(server.Client(), server.Listener.Addr().String()),
+			token:   "test-token",
+			session: newSession(&http.Request{}),
 		}
 
 		_, err := handler.Execute(context.Background(), action)
@@ -380,9 +382,9 @@ func TestRunHttpActionHandler_Execute(t *testing.T) {
 		}
 
 		handler := &runHTTPActionHandler{
-			backend:     createBackendHandler(server.Client(), server.Listener.Addr().String()),
-			token:       "test-token",
-			originalReq: &http.Request{},
+			backend: createBackendHandler(server.Client(), server.Listener.Addr().String()),
+			token:   "test-token",
+			session: newSession(&http.Request{}),
 		}
 
 		result, err := handler.Execute(context.Background(), action)
@@ -416,8 +418,8 @@ func TestRunHttpActionHandler_Execute(t *testing.T) {
 					}
 				}
 			}),
-			token:       "test-token",
-			originalReq: &http.Request{},
+			token:   "test-token",
+			session: newSession(&http.Request{}),
 		}
 
 		result, err := handler.Execute(context.Background(), action)
@@ -537,7 +539,7 @@ func TestRunHttpActionHandler_Execute_RelativeURLRoot(t *testing.T) {
 			backend:         prefixRouter(createBackendHandler(server.Client(), server.Listener.Addr().String())),
 			relativeURLRoot: relativeURLRoot,
 			token:           "test-token",
-			originalReq:     &http.Request{},
+			session:         newSession(&http.Request{}),
 		}
 
 		result, err := handler.Execute(context.Background(), action)
@@ -567,9 +569,9 @@ func TestRunHttpActionHandler_Execute_RelativeURLRoot(t *testing.T) {
 
 		// relativeURLRoot left empty simulates the pre-fix behavior.
 		handler := &runHTTPActionHandler{
-			backend:     prefixRouter(createBackendHandler(server.Client(), server.Listener.Addr().String())),
-			token:       "test-token",
-			originalReq: &http.Request{},
+			backend: prefixRouter(createBackendHandler(server.Client(), server.Listener.Addr().String())),
+			token:   "test-token",
+			session: newSession(&http.Request{}),
 		}
 
 		result, err := handler.Execute(context.Background(), action)
@@ -683,9 +685,9 @@ func TestRunHttpActionHandler_Execute_ContextCancelled(t *testing.T) {
 		originalReq.RemoteAddr = testRemoteAddr
 
 		handler := &runHTTPActionHandler{
-			backend:     backend,
-			token:       "test-token",
-			originalReq: originalReq,
+			backend: backend,
+			token:   "test-token",
+			session: newSession(originalReq),
 		}
 
 		result, err := handler.Execute(ctx, action)
@@ -726,7 +728,7 @@ func TestRunHttpActionHandler_Execute_Timeout(t *testing.T) {
 		handler := &runHTTPActionHandler{
 			backend:                   slowBackend,
 			token:                     "test-token",
-			originalReq:               originalReq,
+			session:                   newSession(originalReq),
 			shouldTimeoutHTTPRequests: true,
 		}
 
@@ -755,7 +757,7 @@ func TestRunHttpActionHandler_Execute_Timeout(t *testing.T) {
 		handler := &runHTTPActionHandler{
 			backend:                   createBackendHandler(server.Client(), server.Listener.Addr().String()),
 			token:                     "test-token",
-			originalReq:               originalReq,
+			session:                   newSession(originalReq),
 			shouldTimeoutHTTPRequests: false,
 		}
 
@@ -780,7 +782,7 @@ func TestRunHttpActionHandler_Execute_Timeout(t *testing.T) {
 		handler := &runHTTPActionHandler{
 			backend:                   createBackendHandler(server.Client(), server.Listener.Addr().String()),
 			token:                     "test-token",
-			originalReq:               originalReq,
+			session:                   newSession(originalReq),
 			shouldTimeoutHTTPRequests: true,
 		}
 
@@ -815,9 +817,9 @@ func TestHeaderParsing(t *testing.T) {
 		}
 
 		handler := &runHTTPActionHandler{
-			backend:     createBackendHandler(server.Client(), server.Listener.Addr().String()),
-			token:       "test-token",
-			originalReq: &http.Request{},
+			backend: createBackendHandler(server.Client(), server.Listener.Addr().String()),
+			token:   "test-token",
+			session: newSession(&http.Request{}),
 		}
 
 		result, err := handler.Execute(context.Background(), action)
@@ -852,9 +854,9 @@ func TestHeaderParsing(t *testing.T) {
 		}
 
 		handler := &runHTTPActionHandler{
-			backend:     createBackendHandler(server.Client(), server.Listener.Addr().String()),
-			token:       "test-token",
-			originalReq: &http.Request{},
+			backend: createBackendHandler(server.Client(), server.Listener.Addr().String()),
+			token:   "test-token",
+			session: newSession(&http.Request{}),
 		}
 
 		result, err := handler.Execute(context.Background(), action)
@@ -893,9 +895,9 @@ func TestHeaderParsing(t *testing.T) {
 		originalReq.Header.Set("X-Forwarded-For", "10.0.0.1, 10.0.0.2")
 
 		handler := &runHTTPActionHandler{
-			backend:     createBackendHandler(server.Client(), server.Listener.Addr().String()),
-			token:       "test-token",
-			originalReq: originalReq,
+			backend: createBackendHandler(server.Client(), server.Listener.Addr().String()),
+			token:   "test-token",
+			session: newSession(originalReq),
 		}
 
 		result, err := handler.Execute(context.Background(), action)
@@ -931,9 +933,9 @@ func TestHeaderParsing(t *testing.T) {
 		originalReq.RemoteAddr = testRemoteAddr
 
 		handler := &runHTTPActionHandler{
-			backend:     createBackendHandler(server.Client(), server.Listener.Addr().String()),
-			token:       "test-token",
-			originalReq: originalReq,
+			backend: createBackendHandler(server.Client(), server.Listener.Addr().String()),
+			token:   "test-token",
+			session: newSession(originalReq),
 		}
 
 		result, err := handler.Execute(context.Background(), action)
@@ -949,7 +951,7 @@ func TestHeaderParsing(t *testing.T) {
 func TestRunHttpActionHandler_buildRequest_Body(t *testing.T) {
 	testhelper.ConfigureSecret()
 
-	handler := &runHTTPActionHandler{originalReq: httptest.NewRequest("GET", "/ws", nil)}
+	handler := &runHTTPActionHandler{session: newSession(httptest.NewRequest("GET", "/ws", nil))}
 
 	buildRequest := func(body *string) *http.Request {
 		action := &pb.Action{

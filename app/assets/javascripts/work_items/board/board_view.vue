@@ -6,6 +6,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { InternalEvents } from '~/tracking';
 import { getParameterByName } from '~/lib/utils/url_utility';
+import { waitForElement } from '~/lib/utils/dom_utils';
 import DraggableCompat from '~/lib/utils/vue3compat/draggable_compat.vue';
 import { defaultSortableOptions, DRAG_DELAY } from '~/sortable/constants';
 import { getDraft, updateDraft } from '~/lib/utils/autosave';
@@ -212,6 +213,8 @@ export default {
       // The column value a new item targets; also gates the create modal's
       // mount so it re-reads the freshly-seeded draft each time it opens.
       createColumnValue: null,
+      // Column whose create button gets focus back after the modal is cancelled.
+      focusCreateButtonColumnId: null,
       // Column standing a placeholder in for a just-created item while we refetch it.
       insertingInColumnId: null,
       // Columns the dragged item can't be dropped into.
@@ -431,7 +434,14 @@ export default {
           ...inheritedFilters,
         }),
       );
+      this.focusCreateButtonColumnId = null;
       this.createColumnValue = value;
+    },
+    // After a create, handleWorkItemCreated has already cleared createColumnValue, so focus
+    // is left for the created toast instead.
+    handleCreateModalHide() {
+      this.focusCreateButtonColumnId = this.createColumnValue?.id ?? null;
+      this.createColumnValue = null;
     },
     async handleWorkItemCreated(workItem) {
       const clickedColumn = this.createColumnValue;
@@ -548,7 +558,7 @@ export default {
             { workItemType },
           );
 
-      this.$toast.show(message, {
+      const toast = this.$toast.show(message, {
         autoHideDelay: 10000,
         action: {
           text: __('View details'),
@@ -560,6 +570,11 @@ export default {
           },
         },
       });
+      // Screen readers skip a live region that is added with its content already in it,
+      // so focus the toast to have it read out.
+      waitForElement(`#${toast.id}`)
+        .then((el) => el.focus())
+        .catch(() => {});
     },
     // Each column loads separately, so this runs every time one resolves. If the
     // item isn't in this batch we leave the param alone, since it may still turn
@@ -1172,6 +1187,7 @@ export default {
         :can-move-right="index < renderedColumns.length - 1"
         :can-hide="canManageColumns"
         :can-create-work-item="canCreateWorkItemInColumn"
+        :focus-create-button="focusCreateButtonColumnId === value.id"
         :inserting-card="insertingInColumnId === value.id"
         :hidden-metadata-keys="hiddenMetadataKeys"
         :active-item="activeItem"
@@ -1200,7 +1216,7 @@ export default {
       :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_BOARD"
       suppress-created-toast
       @work-item-created="handleWorkItemCreated"
-      @hide-modal="createColumnValue = null"
+      @hide-modal="handleCreateModalHide"
     />
   </div>
 </template>

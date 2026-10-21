@@ -59,7 +59,7 @@ module Mcp
               },
               target_project_id: {
                 type: 'integer',
-                description: 'Target project ID. Defaults to the source project. Applies when creating.'
+                description: 'Target project ID for cross-project merge requests. Applies when creating.'
               },
               labels: {
                 type: 'array',

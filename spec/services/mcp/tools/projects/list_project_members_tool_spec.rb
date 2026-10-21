@@ -10,7 +10,7 @@ RSpec.describe Mcp::Tools::Projects::ListProjectMembersTool, feature_category: :
   let_it_be(:inherited_developer) { create(:user, username: 'ida-developer', name: 'Ida Developer') }
 
   let(:params) { { project_id: project.id.to_s } }
-  let(:tool) { described_class.new(current_user: maintainer, params: params) }
+  let(:tool) { described_class.new(current_user: maintainer, params: params, access_token: nil) }
 
   before_all do
     project.add_maintainer(maintainer)
@@ -154,7 +154,8 @@ RSpec.describe Mcp::Tools::Projects::ListProjectMembersTool, feature_category: :
 
         next_page = described_class.new(
           current_user: maintainer,
-          params: { project_id: project.id.to_s, first: 1, after: cursor }
+          params: { project_id: project.id.to_s, first: 1, after: cursor },
+          access_token: nil
         ).execute
 
         expect(next_page[:structuredContent][:items]).not_to eq(first_page[:structuredContent][:items])
@@ -196,7 +197,7 @@ RSpec.describe Mcp::Tools::Projects::ListProjectMembersTool, feature_category: :
     context 'when the caller cannot read the project members' do
       let_it_be(:non_member) { create(:user) }
 
-      let(:tool) { described_class.new(current_user: non_member, params: params) }
+      let(:tool) { described_class.new(current_user: non_member, params: params, access_token: nil) }
 
       before do
         allow(Ability).to receive(:allowed?).and_call_original

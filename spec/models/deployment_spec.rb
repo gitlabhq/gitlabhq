@@ -1649,6 +1649,75 @@ RSpec.describe Deployment, :with_current_organization, feature_category: :contin
       end
     end
 
+    context 'with a branch deployment after a previous deployment' do
+      let_it_be(:project) { create(:project, :repository, organization: current_organization) }
+      let_it_be(:production) { create(:environment, :production, project: project) }
+
+      let(:branch_deployment) do
+        create(:deployment, :success, project: project, environment: production, finished_at: 1.day.ago)
+        create(:deployment, :success, project: project, environment: production,
+          finished_at: Time.current.change(usec: 0))
+      end
+
+      def merge_request_merged_at(merged_at, **attributes)
+        create(:merge_request, :merged, source_project: project, target_project: project, **attributes).tap do |mr|
+          mr.metrics.update!(merged_at: merged_at)
+        end
+      end
+
+      it 'sets the metric only on merge requests merged into the ref since the previous deployment' do
+        since_previous = merge_request_merged_at(2.hours.ago, source_branch: 'since-previous', target_branch: 'master')
+        before_previous = merge_request_merged_at(2.days.ago, source_branch: 'before-previous', target_branch: 'master')
+        other_branch = merge_request_merged_at(2.hours.ago, source_branch: 'other-branch', target_branch: 'foo')
+
+        expect { branch_deployment.update_merge_request_metrics! }
+          .to change { since_previous.reload.metrics.first_deployed_to_production_at }
+          .from(nil).to(branch_deployment.finished_at)
+          .and not_change { before_previous.reload.metrics.first_deployed_to_production_at }.from(nil)
+          .and not_change { other_branch.reload.metrics.first_deployed_to_production_at }.from(nil)
+      end
+    end
+
+    context 'with a tag deployment to a production environment' do
+      let_it_be(:project) { create(:project, :repository, organization: current_organization) }
+      let_it_be(:production) { create(:environment, :production, project: project) }
+
+      let(:tag_deployment) do
+        create(:deployment, :success, project: project, environment: production, ref: 'v1.1.0', tag: true,
+          finished_at: Time.current.change(usec: 0))
+      end
+
+      let(:linked) do
+        create(:merge_request, :merged_last_month, source_project: project, target_project: project,
+          source_branch: 'linked', target_branch: 'master')
+      end
+
+      let(:not_linked) do
+        create(:merge_request, :merged_last_month, source_project: project, target_project: project,
+          source_branch: 'not-linked', target_branch: 'master')
+      end
+
+      before do
+        tag_deployment.link_merge_requests(MergeRequest.where(id: linked.id))
+      end
+
+      it 'sets the metric on the merge requests linked to the deployment' do
+        expect { tag_deployment.update_merge_request_metrics! }
+          .to change { linked.reload.metrics.first_deployed_to_production_at }
+          .from(nil).to(tag_deployment.finished_at)
+          .and not_change { not_linked.reload.metrics.first_deployed_to_production_at }.from(nil)
+      end
+
+      it 'leaves a merge request that already has the metric unchanged' do
+        first_deployed_at = 2.days.ago.change(usec: 0)
+        linked.metrics.update!(first_deployed_to_production_at: first_deployed_at)
+
+        expect { tag_deployment.update_merge_request_metrics! }
+          .not_to change { linked.reload.metrics.first_deployed_to_production_at }
+          .from(first_deployed_at)
+      end
+    end
+
     context 'with staging environment' do
       before do
         deployment.update!(status: :success, finished_at: Time.current, environment: staging)

@@ -62,8 +62,7 @@ RSpec.describe Mcp::Tools::Commits::GetCommitService, feature_category: :mcp_ser
           diff_detail: {
             type: 'string',
             description: 'Level of diff detail to return. Applies only when "diff" is in include. ' \
-              '"stats" returns per-file and summary line counts; "full_patch" returns the patch text. ' \
-              'Defaults to "stats".',
+              '"stats" returns per-file and summary line counts; "full_patch" returns the patch text.',
             enum: %w[stats full_patch]
           },
           notes_after: {
@@ -95,7 +94,8 @@ RSpec.describe Mcp::Tools::Commits::GetCommitService, feature_category: :mcp_ser
       expect(Mcp::Tools::Commits::GetCommitTool).to receive(:new).with(
         current_user: user,
         params: params[:arguments],
-        version: '0.1.0'
+        version: '0.1.0',
+        access_token: nil
       ).and_call_original
 
       service.execute(request: request, params: params)
