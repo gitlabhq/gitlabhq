@@ -35,6 +35,7 @@ GET /groups/:id/milestones?updated_before=2013-10-02T09%3A24%3A18Z
 GET /groups/:id/milestones?updated_after=2013-10-02T09%3A24%3A18Z
 GET /groups/:id/milestones?containing_date=2013-10-02T09%3A24%3A18Z
 GET /groups/:id/milestones?start_date=2013-10-02T09%3A24%3A18Z&end_date=2013-11-02T09%3A24%3A18Z
+GET /groups/:id/milestones?sort=due_date_desc
 ```
 
 Parameters:
@@ -55,6 +56,7 @@ Parameters:
 | `containing_date`           | datetime | no | Return only milestones where `start_date <= containing_date <= due_date`. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `start_date`                | datetime | no | Return only milestones where `due_date >=` the provided `start_date`. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). Note: only valid if `end_date` is also provided. |
 | `end_date`                  | datetime | no | Return only milestones where `start_date <=` the provided `end_date`. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). Note: only valid if `start_date` is also provided. |
+| `sort`                      | string | no | Return milestones sorted in the given order. Possible values: `due_date_asc`, `due_date_desc`, `start_date_asc`, `start_date_desc`, `name_asc`, `name_desc`, `created_asc`, `created_desc`, `updated_asc`, `updated_desc`. Default is `due_date_asc`. |
 
 ```shell
 curl --request GET \

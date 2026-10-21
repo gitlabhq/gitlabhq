@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe FeatureFlagsUserListsFinder do
+RSpec.describe FeatureFlagsUserListsFinder, feature_category: :feature_flags do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user, maintainer_of: project) }
 

@@ -21,6 +21,10 @@ const (
 	XSendFileHeader               = "X-Sendfile"
 	XSendFileTypeHeader           = "X-Sendfile-Type"
 
+	// Internal infrastructure headers (server and load balancer identifiers)
+	GitlabSvHeader = "Gitlab-Sv"
+	GitlabLbHeader = "Gitlab-Lb"
+
 	// Signal header that indicates Workhorse should detect and set the content headers
 	GitlabWorkhorseDetectContentTypeHeader = "Gitlab-Workhorse-Detect-Content-Type"
 )

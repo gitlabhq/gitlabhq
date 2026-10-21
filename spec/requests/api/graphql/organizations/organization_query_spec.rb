@@ -329,6 +329,62 @@ RSpec.describe 'getting organization information', feature_category: :organizati
 
           expect(groups.pluck('fullPath')).to eq([closest_match.full_path, distant_match.full_path])
         end
+
+        context 'when the scope is not bounded by membership' do
+          let(:organization_fields) do
+            <<~FIELDS
+              id
+              groups(search: "zeta", allAvailable: true, sort: "similarity") {
+                nodes {
+                  fullPath
+                }
+              }
+            FIELDS
+          end
+
+          it 'falls back to id_desc' do
+            request_organization
+
+            expect(groups.pluck('fullPath')).to eq([distant_match.full_path, closest_match.full_path])
+          end
+        end
+      end
+
+      context 'with `sort: "storage_size_keyset_desc"`' do
+        # The larger group has the lower ID, so honoring the sort would list it first, while
+        # the `id_desc` fallback lists it last.
+        let_it_be(:large_group) do
+          create(:group, :private, name: 'storage-large', organization: organization) do |g|
+            g.add_developer(user)
+            create(:project, namespace: g,
+              statistics: build(:project_statistics, namespace: g, storage_size: 200.megabytes))
+          end
+        end
+
+        let_it_be(:small_group) do
+          create(:group, :private, name: 'storage-small', organization: organization) do |g|
+            g.add_developer(user)
+            create(:project, namespace: g,
+              statistics: build(:project_statistics, namespace: g, storage_size: 1.megabyte))
+          end
+        end
+
+        let(:organization_fields) do
+          <<~FIELDS
+            id
+            groups(search: "storage", sort: "storage_size_keyset_desc") {
+              nodes {
+                fullPath
+              }
+            }
+          FIELDS
+        end
+
+        it 'drops the sort for a non-admin' do
+          request_organization
+
+          expect(groups.pluck('fullPath')).to eq([small_group.full_path, large_group.full_path])
+        end
       end
 
       context 'with negated `ids` argument' do
@@ -499,8 +555,16 @@ RSpec.describe 'getting organization information', feature_category: :organizati
       end
 
       describe 'project sorting' do
-        let_it_be(:another_project) { create(:project, organization: organization) { |p| p.add_developer(user) } }
-        let_it_be(:another_project2) { create(:project, organization: organization) { |p| p.add_developer(user) } }
+        # Letter-only names that bracket the factory's "Project N Name", so the name order does not
+        # depend on the database collation or the sequence number.
+        let_it_be(:another_project) do
+          create(:project, name: 'Alpha', organization: organization) { |p| p.add_developer(user) }
+        end
+
+        let_it_be(:another_project2) do
+          create(:project, name: 'Zulu', organization: organization) { |p| p.add_developer(user) }
+        end
+
         let_it_be(:all_projects) { [another_project2, another_project, project] }
         let_it_be(:first_param) { 2 }
         let_it_be(:data_path) { [:organization, :projects] }

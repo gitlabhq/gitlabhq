@@ -151712,6 +151712,29 @@
           "possibleTypes": null
         },
         {
+          "kind": "ENUM",
+          "name": "DuoCodeReviewDepth",
+          "description": "Depth of a GitLab Duo Code Review.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "STANDARD",
+              "description": "Standard review.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "DEEP",
+              "description": "Deep review.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
           "kind": "OBJECT",
           "name": "DuoCodeSuggestionsAggregationResponse",
           "description": "Response for `DuoCodeSuggestions` aggregation engine",
@@ -262963,6 +262986,18 @@
               "defaultValue": null,
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "duoCodeReviewDepth",
+              "description": "Depth of the GitLab Duo Code Review to run when the user is the GitLab Duo Code Review bot. Ignored for other users, and unless the `duo_code_review_deep_flow` feature flag is enabled for the current user. Introduced in GitLab 19.6: Status: Experiment.",
+              "type": {
+                "kind": "ENUM",
+                "name": "DuoCodeReviewDepth",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.6."
             }
           ],
           "interfaces": null,

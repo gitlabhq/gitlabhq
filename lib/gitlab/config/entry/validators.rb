@@ -83,10 +83,12 @@ module Gitlab
         end
 
         class ArrayOfStringsValidator < ActiveModel::EachValidator
-          include LegacyValidationHelpers
+          def self.validate(values)
+            values.is_a?(Array) && values.all? { |value| StringValidator.validate(value) }
+          end
 
           def validate_each(record, attribute, value)
-            valid = validate_array_of_strings(value)
+            valid = self.class.validate(value)
 
             record.errors.add(attribute, 'should be an array of strings') unless valid
 
@@ -275,8 +277,6 @@ module Gitlab
         end
 
         class RegexpValidator < ActiveModel::EachValidator
-          include LegacyValidationHelpers
-
           def validate_each(record, attribute, value)
             unless validate_regexp(value)
               record.errors.add(attribute, 'must be a regular expression with re2 syntax')
@@ -330,7 +330,7 @@ module Gitlab
           private
 
           def validate_array_of_strings_or_string(values)
-            validate_array_of_strings(values) || validate_string(values)
+            ArrayOfStringsValidator.validate(values) || StringValidator.validate(values)
           end
         end
 

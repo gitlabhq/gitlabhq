@@ -261,6 +261,58 @@ describe('GLQL data source', () => {
     });
   });
 
+  describe('with a dateField', () => {
+    const glql = 'type = AiUsageEvent';
+    let setVisualizationOverrides;
+
+    const fetchWithDateField = (filters) =>
+      fetch({ query: { glql, dateField: 'timestamp' }, filters, setVisualizationOverrides });
+
+    beforeEach(() => {
+      setVisualizationOverrides = jest.fn();
+    });
+
+    it('returns the query untouched', () => {
+      expect(fetchWithDateField({ dateRangeOption: '7d' })).toBe(glql);
+    });
+
+    it('hands the selected range down as a binding on the field', () => {
+      fetchWithDateField({ dateRangeOption: '7d' });
+
+      expect(setVisualizationOverrides).toHaveBeenCalledWith({
+        visualizationOptionOverrides: {
+          dateRangeBinding: { field: 'timestamp', from: '2020-06-29', to: '2020-07-06' },
+        },
+      });
+    });
+
+    it('binds the fallback range when no filter is set', () => {
+      fetchWithDateField();
+
+      expect(setVisualizationOverrides).toHaveBeenCalledWith({
+        visualizationOptionOverrides: {
+          dateRangeBinding: { field: 'timestamp', from: '2020-06-06', to: '2020-07-06' },
+        },
+      });
+    });
+
+    it('rejects a panel that also asks for trends', () => {
+      expect(() =>
+        fetch({
+          query: { glql: DATED_QUERY, dateField: 'timestamp' },
+          visualizationOptions: { showTrends: true },
+          setVisualizationOverrides,
+        }),
+      ).toThrow('A GLQL panel cannot combine dateField with showTrends.');
+    });
+
+    it('hands down no binding for a panel without a dateField', () => {
+      fetch({ query: { glql }, filters: { dateRangeOption: '7d' }, setVisualizationOverrides });
+
+      expect(setVisualizationOverrides).not.toHaveBeenCalled();
+    });
+  });
+
   describe('with showTrends', () => {
     let setVisualizationOverrides;
 

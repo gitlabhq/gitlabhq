@@ -30,6 +30,9 @@ If you want to use this API, your GitLab instance must meet certain
 
 Schedules a relations export for a specified project.
 
+This endpoint is limited to 6 requests per minute for each user and project. Requests over the limit
+return `429 Too Many Requests`.
+
 ```plaintext
 POST /projects/:id/export_relations
 ```
@@ -109,6 +112,9 @@ The status can be one of the following:
 ## Download an export
 
 Download the finished relations export.
+
+This endpoint is limited to 20 requests per minute for each user and project. Requests over the limit
+return `429 Too Many Requests`.
 
 ```plaintext
 GET /projects/:id/export_relations/download

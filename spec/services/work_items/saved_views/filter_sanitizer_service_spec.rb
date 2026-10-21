@@ -39,32 +39,60 @@ RSpec.describe WorkItems::SavedViews::FilterSanitizerService, feature_category: 
         end
       end
 
-      context 'with label_wildcard_id' do
+      context 'with a legacy label_wildcard_id string' do
         let(:filter_data) { { label_wildcard_id: 'Any' } }
 
         it 'renames label_wildcard_id to label_name' do
-          expect(result.payload[:filters][:label_name]).to eq('Any')
+          expect(result.payload[:filters][:label_name]).to eq(['Any'])
           expect(result.payload[:filters]).not_to have_key(:label_wildcard_id)
           expect(result.payload[:warnings]).to be_empty
         end
       end
 
-      context 'with label_wildcard_id set to None' do
+      context 'with a legacy label_wildcard_id set to None' do
         let(:filter_data) { { label_wildcard_id: 'None' } }
 
         it 'renames label_wildcard_id to label_name' do
-          expect(result.payload[:filters][:label_name]).to eq('None')
+          expect(result.payload[:filters][:label_name]).to eq(['None'])
           expect(result.payload[:filters]).not_to have_key(:label_wildcard_id)
           expect(result.payload[:warnings]).to be_empty
         end
       end
 
-      context 'with label_wildcard_id set to a scoped label wildcard' do
+      context 'with a legacy label_wildcard_id set to a scoped label wildcard' do
         let(:filter_data) { { label_wildcard_id: 'workflow::*' } }
 
         it 'renames label_wildcard_id to label_name unchanged' do
-          expect(result.payload[:filters][:label_name]).to eq('workflow::*')
+          expect(result.payload[:filters][:label_name]).to eq(['workflow::*'])
           expect(result.payload[:filters]).not_to have_key(:label_wildcard_id)
+          expect(result.payload[:warnings]).to be_empty
+        end
+      end
+
+      context 'with label_wildcard_ids' do
+        let(:filter_data) { { label_wildcard_ids: %w[workflow::* priority::*] } }
+
+        it 'returns every wildcard as label_name' do
+          expect(result.payload[:filters][:label_name]).to eq(%w[workflow::* priority::*])
+          expect(result.payload[:filters]).not_to have_key(:label_wildcard_ids)
+          expect(result.payload[:warnings]).to be_empty
+        end
+      end
+
+      context 'with label_wildcard_ids in the negated context' do
+        let(:filter_data) { { not: { label_wildcard_ids: ['workflow::*'] } } }
+
+        it 'returns the wildcard under not' do
+          expect(result.payload[:filters][:not][:label_name]).to eq(['workflow::*'])
+          expect(result.payload[:warnings]).to be_empty
+        end
+      end
+
+      context 'with label_wildcard_ids in the unioned context' do
+        let(:filter_data) { { or: { label_wildcard_ids: ['workflow::*'] } } }
+
+        it 'returns the wildcard under or as label_names' do
+          expect(result.payload[:filters][:or][:label_names]).to eq(['workflow::*'])
           expect(result.payload[:warnings]).to be_empty
         end
       end
@@ -333,10 +361,52 @@ RSpec.describe WorkItems::SavedViews::FilterSanitizerService, feature_category: 
         let(:filter_data) { { label_wildcard_id: 'workflow::*', label_ids: [non_existing_record_id] } }
 
         it 'keeps the wildcard and warns about the missing label', :aggregate_failures do
-          expect(result.payload[:filters][:label_name]).to eq('workflow::*')
+          expect(result.payload[:filters][:label_name]).to eq(['workflow::*'])
           expect(result.payload[:warnings]).to contain_exactly(
             { field: :label_name, message: '1 label(s) not found' }
           )
+        end
+      end
+
+      context 'with label_wildcard_ids alongside label IDs' do
+        let(:filter_data) { { label_wildcard_ids: %w[Any workflow::*], label_ids: [label1.id] } }
+
+        it 'keeps every wildcard and appends the resolved titles', :aggregate_failures do
+          expect(result.payload[:filters][:label_name]).to match_array(['Any', 'workflow::*', label1.title])
+          expect(result.payload[:filters]).not_to have_key(:label_wildcard_ids)
+          expect(result.payload[:warnings]).to be_empty
+        end
+      end
+
+      context 'with label_wildcard_ids alongside label IDs in the negated context' do
+        let(:filter_data) { { not: { label_wildcard_ids: ['workflow::*'], label_ids: [label1.id] } } }
+
+        it 'merges the wildcard with the resolved titles instead of replacing them', :aggregate_failures do
+          expect(result.payload[:filters][:not][:label_name]).to match_array(['workflow::*', label1.title])
+          expect(result.payload[:filters][:not]).not_to have_key(:label_wildcard_ids)
+          expect(result.payload[:warnings]).to be_empty
+        end
+      end
+
+      context 'with label_wildcard_ids alongside label IDs in the unioned context' do
+        let(:filter_data) { { or: { label_wildcard_ids: ['workflow::*'], label_ids: [label1.id] } } }
+
+        it 'merges the wildcard with the resolved titles instead of replacing them', :aggregate_failures do
+          expect(result.payload[:filters][:or][:label_names]).to match_array(['workflow::*', label1.title])
+          expect(result.payload[:filters][:or]).not_to have_key(:label_wildcard_ids)
+          expect(result.payload[:warnings]).to be_empty
+        end
+      end
+
+      # A view saved mid-rollout can carry the legacy string and the new array at once
+      context 'with a legacy label_wildcard_id alongside label_wildcard_ids' do
+        let(:filter_data) { { label_wildcard_id: 'None', label_wildcard_ids: ['workflow::*'] } }
+
+        it 'returns both wildcards', :aggregate_failures do
+          expect(result.payload[:filters][:label_name]).to match_array(['workflow::*', 'None'])
+          expect(result.payload[:filters]).not_to have_key(:label_wildcard_id)
+          expect(result.payload[:filters]).not_to have_key(:label_wildcard_ids)
+          expect(result.payload[:warnings]).to be_empty
         end
       end
     end

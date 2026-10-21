@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cache, feature_category: :importers do
+RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cache,
+  :clean_gitlab_redis_rate_limiting, feature_category: :importers do
   let_it_be_with_reload(:project) { create(:project) }
   let_it_be(:project_none) { create(:project) }
   let_it_be(:project_started) { create(:project) }
@@ -698,6 +699,34 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
           expect(response).to have_gitlab_http_status(:accepted)
         end
 
+        context 'when rate limit is exceeded' do
+          let_it_be(:other_project) { create(:project) }
+
+          before do
+            other_project.add_maintainer(user)
+
+            allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_call_original
+            allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+              .with(:project_relations_export, scope: { user: user, project: project }).and_return(true)
+          end
+
+          it 'throttles the endpoint without starting an export' do
+            expect(BulkImports::ExportService).not_to receive(:new)
+
+            post api(path, user)
+
+            expect(response).to have_gitlab_http_status(:too_many_requests)
+            expect(json_response['message']['error'])
+              .to eq('This endpoint has been requested too many times. Try again later.')
+          end
+
+          it 'does not throttle exports of another project by the same user' do
+            post api("/projects/#{other_project.id}/export_relations", user)
+
+            expect(response).to have_gitlab_http_status(:accepted)
+          end
+        end
+
         it 'creates new audit event' do
           expect(::Import::BulkImports::Audit::Auditor)
             .to receive(:new)
@@ -751,6 +780,34 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
       end
 
       describe 'GET /projects/:id/export_relations/download' do
+        context 'when rate limit is exceeded' do
+          let_it_be(:other_project) { create(:project) }
+
+          before do
+            other_project.add_maintainer(user)
+
+            allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_call_original
+            allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+              .with(:project_relations_export_download, scope: { user: user, project: project }).and_return(true)
+          end
+
+          it 'throttles the endpoint without serving a file' do
+            expect(::Import::BulkImports::Audit::Auditor).not_to receive(:new)
+
+            get api(download_path, user)
+
+            expect(response).to have_gitlab_http_status(:too_many_requests)
+            expect(json_response['message']['error'])
+              .to eq('This endpoint has been requested too many times. Try again later.')
+          end
+
+          it 'does not throttle downloads from another project by the same user' do
+            get api("/projects/#{other_project.id}/export_relations/download?relation=#{relation}", user)
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+
         context 'when export request is not batched' do
           let_it_be_with_reload(:export) { create(:bulk_import_export, project: project, relation: 'labels', user: user) }
           let_it_be_with_reload(:upload) { create(:bulk_import_export_upload, export: export) }
@@ -898,6 +955,17 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
         let_it_be(:started_export) { create(:bulk_import_export, :started, project: project, relation: 'labels', user: user) }
         let_it_be(:finished_export) { create(:bulk_import_export, :finished, project: project, relation: 'milestones', user: user) }
         let_it_be(:failed_export) { create(:bulk_import_export, :failed, project: project, relation: 'project_badges', user: user) }
+
+        it 'is not subject to the relations export rate limits' do
+          allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_call_original
+          expect(Gitlab::ApplicationRateLimiter).not_to receive(:throttled?).with(:project_relations_export, any_args)
+          expect(Gitlab::ApplicationRateLimiter)
+            .not_to receive(:throttled?).with(:project_relations_export_download, any_args)
+
+          get api(status_path, user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
 
         it 'returns a list of relation export statuses' do
           get api(status_path, user)

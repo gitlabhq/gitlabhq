@@ -76,7 +76,7 @@ RSpec.describe Gitlab::Metrics::GitalyClientSlis, feature_category: :gitaly do
           'default' => { 'gitaly_address' => 'tcp://gitaly-01-stor.example.internal:9999',
                          'gitway_address' => 'tcp://gitway.example.internal:8075' }
         )
-        stub_feature_flags(route_gitaly_through_gitway: true)
+        allow(::Gitlab::GitalyClient).to receive(:route_through_gitway?).and_return(true)
       end
 
       it 'labels the Gitaly node, not gitway' do
@@ -84,7 +84,7 @@ RSpec.describe Gitlab::Metrics::GitalyClientSlis, feature_category: :gitaly do
       end
 
       it 'does not evaluate the feature flag' do
-        expect(Feature).not_to receive(:enabled?).with(:route_gitaly_through_gitway, any_args)
+        expect(::Gitlab::GitalyClient).not_to receive(:route_through_gitway?)
 
         described_class.node_label('default')
       end

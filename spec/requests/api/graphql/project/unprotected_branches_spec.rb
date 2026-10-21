@@ -34,7 +34,7 @@ RSpec.describe 'getting unprotected branches for a project', feature_category: :
     graphql_data_at(:project, :unprotected_branches, :page_info)
   end
 
-  context 'when the user does not have read_code permissions' do
+  context 'when the user is a guest' do
     before_all do
       project.add_guest(current_user)
     end
@@ -46,7 +46,17 @@ RSpec.describe 'getting unprotected branches for a project', feature_category: :
     end
   end
 
-  context 'when the user has read_code permissions' do
+  context 'when the user can read code but cannot protect branches' do
+    let_it_be(:developer) { create(:user, developer_of: project) }
+
+    it 'returns null' do
+      post_graphql(query, current_user: developer, variables: variables)
+
+      expect(graphql_data_at(:project, :unprotected_branches)).to be_nil
+    end
+  end
+
+  context 'when the user has read_protectable_branch permissions' do
     before_all do
       project.add_maintainer(current_user)
     end

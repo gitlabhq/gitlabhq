@@ -201,6 +201,119 @@ describe('initIssuablePopovers', () => {
     });
   });
 
+  describe('handleIssuablePopoverMount', () => {
+    const StubPopover = { render: (h) => h('div') };
+    let onMount;
+    let cancel;
+
+    beforeEach(() => {
+      onMount = jest.fn();
+      cancel = popover.handleIssuablePopoverMount({
+        componentsByReferenceType: { merge_request: StubPopover },
+        referenceType: 'merge_request',
+        target: mr1,
+        namespacePath: 'group/project',
+        iid: '1',
+        onMount,
+      });
+    });
+
+    it('mounts after the delay and reports it', () => {
+      jest.runAllTimers();
+
+      expect(mr1.dataset.popoverMounted).toBe('true');
+      expect(onMount).toHaveBeenCalledTimes(1);
+    });
+
+    describe('when the returned cancel runs before the delay', () => {
+      beforeEach(() => {
+        cancel();
+        jest.runAllTimers();
+      });
+
+      it('does not mount', () => {
+        expect(mr1.dataset.popoverMounted).toBeUndefined();
+        expect(onMount).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('when a second target arms and the pointer then leaves the first', () => {
+      beforeEach(() => {
+        popover.handleIssuablePopoverMount({
+          componentsByReferenceType: { merge_request: StubPopover },
+          referenceType: 'merge_request',
+          target: mr2,
+          namespacePath: 'group/project',
+          iid: '1',
+        });
+        mr1.dispatchEvent(new MouseEvent('mouseleave'));
+        jest.runAllTimers();
+      });
+
+      it('cancels only the target that was left', () => {
+        expect(mr1.dataset.popoverMounted).toBeUndefined();
+        expect(mr2.dataset.popoverMounted).toBe('true');
+      });
+    });
+
+    describe('when cancelOnMouseLeave is false and the pointer leaves', () => {
+      beforeEach(() => {
+        popover.handleIssuablePopoverMount({
+          componentsByReferenceType: { merge_request: StubPopover },
+          referenceType: 'merge_request',
+          target: mr2,
+          namespacePath: 'group/project',
+          iid: '1',
+          cancelOnMouseLeave: false,
+        });
+        mr2.dispatchEvent(new MouseEvent('mouseleave'));
+        jest.runAllTimers();
+      });
+
+      it('still mounts', () => {
+        expect(mr2.dataset.popoverMounted).toBe('true');
+      });
+    });
+
+    it('passes the mounted popover to onMount', () => {
+      jest.runAllTimers();
+
+      expect(onMount).toHaveBeenCalledWith(
+        expect.objectContaining({ $destroy: expect.any(Function) }),
+      );
+    });
+
+    describe('for a commit', () => {
+      let receivedProps;
+
+      beforeEach(() => {
+        const CommitStub = {
+          props: ['target', 'commitSha', 'projectPath'],
+          created() {
+            receivedProps = { commitSha: this.commitSha, projectPath: this.projectPath };
+          },
+          render: (h) => h('div'),
+        };
+
+        popover.handleIssuablePopoverMount({
+          componentsByReferenceType: { commit: CommitStub },
+          referenceType: 'commit',
+          target: commit1,
+          commitSha: 'abc123de',
+          projectPath: 'gitlab-org/gitlab-test',
+        });
+        jest.runAllTimers();
+      });
+
+      it('passes the commit sha and project path to the popover', () => {
+        expect(receivedProps).toEqual({
+          commitSha: 'abc123de',
+          projectPath: 'gitlab-org/gitlab-test',
+        });
+      });
+    });
+  });
+
   describe('commit popovers', () => {
     beforeEach(() => {
       jest.spyOn(popover, 'handleIssuablePopoverMount').mockImplementation(jest.fn());
@@ -229,7 +342,7 @@ describe('initIssuablePopovers', () => {
       expect(commit1.classList.contains('has-tooltip')).toBe(false);
     });
 
-    it('calls mount function with only commit-specific props', async () => {
+    it('passes the commit sha and project path to the mount function', async () => {
       initIssuablePopovers([commit1], popover.handleIssuablePopoverMount);
 
       await commit1.dispatchEvent(new Event('mouseenter', { target: commit1 }));
@@ -238,6 +351,8 @@ describe('initIssuablePopovers', () => {
         expect.objectContaining({
           referenceType: 'commit',
           target: commit1,
+          commitSha: 'abc123de',
+          projectPath: 'gitlab-org/gitlab-test',
         }),
       );
 

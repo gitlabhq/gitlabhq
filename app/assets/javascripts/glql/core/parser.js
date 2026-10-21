@@ -24,7 +24,7 @@ export const parseQueryTextWithFrontmatter = (text) => {
 };
 
 export const parseQuery = async (query, config, scope = null) => {
-  const { output, success, variables, fields, mode, source } = await glql.compile(query, {
+  const { output, success, variables, fields, mode, source, warnings } = await glql.compile(query, {
     ...config,
     // An explicit scope replaces the URL-derived one rather than merging with it: the compiler
     // prefers `project` over `group` unconditionally, so merging would let a stale URL-derived
@@ -35,6 +35,11 @@ export const parseQuery = async (query, config, scope = null) => {
   });
 
   if (!success) throw new Error(output);
+
+  // The compiler drops a binding it has no field for, which would run the query unfiltered.
+  // TODO: Remove once the compiler fails on this itself: https://gitlab.com/gitlab-org/glql/-/work_items/244
+  const unknownBinding = warnings?.find(({ kind }) => kind === 'unknownBindingField');
+  if (unknownBinding) throw new Error(unknownBinding.message);
 
   return {
     query: output,

@@ -1,0 +1,10 @@
+---
+name: prevent_cross_cell_session_overwrite
+description: Skip writing the session cookie when a request lands on a cell that does not own it and the visitor is anonymous, so it does not overwrite the owning cell's session cookie
+feature_issue_url: https://gitlab.com/gitlab-com/gl-infra/tenant-scale/cells-infrastructure/team/-/work_items/890
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255824
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/632577
+milestone: '19.6'
+group: group::cells infrastructure
+type: gitlab_com_derisk
+default_enabled: false

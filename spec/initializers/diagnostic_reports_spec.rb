@@ -8,7 +8,7 @@ RSpec.describe 'diagnostic reports', :aggregate_failures, feature_category: :dur
   end
 
   shared_examples 'does not modify worker hooks' do
-    it do
+    it 'registers no worker hooks and creates no reports daemon or reporter' do
       expect(Gitlab::Cluster::LifecycleEvents).not_to receive(:on_worker_start)
       expect(Gitlab::Cluster::LifecycleEvents).not_to receive(:on_worker_stop)
       expect(Gitlab::Memory::ReportsDaemon).not_to receive(:instance)

@@ -135,8 +135,9 @@ export default {
     },
     bindings() {
       const { groups = [], projects = [] } = this.filters;
+      const { dateRangeBinding } = this.options;
 
-      return [
+      const scopeBindings = [
         ['group', groups],
         ['project', projects],
       ]
@@ -145,6 +146,15 @@ export default {
           target: { kind: 'filter', field },
           value: { kind: 'list', values: paths },
         }));
+
+      if (!dateRangeBinding) return scopeBindings;
+
+      const { field, from, to } = dateRangeBinding;
+
+      return [
+        ...scopeBindings,
+        { target: { kind: 'filter', field }, value: { kind: 'range', from, to } },
+      ];
     },
     // Null, not an empty object, so the resolver falls back to deriving the namespace from the URL.
     scope() {

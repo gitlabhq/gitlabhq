@@ -1222,9 +1222,6 @@ msgstr ""
 msgid "%{loadedProjects} of %{totalProjectsCount} %{projects} loaded"
 msgstr ""
 
-msgid "%{locker} has a lock on \"%{path}\". %{additionalPhrase}"
-msgstr ""
-
 msgid "%{mergeLength}/%{usersLength} can merge"
 msgstr ""
 
@@ -12762,9 +12759,6 @@ msgstr ""
 msgid "Are you sure that you want to destroy %{application}"
 msgstr ""
 
-msgid "Are you sure you want to %{action} %{name}?"
-msgstr ""
-
 msgid "Are you sure you want to approve %{user}?"
 msgstr ""
 
@@ -12848,9 +12842,6 @@ msgstr ""
 msgid "Are you sure you want to lock the \"%{name}\" file?"
 msgstr ""
 
-msgid "Are you sure you want to lock this directory?"
-msgstr ""
-
 msgid "Are you sure you want to lose unsaved changes?"
 msgstr ""
 
@@ -12930,9 +12921,6 @@ msgid "Are you sure you want to unlock the \"%{name}\" directory?"
 msgstr ""
 
 msgid "Are you sure you want to unlock the \"%{name}\" file?"
-msgstr ""
-
-msgid "Are you sure you want to unlock this directory?"
 msgstr ""
 
 msgid "Are you sure you want to unsubscribe from the %{type}: %{link_to_noteable_text}?"
@@ -30265,6 +30253,12 @@ msgstr ""
 msgid "DependencyFirewall|Charges may be incurred at the end of beta"
 msgstr ""
 
+msgid "DependencyFirewall|Defined in %{namespace}"
+msgstr ""
+
+msgid "DependencyFirewall|Defined in a subgroup or project"
+msgstr ""
+
 msgid "DependencyFirewall|Dependency Firewall is free during the beta period. Once generally available, it will be a paid feature billed through %{linkStart}GitLab Credits%{linkEnd}. You'll need to opt in before anything is charged, and we'll give you advance notice ahead of general availability."
 msgstr ""
 
@@ -42457,6 +42451,9 @@ msgstr ""
 msgid "Glql|%{metric} trend"
 msgstr ""
 
+msgid "Glql|A GLQL panel cannot combine dateField with showTrends."
+msgstr ""
+
 msgid "Glql|Description placeholders cannot be used with dimensions."
 msgstr ""
 
@@ -47204,6 +47201,9 @@ msgstr ""
 msgid "Integrations|Notification settings"
 msgstr ""
 
+msgid "Integrations|Organization integration management"
+msgstr ""
+
 msgid "Integrations|Organization owners can set up integrations that all groups and projects in the organization inherit and use by default. These integrations apply to all groups and projects that don't already use custom settings. You can override custom settings for a group or project if the settings are necessary at that level. Learn more about %{integrations_link_start}integration management%{link_end}."
 msgstr ""
 
@@ -51331,9 +51331,6 @@ msgstr ""
 msgid "Locked by %{locker}"
 msgstr ""
 
-msgid "Locked by %{locker}. You do not have permission to unlock this"
-msgstr ""
-
 msgid "Locked files"
 msgstr ""
 
@@ -52864,6 +52861,9 @@ msgstr ""
 msgid "Members can be added by project %{i_open}Maintainers%{i_close} or %{i_open}Owners%{i_close}"
 msgstr ""
 
+msgid "Members cannot be added because membership is locked"
+msgstr ""
+
 msgid "Members listed as CODEOWNERS of affected files."
 msgstr ""
 
@@ -52895,9 +52895,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Membership"
-msgstr ""
-
-msgid "Membership is locked for this group"
 msgstr ""
 
 msgid "Members|%{time} by %{user}"
@@ -58930,9 +58927,6 @@ msgid "OfflineTransfer|Your object storage secret key."
 msgstr ""
 
 msgid "Oh no!"
-msgstr ""
-
-msgid "Ok"
 msgstr ""
 
 msgid "Okay"
@@ -87849,9 +87843,6 @@ msgstr ""
 msgid "This diff is collapsed."
 msgstr ""
 
-msgid "This directory cannot be locked while %{locker} has a lock on \"%{path}\". %{additionalPhrase}"
-msgstr ""
-
 msgid "This domain is not verified. You will need to verify ownership before access is enabled."
 msgstr ""
 
@@ -91025,13 +91016,7 @@ msgstr ""
 msgid "Unlock more features with GitLab Ultimate"
 msgstr ""
 
-msgid "Unlock that directory in order to unlock this"
-msgstr ""
-
 msgid "Unlock the discussion"
-msgstr ""
-
-msgid "Unlock this in order to proceed"
 msgstr ""
 
 msgid "Unlocked"
@@ -100209,16 +100194,10 @@ msgstr ""
 msgid "You do not have permission to leave this %{namespaceType}."
 msgstr ""
 
-msgid "You do not have permission to lock this"
-msgstr ""
-
 msgid "You do not have permission to run a pipeline on this branch."
 msgstr ""
 
 msgid "You do not have permission to set a member awaiting"
-msgstr ""
-
-msgid "You do not have permission to unlock it"
 msgstr ""
 
 msgid "You do not have permission to unlock this directory."

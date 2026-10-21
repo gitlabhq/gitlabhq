@@ -550,7 +550,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
         :create_deployment, :read_deployment, :update_deployment, :admin_deployment, :destroy_deployment,
         :download_code, :build_download_code, :read_code,
         :read_resource_group, :update_resource_group,
-        :read_branch, :read_protected_branch, :read_protected_tag,
+        :read_branch, :read_protected_branch, :read_protectable_branch, :read_protected_tag,
         :read_commit, :read_commit_comment, :read_commit_diff, :read_commit_merge_request,
         :read_commit_ref, :read_commit_sequence, :read_commit_signature,
         :read_repository_archive, :read_repository_blob, :read_repository_changelog,
@@ -3098,6 +3098,48 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
           end
         end
       end
+    end
+  end
+
+  describe 'read_protectable_branch' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:current_user) { public_send(role) }
+
+    where(:project_visibility, :role, :allowed) do
+      :private_project | :anonymous        | false
+      :private_project | :non_member       | false
+      :private_project | :guest            | false
+      :private_project | :planner          | false
+      :private_project | :reporter         | false
+      :private_project | :security_manager | false
+      :private_project | :developer        | false
+      :private_project | :maintainer       | true
+      :private_project | :owner            | true
+      :private_project | :admin            | false
+      :public_project  | :anonymous        | false
+      :public_project  | :non_member       | false
+      :public_project  | :guest            | false
+      :public_project  | :planner          | false
+      :public_project  | :reporter         | false
+      :public_project  | :security_manager | false
+      :public_project  | :developer        | false
+      :public_project  | :maintainer       | true
+      :public_project  | :owner            | true
+      :public_project  | :admin            | false
+    end
+
+    with_them do
+      let(:project) { public_send(project_visibility) }
+
+      it { expect(subject.can?(:read_protectable_branch)).to be(allowed) }
+    end
+
+    context 'when admin mode is enabled', :enable_admin_mode do
+      let(:role) { :admin }
+      let(:project) { private_project }
+
+      it { expect_allowed(:read_protectable_branch) }
     end
   end
 

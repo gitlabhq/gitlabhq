@@ -80,7 +80,8 @@ module API
         def execute_tool_with_tracking(tool, request, params, tool_name, request_id, current_user)
           start = current_monotonic_time
           result = tool.execute(request: request, params: params)
-          raise ToolResponseError, result if ::Mcp::Tools::Base::Response.error?(result)
+          failure = failed_result(result)
+          raise ToolResponseError, failure if failure
 
           dispatch = dispatch_info(result)
           track_finish_event(tool_name, request_id, current_user,
@@ -94,8 +95,9 @@ module API
             success: false, error: e, tool: tool, params: params, dispatch: dispatch)
           log_tool_call(tool_name, request_id, current_user, params,
             tool: tool, error: e, duration_s: duration_since(start), dispatch: dispatch)
-          e.result.except(:reason, DISPATCH_KEY)
+          result.is_a?(Hash) ? result.except(:reason, DISPATCH_KEY) : result
         rescue StandardError => error
+          discard_result(result)
           track_finish_event(tool_name, request_id, current_user,
             success: false, error: error, tool: tool, params: params)
           log_tool_call(tool_name, request_id, current_user, params,
@@ -135,6 +137,12 @@ module API
             **dispatch_fields(dispatch),
             **error_fields
           )
+        end
+
+        def discard_result(_result); end
+
+        def failed_result(result)
+          result if ::Mcp::Tools::Base::Response.error?(result)
         end
 
         def dispatch_info(result)

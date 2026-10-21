@@ -27,6 +27,137 @@ title: Orbit API
 Use this API to run queries, retrieve schemas, and check cluster health for
 [Orbit](https://gitlab.com/gitlab-org/orbit/knowledge-graph).
 
+## Search for graph entities
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256404) as an [experiment](../policy/development_stages_support.md) in GitLab 19.6.
+
+{{< /history >}}
+
+Searches for readable entities in a project or group and returns Orbit entity tokens.
+Results use GitLab search, and might be available before the graph indexes the entities.
+The endpoint selects Zoekt, Advanced Search, or Basic search independently for each scope.
+Every selected scope appears in `scopes` with a `status`, so you can tell an empty scope from one that was skipped, unavailable, or failed.
+
+You need at least the Reporter role in a group under the target's top-level group, and Orbit must be turned on for that top-level group.
+Without a Reporter membership in any Orbit-enabled top-level group, such as a project-only member, the endpoint returns `403 Forbidden`.
+Otherwise, a target outside your Orbit-enabled top-level groups returns `404 Not Found`.
+Where the instance license covers Orbit, administrators in Admin Mode and auditors only need Orbit turned on for the target's top-level group.
+On GitLab.com, they still need the usual Orbit entitlement, like the other Orbit endpoints: a Reporter membership in an entitled top-level group.
+A search that GitLab search treats as abusive, such as a stop word or a term that is too short or too long, returns `400 Bad Request`.
+The endpoint counts toward the Orbit query rate limit. It also counts once toward the [search rate limit](../administration/instance_limits.md#search-rate-limit), plus once for each further scope it searches. Once you hit that limit, the remaining scopes return `rate_limited` without searching.
+
+```plaintext
+GET /api/v4/orbit/grep
+```
+
+Supported attributes:
+
+| Attribute | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `search` | string | Yes | Search terms. Must contain between 2 and 256 bytes after leading and trailing whitespace is removed. |
+| `full_path` | string | Conditional | Full path of a project or group. Required if `namespace_id` and `project_id` are omitted. |
+| `namespace_id` | integer | Conditional | ID of a group. Required if `full_path` and `project_id` are omitted. |
+| `project_id` | integer | Conditional | ID of a project. Required if `full_path` and `namespace_id` are omitted. |
+| `limit` | integer | No | Maximum total results. From 1 to 50. Default is 20. |
+| `per_scope` | integer | No | Maximum results per scope. From 1 to 10 and no greater than `limit`. Default is 5. |
+| `response_format` | string | No | Response format. One of `raw` or `llm`. Default is `raw`. |
+| `scopes` | string array | No | Scopes to search, as a comma-separated list or repeated `scopes[]` parameters. Valid values: `work_items`, `merge_requests`, `blobs`, `commits`, `notes`, `milestones`, `users`, `projects`, and `groups`. Defaults to all scopes. |
+
+Provide exactly one of `full_path`, `namespace_id`, or `project_id`.
+Scopes are searched in a fixed order: work items, merge requests, blobs, commits, notes,
+milestones, users, projects, and groups. The total `limit` applies only to the selected scopes.
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following
+response attributes for `response_format=raw`:
+
+| Attribute | Type | Description |
+|-----------|------|-------------|
+| `request` | object | Effective request values: `search`, `limit`, and `per_scope`. |
+| `result_count` | integer | Number of returned results. |
+| `results` | object array | Results from all scopes, in scope order. |
+| `results[].id` | integer or string | Entity ID. The commit SHA for commits, and `null` for files. |
+| `results[].matches` | object array | Matched lines for a file, when the search type returns them. Each entry has `start_line`, `end_line`, and `text`. Basic search keeps the first match for each file. |
+| `results[].reference` | object | Structured entity reference. |
+| `results[].scope` | string | Scope that returned the result. |
+| `results[].text` | string | One-line result text, truncated to 200 characters. |
+| `results[].token` | string | Entity token in the form `Type[id]`. `null` for files and commits. |
+| `results[].type` | string | Orbit entity type. |
+| `scopes` | object array | One entry for every selected scope. |
+| `scopes[].backend` | string | Search type used for the scope: `basic`, `advanced`, or `zoekt`. Present when `status` is `ok`. |
+| `scopes[].name` | string | Search scope name. |
+| `scopes[].pagination` | object | Present when `status` is `ok`. `has_more` is `true` when the scope has more results than were returned. |
+| `scopes[].reason` | object | Present when `status` is not `ok`. `code` is one of `not_available_for_search_type`, `search_type_error`, `invalid_search`, `search_failed`, `timeout`, `rate_limited`, or `limit_reached`. |
+| `scopes[].result_count` | integer | Number of results from the scope. Present when `status` is `ok`. |
+| `scopes[].status` | string | One of `ok`, `unavailable`, `skipped`, or `error`. `unavailable` means the search type or target doesn't support the scope, the search backend rejected the request (for example, a Zoekt project limit), or you don't have access to it. `skipped` means the total `limit` was reached first. `error` means the search failed or hit the search rate limit, and other scopes keep their results. |
+| `target` | object | Search target. |
+| `target.full_path` | string | Full path of the target. |
+| `target.id` | integer | Target ID. |
+| `target.token` | string | Entity token of the target. |
+| `target.type` | string | `Project` or `Group`. |
+| `truncated` | boolean | Whether the total limit was reached before all scopes were exhausted, or a scope has more results than `per_scope`. |
+| `version` | string | Grep response contract version. |
+
+Files use a `reference` with `project_id`, `path`, `branch`, and `commit_sha`.
+`branch` is the default branch for Advanced Search and Zoekt results.
+`commit_sha` is the indexed commit for Advanced Search results, and `null` otherwise.
+Commits use a `reference` with `project_id` and `sha`.
+Other entities use a reference with the global database `id`.
+
+Example request:
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/orbit/grep?search=search%20term&project_id=1&scopes=merge_requests,blobs,notes&limit=2&per_scope=2"
+```
+
+Example response:
+
+```json
+{
+  "version": "1.0.0",
+  "request": {"search": "search term", "limit": 2, "per_scope": 2},
+  "target": {"type": "Project", "id": 1, "token": "Project[1]", "full_path": "example-group/example-project"},
+  "scopes": [
+    {"name": "merge_requests", "status": "ok", "backend": "advanced", "result_count": 1, "pagination": {"has_more": false}},
+    {"name": "blobs", "status": "ok", "backend": "advanced", "result_count": 1, "pagination": {"has_more": true}},
+    {"name": "notes", "status": "skipped", "reason": {"code": "limit_reached"}}
+  ],
+  "results": [
+    {
+      "scope": "merge_requests",
+      "type": "MergeRequest",
+      "id": 42,
+      "token": "MergeRequest[42]",
+      "reference": {"id": 42},
+      "text": "Add scoped search"
+    },
+    {
+      "scope": "blobs",
+      "type": "File",
+      "id": null,
+      "token": null,
+      "reference": {"project_id": 1, "path": "README.md", "branch": "main", "commit_sha": "e79b2dc8c2cca1ed93c8c760dfa89b8e47ed1720"},
+      "text": "README.md",
+      "matches": [{"start_line": 3, "end_line": 5, "text": "A search term in context"}]
+    }
+  ],
+  "result_count": 2,
+  "truncated": true
+}
+```
+
+For `response_format=llm`, the endpoint returns compact `text/plain` output:
+
+```plaintext
+orbit_grep version=1.0.0 target=Project[1] search="search term" scopes="merge_requests,blobs,notes" results=2 truncated=true
+- MergeRequest[42] type=MergeRequest text="Add scoped search"
+- File project_id="1" path="README.md" branch="main" commit_sha="e79b2dc8c2cca1ed93c8c760dfa89b8e47ed1720" type=File text="README.md"
+! skipped scope=notes reason=limit_reached
+```
+
 ## Endpoint reference
 
 For the full reference of Orbit endpoints, including paths, parameters, and

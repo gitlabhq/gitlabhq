@@ -11,7 +11,7 @@ module API
 
         params :work_item_update_features do
           optional :features, type: Hash,
-            desc: 'Input for work item features (widgets). Features that are not available in the namespace, ' \
+            desc: 'Input for work item features. Features that are not available in the namespace, ' \
               'for example because of the subscription tier, are ignored. Features that the work item type ' \
               'does not support return 400 Bad Request.' do
             optional :description, type: Hash, desc: 'Input for description feature.' do
@@ -43,37 +43,37 @@ module API
               optional :due_date, type: Date, desc: 'Due date for the work item.'
             end
 
-            optional :crm_contacts, type: Hash, desc: 'Input for CRM contacts widget.' do
+            optional :crm_contacts, type: Hash, desc: 'Input for CRM contacts feature.' do
               requires :contact_ids, type: Array[Integer],
                 desc: 'IDs of CRM contacts to set on the work item.'
               optional :operation_mode, type: String, values: %w[REPLACE APPEND REMOVE], default: 'REPLACE',
                 desc: 'Operation mode for updating CRM contacts. Supported values: REPLACE, APPEND, REMOVE.'
             end
 
-            optional :notes, type: Hash, desc: 'Input for notes widget.' do
+            optional :notes, type: Hash, desc: 'Input for notes feature.' do
               requires :discussion_locked, type: Boolean,
                 desc: 'Whether discussion is locked on the work item.'
             end
 
-            optional :notifications, type: Hash, desc: 'Input for notifications widget.' do
+            optional :notifications, type: Hash, desc: 'Input for notifications feature.' do
               requires :subscribed, type: Boolean,
                 desc: 'Desired state of the subscription.'
             end
 
-            optional :current_user_todos, type: Hash, desc: 'Input for current user todos widget.' do
+            optional :current_user_todos, type: Hash, desc: 'Input for current user todos feature.' do
               requires :action, type: String, values: %w[mark_as_done add],
                 desc: 'Action for the to-do update. Supported values: mark_as_done, add.'
               optional :todo_id, type: Integer,
                 desc: 'ID of the to-do. If not provided, all to-dos for the work item will be updated.'
             end
 
-            optional :award_emoji, type: Hash, desc: 'Input for award emoji widget.' do
+            optional :award_emoji, type: Hash, desc: 'Input for award emoji feature.' do
               requires :action, type: String, values: %w[add remove toggle],
                 desc: 'Action for the award emoji update. Supported values: add, remove, toggle.'
               requires :name, type: String, desc: 'Name of the emoji.'
             end
 
-            optional :time_tracking, type: Hash, desc: 'Input for time tracking widget.' do
+            optional :time_tracking, type: Hash, desc: 'Input for time tracking feature.' do
               optional :time_estimate, type: String,
                 desc: 'Time estimate in human readable format. For example: 1h 30m.'
               optional :timelog, type: Hash, desc: 'Timelog entry for time spent.' do

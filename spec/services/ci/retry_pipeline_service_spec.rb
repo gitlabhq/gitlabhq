@@ -461,17 +461,6 @@ RSpec.describe Ci::RetryPipelineService, '#execute', feature_category: :continuo
         expect(build('rspec')).to be_failed
         expect(pipeline.reload).not_to be_running
       end
-
-      context 'when the feature flag is disabled' do
-        before do
-          stub_feature_flags(lock_concurrent_pipeline_retries: false)
-        end
-
-        it 'retries the pipeline without taking the lock', :aggregate_failures do
-          expect(service.execute(pipeline)).to be_success
-          expect(build('rspec')).to be_pending
-        end
-      end
     end
 
     context 'when user is not allowed to retry build' do

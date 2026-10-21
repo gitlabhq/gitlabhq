@@ -384,6 +384,8 @@ RSpec.describe API::WorkItems::Update, feature_category: :portfolio_management d
         patch api(api_request_path, user), params: { features: { description: { description: 'Some text' } } }
 
         expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq('Following features are not supported by Task type: description')
+        expect(json_response['unsupported_features']).to match_array(['description'])
       end
     end
 

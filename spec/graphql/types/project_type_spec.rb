@@ -1437,23 +1437,37 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
         end
       end
 
-      context 'without read_code permissions' do
+      context 'as a guest' do
         before do
           project.add_guest(current_user)
         end
 
-        it 'returns an empty array' do
+        it 'returns nil' do
           expect(protectable_branches).to be_nil
         end
       end
 
-      context 'with read_code permissions' do
+      context 'as a developer, who can read code but not protect branches' do
         before do
-          project.add_member(current_user, Gitlab::Access::REPORTER)
+          project.add_developer(current_user)
         end
 
-        it 'returns all the branch names' do
-          expect(protectable_branches).to match_array(branch_names)
+        it 'returns nil' do
+          expect(protectable_branches).to be_nil
+        end
+      end
+
+      context 'when the repository is disabled' do
+        before do
+          project.project_feature.update!(
+            repository_access_level: ProjectFeature::DISABLED,
+            merge_requests_access_level: ProjectFeature::DISABLED,
+            builds_access_level: ProjectFeature::DISABLED
+          )
+        end
+
+        it 'returns nil even for a maintainer' do
+          expect(protectable_branches).to be_nil
         end
       end
     end

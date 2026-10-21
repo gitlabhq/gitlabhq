@@ -49,6 +49,7 @@ RSpec.describe WorkItems::BaseEvent, feature_category: :code_suggestions do
           namespace_id: work_item.namespace_id,
           project_id: work_item.project_id,
           work_item_type: work_item.work_item_type.base_type,
+          work_item_type_id: work_item.work_item_type_id,
           confidential: false
         }
       end
@@ -74,6 +75,18 @@ RSpec.describe WorkItems::BaseEvent, feature_category: :code_suggestions do
 
       it 'rejects missing work_item_type' do
         expect { subclass.new(data: cloud_event_data.merge(data: valid_data.except(:work_item_type))) }
+          .to raise_error(Gitlab::EventStore::InvalidEvent, /does not match/)
+      end
+
+      it 'accepts missing work_item_type_id, as in events published before the field existed' do
+        expect { subclass.new(data: cloud_event_data.merge(data: valid_data.except(:work_item_type_id))) }
+          .not_to raise_error
+      end
+
+      it 'rejects a work_item_type_id that is not an integer' do
+        expect do
+          subclass.new(data: cloud_event_data.merge(data: valid_data.merge(work_item_type_id: 'task')))
+        end
           .to raise_error(Gitlab::EventStore::InvalidEvent, /does not match/)
       end
 

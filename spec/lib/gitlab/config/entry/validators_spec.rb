@@ -417,6 +417,100 @@ RSpec.describe Gitlab::Config::Entry::Validators, feature_category: :pipeline_co
     end
   end
 
+  describe described_class::ArrayOfStringsValidator do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:config, :valid_result) do
+      %w[a b]    | true
+      ['a', :b]  | true
+      []         | true
+      'a'        | false
+      nil        | false
+      ['a', 1]   | false
+      ['a', nil] | false
+      [['a']]    | false
+      { a: 'b' } | false
+    end
+
+    with_them do
+      before do
+        klass.instance_eval do
+          validates :config, array_of_strings: true
+        end
+
+        allow(instance).to receive(:config).and_return(config)
+      end
+
+      it 'validates the instance' do
+        expect(instance.valid?).to be(valid_result)
+
+        unless valid_result
+          expect(instance.errors.messages_for(:config))
+            .to contain_exactly('should be an array of strings')
+        end
+      end
+    end
+
+    context 'with a format' do
+      where(:config, :error_message) do
+        %w[a1 b2] | nil
+        %w[a1 b]  | 'contains elements that do not match the format'
+        ['a1', 1] | 'should be an array of strings'
+      end
+
+      with_them do
+        before do
+          klass.instance_eval do
+            validates :config, array_of_strings: { with: /\d/ }
+          end
+
+          allow(instance).to receive(:config).and_return(config)
+        end
+
+        it 'validates the instance' do
+          expect(instance.valid?).to be(error_message.nil?)
+
+          expect(instance.errors.messages_for(:config)).to contain_exactly(error_message) if error_message
+        end
+      end
+    end
+  end
+
+  describe described_class::ArrayOfStringsOrStringValidator do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:config, :valid_result) do
+      'a'        | true
+      :a         | true
+      %w[a b]    | true
+      []         | true
+      nil        | false
+      1          | false
+      ['a', 1]   | false
+      [['a']]    | false
+      { a: 'b' } | false
+    end
+
+    with_them do
+      before do
+        klass.instance_eval do
+          validates :config, array_of_strings_or_string: true
+        end
+
+        allow(instance).to receive(:config).and_return(config)
+      end
+
+      it 'validates the instance' do
+        expect(instance.valid?).to be(valid_result)
+
+        unless valid_result
+          expect(instance.errors.messages_for(:config))
+            .to contain_exactly('should be an array of strings or a string')
+        end
+      end
+    end
+  end
+
   describe described_class::DurationValidator do
     using RSpec::Parameterized::TableSyntax
 

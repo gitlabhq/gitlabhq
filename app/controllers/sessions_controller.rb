@@ -29,6 +29,8 @@ class SessionsController < Devise::SessionsController
   prepend_before_action :check_captcha, only: [:create]
   prepend_before_action :start_time_for_sign_in_dashboard_ux_sli, only: [:create]
   prepend_before_action :store_redirect_uri, only: [:new]
+  # Prepended so the session that `new` writes survives a redirect from a later filter.
+  prepend_before_action :allow_cross_cell_session_overwrite, only: [:new]
   prepend_before_action :ensure_password_authentication_enabled!,
     if: -> { action_name == 'create' && password_based_login? }
   before_action :redirect_to_connector_provider, only: [:new]
@@ -259,6 +261,12 @@ class SessionsController < Devise::SessionsController
     return if current_user
 
     Gitlab::AnonymousSession.new(request.remote_ip).count_session_ip
+  end
+
+  # The router sends the password POST to the cell in the session cookie, so the cell
+  # that renders the sign-in form must own the cookie, even if another cell set it.
+  def allow_cross_cell_session_overwrite
+    Gitlab::Middleware::PreventCrossCellSessionOverwrite.allow_overwrite!(request)
   end
 
   # Handle an "initial setup" state, where there's only one user, it's an admin,

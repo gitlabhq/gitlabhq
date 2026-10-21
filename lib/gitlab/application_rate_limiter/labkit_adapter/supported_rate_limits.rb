@@ -296,6 +296,13 @@ module Gitlab
               period: 1.minute,
               action: :limit
             ),
+            group_delete_api: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_group_deletes_api_by_user',
+              characteristics: %i[user],
+              limit: 60,
+              period: 1.minute,
+              action: :limit
+            ),
             group_download_export: ::Labkit::RateLimit::Rule.new(
               name: 'limit_group_export_downloads_by_user_group',
               characteristics: %i[user group],
@@ -324,10 +331,31 @@ module Gitlab
               period: 1.minute,
               action: :limit
             ),
+            group_permanent_delete_api: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_group_permanent_deletes_api_by_user',
+              characteristics: %i[user],
+              limit: 10,
+              period: 1.minute,
+              action: :limit
+            ),
             group_projects_api: ::Labkit::RateLimit::Rule.new(
               name: 'limit_group_projects_api_by_user_or_ip',
               characteristics: %i[user ip],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.group_projects_api_limit },
+              period: 1.minute,
+              action: :limit
+            ),
+            group_relations_export: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_group_relations_exports_by_user_group',
+              characteristics: %i[user group],
+              limit: 6,
+              period: 1.minute,
+              action: :limit
+            ),
+            group_relations_export_download: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_group_relations_export_downloads_by_user_group',
+              characteristics: %i[user group],
+              limit: 20,
               period: 1.minute,
               action: :limit
             ),
@@ -710,6 +738,20 @@ module Gitlab
               name: 'limit_project_permanent_deletes_api_by_user',
               characteristics: %i[user],
               limit: 10,
+              period: 1.minute,
+              action: :limit
+            ),
+            project_relations_export: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_project_relations_exports_by_user_project',
+              characteristics: %i[user project],
+              limit: 6,
+              period: 1.minute,
+              action: :limit
+            ),
+            project_relations_export_download: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_project_relations_export_downloads_by_user_project',
+              characteristics: %i[user project],
+              limit: 20,
               period: 1.minute,
               action: :limit
             ),

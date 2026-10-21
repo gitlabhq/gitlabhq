@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe API::GroupExport, :aggregate_failures, feature_category: :importers do
+RSpec.describe API::GroupExport, :aggregate_failures, :clean_gitlab_redis_rate_limiting,
+  feature_category: :importers do
   let_it_be(:group) { create(:group) }
   let_it_be(:user) { create(:user) }
 
@@ -271,6 +272,34 @@ RSpec.describe API::GroupExport, :aggregate_failures, feature_category: :importe
           expect(response).to have_gitlab_http_status(:accepted)
         end
       end
+
+      context 'when rate limit is exceeded' do
+        let_it_be(:other_group) { create(:group) }
+
+        before do
+          other_group.add_owner(user)
+
+          allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_call_original
+          allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+            .with(:group_relations_export, scope: { user: user, group: group }).and_return(true)
+        end
+
+        it 'throttles the endpoint without starting an export' do
+          expect(BulkImports::ExportService).not_to receive(:new)
+
+          post api(path, user)
+
+          expect(response).to have_gitlab_http_status(:too_many_requests)
+          expect(json_response['message'])
+            .to include('error' => 'This endpoint has been requested too many times. Try again later.')
+        end
+
+        it 'does not throttle exports of another group by the same user' do
+          post api("/groups/#{other_group.id}/export_relations", user)
+
+          expect(response).to have_gitlab_http_status(:accepted)
+        end
+      end
     end
 
     describe 'GET /groups/:id/export_relations/download' do
@@ -282,6 +311,34 @@ RSpec.describe API::GroupExport, :aggregate_failures, feature_category: :importe
           export = create(:bulk_import_export, group: group, relation: 'labels', user: user)
           upload = create(:bulk_import_export_upload, export: export)
           upload.update!(export_file: fixture_file_upload('spec/fixtures/bulk_imports/gz/labels.ndjson.gz'))
+        end
+      end
+
+      context 'when rate limit is exceeded' do
+        let_it_be(:other_group) { create(:group) }
+
+        before do
+          other_group.add_owner(user)
+
+          allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_call_original
+          allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+            .with(:group_relations_export_download, scope: { user: user, group: group }).and_return(true)
+        end
+
+        it 'throttles the endpoint without serving a file' do
+          expect(::Import::BulkImports::Audit::Auditor).not_to receive(:new)
+
+          get api(download_path, user)
+
+          expect(response).to have_gitlab_http_status(:too_many_requests)
+          expect(json_response['message'])
+            .to include('error' => 'This endpoint has been requested too many times. Try again later.')
+        end
+
+        it 'does not throttle downloads from another group by the same user' do
+          get api("/groups/#{other_group.id}/export_relations/download?relation=#{relation}", user)
+
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
 
@@ -428,6 +485,17 @@ RSpec.describe API::GroupExport, :aggregate_failures, feature_category: :importe
       end
 
       let_it_be(:failed_export) { create(:bulk_import_export, :failed, group: group, relation: 'badges', user: user) }
+
+      it 'is not subject to the relations export rate limits' do
+        allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_call_original
+        expect(Gitlab::ApplicationRateLimiter).not_to receive(:throttled?).with(:group_relations_export, any_args)
+        expect(Gitlab::ApplicationRateLimiter)
+          .not_to receive(:throttled?).with(:group_relations_export_download, any_args)
+
+        get api(status_path, user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
 
       it 'returns a list of relation export statuses' do
         get api(status_path, user)

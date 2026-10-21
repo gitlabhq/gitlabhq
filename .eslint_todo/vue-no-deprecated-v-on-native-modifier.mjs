@@ -3,7 +3,6 @@
  */
 export default {
   files: [
-    'app/assets/javascripts/batch_comments/components/draft_note.vue',
     'app/assets/javascripts/ci/pipeline_details/graph/components/job_item.vue',
     'app/assets/javascripts/ci/pipeline_details/graph/components/stage_column_component.vue',
     'app/assets/javascripts/projects/settings/components/access_dropdown.vue',

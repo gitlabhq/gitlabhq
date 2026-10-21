@@ -451,7 +451,9 @@ export default {
     },
     isLoading() {
       return (
-        this.initialLoadingWorkItemTypes || (this.initialLoadingWorkItem && !this.skipWorkItemQuery)
+        this.initialLoadingWorkItemTypes ||
+        (this.initialLoadingWorkItem && !this.skipWorkItemQuery) ||
+        this.$apollo.queries.availableFeatures.loading
       );
     },
     isWorkItemTypesLoading() {

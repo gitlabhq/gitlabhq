@@ -191,6 +191,16 @@ module API
         end
       end
 
+      # Marking for deletion still writes to the primary DB, so it gets a loose limit.
+      # Permanent removal fans out destroy jobs straight away, so it gets a strict one.
+      def group_delete_rate_limit_key
+        if ::Gitlab::Utils.to_boolean(params[:permanently_remove])
+          :group_permanent_delete_api
+        else
+          :group_delete_api
+        end
+      end
+
       def delete_group(group)
         permanently_remove = ::Gitlab::Utils.to_boolean(params[:permanently_remove])
 
@@ -464,6 +474,10 @@ module API
       end
       route_setting :authorization, permissions: :delete_group, boundary_type: :group
       delete ":id", feature_category: :groups_and_projects, urgency: :low do
+        if Feature.enabled?(:group_and_project_delete_rate_limit, current_user)
+          check_rate_limit!(group_delete_rate_limit_key, scope: { user: current_user })
+        end
+
         group = find_group!(params[:id])
         authorize! :remove_group, group
         check_subscription! group

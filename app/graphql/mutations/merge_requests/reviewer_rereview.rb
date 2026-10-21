@@ -14,13 +14,14 @@ module Mutations
                             User ID for the user that has been requested for a new review.
         DESC
 
-      def resolve(project_path:, iid:, user_id:)
+      def resolve(project_path:, iid:, user_id:, **params)
         merge_request = authorized_find!(project_path: project_path, iid: iid)
         user = load_user(user_id)
 
         result = ::MergeRequests::RequestReviewService.new(
           project: merge_request.project,
-          current_user: current_user
+          current_user: current_user,
+          params: params
         ).execute(merge_request, user)
 
         {
@@ -45,3 +46,5 @@ module Mutations
     end
   end
 end
+
+Mutations::MergeRequests::ReviewerRereview.prepend_mod

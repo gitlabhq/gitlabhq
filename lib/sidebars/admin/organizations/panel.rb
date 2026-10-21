@@ -4,11 +4,17 @@ module Sidebars
   module Admin
     module Organizations
       class Panel < ::Sidebars::Panel
+        include ::Sidebars::Concerns::SuperSidebarPanel
+
         override :configure_menus
         def configure_menus
           super
+          set_scope_menu(Sidebars::Admin::Organizations::Menus::ScopeMenu.new(context))
+          add_menu(Sidebars::StaticMenu.new(context))
           add_menu(Sidebars::Admin::Organizations::Menus::OverviewMenu.new(context))
           add_menu(Sidebars::Admin::Organizations::Menus::SettingsMenu.new(context))
+
+          transform_old_menus(@menus, @scope_menu)
         end
 
         override :aria_label

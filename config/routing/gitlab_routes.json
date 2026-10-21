@@ -10556,6 +10556,11 @@
     "acceptsFormat": true
   },
   {
+    "template": "/api/:version/orbit/grep",
+    "example": "/api/v4/orbit/grep",
+    "acceptsFormat": true
+  },
+  {
     "template": "/api/:version/orbit/mcp",
     "example": "/api/v4/orbit/mcp",
     "acceptsFormat": true

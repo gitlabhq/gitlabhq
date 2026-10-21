@@ -511,16 +511,21 @@ RSpec.describe Ci::Catalog::Resources::Versions::CreateService, feature_category
     end
 
     context 'when the collection fails' do
+      let(:rejection) do
+        'Component `dast`: `templates/dast.yml` includes `remote: https://example.com/ci.yml`: ' \
+          '`remote:` includes are not allowed in a bundled component'
+      end
+
       before do
         allow(collect_service).to receive(:prepare)
-          .and_return(ServiceResponse.error(message: 'Version has no publisher'))
+          .and_return(ServiceResponse.error(message: rejection, reason: :collect_failed))
       end
 
       it 'does not publish the version', :aggregate_failures do
         expect { execute }.not_to change { Ci::Catalog::Resources::Version.count }
 
         expect(execute).to be_error
-        expect(execute.message).to include('Version has no publisher')
+        expect(execute.message).to include(rejection)
         expect(catalog_resource.reload.state).not_to eq('published')
       end
     end
@@ -544,16 +549,55 @@ RSpec.describe Ci::Catalog::Resources::Versions::CreateService, feature_category
     end
 
     context 'when persisting the bundle raises' do
+      let(:exception) { ActiveRecord::StatementInvalid.new }
+
       before do
-        allow(collect_service).to receive(:persist).and_raise(ActiveRecord::StatementInvalid)
+        allow(collect_service).to receive(:persist).and_raise(exception)
       end
 
-      it 'rolls back the version', :aggregate_failures do
-        expect { execute }.to raise_error(ActiveRecord::StatementInvalid)
-          .and not_change { Ci::Catalog::Resources::Version.count }
+      it 'rolls back the version and returns an error', :aggregate_failures do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(exception, project_id: project.id)
 
+        expect { execute }.not_to change { Ci::Catalog::Resources::Version.count }
+
+        expect(execute).to be_error
+        expect(execute.message).to eq('Catalog version could not be published')
         expect(catalog_resource.reload.state).not_to eq('published')
       end
+    end
+  end
+
+  describe '#execute bundle collection without stubs' do
+    let_it_be_with_refind(:project) do
+      create(:project, :public, :custom_repo, files: {
+        'templates/main.yml' => "main-job:\n  script: echo main"
+      })
+    end
+
+    let_it_be_with_refind(:catalog_resource) do
+      create(:ci_catalog_resource, project: project, verification_level: :gitlab_maintained)
+    end
+
+    let(:release) do
+      create(:release, tag: '1.0.0', project: project, sha: project.repository.root_ref_sha,
+        author: project.first_owner)
+    end
+
+    let(:metadata) { { components: [{ name: 'main', spec: {}, component_type: 'template' }] } }
+
+    subject(:execute) { described_class.new(release, project.first_owner, metadata).execute }
+
+    it 'publishes the version and stores its bundle', :aggregate_failures do
+      expect { execute }.to change { Ci::Catalog::BundledResources::Version.count }.by(1)
+
+      expect(execute).to be_success
+
+      bundled_version = Ci::Catalog::BundledResources::Version.last
+
+      expect(bundled_version.semver.to_s).to eq('1.0.0')
+      expect(bundled_version.bundled_resource.full_path).to eq(project.full_path.downcase)
+      expect(bundled_version.components.pluck(:name)).to contain_exactly('main')
+      expect(catalog_resource.reload.state).to eq('published')
     end
   end
 end

@@ -884,6 +884,7 @@ Grants the ability to read Orbit data the token owner can access in GitLab. Grou
 | ------ | ------ | ------ | ---- |
 | Read | User | `GET` | `/orbit/agent/commands` |
 | Read | User | `GET` | `/orbit/graph_status` |
+| Read <sup>1</sup> | User | `GET` | `/orbit/grep` |
 | Read | User | `GET` | `/orbit/mcp` |
 | Read | User | `GET` | `/orbit/query/templates` |
 | Read | User | `GET` | `/orbit/schema` |
@@ -898,6 +899,8 @@ Grants the ability to read Orbit data the token owner can access in GitLab. Grou
 | Read | User | `POST` | `/orbit/mcp` |
 | Read | User | `POST` | `/orbit/query` |
 | Read | User | `POST` | `/orbit/query/:name` |
+
+<sup>1</sup> Also requires the `Use Global Search` permission.
 
 ### Groups resources
 

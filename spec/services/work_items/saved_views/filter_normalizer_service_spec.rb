@@ -158,11 +158,11 @@ RSpec.describe WorkItems::SavedViews::FilterNormalizerService, feature_category:
       context 'with wildcard Any' do
         let(:filter_data) { { label_name: ['Any'] } }
 
-        it 'stores as label_wildcard_id instead of resolving to IDs' do
+        it 'stores as label_wildcard_ids instead of resolving to IDs' do
           result = service.execute
 
           expect(result).to be_success
-          expect(result.payload[:label_wildcard_id]).to eq('Any')
+          expect(result.payload[:label_wildcard_ids]).to eq(['Any'])
           expect(result.payload).not_to have_key(:label_ids)
         end
       end
@@ -170,11 +170,23 @@ RSpec.describe WorkItems::SavedViews::FilterNormalizerService, feature_category:
       context 'with wildcard None' do
         let(:filter_data) { { label_name: ['None'] } }
 
-        it 'stores as label_wildcard_id instead of resolving to IDs' do
+        it 'stores as label_wildcard_ids instead of resolving to IDs' do
           result = service.execute
 
           expect(result).to be_success
-          expect(result.payload[:label_wildcard_id]).to eq('None')
+          expect(result.payload[:label_wildcard_ids]).to eq(['None'])
+          expect(result.payload).not_to have_key(:label_ids)
+        end
+      end
+
+      context 'with more than one wildcard' do
+        let(:filter_data) { { label_name: %w[Any None] } }
+
+        it 'stores every wildcard' do
+          result = service.execute
+
+          expect(result).to be_success
+          expect(result.payload[:label_wildcard_ids]).to eq(%w[Any None])
           expect(result.payload).not_to have_key(:label_ids)
         end
       end
@@ -182,12 +194,36 @@ RSpec.describe WorkItems::SavedViews::FilterNormalizerService, feature_category:
       context 'with wildcard Any alongside regular label names' do
         let(:filter_data) { { label_name: %w[Any bug] } }
 
-        it 'stores wildcard in label_wildcard_id and resolves remaining labels to IDs' do
+        it 'stores wildcard in label_wildcard_ids and resolves remaining labels to IDs' do
           result = service.execute
 
           expect(result).to be_success
-          expect(result.payload[:label_wildcard_id]).to eq('Any')
+          expect(result.payload[:label_wildcard_ids]).to eq(['Any'])
           expect(result.payload[:label_ids]).to eq([group_label.id])
+        end
+      end
+
+      context 'with a wildcard in the negated context' do
+        let(:filter_data) { { not: { label_name: %w[Any bug] } } }
+
+        it 'stores the wildcard and resolves the remaining labels' do
+          result = service.execute
+
+          expect(result).to be_success
+          expect(result.payload[:not][:label_wildcard_ids]).to eq(['Any'])
+          expect(result.payload[:not][:label_ids]).to eq([group_label.id])
+        end
+      end
+
+      context 'with a wildcard in the unioned context' do
+        let(:filter_data) { { or: { label_names: %w[None bug] } } }
+
+        it 'stores the wildcard and resolves the remaining labels' do
+          result = service.execute
+
+          expect(result).to be_success
+          expect(result.payload[:or][:label_wildcard_ids]).to eq(['None'])
+          expect(result.payload[:or][:label_ids]).to eq([group_label.id])
         end
       end
 
@@ -588,6 +624,40 @@ RSpec.describe WorkItems::SavedViews::FilterNormalizerService, feature_category:
           expect(result.payload[:work_item_type_ids]).to eq([1, 2])
         end
       end
+    end
+  end
+
+  # Views stored before multi-wildcard support kept a single wildcard as a bare string
+  describe 'legacy single-wildcard filter_data' do
+    let(:stored_filter_data) { { label_wildcard_id: 'Any', label_ids: [group_label.id] } }
+
+    subject(:reloaded) do
+      WorkItems::SavedViews::FilterSanitizerService.new(
+        filter_data: stored_filter_data, namespace: group, current_user: current_user
+      ).execute
+    end
+
+    it 'loads the legacy wildcard alongside the resolved label' do
+      expect(reloaded).to be_success
+      expect(reloaded.payload[:filters][:label_name]).to match_array(['Any', group_label.title])
+      expect(reloaded.payload[:warnings]).to be_empty
+    end
+
+    it 'rewrites the legacy shape into label_wildcard_ids when saved again' do
+      renormalized = described_class.new(
+        filter_data: reloaded.payload[:filters], container: container, current_user: current_user
+      ).execute
+
+      expect(renormalized).to be_success
+      expect(renormalized.payload[:label_wildcard_ids]).to eq(['Any'])
+      expect(renormalized.payload[:label_ids]).to eq([group_label.id])
+      expect(renormalized.payload).not_to have_key(:label_wildcard_id)
+    end
+
+    it 'still satisfies the filter_data schema, so no backfill is required' do
+      view = build(:saved_view, namespace: group, author: current_user, filter_data: stored_filter_data)
+
+      expect(view).to be_valid
     end
   end
 end

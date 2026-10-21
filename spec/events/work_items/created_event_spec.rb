@@ -28,6 +28,7 @@ RSpec.describe WorkItems::CreatedEvent, feature_category: :code_suggestions do
       namespace_id: 100,
       project_id: 200,
       work_item_type: 'issue',
+      work_item_type_id: 1,
       confidential: false
     },
     missing_required: %i[work_item_id work_item_iid namespace_id work_item_type confidential],
@@ -37,6 +38,7 @@ RSpec.describe WorkItems::CreatedEvent, feature_category: :code_suggestions do
       namespace_id: 'not_an_integer',
       project_id: 'not_an_integer',
       work_item_type: 123,
+      work_item_type_id: 'not_an_integer',
       confidential: 'not_a_boolean'
     }
 end

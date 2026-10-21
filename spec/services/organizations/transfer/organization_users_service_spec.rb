@@ -21,14 +21,22 @@ RSpec.describe Organizations::Transfer::OrganizationUsersService, feature_catego
 
     context 'when organization has already been activated' do
       let_it_be(:active_organization) { create(:organization) }
+      let_it_be(:tlg_owner) { create(:user) }
+      let_it_be(:tlg_developer) { create(:user) }
+      let_it_be(:tlg) do
+        create(:group, organization: active_organization, owners: tlg_owner, developers: tlg_developer)
+      end
 
       subject(:service) { described_class.new(organization: active_organization) }
 
-      it 'returns an error' do
+      it 'backfills missing members as default without re-deriving owners', :aggregate_failures do
         result = service.execute
 
-        expect(result).to be_error
-        expect(result.message).to eq('Organization has already been activated')
+        expect(result).to be_success
+        expect(active_organization.organization_users.find_by(user: tlg_developer).access_level).to eq('default')
+        # Owner derivation is skipped on an active org, so the TLG owner is backfilled as default too.
+        expect(active_organization.organization_users.find_by(user: tlg_owner).access_level).to eq('default')
+        expect(active_organization.organization_users.owners).to be_empty
       end
     end
 
@@ -57,6 +65,48 @@ RSpec.describe Organizations::Transfer::OrganizationUsersService, feature_catego
 
         expect(single_tlg_org.organization_users.find_by(user: tlg_owner).access_level).to eq('owner')
         expect(single_tlg_org.organization_users.find_by(user: tlg_developer).access_level).to eq('default')
+      end
+
+      it 'backfills sub-group-only members as default' do
+        service.execute
+
+        expect(single_tlg_org.organization_users.find_by(user: subgroup_only_owner).access_level).to eq('default')
+      end
+    end
+
+    context 'when members only exist on sub-groups and projects' do
+      let_it_be(:hierarchy_org) { create(:organization, :confirmed) }
+      let_it_be(:subgroup_member) { create(:user) }
+      let_it_be(:project_member) { create(:user) }
+      let_it_be(:tlg) { create(:group, organization: hierarchy_org) }
+      let_it_be(:subgroup) do
+        create(:group, parent: tlg, organization: hierarchy_org, developers: subgroup_member)
+      end
+
+      let_it_be(:project) do
+        create(:project, namespace: subgroup, organization: hierarchy_org, maintainers: project_member)
+      end
+
+      subject(:service) { described_class.new(organization: hierarchy_org) }
+
+      it 'backfills sub-group and project members as default', :aggregate_failures do
+        service.execute
+
+        expect(hierarchy_org.organization_users.find_by(user: subgroup_member).access_level).to eq('default')
+        expect(hierarchy_org.organization_users.find_by(user: project_member).access_level).to eq('default')
+      end
+
+      it 'excludes invited and requested members across the hierarchy' do
+        invited = create(:project_member, :invited, source: project, access_level: Gitlab::Access::DEVELOPER)
+        requesting = create(:user)
+        create(:group_member, :access_request, source: subgroup, user: requesting,
+          access_level: Gitlab::Access::DEVELOPER)
+
+        service.execute
+
+        user_ids = hierarchy_org.organization_users.pluck(:user_id)
+        expect(user_ids).to contain_exactly(subgroup_member.id, project_member.id)
+        expect(user_ids).not_to include(invited.user_id, requesting.id)
       end
     end
 

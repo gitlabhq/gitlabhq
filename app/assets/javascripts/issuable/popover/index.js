@@ -19,16 +19,6 @@ export const componentsByReferenceTypeMap = {
   commit: CommitPopover,
 };
 
-let renderFn;
-
-const handleIssuablePopoverMouseOut = ({ target }) => {
-  target.removeEventListener('mouseleave', handleIssuablePopoverMouseOut);
-
-  if (renderFn) {
-    clearTimeout(renderFn);
-  }
-};
-
 const popoverMountedAttr = 'data-popover-mounted';
 
 function isCommentPopover(target) {
@@ -43,7 +33,7 @@ function isCommentPopover(target) {
 export function handleCommentPopoverMount({ target, apolloProvider }) {
   const PopoverComponent = Vue.extend(CommentPopover);
 
-  new PopoverComponent({
+  return new PopoverComponent({
     propsData: {
       target,
     },
@@ -70,26 +60,36 @@ export const handleIssuablePopoverMount = ({
   referenceType,
   target,
   placement,
+  commitSha,
+  projectPath,
+  onMount,
+  cancelOnMouseLeave = true,
 }) => {
-  // Add listener to actually remove it again
-  target.addEventListener('mouseleave', handleIssuablePopoverMouseOut);
+  // Per call, so leaving one target never cancels another target's pending mount.
+  // Returned so a caller that arms on focus can cancel on blur; such a caller passes
+  // `cancelOnMouseLeave: false` so a passing pointer does not cancel a focused target.
+  let timer;
+  const cancel = () => {
+    clearTimeout(timer);
+    target.removeEventListener('mouseleave', cancel);
+  };
+  if (cancelOnMouseLeave) target.addEventListener('mouseleave', cancel);
 
-  renderFn = setTimeout(() => {
+  timer = setTimeout(() => {
+    let popover;
+
     if (isCommentPopover(target)) {
-      handleCommentPopoverMount({ target, apolloProvider });
+      popover = handleCommentPopoverMount({ target, apolloProvider });
     } else {
       const PopoverComponent = Vue.extend(componentsByReferenceType[referenceType]);
 
       const isCommit = referenceType === 'commit';
 
-      new PopoverComponent({
+      popover = new PopoverComponent({
         propsData: {
           target,
           ...(isCommit
-            ? {
-                commitSha: target.dataset.commit,
-                projectPath: target.dataset.projectPath,
-              }
+            ? { commitSha, projectPath }
             : {
                 namespacePath,
                 iid,
@@ -106,7 +106,10 @@ export const handleIssuablePopoverMount = ({
     }
 
     target.setAttribute(popoverMountedAttr, true);
+    onMount?.(popover);
   }, 200); // 200ms delay so not every mouseover triggers Popover + API Call
+
+  return cancel;
 };
 
 export default (elements, issuablePopoverMount = handleIssuablePopoverMount) => {
@@ -153,6 +156,8 @@ export default (elements, issuablePopoverMount = handleIssuablePopoverMount) => 
               referenceType,
               target,
               placement,
+              commitSha: el.dataset.commit,
+              projectPath,
             });
           }
         });

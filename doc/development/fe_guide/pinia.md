@@ -305,8 +305,8 @@ Follow these steps to iterate over the migration process and split the work onto
    Import migrated modules in your new store's definition (`index.js`).
 1. If you have circular dependencies in your stores consider [using `tryStore` plugin](#avoiding-circular-dependencies).
 1. [Migrate the store specs manually](#migrating-store-tests).
-1. [Sync your Vuex store with Pinia stores](#syncing-with-vuex).
-1. Refactor components to use the new store. Split this into as many merge requests as necessary.
+1. Refactor components to use the new store. You can split independent pages into separate merge requests,
+   but migrate components that depend on shared live state together. Vuex and Pinia stores are no longer synchronized.
    Always [update the specs](#migrating-component-tests) with the components.
 1. Remove the Vuex store.
 1. Remove CODEOWNERS rule.
@@ -481,57 +481,6 @@ graph TD
     B[Store Beta] --- Foo(Action Foo)
     C -- calls --> Bar
     C -- calls --> Foo
-```
-
-### Syncing with Vuex
-
-This `syncWithVuex` plugin syncs your state from Vuex to Pinia and vice versa.
-This allows you to iteratively migrate components by having both stores in your app during migration.
-
-Usage example:
-
-```javascript
-// Vuex store @ ./store.js
-import Vuex from 'vuex';
-import createOldStore from './stores/old_store';
-
-export default new Vuex.Store({
-  modules: {
-    oldStore: createOldStore(),
-  },
-});
-```
-
-```javascript
-// Pinia store
-import { defineStore } from 'pinia';
-import oldVuexStore from './store'
-
-export const useMigratedStore = defineStore('migratedStore', {
-  syncWith: {
-    store: oldVuexStore,
-    name: 'oldStore', // use legacy store name if it is defined inside Vuex `modules`
-    namespaced: true, // set to 'true' if Vuex module is namespaced
-  },
-  // the state here gets sync with Vuex, any changes to migratedStore also propagate to the Vuex store
-  state() {
-    // ...
-  },
-  // ...
-});
-```
-
-#### Override
-
-A Vuex store definition can be shared in multiple Vuex store instances.
-In that case we can not rely on the store config alone to sync our Pinia store with the Vuex store.
-We need to point our Pinia store to the actual Vuex store instance using `syncWith` helper function.
-
-```javascript
-// this overrides the existing `syncWith` config
-useMigratedStore().syncWith({ store: anotherOldStore });
-// `useMigratedStore` state now is synced only with `anotherOldStore`
-new Vue({ pinia, render(h) { return h(MyComponent) } });
 ```
 
 ### Migrating store tests

@@ -20,7 +20,7 @@ module API
       helpers ::API::Helpers::WorkItems::Creation
       helpers ::API::Helpers::WorkItems::Preloads
       helpers ::API::Helpers::WorkItems::Rendering
-      helpers ::API::Helpers::WorkItems::WidgetValidation
+      helpers ::API::Helpers::WorkItems::FeatureValidation
 
       resource :namespaces do
         params do

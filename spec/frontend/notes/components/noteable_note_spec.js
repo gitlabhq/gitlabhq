@@ -602,6 +602,14 @@ describe('issue_note', () => {
 
       expect(wrapper.emitted('update-success')).toHaveLength(1);
     });
+
+    it.each(['mouseenter', 'mouseleave'])('emits `%s` when the note is hovered', async (event) => {
+      createWrapper();
+
+      await wrapper.findByTestId('noteable-note-container').trigger(event);
+
+      expect(wrapper.emitted(event)).toHaveLength(1);
+    });
   });
 
   describe('NoteSessionBar', () => {

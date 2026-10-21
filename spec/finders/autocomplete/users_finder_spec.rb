@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Autocomplete::UsersFinder do
+RSpec.describe Autocomplete::UsersFinder, feature_category: :user_profile do
   # TODO update when multiple owners are possible in projects
   # https://gitlab.com/gitlab-org/gitlab/-/issues/21432
 

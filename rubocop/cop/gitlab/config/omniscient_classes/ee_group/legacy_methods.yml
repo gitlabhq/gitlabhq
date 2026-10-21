@@ -104,7 +104,6 @@ EE::Group:
 - safe_read_repository_read_only_column
 - saml_discovery_token
 - saml_enabled?
-- saml_group_links_exists?
 - saml_group_sync_available?
 - sbom_occurrences
 - scoped_variables_available?

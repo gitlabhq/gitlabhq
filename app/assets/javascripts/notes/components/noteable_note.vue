@@ -126,6 +126,8 @@ export default {
     'handle-delete-note',
     'handle-edit',
     'handle-update-note',
+    'mouseenter',
+    'mouseleave',
     'start-replying',
     'update-success',
   ],
@@ -463,6 +465,8 @@ export default {
     :data-note-id="note.id"
     class="note note-wrapper note-comment"
     data-testid="noteable-note-container"
+    @mouseenter="$emit('mouseenter', $event)"
+    @mouseleave="$emit('mouseleave', $event)"
   >
     <div
       v-if="showMultiLineComment"

@@ -103,6 +103,43 @@ describe('WorkItemNamespaceListbox', () => {
     expect(findDropdownToggle().text()).toContain(namespaceGroupsList.data.group.name);
   });
 
+  describe('auto-selecting a project', () => {
+    it('selects the first project when in a group context with the group path still selected and projectsOnly is true', async () => {
+      await createComponent({ selectedNamespacePath: 'group-a', projectsOnly: true });
+
+      expect(wrapper.emitted('select-namespace')[0]).toEqual([
+        namespaceProjectsData[0].fullPath,
+        expect.objectContaining({ fullPath: namespaceProjectsData[0].fullPath }),
+      ]);
+    });
+
+    it('does not select a project when selectedNamespacePath has already moved away from the group path', async () => {
+      await createComponent({
+        selectedNamespacePath: namespaceProjectsData[1].fullPath,
+        projectsOnly: true,
+      });
+
+      expect(wrapper.emitted('select-namespace')).toBeUndefined();
+    });
+
+    it('does not select a project when projectsOnly is false, even if selectedNamespacePath matches the group path', async () => {
+      await createComponent({ selectedNamespacePath: 'group-a', projectsOnly: false });
+
+      expect(wrapper.emitted('select-namespace')).toBeUndefined();
+    });
+
+    it('does not select a project when not in a group context, even if selectedNamespacePath matches fullPath', async () => {
+      await createComponent({
+        isGroup: false,
+        fullPath: 'group-a/project-a',
+        selectedNamespacePath: 'group-a/project-a',
+        projectsOnly: true,
+      });
+
+      expect(wrapper.emitted('select-namespace')).toBeUndefined();
+    });
+  });
+
   it('renders both projects and groups options regardless of the current namespace', () => {
     expect(findDropdown().text()).not.toContain('Recently used');
 

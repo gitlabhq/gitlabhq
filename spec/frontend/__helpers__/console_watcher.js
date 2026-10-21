@@ -239,6 +239,3 @@ export const ignoreConsoleMessages = (ignores) => {
     global.jestConsoleWatcher.setIgnores(origIgnores);
   });
 };
-
-export const ignoreVueConsoleWarnings = () =>
-  ignoreConsoleMessages([/^\[Vue warn\]: Missing required prop/, /^\[Vue warn\]: Invalid prop/]);

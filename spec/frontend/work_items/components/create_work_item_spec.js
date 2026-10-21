@@ -85,6 +85,7 @@ describe('Create work item component', () => {
   let apolloProvider;
   let resolveMutation;
   let resolveAll;
+  let resolveQuery;
 
   useLocalStorageSpy();
 
@@ -163,7 +164,7 @@ describe('Create work item component', () => {
       resolvers,
     );
 
-    ({ apolloProvider, resolveMutation, resolveAll } = mockResult);
+    ({ apolloProvider, resolveMutation, resolveAll, resolveQuery } = mockResult);
 
     wrapper = shallowMountExtended(CreateWorkItem, {
       apolloProvider: mockResult.apolloProvider,
@@ -295,6 +296,24 @@ describe('Create work item component', () => {
         expect(findParentWidget().props().groupPath).toBe(expectedGroupPath);
       },
     );
+  });
+
+  describe('isLoading', () => {
+    const findDetailLayoutLoading = () => wrapper.findComponent(DetailLayout).props('loading');
+
+    it('stays true while the availableFeatures query is pending, even after other queries resolve', async () => {
+      createComponent();
+
+      await resolveQuery(workItemTypesConfigurationQuery);
+      await resolveQuery(namespaceWorkItemTypesQuery);
+      await resolveQuery(workItemByIidQuery);
+
+      expect(findDetailLayoutLoading()).toBe(true);
+
+      await resolveQuery(createWorkItemFeaturesQuery);
+
+      expect(findDetailLayoutLoading()).toBe(false);
+    });
   });
 
   describe('Cache clearing', () => {

@@ -59,12 +59,9 @@ default branch locks. For more information, see [roles and permissions](../permi
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519325) in GitLab 17.10 [with a feature flag](../../administration/feature_flags/_index.md) named `blob_overflow_menu`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/522993) in GitLab 18.1. Feature flag `blob_overflow_menu` removed.
 - Lock button [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/545279) in GitLab 19.4 [with a feature flag](../../administration/feature_flags/_index.md) named `repository_lock_information`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/628649) in GitLab 19.6. Feature flag `repository_lock_information` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 To lock a file or directory:
 

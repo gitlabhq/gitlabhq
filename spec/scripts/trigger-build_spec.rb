@@ -989,15 +989,37 @@ RSpec.describe Trigger, feature_category: :tooling do
     end
 
     describe '#app_url' do
-      let(:review_slug) { 'ce-123' }
+      let(:external_url) { 'https://docs-upstream-ee-123.gitlab-marketing.workers.dev' }
+      let(:downstream_environments_response) { [double('downstream_environment', external_url: external_url)] }
 
       before do
-        allow(subject).to receive(:review_slug).and_return(review_slug)
+        allow(com_gitlab_client).to receive(:environments)
+          .with(downstream_project_path, name: subject.__send__(:downstream_environment))
+          .and_return(downstream_environments_response)
       end
 
-      it 'returns the correct app URL' do
-        expected_url = "https://docs.gitlab.com/upstream-review-mr-#{review_slug}/"
-        expect(subject.send(:app_url)).to eq(expected_url)
+      it 'returns the external URL of the downstream environment' do
+        expect(subject.send(:app_url)).to eq(external_url)
+      end
+
+      context 'when no environment is found' do
+        let(:downstream_environments_response) { [] }
+
+        it 'exits with an error' do
+          expect { subject.send(:app_url) }
+            .to raise_error(SystemExit)
+            .and output(/No review app URL found/).to_stderr
+        end
+      end
+
+      context 'when the environment has no external URL' do
+        let(:external_url) { nil }
+
+        it 'exits with an error' do
+          expect { subject.send(:app_url) }
+            .to raise_error(SystemExit)
+            .and output(/No review app URL found/).to_stderr
+        end
       end
     end
   end

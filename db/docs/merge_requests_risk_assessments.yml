@@ -3,7 +3,7 @@ table_name: merge_requests_risk_assessments
 classes:
 - MergeRequests::RiskAssessment
 feature_categories:
-- duo_code_review
+- dap_code_review
 description: Risk classification produced for a merge request, holding the derived
   score, its confidence, and the signals the score was computed from.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249134

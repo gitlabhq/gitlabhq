@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import { createPinia, PiniaVuePlugin, setActivePinia } from 'pinia';
-import { globalAccessorPlugin, syncWithVuex } from '~/pinia/plugins';
+import { globalAccessorPlugin } from '~/pinia/plugins';
 
 Vue.use(PiniaVuePlugin);
 
@@ -13,7 +13,6 @@ setActivePinia(pinia);
 // eslint-disable-next-line no-underscore-dangle
 pinia._a = pinia._a || {};
 
-pinia.use(syncWithVuex);
 pinia.use(globalAccessorPlugin);
 
 export { pinia };

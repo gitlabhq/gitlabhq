@@ -90,6 +90,9 @@ module Ci
               project.catalog_resource.publish!
               ::Ci::Catalog::BundledResources::CollectAndStoreService.new(version).persist(bundle) if bundle
             end
+          rescue ActiveRecord::ActiveRecordError => e
+            ::Gitlab::ErrorTracking.track_exception(e, project_id: project.id)
+            error('Catalog version could not be published')
           end
 
           def error(message)

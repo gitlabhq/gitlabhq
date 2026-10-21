@@ -156,6 +156,7 @@ project:
   - read_project_component_usages
   - read_project_secrets_manager
   - read_project_security_exclusions
+  - read_protectable_branch
   - read_protected_branch
   - read_protected_tags
   - read_reject_non_dco_commits

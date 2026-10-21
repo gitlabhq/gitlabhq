@@ -184,7 +184,8 @@ module Ci
 
           ::Gitlab::AppLogger.info(
             message: 'Bundled catalog component has no published spec',
-            catalog_resource_version_id: version.id,
+            catalog_resource_id: version.catalog_resource_id,
+            semver: version.semver.to_s,
             component_name: name
           )
 

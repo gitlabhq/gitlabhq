@@ -62,6 +62,12 @@
     "label_wildcard_id": {
       "type": "string"
     },
+    "label_wildcard_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "milestone_ids": {
       "type": "array",
       "items": {
@@ -239,6 +245,12 @@
             "type": "integer"
           }
         },
+        "label_wildcard_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
         "milestone_ids": {
           "type": "array",
           "items": {
@@ -329,6 +341,12 @@
           "type": "array",
           "items": {
             "type": "integer"
+          }
+        },
+        "label_wildcard_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
           }
         },
         "custom_field": {

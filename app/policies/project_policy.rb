@@ -685,6 +685,7 @@ class ProjectPolicy < BasePolicy
 
     prevent :read_branch
     prevent :read_protected_branch
+    prevent :read_protectable_branch
     prevent :read_protected_tag
 
     prevent :read_commit

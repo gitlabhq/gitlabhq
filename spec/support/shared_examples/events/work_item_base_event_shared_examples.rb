@@ -12,6 +12,7 @@ RSpec.shared_examples 'a work item base event' do
       namespace_id: work_item.namespace_id,
       project_id: work_item.project_id,
       work_item_type: work_item.work_item_type.base_type,
+      work_item_type_id: work_item.work_item_type_id,
       confidential: work_item.confidential
     )
   end

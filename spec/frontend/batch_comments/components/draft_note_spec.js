@@ -121,14 +121,14 @@ describe('Batch comments draft note component', () => {
   describe('multiline comments', () => {
     it(`calls store with draft.position with mouseenter`, () => {
       createComponent({ draft: { ...draft, ...draftWithLineRange } });
-      findNoteableNote().trigger('mouseenter');
+      findNoteableNote().vm.$emit('mouseenter');
 
       expect(useNotes().setSelectedCommentPositionHover).toHaveBeenCalledWith(LINE_RANGE);
     });
 
     it(`calls store with draft.position and mouseleave`, () => {
       createComponent({ draft: { ...draft, ...draftWithLineRange } });
-      findNoteableNote().trigger('mouseleave');
+      findNoteableNote().vm.$emit('mouseleave');
 
       expect(useNotes().setSelectedCommentPositionHover).toHaveBeenCalledWith();
     });
@@ -136,8 +136,8 @@ describe('Batch comments draft note component', () => {
     it(`does not call store without draft position`, () => {
       createComponent({ draft });
 
-      findNoteableNote().trigger('mouseenter');
-      findNoteableNote().trigger('mouseleave');
+      findNoteableNote().vm.$emit('mouseenter');
+      findNoteableNote().vm.$emit('mouseleave');
 
       expect(useNotes().setSelectedCommentPositionHover).not.toHaveBeenCalled();
     });

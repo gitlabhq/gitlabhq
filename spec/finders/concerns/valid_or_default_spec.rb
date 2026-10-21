@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ValidOrDefault, feature_category: :shared do
+RSpec.describe ValidOrDefault, feature_category: :mlops do
   using RSpec::Parameterized::TableSyntax
 
   let(:object) do

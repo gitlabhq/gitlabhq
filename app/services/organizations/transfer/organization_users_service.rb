@@ -14,10 +14,11 @@ module Organizations
 
       def execute
         return ServiceResponse.error(message: 'Organization is required') unless organization
-        return ServiceResponse.error(message: 'Organization has already been activated') if organization.active?
         return ServiceResponse.success if top_level_group_ids.empty?
 
-        upsert_organization_owners
+        # Owner derivation ("owns every TLG") is a one-time bootstrap: re-running it on an
+        # active organization could wrongly re-grant ownership.
+        upsert_organization_owners unless organization.active?
         upsert_all_users_as_default
 
         ServiceResponse.success
@@ -44,8 +45,20 @@ module Organizations
       end
 
       def upsert_all_users_as_default
-        top_level_group_members.each_batch(of: BATCH_SIZE) do |batch|
-          upsert_batch(batch.pluck(:user_id).compact, :default) # rubocop:disable Database/AvoidUsingPluckWithoutLimit -- batch size controlled by each_batch
+        backfill_members_for(organization.groups, GroupMember)
+        backfill_members_for(organization.projects, ProjectMember)
+      end
+
+      def backfill_members_for(sources, member_class)
+        sources.each_batch(of: BATCH_SIZE) do |source_batch|
+          source_batch.pluck(:id).each do |source_id| # rubocop:disable Database/AvoidUsingPluckWithoutLimit -- bounded by each_batch
+            member_class.with_source_id(source_id).non_invite.non_request
+              .each_batch(of: BATCH_SIZE) do |member_batch|
+                # uniq collapses a user's multiple in-batch memberships; cross-batch dupes fall to :skip.
+                user_ids = member_batch.pluck(:user_id).compact.uniq # rubocop:disable Database/AvoidUsingPluckWithoutLimit -- bounded by each_batch
+                upsert_batch(user_ids, :default)
+              end
+          end
         end
       end
 

@@ -99,6 +99,8 @@ The following limits apply on migration by direct transfer.
 | Limit                                                                      | Default     | Configurable |
 |:---------------------------------------------------------------------------|:------------|:-------------|
 | Number of migrations by a destination GitLab instance per minute per user. | 6           | {{< no >}}   |
+| Relations export requests per minute per user for each project or group.   | 6           | {{< no >}}   |
+| Relations export downloads per minute per user for each project or group.  | 20          | {{< no >}}   |
 | Time to wait for decompressing an archive file.                            | 210 seconds | {{< no >}}   |
 | Length of an NDJSON row.                                                   | 50 MB       | {{< no >}}   |
 | Time until an empty export status on source instance is raised.            | 5 minutes   | {{< no >}}   |

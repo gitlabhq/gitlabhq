@@ -8,10 +8,14 @@ module.exports = {
   process: (contentArg, filename, ...args) => {
     const { code: content } = createTransformer().process(contentArg, filename, ...args);
 
-    const jestTransformedWorkerCode = `const { FakeWebWorker } = require("helpers/web_worker_fake");
+    const fakeWorkerPath = JSON.stringify(require.resolve('./web_worker_fake'));
+    const workerPath = JSON.stringify(filename);
+    const workerCode = JSON.stringify(content);
+
+    const jestTransformedWorkerCode = `const { FakeWebWorker } = require(${fakeWorkerPath});
     module.exports = class JestTransformedWorker extends FakeWebWorker {
       constructor() {
-        super(${JSON.stringify(filename)}, ${JSON.stringify(content)});
+        super(${workerPath}, ${workerCode});
       }
     };`;
 

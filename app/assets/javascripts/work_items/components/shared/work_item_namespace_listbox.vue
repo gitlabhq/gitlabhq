@@ -241,14 +241,27 @@ export default {
     },
   },
   watch: {
-    projects(projectsList) {
-      this.namespaceCache = unionBy(this.namespaceCache, projectsList, 'id');
+    projects(projects) {
+      this.namespaceCache = unionBy(this.namespaceCache, projects, 'id');
+
+      const isSelectingGroupPathWhenProjectsOnly =
+        this.isGroup &&
+        this.selectedNamespacePath === this.fullPath &&
+        !this.selectedNamespace &&
+        this.projectsOnly &&
+        projects.length;
+
+      // Fix bug when in group-context and using group path but we're doing projects only.
+      // Auto-select first project in this case.
+      if (isSelectingGroupPathWhenProjectsOnly) {
+        this.handleSelect(projects[0].fullPath);
+      }
     },
-    group(groupData) {
-      if (!groupData) return;
-      const descendents = groupData.descendantGroups?.nodes || [];
-      const groupList = [groupData, ...descendents];
-      this.namespaceCache = unionBy(this.namespaceCache, groupList, 'id');
+    group(group) {
+      if (!group) return;
+      const descendents = group.descendantGroups?.nodes || [];
+      const groups = [group, ...descendents];
+      this.namespaceCache = unionBy(this.namespaceCache, groups, 'id');
     },
   },
   created() {

@@ -4,7 +4,7 @@
 
 ## How it works
 
-See [How it works](doc/how_it_works.md).
+See [Active Context](https://docs.gitlab.com/development/ai_features/semantic_search/active_context/).
 
 ## Installation
 
@@ -12,16 +12,15 @@ TODO
 
 ## Getting started
 
-See [Getting started](doc/getting_started.md).
+See [Configuring the Active Context initializer](https://docs.gitlab.com/development/ai_features/semantic_search/#configuring-the-active-context-initializer).
 
 ## Usage
 
-See [Usage](doc/usage.md)
+See [Adding Semantic Search Collections](https://docs.gitlab.com/development/ai_features/semantic_search/adding_semantic_search_collections/)
 
 ## How to
 
-- [How to set initial embedding model](doc/how_to.md#set-embedding-model)
-- [How to migrate from one embedding model to another](doc/how_to.md#migrate-from-one-embedding-model-to-another)
+- [Setting or switching an embedding model](https://docs.gitlab.com/development/ai_features/semantic_search/#setting-or-switching-an-embedding-model)
 
 ## Contributing
 

@@ -24,6 +24,25 @@ RSpec.describe Sidebars::Admin::Organizations::Panel, feature_category: :navigat
     end
   end
 
+  describe 'scope menu' do
+    it 'is titled with the organization name' do
+      expect(panel.scope_menu.title).to eq(organization.name)
+    end
+
+    # rubocop:disable RSpec/FactoryBot/AvoidCreate -- menus only render for a user who can admin the organization
+    context 'when the user can access the organization admin area' do
+      let_it_be(:organization) { create(:organization) }
+      let_it_be(:user) { create(:user, owner_of: organization) }
+
+      it 'appears in the rendered sidebar' do
+        item_ids = panel.super_sidebar_menu_items.map { |item| item[:id] }
+
+        expect(item_ids).to include(:organization_admin_scope)
+      end
+    end
+    # rubocop:enable RSpec/FactoryBot/AvoidCreate
+  end
+
   it 'includes the overview menu' do
     expect(panel.instance_variable_get(:@menus).map(&:class))
       .to include(Sidebars::Admin::Organizations::Menus::OverviewMenu)

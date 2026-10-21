@@ -168,6 +168,8 @@ RSpec.describe Ci::Catalog::BundledResources::CollectAndStoreService, feature_ca
         expect(::Gitlab::AppLogger).to receive(:info).with(
           hash_including(
             message: 'Bundled catalog component has no published spec',
+            catalog_resource_id: catalog_resource.id,
+            semver: 'v2.1.0-rc1',
             component_name: 'orphan'
           )
         )

@@ -76,6 +76,23 @@ The chunking process uses a two-stage approach:
 
 This approach ensures chunks are semantically meaningful while staying within size limits for embedding generation.
 
+### Queues
+
+Semantic Code Search uses two [queues](active_context.md#queues):
+
+- `Ai::ActiveContext::Queues::Code`: Generates embeddings for the current indexing embedding model.
+  Passes `current_model_only: true` to the preprocessors.
+- `Ai::ActiveContext::Queues::CodeBackfill`: Generates embeddings for the next indexing embedding model
+  during [model switching](active_context.md#model-switching).
+  Passes `next_model_only: true` to the preprocessors.
+
+Both queues read `number_of_shards` and `shard_limit` from the collection record
+(`queue_shard_count` and `queue_shard_limit`), with defaults of `1` and `1000`.
+
+Throughput is limited on instances other than GitLab.com that use a GitLab-managed embedding model.
+When throughput is limited, the queue uses one shard,
+and `shard_limit` is capped at 20 times the embedding request batch size, which is about 20 embedding requests a minute.
+
 ### Namespace eligibility
 
 Not all namespaces are eligible for Semantic Code Search. Eligibility is managed through two workers:

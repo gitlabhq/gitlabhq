@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Members > Anonymous user sees members' do
+RSpec.describe 'Projects > Members > Anonymous user sees members', feature_category: :groups_and_projects do
   include Features::MembersHelpers
 
   let(:user) { create(:user) }

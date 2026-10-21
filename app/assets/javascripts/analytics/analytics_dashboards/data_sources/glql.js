@@ -54,6 +54,12 @@ const usesWholeDateRange = (glql, variables) =>
  * GLQL reads an absolute bound as the whole day (`timestamp <= "2026-09-02"` compiles to
  * `timestampTo: "2026-09-02 23:59"`), so the range needs no end-exclusive adjustment.
  *
+ * A panel with `dateField` gets the range as a binding on that field instead, handed down as
+ * the `dateRangeBinding` visualization option. The compiler applies it over any predicate the
+ * query already has on the field, so the query needs no placeholders. The comparison query
+ * shares the main query's bindings and would be re-bound to the current period, so
+ * `dateField` can't combine with `showTrends`: such a panel keeps the placeholders.
+ *
  * A query with no placeholders is returned untouched, so GLQL panels on dashboards
  * without a date range filter keep the window their own query sets.
  *
@@ -75,13 +81,17 @@ const usesWholeDateRange = (glql, variables) =>
  * visualization option, which the stat display renders as a trend.
  */
 export default function fetch({
-  query: { glql = '', dateRange: panelDateRange } = {},
+  query: { glql = '', dateRange: panelDateRange, dateField } = {},
   filters = {},
   visualizationOptions: { showTrends = false } = {},
   setVisualizationOverrides = () => {},
 } = {}) {
   if (typeof glql !== 'string') {
     throw new Error(s__('Glql|GLQL query must be a string.'));
+  }
+
+  if (dateField && showTrends) {
+    throw new Error(s__('Glql|A GLQL panel cannot combine dateField with showTrends.'));
   }
 
   const dateRange = resolveDateRangeFilter(
@@ -93,17 +103,28 @@ export default function fetch({
   const rangeDays = dateRangeDayCount(dateRange);
   const previousStartDate = toISODateFormat(previousDateRange(dateRange).startDate, true);
 
+  // One call, because setVisualizationOverrides replaces the options rather than merging them.
+  const visualizationOptionOverrides = {};
+
+  if (dateField) {
+    visualizationOptionOverrides.dateRangeBinding = {
+      field: dateField,
+      from: dateVariables.startDate,
+      to: dateVariables.endDate,
+    };
+  }
+
   // Checked against the date variables alone: a stat carries no granularity placeholder,
   // requiring one here would cost every trend stat its comparison query.
   if (showTrends && usesWholeDateRange(glql, dateVariables)) {
-    setVisualizationOverrides({
-      visualizationOptionOverrides: {
-        comparisonQuery: interpolate(glql, {
-          ...dateRangeVariables(previousDateRange(dateRange)),
-          dynamicGranularity,
-        }),
-      },
+    visualizationOptionOverrides.comparisonQuery = interpolate(glql, {
+      ...dateRangeVariables(previousDateRange(dateRange)),
+      dynamicGranularity,
     });
+  }
+
+  if (Object.keys(visualizationOptionOverrides).length) {
+    setVisualizationOverrides({ visualizationOptionOverrides });
   }
 
   return interpolate(glql, {

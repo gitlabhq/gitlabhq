@@ -479,7 +479,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
 
     subject(:metadata) { remote_file.metadata }
 
-    it do
+    it 'returns the remote file metadata with the masked variable hidden in location and raw' do
       is_expected.to eq(
         context_project: project.full_path,
         context_sha: project.commit.sha,

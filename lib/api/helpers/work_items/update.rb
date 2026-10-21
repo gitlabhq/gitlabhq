@@ -12,7 +12,7 @@ module API
           validator = ::Gitlab::Auth::ScopeValidator.new(current_user, Gitlab::Auth::RequestAuthenticator.new(request))
           update_params = build_update_work_item_params.merge(scope_validator: validator)
           widget_params = extract_update_feature_params(work_item)
-          validate_supported_widgets!(work_item.work_item_type, work_item.resource_parent, widget_params)
+          validate_supported_features!(work_item.work_item_type, work_item.resource_parent, widget_params)
 
           ::WorkItems::UpdateService.new(
             container: work_item.resource_parent,
@@ -78,7 +78,7 @@ module API
             hash[widget_key] = value
           end
 
-          strip_disabled_widget_params!(widget_params, work_item.work_item_type, work_item.resource_parent)
+          strip_disabled_feature_params!(widget_params, work_item.work_item_type, work_item.resource_parent)
           widget_params
         end
       end

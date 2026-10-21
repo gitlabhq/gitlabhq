@@ -613,7 +613,7 @@ module Trigger
     %<app_url>s
 
     => For more information, see the documentation
-    => https://docs.gitlab.com/ee/development/documentation/review_apps.html
+    => https://docs.gitlab.com/development/documentation/review_apps/
 
     => If something doesn't work, drop a line in the #docs chat channel.
     MSG
@@ -629,7 +629,7 @@ module Trigger
     def cleanup!
       puts "=> Looking for downstream environment '#{downstream_environment}' in project '#{downstream_project_path}'"
 
-      environment = com_gitlab_client.environments(downstream_project_path, name: downstream_environment).first
+      environment = find_downstream_environment
 
       unless environment
         puts "=> No environment found matching '#{downstream_environment}'. Nothing to clean up."
@@ -657,6 +657,10 @@ module Trigger
 
     def downstream_environment
       "review/mr-#{review_slug}"
+    end
+
+    def find_downstream_environment
+      com_gitlab_client.environments(downstream_project_path, name: downstream_environment).first
     end
 
     def review_slug
@@ -713,7 +717,8 @@ module Trigger
     end
 
     def app_url
-      "https://docs.gitlab.com/upstream-review-mr-#{review_slug}/"
+      find_downstream_environment&.external_url ||
+        abort("=> No review app URL found for downstream environment '#{downstream_environment}' in '#{downstream_project_path}'.")
     end
 
     def display_success_message

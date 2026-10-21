@@ -506,6 +506,7 @@ CREATE TABLE duo_workflow_session_enrichments
     `workflow_id` Int64 CODEC(DoubleDelta, ZSTD(1)),
     `credits_used` Float64 DEFAULT 0 CODEC(ZSTD(1)),
     `model_used` LowCardinality(String) DEFAULT '' CODEC(ZSTD(1)),
+    `credits_by_model` Map(LowCardinality(String), Decimal(18, 4)) CODEC(ZSTD(1)),
     `updated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(Delta(8), ZSTD(1))
 )
 ENGINE = ReplacingMergeTree(updated_at)

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe KeysFinder do
+RSpec.describe KeysFinder, feature_category: :system_access do
   using RSpec::Parameterized::TableSyntax
 
   subject { described_class.new(params).execute }

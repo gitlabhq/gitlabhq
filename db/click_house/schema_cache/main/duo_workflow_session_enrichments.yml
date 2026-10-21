@@ -23,6 +23,9 @@ columns:
   default_kind: DEFAULT
   default_expression: "''"
   compression_codec: CODEC(ZSTD(1))
+- name: credits_by_model
+  type: Map(LowCardinality(String), Decimal(18, 4))
+  compression_codec: CODEC(ZSTD(1))
 - name: updated_at
   type: DateTime64(6, 'UTC')
   default_kind: DEFAULT

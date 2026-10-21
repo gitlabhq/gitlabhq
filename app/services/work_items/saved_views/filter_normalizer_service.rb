@@ -184,24 +184,25 @@ module WorkItems
       end
 
       def normalize_label_names
-        if filters[:label_name]
-          label_names = Array.wrap(filters[:label_name])
-          idx = label_names.find_index { |name| label_wildcard?(name) }
+        assign_label_filters(filters[:label_name], normalized_filters)
 
-          if idx
-            normalized_filters[:label_wildcard_id] = label_names.delete_at(idx).to_s
-            filters.delete(:label_name) if label_names.empty?
-          end
-        end
-
-        normalize_with_context(:label_name, :label_ids) do |label_name_or_names|
-          find_label_ids(Array.wrap(label_name_or_names))
+        if filters.dig(:not, :label_name)
+          normalized_filters[:not] ||= {}
+          assign_label_filters(filters[:not][:label_name], normalized_filters[:not])
         end
 
         return unless filters.dig(:or, :label_names)
 
         normalized_filters[:or] ||= {}
-        normalized_filters[:or][:label_ids] = find_label_ids(filters[:or][:label_names])
+        assign_label_filters(filters[:or][:label_names], normalized_filters[:or])
+      end
+
+      # Wildcards match no label record, so they are stored verbatim instead of as IDs
+      def assign_label_filters(names, target)
+        wildcards, titles = Array.wrap(names).partition { |name| label_wildcard?(name) }
+
+        target[:label_wildcard_ids] = wildcards.map(&:to_s) if wildcards.any?
+        target[:label_ids] = find_label_ids(titles) if titles.any?
       end
 
       def normalize_negated_parent_ids

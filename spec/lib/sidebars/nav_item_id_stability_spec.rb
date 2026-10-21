@@ -89,6 +89,7 @@ KNOWN_STABLE_CE_IDS = %i[
   observability_alerts
   observability_dashboard
   organization_admin_dashboard
+  organization_admin_scope
   organization_admin_settings_general
   organization_admin_settings_integrations
   organization_admin_users

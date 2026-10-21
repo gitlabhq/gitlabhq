@@ -936,7 +936,7 @@ module Types
       experiment: { milestone: '19.4' },
       connection_extension: Gitlab::Graphql::Extensions::ForwardOnlyExternallyPaginatedArrayExtension,
       max_page_size: 100,
-      authorize: :read_code do
+      authorize: :read_protectable_branch do
       extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 1
     end
 
@@ -946,7 +946,7 @@ module Types
       null: true,
       calls_gitaly: true,
       experiment: { milestone: '16.9' },
-      authorize: :read_code
+      authorize: :read_protectable_branch
 
     field :project_plan_limits, Types::ProjectPlanLimitsType,
       resolver: Resolvers::Projects::PlanLimitsResolver,

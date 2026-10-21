@@ -11,7 +11,7 @@ module API
 
         params :work_item_create_features do
           optional :features, type: Hash,
-            desc: 'Input for work item features (widgets). Features that are not available in the namespace, ' \
+            desc: 'Input for work item features. Features that are not available in the namespace, ' \
               'for example because of the subscription tier, are ignored. If the work item type does not ' \
               'support a feature, the request returns 400 Bad Request.' do
             optional :description, type: Hash, desc: 'Input for description feature.' do
@@ -48,7 +48,7 @@ module API
                 desc: 'Type of link. Supported values: relates_to.'
             end
 
-            optional :crm_contacts, type: Hash, desc: 'Input for CRM contacts widget.' do
+            optional :crm_contacts, type: Hash, desc: 'Input for CRM contacts feature.' do
               requires :contact_ids, type: Array[Integer],
                 desc: 'IDs of CRM contacts to set on the work item.'
             end

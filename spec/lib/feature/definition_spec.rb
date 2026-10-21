@@ -44,7 +44,7 @@ RSpec.describe Feature::Definition, feature_category: :feature_flags do
         params[param] = value
       end
 
-      it do
+      it 'raises an error for the invalid or missing attribute' do
         expect do
           described_class.new(
             params[:path], params.except(:path)

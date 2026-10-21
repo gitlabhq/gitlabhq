@@ -369,6 +369,19 @@ type = DuoWorkflow`;
       expect(query).toContain('descendantsScope: {groupFullPaths: ["gitlab-org", "gitlab-com"]}');
     });
 
+    it('throws when a binding names a field the compiler does not know', async () => {
+      await expect(
+        parse(analyticsQuery, null, {
+          bindings: [
+            {
+              target: { kind: 'filter', field: 'creatd' },
+              value: { kind: 'range', from: '2026-09-01', to: '2026-09-30' },
+            },
+          ],
+        }),
+      ).rejects.toThrow('Ignoring a binding for unknown field `creatd`.');
+    });
+
     it('carries groups and projects together in one scope', async () => {
       const { query } = await parse(analyticsQuery, null, {
         bindings: [

@@ -38,7 +38,7 @@ curl -H 'Content-Type: application/json' -XPUT "http://localhost:9200/gitlab_act
 ### Create and Activate Connection
 
 For detailed connection setup including Elasticsearch, OpenSearch and PostgreSQL
-options, see [create a connection](getting_started.md#create-a-connection).
+options, see [creating a connection](https://docs.gitlab.com/development/ai_features/semantic_search/#creating-a-connection).
 
 For quick Elasticsearch setup, if you already have an Elasticsearch connection
 for advanced search, you can reuse it by setting `use_advanced_search_config` to

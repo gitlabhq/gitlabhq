@@ -30,4 +30,12 @@ describe(`TimelineEntryItem`, () => {
 
     expect(content.html()).toBe(dummyContent);
   });
+
+  it.each(['mouseenter', 'mouseleave'])('emits `%s` when the entry is hovered', async (event) => {
+    factory();
+
+    await wrapper.trigger(event);
+
+    expect(wrapper.emitted(event)).toHaveLength(1);
+  });
 });

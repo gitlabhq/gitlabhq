@@ -140,7 +140,7 @@ RSpec.describe Gitlab::Ci::Ansi2json::Line, feature_category: :continuous_integr
     end
 
     with_them do
-      it do
+      it 'sets the formatted section duration' do
         line.set_section_duration(duration)
 
         expect(line.section_duration).to eq(result)

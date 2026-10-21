@@ -39,8 +39,6 @@ module Ci
     # work until the first one finishes, so it is rejected rather than queued behind
     # the lock and tying up a web thread.
     def retry_jobs_exclusively(pipeline)
-      return retry_jobs(pipeline) unless Feature.enabled?(:lock_concurrent_pipeline_retries, pipeline.project)
-
       key = lock_key(pipeline)
       uuid = Gitlab::ExclusiveLease.new(key, timeout: LOCK_TIMEOUT).try_obtain
       return retry_in_progress_response unless uuid

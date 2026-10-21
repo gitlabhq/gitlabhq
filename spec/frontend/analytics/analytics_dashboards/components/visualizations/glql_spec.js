@@ -308,6 +308,40 @@ describe('GlqlVisualization', () => {
     });
   });
 
+  describe('the date range binding', () => {
+    const glqlQuery = 'type = Issue AND state = opened';
+    const dateRangeBinding = { field: 'created', from: '2026-09-01', to: '2026-09-30' };
+    const dateBinding = {
+      target: { kind: 'filter', field: 'created' },
+      value: { kind: 'range', from: '2026-09-01', to: '2026-09-30' },
+    };
+
+    it('binds the range onto the panel date field', async () => {
+      await createWrapper({ data: glqlQuery, options: { dateRangeBinding } });
+
+      expect(findResolver().props('bindings')).toEqual([dateBinding]);
+    });
+
+    it('is added alongside the scope bindings', async () => {
+      await createWrapper({
+        data: glqlQuery,
+        filters: { groups: ['gitlab-org'] },
+        options: { dateRangeBinding },
+      });
+
+      expect(findResolver().props('bindings')).toHaveLength(2);
+      expect(findResolver().props('bindings')).toEqual(
+        expect.arrayContaining([
+          {
+            target: { kind: 'filter', field: 'group' },
+            value: { kind: 'list', values: ['gitlab-org'] },
+          },
+          dateBinding,
+        ]),
+      );
+    });
+  });
+
   describe('error handling', () => {
     const graphQLError = (extensions) => ({ graphQLErrors: [{ message: 'failed', extensions }] });
 

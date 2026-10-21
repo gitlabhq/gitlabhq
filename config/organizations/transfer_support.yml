@@ -101,7 +101,7 @@ import_offline_exports: supported
 import_placeholder_user_details: supported
 integrations: no_work_needed
 issue_tracker_data: no_work_needed
-jira_connect_installations: https://gitlab.com/gitlab-org/gitlab/-/issues/611960
+jira_connect_installations: https://gitlab.com/gitlab-org/gitlab/-/work_items/624085
 jira_tracker_data: no_work_needed
 keys: supported
 labels: no_work_needed

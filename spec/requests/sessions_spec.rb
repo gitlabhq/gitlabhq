@@ -40,6 +40,32 @@ RSpec.describe 'Sessions', feature_category: :system_access do
     end
   end
 
+  context 'when the session cookie may belong to another cell' do
+    let_it_be(:organization) { create(:organization) }
+
+    def overwrite_allowed?
+      Gitlab::Middleware::PreventCrossCellSessionOverwrite.overwrite_allowed?(request.env)
+    end
+
+    it 'lets the sign-in page write the session' do
+      get new_user_session_path
+
+      expect(overwrite_allowed?).to be(true)
+    end
+
+    it 'lets the organization-scoped sign-in page write the session' do
+      get "/o/#{organization.path}/users/sign_in"
+
+      expect(overwrite_allowed?).to be(true)
+    end
+
+    it 'does not let the sign-in submission write the session' do
+      post user_session_path, params: { user: { login: user.username, password: user.password } }
+
+      expect(overwrite_allowed?).to be(false)
+    end
+  end
+
   context 'when user has pending invitations' do
     it 'accepts the invitations and stores a user location' do
       create(:group_member, :invited, invite_email: user.email)

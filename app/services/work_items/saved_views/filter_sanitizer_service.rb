@@ -53,11 +53,6 @@ module WorkItems
         # Rename issue_types back to types for consistency with GraphQL input
         sanitized_filters[:types] = sanitized_filters.delete(:issue_types) if sanitized_filters.key?(:issue_types)
 
-        # Rename label_wildcard_id back to label_name for consistency with GraphQL input
-        if sanitized_filters.key?(:label_wildcard_id)
-          sanitized_filters[:label_name] = sanitized_filters.delete(:label_wildcard_id)
-        end
-
         # Handle static negated filters
         return unless filters[:not]
 
@@ -138,36 +133,59 @@ module WorkItems
 
       # Labels - custom handling due to unique and different OR key
       def validate_labels
-        # validate_static_filters already wrote the wildcard here; hold it so label_ids can't clobber it
-        wildcard = sanitized_filters.delete(:label_name)
-
         validate_id_to_attribute(id_key: :label_ids, model: Label, attribute: :title, output_key: :label_name,
           warning_label: 'label(s)', unique: true)
 
-        return if wildcard.nil?
-
-        resolved = sanitized_filters[:label_name]
-        sanitized_filters[:label_name] = resolved ? Array.wrap(wildcard) + Array.wrap(resolved) : wildcard
+        merge_label_wildcards(filters, sanitized_filters, :label_name)
       end
 
       def validate_not_labels
         validate_negated_id_to_attribute(id_key: :label_ids, model: Label, attribute: :title, output_key: :label_name,
           warning_label: 'label(s)', unique: true)
+
+        return if filters[:not].blank? || label_wildcards(filters[:not]).empty?
+
+        sanitized_filters[:not] ||= {}
+        merge_label_wildcards(filters[:not], sanitized_filters[:not], :label_name)
       end
 
       def validate_or_labels
-        return unless filters.dig(:or, :label_ids)
+        or_filters = filters[:or]
+        return if or_filters.blank?
 
-        found_records = Label.id_in(filters[:or][:label_ids])
+        resolve_or_label_ids(or_filters)
+
+        return if label_wildcards(or_filters).empty?
+
+        sanitized_filters[:or] ||= {}
+        merge_label_wildcards(or_filters, sanitized_filters[:or], :label_names)
+      end
+
+      def resolve_or_label_ids(or_filters)
+        return unless or_filters[:label_ids]
+
+        found_records = Label.id_in(or_filters[:label_ids])
         found_titles = found_records.map(&:title).uniq
 
-        missing_count = filters[:or][:label_ids].size - found_records.size
+        missing_count = or_filters[:label_ids].size - found_records.size
         add_warning(:or_label_names, "#{missing_count} label(s) not found") if missing_count > 0
 
         return unless found_titles.any?
 
         sanitized_filters[:or] ||= {}
         sanitized_filters[:or][:label_names] = found_titles
+      end
+
+      # Views saved before multi-wildcard support stored a single wildcard as a string
+      def label_wildcards(context)
+        Array.wrap(context[:label_wildcard_ids]) + Array.wrap(context[:label_wildcard_id])
+      end
+
+      def merge_label_wildcards(source, target, output_key)
+        wildcards = label_wildcards(source)
+        return if wildcards.empty?
+
+        target[output_key] = wildcards + Array.wrap(target[output_key])
       end
 
       def validate_hierarchy

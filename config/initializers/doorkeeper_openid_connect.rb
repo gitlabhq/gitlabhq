@@ -7,6 +7,15 @@ Doorkeeper::OpenidConnect.configure do
 
   protocol { Gitlab.config.gitlab.protocol }
 
+  # Discovery documents are cached, so build endpoint URLs from config,
+  # never from the Host or X-Forwarded-Host headers.
+  discovery_url_options do |_request|
+    url_options = { host: Gitlab.config.gitlab.host, port: Gitlab.config.gitlab.port }
+
+    %i[authorization token revocation introspection userinfo jwks webfinger dynamic_client_registration]
+      .index_with(url_options)
+  end
+
   resource_owner_from_access_token do |access_token|
     User.active.find_by(id: access_token.resource_owner_id)
   end

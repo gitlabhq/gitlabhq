@@ -89,6 +89,7 @@ module API
             { code: 401, message: 'Unauthorized' },
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not found' },
+            { code: 429, message: 'Too many requests' },
             { code: 503, message: 'Service unavailable' }
           ]
         end
@@ -98,6 +99,8 @@ module API
         route_setting :authorization,
           permissions: :create_project_relation_export, boundary_type: :group
         post ':id/export_relations' do
+          check_rate_limit! :group_relations_export, scope: { user: current_user, group: user_group }
+
           response = ::BulkImports::ExportService
             .new(portable: user_group, user: current_user, batched: params[:batched])
             .execute
@@ -125,6 +128,7 @@ module API
             { code: 401, message: 'Unauthorized' },
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not found' },
+            { code: 429, message: 'Too many requests' },
             { code: 503, message: 'Service unavailable' }
           ]
         end
@@ -138,6 +142,8 @@ module API
         route_setting :authorization,
           permissions: :download_project_relation_export, boundary_type: :group
         get ':id/export_relations/download' do
+          check_rate_limit! :group_relations_export_download, scope: { user: current_user, group: user_group }
+
           export = user_group.bulk_import_exports.for_user_and_relation(current_user, params[:relation])
             .for_offline_export(nil).first
 

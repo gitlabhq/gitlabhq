@@ -14016,6 +14016,7 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutation-mergerequestreviewerrereview-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-mergerequestreviewerrereview-duocodereviewdepth"></a>`duoCodeReviewDepth` {{< icon name="warning-solid" >}} | [`DuoCodeReviewDepth`](#duocodereviewdepth) | Introduced in GitLab 19.6. Status: Experiment. Depth of the GitLab Duo Code Review to run when the user is the GitLab Duo Code Review bot. Ignored for other users, and unless the `duo_code_review_deep_flow` feature flag is enabled for the current user. |
 | <a id="mutation-mergerequestreviewerrereview-iid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
 | <a id="mutation-mergerequestreviewerrereview-projectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
 | <a id="mutation-mergerequestreviewerrereview-userid"></a>`userId` | [`UserID!`](#userid) | User ID for the user that has been requested for a new review. |
@@ -72845,6 +72846,15 @@ GitLab Duo availability states for an admin-locked namespace override.
 | <a id="duoavailability-default_off"></a>`DEFAULT_OFF` | Duo is off by default but group Owners can turn it on. |
 | <a id="duoavailability-default_on"></a>`DEFAULT_ON` | Duo is on by default but group Owners can turn it off. |
 | <a id="duoavailability-never_on"></a>`NEVER_ON` | Duo is off and group Owners cannot turn it on. |
+
+### `DuoCodeReviewDepth`
+
+Depth of a GitLab Duo Code Review.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="duocodereviewdepth-deep"></a>`DEEP` | Deep review. |
+| <a id="duocodereviewdepth-standard"></a>`STANDARD` | Standard review. |
 
 ### `DuoLicensedFeature`
 

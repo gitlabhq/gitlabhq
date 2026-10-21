@@ -182,7 +182,7 @@ RSpec.describe Gitlab::Diff::ViewerHunk, feature_category: :code_review_workflow
   end
 
   describe '#parallel_lines' do
-    it do
+    it 'places the added line on the right and the removed line on the left' do
       expect(hunk.parallel_lines.first[:right]).to be_instance_of(Gitlab::Diff::Line)
       expect(hunk.parallel_lines.second[:left]).to be_instance_of(Gitlab::Diff::Line)
     end

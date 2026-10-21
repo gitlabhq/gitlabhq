@@ -123,8 +123,8 @@ export default {
     @update-success="handleNotEditing"
     @handle-delete-note="deleteDraft"
     @handle-update-note="update"
-    @mouseenter.native="handleMouseEnter(draft)"
-    @mouseleave.native="handleMouseLeave(draft)"
+    @mouseenter="handleMouseEnter(draft)"
+    @mouseleave="handleMouseLeave(draft)"
   >
     <template #note-header-info>
       <gl-badge
