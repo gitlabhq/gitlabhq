@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Types::PermissionTypes::Ci::Runner do
-  it do
+  it 'exposes the read, update, delete, and assign runner permission fields' do
     expected_permissions = [
       :read_runner, :update_runner, :delete_runner, :assign_runner
     ]

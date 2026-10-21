@@ -132,6 +132,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         },
         gitlab_com_and_canary: Gitlab.com_and_canary?,
         pinned_items: %w[foo bar],
+        sidebar_navigation_mode: 'compact',
         shortcut_links: global_shortcut_links,
         work_items: nil,
         has_multiple_organizations: false,

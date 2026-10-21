@@ -1,6 +1,6 @@
 ---
-source_checksum: 95b7345be7837bb6
-distilled_at_sha: f881cd88ec49e57cc6d320e2b57c56d80cb06564
+source_checksum: a28605a66b3215f0
+distilled_at_sha: 0598d6c1b5bb294276c7c644f29291505d54c4c1
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -43,7 +43,6 @@ distilled_at_sha: f881cd88ec49e57cc6d320e2b57c56d80cb06564
 - Keep feature names lowercase unless they are listed as exceptions in markdownlint or the word list.
 - Capitalize GitLab product tiers (e.g., GitLab Free, GitLab Ultimate), third-party product names, and methodology names.
 - DO NOT match capitalization from the Features page or `features.yml` by default.
-- Use the same capitalization as displayed in the UI when referring to UI elements; exception: use sentence case for UI text that is all uppercase.
 
 ### Fake Data and Tokens
 
@@ -72,11 +71,10 @@ distilled_at_sha: f881cd88ec49e57cc6d320e2b57c56d80cb06564
 
 ### Text Formatting
 
-- Use **bold** only for UI elements with visible labels and navigation paths; DO NOT use bold for keywords or emphasis.
+- DO NOT use bold for keywords or emphasis; use the UI text shortcodes for UI elements and navigation paths (see `doc/development/documentation/styleguide/ui_text.md`) in new content, and use bold only for hardcoded UI strings.
 - Use inline code (backticks) for user input, filenames, configuration parameters, keywords, API/HTTP methods, HTTP status codes, and short error messages.
 - Use code blocks for CLI/cURL commands and multi-line inputs/outputs; add a syntax name for highlighting.
 - Use `<kbd>` tags for keyboard commands; spell out full key names (except `Alt`); DO NOT use spaces between `<kbd>` tags in combinations.
-- Write UI instructions instead of keyboard commands when both options exist (applies to GitLab and third-party applications).
 - DO NOT use italics for emphasis in product documentation.
 - Use `<` and `>` to denote placeholder text in code blocks.
 
@@ -162,15 +160,6 @@ distilled_at_sha: f881cd88ec49e57cc6d320e2b57c56d80cb06564
 - Use `www.youtube-nocookie.com` in the `src` of embedded video iframes to enable Privacy Enhanced Mode.
 - Follow the same guidelines for click-through demo links as for videos.
 
-### Navigation and UI References
-
-- Write navigation steps as location then action (e.g., "From the **Visibility** dropdown list, select **Public**").
-- Use **left sidebar** instead of "the Explore menu" or "the Your work sidebar".
-- Bold all UI element names; DO NOT bold the `>` separator in navigation paths.
-- Place punctuation outside bold tags unless the punctuation is part of the UI element itself.
-- Start recommended steps with "Recommended." followed by a period.
-- Use "Complete the fields" to summarize multiple self-explanatory fields in a single task step rather than documenting each field individually.
-
 ### GitLab Self-Managed Procedures
 
 - Use the official installation method names (Linux package, Helm chart, GitLab Operator, Docker, Self-compiled) in sentences and titles; add explanatory parentheses (Omnibus, Kubernetes, source) only in tab titles.
@@ -195,6 +184,7 @@ distilled_at_sha: f881cd88ec49e57cc6d320e2b57c56d80cb06564
 - DO NOT repeat tier, offering, or status in a subheading's badge when it matches the parent topic's badge.
 - Place history notes (`{{< history >}}` shortcode) after the details block and immediately after the heading; start each entry with `-` and link to the related issue, MR, or epic when possible.
 - Add a history entry only to the page for the feature that changed; DO NOT duplicate the entry on other pages.
+- DO NOT link to the pricing page in history entries, and DO NOT include the subscription tier unless the feature is changing from one tier to another; for a tier change, use `moved` (e.g., `- [Moved](https://work-item-link) from GitLab Premium to GitLab Free in GitLab 19.0.`).
 - When a feature changes from seat-based billing to usage-based billing with GitLab Credits, add a `Changed to usage-based billing` entry only to the feature's history; DO NOT add an entry to the GitLab Credits history.
 - For a feature introduced as an experiment or beta, state the status in the `Introduced` history item and link it to the matching policy anchor (for example, `- [Introduced](https://work-item-link) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 15.7.`); record a later experiment-to-beta move as a separate `Changed` item.
 - Remove history items and inline version references that refer to unsupported GitLab versions (current major version and two previous major versions are supported); when a new major version is about to be released, create removal MRs in advance but merge them only during that milestone.
@@ -205,7 +195,7 @@ distilled_at_sha: f881cd88ec49e57cc6d320e2b57c56d80cb06564
 
 ### Deprecations and Removals
 
-- When deprecating a feature, add `(deprecated)` after the title, add a `> [!warning]` alert stating when it was deprecated and when it will be removed, add "This change is a breaking change." if the deprecation is a breaking change, and wrap the content in `<!--- start_remove The following content will be removed on remove_date: 'YYYY-MM-DD' -->` and `<!--- end_remove -->` HTML comments (set `remove_date` to three months after the planned removal release).
+- When deprecating a feature, add `(deprecated)` after the title, add a `> [!warning]` alert stating when it was deprecated and when it will be removed, add "This change is a breaking change." if the deprecation is a breaking change, wrap the content in `<!--- start_remove The following content will be removed on remove_date: 'YYYY-MM-DD' -->` and `<!--- end_remove -->` HTML comments (set `remove_date` to three months after the planned removal release), and open an MR to add `(deprecated)` to the left nav entry.
 - When removing a feature, change `(deprecated)` to `(removed)` in the title, remove all content except the deprecation/removal statement, set `remove_date` in metadata to three months after the removal release, and set `redirect_to` to a relevant replacement page.
 - When removing a topic (subsection) rather than a full page, leave the title and deprecation/removal details, add `(removed)` after the title, and wrap the remaining content in HTML comments with `remove_date` set to three months after the removal release.
 - After removing a page, edit `navigation.yaml` in `docs-gitlab-com` to remove the page's entry from the global navigation, update any links in the [Deprecations and Removals](https://docs.gitlab.com/update/deprecations/) YAML files, and run `bin/rake gitlab:docs:compile_deprecations`.

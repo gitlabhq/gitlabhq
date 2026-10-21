@@ -155,10 +155,11 @@ async function main() {
     'storybook/**/*.{js,mjs,cjs,vue}',
   ];
 
-  // We don't add ee/app/graphql since that directory only contains Ruby files.
-  // EE's .graphql files are in ee/app/assets/javascripts (already covered above)
-  if (fs.existsSync(path.join(ROOT_PATH, 'app/graphql'))) {
-    lintPaths.push('./app/graphql/**/*.graphql');
+  // Mostly Ruby, but both hold `.graphql` documents (e.g. the MCP queries) that eslint.config.mjs lints.
+  for (const dir of ['app/graphql', 'ee/app/graphql']) {
+    if (fs.existsSync(path.join(ROOT_PATH, dir))) {
+      lintPaths.push(`./${dir}/**/*.graphql`);
+    }
   }
 
   const results = await lint(eslint, lintPaths);

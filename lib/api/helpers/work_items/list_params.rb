@@ -176,11 +176,12 @@ module API
 
         params :work_items_group_filter_params do
           optional :include_ancestors, type: Boolean,
-            desc: 'Include work items from ancestor groups.'
+            desc: 'Include work items from ancestor groups. Ignored for project namespaces.'
           optional :include_descendants, type: Boolean,
-            desc: 'Include work items from descendant groups and projects.'
+            desc: 'Include work items from descendant groups and projects. Ignored for project namespaces.'
           optional :include_archived, type: Boolean, default: false,
-            desc: 'Return work items from archived projects.'
+            desc: 'Return work items from archived projects. To list work items in an archived project ' \
+              'namespace, set to true.'
         end
 
         params :work_items_list_params do
@@ -190,7 +191,9 @@ module API
           optional :order_by, type: String,
             values: ::WorkItems::SortingKeys.order_by_values,
             default: 'created_at',
-            desc: 'Column to sort work items by. Default: created_at.'
+            desc: 'Column to sort work items by. Default: created_at. ' \
+              'Sorting by blocking_issues, status, or weight is useful only in Premium and Ultimate, ' \
+              'the tiers that can set those values. Sorting by health_status is useful only in Ultimate.'
           optional :sort, type: String,
             values: %w[asc desc],
             default: 'desc',

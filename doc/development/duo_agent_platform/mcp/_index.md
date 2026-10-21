@@ -928,7 +928,8 @@ For example, to find sessions that run the `developer` flow, use this query in K
 
 ### Identify the MCP client
 
-The `initialize_mcp_connection`, `start_mcp_tool_call`, and `finish_mcp_tool_call` events
+The `initialize_mcp_connection`, `start_mcp_tool_call`, `finish_mcp_tool_call`,
+`deny_mcp_server_access`, and `register_oauth_dynamic_application` events
 record the client in the `mcp_client_name` and `mcp_client_version` additional properties.
 The `initialize` and `tool_call` lines in `mcp.log` have fields with the same names.
 For sessions started over MCP, the `agent_platform_session_created` event and the `duo_session_created` line have them too.
@@ -944,6 +945,9 @@ MCP clients report free-text names, so they are kept in separate properties.
 
 Both sources can be present on every request, so `initialize` and `tools/call` from the same
 client get the same value. The server is stateless and has no session to link the two requests.
+
+`register_oauth_dynamic_application` is unauthenticated and has no JSON-RPC body,
+so it resolves the client from the `User-Agent` only.
 
 The `clientInfo` that a handshake-revision client sends on `initialize` is recorded separately,
 as `declared_client_name` and `declared_client_version`. These are additional properties of the

@@ -10,16 +10,13 @@ describe('EmptyState component', () => {
 
   const defaultProvide = {
     canCreateProjects: false,
-    newIssuePath: 'new/issue/path',
     newProjectPath: 'new/project/path',
-    showNewIssueLink: false,
     signInPath: 'sign/in/path',
     isGroup: true,
   };
 
   const findGlEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findJiraDocsLink = () => wrapper.findByRole('link', { name: 'See integration options' });
-  const findCreateIssueLink = () => wrapper.findByRole('link', { name: 'Create issue' });
   const findNewProjectLink = () => wrapper.findByRole('link', { name: 'New project' });
 
   const mountComponent = ({
@@ -138,24 +135,6 @@ describe('EmptyState component', () => {
             });
           });
         });
-
-        describe('"Create issue" link', () => {
-          describe('when can show new issue link', () => {
-            it('renders', () => {
-              mountComponent({ provide: { showNewIssueLink: true } });
-
-              expect(findCreateIssueLink().attributes('href')).toBe(defaultProvide.newIssuePath);
-            });
-          });
-
-          describe('when cannot show new issue link', () => {
-            it('does not render', () => {
-              mountComponent({ provide: { showNewIssueLink: false } });
-
-              expect(findCreateIssueLink().exists()).toBe(false);
-            });
-          });
-        });
       });
     });
 
@@ -182,7 +161,7 @@ describe('EmptyState component', () => {
 
     it('renders empty state', () => {
       expect(findGlEmptyState().props()).toMatchObject({
-        title: 'Track bugs, plan features, and organize your work with issues',
+        title: 'Track bugs, plan features, and organize your efforts with work items',
         primaryButtonText: 'Register / Sign In',
         primaryButtonLink: defaultProvide.signInPath,
       });

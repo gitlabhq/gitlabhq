@@ -21848,6 +21848,18 @@
               "defaultValue": null,
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "source",
+              "description": "Where the session was triggered from. Only client-surface values are accepted.",
+              "type": {
+                "kind": "ENUM",
+                "name": "DuoWorkflowSourceType",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "interfaces": null,
@@ -156675,6 +156687,12 @@
             {
               "name": "WORK_ITEM_PLAN_TO_MERGE_REQUEST",
               "description": "Session initiated from implementing a work item plan.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "WEB_CHAT",
+              "description": "Session initiated from GitLab Duo Chat in the web UI.",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -334465,6 +334483,22 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.4."
             },
             {
+              "name": "kind",
+              "description": "Kind of the trigger. A `gate` trigger is evaluated before the change and can stop it, an `event` trigger is evaluated after the change and cannot. Introduced in GitLab 19.6: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.6."
+            },
+            {
               "name": "name",
               "description": "Human-readable name of the trigger. Introduced in GitLab 19.4: Status: Experiment.",
               "args": [],
@@ -410095,6 +410129,29 @@
           "possibleTypes": null
         },
         {
+          "kind": "ENUM",
+          "name": "SidebarNavigationMode",
+          "description": "Values for the navigation mode of the left sidebar",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "COMPACT",
+              "description": "Show only pinned items.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ALL_CATEGORIES",
+              "description": "Show pinned items and all navigation categories.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
           "kind": "OBJECT",
           "name": "SlashCommand",
           "description": "Duo Chat slash command",
@@ -445371,6 +445428,22 @@
               "deprecationReason": null
             },
             {
+              "name": "sidebarNavigationMode",
+              "description": "Navigation mode of the left sidebar. Applies only when the `hide_unpinned_sidebar_items` feature flag is enabled; otherwise the sidebar shows all navigation categories. Introduced in GitLab 19.6: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "SidebarNavigationMode",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.6."
+            },
+            {
               "name": "timezone",
               "description": "Timezone of the user. Introduced in GitLab 17.7: Status: Experiment.",
               "args": [],
@@ -445545,6 +445618,18 @@
               "defaultValue": null,
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "sidebarNavigationMode",
+              "description": "Navigation mode of the left sidebar. Applies only when the `hide_unpinned_sidebar_items` feature flag is enabled; otherwise the sidebar shows all navigation categories. Introduced in GitLab 19.6: Status: Experiment.",
+              "type": {
+                "kind": "ENUM",
+                "name": "SidebarNavigationMode",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.6."
             },
             {
               "name": "useWorkItemsView",

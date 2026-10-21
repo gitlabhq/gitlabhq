@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::Analytics::CycleAnalytics::SummaryController do
+RSpec.describe Projects::Analytics::CycleAnalytics::SummaryController, feature_category: :value_stream_management do
   let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:project) { create(:project) }
 

@@ -144,7 +144,7 @@ Fallback keys follow the same processing logic as `cache:key`:
 
 - If you [clear caches manually](#clear-the-cache-manually), per-cache fallback keys are appended
   with an index like other cache keys.
-- If the [**Use separate caches for protected branches** setting](#cache-key-names) is enabled,
+- If the [{{< ui text="CICD|Use separate caches for protected branches" >}} setting](#cache-key-names) is enabled,
   per-cache fallback keys are appended with `-protected` or `-non_protected`.
 
 ### Global fallback key
@@ -277,11 +277,11 @@ and should only be disabled in an environment where all users with Developer rol
 
 To use the same cache for all branches:
 
-1. In the top bar, select **Search or go to** and find your project.
-1. In the left sidebar, select **Settings** > **CI/CD**.
-1. Expand **General pipelines**.
-1. Clear the **Use separate caches for protected branches** checkbox.
-1. Select **Save changes**.
+1. In the top bar, select {{< ui text="Search or go to" >}} and find your project.
+1. In the left sidebar, select {{< ui text="Settings" >}} > {{< ui text="CI/CD" >}}.
+1. Expand {{< ui text="General pipelines" >}}.
+1. Clear the {{< ui text="CICD|Use separate caches for protected branches" >}} checkbox.
+1. Select {{< ui text="Save changes" >}}.
 
 ## Availability of the cache
 
@@ -417,9 +417,9 @@ Prerequisites:
 
 You can clear the cache in the GitLab UI:
 
-1. In the top bar, select **Search or go to** and find your project.
-1. In the left sidebar, select **Build** > **Pipelines**.
-1. In the upper-right corner, select **Clear runner caches**.
+1. In the top bar, select {{< ui text="Search or go to" >}} and find your project.
+1. In the left sidebar, select {{< ui text="Navigation|Build" >}} > {{< ui text="Pipelines" >}}.
+1. In the upper-right corner, select {{< ui text="Pipelines|Clear runner caches" >}}.
 
 On the next commit, your CI/CD jobs use a new cache.
 

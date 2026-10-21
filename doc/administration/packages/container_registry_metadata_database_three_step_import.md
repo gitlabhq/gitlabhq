@@ -19,10 +19,19 @@ minimize downtime while completing the import.
 
 ## Pre-import repositories (step one)
 
-Users have reported step one import completed at [rates of 2 to 4 TB per hour](https://gitlab.com/gitlab-org/gitlab/-/issues/423459).
-At the slower speed, registries with over 100TB of data could take longer than 48 hours.
+The duration of step one depends mostly on the number of tagged images in your registry,
+not on the total size of the registry data. In [user reports](https://gitlab.com/gitlab-org/gitlab/-/work_items/423459#completed-tests-and-user-reports),
+step one ran at rates from under 1 TB per hour to over 4 TB per hour.
+Plan with the lower end of this range, and treat any estimate as a lower bound.
+For example durations, see
+[Plan an import for a large registry](container_registry_metadata_database.md#plan-an-import-for-a-large-registry).
 
 You may continue to use the registry as normal while step one is being completed.
+
+In GitLab 18.5 and later, if step one is interrupted, you can run it again and skip
+repositories that were already pre-imported. By default, the import skips repositories
+pre-imported in the last 72 hours. For more information, see
+[restore interrupted imports](container_registry_metadata_database.md#restore-interrupted-imports).
 
 {{< tabs >}}
 
@@ -109,8 +118,9 @@ Prerequisites:
 
 ## Import all repository data (step two)
 
-This step requires the registry to be set in `read-only` mode;
-however, you can expect this step to complete around 90% faster than step one.
+This step requires the registry to be set in `read-only` mode.
+Step two is usually much shorter than step one. For example, in one of the user reports,
+step two took 12.5 hours after a step one of 344 hours.
 Allow enough time for downtime while step two is being executed.
 
 {{< tabs >}}
@@ -306,6 +316,9 @@ does not yet have access to any potentially unused layer blobs, preventing these
 blobs from being removed by the online garbage collector.
 
 You may continue to use the registry as normal while step three is being completed.
+Step three can take longer than step one, but it does not require downtime.
+If step three is interrupted, you can run it again. Step three
+[imports only the blobs that are not already in the database](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/database-import-tool.md#common-blobs).
 
 To complete the process, run the final step of the migration:
 

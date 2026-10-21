@@ -39006,7 +39006,28 @@ msgid_plural "FeatureLibrary|%d features found."
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "FeatureLibrary|Add DORA metrics to your value streams"
+msgstr ""
+
+msgid "FeatureLibrary|Add custom roles, and invite guests at no cost"
+msgstr ""
+
+msgid "FeatureLibrary|Add objectives, key results, requirements, test cases, and health status"
+msgstr ""
+
+msgid "FeatureLibrary|Add weights, multiple assignees, and custom fields"
+msgstr ""
+
+msgid "FeatureLibrary|Advanced SAST"
+msgstr ""
+
 msgid "FeatureLibrary|All"
+msgstr ""
+
+msgid "FeatureLibrary|Block merges when a scan finds a vulnerability or a disallowed license"
+msgstr ""
+
+msgid "FeatureLibrary|Build custom value streams with your own stages"
 msgstr ""
 
 msgid "FeatureLibrary|Can't find what you're looking for? Search with AI"
@@ -39018,7 +39039,16 @@ msgstr ""
 msgid "FeatureLibrary|Contact your administrator to upgrade"
 msgstr ""
 
+msgid "FeatureLibrary|Create multiple boards with scoped lists and epic swimlanes"
+msgstr ""
+
+msgid "FeatureLibrary|Dependency scanning"
+msgstr ""
+
 msgid "FeatureLibrary|Filter features by category"
+msgstr ""
+
+msgid "FeatureLibrary|Find known vulnerabilities in the packages your code depends on"
 msgstr ""
 
 msgid "FeatureLibrary|Gemini couldn't find a matching feature. Try different keywords."
@@ -39029,10 +39059,16 @@ msgid_plural "FeatureLibrary|Gemini found %d matching features."
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "FeatureLibrary|GitLab Duo Agent Platform"
+msgstr ""
+
 msgid "FeatureLibrary|GitLab features"
 msgstr ""
 
 msgid "FeatureLibrary|Hide"
+msgstr ""
+
+msgid "FeatureLibrary|Merge controls"
 msgstr ""
 
 msgid "FeatureLibrary|No features match your search"
@@ -39050,6 +39086,9 @@ msgstr ""
 msgid "FeatureLibrary|Press Enter or the down arrow key to move to the first search result."
 msgstr ""
 
+msgid "FeatureLibrary|Protect environments and require approval before deploying"
+msgstr ""
+
 msgid "FeatureLibrary|Recommended"
 msgstr ""
 
@@ -39057,6 +39096,18 @@ msgid "FeatureLibrary|Recommended based on your search"
 msgstr ""
 
 msgid "FeatureLibrary|Renew subscription"
+msgstr ""
+
+msgid "FeatureLibrary|Require approvals, enforce Code Owners, and queue merges with merge trains"
+msgstr ""
+
+msgid "FeatureLibrary|Route incidents through on-call schedules and escalation policies"
+msgstr ""
+
+msgid "FeatureLibrary|Run AI agents and flows across your work, paid for with GitLab Credits"
+msgstr ""
+
+msgid "FeatureLibrary|Scan across files and functions with static application security testing"
 msgstr ""
 
 msgid "FeatureLibrary|Search GitLab features"
@@ -39074,12 +39125,24 @@ msgstr ""
 msgid "FeatureLibrary|Searching with Gemini …"
 msgstr ""
 
+msgid "FeatureLibrary|Secrets manager"
+msgstr ""
+
+msgid "FeatureLibrary|See multi-project pipeline graphs and subscribe to upstream pipelines"
+msgstr ""
+
+msgid "FeatureLibrary|See progress with burndown and burnup charts"
+msgstr ""
+
 msgid "FeatureLibrary|Showing %{count} feature in %{category}"
 msgid_plural "FeatureLibrary|Showing %{count} features in %{category}"
 msgstr[0] ""
 msgstr[1] ""
 
 msgid "FeatureLibrary|Something went wrong searching with Gemini. Try again."
+msgstr ""
+
+msgid "FeatureLibrary|Store and manage secrets in GitLab, paid for with GitLab Credits"
 msgstr ""
 
 msgid "FeatureLibrary|Suggested by Gemini"
@@ -39089,6 +39152,9 @@ msgid "FeatureLibrary|Talk to sales"
 msgstr ""
 
 msgid "FeatureLibrary|Try a different search term."
+msgstr ""
+
+msgid "FeatureLibrary|Unlimited licensed users"
 msgstr ""
 
 msgid "FeatureLibrary|Unpin"
@@ -39101,6 +39167,9 @@ msgid "FeatureLibrary|Upgrade to Premium"
 msgstr ""
 
 msgid "FeatureLibrary|Upgrade to Ultimate"
+msgstr ""
+
+msgid "FeatureLibrary|Use scoped labels so only one value in a set applies at a time"
 msgstr ""
 
 msgid "FeatureLibrary|You have reached the search limit. Try again later."
@@ -48001,12 +48070,6 @@ msgid "IssuesAnalytics|To widen your search, change or remove filters in the fil
 msgstr ""
 
 msgid "IssuesAnalytics|Total:"
-msgstr ""
-
-msgid "Issues|Track bugs, plan features, and organize your work with issues"
-msgstr ""
-
-msgid "Issues|Use issues (also known as tickets or stories on other platforms) to collaborate on ideas, solve problems, and plan your project."
 msgstr ""
 
 msgid "It fails with a TLS mismatch error. If your self-hosted Duo Agent Platform service endpoint does not support TLS, turn off TLS connection to the GitLab Duo Agent Platform service "
@@ -60316,6 +60379,9 @@ msgstr ""
 msgid "Orbit|GitLab Orbit queries are paused for groups whose trial ended. Contact sales to keep using GitLab Orbit."
 msgstr ""
 
+msgid "Orbit|GitLab Orbit queries are paused. GitLab Orbit still indexes this group when it is on. Ask your administrator, or contact sales."
+msgstr ""
+
 msgid "Orbit|GitLab Orbit queries start with a trial or a purchase. Contact sales."
 msgstr ""
 
@@ -65088,6 +65154,9 @@ msgstr ""
 msgid "PolicyStore|%{rule} needs at least one of: %{fields}."
 msgstr ""
 
+msgid "PolicyStore|%{settings}: a group or instance setting can still override the values not offered here, so only these values can be required."
+msgstr ""
+
 msgid "PolicyStore|2026-12-24T00:00:00Z"
 msgstr ""
 
@@ -65113,6 +65182,9 @@ msgid "PolicyStore|Add exclusion"
 msgstr ""
 
 msgid "PolicyStore|Add rule"
+msgstr ""
+
+msgid "PolicyStore|Add setting"
 msgstr ""
 
 msgid "PolicyStore|Add trigger"
@@ -65155,9 +65227,6 @@ msgid "PolicyStore|Always"
 msgstr ""
 
 msgid "PolicyStore|An error occurred updating the Policy store setting. Please try again."
-msgstr ""
-
-msgid "PolicyStore|An upper level can still override the values left out, so only the values offered here can be required."
 msgstr ""
 
 msgid "PolicyStore|Are you sure you want to delete %{name}? This action cannot be undone."
@@ -65292,6 +65361,9 @@ msgstr ""
 msgid "PolicyStore|Discard this policy?"
 msgstr ""
 
+msgid "PolicyStore|Each row requires one project setting to have one value. A setting offers only the values a policy may require of it."
+msgstr ""
+
 msgid "PolicyStore|Edit policy"
 msgstr ""
 
@@ -65400,6 +65472,9 @@ msgstr ""
 msgid "PolicyStore|No actions configured"
 msgstr ""
 
+msgid "PolicyStore|No building blocks are available yet."
+msgstr ""
+
 msgid "PolicyStore|No building blocks match your search."
 msgstr ""
 
@@ -65472,7 +65547,10 @@ msgstr ""
 msgid "PolicyStore|Project created"
 msgstr ""
 
-msgid "PolicyStore|Project setting"
+msgid "PolicyStore|Project setting %{name}"
+msgstr ""
+
+msgid "PolicyStore|Project settings"
 msgstr ""
 
 msgid "PolicyStore|Project settings change requested"
@@ -65511,6 +65589,9 @@ msgstr ""
 msgid "PolicyStore|Remove %{label}"
 msgstr ""
 
+msgid "PolicyStore|Remove setting %{name}"
+msgstr ""
+
 msgid "PolicyStore|Remove window %{name}"
 msgstr ""
 
@@ -65520,7 +65601,7 @@ msgstr ""
 msgid "PolicyStore|Require approval"
 msgstr ""
 
-msgid "PolicyStore|Required value"
+msgid "PolicyStore|Required value for %{name}"
 msgstr ""
 
 msgid "PolicyStore|Retain approvals on push"
@@ -65563,6 +65644,9 @@ msgid "PolicyStore|Secret push protection"
 msgstr ""
 
 msgid "PolicyStore|Select a required value"
+msgstr ""
+
+msgid "PolicyStore|Select a setting"
 msgstr ""
 
 msgid "PolicyStore|Select projects"
@@ -65626,12 +65710,6 @@ msgid "PolicyStore|The policy could not be saved. Try again."
 msgstr ""
 
 msgid "PolicyStore|The policy could not be updated. Try again."
-msgstr ""
-
-msgid "PolicyStore|The project setting this rule checks."
-msgstr ""
-
-msgid "PolicyStore|The value the setting must have. The control matches the type of the selected setting."
 msgstr ""
 
 msgid "PolicyStore|This policy will be enabled for %{scope} in Audit mode. The match is recorded, but nothing is blocked, changed, or shown to users."
@@ -91421,6 +91499,16 @@ msgstr ""
 msgid "UsageBillingUserDetails|total credits used"
 msgstr ""
 
+msgid "UsageBilling|%d override failed to save."
+msgid_plural "UsageBilling|%d overrides failed to save."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "UsageBilling|%d override saved."
+msgid_plural "UsageBilling|%d overrides saved."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "UsageBilling|%d selected"
 msgid_plural "UsageBilling|%d selected"
 msgstr[0] ""
@@ -91802,6 +91890,9 @@ msgid "UsageBilling|Regular usage"
 msgstr ""
 
 msgid "UsageBilling|Save"
+msgstr ""
+
+msgid "UsageBilling|Save all"
 msgstr ""
 
 msgid "UsageBilling|Save on GitLab Credits with monthly commitment"

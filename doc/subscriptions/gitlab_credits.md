@@ -19,6 +19,7 @@ title: GitLab Credits and usage billing
 - GitLab Duo Agent Platform and GitLab Credits supported on GitLab 18.8 and later.
 - Introduced for community subscriptions in GitLab 18.11.
 - Credit usage order changed in GitLab 19.4.
+- Billing for retried LLM calls for self-hosted models [removed](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/7381) in GitLab 19.6.
 
 {{< /history >}}
 
@@ -292,7 +293,9 @@ You are charged for model usage based on the following billing methods:
 - Flat pricing for GitLab Duo features: Each end-to-end execution consumes a pre-set amount of credits, regardless of how many LLM calls (GitLab-managed and self-hosted models) are made during execution. Features that run on a self-hosted model receive a 20% discount on the credits consumed for an execution.
 - Credit deduction for a failed execution depends on the offering:
   - On GitLab.com with GitLab-managed models, a flow that fails before it completes deducts no credits, even if some LLM calls were already made.
-  - On GitLab Self-Managed with self-hosted models, for features that do not use a flat price, billing is based on individual LLM calls, not flow completion. Each call is metered when it starts, so calls made before a flow fails are still billed. This means a flow that fails partway through may still consume credits for the calls that were already initiated. For flat-priced features, the full flat price is charged even if the flow fails, regardless of how many LLM calls were actually made.
+  - On GitLab Self-Managed with self-hosted models, for features that do not use a flat price, billing is based on individual LLM calls, not flow completion. Each call is metered when it starts, so a call is billed even if the model returns an error. Calls made before a flow fails are also billed. This means a flow that fails partway through might still consume credits for the calls that were already initiated. When a flow retries a call after a rate limit or server error from the model provider, the retry is not billed again. For flat-priced features, the full flat price is charged even if the flow fails, regardless of how many LLM calls were actually made.
+
+    To confirm that your self-hosted model works before users consume credits, run a [functional verification check](../administration/gitlab_duo/configure/_index.md#run-a-functional-verification-check-for-agentic-chat), which does not consume credits.
 
 ### Basic models
 

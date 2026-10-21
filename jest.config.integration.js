@@ -24,6 +24,9 @@ const config = baseConfig('spec/frontend/integration', {
 
 module.exports = createFrontendIntegrationConfig({
   ...config,
+  // Some suites release their memory late. Recycling workers between files stops that
+  // from piling up into a heap OOM.
+  workerIdleMemoryLimit: '1536MB',
   setupFilesAfterEnv: [
     ...(USE_VUE_3 ? ['<rootDir>/spec/frontend/vue_compat_test_setup.js'] : []),
     '<rootDir>/spec/frontend/__helpers__/shared_test_setup.js',

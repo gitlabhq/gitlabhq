@@ -6470,6 +6470,46 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       end
     end
 
+    it_behaves_like 'rate limited endpoint', rate_limit_key: :project_delete_api do
+      let(:current_user) { user }
+
+      def request
+        delete api(path, user)
+      end
+
+      def request_with_second_scope
+        delete api(path, user2)
+      end
+    end
+
+    it_behaves_like 'rate limited endpoint', rate_limit_key: :project_permanent_delete_api do
+      let(:current_user) { user }
+
+      def request
+        delete api(path, user), params: { permanently_remove: true }
+      end
+
+      def request_with_second_scope
+        delete api(path, user2), params: { permanently_remove: true }
+      end
+    end
+
+    context 'when the group_and_project_delete_rate_limit feature flag is disabled' do
+      before do
+        stub_feature_flags(group_and_project_delete_rate_limit: false)
+      end
+
+      it 'does not check the rate limit' do
+        allow(Gitlab::ApplicationRateLimiter).to receive(:throttled_request?).and_call_original
+
+        api_request
+
+        expect(Gitlab::ApplicationRateLimiter).not_to have_received(:throttled_request?)
+          .with(anything, anything, :project_delete_api, anything)
+        expect(response).not_to have_gitlab_http_status(:too_many_requests)
+      end
+    end
+
     context 'when authenticated as user' do
       it 'removes project' do
         api_request

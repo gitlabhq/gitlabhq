@@ -208,6 +208,32 @@ RSpec.describe Organizations::ActivateService, :freeze_time, feature_category: :
           new_organization_id: organization.id
         )
       end
+
+      # Phase 2 (gitlab-org/gitlab#630389): activation must recover from a prior partial
+      # transfer rather than leaving descendants stranded on the source org.
+      context 'when a prior activation failed partway through the transfer' do
+        before do
+          call_count = 0
+          allow_next_instance_of(Organizations::Transfer::GroupsService) do |instance|
+            allow(instance).to receive(:transfer_oauth_applications).and_wrap_original do |original, *args|
+              call_count += 1
+              raise 'boom' if call_count == 1
+
+              original.call(*args)
+            end
+          end
+        end
+
+        it 'completes the transfer and activates on re-run' do
+          expect(described_class.new(current_user, params).execute).to be_error
+          expect(organization.reload.state).to eq('confirmed')
+
+          expect(described_class.new(current_user, params).execute).to be_success
+          expect(organization.reload.state).to eq('active')
+          expect(subgroup.reload.organization_id).to eq(organization.id)
+          expect(nested_project.reload.organization_id).to eq(organization.id)
+        end
+      end
     end
 
     context 'when Organizations::Transfer::GroupsService returns a non-recoverable error' do

@@ -38,6 +38,12 @@ module Types
       description: 'Show draft merge requests on merge request dashboard.',
       null: true
 
+    field :sidebar_navigation_mode, Types::Users::SidebarNavigationModeEnum,
+      description: 'Navigation mode of the left sidebar. Applies only when the `hide_unpinned_sidebar_items` ' \
+        'feature flag is enabled; otherwise the sidebar shows all navigation categories.',
+      null: false,
+      experiment: { milestone: '19.6' }
+
     field :projects_sort,
       Types::Projects::ProjectSortEnum,
       description: 'Sort order for projects.',

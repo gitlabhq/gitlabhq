@@ -5,12 +5,14 @@ import ProtectedBadge from '~/vue_shared/components/badges/protected_badge.vue';
 import { s__, sprintf, n__ } from '~/locale';
 import squashOptionQuery from '~/projects/settings/branch_rules/queries/squash_option.query.graphql';
 import GroupInheritancePopover from '~/vue_shared/components/settings/group_inheritance_popover.vue';
+import DisabledByPolicyPopover from '~/projects/settings/branch_rules/components/disabled_by_policy_popover.vue';
 import {
   getAccessLevels,
   getAccessLevelsRolesText,
   getAccessLevelsDeployKeysText,
 } from '../../../utils';
 import GroupBadge from './group_badge.vue';
+import PolicyBadge from './policy_badge.vue';
 
 export default {
   name: 'BranchRule',
@@ -32,6 +34,8 @@ export default {
     ProtectedBadge,
     GroupInheritancePopover,
     GroupBadge,
+    PolicyBadge,
+    DisabledByPolicyPopover,
   },
   apollo: {
     squashOption: {
@@ -244,7 +248,6 @@ export default {
 
         <group-badge v-if="isGroupLevel" />
 
-        <!-- eslint-disable-next-line vue/no-undef-components -- PolicyBadge is registered in EE via extends -->
         <policy-badge v-if="showPolicyBadge" :is-protected-by-policy="isEnforcedByAnyPolicy" />
       </div>
 
@@ -270,7 +273,6 @@ export default {
       <li v-for="(detail, index) in approvalDetails" :key="index">
         <div class="gl-flex gl-items-center">
           <span :class="{ 'gl-text-disabled': disabledText(detail) }">{{ detail }}</span>
-          <!-- eslint-disable-next-line vue/no-undef-components -- DisabledByPolicyPopover is registered in EE via extends -->
           <disabled-by-policy-popover
             v-if="isAffectedByPolicy(detail)"
             :is-protected-by-policy="isEnforcedForRow(detail)"

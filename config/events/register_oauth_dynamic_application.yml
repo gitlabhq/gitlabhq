@@ -1,0 +1,22 @@
+---
+description: Tracks OAuth dynamic client registration (RFC 7591) requests, which MCP clients use to connect
+internal_events: true
+action: register_oauth_dynamic_application
+product_group: agent_execution
+product_categories:
+- mcp_server
+additional_properties:
+  response_status:
+    description: HTTP status of the response, for example 201 on success, 400 for invalid metadata or 403 when registration is disabled. Rate-limited (429) requests are not tracked
+  oauth_application_id:
+    description: ID of the OAuth application that was created, present only on success
+  mcp_client_name:
+    description: The client name, from the first product token of the User-Agent
+  mcp_client_version:
+    description: The client version, from the same source as mcp_client_name
+milestone: '19.6'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/262909
+tiers:
+- free
+- premium
+- ultimate

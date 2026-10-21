@@ -567,6 +567,7 @@ class User < ApplicationRecord
     :orbit_custom_agents_enabled, :orbit_custom_agents_enabled=,
     :merge_request_dashboard_list_type, :merge_request_dashboard_list_type=,
     :merge_request_dashboard_show_drafts, :merge_request_dashboard_show_drafts=,
+    :sidebar_navigation_mode, :sidebar_navigation_mode=,
     to: :user_preference
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true

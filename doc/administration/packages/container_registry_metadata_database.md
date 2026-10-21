@@ -123,8 +123,7 @@ Prerequisites:
   The garbage collection command included with GitLab will safely exit when the database is enabled, but third-party
   commands, such as the one provided by the upstream registry, will delete data associated with tagged images.
 - Verify you have not automated offline garbage collection, especially with a third-party command.
-- You can first [reduce the storage of your registry](../../user/packages/container_registry/reduce_container_registry_storage.md)
-  to speed up the process.
+- To speed up the import, first [delete tags you no longer need](#reduce-the-number-of-tags-before-you-import).
 - Back up [your container registry data](../backup_restore/backup_gitlab.md#container-registry)
   if possible.
 - Configure container registry [notifications](container_registry.md#configure-container-registry-notifications).
@@ -143,7 +142,7 @@ You can import your existing container registry metadata
 using either a one-step import method or three-step import method.
 A few factors affect the duration of the import:
 
-- The number of tagged images in your registry.
+- The number of tagged images in your registry. This factor has the largest effect.
 - The size of your existing registry data.
 - The specifications of your PostgreSQL instance.
 - The number of registry instances running.
@@ -153,7 +152,9 @@ You do not need to do the following in preparation before importing:
 
 - Allocate extra object storage or file system space: The import makes no significant writes to this storage.
 - Run offline garbage collection: While not harmful, offline garbage collection does not shorten the
-  import enough to recoup the time spent running this command.
+  import enough to recoup the time spent running this command. For large registries, offline garbage collection
+  is often not practical. For more information, see
+  [garbage collection for large registries](container_registry.md#garbage-collection-for-large-registries).
 
 > [!note]
 > The metadata import only targets tagged images. Untagged and unreferenced manifests, and the layers
@@ -162,6 +163,15 @@ You do not need to do the following in preparation before importing:
 > left behind in the backend. After import to the new registry, all images are subject
 > to continuous online garbage collection, by default deleting any untagged and unreferenced manifests
 > and layers that remain for longer than 24 hours.
+
+#### Reduce the number of tags before you import
+
+Deleting tags you don't need is the most effective way to shorten the import.
+For example, one user reported that after deleting unused tags,
+step one for a 535 TiB registry went from 278 hours to 145 hours.
+
+To delete tags, use [cleanup policies](../../user/packages/container_registry/reduce_container_registry_storage.md#cleanup-policy)
+or the [container registry API](../../api/container_registry.md#delete-registry-repository-tags-in-bulk).
 
 ### Choose the right import method
 
@@ -177,6 +187,43 @@ If you use an external database, make sure you set up the
 external database connection before proceeding with a migration path.
 
 For more information, see [Using an external database](#using-an-external-database).
+
+#### Supported import methods
+
+The one-step import and three-step import methods are the only supported ways to
+move an existing registry to the metadata database.
+Custom tools or scripts that clean up, copy, or modify registry storage directly
+are not supported and can cause data loss.
+
+If you do not need to keep all of your existing images, you can instead set up a
+[new registry with the metadata database enabled](container_registry_metadata_database_new_install.md)
+and push only the images you need to it. GitLab does not provide tooling for this approach.
+
+### Plan an import for a large registry
+
+For registries with tens or hundreds of terabytes of data, use the
+[three-step import](container_registry_metadata_database_three_step_import.md) method.
+
+> [!note]
+> Only step two requires downtime. During step two, the registry is in read-only mode.
+> During step one and step three, you can continue to push and pull images.
+
+| Step       | Registry availability | What affects the duration |
+|------------|-----------------------|---------------------------|
+| Step one   | Read and write        | The number of tagged images. |
+| Step two   | Read-only (downtime)  | The data written to the registry after step one. |
+| Step three | Read and write        | The number of blobs that steps one and two did not import, which are mostly unreferenced blobs. |
+
+For example, [one user reported](https://gitlab.com/gitlab-org/gitlab/-/work_items/423459#completed-tests-and-user-reports)
+these durations for a 609 TiB registry on S3:
+
+- Step one: 344 hours, with the registry available for reads and writes.
+- Step two: 12.5 hours, with the registry in read-only mode.
+- Step three: 615 hours, with the registry available for reads and writes.
+
+Import speed varies between environments. Treat published durations as a minimum,
+and allow for longer import times. To shorten the import,
+[reduce the number of tags](#reduce-the-number-of-tags-before-you-import) first.
 
 ### Restore interrupted imports
 
@@ -209,6 +256,9 @@ For more information about valid duration units, see [Go duration strings](https
 ### Post import
 
 After completing a large import, hundreds of thousands or even millions of blobs can be queued for garbage collection review. This is normal.
+
+Storage usage does not decrease during step one or step two of a three-step import.
+Step three makes unreferenced blobs visible to the online garbage collector so that it can remove them.
 
 Because tagged images are imported before dangling blobs are inventoried, the garbage collector initially reviews blobs that are still referenced by tagged images. Garbage collection removes these blobs from the queue, but does not delete them from storage.
 

@@ -104,7 +104,7 @@ You do not need a workplan for small or well-understood changes, where planning 
 
 {{< /history >}}
 
-By default, the **Workplan** widget and the readiness score are hidden on a work item.
+By default, the **Workplan** widget and the readiness level are hidden on a work item.
 To show them, turn on planning for that work item.
 
 Prerequisites:
@@ -230,7 +230,7 @@ To delete a workplan:
 
 This action cannot be undone.
 
-## Readiness score
+## Readiness
 
 {{< history >}}
 
@@ -244,9 +244,10 @@ This action cannot be undone.
 > For more information, see the history.
 > This feature is available for testing, but not ready for production use.
 
-The readiness score shows how ready a work item is for an agent to run.
-GitLab Duo scores the work item on how complete, clear, and well scoped it is, then
-maps the score to a readiness level.
+Readiness shows how ready a work item is for GitLab Duo to
+[implement](#implement-a-workplan-with-gitlab-duo).
+GitLab Duo evaluates how complete, clear, and well scoped the work item is,
+and shows the result as a readiness level.
 
 Prerequisites:
 
@@ -255,15 +256,16 @@ Prerequisites:
 In the **Workplan** widget on the work item, the readiness level appears as
 **Low**, **Medium**, or **High**.
 The readiness level appears only after GitLab Duo generates a workplan and
-calculates a score.
+evaluates the work item.
 
-To view the score and available feedback, select **Readiness details**
-({{< icon name="information-o" >}}) next to the readiness indicator.
-The details open in a drawer.
-Select **Readiness details** again to close the drawer.
+To view feedback on how to improve readiness, select **Readiness details**
+({{< icon name="information-o" >}}) next to the readiness level.
+The feedback opens in a drawer and shows any suggested changes to the work item or its workplan.
+To close the drawer, select **Readiness details** again.
 
-To raise the score, add more detail to the work item description and to the workplan
-steps, such as requirements, acceptance criteria, and constraints.
+To improve readiness, make the suggested changes.
+For example, add requirements, acceptance criteria, and constraints to the work item
+description and to the workplan steps.
 
 ## Decision log
 

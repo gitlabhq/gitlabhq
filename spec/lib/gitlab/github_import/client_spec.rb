@@ -109,6 +109,15 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
     end
   end
 
+  describe '#issue_comment' do
+    it 'returns the details of an issue comment' do
+      expect(client.octokit).to receive(:issue_comment).with('foo/bar', 999)
+      expect(client).to receive(:with_rate_limit).and_yield
+
+      client.issue_comment('foo/bar', 999)
+    end
+  end
+
   describe '#create_hook' do
     let(:config) { { url: 'https://gitlab.example.com/hook', content_type: 'json', secret: 'secret' } }
     let(:options) { { events: %w[push pull_request], active: true } }

@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import Vue2 from 'vue/dist/vue.runtime.common';
-import SharedVShow from './components/shared_sfc/shared_v_show.vue';
+import SharedVShow from './components/shared_sfc/shared_v_show';
 import SharedRenderFn from './components/shared_sfc/shared_render_fn.vue';
-import SharedLocalDirective from './components/shared_sfc/shared_local_directive.vue';
+import SharedLocalDirective from './components/shared_sfc/shared_local_directive';
 
 // An import-free `.vue` file is not infected, so the Vue 2 realm and the @vue/compat
 // realm extend the same options object. Vue 2 writes re-merged options back onto it;

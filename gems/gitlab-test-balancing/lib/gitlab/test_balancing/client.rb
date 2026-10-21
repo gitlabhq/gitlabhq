@@ -3,6 +3,7 @@
 require 'net/http'
 require 'openssl'
 require 'json'
+require 'securerandom'
 require 'uri'
 
 module Gitlab
@@ -50,6 +51,8 @@ module Gitlab
         @api_url = api_url&.chomp('/')
         @job_token = job_token
         @logger = logger
+        @run_id = SecureRandom.uuid
+        @seq = 0
       end
 
       # test_splits: array of { path:, expected_duration: }. expected_duration may
@@ -62,13 +65,19 @@ module Gitlab
       end
 
       # Returns the next batch of test splits (array), empty when the queue is drained.
+      #
+      # Retries of this call reuse the run_id and seq, so the server returns the
+      # same batch if it already claimed one but the response never arrived, and
+      # ignores a late attempt from an earlier call.
       def request
-        symbolize_test_splits(post('request', {}))
+        @seq += 1
+
+        symbolize_test_splits(post('request', { run_id: run_id, seq: @seq }))
       end
 
       private
 
-      attr_reader :api_url, :job_token, :logger
+      attr_reader :api_url, :job_token, :logger, :run_id
 
       def post(action, body)
         uri = URI.parse("#{api_url}/job/test_balancing/#{action}")

@@ -17,3 +17,7 @@ export { default as tailwindcssNoArbitraryValue } from './tailwindcss-no-arbitra
 export { default as gitlabVueNoInteractiveContentInTooltip } from './gitlab-vue-no-interactive-content-in-tooltip.mjs';
 
 export { default as importXNoExtraneousDependencies } from './import-x-no-extraneous-dependencies.mjs';
+
+export { default as graphqlEslintSelectionSetDepth } from './graphql-eslint-selection-set-depth.mjs';
+
+export { default as localRulesGraphqlNoUnboundedNestedConnection } from './local-rules-graphql-no-unbounded-nested-connection.mjs';

@@ -846,7 +846,12 @@ export default [
       '@graphql-eslint/no-unused-variables': 'error',
       '@graphql-eslint/no-unused-fragments': 'error',
       '@graphql-eslint/no-duplicate-fields': 'error',
+      '@graphql-eslint/selection-set-depth': ['error', { maxDepth: 8 }],
       'local-rules/graphql-require-feature-category': 'error',
+      'local-rules/graphql-no-unbounded-nested-connection': [
+        'error',
+        { allow: ['assignees', 'labels'] },
+      ],
       'local-rules/graphql-require-valid-urgency': 'error',
     },
   },

@@ -81,6 +81,19 @@
         "null"
       ]
     },
+    "organization_transfer_completed_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "organization_transfer_completed_organization_id": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
     "preserved_states": {
       "type": "object",
       "properties": {

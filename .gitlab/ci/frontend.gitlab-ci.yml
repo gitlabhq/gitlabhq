@@ -529,13 +529,16 @@ jest-integration:
   variables:
     JEST_INTEGRATION_REPORT: tmp/jest-integration-report.json
     JEST_INTEGRATION_START_TIME_FILE: tmp/jest-integration-start-time
+    # Per-process cap: 2 workers plus the parent must stay under the 8 GB runner limit.
+    # Workers peak at about 2.5 GB because `workerIdleMemoryLimit` recycles them.
+    NODE_OPTIONS: --max-old-space-size=3072
   script:
     - date +%s > "${JEST_INTEGRATION_START_TIME_FILE}"
     # Capture the Jest exit code so we can re-raise it after the summary step.
     # The summary is always posted (even on test failure) because the inline
     # comment is the primary signal for reviewers; the job itself also fails
     # when tests fail, surfacing the failure in the pipeline.
-    - yarn jest:integration --ci --passWithNoTests --forceExit --json --outputFile="${JEST_INTEGRATION_REPORT}"; JEST_EXIT=$?
+    - yarn jest:integration --ci --passWithNoTests --forceExit --maxWorkers=2 --json --outputFile="${JEST_INTEGRATION_REPORT}"; JEST_EXIT=$?
     # This runs in `script` instead of `after_script` on purpose.
     # We want the budget gate to be able to fail the job when someone adds too many new tests.
     # That only works from `script`, because GitLab ignores the exit code of `after_script` and a failure there
@@ -573,11 +576,6 @@ jest-integration vue3:
   extends:
     - jest-integration
     - .vue3
-  variables:
-    # Under Vue 3 the single in-band Jest process lets its heap sit at 3.5-4.3 GB for
-    # dozens of suites before collecting. With the global 5 GB cap it can reach the
-    # cap mid-suite and die on ineffective mark-compacts; a lower cap collects earlier.
-    NODE_OPTIONS: --max-old-space-size=4096
 
 jest-snapshot-vue3:
   extends:

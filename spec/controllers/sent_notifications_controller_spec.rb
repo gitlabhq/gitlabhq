@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe SentNotificationsController, feature_category: :shared do
+RSpec.describe SentNotificationsController, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:private_project) { create(:project, :private) }

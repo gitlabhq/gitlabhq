@@ -33,7 +33,7 @@ RSpec.describe Admin::UsersHelper, feature_category: :user_management do
     context 'when instance has one organization' do
       let_it_be(:organization) { create(:organization) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- spec needs organization persisted to database
 
-      it do
+      it 'reports a single organization and returns it as the initial organization' do
         is_expected.to eq({
           'has_multiple_organizations' => false,
           'initial_organization' => {
@@ -48,7 +48,7 @@ RSpec.describe Admin::UsersHelper, feature_category: :user_management do
     context 'when instance has multiple organizations' do
       let_it_be(:organizations) { create_list(:organization, 2) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- spec needs organization persisted to database
 
-      it do
+      it 'reports multiple organizations and returns the first one as the initial organization' do
         is_expected.to eq({
           'has_multiple_organizations' => true,
           'initial_organization' => {
@@ -66,7 +66,7 @@ RSpec.describe Admin::UsersHelper, feature_category: :user_management do
 
     subject { Gitlab::Json.parse(helper.invite_organization_user_app_data(organization)) }
 
-    it do
+    it 'returns the organization gid, name, and invite search url' do
       is_expected.to eq({
         'organization_gid' => organization.to_global_id.to_s,
         'organization_name' => organization.name,

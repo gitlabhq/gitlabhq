@@ -483,6 +483,28 @@ You can experiment with the regex and try your version strings by using this
 
 For more details about the regex, see the [Python documentation](https://www.python.org/dev/peps/pep-0440/#appendix-b-parsing-version-strings-with-regular-expressions).
 
+## Package index response formats
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/586978) in GitLab 18.10 [with a feature flag](../../../administration/feature_flags/_index.md) named `pypi_pep_691_json`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the history.
+
+The PyPI package registry can return its package index in two formats:
+
+- JSON, as defined in [Python Enhancement Proposal (PEP) 691](https://peps.python.org/pep-0691/).
+- HTML, as defined in [PEP 503](https://peps.python.org/pep-0503/).
+
+[`pip` 22.2 and later](https://pip.pypa.io/en/stable/news/#v22-2) requests JSON automatically.
+Clients that don't request JSON, including earlier versions of `pip`, receive HTML.
+Both formats list the same package files and SHA256 hashes.
+
+To request JSON from another client, set the `Accept` header to `application/vnd.pypi.simple.v1+json`.
+
 ## Supported CLI commands
 
 The GitLab PyPI repository supports the following CLI commands:

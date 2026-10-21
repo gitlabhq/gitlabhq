@@ -650,6 +650,13 @@ module Gitlab
               period: 1.minute,
               action: :limit
             ),
+            project_delete_api: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_project_deletes_api_by_user',
+              characteristics: %i[user],
+              limit: 60,
+              period: 1.minute,
+              action: :limit
+            ),
             project_download_export: ::Labkit::RateLimit::Rule.new(
               name: 'limit_project_export_downloads_by_user_project',
               characteristics: %i[user project],
@@ -696,6 +703,13 @@ module Gitlab
               name: 'limit_project_members_api_by_user_or_ip',
               characteristics: %i[user ip],
               limit: -> { Gitlab::CurrentSettings.current_application_settings.project_members_api_limit },
+              period: 1.minute,
+              action: :limit
+            ),
+            project_permanent_delete_api: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_project_permanent_deletes_api_by_user',
+              characteristics: %i[user],
+              limit: 10,
               period: 1.minute,
               action: :limit
             ),

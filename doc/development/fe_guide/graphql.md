@@ -513,7 +513,165 @@ When a list needs nested data, pick the first of these options that fits, in ord
 - A connection or sub-list inside a list without a `first:` argument.
 - Fields known to be expensive, such as checkpoints, pipelines, or diff stats.
 
+Two of these are linted in the `eslint` CI job:
+
+- Depth: `@graphql-eslint/selection-set-depth` fails a query deeper than 8 selection sets.
+- Unbounded nested connections: `local-rules/graphql-no-unbounded-nested-connection` fails a connection selected inside a list without a `first:` or `last:` argument.
+
+The rest is reviewer judgment: a plain list field nested in a list, and the expensive fields.
+
+`@graphql-eslint/selection-set-depth` counts every nested selection set, so a connection's `nodes` wrapper adds a level of its own.
+This query reports `exceeds maximum operation depth of 8`: four connection levels under `project` and `pipeline` put the leaf `name` at depth 10.
+
+```graphql
+query pipelineJobNeeds($fullPath: ID!, $iid: ID!) {
+  project(fullPath: $fullPath) {
+    id
+    pipeline(iid: $iid) {
+      id
+      stages(first: 10) {
+        nodes {
+          id
+          groups(first: 10) {
+            nodes {
+              id
+              jobs(first: 10) {
+                nodes {
+                  id
+                  needs(first: 10) {
+                    nodes {
+                      id
+                      name
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+This one passes: three connection levels put the leaf at depth 8.
+Fetch `needs` for a single job in a separate query when the user expands it.
+
+```graphql
+query pipelineJobs($fullPath: ID!, $iid: ID!) {
+  project(fullPath: $fullPath) {
+    id
+    pipeline(iid: $iid) {
+      id
+      stages(first: 10) {
+        nodes {
+          id
+          groups(first: 10) {
+            nodes {
+              id
+              jobs(first: 10) {
+                nodes {
+                  id
+                  name
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+`local-rules/graphql-no-unbounded-nested-connection` reports a connection field that is selected inside a list and has neither a `first:` nor a `last:` argument.
+This query reports `` `notes` is a connection selected inside a list without `first:` or `last:` ``, because `notes` sits under `issues.nodes`:
+
+```graphql
+query issueNotes($fullPath: ID!) {
+  project(fullPath: $fullPath) {
+    id
+    issues(first: 20) {
+      nodes {
+        id
+        notes {
+          nodes {
+            id
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+The same query passes with the nested connection bounded:
+
+```graphql
+query issueNotes($fullPath: ID!) {
+  project(fullPath: $fullPath) {
+    id
+    issues(first: 20) {
+      nodes {
+        id
+        notes(first: 5) {
+          nodes {
+            id
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+The rule's `allow` option in `eslint.config.mjs` exempts connection fields by name (currently `assignees` and `labels`), so those pass without a `first:` argument wherever they are selected.
+The local rule checks fragments as their own definitions, not at their spread sites, so a fragment that selects a connection without `first:` passes lint and is caught only when a reviewer looks at where it is spread.
+
 For the full reviewer procedure, see [frontend GraphQL fragment changes](../graphql_guide/reviewing.md#frontend-graphql-fragment-changes).
+
+### Strategies to decompose queries
+
+A lint failure means the query fetches too much in one request.
+Split the query instead of adjusting it until the rule passes.
+The strategies below are in order of preference.
+
+#### Load nested data when the user asks for it
+
+Most lists show one line per item and reveal details on expand or open.
+Fetch the detail at that moment with a second query keyed by the item's ID.
+The `pipelineJobs` and `needs` example above does this.
+The nesting disappears, so both rules pass, and the list renders with less data.
+
+#### Give nested connections a small page size
+
+Some rows need a few children on first render, such as the first labels or the latest comment.
+Bound the connection with `first:` set to the number the UI shows.
+If more can exist, show a count or a "view all" link to a paginated view.
+This bounds the fan-out but does not reduce depth, so a deep query may still need another strategy.
+
+#### Query the children from the top
+
+Fetch children through their own top-level field and pagination rather than through the parent list.
+For example, load `project.issues(first: 20)` for the list and load notes with a separate query that takes an issue ID.
+Two flat queries paginate, cache, and reuse more easily than one deep query, and each stays under the depth limit.
+This only helps when paired with the first strategy: run the child query for the item the user opened, not for every row.
+Running it per row recreates the N+1 the lint caught.
+
+#### Use a batched field
+
+A nested field is cheap when the backend batches it with `BatchLoader::GraphQL` or preloads it with `LooksAhead`.
+If the field is batched and the query is within the depth limit, leave the query as it is.
+If it is not batched, add the batching in a paired backend MR rather than reshaping the query for the lint.
+
+#### Suppressing a rule
+
+Suppress a rule only when the fan-out is bounded by something the linter cannot see, for example a parent connection with `first: 1`.
+
+- Add `# eslint-disable-next-line` in the `.graphql` file with a comment that says why, and get the reviewer's agreement.
+- Use the `.eslint_todo/` lists only for queries that predate the rules. New queries do not go there.
+- Add a field to the rule's `allow` option only when it is small and batched everywhere, like `labels`. That is a schema-wide decision, not a per-query one.
 
 ### How to check locally
 
@@ -523,6 +681,10 @@ For the full reviewer procedure, see [frontend GraphQL fragment changes](../grap
 - When the frontend change is paired with a backend one, add or extend a `QueryRecorder` request spec.
   Specs live under `spec/requests/api/graphql/` or `ee/spec/requests/api/graphql/`.
   For an example, see [testing tips and tricks](../api_graphql_styleguide.md#testing-tips-and-tricks).
+- Lint the `.graphql` file with the GraphQL lint rules.
+  They need the [schema dump](tooling.md#graphql-schema-and-operations-validation), so run `./scripts/dump_graphql_schema`, then `yarn run lint:eslint path/to/file.query.graphql`.
+  Without the dump, ESLint reports a parsing error on every `.graphql` file, as it did before these rules existed.
+  When the change is to a fragment, lint the operation files that spread it as well, because the depth rule counts `#import`ed fragments at each spread.
 
 ### When to ask for a backend or database review
 

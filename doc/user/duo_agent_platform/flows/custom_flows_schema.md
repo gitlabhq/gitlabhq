@@ -76,26 +76,84 @@ Context: {Issue IID: 2}
 
 ### Assign and Assign reviewer events
 
-When the flow service account is assigned to an issue or merge
-request, or assigned as a reviewer, the IID of the resource is
-passed as the goal.
+{{< history >}}
 
-For example, if the flow service account is assigned as a reviewer
-on merge request `!10`, the value of `context:goal` is `10`.
+- Typed resource reference [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/628996) in GitLab 19.6 [with a flag](../../../administration/feature_flags/_index.md) named `ai_flow_trigger_typed_resource_goal`. Disabled by default.
 
-Use the IID with `context:project_id` to read the resource:
+{{< /history >}}
 
-```yaml
-components:
-  - name: "review_mr"
-    type: AgentComponent
-    prompt_id: "review_mr_prompt"
-    inputs:
-      - from: "context:project_id"
-        as: "project_id"
-      - from: "context:goal"
-        as: "mr_iid"
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+When the flow service account is added as an assignee or reviewer to an issue or merge request, the resource type and URL are passed as the goal:
+
+```plaintext
+Context:
+<resource_type>: <resource_web_url>
 ```
+
+The resource type is `Issue` or `MergeRequest`.
+
+For example, if the flow service account is added as a reviewer to merge request `!10`, the goal is:
+
+```plaintext
+Context:
+MergeRequest: https://gitlab.example.com/my-group/my-project/-/merge_requests/10
+```
+
+Use the URL to identify the resource. Don't use the resource type, because the same issue can appear as `Issue` or `WorkItem`, depending on the trigger.
+
+> [!warning]
+> When the feature flag is enabled, `context:goal` contains the resource type and URL instead of the IID.
+> To keep your custom flows working, update any that read `context:goal` as an IID.
+
+### Merge request and work item events
+
+{{< history >}}
+
+- Typed resource reference [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/628996) in GitLab 19.6 [with a flag](../../../administration/feature_flags/_index.md) named `ai_flow_trigger_typed_resource_goal`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+When a merge request or work item event triggers the flow, the resource type, URL, and action are passed as the goal:
+
+```plaintext
+Context:
+<resource_type>: <resource_web_url>
+Action: <action>
+```
+
+The resource type is `MergeRequest` or `WorkItem`.
+
+The action depends on the event and the **Run when** selection:
+
+| Event         | Run when       | Action           |
+|---------------|----------------|------------------|
+| Merge request | Approved       | `approved`       |
+| Merge request | Created        | `created`        |
+| Work item     | Created        | `created`        |
+| Work item     | Status changed | `status_changed` |
+
+The **Marked ready** and **Merge conflict** actions don't include an action in the goal.
+
+For example, if merge request `!10` is approved, the goal is:
+
+```plaintext
+Context:
+MergeRequest: https://gitlab.example.com/my-group/my-project/-/merge_requests/10
+Action: approved
+```
+
+Use the URL to identify the resource. Don't use the resource type, because the same issue can appear as `Issue` or `WorkItem`, depending on the trigger.
+
+> [!warning]
+> When the feature flag is enabled, `context:goal` contains the resource type and URL instead of the IID.
+> To keep your custom flows working, update any that read `context:goal` as an IID.
 
 ### Pipeline events
 

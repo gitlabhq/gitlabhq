@@ -1,6 +1,6 @@
 ---
-source_checksum: f0cbd09ac2cef04c
-distilled_at_sha: f881cd88ec49e57cc6d320e2b57c56d80cb06564
+source_checksum: f68e407416a3d8e0
+distilled_at_sha: 0598d6c1b5bb294276c7c644f29291505d54c4c1
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -47,8 +47,12 @@ distilled_at_sha: f881cd88ec49e57cc6d320e2b57c56d80cb06564
 ### Release Notes — Feature Release Notes
 
 - Create each feature release note as a separate Markdown file inside the appropriate release directory (e.g., `doc/releases/19/gitlab-19-1-released/`); use the `Release Notes Item` MR template and assign to an Engineering Manager and Technical Writer for review.
+- Name each feature release note file with a short, hyphenated slug based on the release note title (not the work item title) that is unique in the release directory; the filename breaks ties between notes with the same `weight`.
 - Keep release note body text to 125 words or fewer; DO NOT include images or videos; use relative links for documentation links; ensure work item links are not confidential.
+- Write release note text that explains the value of the change ("In previous versions of GitLab, you couldn't... Now you can..."); keep sentences under 25 words, use second person and present tense, DO NOT use "we", DO NOT include implementation details (syntax, variable names, API parameters), use a bulleted list for several distinct capabilities, and give links meaningful text (DO NOT use "here").
 - Set all required metadata fields: `title` (seven words or fewer), `tier`, `offering`, `documentation_link` (relative URL, no `.md` extension), `work_item` (absolute, non-confidential URL), `categories`, and `stage`.
+- Use a relative `documentation_link` without the `.md` extension or `_index` (starting with `../../../` from a release directory); keep the `.md` extension and any anchor on relative links inside the note body — mixing the two formats breaks the CI pipeline.
+- Set `stage` to a value that matches an entry in `release_post_groupings.yaml` in `docs-gitlab-com` (a `devops::` label does not always map); an unrecognized value silently places the note in the `Scale and Deployments` section.
 - Use `level: primary` to place a feature in the `Primary features` section; use `weight` (multiples of 10) to control ordering within a section; omit both when defaults are acceptable.
 - Merge all feature release notes by 23:59 UTC on the Friday before release day.
 - List `tier` and `offering` values in the documented order (`Free, Premium, Ultimate`; `gitlab_com, self_managed, gitlab_dedicated, gitlab_dedicated_for_government`) and use case-sensitive category `Name` values.

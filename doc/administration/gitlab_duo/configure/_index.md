@@ -216,12 +216,9 @@ see the [troubleshooting page](../../../user/gitlab_duo/troubleshooting.md).
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253398) in GitLab 19.4 as a [beta](../../../policy/development_stages_support.md#beta) [with a feature flag](../../../administration/feature_flags/_index.md) named `duo_agentic_chat_verification_check`. Enabled by default.
+- [Feature flag `duo_agentic_chat_verification_check` removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/263338) in GitLab 19.6.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 Run a functional verification check to send an Agentic Chat request
 through your self-hosted model and confirm that a full response is returned.

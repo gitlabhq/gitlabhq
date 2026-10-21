@@ -33818,6 +33818,7 @@ CREATE TABLE user_preferences (
     knowledge_graph_governing_namespace_id bigint,
     emoji_autocomplete_enabled boolean DEFAULT true NOT NULL,
     emoji_skin_tone smallint DEFAULT 0 NOT NULL,
+    sidebar_navigation_mode smallint,
     CONSTRAINT check_1d670edc68 CHECK ((time_display_relative IS NOT NULL)),
     CONSTRAINT check_89bf269f41 CHECK ((char_length(diffs_deletion_color) <= 7)),
     CONSTRAINT check_9b50d9f942 CHECK ((char_length(extensions_marketplace_opt_in_url) <= 512)),
@@ -49595,6 +49596,8 @@ CREATE INDEX index_import_source_users_on_reassigned_by_user_id ON import_source
 CREATE INDEX index_import_source_users_on_reassignment_expires_at ON import_source_users USING btree (reassignment_expires_at);
 
 CREATE INDEX index_import_sync_external_objects_on_project_id ON import_sync_external_objects USING btree (project_id);
+
+CREATE INDEX index_import_sync_repositories_on_authority_state_and_id ON import_sync_repositories USING btree (authority_state, id);
 
 CREATE INDEX index_import_sync_repositories_on_connected_by_user_id ON import_sync_repositories USING btree (connected_by_user_id);
 

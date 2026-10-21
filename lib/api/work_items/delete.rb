@@ -39,7 +39,10 @@ module API
 
         namespace ':id/-/work_items', requirements: { id: FULL_PATH_ID_REQUIREMENT } do
           desc 'Delete a work item.' do
-            detail 'Delete a work item in a namespace. Project and group namespaces are supported.'
+            detail 'Delete a work item in a namespace. Project and group namespaces are supported. ' \
+              'Requires administrator access or the Planner or Owner role. Authors who are members of the ' \
+              'project or group can also delete their own work items. Only administrators and users with ' \
+              'the Owner role can delete incidents.'
             hidden true
             success code: 204
             failure FAILURE_RESPONSES
@@ -68,7 +71,10 @@ module API
 
         namespace ':id/-/work_items', requirements: { id: FULL_PATH_ID_REQUIREMENT } do
           desc 'Delete a work item in a project.' do
-            detail 'Delete a work item in a project.'
+            detail 'Delete a work item in a project. ' \
+              'Requires administrator access or the Planner or Owner role. Authors who are members of the ' \
+              'project or group can also delete their own work items. Only administrators and users with ' \
+              'the Owner role can delete incidents.'
             hidden true
             success code: 204
             failure FAILURE_RESPONSES
@@ -94,7 +100,10 @@ module API
 
         namespace ':id/-/work_items', requirements: { id: FULL_PATH_ID_REQUIREMENT } do
           desc 'Delete a work item in a group.' do
-            detail 'Delete a work item in a group.'
+            detail 'Delete a work item in a group. ' \
+              'Requires administrator access or the Planner or Owner role. Authors who are members of the ' \
+              'project or group can also delete their own work items. Only administrators and users with ' \
+              'the Owner role can delete incidents.'
             hidden true
             success code: 204
             failure FAILURE_RESPONSES

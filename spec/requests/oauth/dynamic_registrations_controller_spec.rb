@@ -47,6 +47,41 @@ RSpec.describe Oauth::DynamicRegistrationsController, :with_current_organization
       post oauth_registration_path, params: request_body.to_json, headers: headers
     end
 
+    describe 'internal event tracking' do
+      let(:headers) { { 'Content-Type' => 'application/json', 'User-Agent' => 'Cursor/1.2.3 (darwin)' } }
+      let(:request_body) { valid_request_body }
+
+      def expect_registration_event(**additional_properties)
+        expect { create_registration }
+          .to trigger_internal_events('register_oauth_dynamic_application')
+          .with(additional_properties: {
+            mcp_client_name: 'Cursor', mcp_client_version: '1.2.3', **additional_properties
+          })
+      end
+
+      it 'tracks a successful registration with the created application' do
+        expect_registration_event(response_status: 201, oauth_application_id: an_instance_of(Integer))
+      end
+
+      context 'with invalid client metadata' do
+        let(:request_body) { valid_request_body.merge(client_name: '') }
+
+        it 'tracks the failure' do
+          expect_registration_event(response_status: 400)
+        end
+      end
+
+      context 'without a User-Agent' do
+        let(:headers) { { 'Content-Type' => 'application/json', 'User-Agent' => '' } }
+
+        it 'tracks the event without client fields' do
+          expect { create_registration }
+            .to trigger_internal_events('register_oauth_dynamic_application')
+            .with(additional_properties: { response_status: 201, oauth_application_id: an_instance_of(Integer) })
+        end
+      end
+    end
+
     context 'when dynamic client registration setting is disabled' do
       let(:request_body) { valid_request_body }
 
@@ -61,6 +96,12 @@ RSpec.describe Oauth::DynamicRegistrationsController, :with_current_organization
         expect(response.parsed_body).to include('error' => 'access_denied')
         expect(response.parsed_body['error_description']).to include('disabled on this instance')
         expect(response.parsed_body['error_description']).to include('reuse-a-single-oauth-application')
+      end
+
+      it 'tracks the rejection' do
+        expect { create_registration }
+          .to trigger_internal_events('register_oauth_dynamic_application')
+          .with(additional_properties: { response_status: 403 })
       end
     end
 
@@ -574,6 +615,23 @@ RSpec.describe Oauth::DynamicRegistrationsController, :with_current_organization
           it_behaves_like 'rejects request with bad_request'
         end
 
+        context 'with a JSON body that is not an object' do
+          let(:request_body) { [] }
+
+          it_behaves_like 'rejects request with bad_request'
+
+          it 'returns an invalid_client_metadata error and tracks the failure', :aggregate_failures do
+            expect { create_registration }
+              .to trigger_internal_events('register_oauth_dynamic_application')
+              .with(additional_properties: { response_status: 400 })
+
+            expect(response.parsed_body).to eq(
+              'error' => 'invalid_client_metadata',
+              'error_description' => 'client metadata must be a JSON object'
+            )
+          end
+        end
+
         context 'when content type is not JSON and an invalid JSON body is provided' do
           let(:headers) { { 'Content-Type' => 'multipart/form-data' } }
           let(:request_body) { '{ invalid json' }
@@ -612,6 +670,10 @@ RSpec.describe Oauth::DynamicRegistrationsController, :with_current_organization
 
         it 'does not create an application' do
           expect { create_registration }.not_to change { Authn::OauthApplication.count }
+        end
+
+        it 'does not track the request' do
+          expect { create_registration }.not_to trigger_internal_events('register_oauth_dynamic_application')
         end
       end
 

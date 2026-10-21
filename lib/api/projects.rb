@@ -111,6 +111,16 @@ module API
         end
       end
 
+      # Marking for deletion still writes to the primary DB, so it gets a loose limit.
+      # Permanent removal fans out destroy jobs straight away, so it gets a strict one.
+      def project_delete_rate_limit_key
+        if ::Gitlab::Utils.to_boolean(params[:permanently_remove])
+          :project_permanent_delete_api
+        else
+          :project_delete_api
+        end
+      end
+
       def delete_project(user_project)
         permanently_remove = ::Gitlab::Utils.to_boolean(params[:permanently_remove])
 
@@ -923,6 +933,10 @@ module API
       end
       route_setting :authorization, permissions: :delete_project, boundary_type: :project
       delete ":id", feature_category: :groups_and_projects do
+        if Feature.enabled?(:group_and_project_delete_rate_limit, current_user)
+          check_rate_limit!(project_delete_rate_limit_key, scope: { user: current_user })
+        end
+
         authorize! :remove_project, user_project
 
         delete_project(user_project)

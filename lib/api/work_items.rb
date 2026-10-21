@@ -18,8 +18,10 @@ module API
     FAILURE_RESPONSES = [
       { code: 400, message: 'Bad request' },
       { code: 401, message: 'Unauthorized' },
-      { code: 403, message: 'Forbidden - feature flag disabled' },
-      { code: 404, message: 'Not found' }
+      { code: 403, message: 'Forbidden - you do not have permission to perform the action, ' \
+                     'or your token scope or CI/CD job token permissions do not allow it' },
+      { code: 404, message: 'Not found - the resource does not exist, you cannot view it, ' \
+                     'or the work_item_rest_api feature flag is disabled' }
     ].freeze
 
     FEATURE_NAME_LOOKUP = ::API::Entities::WorkItems::Features::Entity

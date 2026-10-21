@@ -385,7 +385,7 @@ RSpec.describe Projects::LabelsController, feature_category: :team_planning do
       end
 
       shared_examples 'allows setting lock_on_merge' do
-        it do
+        it 'sets lock_on_merge on the label and redirects to the labels index' do
           update_request
 
           expect(response).to redirect_to(namespace_project_labels_path)

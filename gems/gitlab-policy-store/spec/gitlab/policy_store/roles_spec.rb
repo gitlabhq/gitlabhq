@@ -62,11 +62,15 @@ RSpec.describe Gitlab::PolicyStore::Roles do
     end
 
     context "with a non-deployment trigger" do
-      it "returns only GitLab roles" do
-        roles = described_class.for_trigger('some_other_trigger')
+      # The settings and lifecycle triggers are the real non-deployment ids, so cover one
+      # rather than a fabricated id that no catalogue offers.
+      %w[project.before_settings_update project.after_create project.after_transfer].each do |trigger|
+        it "returns only GitLab roles for #{trigger}" do
+          roles = described_class.for_trigger(trigger)
 
-        expect(roles).to eq(described_class::GITLAB_ROLES)
-        expect(roles).not_to include(*described_class::CD_ROLES)
+          expect(roles).to eq(described_class::GITLAB_ROLES)
+          expect(roles).not_to include(*described_class::CD_ROLES)
+        end
       end
     end
 

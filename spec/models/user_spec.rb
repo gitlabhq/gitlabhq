@@ -163,6 +163,9 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     it { is_expected.to delegate_method(:merge_request_dashboard_show_drafts).to(:user_preference) }
     it { is_expected.to delegate_method(:merge_request_dashboard_show_drafts=).to(:user_preference).with_arguments(:args) }
 
+    it { is_expected.to delegate_method(:sidebar_navigation_mode).to(:user_preference) }
+    it { is_expected.to delegate_method(:sidebar_navigation_mode=).to(:user_preference).with_arguments(:args) }
+
     it { is_expected.to delegate_method(:text_editor).to(:user_preference) }
     it { is_expected.to delegate_method(:text_editor=).to(:user_preference).with_arguments(:args) }
 

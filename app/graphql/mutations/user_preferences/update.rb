@@ -15,7 +15,8 @@ module Mutations
         :visibility_pipeline_id_type,
         :merge_request_dashboard_list_type,
         :merge_request_dashboard_show_drafts,
-        :wiki_use_auto_commit_message
+        :wiki_use_auto_commit_message,
+        :sidebar_navigation_mode
       ].freeze
 
       argument :emoji_skin_tone, Types::Users::EmojiSkinToneEnum,
@@ -42,6 +43,10 @@ module Mutations
       argument :merge_requests_sort, Types::MergeRequestSortEnum,
         required: false,
         description: 'Sort order for issue lists.'
+      argument :sidebar_navigation_mode, Types::Users::SidebarNavigationModeEnum,
+        required: false,
+        description: copy_field_description(Types::UserPreferencesType, :sidebar_navigation_mode),
+        experiment: { milestone: '19.6' }
       argument :use_work_items_view, GraphQL::Types::Boolean,
         required: false,
         description: 'Use work item view instead of legacy issue view.',

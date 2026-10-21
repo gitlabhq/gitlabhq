@@ -97,6 +97,28 @@ RSpec.describe UserPreference, feature_category: :user_profile do
       it { is_expected.to define_enum_for(:visibility_pipeline_id_type) }
     end
 
+    describe 'sidebar_navigation_mode' do
+      it 'reads as compact without persisting a value when unset' do
+        pref = create(:user_preference)
+
+        expect(pref.sidebar_navigation_mode).to eq('compact')
+        expect(pref.read_attribute(:sidebar_navigation_mode)).to be_nil
+      end
+
+      it 'returns the stored value when set' do
+        pref = build(:user_preference, sidebar_navigation_mode: 'all_categories')
+
+        expect(pref.sidebar_navigation_mode).to eq('all_categories')
+      end
+
+      it do
+        is_expected.to define_enum_for(:sidebar_navigation_mode)
+          .with_values(compact: 0, all_categories: 1)
+          .without_scopes
+          .without_instance_methods
+      end
+    end
+
     describe 'extensions_marketplace_opt_in_status' do
       it 'is set to 0 by default' do
         pref = described_class.new

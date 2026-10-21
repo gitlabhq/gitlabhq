@@ -81,6 +81,7 @@ module SidebarsHelper
       gitlab_com_and_canary: Gitlab.com_and_canary?,
       current_context: super_sidebar_current_context(project: project, group: group),
       pinned_items: pinned_items(user, panel_type, group: group),
+      sidebar_navigation_mode: user.sidebar_navigation_mode,
       is_impersonating: impersonating?,
       shortcut_links: shortcut_links(user: user, project: project),
       work_items: work_items_modal_data(group, project),

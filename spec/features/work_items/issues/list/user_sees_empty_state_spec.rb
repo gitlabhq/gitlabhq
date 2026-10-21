@@ -22,7 +22,7 @@ RSpec.describe 'Issues > User sees empty state', :js, feature_category: :plannin
       it 'user sees empty state' do
         visit project_work_items_path(project)
 
-        expect(page).to have_content('Track bugs, plan features, and organize your work with issues')
+        expect(page).to have_content('Track bugs, plan features, and organize your efforts with work items')
         expect(page).to have_content('Register / Sign In')
       end
 

@@ -2,10 +2,14 @@
 
 module Oauth
   class DynamicRegistrationsController < ApplicationController
+    include Gitlab::InternalEventsTracking
+
     feature_category :system_access
 
     skip_before_action :authenticate_user!, only: [:create]
     skip_before_action :verify_authenticity_token, only: [:create]
+    # Declared before the checks so it also tracks the 403 when registration is disabled.
+    around_action :track_registration, only: [:create]
     before_action :check_rate_limit, only: [:create]
     before_action :check_dynamic_client_registration_enabled, only: [:create]
 
@@ -18,7 +22,14 @@ module Oauth
 
     # POST /oauth/register
     def create
-      client_metadata = Gitlab::Json.safe_parse(request.body.read).symbolize_keys
+      client_metadata = Gitlab::Json.safe_parse(request.body.read)
+
+      unless client_metadata.is_a?(Hash)
+        render json: error_data('client metadata must be a JSON object'), status: :bad_request
+        return
+      end
+
+      client_metadata = client_metadata.symbolize_keys
 
       allowed_params = [:redirect_uris, :client_name, :resource, :scope]
 
@@ -50,6 +61,8 @@ module Oauth
       )
 
       if application.persisted?
+        @registered_application = application
+
         render json: {
           client_id: application.uid,
           client_id_issued_at: application.created_at.to_i,
@@ -71,6 +84,25 @@ module Oauth
     end
 
     private
+
+    def track_registration
+      yield
+
+      # Throttled requests are uncapped and have no user or IP, so they would skew the failure rate.
+      # auth.log already records them.
+      return if response.status == 429
+
+      client_info = Gitlab::Mcp::ClientInfo.from_request(nil, user_agent: request.user_agent)
+
+      track_internal_event(
+        'register_oauth_dynamic_application',
+        additional_properties: {
+          response_status: response.status,
+          oauth_application_id: @registered_application&.id,
+          **client_info.to_h
+        }.compact
+      )
+    end
 
     def resolve_mcp_scope(resource, requested_scope)
       if resource.present?

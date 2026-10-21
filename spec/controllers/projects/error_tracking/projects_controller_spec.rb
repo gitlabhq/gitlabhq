@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::ErrorTracking::ProjectsController do
+RSpec.describe Projects::ErrorTracking::ProjectsController, feature_category: :observability do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user, maintainer_of: project) }
 

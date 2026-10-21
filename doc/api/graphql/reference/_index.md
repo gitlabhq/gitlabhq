@@ -4334,6 +4334,7 @@ Arguments:
 | <a id="mutation-aiduoworkflowcreate-namespaceid"></a>`namespaceId` | [`NamespaceID`](#namespaceid) | Global ID of the namespace the user is acting on. |
 | <a id="mutation-aiduoworkflowcreate-preapprovedagentprivileges"></a>`preApprovedAgentPrivileges` | [`[Int!]`](#int) | Actions the agent can perform without asking for approval. |
 | <a id="mutation-aiduoworkflowcreate-projectid"></a>`projectId` | [`ProjectID`](#projectid) | Global ID of the project the user is acting on. |
+| <a id="mutation-aiduoworkflowcreate-source"></a>`source` | [`DuoWorkflowSourceType`](#duoworkflowsourcetype) | Where the session was triggered from. Only client-surface values are accepted. |
 | <a id="mutation-aiduoworkflowcreate-websearchenabled"></a>`webSearchEnabled` | [`Boolean`](#boolean) | Enable web search for the session. |
 | <a id="mutation-aiduoworkflowcreate-workflowdefinition"></a>`workflowDefinition` | [`String`](#string) | Workflow type based on its capability. |
 
@@ -20237,6 +20238,7 @@ Arguments:
 | <a id="mutation-userpreferencesupdate-organizationgroupsprojectsdisplay"></a>`organizationGroupsProjectsDisplay` {{< icon name="warning-solid" >}} | [`OrganizationGroupProjectDisplay`](#organizationgroupprojectdisplay) | Introduced in GitLab 17.2. Status: Experiment. Default list view for organization groups and projects. |
 | <a id="mutation-userpreferencesupdate-organizationgroupsprojectssort"></a>`organizationGroupsProjectsSort` {{< icon name="warning-solid" >}} | [`OrganizationGroupProjectSort`](#organizationgroupprojectsort) | Introduced in GitLab 17.2. Status: Experiment. Sort order for organization groups and projects. |
 | <a id="mutation-userpreferencesupdate-projectssort"></a>`projectsSort` | [`ProjectSort`](#projectsort) | Sort order for projects. |
+| <a id="mutation-userpreferencesupdate-sidebarnavigationmode"></a>`sidebarNavigationMode` {{< icon name="warning-solid" >}} | [`SidebarNavigationMode`](#sidebarnavigationmode) | Introduced in GitLab 19.6. Status: Experiment. Navigation mode of the left sidebar. Applies only when the `hide_unpinned_sidebar_items` feature flag is enabled; otherwise the sidebar shows all navigation categories. |
 | <a id="mutation-userpreferencesupdate-useworkitemsview"></a>`useWorkItemsView` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Deprecated in GitLab 19.5. Work item view is always used. |
 | <a id="mutation-userpreferencesupdate-visibilitypipelineidtype"></a>`visibilityPipelineIdType` | [`VisibilityPipelineIdType`](#visibilitypipelineidtype) | Determines whether the pipeline list shows ID or IID. |
 | <a id="mutation-userpreferencesupdate-wikiuseautocommitmessage"></a>`wikiUseAutoCommitMessage` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 18.10. Status: Experiment. Whether to skip the commit message modal and use the auto-generated commit message when saving changes to a wiki document. |
@@ -59431,6 +59433,7 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="policystoretrigger-availableroles"></a>`availableRoles` {{< icon name="warning-solid" >}} | [`[PolicyStoreRole!]!`](#policystorerole) | Introduced in GitLab 19.4. Status: Experiment. Roles available for the trigger type. |
 | <a id="policystoretrigger-id"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | Introduced in GitLab 19.4. Status: Experiment. Identifier of the trigger. |
+| <a id="policystoretrigger-kind"></a>`kind` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.6. Status: Experiment. Kind of the trigger. A `gate` trigger is evaluated before the change and can stop it, an `event` trigger is evaluated after the change and cannot. |
 | <a id="policystoretrigger-name"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.4. Status: Experiment. Human-readable name of the trigger. |
 
 ### `PolicyViolationDetails`
@@ -66933,6 +66936,7 @@ Fields:
 | <a id="userpreferences-organizationgroupsprojectsdisplay"></a>`organizationGroupsProjectsDisplay` {{< icon name="warning-solid" >}} | [`OrganizationGroupProjectDisplay!`](#organizationgroupprojectdisplay) | Introduced in GitLab 17.2. Status: Experiment. Default list view for organization groups and projects. |
 | <a id="userpreferences-organizationgroupsprojectssort"></a>`organizationGroupsProjectsSort` {{< icon name="warning-solid" >}} | [`OrganizationGroupProjectSort`](#organizationgroupprojectsort) | Introduced in GitLab 17.2. Status: Experiment. Sort order for organization groups and projects. |
 | <a id="userpreferences-projectssort"></a>`projectsSort` | [`ProjectSort`](#projectsort) | Sort order for projects. |
+| <a id="userpreferences-sidebarnavigationmode"></a>`sidebarNavigationMode` {{< icon name="warning-solid" >}} | [`SidebarNavigationMode!`](#sidebarnavigationmode) | Introduced in GitLab 19.6. Status: Experiment. Navigation mode of the left sidebar. Applies only when the `hide_unpinned_sidebar_items` feature flag is enabled; otherwise the sidebar shows all navigation categories. |
 | <a id="userpreferences-timezone"></a>`timezone` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 17.7. Status: Experiment. Timezone of the user. |
 | <a id="userpreferences-useworkitemsview"></a>`useWorkItemsView` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Deprecated in GitLab 19.5. Work item view is always used. |
 | <a id="userpreferences-visibilitypipelineidtype"></a>`visibilityPipelineIdType` | [`VisibilityPipelineIdType`](#visibilitypipelineidtype) | Determines whether the pipeline list shows ID or IID. |
@@ -72897,6 +72901,7 @@ Where a Duo Workflow session was initiated from.
 | <a id="duoworkflowsourcetype-merge_request_fix_pipeline"></a>`MERGE_REQUEST_FIX_PIPELINE` | Session initiated from fixing a failed pipeline on a merge request. |
 | <a id="duoworkflowsourcetype-merge_request_resolve_discussion"></a>`MERGE_REQUEST_RESOLVE_DISCUSSION` | Session initiated from resolving a discussion on a merge request. |
 | <a id="duoworkflowsourcetype-slack"></a>`SLACK` | Session initiated from Slack. |
+| <a id="duoworkflowsourcetype-web_chat"></a>`WEB_CHAT` | Session initiated from GitLab Duo Chat in the web UI. |
 | <a id="duoworkflowsourcetype-work_item_plan_to_merge_request"></a>`WORK_ITEM_PLAN_TO_MERGE_REQUEST` | Session initiated from implementing a work item plan. |
 | <a id="duoworkflowsourcetype-work_item_to_merge_request"></a>`WORK_ITEM_TO_MERGE_REQUEST` | Session initiated from creating a merge request from a work item. |
 
@@ -75885,6 +75890,15 @@ How to format SHA strings.
 | <a id="sharedrunnerssetting-disabled_and_overridable"></a>`DISABLED_AND_OVERRIDABLE` | Sharing of runners is disabled and overridable. |
 | <a id="sharedrunnerssetting-disabled_and_unoverridable"></a>`DISABLED_AND_UNOVERRIDABLE` | Sharing of runners is disabled and unoverridable. |
 | <a id="sharedrunnerssetting-enabled"></a>`ENABLED` | Sharing of runners is enabled. |
+
+### `SidebarNavigationMode`
+
+Values for the navigation mode of the left sidebar.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="sidebarnavigationmode-all_categories"></a>`ALL_CATEGORIES` | Show pinned items and all navigation categories. |
+| <a id="sidebarnavigationmode-compact"></a>`COMPACT` | Show only pinned items. |
 
 ### `SnippetBlobActionEnum`
 

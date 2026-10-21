@@ -101,6 +101,10 @@ module Gitlab
         with_rate_limit { octokit.pull_request(repo_name, iid).to_h }
       end
 
+      def issue_comment(repo_name, comment_id)
+        with_rate_limit { octokit.issue_comment(repo_name, comment_id).to_h }
+      end
+
       def create_hook(repo, config, options = {})
         with_rate_limit { octokit.create_hook(repo, 'web', config, options).to_h }
       end

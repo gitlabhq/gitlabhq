@@ -65,6 +65,7 @@ module API
             denial_reason: mcp_denial_reason,
             Labkit::Fields::GL_USER_ID => current_user.id
           )
+          track_mcp_access_denied
 
           forbidden!(mcp_denial_message)
         end
@@ -110,6 +111,18 @@ module API
         override :bearer_challenge_scopes
         def bearer_challenge_scopes(scopes)
           scopes.include?(Gitlab::Auth::MCP_SCOPE) ? [Gitlab::Auth::MCP_SCOPE] : scopes
+        end
+
+        def track_mcp_access_denied
+          track_event(
+            'deny_mcp_server_access',
+            user: current_user,
+            additional_properties: {
+              denial_reason: mcp_denial_reason.to_s,
+              oauth_application_id: access_token.try(:application_id),
+              **mcp_client_info.to_h
+            }.compact
+          )
         end
 
         # Allowed MCP tool names, as set by the Duo Workflow executor.

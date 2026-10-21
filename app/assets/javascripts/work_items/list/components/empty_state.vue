@@ -1,42 +1,23 @@
 <script>
-import emptyStateSvg from '@gitlab/svgs/dist/illustrations/empty-state/empty-issues-add-md.svg';
 import jiraCloudAppLogo from '@gitlab/svgs/dist/illustrations/third-party-logos/integrations-logos/jira_cloud_app.svg?raw';
-import { GlButton, GlEmptyState, GlLink } from '@gitlab/ui';
-import { helpPagePath } from '~/helpers/help_page_helper';
-import SafeHtml from '~/vue_shared/directives/safe_html';
-import { s__ } from '~/locale';
+import { GlButton, GlEmptyState } from '@gitlab/ui';
 import { isLoggedIn } from '~/lib/utils/common_utils';
+import { s__ } from '~/locale';
+import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 
 export default {
+  jiraCloudAppLogo,
   name: 'EmptyState',
-  i18n: {
-    title: s__('WorkItem|Track bugs, plan features, and organize your efforts with work items'),
-    description: s__(
-      'WorkItem|Use work items (also known as tickets or stories on other platforms) to collaborate on ideas, solve problems, and plan your project.',
-    ),
-    descriptionWithoutProjects: s__(
-      'WorkItem|Use epics to collaborate on ideas, solve problems, and plan work across this group. To track other work items, create a project.',
-    ),
-  },
-  emptyStateSvg,
-  issuesHelpPagePath: helpPagePath('user/project/issues/_index'),
-  jiraIntegrationPath: helpPagePath('integration/jira/_index'),
   components: {
     GlButton,
     GlEmptyState,
-    GlLink,
+    HelpPageLink,
   },
   directives: {
     SafeHtml,
   },
-  inject: [
-    'canCreateProjects',
-    'newIssuePath',
-    'newProjectPath',
-    'showNewIssueLink',
-    'signInPath',
-    'isGroup',
-  ],
+  inject: ['canCreateProjects', 'newProjectPath', 'signInPath', 'isGroup'],
   props: {
     hasProjects: {
       type: Boolean,
@@ -60,55 +41,49 @@ export default {
     },
     description() {
       return this.showNewProjectButton && this.hasEpicsFeature
-        ? this.$options.i18n.descriptionWithoutProjects
-        : this.$options.i18n.description;
+        ? s__(
+            'WorkItem|Use epics to collaborate on ideas, solve problems, and plan work across this group. To track other work items, create a project.',
+          )
+        : s__(
+            'WorkItem|Use work items (also known as tickets or stories on other platforms) to collaborate on ideas, solve problems, and plan your project.',
+          );
     },
     newProjectButtonVariant() {
       // Without epics there is no "New item" button, so "New project" is the only action
       return this.hasEpicsFeature ? 'default' : 'confirm';
     },
   },
-  jiraCloudAppLogo,
 };
 </script>
 
 <template>
   <div
-    v-if="isLoggedIn"
     data-testid="signed-in-empty-state-block"
-    :data-track-action="!isGroup && 'render'"
-    :data-track-label="!isGroup && 'project_issues_empty_list'"
+    :data-track-action="isLoggedIn && !isGroup && 'render'"
+    :data-track-label="isLoggedIn && !isGroup && 'project_issues_empty_list'"
   >
-    <div>
-      <gl-empty-state
-        :title="$options.i18n.title"
-        :description="description"
-        :svg-path="$options.emptyStateSvg"
-        data-testid="issuable-empty-state"
-      >
-        <template #actions>
-          <div class="gl-flex gl-justify-center gl-gap-3">
-            <slot name="new-issue-button">
-              <gl-button
-                v-if="showNewIssueLink"
-                :href="newIssuePath"
-                variant="confirm"
-                data-track-action="click_new_issue_project_issues_empty_list_page"
-                data-track-label="new_issue_project_issues_empty_list"
-              >
-                {{ __('Create issue') }}
-              </gl-button>
-            </slot>
-            <gl-button
-              v-if="showNewProjectButton"
-              :href="newProjectPath"
-              :variant="newProjectButtonVariant"
-            >
-              {{ __('New project') }}
-            </gl-button>
-          </div>
-        </template>
-      </gl-empty-state>
+    <gl-empty-state
+      :title="s__('WorkItem|Track bugs, plan features, and organize your efforts with work items')"
+      :description="description"
+      illustration-name="empty-issues-add-md"
+      :primary-button-text="isLoggedIn ? undefined : __('Register / Sign In')"
+      :primary-button-link="isLoggedIn ? undefined : signInPath"
+      data-testid="issuable-empty-state"
+    >
+      <template v-if="isLoggedIn" #actions>
+        <div class="gl-flex gl-justify-center gl-gap-3">
+          <slot name="new-issue-button"></slot>
+          <gl-button
+            v-if="showNewProjectButton"
+            :href="newProjectPath"
+            :variant="newProjectButtonVariant"
+          >
+            {{ __('New project') }}
+          </gl-button>
+        </div>
+      </template>
+    </gl-empty-state>
+    <template v-if="isLoggedIn">
       <hr class="gl-mb-7" />
       <div class="gl-flex gl-justify-center">
         <span
@@ -117,32 +92,17 @@ export default {
         ></span>
         <p class="gl-mb-0 gl-ml-3 gl-mt-1">
           {{ s__('JiraService|Using Jira for issue tracking?') }}
-          <gl-link
-            :href="$options.jiraIntegrationPath"
+          <help-page-link
+            href="integration/jira/_index"
             :data-track-action="!isGroup && 'click_jira_int_project_issues_empty_list_page'"
             :data-track-label="!isGroup && 'jira_int_project_issues_empty_list'"
           >
             {{ s__('JiraService|See integration options') }}
-          </gl-link>
+          </help-page-link>
         </p>
       </div>
-    </div>
+    </template>
   </div>
-
-  <gl-empty-state
-    v-else
-    :title="s__('Issues|Track bugs, plan features, and organize your work with issues')"
-    :description="
-      s__(
-        'Issues|Use issues (also known as tickets or stories on other platforms) to collaborate on ideas, solve problems, and plan your project.',
-      )
-    "
-    :svg-path="$options.emptyStateSvg"
-    :svg-height="null"
-    :primary-button-text="__('Register / Sign In')"
-    :primary-button-link="signInPath"
-    data-testid="issuable-empty-state"
-  />
 </template>
 
 <style scoped>

@@ -35,7 +35,7 @@ This flow is available in the GitLab UI only.
 ## Prerequisites
 
 - Meet the [prerequisites for the GitLab Duo Agent Platform](../../user/duo_agent_platform/_index.md#prerequisites).
-- Turn on **Allow foundational flows** and **Convert to GitLab CI/CD** [for the top-level group](../../user/duo_agent_platform/flows/foundational_flows/_index.md#turn-foundational-flows-on-or-off).
+- Turn on {{< ui text="DuoAgentPlatform|Allow foundational flows" >}} and {{< ui text="FoundationalFlow|Convert to GitLab CI/CD" >}} [for the top-level group](../../user/duo_agent_platform/flows/foundational_flows/_index.md#turn-foundational-flows-on-or-off).
 - Have the Developer, Maintainer, or Owner role for the target GitLab project.
 - Have access to your Jenkins pipeline configuration.
 - [Configure push rules to allow a service account](../../user/duo_agent_platform/troubleshooting.md#configure-push-rules-to-allow-a-service-account).
@@ -46,11 +46,11 @@ This flow is available in the GitLab UI only.
 
 To convert your Jenkinsfile to GitLab CI/CD:
 
-1. In the top bar, select **Search or go to** and find your project.
+1. In the top bar, select {{< ui text="Search or go to" >}} and find your project.
 1. Open your Jenkinsfile.
-1. Above the file, select **Convert to GitLab CI/CD**.
-1. Monitor progress by selecting **AI** > **Sessions**.
-1. When the pipeline has successfully executed, in the left sidebar, select **Code** > **Merge requests**.
+1. Above the file, select {{< ui text="Convert to GitLab CI/CD" >}}.
+1. Monitor progress by selecting {{< ui text="DuoAgentsPlatform|AI" >}} > {{< ui text="DuoAgentsPlatform|Sessions" >}}.
+1. When the pipeline has successfully executed, in the left sidebar, select {{< ui text="Navigation|Code" >}} > {{< ui text="Merge requests" >}}.
    A merge request with the title `Duo Workflow: Convert to GitLab CI` is displayed.
 1. Review the merge request and make changes as needed.
 

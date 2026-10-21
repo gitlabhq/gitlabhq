@@ -912,6 +912,8 @@ principles:
         url: https://docs.gitlab.com/development/documentation/styleguide/deprecations_and_removals/
       - path: doc/development/documentation/metadata.md
         url: https://docs.gitlab.com/development/documentation/metadata/
+      - path: doc/development/documentation/styleguide/ui_text.md
+        url: https://docs.gitlab.com/development/documentation/styleguide/ui_text/
 
   documentation-topics:
     description: Documentation authoring guidelines per topic type (for example, Concept, Task, Reference, Troubleshooting, Tutorial, etc.)

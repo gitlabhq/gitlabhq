@@ -17,6 +17,7 @@ module Organizations
         group_id = args['group_id']
         organization_id = args['organization_id']
         current_user_id = args['current_user_id']
+        force = args['force'] || false
 
         group = Group.find_by_id(group_id)
         return unless group
@@ -30,7 +31,8 @@ module Organizations
         Organizations::Transfer::GroupsService.new(
           group: group,
           new_organization: organization,
-          current_user: current_user
+          current_user: current_user,
+          force: force
         ).execute
       end
     end

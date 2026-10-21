@@ -21,7 +21,8 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
       'mergeRequestDashboardListType' => 'ROLE_BASED',
       'workItemsDisplaySettings' => { 'shouldOpenItemsInSidePanel' => false },
       'mergeRequestDashboardShowDrafts' => true,
-      'emojiSkinTone' => 'MEDIUM'
+      'emojiSkinTone' => 'MEDIUM',
+      'sidebarNavigationMode' => 'ALL_CATEGORIES'
     }
   end
 
@@ -57,11 +58,13 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
       expect(mutation_response['userPreferences']['mergeRequestDashboardListType']).to eq('ROLE_BASED')
       expect(mutation_response['userPreferences']['mergeRequestDashboardShowDrafts']).to be(true)
       expect(mutation_response['userPreferences']['emojiSkinTone']).to eq('MEDIUM')
+      expect(mutation_response['userPreferences']['sidebarNavigationMode']).to eq('ALL_CATEGORIES')
       expect(mutation_response['userPreferences']['workItemsDisplaySettings']).to eq({
         'shouldOpenItemsInSidePanel' => false
       })
 
       expect(current_user.user_preference.persisted?).to be(true)
+      expect(current_user.user_preference.sidebar_navigation_mode).to eq('all_categories')
       expect(current_user.user_preference.extensions_marketplace_opt_in_status).to eq('enabled')
       expect(current_user.user_preference.extensions_marketplace_opt_in_url).to eq('https://example.com')
       expect(current_user.user_preference.issues_sort).to eq(Types::IssueSortEnum.values[sort_value].value.to_s)
@@ -94,7 +97,8 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
         first_day_of_week: 6,
         work_items_display_settings: { 'shouldOpenItemsInSidePanel' => true },
         merge_request_dashboard_show_drafts: false,
-        emoji_skin_tone: 'light'
+        emoji_skin_tone: 'light',
+        sidebar_navigation_mode: 'compact'
       }
     end
 
@@ -124,6 +128,7 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
       expect(current_user.user_preference.merge_request_dashboard_list_type).to eq('role_based')
       expect(current_user.user_preference.merge_request_dashboard_show_drafts).to be(true)
       expect(current_user.user_preference.first_day_of_week).to eq(1)
+      expect(current_user.user_preference.sidebar_navigation_mode).to eq('all_categories')
       expect(current_user.user_preference.work_items_display_settings).to eq({
         'shouldOpenItemsInSidePanel' => false
       })
@@ -139,8 +144,13 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
           'organizationGroupsProjectsDisplay' => nil,
           'organizationGroupsProjectsSort' => nil,
           'visibilityPipelineIdType' => nil,
-          'firstDayOfWeek' => nil
+          'firstDayOfWeek' => nil,
+          'sidebarNavigationMode' => nil
         }
+      end
+
+      before do
+        current_user.user_preference.update!(sidebar_navigation_mode: 'all_categories')
       end
 
       it 'updates only nullable attributes' do
@@ -160,6 +170,7 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
           organization_groups_projects_display: init_user_preference[:organization_groups_projects_display],
           extensions_marketplace_opt_in_status: init_user_preference[:extensions_marketplace_opt_in_status],
           visibility_pipeline_id_type: init_user_preference[:visibility_pipeline_id_type],
+          sidebar_navigation_mode: 'all_categories',
           work_items_display_settings: init_user_preference[:work_items_display_settings]
         })
       end
@@ -203,6 +214,17 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
         expect(graphql_errors).to include(a_hash_including('message' => a_string_including("can't be null")))
         expect(current_user.user_preference.reload.emoji_skin_tone).to eq('dark')
       end
+    end
+  end
+
+  describe 'sidebar_navigation_mode argument' do
+    let(:input) { { 'sidebarNavigationMode' => 'NOT_A_MODE' } }
+
+    it 'rejects an unknown mode' do
+      post_graphql_mutation(mutation, current_user: current_user)
+
+      expect(graphql_errors).to include(a_hash_including('message' => a_string_including('NOT_A_MODE')))
+      expect(current_user.reload.user_preference.sidebar_navigation_mode).to eq('compact')
     end
   end
 

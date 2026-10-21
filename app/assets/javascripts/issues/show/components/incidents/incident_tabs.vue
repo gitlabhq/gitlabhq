@@ -33,15 +33,11 @@ export default {
     GlTab,
     GlTabs,
     HighlightBar,
-    ...(gon.features?.hideIncidentManagementFeatures
-      ? {}
-      : {
-          AlertDetailsTable,
-          TimelineTab,
-          IncidentMetricTab: defineAsyncComponent(
-            () => import('ee_component/issues/show/components/incidents/incident_metric_tab.vue'),
-          ),
-        }),
+    AlertDetailsTable,
+    TimelineTab,
+    IncidentMetricTab: defineAsyncComponent(
+      () => import('ee_component/issues/show/components/incidents/incident_metric_tab.vue'),
+    ),
   },
   mixins: [glListenersMixin],
   inject: ['fullPath', 'iid', 'hasLinkedAlerts', 'uploadMetricsFeatureAvailable'],
@@ -171,7 +167,6 @@ export default {
         :title="$options.i18n.metricsTitle"
         data-testid="metrics-tab"
       >
-        <!-- eslint-disable-next-line vue/no-undef-components -->
         <incident-metric-tab />
       </gl-tab>
       <gl-tab
@@ -180,7 +175,6 @@ export default {
         :title="$options.i18n.alertsTitle"
         data-testid="alert-details-tab"
       >
-        <!-- eslint-disable-next-line vue/no-undef-components -->
         <alert-details-table :alert="alert" :loading="loading" />
       </gl-tab>
       <gl-tab
@@ -188,7 +182,6 @@ export default {
         :title="$options.i18n.timelineTitle"
         data-testid="timeline-tab"
       >
-        <!-- eslint-disable-next-line vue/no-undef-components -->
         <timeline-tab />
       </gl-tab>
     </gl-tabs>

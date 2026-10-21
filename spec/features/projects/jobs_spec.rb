@@ -433,7 +433,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
         visit project_job_path(project, job)
       end
 
-      it do
+      it 'shows the button linking to the raw job log' do
         wait_for_all_requests
         expect(page).to have_css('[data-testid="job-raw-link-controller"]')
       end

@@ -411,6 +411,55 @@ RSpec.describe API::Mcp::Base, feature_category: :mcp_server do
         post api('/mcp', user, oauth_access_token: access_token),
           params: { jsonrpc: '2.0', method: 'initialize', id: '1', params: { protocolVersion: '2025-11-25' } }
       end
+
+      it 'tracks the denial with the OAuth application and client' do
+        expect do
+          post api('/mcp', user, oauth_access_token: access_token),
+            params: { jsonrpc: '2.0', method: 'initialize', id: '1', params: { protocolVersion: '2025-11-25' } },
+            headers: { 'User-Agent' => 'Cursor/1.2.3' }
+        end.to trigger_internal_events('deny_mcp_server_access').with(
+          category: 'InternalEventTracking',
+          user: user,
+          additional_properties: {
+            denial_reason: 'instance_setting_disabled',
+            oauth_application_id: access_token.application_id,
+            mcp_client_name: 'Cursor',
+            mcp_client_version: '1.2.3'
+          }
+        )
+      end
+
+      shared_examples 'tracks the denial without an OAuth application' do
+        it 'tracks the denial without an OAuth application' do
+          expect do
+            post api('/mcp', personal_access_token: pat),
+              params: { jsonrpc: '2.0', method: 'initialize', id: '1', params: { protocolVersion: '2025-11-25' } },
+              headers: { 'User-Agent' => 'Cursor/1.2.3' }
+          end.to trigger_internal_events('deny_mcp_server_access').with(
+            category: 'InternalEventTracking',
+            user: user,
+            additional_properties: {
+              denial_reason: 'instance_setting_disabled',
+              mcp_client_name: 'Cursor',
+              mcp_client_version: '1.2.3'
+            }
+          )
+        end
+      end
+
+      context 'with a fine-grained personal access token' do
+        let(:pat) do
+          create(:granular_pat, user: user, boundary: ::Authz::Boundary.for(:user), permissions: :execute_mcp_tool)
+        end
+
+        it_behaves_like 'tracks the denial without an OAuth application'
+      end
+
+      context 'with a legacy personal access token with the api scope' do
+        let(:pat) { create(:personal_access_token, user: user, scopes: [:api]) }
+
+        it_behaves_like 'tracks the denial without an OAuth application'
+      end
     end
 
     context 'with granular token authorization' do

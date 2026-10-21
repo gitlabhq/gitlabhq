@@ -1,0 +1,10 @@
+---
+name: group_and_project_delete_rate_limit
+description: Enforce the per-user rate limit on the group and project deletion API endpoints
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/605332
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/263603
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/635074
+milestone: '19.6'
+type: gitlab_com_derisk
+group: group::organizations
+default_enabled: false

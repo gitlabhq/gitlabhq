@@ -131,8 +131,8 @@ module Organizations
         ).execute
 
         next if result.success?
-        # The group and all of its descendants are already in the target
-        # organization, so there is nothing to do for this group.
+        # already_transferred means nothing is left on the source; a half-transferred
+        # group returns a different error and is retried.
         next if already_transferred_error?(result)
 
         aggregated_errors << result

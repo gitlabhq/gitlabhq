@@ -1,0 +1,24 @@
+---
+description: Tracks MCP requests rejected because the MCP server is not available to the user
+internal_events: true
+action: deny_mcp_server_access
+identifiers:
+- user
+product_group: agent_execution
+product_categories:
+- mcp_server
+additional_properties:
+  denial_reason:
+    description: Why access was denied, for example instance_setting_disabled or no_enabled_namespace
+  oauth_application_id:
+    description: ID of the OAuth application of the access token, absent for personal access tokens
+  mcp_client_name:
+    description: The MCP client name, from the clientInfo in the request _meta or else the User-Agent
+  mcp_client_version:
+    description: The MCP client version, from the same source as mcp_client_name
+milestone: '19.6'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/262909
+tiers:
+- free
+- premium
+- ultimate

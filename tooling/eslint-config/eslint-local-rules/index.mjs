@@ -1,6 +1,7 @@
 import { requireValidHelpPagePath } from './require_valid_help_page_path.mjs';
 import { vueRequireValidHelpPageLinkComponent } from './vue_require_valid_help_page_link_component.mjs';
 import { graphqlRequireFeatureCategory } from './graphql_require_feature_category.mjs';
+import { graphqlNoUnboundedNestedConnection } from './graphql_no_unbounded_nested_connection.mjs';
 import { graphqlRequireValidUrgency } from './graphql_require_valid_urgency.mjs';
 import { noOrphanedFeatureFlagReferences } from './no_orphaned_feature_flag_references.mjs';
 import { noWebUrl } from './no_web_url.mjs';
@@ -21,6 +22,7 @@ export const eslintLocalRules = {
     'require-valid-help-page-path': requireValidHelpPagePath,
     'vue-require-valid-help-page-link-component': vueRequireValidHelpPageLinkComponent,
     'graphql-require-feature-category': graphqlRequireFeatureCategory,
+    'graphql-no-unbounded-nested-connection': graphqlNoUnboundedNestedConnection,
     'graphql-require-valid-urgency': graphqlRequireValidUrgency,
     'no-orphaned-feature-flag-references': noOrphanedFeatureFlagReferences,
     'no-web-url': noWebUrl,

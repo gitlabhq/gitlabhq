@@ -108,11 +108,23 @@ the shared pool. When a large amount of duration remains, the server returns lar
 reduce the number of requests. As the pool drains, the server returns smaller batches so that work
 stays balanced across nodes.
 
+To retry a request safely, for example after a timeout, send the same `run_id` and `seq` again:
+
+- If the server already claimed a batch for that request, it returns the same batch instead of
+  claiming a new one.
+- If the server already received a request with a higher `seq` for the same `run_id`, it returns
+  an empty `test_splits` array and does not claim any test splits.
+
 ```plaintext
 POST /job/test_balancing/request
 ```
 
-This endpoint does not take any attributes.
+Supported attributes:
+
+| Attribute | Type    | Required | Description |
+|-----------|---------|----------|-------------|
+| `run_id`  | string  | No       | A client-generated ID for the process that sends the requests. Use the same value for every request from the process. Required with `seq`. Maximum 64 characters. |
+| `seq`     | integer | No       | The sequence number of the request in the run. Increase the value for each new request, and reuse the value only when you retry that request. Required with `run_id`. Minimum 1. |
 
 If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the following
 response attributes:
@@ -128,6 +140,8 @@ Example request:
 ```shell
 curl --request POST \
   --header "JOB-TOKEN: $CI_JOB_TOKEN" \
+  --header "Content-Type: application/json" \
+  --data '{"run_id": "3f2b8c1e-6d4a-4f0b-9a7e-2c5d8e1f4a6b", "seq": 1}' \
   --url "https://gitlab.example.com/api/v4/job/test_balancing/request"
 ```
 

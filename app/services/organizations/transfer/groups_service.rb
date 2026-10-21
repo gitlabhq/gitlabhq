@@ -10,10 +10,12 @@ module Organizations
       BATCH_SIZE = 50
       SLACK_SCOPE_BATCH_LIMIT = 1_000
 
-      def initialize(group:, new_organization:, current_user:)
+      # force: re-run a converged transfer to catch up newly-supported tables.
+      def initialize(group:, new_organization:, current_user:, force: false)
         @group = group
         @new_organization = new_organization
         @current_user = current_user
+        @force = force
       end
 
       def async_execute
@@ -23,7 +25,8 @@ module Organizations
           {
             'group_id' => group.id,
             'organization_id' => new_organization.id,
-            'current_user_id' => current_user.id
+            'current_user_id' => current_user.id,
+            'force' => force
           }
         )
 
@@ -43,6 +46,7 @@ module Organizations
         Group.transaction do
           persist_transfer_source_organization
           perform_transfer
+          mark_transfer_completed
         end
 
         schedule_sync_workers
@@ -56,10 +60,9 @@ module Organizations
 
       private
 
-      attr_reader :group, :new_organization, :current_user
+      attr_reader :group, :new_organization, :current_user, :force
 
-      # Before the root moves it is the group's own org; after (re-run) it is the value
-      # persisted earlier, so the source survives a partial transfer.
+      # The group's own org before the root moves; the persisted value on a re-run.
       def old_organization
         source_id =
           if group.organization_id == new_organization.id
@@ -68,13 +71,29 @@ module Organizations
             group.organization_id
           end
 
-        Organizations::Organization.find_by_id(source_id)
+        organization = Organizations::Organization.find_by_id(source_id)
+        organization ||= default_organization if force
+        organization
       end
+
+      # rubocop:disable Gitlab/AvoidDefaultOrganization -- forced catch-up fallback only
+      def default_organization
+        Organizations::Organization.default_organization
+      end
+      # rubocop:enable Gitlab/AvoidDefaultOrganization
 
       def persist_transfer_source_organization
         return if group.organization_id == new_organization.id
 
         group.state_metadata['organization_transfer_source_id'] = group.organization_id
+        group.namespace_details.save!
+      end
+
+      # The mark is the durable "done" record, so the source is cleared.
+      def mark_transfer_completed
+        group.state_metadata['organization_transfer_completed_at'] = Time.current.as_json
+        group.state_metadata['organization_transfer_completed_organization_id'] = new_organization.id
+        group.state_metadata['organization_transfer_source_id'] = nil
         group.namespace_details.save!
       end
 
@@ -94,10 +113,9 @@ module Organizations
         target_hash_ids_by_source_id = transfer_stage_event_hashes(descendant_ids)
 
         descendant_ids.in_groups_of(BATCH_SIZE, false) do |batch_ids|
-          Namespace.id_in(batch_ids).update_all(
-            organization_id: new_organization.id,
-            visibility_level: Arel.sql('LEAST(?, visibility_level)', new_organization.visibility_level)
-          )
+          # Flip the namespace organization_id last. Projects are found by namespace_id
+          # (unaffected by the move), so a mid-batch failure leaves the namespace on the
+          # source and a re-run reprocesses the whole batch.
           project_relation = Project.in_namespace(batch_ids)
           project_relation.each_batch(of: BATCH_SIZE) do |batch|
             schedule_pool_repository_disconnections(batch)
@@ -114,6 +132,11 @@ module Organizations
           target_hash_ids_by_source_id.each do |source_hash_id, target_hash_id|
             repoint_stage_events(source_hash_id, target_hash_id, batch_ids)
           end
+
+          Namespace.id_in(batch_ids).update_all(
+            organization_id: new_organization.id,
+            visibility_level: Arel.sql('LEAST(?, visibility_level)', new_organization.visibility_level)
+          )
         end
 
         # Last, so an interrupted run leaves stages on the source hashes and a re-run finds them again.
@@ -471,14 +494,20 @@ module Organizations
         !group.has_parent?
       end
 
-      # A recorded source means a transfer is still in progress, so proceed. Detecting
-      # true completion across every moved resource is deferred to the re-run guard in
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/630389.
+      # Done when a prior run marked completion, or the group is on the target with no
+      # recorded source (never ours to transfer). Absent that, assume incomplete.
       def already_transferred?
         return false unless new_organization
+        return false if force
+        return true if completed_for_target?
 
         group.organization_id == new_organization.id &&
           group.state_metadata['organization_transfer_source_id'].nil?
+      end
+      strong_memoize_attr :already_transferred?
+
+      def completed_for_target?
+        group.state_metadata['organization_transfer_completed_organization_id'] == new_organization.id
       end
 
       def has_permission?

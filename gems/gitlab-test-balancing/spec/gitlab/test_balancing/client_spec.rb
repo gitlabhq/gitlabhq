@@ -89,6 +89,33 @@ RSpec.describe Gitlab::TestBalancing::Client, feature_category: :code_testing do
       expect(client.request).to eq([])
     end
 
+    it 'sends the same run_id and an increasing seq for each request', :aggregate_failures do
+      bodies = []
+      stub_request(:post, url).to_return do |request|
+        bodies << JSON.parse(request.body)
+        { status: 201, body: { test_splits: [] }.to_json }
+      end
+
+      2.times { client.request }
+
+      expect(bodies.map { |body| body['seq'] }).to eq([1, 2])
+      expect(bodies.map { |body| body['run_id'] }.uniq.size).to eq(1)
+      expect(bodies.first['run_id']).to match(/\A\h{8}-\h{4}-\h{4}-\h{4}-\h{12}\z/)
+    end
+
+    it 'uses a different run_id for each client' do
+      run_ids = []
+      stub_request(:post, url).to_return do |request|
+        run_ids << JSON.parse(request.body)['run_id']
+        { status: 201, body: { test_splits: [] }.to_json }
+      end
+
+      client.request
+      described_class.new(api_url: api_url, job_token: job_token).request
+
+      expect(run_ids.uniq.size).to eq(2)
+    end
+
     it 'raises FeatureUnavailableError on 404' do
       stub_request(:post, url).to_return(status: 404, body: '')
 
@@ -111,6 +138,21 @@ RSpec.describe Gitlab::TestBalancing::Client, feature_category: :code_testing do
 
       expect(client.request).to eq([])
       expect(stub).to have_been_requested.twice
+    end
+
+    it 'sends the same run_id and seq on each retry' do
+      bodies = []
+      stub_request(:post, url).to_return do |request|
+        bodies << JSON.parse(request.body)
+        raise Net::ReadTimeout if bodies.size == 1
+
+        { status: 201, body: drained_body }
+      end
+
+      client.request
+
+      expect(bodies.size).to eq(2)
+      expect(bodies.uniq.size).to eq(1)
     end
 
     it 'retries SSL errors and succeeds' do

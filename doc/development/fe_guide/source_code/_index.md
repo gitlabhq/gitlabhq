@@ -9,6 +9,9 @@ These pages cover the frontend of the source code areas of GitLab: the
 repository browser, the blob (file) viewer, and the editors built on top
 of them.
 
+- [App initialization (repository and blob pages)](repository_blob_apps.md): which
+  Vue apps mount on the repository and blob pages, and how each entry point
+  initializes them.
 - [Source viewer layout](source_viewer.md): the CSS grid layout that
   aligns the blame gutter, line numbers, and code in the blob viewer.
 - [Syntax highlighting](blob_syntax_highlighting.md): how the blob viewer

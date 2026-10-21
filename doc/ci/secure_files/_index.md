@@ -30,11 +30,11 @@ by using the [`glab securefile`](https://gitlab.com/gitlab-org/cli/-/tree/main/d
 
 To add a secure file to a project:
 
-1. In the top bar, select **Search or go to** and find your project.
-1. In the left sidebar, select **Settings** > **CI/CD**.
-1. Expand the **Secure Files** section.
-1. Select **Upload File**.
-1. Find the file to upload, select **Open**, and the file upload begins immediately.
+1. In the top bar, select {{< ui text="Search or go to" >}} and find your project.
+1. In the left sidebar, select {{< ui text="Settings" >}} > {{< ui text="CI/CD" >}}.
+1. Expand the {{< ui text="Secure files" >}} section.
+1. Select {{< ui text="Upload File" >}}.
+1. Find the file to upload, select {{< external-ui text="Open" >}}, and the file upload begins immediately.
    The file shows up in the list when the upload is complete.
 
 ## Use secure files in CI/CD jobs

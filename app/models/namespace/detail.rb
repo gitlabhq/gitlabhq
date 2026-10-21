@@ -27,7 +27,9 @@ class Namespace::Detail < ApplicationRecord
     transfer_target_parent_id: :integer,
     transfer_attempt_count: :integer,
     transfer_last_error: :string,
-    organization_transfer_source_id: :integer
+    organization_transfer_source_id: :integer,
+    organization_transfer_completed_at: :datetime,
+    organization_transfer_completed_organization_id: :integer
 
   scope :deletion_scheduled_before, ->(time) { where(deletion_scheduled_at: ..time) }
 

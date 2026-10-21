@@ -21,6 +21,7 @@ title: Policy store API
   - [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/598030) to require authentication in GitLab 19.4.
   - `environment_advanced` and `deployment_promoted` triggers [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/252841) in GitLab 19.4.
   - `set_setting` action [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/630210) in GitLab 19.6.
+  - `project.before_settings_update`, `project.after_create`, and `project.after_transfer` triggers and the `[].kind` trigger attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/634898) in GitLab 19.6.
 - Policy endpoints:
   - [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/604367) to persist policies to the database in GitLab 19.4.
   - `policy_rego` response attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/616505) in GitLab 19.4.
@@ -79,6 +80,7 @@ response attributes:
 | --------- | ------ | ----------- |
 | `[].id`   | string | ID of the trigger, used as `trigger_type` when authoring a policy. |
 | `[].name` | string | Display name of the trigger. |
+| `[].kind` | string | Either `gate` or `event`. A `gate` trigger is evaluated before the change and can stop it. An `event` trigger is evaluated after the change and cannot. |
 
 Example request:
 
@@ -91,9 +93,12 @@ Example response:
 
 ```json
 [
-  { "id": "deployment_requested", "name": "Deployment requested" },
-  { "id": "environment_advanced", "name": "Environment advanced" },
-  { "id": "deployment_promoted", "name": "Deployment promoted" }
+  { "id": "deployment_requested", "name": "Deployment requested", "kind": "gate" },
+  { "id": "environment_advanced", "name": "Environment advanced", "kind": "gate" },
+  { "id": "deployment_promoted", "name": "Deployment promoted", "kind": "gate" },
+  { "id": "project.before_settings_update", "name": "Project settings change requested", "kind": "gate" },
+  { "id": "project.after_create", "name": "Project created", "kind": "event" },
+  { "id": "project.after_transfer", "name": "Project transferred", "kind": "event" }
 ]
 ```
 

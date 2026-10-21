@@ -10,7 +10,10 @@ module API
         end
 
         params :work_item_create_features do
-          optional :features, type: Hash, desc: 'Input for work item features (widgets).' do
+          optional :features, type: Hash,
+            desc: 'Input for work item features (widgets). Features that are not available in the namespace, ' \
+              'for example because of the subscription tier, are ignored. If the work item type does not ' \
+              'support a feature, the request returns 400 Bad Request.' do
             optional :description, type: Hash, desc: 'Input for description feature.' do
               requires :description, type: String, desc: 'Description text for the work item.'
             end

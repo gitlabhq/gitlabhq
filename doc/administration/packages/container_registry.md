@@ -1573,6 +1573,20 @@ itself on the system so that the `gitlab-ctl` command can bring the registry ser
 Also, there's no way to save progress or results during the mark phase of the process. Only once
 blobs start being deleted is anything permanent done.
 
+### Garbage collection for large registries
+
+For large registries, offline garbage collection can take a long time, and the registry
+must stay in read-only mode for the full duration. If the command stops during the mark phase,
+it starts again from the beginning. For more information, see [Stop garbage collection](#stop-garbage-collection).
+
+The `parallelwalk` option for the S3 and GCS storage drivers runs parts of the mark phase concurrently.
+This option can make garbage collection faster, but uses more CPU and memory.
+It does not remove the read-only requirement. For more information, see
+[container registry storage driver](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/upstream-differences.md).
+
+To reclaim storage without downtime, import your registry to the
+[metadata database](container_registry_metadata_database.md#plan-an-import-for-a-large-registry).
+
 ### Continuous zero-downtime garbage collection
 
 You can run garbage collection in the background without the need to schedule it or require read-only mode,

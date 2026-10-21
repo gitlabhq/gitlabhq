@@ -26,12 +26,31 @@ RSpec.describe Organizations::Groups::TransferWorker, feature_category: :organiz
           Organizations::Transfer::GroupsService,
           group: group,
           new_organization: organization,
-          current_user: user
+          current_user: user,
+          force: false
         ) do |service|
           expect(service).to receive(:execute)
         end
 
         perform
+      end
+
+      context 'when force is passed' do
+        let(:args) { super().merge('force' => true) }
+
+        it 'forwards force to the transfer service' do
+          expect_next_instance_of(
+            Organizations::Transfer::GroupsService,
+            group: group,
+            new_organization: organization,
+            current_user: user,
+            force: true
+          ) do |service|
+            expect(service).to receive(:execute)
+          end
+
+          perform
+        end
       end
     end
 

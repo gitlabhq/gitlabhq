@@ -146,6 +146,8 @@ pipeline that:
 
 Pipelines for forks display with the **fork** badge in the parent project.
 
+If a user with the Owner role in the parent project [deletes the merge request](../../user/project/merge_requests/manage.md#delete-a-merge-request), GitLab also deletes its merge request pipelines in both the fork and the parent project.
+
 ### Run pipelines in the parent project
 
 Project members in the parent project can trigger a merge request pipeline

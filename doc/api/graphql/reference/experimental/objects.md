@@ -16163,6 +16163,7 @@ Trigger available when creating a policy in the policy store.
 | ---- | ---- | ----------- |
 | `availableRoles` | [`[PolicyStoreRole!]!`](#policystorerole) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Roles available for the trigger type. |
 | `id` | [`ID!`](scalars.md#id) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Identifier of the trigger. |
+| `kind` | [`String!`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.6.<br/><br/>Kind of the trigger. A `gate` trigger is evaluated before the change and can stop it, an `event` trigger is evaluated after the change and cannot. |
 | `name` | [`String!`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Human-readable name of the trigger. |
 
 ## `PolicyViolationDetails`

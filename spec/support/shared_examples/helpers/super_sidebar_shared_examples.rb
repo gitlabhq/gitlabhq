@@ -28,4 +28,6 @@ RSpec.shared_examples 'logged-out super-sidebar context' do
   it 'includes the panel default pins so anonymous users see a pinned section' do
     is_expected.to include(pinned_items: helper.send(:super_sidebar_default_pins, panel_type))
   end
+
+  it { is_expected.not_to have_key(:sidebar_navigation_mode) }
 end

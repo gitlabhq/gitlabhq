@@ -13,6 +13,11 @@ GitLab provides tools for managing merge requests for your project and group.
 In most cases you should close, rather than delete, merge requests.
 You cannot undo the deletion of a merge request.
 
+When you delete a merge request, GitLab also deletes its merge request pipelines, including their jobs and artifacts.
+For a merge request from a fork, GitLab deletes pipelines in the fork project, even if you are not a member of the fork.
+GitLab does not delete deployments or environments in the fork, but they no longer link to a job or pipeline.
+GitLab does not delete the source branch or its branch pipelines.
+
 Prerequisites:
 
 - You must have the Owner role for the project.

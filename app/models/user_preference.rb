@@ -76,6 +76,9 @@ class UserPreference < ApplicationRecord
 
   enum :merge_request_dashboard_list_type, { action_based: 0, role_based: 1 }
 
+  # Predicates and scopes are disabled because they would ignore the reader's default for NULL.
+  enum :sidebar_navigation_mode, { compact: 0, all_categories: 1 }, scopes: false, instance_methods: false
+
   class << self
     def notes_filters
       {
@@ -117,6 +120,11 @@ class UserPreference < ApplicationRecord
   def extensions_marketplace_opt_in_url
     # To support existing records, this can be `nil` and it defaults to `https://open-vsx.org`
     super || 'https://open-vsx.org'
+  end
+
+  # NULL means the user hasn't chosen a mode, so the default can change without a data migration.
+  def sidebar_navigation_mode
+    super || 'compact'
   end
 
   def dpop_enabled=(value)

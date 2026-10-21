@@ -211,7 +211,7 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
       end
 
       context 'for the persisted transfer source' do
-        it 'persists the source before the transfer and retains it after success' do
+        it 'persists the source during the transfer and clears it on completion' do
           persisted_sources = []
           allow(service).to receive(:perform_transfer).and_wrap_original do |original, *args|
             persisted_sources << group.reload.state_metadata['organization_transfer_source_id']
@@ -221,7 +221,8 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
           expect(service.execute).to be_success
 
           expect(persisted_sources).to eq([old_organization.id])
-          expect(group.reload.state_metadata['organization_transfer_source_id']).to eq(old_organization.id)
+          # Cleared on completion; the completion mark is the durable "done" record.
+          expect(group.reload.state_metadata['organization_transfer_source_id']).to be_nil
         end
 
         context 'when re-running after the root already moved' do
@@ -236,6 +237,110 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
 
             expect(subgroup.reload.organization_id).to eq(new_organization.id)
             expect(nested_project.reload.organization_id).to eq(new_organization.id)
+          end
+        end
+      end
+
+      # Phase 2 (gitlab-org/gitlab#630389): a mid-transfer failure must be recoverable by
+      # re-running the service. A completion mark is only written on a full pass, so a
+      # partial transfer is treated as incomplete and re-run to completion.
+      context 'when a prior run failed partway through' do
+        def source_namespace_ids
+          Namespace.id_in(group.self_and_descendant_ids(skope: Namespace))
+            .where.not(organization_id: new_organization.id).pluck(:id)
+        end
+
+        def source_project_ids
+          Project.in_namespace(group.self_and_descendant_ids(skope: Namespace))
+            .where.not(organization_id: new_organization.id).pluck(:id)
+        end
+
+        it 'is not considered already transferred without a completion mark' do
+          # Simulate a partial run: root moved and source recorded, but no completion mark.
+          group.update_column(:organization_id, new_organization.id)
+          group.state_metadata['organization_transfer_source_id'] = old_organization.id
+          group.namespace_details.save!
+
+          expect(service.execute).to be_success
+          expect(source_namespace_ids).to be_empty
+          expect(source_project_ids).to be_empty
+        end
+
+        it 'completes the transfer when re-run after a mid-batch failure' do
+          call_count = 0
+          allow(service).to receive(:transfer_oauth_applications).and_wrap_original do |original, *args|
+            call_count += 1
+            raise 'boom' if call_count == 1
+
+            original.call(*args)
+          end
+
+          expect(service.execute).to be_error
+
+          # Projects moved before the raise; at least one namespace is still on the source,
+          # so the transfer is incomplete and must be resumable.
+          retry_service = described_class.new(
+            group: group.reset, new_organization: new_organization, current_user: user
+          )
+
+          expect(retry_service.execute).to be_success
+          expect(source_namespace_ids).to be_empty
+          expect(source_project_ids).to be_empty
+        end
+
+        it 'reports a fully converged group as already transferred' do
+          expect(service.execute).to be_success
+
+          retry_service = described_class.new(
+            group: group.reset, new_organization: new_organization, current_user: user
+          )
+          result = retry_service.execute
+
+          expect(result).to be_error
+          expect(result.reason).to eq(:already_transferred)
+        end
+
+        it 'stamps the completion mark on a successful transfer' do
+          expect(service.execute).to be_success
+
+          details = group.reset.state_metadata
+          expect(details['organization_transfer_completed_organization_id']).to eq(new_organization.id)
+          expect(details['organization_transfer_completed_at']).to be_present
+        end
+      end
+
+      # A group transferred before all tables were supported looks converged (completion
+      # mark present) but may still have newly-supported records to move. force: re-runs it.
+      context 'with force: to catch up a previously completed transfer' do
+        let(:service) do
+          described_class.new(
+            group: group, new_organization: new_organization, current_user: user, force: true
+          )
+        end
+
+        before do
+          group.update_column(:organization_id, new_organization.id)
+          group.state_metadata['organization_transfer_completed_organization_id'] = new_organization.id
+          group.state_metadata['organization_transfer_source_id'] = old_organization.id
+          group.namespace_details.save!
+        end
+
+        it 're-runs despite the completion mark' do
+          expect(service).to receive(:perform_transfer).and_call_original
+
+          expect(service.execute).to be_success
+        end
+
+        context 'when no source was recorded' do
+          before do
+            group.state_metadata['organization_transfer_source_id'] = nil
+            group.namespace_details.save!
+          end
+
+          it 'falls back to the default organization as the source' do
+            # rubocop:disable Gitlab/AvoidDefaultOrganization -- asserting the forced fallback
+            expect(service.send(:old_organization)).to eq(Organizations::Organization.default_organization)
+            # rubocop:enable Gitlab/AvoidDefaultOrganization
           end
         end
       end
@@ -1784,7 +1889,8 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
           {
             'group_id' => group.id,
             'organization_id' => new_organization.id,
-            'current_user_id' => user.id
+            'current_user_id' => user.id,
+            'force' => false
           }
         )
 

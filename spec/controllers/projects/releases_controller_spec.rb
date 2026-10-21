@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::ReleasesController do
+RSpec.describe Projects::ReleasesController, feature_category: :release_orchestration do
   include AccessMatchersForController
 
   let_it_be(:developer) { create(:user) }

@@ -48,15 +48,15 @@ resources are available to these groups and projects.
 
 To add fine-grained permissions to groups or projects on the job token allowlist:
 
-1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **CI/CD**.
-1. Expand **Job token permissions**.
-1. In the **CI/CD job token allowlist** section, select **Add**.
-1. From the dropdown list, select **Group or project**.
+1. In the top bar, select {{< ui text="Search or go to" >}} and find your project.
+1. Select {{< ui text="Settings" >}} > {{< ui text="CI/CD" >}}.
+1. Expand {{< ui text="Job token permissions" >}}.
+1. In the {{< ui text="CICD|CI/CD job token allowlist" >}} section, select {{< ui text="Add" >}}.
+1. From the dropdown list, select {{< ui text="Group or project" >}}.
 1. Enter the path to an existing group or project.
-1. Select **Fine-grained permissions**.
+1. Select {{< ui text="JobToken|Fine-grained permissions" >}}.
 1. Grant permissions to any [available API endpoints](#available-api-endpoints).
-1. Select **Add**.
+1. Select {{< ui text="Add" >}}.
 
 GitLab adds the group or project to the job token allowlist with the specified permissions. The group or project can now
 access any allowed resources in the current project.

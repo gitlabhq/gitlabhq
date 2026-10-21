@@ -95,6 +95,16 @@ Also have an extra tracker (`Gitlab::Tracking::AiTracking`), which does not stor
 | `start_mcp_tool_call` | none | MCP tool call started |
 | `finish_mcp_tool_call` | `has_tool_call_success`, `failure_reason`, `error_status`, `dispatched_tool_name` | MCP tool call finished. `dispatched_tool_name` is set only for aggregated tools. |
 
+### MCP connection failures
+
+Fired before a request reaches tool dispatch, so failed connections appear next to tool calls.
+Both events carry `mcp_client_name` and `mcp_client_version`, and `oauth_application_id` when known.
+
+| Event | Identifiers | Additional properties | What it tracks |
+| --- | --- | --- | --- |
+| `register_oauth_dynamic_application` | none | `response_status` | OAuth dynamic client registration (`POST /oauth/register`), on success and failure. The client fields come from the `User-Agent`. |
+| `deny_mcp_server_access` | `user` | `denial_reason` | MCP request rejected because the MCP server is not available to the user. Matches the `permission_denied` line in `mcp.log`. |
+
 ### Vulnerability workflow triggers
 
 Fired in `Workflows#track_event`
