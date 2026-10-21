@@ -1418,6 +1418,46 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
         expect(oauth_user.send(:find_ldap_person, hash, adapter)).to be_nil
       end
     end
+
+    context 'when the omniauth uid contains LDAP filter metacharacters' do
+      let(:adapter) { ldap_adapter }
+      let(:email_attributes) { %w[mail email userPrincipalName] }
+
+      before do
+        stub_ldap_config(
+          options: {
+            'uid' => 'uid',
+            'attributes' => { 'email' => email_attributes }
+          }
+        )
+      end
+
+      # Reusing a raw wildcard uid as an LDAP email search built a presence/substring
+      # filter (mail=*) that matched an arbitrary victim; it must be escaped first.
+      # Records the value used for each email-attribute lookup, tolerating both the
+      # FOSS (array of fields) and EE (one field per call) adapter call shapes.
+      %w[* admin* *@example.com].each do |malicious_uid|
+        it "escapes #{malicious_uid.inspect} before the LDAP email lookup" do
+          hash = Gitlab::Auth::OAuth::AuthHash.new(
+            OmniAuth::AuthHash.new(uid: malicious_uid, provider: 'ldapmain', info: { email: 'attacker@example.com' })
+          )
+
+          escaped = Net::LDAP::Filter.escape(malicious_uid)
+          expect(escaped).not_to eq(malicious_uid)
+
+          email_lookups = []
+          allow(adapter).to receive(:user) do |fields, value|
+            email_lookups << value if (Array(fields).map(&:to_s) & email_attributes).any?
+            nil
+          end
+
+          oauth_user.send(:find_ldap_person, hash, adapter)
+
+          expect(email_lookups).to include(escaped)
+          expect(email_lookups).not_to include(malicious_uid)
+        end
+      end
+    end
   end
 
   describe "#bypass_two_factor?" do

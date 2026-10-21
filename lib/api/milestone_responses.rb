@@ -20,10 +20,21 @@ module API
           optional :iids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'The IIDs of the milestones'
           optional :title, type: String, desc: 'The title of the milestones'
           optional :search, type: String, desc: 'The search criteria for the title or description of the milestone'
+          optional :search_title, type: String, desc: 'The search criteria for the title of the milestone'
           optional :include_parent_milestones, type: Grape::API::Boolean, desc: 'Deprecated: see `include_ancestors`'
           optional :include_ancestors, type: Grape::API::Boolean, desc: 'Include milestones from all parent groups'
           optional :updated_before, type: DateTime, desc: 'Return milestones updated before the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
           optional :updated_after, type: DateTime, desc: 'Return milestones updated after the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
+          optional :containing_date, type: DateTime, desc: 'Return milestones where start_date <= containing_date <= due_date. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
+          optional :start_date, type: DateTime, desc: 'Return milestones where due_date >= start_date. Requires end_date. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
+          optional :end_date, type: DateTime, desc: 'Return milestones where start_date <= end_date. Requires start_date. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
+          optional :sort, type: String,
+            values: %w[
+              due_date_asc due_date_desc start_date_asc start_date_desc name_asc name_desc
+              created_asc created_desc updated_asc updated_desc
+            ],
+            default: 'due_date_asc',
+            desc: 'Return milestones sorted in the given order'
           mutually_exclusive :include_ancestors, :include_parent_milestones
           use :pagination
         end
@@ -46,7 +57,7 @@ module API
           end
 
           milestones = MilestonesFinder.new(
-            params.merge(parent_finder_params(parent))
+            declared_params(include_missing: false).merge(parent_finder_params(parent))
           ).execute
 
           present paginate(milestones), with: Entities::Milestone
