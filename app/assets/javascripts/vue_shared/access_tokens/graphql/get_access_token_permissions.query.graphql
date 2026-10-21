@@ -1,3 +1,4 @@
+# @feature_category: system_access
 query getAccessTokenPermissions {
   accessTokenPermissions {
     name

@@ -1,11 +1,11 @@
 <script>
 import { GlCollapsibleListbox, GlButton } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
-import { ACCESS_SCOPE_KEYS } from '~/personal_access_tokens/constants';
-import { groupPermissionsByResourceAndCategory } from '~/personal_access_tokens/utils';
+import { ACCESS_SCOPE_KEYS } from '../constants';
+import { groupPermissionsByResourceAndCategory } from '../utils';
 
 export default {
-  name: 'PersonalAccessTokenGranularPermissionsList',
+  name: 'GranularPermissionsList',
   components: {
     GlCollapsibleListbox,
     GlButton,

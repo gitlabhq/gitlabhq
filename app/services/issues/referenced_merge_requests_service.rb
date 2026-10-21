@@ -56,8 +56,6 @@ module Issues
     end
 
     def persisted_related_merge_requests(issue)
-      return [] unless Feature.enabled?(:explicit_mr_work_item_relations, project)
-
       merge_request_ids = MergeRequestIssue.link_type_related.with_issues(issue.id).select(:merge_request_id)
       merge_requests = MergeRequest.id_in(merge_request_ids).preload_target_project.preload_author
 

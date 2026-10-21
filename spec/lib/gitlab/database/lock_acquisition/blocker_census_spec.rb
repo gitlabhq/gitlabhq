@@ -46,6 +46,19 @@ RSpec.describe Gitlab::Database::LockAcquisition::BlockerCensus, feature_categor
         expect(blocker['endpoint_id']).to eq('Foo::Bar')
       end
 
+      it 'extracts the Marginalia fields when Rails sorts the tags by name' do
+        blocker_connection.execute(
+          "/*application:test,correlation_id:abc-123,db_config_database:gitlabhq_test,endpoint_id:Foo::Bar,jid:abc*/ " \
+            "SELECT 1"
+        )
+
+        payload = described_class.capture(connection, tables: [Project.table_name])
+        blocker = payload[:blockers].find { |row| row['pid'] == blocker_pid }
+
+        expect(blocker['application']).to eq('test')
+        expect(blocker['endpoint_id']).to eq('Foo::Bar')
+      end
+
       it 'counts only hidden sessions that hold a lock on the target tables' do
         # The test role sees every session, so a marker query stands in for
         # the text pg_stat_activity shows in place of a hidden session's query.

@@ -5,7 +5,7 @@ require_relative "lib/banzai/version"
 Gem::Specification.new do |spec|
   spec.name = "gitlab-banzai"
   spec.version = Banzai::VERSION
-  spec.authors = ["group::knowledge"]
+  spec.authors = ["group::planner intelligence"]
   spec.email = ["engineering@gitlab.com"]
 
   spec.summary = "GitLab Flavored Markdown rendering pipeline"

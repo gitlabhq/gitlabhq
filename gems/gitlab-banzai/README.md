@@ -60,6 +60,21 @@ read, not at boot, so a spec that stubs the underlying monolith state still
 changes what the gem sees. Reading an input that was never set raises
 `Banzai::MissingConfigurationError`, which names the input and how to set it.
 
+A reader passes its arguments through to the callable. The `url_builder` port
+above is declared on `Banzai::Configuration` as a reader that takes the
+object, and the gem calls it as `Banzai.configuration.url_builder(object)`:
+
+```ruby
+attr_writer :url_builder
+
+def url_builder(object)
+  resolve(:url_builder, @url_builder, object)
+end
+```
+
+An input without arguments, such as a flag, is configured as a plain value or
+as a callable with no arguments.
+
 No input is declared yet: every file moved so far is self-contained. The
 first port arrives with the first filter that needs one, and the gem's own
 specs drive ports with in-memory fakes.

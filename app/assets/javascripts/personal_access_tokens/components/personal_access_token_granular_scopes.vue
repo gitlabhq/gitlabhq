@@ -1,15 +1,14 @@
 <script>
 import { GlButton, GlCollapse, GlIcon, GlLink } from '@gitlab/ui';
 import { camelCase, uniqBy, xor } from 'lodash-es';
-import { groupPermissionsByResourceAndCategory } from '~/personal_access_tokens/utils';
+import { groupPermissionsByResourceAndCategory } from '~/vue_shared/access_tokens/utils';
 import { s__, n__, sprintf } from '~/locale';
 import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
+import { ACCESS_USER_ENUM, ACCESS_INSTANCE_ENUM } from '~/vue_shared/access_tokens/constants';
 import {
   ACCESS_PERSONAL_PROJECTS_ENUM,
   ACCESS_SELECTED_MEMBERSHIPS_ENUM,
   ACCESS_ALL_MEMBERSHIPS_ENUM,
-  ACCESS_USER_ENUM,
-  ACCESS_INSTANCE_ENUM,
 } from '../constants';
 
 export default {

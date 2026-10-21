@@ -551,6 +551,7 @@ Grants the ability to create, delete, read, and update pipelines.
 | Delete | Project | Mutation | `PipelineDestroy` |
 | Read | Project | Type | `CiStage` |
 | Read | Project | Type | `Pipeline` |
+| Read | Project | Field | `Project.pipelines` |
 | Update | Project | Mutation | `PipelineCancel` |
 | Update | Project | Mutation | `PipelineRetry` |
 

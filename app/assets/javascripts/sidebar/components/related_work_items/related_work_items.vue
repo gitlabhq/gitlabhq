@@ -12,7 +12,6 @@ import {
 } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { __, n__, s__ } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WorkItemDetailPanel from '~/work_items/components/work_item_detail_panel.vue';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
@@ -45,7 +44,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagsMixin(), GlToastMixin],
+  mixins: [GlToastMixin],
   inject: ['fullPath', 'id'],
   data() {
     return {
@@ -62,7 +61,6 @@ export default {
       variables() {
         return {
           id: convertToGraphQLId(TYPENAME_MERGE_REQUEST, this.id),
-          explicitMrWorkItemRelations: Boolean(this.glFeatures.explicitMrWorkItemRelations),
         };
       },
       update(data) {
@@ -86,10 +84,7 @@ export default {
       return convertToGraphQLId(TYPENAME_MERGE_REQUEST, this.id);
     },
     allItems() {
-      const relations = this.glFeatures.explicitMrWorkItemRelations
-        ? this.mergeRequest?.workItemRelations?.nodes
-        : this.mergeRequest?.linkedWorkItems;
-      return (relations || []).filter((i) => i.workItem);
+      return (this.mergeRequest?.workItemRelations?.nodes || []).filter((i) => i.workItem);
     },
     canAdminMergeRequest() {
       return this.mergeRequest?.userPermissions?.adminMergeRequest || false;
@@ -122,9 +117,6 @@ export default {
       return this.relationSections
         .map((section) => `${section.title} ${section.relations.length}`)
         .join(', ');
-    },
-    canRemoveRelations() {
-      return this.canAdminMergeRequest && Boolean(this.glFeatures.explicitMrWorkItemRelations);
     },
   },
   watch: {
@@ -174,7 +166,7 @@ export default {
       this.$toast.show(s__('WorkItem|Linked item added'));
     },
     canRemoveRelation(relation) {
-      return this.canRemoveRelations && Boolean(relation.id) && !relation.fromMrDescription;
+      return this.canAdminMergeRequest && Boolean(relation.id) && !relation.fromMrDescription;
     },
     /**
      * Relations generated from the description cannot be removed here, so we
@@ -183,7 +175,7 @@ export default {
      * otherwise point at an action they never have.
      */
     showFromDescriptionIndicator(relation) {
-      return this.canRemoveRelations && Boolean(relation.fromMrDescription);
+      return this.canAdminMergeRequest && Boolean(relation.fromMrDescription);
     },
     async handleRemove(relation) {
       try {
@@ -218,10 +210,7 @@ export default {
         return;
       }
 
-      const variables = {
-        id: this.mergeRequestGid,
-        explicitMrWorkItemRelations: Boolean(this.glFeatures.explicitMrWorkItemRelations),
-      };
+      const variables = { id: this.mergeRequestGid };
 
       const existing = cache.readQuery({ query: mergeRequestRelatedWorkItemsQuery, variables });
       if (!existing?.mergeRequest) {
@@ -349,7 +338,7 @@ export default {
                 and focus-within brings it back for keyboard users.
               -->
               <span
-                v-if="canRemoveRelations"
+                v-if="canAdminMergeRequest"
                 class="gl-flex gl-w-5 gl-shrink-0 gl-justify-center gl-opacity-0 gl-transition-opacity focus-within:gl-opacity-10 group-hover:gl-opacity-10"
                 data-testid="relation-action-slot"
               >

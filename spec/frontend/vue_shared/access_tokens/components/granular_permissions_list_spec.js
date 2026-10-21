@@ -1,19 +1,19 @@
 import { GlCollapsibleListbox, GlButton } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import PersonalAccessTokenGranularPermissionsList from '~/personal_access_tokens/components/create_granular_token/personal_access_token_granular_permissions_list.vue';
+import GranularPermissionsList from '~/vue_shared/access_tokens/components/granular_permissions_list.vue';
 import {
   mockGroupPermissions,
   mockGroupResources,
   mockUserPermissions,
   mockUserResources,
-} from '../../mock_data';
+} from '../mock_data';
 
-describe('PersonalAccessTokenGranularPermissionsList', () => {
+describe('GranularPermissionsList', () => {
   let wrapper;
 
   const createComponent = ({ props = {}, mountFn = shallowMountExtended } = {}) => {
-    wrapper = mountFn(PersonalAccessTokenGranularPermissionsList, {
+    wrapper = mountFn(GranularPermissionsList, {
       propsData: {
         scope: 'namespace',
         permissions: mockGroupPermissions,
@@ -46,7 +46,7 @@ describe('PersonalAccessTokenGranularPermissionsList', () => {
 
   describe('props validation', () => {
     it('validates `scope` prop correctly', () => {
-      const { validator } = PersonalAccessTokenGranularPermissionsList.props.scope;
+      const { validator } = GranularPermissionsList.props.scope;
 
       expect(validator('namespace')).toBe(true);
       expect(validator('user')).toBe(true);

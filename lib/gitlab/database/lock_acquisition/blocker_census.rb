@@ -30,12 +30,6 @@ module Gitlab
 
         HIDDEN_QUERY = '<insufficient privilege>'
 
-        # Same anchored extraction as Gitlab::Database::StatActivitySampler:
-        # both capture groups have bounded character classes, so no free
-        # text from another session's SQL can pass through.
-        MARGINALIA_PATTERN = '^\\s*(?:/\\*(?:application:(\\w+),?)?(?:correlation_id:[\\w\\-]+,?)?' \
-          '(?:jid:\\w+,?)?(?:endpoint_id:([\\w/\\-\\.:#\\s]+),?)?.*?\\*/)?'
-
         def self.capture(connection, tables:)
           new(connection, tables: tables).capture
         end
@@ -102,7 +96,7 @@ module Gitlab
         # Never the statement body: another session's SQL can contain
         # literals (tokens, emails) and Rails logs are more widely
         # accessible than PG server logs. Only the named Marginalia fields
-        # are extracted, via MARGINALIA_PATTERN.
+        # are extracted, via Gitlab::Database::QueryLogComment.
         def blocker_columns
           <<~SQL.squish
             a.pid,
@@ -115,8 +109,8 @@ module Gitlab
             CASE WHEN a.query IS NULL OR a.query = #{connection.quote(HIDDEN_QUERY)} THEN NULL
                  ELSE a.backend_type = 'autovacuum worker' AND a.query LIKE '%to prevent wraparound%'
             END AS wraparound_vacuum,
-            (regexp_match(a.query, '#{MARGINALIA_PATTERN}'))[1] AS application,
-            (regexp_match(a.query, '#{MARGINALIA_PATTERN}'))[2] AS endpoint_id
+            #{QueryLogComment.tag_sql('a.query', :application)} AS application,
+            #{QueryLogComment.tag_sql('a.query', :endpoint_id)} AS endpoint_id
           SQL
         end
 

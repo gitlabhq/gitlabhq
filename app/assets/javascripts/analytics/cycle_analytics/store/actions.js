@@ -7,14 +7,9 @@ import {
 } from '~/api/analytics_api';
 import { normalizeHeaders, parseIntPagination } from '~/lib/utils/common_utils';
 import { createAlert } from '~/alert';
+import { projectLabelsPath, projectMilestonesPath } from '~/lib/utils/path_helpers/project';
 import { __ } from '~/locale';
-import {
-  DEFAULT_VALUE_STREAM,
-  I18N_VSA_ERROR_STAGE_MEDIAN,
-  LABELS_ENDPOINT,
-  MILESTONES_ENDPOINT,
-} from '../constants';
-import { constructPathWithNamespace } from '../utils';
+import { DEFAULT_VALUE_STREAM, I18N_VSA_ERROR_STAGE_MEDIAN } from '../constants';
 import * as types from './mutation_types';
 
 export const setSelectedValueStream = ({ commit, dispatch }, valueStream) => {
@@ -200,8 +195,8 @@ export const initializeVsa = async ({ commit, dispatch }, initialData = {}) => {
   } = initialData;
 
   dispatch('filters/setEndpoints', {
-    labelsEndpoint: constructPathWithNamespace(namespace, LABELS_ENDPOINT),
-    milestonesEndpoint: constructPathWithNamespace(namespace, MILESTONES_ENDPOINT),
+    labelsEndpoint: projectLabelsPath(namespace.path, { format: 'json' }),
+    milestonesEndpoint: projectMilestonesPath(namespace.path, { format: 'json' }),
     groupEndpoint: groupPath,
     projectEndpoint: namespace.restApiRequestPath,
   });

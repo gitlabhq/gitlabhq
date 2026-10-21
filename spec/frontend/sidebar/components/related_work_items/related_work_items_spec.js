@@ -21,10 +21,12 @@ Vue.use(VueApollo);
 const MOCK_MERGE_REQUEST_ID = 'gid://gitlab/MergeRequest/1';
 
 let workItemCounter = 0;
-const mockLinkedItem = ({ title, linkType }) => {
+const mockRelationItem = ({ title, linkType, fromMrDescription = true }) => {
   workItemCounter += 1;
   return {
+    id: `gid://gitlab/MergeRequestIssue/${workItemCounter}`,
     linkType,
+    fromMrDescription,
     workItem: {
       id: `gid://gitlab/WorkItem/${workItemCounter + 100}`,
       iid: String(workItemCounter),
@@ -38,57 +40,35 @@ const mockLinkedItem = ({ title, linkType }) => {
       },
       __typename: 'WorkItem',
     },
-    __typename: 'LinkedWorkItem',
-  };
-};
-
-const mockRelationItem = ({ title, linkType, fromMrDescription = true }) => {
-  const { workItem } = mockLinkedItem({ title, linkType });
-  return {
-    id: `gid://gitlab/MergeRequestIssue/${workItemCounter}`,
-    linkType,
-    fromMrDescription,
-    workItem,
     __typename: 'MergeRequestWorkItemRelation',
   };
 };
 
-const closingItem1 = mockLinkedItem({ title: 'Fix bug', linkType: 'CLOSES' });
-const closingItem2 = mockLinkedItem({ title: 'Update docs', linkType: 'CLOSES' });
-const mentionedItem = mockLinkedItem({ title: 'Refactor code', linkType: 'MENTIONED' });
+const closingItem1 = mockRelationItem({ title: 'Fix bug', linkType: 'CLOSES' });
+const closingItem2 = mockRelationItem({ title: 'Update docs', linkType: 'CLOSES' });
+const mentionedItem = mockRelationItem({ title: 'Refactor code', linkType: 'MENTIONED' });
 
 const MOCK_MERGE_REQUEST_IID = '1';
 
-const buildQueryResponse = (
-  linkedWorkItems = [],
-  { adminMergeRequest = true, includePermissions = true, workItemRelations = [] } = {},
-) => ({
+const buildQueryResponse = (workItemRelations = [], { adminMergeRequest = false } = {}) => ({
   data: {
     mergeRequest: {
       id: MOCK_MERGE_REQUEST_ID,
       iid: MOCK_MERGE_REQUEST_IID,
       title: 'Fix the bug',
       reference: 'group/project!1',
-      ...(includePermissions
-        ? {
-            userPermissions: {
-              adminMergeRequest,
-              __typename: 'MergeRequestPermissions',
-            },
-          }
-        : {}),
+      userPermissions: {
+        adminMergeRequest,
+        __typename: 'MergeRequestPermissions',
+      },
       workItemRelations: {
         nodes: workItemRelations,
         __typename: 'MergeRequestWorkItemRelationConnection',
       },
-      linkedWorkItems,
       __typename: 'MergeRequest',
     },
   },
 });
-
-const buildRelationsResponse = (nodes = [], options = {}) =>
-  buildQueryResponse([], { ...options, workItemRelations: nodes });
 
 const buildDestroyMutationResponse = (removedRelationIds = [], errors = []) => ({
   data: {
@@ -201,7 +181,10 @@ describe('MRRelatedWorkItems', () => {
   });
 
   it('filters out null workItem entries and renders valid items', async () => {
-    const nullWorkItem = { linkType: 'CLOSES', workItem: null, __typename: 'LinkedWorkItem' };
+    const nullWorkItem = {
+      ...mockRelationItem({ title: 'Deleted', linkType: 'CLOSES' }),
+      workItem: null,
+    };
 
     createComponent({
       queryHandler: jest
@@ -433,14 +416,11 @@ describe('MRRelatedWorkItems', () => {
   });
 
   describe('when the user can administer the merge request', () => {
-    const glFeatures = { explicitMrWorkItemRelations: true };
-
     beforeEach(async () => {
       createComponent({
         queryHandler: jest
           .fn()
           .mockResolvedValue(buildQueryResponse([], { adminMergeRequest: true })),
-        provide: { glFeatures },
       });
       await waitForPromises();
     });
@@ -493,13 +473,12 @@ describe('MRRelatedWorkItems', () => {
     });
   });
 
-  describe('when the `explicitMrWorkItemRelations` feature flag is enabled', () => {
+  describe('when the user cannot administer the merge request', () => {
     beforeEach(async () => {
       createComponent({
         queryHandler: jest
           .fn()
           .mockResolvedValue(buildQueryResponse([], { adminMergeRequest: false })),
-        provide: { glFeatures: { explicitMrWorkItemRelations: true } },
       });
       await waitForPromises();
     });
@@ -513,52 +492,15 @@ describe('MRRelatedWorkItems', () => {
     });
   });
 
-  describe('when the `explicitMrWorkItemRelations` feature flag is disabled', () => {
-    it('queries with explicitMrWorkItemRelations set to false', async () => {
-      const queryHandler = jest.fn().mockResolvedValue(buildQueryResponse());
-      createComponent({
-        queryHandler,
-        provide: { glFeatures: { explicitMrWorkItemRelations: false } },
-      });
-      await waitForPromises();
-
-      expect(queryHandler).toHaveBeenCalledWith(
-        expect.objectContaining({ explicitMrWorkItemRelations: false }),
-      );
-    });
-
-    it('does not render the add work item button or form when permissions are not fetched', async () => {
-      createComponent({
-        queryHandler: jest
-          .fn()
-          .mockResolvedValue(buildQueryResponse([], { includePermissions: false })),
-        provide: { glFeatures: { explicitMrWorkItemRelations: false } },
-      });
-      await waitForPromises();
-
-      expect(findAddButton().exists()).toBe(false);
-      expect(findAddForm().exists()).toBe(false);
-    });
-  });
-
-  describe('when the feature flag is enabled and relations are present', () => {
+  describe('when relations of all three types are present', () => {
     const closingRelation = mockRelationItem({ title: 'Fix bug', linkType: 'CLOSES' });
     const relatedRelation = mockRelationItem({ title: 'Investigate flake', linkType: 'RELATED' });
     const mentionedRelation = mockRelationItem({ title: 'Refactor code', linkType: 'MENTIONED' });
 
     const createWithRelations = (nodes) =>
       createComponent({
-        queryHandler: jest.fn().mockResolvedValue(buildRelationsResponse(nodes)),
-        provide: { glFeatures: { explicitMrWorkItemRelations: true } },
+        queryHandler: jest.fn().mockResolvedValue(buildQueryResponse(nodes)),
       });
-
-    it('consumes workItemRelations instead of linkedWorkItems', async () => {
-      createWithRelations([closingRelation]);
-      await waitForPromises();
-
-      expect(findNoneText().exists()).toBe(false);
-      expect(findAllLinks().at(0).text()).toBe('Fix bug');
-    });
 
     it('renders closing, related, and mentioned section labels', async () => {
       createWithRelations([closingRelation, relatedRelation, mentionedRelation]);
@@ -582,8 +524,9 @@ describe('MRRelatedWorkItems', () => {
 
     beforeEach(async () => {
       createComponent({
-        queryHandler: jest.fn().mockResolvedValue(buildRelationsResponse([])),
-        provide: { glFeatures: { explicitMrWorkItemRelations: true } },
+        queryHandler: jest
+          .fn()
+          .mockResolvedValue(buildQueryResponse([], { adminMergeRequest: true })),
       });
       await waitForPromises();
     });
@@ -630,29 +573,21 @@ describe('MRRelatedWorkItems', () => {
 
     const createWithDestroy = ({
       relations = [removableRelation],
-      linkedWorkItems = [],
       destroyResponse = buildDestroyMutationResponse([removableRelation.id]),
       adminMergeRequest = true,
-      glFeatures = { explicitMrWorkItemRelations: true },
     } = {}) => {
       destroyHandler = jest.fn().mockResolvedValue(destroyResponse);
       wrapper = shallowMountExtended(MRRelatedWorkItems, {
         apolloProvider: createMockApollo([
           [
             mergeRequestRelatedWorkItemsQuery,
-            jest.fn().mockResolvedValue(
-              buildQueryResponse(linkedWorkItems, {
-                adminMergeRequest,
-                workItemRelations: relations,
-              }),
-            ),
+            jest.fn().mockResolvedValue(buildQueryResponse(relations, { adminMergeRequest })),
           ],
           [destroyMergeRequestWorkItemRelationMutation, destroyHandler],
         ]),
         provide: {
           fullPath: 'group/project',
           id: '1',
-          glFeatures,
         },
         mocks: {
           $toast: { show: showToast },
@@ -684,18 +619,6 @@ describe('MRRelatedWorkItems', () => {
       createWithDestroy({ adminMergeRequest: false });
       await waitForPromises();
 
-      expect(findRemoveButton(removableRelation.workItem).exists()).toBe(false);
-    });
-
-    it('does not render a remove button when the feature flag is disabled', async () => {
-      createWithDestroy({
-        relations: [],
-        linkedWorkItems: [{ linkType: 'RELATED', workItem: removableRelation.workItem }],
-        glFeatures: { explicitMrWorkItemRelations: false },
-      });
-      await waitForPromises();
-
-      expect(findAllLinks().at(0).text()).toBe('Manually linked item');
       expect(findRemoveButton(removableRelation.workItem).exists()).toBe(false);
     });
 
@@ -840,18 +763,6 @@ describe('MRRelatedWorkItems', () => {
         createWithDestroy({ relations: [fromDescription], adminMergeRequest: false });
         await waitForPromises();
 
-        expect(findFromDescriptionIndicator(fromDescription.workItem).exists()).toBe(false);
-      });
-
-      it('does not explain anything when the feature flag is disabled', async () => {
-        createWithDestroy({
-          relations: [],
-          linkedWorkItems: [{ linkType: 'CLOSES', workItem: fromDescription.workItem }],
-          glFeatures: { explicitMrWorkItemRelations: false },
-        });
-        await waitForPromises();
-
-        expect(findAllLinks().at(0).text()).toBe('Closes #1');
         expect(findFromDescriptionIndicator(fromDescription.workItem).exists()).toBe(false);
       });
     });

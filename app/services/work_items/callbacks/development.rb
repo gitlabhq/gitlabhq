@@ -37,11 +37,7 @@ module WorkItems
       def each_target_merge_request
         return unless params.present? && params.key?(:merge_request_ids)
 
-        target_merge_requests.each do |merge_request|
-          next unless Feature.enabled?(:explicit_mr_work_item_relations, merge_request.project)
-
-          yield merge_request
-        end
+        target_merge_requests.each { |merge_request| yield merge_request }
       end
 
       def target_merge_requests

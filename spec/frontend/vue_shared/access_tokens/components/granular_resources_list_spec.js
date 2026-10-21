@@ -9,15 +9,15 @@ import {
 } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import PersonalAccessTokenResourcesList from '~/personal_access_tokens/components/create_granular_token/personal_access_token_resources_list.vue';
+import GranularResourcesList from '~/vue_shared/access_tokens/components/granular_resources_list.vue';
 import { stubComponent } from 'helpers/stub_component';
-import { mockGroupPermissions, mockGroupResources } from '../../mock_data';
+import { mockGroupPermissions, mockGroupResources } from '../mock_data';
 
-describe('PersonalAccessTokenResourcesList', () => {
+describe('GranularResourcesList', () => {
   let wrapper;
 
   const createComponent = ({ isFiltering = false, value = [] } = {}) => {
-    wrapper = shallowMountExtended(PersonalAccessTokenResourcesList, {
+    wrapper = shallowMountExtended(GranularResourcesList, {
       propsData: {
         scope: 'namespace',
         permissions: mockGroupPermissions,
@@ -54,7 +54,7 @@ describe('PersonalAccessTokenResourcesList', () => {
 
   describe('props validation', () => {
     it('validates `scope` prop correctly', () => {
-      const { validator } = PersonalAccessTokenResourcesList.props.scope;
+      const { validator } = GranularResourcesList.props.scope;
 
       expect(validator('namespace')).toBe(true);
       expect(validator('user')).toBe(true);

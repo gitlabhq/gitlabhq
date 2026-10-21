@@ -137,6 +137,17 @@ tests = [
     ]
   },
 
+  {
+    explanation: 'Schema validation gem code maps to the monolith specs that run it',
+    changed_file: 'gems/gitlab-schema-validation/lib/gitlab/schema/validation.rb',
+    expected: %w[
+      spec/lib/gitlab/usage_data_metrics_spec.rb
+      spec/lib/gitlab/database/schema_checker_spec.rb
+      spec/lib/gitlab/usage/metrics/instrumentations/index_inconsistencies_metric_spec.rb
+      spec/lib/gitlab/usage/metrics/instrumentations/schema_inconsistencies_metric_spec.rb
+    ]
+  },
+
   plain_spec_migration && {
     explanation: 'Migration should map to its non-timestamped spec + the ClickHouse siphon tables spec (db/ change)',
     changed_file: plain_spec_migration,

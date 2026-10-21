@@ -1,0 +1,11 @@
+---
+name: reply_confidentiality_check_loads_first_note
+description: Load only the first note of a thread when validating that a reply matches
+  its confidentiality
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/634293
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/263097
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/634437
+milestone: '19.6'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

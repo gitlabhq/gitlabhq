@@ -256,29 +256,69 @@ RSpec.describe Note, feature_category: :team_planning do
 
           subject { build(:discussion_note, discussion_id: original_note.discussion_id, **note_params) }
 
-          context 'when the note is reply to a confidential note' do
-            let_it_be(:original_note) { create(:note, confidential: true, noteable: noteable, project: noteable.project) }
+          shared_examples 'a reply that must match the discussion confidentiality' do
+            context 'when the note is reply to a confidential note' do
+              let_it_be(:original_note) { create(:note, confidential: true, noteable: noteable, project: noteable.project) }
 
-            it { is_expected.to be_valid }
-          end
+              it { is_expected.to be_valid }
+            end
 
-          context 'when the note is reply to a public note' do
-            let_it_be(:original_note) { create(:note, noteable: noteable, project: noteable.project) }
+            context 'when the note is reply to a public note' do
+              let_it_be(:original_note) { create(:note, noteable: noteable, project: noteable.project) }
 
-            it 'can not be set confidential' do
-              expect(subject).not_to be_valid
-              expect(subject.errors[:confidential]).to include('reply should have same confidentiality as top-level note')
+              it 'can not be set confidential' do
+                expect(subject).not_to be_valid
+                expect(subject.errors[:confidential]).to include('reply should have same confidentiality as top-level note')
+              end
+            end
+
+            context 'when reply note is public but discussion is confidential' do
+              let_it_be(:original_note) { create(:note, confidential: true, noteable: noteable, project: noteable.project) }
+
+              let(:note_params) { { noteable: noteable, project: noteable.project } }
+
+              it 'can not be set confidential' do
+                expect(subject).not_to be_valid
+                expect(subject.errors[:confidential]).to include('reply should have same confidentiality as top-level note')
+              end
             end
           end
 
-          context 'when reply note is public but discussion is confidential' do
+          it_behaves_like 'a reply that must match the discussion confidentiality'
+
+          context 'when the original note is confidential' do
             let_it_be(:original_note) { create(:note, confidential: true, noteable: noteable, project: noteable.project) }
 
-            let(:note_params) { { noteable: noteable, project: noteable.project } }
+            it 'does not load the whole discussion' do
+              expect(described_class).not_to receive(:find_discussion)
 
-            it 'can not be set confidential' do
-              expect(subject).not_to be_valid
-              expect(subject.errors[:confidential]).to include('reply should have same confidentiality as top-level note')
+              subject.valid?
+            end
+
+            it 'does not query the first note when the discussion is already loaded' do
+              subject.discussion = original_note.to_discussion
+
+              recorder = ActiveRecord::QueryRecorder.new { subject.valid? }
+
+              expect(recorder.log).not_to include(a_string_including('"notes"."discussion_id"'))
+            end
+          end
+
+          context 'when reply_confidentiality_check_loads_first_note is disabled' do
+            before do
+              stub_feature_flags(reply_confidentiality_check_loads_first_note: false)
+            end
+
+            it_behaves_like 'a reply that must match the discussion confidentiality'
+
+            context 'when the original note is confidential' do
+              let_it_be(:original_note) { create(:note, confidential: true, noteable: noteable, project: noteable.project) }
+
+              it 'loads the whole discussion' do
+                expect(described_class).to receive(:find_discussion).and_call_original
+
+                subject.valid?
+              end
             end
           end
         end

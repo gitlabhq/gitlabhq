@@ -79,8 +79,8 @@ The client raises one of four error classes, depending on what OpenBao or the co
 
 | Class | Raised for |
 |-------|------------|
-| `ApiError` | A response body with an `errors` array, or a 4xx that OpenBao's `raise_error` middleware turns into a client error. |
-| `AuthenticationError` | Inline auth failed. Signaled by the `X-Vault-Inline-Auth-Failed` response header rather than always as a distinct status code. |
+| `ApiError` | A response body with an `errors` array, or a 4xx that OpenBao's `raise_error` middleware turns into a client error. In the `capabilities_self` flow, also any non-2xx response (for example, a `307` redirect from a standby node), or a non-empty body that is not a JSON object (for example, an HTML error page from a proxy). |
+| `AuthenticationError` | Inline auth failed. Signaled by the `X-Vault-Inline-Auth-Failed` response header rather than always as a distinct status code. In the `capabilities_self` flow, also an explicit login that returns no `client_token`. |
 | `ServiceUnavailableError` | 5xx responses, or a request timeout. |
 | `ConnectionError` | Any other Faraday connection failure. |
 

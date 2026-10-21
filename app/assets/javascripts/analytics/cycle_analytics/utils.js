@@ -1,6 +1,5 @@
 import { parseSeconds, newDate } from '~/lib/utils/datetime_utility';
 import { formatTimeAsSummary } from '~/lib/utils/datetime/date_format_utility';
-import { joinPaths } from '~/lib/utils/url_utility';
 
 /**
  * Takes the stages and median data, combined with the selected stage, to build an
@@ -92,6 +91,3 @@ export const buildCycleAnalyticsInitialData = ({
     selectedStage: stage ? JSON.parse(stage) : null,
   };
 };
-
-export const constructPathWithNamespace = ({ restApiRequestPath }, endpoint) =>
-  joinPaths('/', restApiRequestPath, endpoint);

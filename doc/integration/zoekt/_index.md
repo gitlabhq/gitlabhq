@@ -40,6 +40,8 @@ You can use exact match and regular expression modes to search for code in a gro
 
 ## Version compatibility
 
+<!-- Keeps::UpdateZoektCompatibilityMatrix regenerates the table below. Do not edit it manually. -->
+
 Each GitLab version comes with a specific `gitlab-zoekt-indexer` and `gitlab-zoekt` chart version.
 
 | GitLab version | `gitlab-zoekt-indexer` version | `gitlab-zoekt` chart version |

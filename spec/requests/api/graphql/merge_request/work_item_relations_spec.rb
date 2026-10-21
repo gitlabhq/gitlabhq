@@ -120,17 +120,6 @@ RSpec.describe 'Query.mergeRequest.workItemRelations', feature_category: :code_r
     end
   end
 
-  context 'when the feature flag is disabled' do
-    before do
-      stub_feature_flags(explicit_mr_work_item_relations: false)
-      post_graphql(query, current_user: current_user)
-    end
-
-    it 'returns null' do
-      expect(graphql_data_at(:merge_request, :work_item_relations)).to be_nil
-    end
-  end
-
   describe 'avoiding N+1 queries on the connection authorization' do
     def add_relations(count)
       Array.new(count) do

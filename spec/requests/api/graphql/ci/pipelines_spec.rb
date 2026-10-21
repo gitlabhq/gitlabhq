@@ -12,6 +12,136 @@ RSpec.describe 'Query.project(fullPath).pipelines', feature_category: :continuou
     travel_to(Time.current) { example.run }
   end
 
+  describe 'granular token authorization', :aggregate_failures do
+    let_it_be(:group) { create(:group, :private) }
+    let_it_be(:project) { create(:project, :private, group: group) }
+    let_it_be(:user) { create(:user, developer_of: project) }
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+
+    let(:requested_project) { project }
+    let(:fields) { 'nodes { id } count(limit: 1000) pageInfo { endCursor hasNextPage }' }
+    let(:query) do
+      graphql_query_for(:project, { full_path: requested_project.full_path }, "pipelines { #{fields} }")
+    end
+
+    let(:pat) do
+      create(:granular_pat, user: user, boundary: Authz::Boundary.for(requested_project), permissions: ['read_project'])
+    end
+
+    shared_examples 'a hidden pipeline connection' do
+      it 'does not expose pipeline records, counts, or pagination metadata #security' do
+        post_graphql(query, token: { personal_access_token: pat })
+
+        expect(graphql_errors).to be_nil
+        expect(graphql_data_at(:project)).to be_present
+        expect(graphql_data_at(:project, :pipelines)).to be_nil
+      end
+    end
+
+    it_behaves_like 'authorizing granular token permissions for GraphQL', [:read_project, :read_pipeline] do
+      let(:boundary_object) { project }
+      let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+    end
+
+    context 'when the token only permits reading the project' do
+      where(:fields) do
+        [
+          'nodes { id } count(limit: 1000) pageInfo { endCursor hasNextPage }',
+          'count(limit: 1000)',
+          'pageInfo { endCursor hasNextPage }'
+        ]
+      end
+
+      with_them do
+        it_behaves_like 'a hidden pipeline connection'
+      end
+
+      context 'when the project has no pipelines' do
+        let_it_be(:empty_project) { create(:project, :private, group: group, developers: [user]) }
+        let(:requested_project) { empty_project }
+
+        it_behaves_like 'a hidden pipeline connection'
+      end
+
+      context 'when the project is public' do
+        let_it_be(:public_group) { create(:group, :public) }
+        let_it_be(:public_project) { create(:project, :public, group: public_group, developers: [user]) }
+        let_it_be(:public_pipeline) { create(:ci_pipeline, project: public_project) }
+        let(:requested_project) { public_project }
+
+        it 'preserves access to publicly readable pipelines' do
+          post_graphql(query, token: { personal_access_token: pat })
+
+          expect(graphql_errors).to be_nil
+          expect(graphql_data_at(:project, :pipelines, :nodes))
+            .to contain_exactly(a_graphql_entity_for(public_pipeline))
+          expect(graphql_data_at(:project, :pipelines, :count)).to eq(1)
+          expect(graphql_data_at(:project, :pipelines, :page_info, :end_cursor)).to be_present
+          expect(graphql_data_at(:project, :pipelines, :page_info, :has_next_page)).to be false
+        end
+
+        context 'when CI/CD is only accessible to project members' do
+          let_it_be(:restricted_project) do
+            create(:project, :public, :builds_private, group: public_group, developers: [user])
+          end
+
+          let_it_be(:restricted_pipeline) { create(:ci_pipeline, project: restricted_project) }
+          let(:requested_project) { restricted_project }
+
+          it_behaves_like 'a hidden pipeline connection'
+        end
+      end
+    end
+
+    context 'when the token permits reading pipelines in another project' do
+      let_it_be(:other_project) { create(:project, :private, developers: [user]) }
+
+      let(:pat) do
+        create(:granular_pat, user: user, boundary: Authz::Boundary.for(project), permissions: ['read_project'],
+          additional_scopes: [{ boundary: Authz::Boundary.for(other_project), permissions: ['read_pipeline'] }])
+      end
+
+      where(:fields) do
+        [
+          'nodes { id } count(limit: 1000) pageInfo { endCursor hasNextPage }',
+          'count(limit: 1000)',
+          'pageInfo { endCursor hasNextPage }'
+        ]
+      end
+
+      with_them do
+        it_behaves_like 'a hidden pipeline connection'
+      end
+    end
+
+    shared_examples 'a visible pipeline connection' do
+      it 'returns pipeline records, count, and pagination metadata' do
+        post_graphql(query, token: { personal_access_token: pat })
+
+        expect(graphql_errors).to be_nil
+        expect(graphql_data_at(:project, :pipelines, :nodes)).to contain_exactly(a_graphql_entity_for(pipeline))
+        expect(graphql_data_at(:project, :pipelines, :count)).to eq(1)
+        expect(graphql_data_at(:project, :pipelines, :page_info, :end_cursor)).to be_present
+        expect(graphql_data_at(:project, :pipelines, :page_info, :has_next_page)).to be false
+      end
+    end
+
+    context 'when authenticating with a legacy read-only token' do
+      let(:pat) { create(:personal_access_token, user: user, scopes: ['read_api']) }
+
+      it_behaves_like 'a visible pipeline connection'
+    end
+
+    context 'when the token permits reading pipelines' do
+      let(:pat) do
+        create(:granular_pat, user: user, boundary: Authz::Boundary.for(project),
+          permissions: %w[read_project read_pipeline])
+      end
+
+      it_behaves_like 'a visible pipeline connection'
+    end
+  end
+
   describe 'TAGS and BRANCHES scope' do
     let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
     let_it_be(:branch_pipeline) { create(:ci_pipeline, project: project, ref: 'feature') }

@@ -1,19 +1,26 @@
 <script>
 import { GlSearchBoxByType, GlSkeletonLoader, GlSegmentedControl, GlBadge } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
-import { ACCESS_SCOPES } from '~/personal_access_tokens/constants';
-import PersonalAccessTokenResourcesList from './personal_access_token_resources_list.vue';
+import { ACCESS_SCOPES, ACCESS_SCOPE_KEYS } from '../constants';
+import GranularResourcesList from './granular_resources_list.vue';
 
 export default {
-  name: 'PersonalAccessTokenResourcePanel',
+  name: 'GranularResourcePanel',
   components: {
     GlSearchBoxByType,
     GlSkeletonLoader,
     GlSegmentedControl,
     GlBadge,
-    PersonalAccessTokenResourcesList,
+    GranularResourcesList,
   },
   props: {
+    scopes: {
+      type: Array,
+      required: false,
+      default: () => ACCESS_SCOPES,
+      validator: (scopes) =>
+        scopes.length > 0 && scopes.every(({ key }) => ACCESS_SCOPE_KEYS.includes(key)),
+    },
     activeBoundary: {
       type: String,
       required: true,
@@ -42,7 +49,7 @@ export default {
   },
   computed: {
     accessOptions() {
-      return ACCESS_SCOPES.map(({ key }) => ({
+      return this.scopes.map(({ key }) => ({
         value: key,
         text: this.$options.i18n[key].title,
         count: this.selectedResources[key]?.length ?? 0,
@@ -107,7 +114,7 @@ export default {
     />
 
     <gl-skeleton-loader v-if="isLoading" />
-    <personal-access-token-resources-list
+    <granular-resources-list
       v-else-if="filteredPermissions.length"
       :key="activeBoundary"
       :value="activeResources"

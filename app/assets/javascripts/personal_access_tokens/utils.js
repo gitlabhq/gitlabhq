@@ -1,8 +1,8 @@
-import { cloneDeep, map, groupBy } from 'lodash-es';
+import { cloneDeep } from 'lodash-es';
 import { queryToObject } from '~/lib/utils/url_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { localeDateFormat, newDate } from '~/lib/utils/datetime_utility';
-import { convertToSnakeCase, humanize } from '~/lib/utils/text_utility';
+import { convertToSnakeCase } from '~/lib/utils/text_utility';
 import { __ } from '~/locale';
 import {
   OPERATORS_AFTER,
@@ -10,23 +10,9 @@ import {
   OPERATORS_IS,
   FILTERED_SEARCH_TERM,
 } from '~/vue_shared/components/filtered_search_bar/constants';
-import {
-  SEARCH,
-  FILTER_OPTIONS,
-  SORT_OPTIONS,
-  DEFAULT_FILTER,
-  DEFAULT_SORT,
-  ACCESS_SCOPE_KEYS,
-} from './constants';
+import { SEARCH, FILTER_OPTIONS, SORT_OPTIONS, DEFAULT_FILTER, DEFAULT_SORT } from './constants';
 
 const emptyDateField = __('Never');
-
-/**
- * Builds an empty permissions object keyed by access scope (namespace, user, instance),
- * with each scope initialized to an empty array.
- * @returns {Object} e.g. { namespace: [], user: [], instance: [] }
- */
-export const emptyByScope = () => Object.fromEntries(ACCESS_SCOPE_KEYS.map((key) => [key, []]));
 
 /**
  * Formats a timestamp as a localized date string
@@ -243,52 +229,6 @@ export function convertSortToQueryParams(sort) {
   return {
     sort: `${sort.value}_${sort.isAsc ? 'asc' : 'desc'}`,
   };
-}
-
-/**
- * Groups a flat list of permissions by category and resource, with actions nested under each resource.
- *
- * @param {Array} permissions
- * @returns {Array}
- *
- * @example
- * const permissions = [
- *   { name: 'read_runner', action: 'read', resource: 'runner', resourceName: 'Runner', resourceDescription: 'Grants the ability to read runners', category: 'ci_cd', categoryName: 'CI/CD' },
- * ];
- * // Returns:
- * // [
- * //   {
- * //     key: 'ci_cd',
- * //     name: 'CI/CD',
- * //     resources: [
- * //       {
- * //         key: 'runner',
- * //         name: 'Runner',
- * //         description: 'Grants the ability to read runners',
- * //         actions: [
- * //           { value: 'read_runner', text: 'read' }
- * //         ]
- * //       }
- * //     ]
- * //   }
- * // ]
- */
-export function groupPermissionsByResourceAndCategory(permissions) {
-  const groupedByCategory = groupBy(permissions, 'category');
-
-  return map(groupedByCategory, (items, category) => ({
-    key: category,
-    name: items[0]?.categoryName,
-    resources: map(groupBy(items, 'resource'), (resourceItems, resource) => ({
-      key: resource,
-      name: resourceItems[0]?.resourceName,
-      description: resourceItems[0]?.resourceDescription,
-      actions: resourceItems.map((permission) => ({
-        key: permission.name,
-        name: humanize(permission.action),
-      })),
-    })),
-  }));
 }
 
 /**

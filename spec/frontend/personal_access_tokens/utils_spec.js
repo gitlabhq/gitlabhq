@@ -5,10 +5,9 @@ import {
   initializeSortFromQueryParams,
   convertFiltersToQueryParams,
   convertSortToQueryParams,
-  groupPermissionsByResourceAndCategory,
   buildDuplicateUrl,
 } from '~/personal_access_tokens/utils';
-import { mockGroupPermissions, mockTokens } from './mock_data';
+import { mockTokens } from './mock_data';
 
 describe('personal_access_tokens/utils', () => {
   describe('timeFormattedAsDate', () => {
@@ -222,62 +221,6 @@ describe('personal_access_tokens/utils', () => {
       expect(convertSortToQueryParams(sort)).toEqual({
         sort: 'expires_desc',
       });
-    });
-  });
-
-  describe('groupPermissionsByResourceAndCategory', () => {
-    it('groups permissions by resources and category', () => {
-      expect(groupPermissionsByResourceAndCategory(mockGroupPermissions)).toEqual([
-        {
-          key: 'groups_and_projects',
-          name: 'Groups and projects',
-          resources: [
-            {
-              description: 'Project resource description',
-              key: 'project',
-              name: 'Project',
-              actions: [
-                {
-                  key: 'read_project',
-                  name: 'Read',
-                },
-                {
-                  key: 'write_project',
-                  name: 'Write',
-                },
-              ],
-            },
-            {
-              description: 'Contributed project resource description',
-              key: 'contributed_project',
-              name: 'Contributed project',
-              actions: [
-                {
-                  key: 'read_contributed_project',
-                  name: 'Read',
-                },
-              ],
-            },
-          ],
-        },
-        {
-          key: 'merge_request',
-          name: 'Merge request',
-          resources: [
-            {
-              description: 'Repository resource description',
-              key: 'repository',
-              name: 'Repository',
-              actions: [
-                {
-                  key: 'read_repository',
-                  name: 'Read',
-                },
-              ],
-            },
-          ],
-        },
-      ]);
     });
   });
 

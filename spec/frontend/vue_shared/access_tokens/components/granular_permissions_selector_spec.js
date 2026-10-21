@@ -4,16 +4,16 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
-import PersonalAccessTokenPermissionsSelector from '~/personal_access_tokens/components/create_granular_token/personal_access_token_permissions_selector.vue';
-import PersonalAccessTokenResourcePanel from '~/personal_access_tokens/components/create_granular_token/personal_access_token_resource_panel.vue';
-import PersonalAccessTokenGranularPermissionsList from '~/personal_access_tokens/components/create_granular_token/personal_access_token_granular_permissions_list.vue';
-import getAccessTokenPermissions from '~/personal_access_tokens/graphql/get_access_token_permissions.query.graphql';
+import GranularPermissionsSelector from '~/vue_shared/access_tokens/components/granular_permissions_selector.vue';
+import GranularResourcePanel from '~/vue_shared/access_tokens/components/granular_resource_panel.vue';
+import GranularPermissionsList from '~/vue_shared/access_tokens/components/granular_permissions_list.vue';
+import getAccessTokenPermissions from '~/vue_shared/access_tokens/graphql/get_access_token_permissions.query.graphql';
 import {
   mockAccessTokenPermissionsQueryResponse,
   mockGroupPermissions,
   mockUserPermissions,
   mockInstancePermissions,
-} from '../../mock_data';
+} from '../mock_data';
 
 jest.mock('~/alert');
 
@@ -21,7 +21,7 @@ Vue.use(VueApollo);
 
 const emptyPermissions = () => ({ namespace: [], user: [], instance: [] });
 
-describe('PersonalAccessTokenPermissionsSelector', () => {
+describe('GranularPermissionsSelector', () => {
   let wrapper;
   let mockApollo;
 
@@ -30,7 +30,7 @@ describe('PersonalAccessTokenPermissionsSelector', () => {
   const createComponent = ({ queryHandler = mockQueryHandler, props = {} } = {}) => {
     mockApollo = createMockApollo([[getAccessTokenPermissions, queryHandler]]);
 
-    wrapper = shallowMountExtended(PersonalAccessTokenPermissionsSelector, {
+    wrapper = shallowMountExtended(GranularPermissionsSelector, {
       apolloProvider: mockApollo,
       propsData: {
         value: emptyPermissions(),
@@ -39,9 +39,8 @@ describe('PersonalAccessTokenPermissionsSelector', () => {
     });
   };
 
-  const findResourcePanel = () => wrapper.findComponent(PersonalAccessTokenResourcePanel);
-  const findPermissionsLists = () =>
-    wrapper.findAllComponents(PersonalAccessTokenGranularPermissionsList);
+  const findResourcePanel = () => wrapper.findComponent(GranularResourcePanel);
+  const findPermissionsLists = () => wrapper.findAllComponents(GranularPermissionsList);
   const findPermissionsList = (index) => findPermissionsLists().at(index);
   const findErrorMessage = () => wrapper.find('.invalid-feedback');
 
@@ -80,6 +79,14 @@ describe('PersonalAccessTokenPermissionsSelector', () => {
       expect(findPermissionsList(2).props('scope')).toBe('instance');
     });
 
+    it('defaults to an empty selection for every scope when no value is given', () => {
+      createComponent({ props: { value: undefined } });
+
+      expect(findPermissionsList(0).props('value')).toEqual([]);
+      expect(findPermissionsList(1).props('value')).toEqual([]);
+      expect(findPermissionsList(2).props('value')).toEqual([]);
+    });
+
     it('passes each boundary its selected permissions from the value prop', () => {
       createComponent({
         props: { value: { namespace: ['read_project'], user: ['read_user'], instance: [] } },
@@ -95,6 +102,61 @@ describe('PersonalAccessTokenPermissionsSelector', () => {
 
       expect(findErrorMessage().exists()).toBe(true);
       expect(findErrorMessage().text()).toBe('At least one permission is required.');
+    });
+  });
+
+  describe('with a subset of scopes', () => {
+    beforeEach(async () => {
+      createComponent({ props: { scopes: [{ key: 'user', boundaries: ['USER'] }] } });
+      await waitForPromises();
+    });
+
+    it('passes the scopes to the resource panel and activates the first one', () => {
+      expect(findResourcePanel().props('scopes')).toEqual([{ key: 'user', boundaries: ['USER'] }]);
+      expect(findResourcePanel().props('activeBoundary')).toBe('user');
+      expect(findResourcePanel().props('selectedResources')).toEqual({ user: [] });
+      expect(findResourcePanel().props('permissions')).toEqual(mockUserPermissions);
+    });
+
+    it('renders a permissions list for the given scopes only', () => {
+      expect(findPermissionsLists()).toHaveLength(1);
+      expect(findPermissionsList(0).props('scope')).toBe('user');
+      expect(findPermissionsList(0).props('permissions')).toEqual(mockUserPermissions);
+    });
+
+    it('accepts a value keyed by the given scopes only and emits the same shape', async () => {
+      createComponent({
+        props: { scopes: [{ key: 'user', boundaries: ['USER'] }], value: { user: ['read_user'] } },
+      });
+      await waitForPromises();
+
+      expect(findPermissionsList(0).props('value')).toEqual(['read_user']);
+
+      findPermissionsList(0).vm.$emit('input', ['read_user', 'read_contributed_project']);
+
+      expect(wrapper.emitted('input')).toEqual([
+        [{ user: ['read_user', 'read_contributed_project'] }],
+      ]);
+    });
+
+    it('reads a scope missing from the value as an empty selection', () => {
+      createComponent({ props: { scopes: [{ key: 'user', boundaries: ['USER'] }], value: {} } });
+
+      expect(findPermissionsList(0).props('value')).toEqual([]);
+    });
+  });
+
+  describe('value validator', () => {
+    const { validator } = GranularPermissionsSelector.props.value;
+
+    it('accepts any subset of the known scopes with a list of permissions each', () => {
+      expect(validator({ user: [] })).toBe(true);
+      expect(validator({ namespace: ['read_project'], user: [], instance: [] })).toBe(true);
+    });
+
+    it('rejects unknown scopes and selections that are not lists', () => {
+      expect(validator({ unknown: [] })).toBe(false);
+      expect(validator({ user: 'read_user' })).toBe(false);
     });
   });
 

@@ -74,19 +74,6 @@ RSpec.describe API::WorkItems::RelatedMergeRequests, feature_category: :portfoli
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response.pluck('id')).to contain_exactly(referenced_mr.id, other_mr.id, explicitly_related_mr.id)
       end
-
-      context 'when the explicit_mr_work_item_relations feature flag is disabled' do
-        before do
-          stub_feature_flags(explicit_mr_work_item_relations: false)
-        end
-
-        it 'returns only the referenced merge requests' do
-          get api(api_request_path, user)
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response.pluck('id')).to contain_exactly(referenced_mr.id, other_mr.id)
-        end
-      end
     end
 
     it 'deduplicates a merge request that is both referenced and explicitly related' do

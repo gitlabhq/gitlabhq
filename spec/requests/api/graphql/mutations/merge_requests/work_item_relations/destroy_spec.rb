@@ -82,17 +82,4 @@ RSpec.describe 'Destroying merge request work item relations', feature_category:
     let(:boundary_object) { project }
     let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
   end
-
-  context 'when the feature flag is disabled' do
-    before do
-      stub_feature_flags(explicit_mr_work_item_relations: false)
-    end
-
-    it 'does not remove the relation and returns a top-level error' do
-      expect { post_graphql_mutation(mutation, current_user: current_user) }
-        .not_to change { merge_request.merge_request_issues.count }
-
-      expect(graphql_errors).not_to be_empty
-    end
-  end
 end

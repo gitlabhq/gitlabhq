@@ -46,6 +46,19 @@ RSpec.describe SupplyChain::ProvenancePublisher, feature_category: :artifact_sec
       end
     end
 
+    context 'when the attest method is SIGSTORE' do
+      let(:attest_method) { 'SIGSTORE' }
+
+      it 'persists a sigstore attestation without a signing certificate', :aggregate_failures do
+        attestation, _duration = cosign_attest_blob
+
+        expect(attestation).to be_persisted
+        expect(attestation).to be_success
+        expect(attestation).to be_signing_method_sigstore
+        expect(attestation.signing_certificate_id).to be_nil
+      end
+    end
+
     context 'when popen returns an error' do
       let(:popen_success) { false }
 
@@ -292,6 +305,59 @@ RSpec.describe SupplyChain::ProvenancePublisher, feature_category: :artifact_sec
       let(:expected_message) { "Key import failed after #{expected_duration}s: #{expected_stderr}" }
 
       it_behaves_like 'a signing material failure'
+    end
+  end
+
+  describe '#persist_attestation!' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:subject_digest) { "5db1fee4b5703808c48078a76768b155b421b210c0761cd6a5d223f4d99f1eaa" }
+
+    subject(:attestation) do
+      publisher.send(:persist_attestation!, status: :success, subject_digest: subject_digest,
+        bundle_file: real_tmp_files.first)
+    end
+
+    where(:attest_method, :expected_signing_method) do
+      'SIGSTORE' | 'sigstore'
+      'LOCAL_CA' | 'local_ca'
+      nil        | 'local_ca' # specs do not run as GitLab.com
+    end
+
+    with_them do
+      it 'records the signing method without a signing certificate', :aggregate_failures do
+        expect(attestation).to be_persisted
+        expect(attestation.reload.signing_method).to eq(expected_signing_method)
+        expect(attestation.signing_certificate_id).to be_nil
+      end
+    end
+
+    context 'with a signing certificate' do
+      let(:attest_method) { 'LOCAL_CA' }
+      let(:signing_certificate) { create(:supply_chain_signing_certificate, project: project) }
+
+      subject(:attestation) do
+        publisher.send(:persist_attestation!, status: :success, subject_digest: subject_digest,
+          bundle_file: real_tmp_files.first, signing_certificate_id: signing_certificate.id)
+      end
+
+      it 'records the signing certificate id', :aggregate_failures do
+        expect(attestation.reload.signing_certificate_id).to eq(signing_certificate.id)
+        expect(attestation).to be_signing_method_local_ca
+      end
+    end
+  end
+
+  describe '#persist_error_attestation' do
+    let(:attest_method) { 'LOCAL_CA' }
+    let(:subject_digest) { "5db1fee4b5703808c48078a76768b155b421b210c0761cd6a5d223f4d99f1eaa" }
+
+    subject(:attestation) { publisher.send(:persist_error_attestation, subject_digest: subject_digest) }
+
+    it 'records the signing method on the error attestation', :aggregate_failures do
+      expect(attestation.reload).to be_error
+      expect(attestation).to be_signing_method_local_ca
+      expect(attestation.signing_certificate_id).to be_nil
     end
   end
 

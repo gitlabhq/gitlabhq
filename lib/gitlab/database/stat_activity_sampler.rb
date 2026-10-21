@@ -14,17 +14,19 @@ module Gitlab
       #
       # This query omits idle tuples from the pg_stat_activity table as it is only concerned with active or idle in
       # transaction processes.
-      PG_STAT_ACTIVITY_SAMPLER_SQL = <<~SQL
+      PG_STAT_ACTIVITY_SAMPLER_SQL = <<~SQL.freeze
         SELECT
-          a.matches[1] AS application,
-          a.matches[2] AS endpoint,
-          a.matches[3] AS database,
+          a.application,
+          a.endpoint,
+          a.database,
           a.state AS state,
           COUNT(*) AS count
         FROM (
           SELECT
             state,
-            regexp_matches(query, '^\\s*(?:\\/\\*(?:application:(\\w+),?)?(?:correlation_id:[\\w\\-]+,?)?(?:jid:\\w+,?)?(?:endpoint_id:([\\w/\\-\\.:\\\#\\s]+),?)?(?:db_config_database:(\\w+),?)?.*?\\*\\/)?\\s*(\\w+)') AS matches
+            #{QueryLogComment.tag_sql('query', :application)} AS application,
+            #{QueryLogComment.tag_sql('query', :endpoint_id)} AS endpoint,
+            #{QueryLogComment.tag_sql('query', :db_config_database)} AS database
           FROM
             pg_stat_get_activity(-1)
           ) a

@@ -156,7 +156,7 @@ RSpec.shared_context 'group navbar structure' do
         _('Applications'),
         _('Packages and registries'),
         s_('UsageQuota|Usage quotas'),
-        s_('Orbit|Orbit'),
+        s_('Orbit|GitLab Orbit'),
         _('Domain Verification')
       ]
     }

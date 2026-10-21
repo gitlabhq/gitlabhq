@@ -3,7 +3,7 @@
 module Mutations
   module MergeRequests
     module WorkItemRelations
-      class Destroy < Base
+      class Destroy < ::Mutations::MergeRequests::Base
         graphql_name 'MergeRequestDestroyWorkItemRelations'
         description 'Removes relations between a merge request and work items.'
 
@@ -20,7 +20,6 @@ module Mutations
 
         def resolve(project_path:, iid:, ids:)
           merge_request = authorized_find!(project_path: project_path, iid: iid)
-          raise_resource_not_available_error! unless feature_enabled?(merge_request)
 
           result = ::MergeRequests::WorkItemRelations::DestroyService.new(
             merge_request: merge_request,

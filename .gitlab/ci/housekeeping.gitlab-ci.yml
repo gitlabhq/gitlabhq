@@ -116,3 +116,12 @@ housekeeper:update-browserslist-baseline-date:
   variables:
     KEEP: "Keeps::UpdateBrowserslistBaselineDate"
     SLACK_CHANNEL: "frontend"
+
+housekeeper:update-zoekt-compatibility-matrix:
+  extends: .housekeeping-keep
+  rules:
+    - if: '$HOUSEKEEPING_KEEP != "update_zoekt_compatibility_matrix"'
+      when: never
+    - !reference [".housekeeping:rules:scheduled", rules]
+  variables:
+    KEEP: "Keeps::UpdateZoektCompatibilityMatrix"

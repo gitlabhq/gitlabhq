@@ -170,8 +170,10 @@ describe('ErrorTrackingList', () => {
     });
 
     it('each error in the list should have an action button set', () => {
-      findErrorListRows().wrappers.forEach((row) => {
-        expect(row.findComponent(ErrorTrackingActions).exists()).toBe(true);
+      findErrorListRows().wrappers.forEach((row, index) => {
+        expect(row.findComponent(ErrorTrackingActions).props('detailsPath')).toBe(
+          `/error_tracking/${errorsList[index].id}/details`,
+        );
       });
     });
 

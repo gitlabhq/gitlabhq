@@ -32,11 +32,12 @@ module SupplyChain
       begin
         attestation, duration = cosign_attest_blob(blob_name: blob_name, hash: hash)
         log(message: "Attestation successful", duration: duration, path: artifact_path, hash: hash,
-          blob_name: blob_name)
+          blob_name: blob_name, signing_method: signing_method)
 
         [attestation, true]
       rescue StandardError => e
-        log(message: "Attestation failure", path: artifact_path, hash: hash, blob_name: blob_name)
+        log(message: "Attestation failure", path: artifact_path, hash: hash, blob_name: blob_name,
+          signing_method: signing_method)
 
         Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e, project_id: @build.project.id)
 

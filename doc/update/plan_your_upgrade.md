@@ -33,6 +33,7 @@ When planning the upgrade:
 1. Determine the appropriate [upgrade path](upgrade_paths.md) for your instance, including any required upgrade stops.
    Upgrade stops might require you to perform multiple upgrades.
 1. Run [upgrade health checks](#run-upgrade-health-checks) to find and resolve potential issues early.
+   Include the database health checks, because some database problems take time to fix.
 1. Create an upgrade plan that documents:
    - The steps to take to upgrade your instance including, if possible and required, a
      [zero-downtime upgrade](zero_downtime.md).
@@ -84,7 +85,7 @@ If restoring from a snapshot, you must already know how to do this. This process
 
 Shortly before you perform the upgrade:
 
-1. Rerun [upgrade health checks](#run-upgrade-health-checks).
+1. Rerun [upgrade health checks](#run-upgrade-health-checks), including the database health checks.
 1. Perform [upgrades for any optional features](#upgrades-for-optional-features) that you use.
 
 ### Run upgrade health checks
@@ -107,6 +108,7 @@ working:
    sudo gitlab-rake gitlab:doctor:secrets
    ```
 
+1. [Check database health](#check-database-health).
 1. In the GitLab UI, check that:
    - Users can sign in.
    - The project list is visible.
@@ -128,6 +130,43 @@ working:
 1. Optional. [Pre-download a package from the official repository](package/_index.md#pre-download-a-package-from-the-official-repository) to test package availability and reduce install time.
 
 If something goes wrong, [get support](#get-support).
+
+### Check database health
+
+Database migrations run during the upgrade. They expect the database schema to match the schema of
+your current GitLab version, and they need locks on the tables they change. Use the
+Database diagnostics page to find problems
+that can cause migrations to fail.
+
+Prerequisites:
+
+- You must have administrator access.
+
+To check database health:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Monitoring** > **Database diagnostics**.
+1. In the **Schema health check** section, select **Run schema check**. The check runs as a
+   background job, so Sidekiq must be running. The page shows the results when the job finishes.
+   Results stay available for one week. Rerun the check shortly before you upgrade.
+1. Review the results and take action before you upgrade:
+
+   | Section   | Problem   | Action   |
+   |-----------|-----------|----------|
+   | **Schema health check** | The check reports missing tables, indexes, foreign keys, or sequences, or wrong sequence owners. Migrations that depend on these objects can fail. | No automated repair tool is available. Contact GitLab Support before you upgrade. For more information, see [schema health check](../administration/admin_area.md#schema-health-check). |
+   | **Search path** | An error reports that more than one schema in the search path contains GitLab objects. Migrations can change objects in the wrong schema. | Before you upgrade, make sure only the main schema in the search path contains GitLab objects. For help, contact GitLab Support. For more information, see [search path check](../administration/admin_area.md#search-path-check). |
+   | **Vacuum information** | A vacuum has the **Anti-wraparound** badge. This vacuum does not cancel itself, so migrations can wait for its locks and fail. | Do not start the upgrade, and do not stop the vacuum. Wait for the vacuum to finish. For more information, see [Monitor autovacuum](../administration/postgresql/vacuum.md#database-diagnostics-page). |
+
+The **Vacuum information** section shows vacuums that run now.
+Check this section again immediately before you start the upgrade.
+
+If you have no access to the UI, you can check the search path from the console:
+
+```shell
+sudo gitlab-rake gitlab:db:diagnostics:search_path
+```
+
+The task exits with status `1` when it finds an error.
 
 ### Upgrades for optional features
 
@@ -195,6 +234,12 @@ upgrade plan, document and share it with the answers to the following questions:
   each secondary site.
 - What else might be unique or interesting in your setup that might be important?
 - Are you running into any known issues with your current version of GitLab?
+- What do the database health checks report? Save the database diagnostics report to a file and
+  share the file with the results of the **Schema health check**:
+
+  ```shell
+  sudo gitlab-rake gitlab:db:diagnostics > db_diagnostics.txt
+  ```
 
 ## Get support
 
@@ -204,6 +249,7 @@ If something goes wrong during your upgrade:
    - [`gitlabsos`](https://gitlab.com/gitlab-com/support/toolbox/gitlabsos) if you installed GitLab with the Linux
      package or Docker.
    - [`kubesos`](https://gitlab.com/gitlab-com/support/toolbox/kubesos/) if you installed GitLab using the Helm Charts.
+   - `sudo gitlab-rake gitlab:db:diagnostics > db_diagnostics.txt` if the problem concerns the database.
 1. Roll back to the last working version.
 
 For support:

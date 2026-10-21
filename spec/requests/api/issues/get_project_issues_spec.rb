@@ -945,18 +945,6 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
         expect_paginated_array_response([related_mr.id, explicitly_related_mr.id])
       end
-
-      context 'when the explicit_mr_work_item_relations feature flag is disabled' do
-        before do
-          stub_feature_flags(explicit_mr_work_item_relations: false)
-        end
-
-        it 'excludes explicitly related merge requests' do
-          get_related_merge_requests(project.id, issue.iid, user)
-
-          expect_paginated_array_response(related_mr.id)
-        end
-      end
     end
 
     it 'returns a merge request that is both referenced and explicitly related only once' do

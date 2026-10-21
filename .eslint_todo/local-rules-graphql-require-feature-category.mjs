@@ -487,7 +487,6 @@ export default {
     'app/assets/javascripts/pages/projects/merge_requests/queries/diff_generated.subscription.graphql',
     'app/assets/javascripts/pages/projects/merge_requests/queries/get_state.query.graphql',
     'app/assets/javascripts/personal_access_tokens/graphql/create_granular_personal_access_token.mutation.graphql',
-    'app/assets/javascripts/personal_access_tokens/graphql/get_access_token_permissions.query.graphql',
     'app/assets/javascripts/personal_access_tokens/graphql/get_user_groups_and_projects.query.graphql',
     'app/assets/javascripts/personal_access_tokens/graphql/get_user_personal_access_token_statistics.query.graphql',
     'app/assets/javascripts/personal_access_tokens/graphql/get_user_personal_access_tokens.query.graphql',

@@ -11,14 +11,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::CommandPolicy, feature_category: :co
   subject(:policy) { described_class.new(user, command) }
 
   describe 'delegation' do
-    let(:delegations) { policy.delegated_policies }
-
-    it 'delegates to ProjectPolicy' do
-      expect(delegations.size).to eq(1)
-
-      delegations.each_value do |delegated_policy|
-        expect(delegated_policy).to be_instance_of(ProjectPolicy)
-      end
-    end
+    it { is_expected.to delegate_to(::ProjectPolicy) }
   end
 end

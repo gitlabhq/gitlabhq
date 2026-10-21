@@ -3,7 +3,6 @@ import { GlAlert, GlModal, GlFormGroup, GlButton, GlCollapsibleListbox, GlIcon }
 import { createAlert } from '~/alert';
 import { __, s__ } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import WorkItemTokenInput from '~/work_items/components/shared/work_item_token_input.vue';
 import { CREATION_CONTEXT_RELATED_ITEM } from '~/work_items/constants';
@@ -27,7 +26,6 @@ export default {
     CreateWorkItemModal,
     WorkItemTokenInput,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     visible: {
       type: Boolean,
@@ -193,48 +191,18 @@ export default {
         return;
       }
 
-      const variables = {
-        id: this.mergeRequestId,
-        explicitMrWorkItemRelations: Boolean(this.glFeatures.explicitMrWorkItemRelations),
-      };
+      const variables = { id: this.mergeRequestId };
 
       const existing = cache.readQuery({ query: mergeRequestRelatedWorkItemsQuery, variables });
       if (!existing?.mergeRequest) {
         return;
       }
 
-      if (this.glFeatures.explicitMrWorkItemRelations) {
-        const existingNodes = existing.mergeRequest.workItemRelations?.nodes || [];
-        const existingIds = new Set(existingNodes.map((node) => node.workItem?.id));
-        const newNodes = created.filter(
-          (relation) => relation.workItem && !existingIds.has(relation.workItem.id),
-        );
-
-        cache.writeQuery({
-          query: mergeRequestRelatedWorkItemsQuery,
-          variables,
-          data: {
-            mergeRequest: {
-              ...existing.mergeRequest,
-              workItemRelations: {
-                __typename: 'MergeRequestWorkItemRelationConnection',
-                nodes: [...existingNodes, ...newNodes],
-              },
-            },
-          },
-        });
-        return;
-      }
-
-      const existingLinks = existing.mergeRequest.linkedWorkItems || [];
-      const existingIds = new Set(existingLinks.map((link) => link.workItem?.id));
-      const newLinks = created
-        .filter((relation) => relation.workItem && !existingIds.has(relation.workItem.id))
-        .map((relation) => ({
-          __typename: 'LinkedWorkItem',
-          linkType: relation.linkType,
-          workItem: relation.workItem,
-        }));
+      const existingNodes = existing.mergeRequest.workItemRelations?.nodes || [];
+      const existingIds = new Set(existingNodes.map((node) => node.workItem?.id));
+      const newNodes = created.filter(
+        (relation) => relation.workItem && !existingIds.has(relation.workItem.id),
+      );
 
       cache.writeQuery({
         query: mergeRequestRelatedWorkItemsQuery,
@@ -242,7 +210,10 @@ export default {
         data: {
           mergeRequest: {
             ...existing.mergeRequest,
-            linkedWorkItems: [...existingLinks, ...newLinks],
+            workItemRelations: {
+              __typename: 'MergeRequestWorkItemRelationConnection',
+              nodes: [...existingNodes, ...newNodes],
+            },
           },
         },
       });

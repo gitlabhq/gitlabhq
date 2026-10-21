@@ -603,6 +603,8 @@ The list view displays verification status for a selected component.
 - Collation health check [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/555916) in GitLab 18.3.
 - Schema health check [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199796) in GitLab 18.3 with missing indexes, tables, foreign keys, and sequences checks.
 - Wrong sequence owners check [added to schema health check](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197521) in GitLab 18.4.
+- Search path check [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/239913) in GitLab 19.2.
+- Check for GitLab objects outside the search path [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249289) in GitLab 19.3.
 
 {{< /history >}}
 
@@ -611,6 +613,7 @@ attempt to flag common problems with the database:
 
 - Index corruption caused by [change in PostgreSQL collations](https://gitlab.com/groups/gitlab-org/-/work_items/8573)
 - [Schema discrepancies](https://gitlab.com/groups/gitlab-org/-/work_items/3928)
+- GitLab objects that the [search path](#search-path-check) cannot resolve as expected
 
 To run each check, select the run button for the check. Selecting the run button
 schedules a background job that will report information from the check to the page.
@@ -652,6 +655,39 @@ discrepancies. No automated schema repair tool is available.
 
 If you notice any false positives or have any questions about the results of the check, see the
 [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/567561).
+
+#### Search path check
+
+The search path check runs when the page loads. For each database, the **Search path** section
+shows the current user, the PostgreSQL `search_path`, and the schemas in the database.
+
+GitLab uses three schemas:
+
+- One main schema that GitLab accesses through the search path. This schema is usually `public`,
+  but can have a different name.
+- `gitlab_partitions_dynamic` and `gitlab_partitions_static`, which contain partitions. GitLab
+  references these schemas by their full name, so they must not be in the search path.
+
+PostgreSQL resolves an unqualified name against the first schema in the search path that contains
+it. If more than one schema in the search path contains GitLab objects, GitLab can read or change
+the wrong object.
+
+The check reports these findings:
+
+| Severity | Finding | Description |
+|----------|---------|-------------|
+| Error    | More than one schema in the search path contains GitLab objects. | Only the main schema in the search path can contain GitLab objects. Fix this problem before you upgrade GitLab. |
+| Warning  | The search path contains a GitLab partition schema. | Remove `gitlab_partitions_dynamic` and `gitlab_partitions_static` from the search path. |
+| Warning  | More than one schema in the search path contains objects. | This can be intentional, for example for an extension or database administration tools. Unqualified names resolve against the first schema that matches. |
+| Warning  | Schemas outside the search path contain GitLab objects. | GitLab does not use these objects. They can remain from a restore or from an earlier misconfiguration. |
+
+To run the check from the console:
+
+```shell
+sudo gitlab-rake gitlab:db:diagnostics:search_path
+```
+
+The task exits with status `1` when it finds an error.
 
 ### Logs
 

@@ -10,14 +10,6 @@ RSpec.describe Ci::NamespaceSettingPolicy, feature_category: :pipeline_compositi
   let_it_be(:namespace_setting) { build(:namespace_settings, namespace: namespace) }
 
   describe 'delegation' do
-    let(:delegations) { policy.delegated_policies }
-
-    it 'delegates to UserNamespacePolicy' do
-      expect(delegations.size).to eq(1)
-
-      delegations.each_value do |delegated_policy|
-        expect(delegated_policy).to be_instance_of(::Namespaces::UserNamespacePolicy)
-      end
-    end
+    it { is_expected.to delegate_to(::Namespaces::UserNamespacePolicy) }
   end
 end

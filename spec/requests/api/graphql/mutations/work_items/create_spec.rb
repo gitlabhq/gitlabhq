@@ -529,18 +529,6 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
         expect(relation.from_mr_description).to be(false)
       end
 
-      context 'when the feature flag is disabled' do
-        before do
-          stub_feature_flags(explicit_mr_work_item_relations: false)
-        end
-
-        it 'creates the work item without linking the merge request' do
-          expect { post_graphql_mutation(mutation, current_user: current_user) }
-            .to change { WorkItem.count }.by(1)
-            .and not_change { merge_request.merge_request_issues.count }
-        end
-      end
-
       context 'when number of merge requests exceeds maximum allowed' do
         before do
           stub_const('Types::WorkItems::Widgets::DevelopmentCreateInputType::MAX_MERGE_REQUESTS', 0)

@@ -27,6 +27,4 @@ export const I18N_VSA_ERROR_SELECTED_STAGE = __(
   'There was an error fetching data for the selected stage',
 );
 
-export const MILESTONES_ENDPOINT = '/-/milestones.json';
-export const LABELS_ENDPOINT = '/-/labels.json';
 export const MAX_LABELS = 100;

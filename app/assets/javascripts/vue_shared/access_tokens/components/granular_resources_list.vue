@@ -10,11 +10,11 @@ import {
 } from '@gitlab/ui';
 import { xor, union, difference } from 'lodash-es';
 import { __, sprintf } from '~/locale';
-import { ACCESS_SCOPE_KEYS } from '~/personal_access_tokens/constants';
-import { groupPermissionsByResourceAndCategory } from '~/personal_access_tokens/utils';
+import { ACCESS_SCOPE_KEYS } from '../constants';
+import { groupPermissionsByResourceAndCategory } from '../utils';
 
 export default {
-  name: 'PersonalAccessTokenResourcesList',
+  name: 'GranularResourcesList',
   i18n: {
     toggleCategory: __('Toggle %{category} category'),
     resourceInformation: __('%{resource} information'),

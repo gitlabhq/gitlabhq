@@ -1,17 +1,14 @@
 # @feature_category: portfolio_management
-query mergeRequestRelatedWorkItems(
-  $id: MergeRequestID!
-  $explicitMrWorkItemRelations: Boolean = false
-) {
+query mergeRequestRelatedWorkItems($id: MergeRequestID!) {
   mergeRequest(id: $id) {
     id
     iid
     title
     reference(full: true)
-    userPermissions @include(if: $explicitMrWorkItemRelations) {
+    userPermissions {
       adminMergeRequest
     }
-    workItemRelations @include(if: $explicitMrWorkItemRelations) {
+    workItemRelations {
       nodes {
         id
         linkType
@@ -26,20 +23,6 @@ query mergeRequestRelatedWorkItems(
             id
             fullPath
           }
-        }
-      }
-    }
-    linkedWorkItems {
-      linkType
-      workItem {
-        id
-        iid
-        title
-        webPath
-        webUrl
-        namespace {
-          id
-          fullPath
         }
       }
     }

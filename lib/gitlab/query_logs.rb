@@ -31,8 +31,8 @@ module Gitlab
         { db_config_name: ->(context) { ::Gitlab::QueryLogs::Tags.db_config_name(context) } },
         { console_hostname: ->(context) { ::Gitlab::QueryLogs::Tags.console_hostname(context) } },
         { console_username: ->(context) { ::Gitlab::QueryLogs::Tags.console_username(context) } },
-        # StatActivitySampler parses this comment with a positional regexp:
-        # append new tags after db_config_database, never insert before it.
+        # Do not rely on this order: Rails 8 sorts tags by name. Parse the
+        # comment by key, as Gitlab::Database::QueryLogComment does.
         { feature_category: ->(context) { ::Gitlab::QueryLogs::Tags.feature_category(context) } }
       ]
 

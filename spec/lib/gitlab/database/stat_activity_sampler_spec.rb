@@ -18,6 +18,35 @@ RSpec.describe Gitlab::Database::StatActivitySampler,
     end
   end
 
+  describe 'PG_STAT_ACTIVITY_SAMPLER_SQL' do
+    # A separate session, so the transactional test connection does not hide it
+    let(:other_session) do
+      config = ActiveRecord::Base.connection_db_config.configuration_hash
+
+      PG.connect({ host: config[:host], port: config[:port], dbname: config[:database],
+                   user: config[:username], password: config[:password] }.compact)
+    end
+
+    after do
+      other_session.close
+    end
+
+    it 'groups sessions by the tags of their leading query log comment, in any tag order' do
+      endpoint = "StatActivitySamplerSpec::#{SecureRandom.hex(4)}"
+      # Tags sorted by name, as Rails 8 writes them
+      other_session.exec(
+        "/*application:sidekiq,correlation_id:abc,db_config_database:gitlabhq_spec,endpoint_id:#{endpoint}," \
+          "jid:abc*/ SELECT 1"
+      )
+
+      rows = conn.execute(described_class::PG_STAT_ACTIVITY_SAMPLER_SQL).to_a
+
+      expect(rows).to include(
+        a_hash_including('application' => 'sidekiq', 'endpoint' => endpoint, 'database' => 'gitlabhq_spec')
+      )
+    end
+  end
+
   describe '#execute' do
     let(:response) do
       [

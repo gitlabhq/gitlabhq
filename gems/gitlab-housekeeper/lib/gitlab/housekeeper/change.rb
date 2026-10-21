@@ -42,8 +42,7 @@ module Gitlab
       end
 
       def add_standard_data!
-        self.labels ||= []
-        labels << HOUSEKEEPER_LABEL
+        self.labels = Array(labels) + [HOUSEKEEPER_LABEL]
       end
 
       def abort!

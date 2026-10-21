@@ -62,6 +62,19 @@ module SupplyChain
       Gitlab.config.gitlab.url
     end
 
+    def attest_method
+      SupplyChain.attest_method(@build)
+    end
+    strong_memoize_attr :attest_method
+
+    def local_ca?
+      attest_method == SupplyChain::DEFAULT_METHOD_PRIVATE
+    end
+
+    def signing_method
+      local_ca? ? :local_ca : :sigstore
+    end
+
     def successful_attestation?(hash)
       existing_attestation = SupplyChain::Attestation.find_provenance(project: @build.project, subject_digest: hash)
       return true if existing_attestation&.success?
@@ -196,7 +209,7 @@ module SupplyChain
       raise TrustedRootFailure, "Trusted root creation failed after #{result.duration}s: #{result.stderr}"
     end
 
-    def persist_attestation!(status:, subject_digest:, bundle_file: nil)
+    def persist_attestation!(status:, subject_digest:, bundle_file: nil, signing_certificate_id: nil)
       attestation = SupplyChain::Attestation.new do |att|
         att.subject_digest = subject_digest
         att.project = @build.project
@@ -206,6 +219,8 @@ module SupplyChain
         att.predicate_kind = :provenance
         att.predicate_type = SupplyChain::Slsa::ProvenanceStatement::PREDICATE_TYPE_V1
         att.file = bundle_file
+        att.signing_method = signing_method
+        att.signing_certificate_id = signing_certificate_id
       end
 
       attestation.save!

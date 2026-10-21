@@ -1687,17 +1687,6 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
 
           expect(related_mr_ids).to include(related_mr.to_gid.to_s)
         end
-
-        context 'when the feature flag is disabled' do
-          before do
-            stub_feature_flags(explicit_mr_work_item_relations: false)
-            post_graphql(query, current_user: developer)
-          end
-
-          it 'excludes the explicitly related merge request' do
-            expect(related_mr_ids).not_to include(related_mr.to_gid.to_s)
-          end
-        end
       end
 
       context 'when fetching closing merge requests' do

@@ -29,10 +29,10 @@ export default {
   },
   computed: {
     firstReleaseLink() {
-      return `${this.error.externalBaseUrl}/releases/${this.error.firstReleaseVersion}`;
+      return this.externalReleaseLink(this.error.firstReleaseVersion);
     },
     lastReleaseLink() {
-      return `${this.error.externalBaseUrl}/releases/${this.error.lastReleaseVersion}`;
+      return this.externalReleaseLink(this.error.lastReleaseVersion);
     },
     shortFirstReleaseVersion() {
       return this.error.firstReleaseVersion?.substr(0, 10);
@@ -46,6 +46,10 @@ export default {
   },
   methods: {
     trackClickErrorLinkToSentryOptions,
+    externalReleaseLink(version) {
+      // eslint-disable-next-line @gitlab/no-hardcoded-urls -- External Sentry URL, not a GitLab route
+      return `${this.error.externalBaseUrl}/releases/${version}`;
+    },
   },
   CARD_CLASS,
   HEADER_CLASS,

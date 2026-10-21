@@ -18,8 +18,6 @@ module Resolvers
       end
 
       def resolve(types: nil)
-        return unless Feature.enabled?(:explicit_mr_work_item_relations, object.project)
-
         relations = object.merge_request_issues
         relations = relations.by_link_types(types) if types.present?
         relations

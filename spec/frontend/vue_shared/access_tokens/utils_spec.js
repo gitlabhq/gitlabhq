@@ -6,7 +6,10 @@ import {
   resetCreatedTime,
   isWithin2Weeks,
   rotationDefaultDate,
+  groupPermissionsByResourceAndCategory,
+  emptyByScope,
 } from '~/vue_shared/access_tokens/utils';
+import { mockGroupPermissions } from './mock_data';
 
 // Current date, `new Date()`, for these tests is 2020-07-06
 describe('defaultDate', () => {
@@ -198,5 +201,71 @@ describe('isWithin2Weeks', () => {
 
   it('returns false when timestamp is not within 2 weeks', () => {
     expect(isWithin2Weeks('2020-02-25')).toBe(false);
+  });
+});
+
+describe('groupPermissionsByResourceAndCategory', () => {
+  it('groups permissions by resources and category', () => {
+    expect(groupPermissionsByResourceAndCategory(mockGroupPermissions)).toEqual([
+      {
+        key: 'groups_and_projects',
+        name: 'Groups and projects',
+        resources: [
+          {
+            description: 'Project resource description',
+            key: 'project',
+            name: 'Project',
+            actions: [
+              {
+                key: 'read_project',
+                name: 'Read',
+              },
+              {
+                key: 'write_project',
+                name: 'Write',
+              },
+            ],
+          },
+          {
+            description: 'Contributed project resource description',
+            key: 'contributed_project',
+            name: 'Contributed project',
+            actions: [
+              {
+                key: 'read_contributed_project',
+                name: 'Read',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        key: 'merge_request',
+        name: 'Merge request',
+        resources: [
+          {
+            description: 'Repository resource description',
+            key: 'repository',
+            name: 'Repository',
+            actions: [
+              {
+                key: 'read_repository',
+                name: 'Read',
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+  });
+});
+
+describe('emptyByScope', () => {
+  it('returns an empty array for every access scope by default', () => {
+    expect(emptyByScope()).toEqual({ namespace: [], user: [], instance: [] });
+  });
+
+  it('returns an empty array for the given keys only', () => {
+    expect(emptyByScope(['user'])).toEqual({ user: [] });
   });
 });

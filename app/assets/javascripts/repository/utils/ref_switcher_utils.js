@@ -61,6 +61,7 @@ export function generateRefDestinationPath(projectRootPath, ref, selectedRef) {
   const currentPath = url.pathname;
   const encodedHash = '%23';
   let refType = null;
+  // eslint-disable-next-line @gitlab/no-hardcoded-urls -- Fallback segment when the current path has no namespace to preserve
   let namespace = '/-/tree';
   let target;
   let actualRef = selectedRef;

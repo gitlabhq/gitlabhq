@@ -28,20 +28,18 @@ import {
   ACCESS_SELECTED_MEMBERSHIPS_ENUM,
   MAX_NAME_LENGTH,
   MAX_DESCRIPTION_LENGTH,
-  ACCESS_USER_ENUM,
-  ACCESS_INSTANCE_ENUM,
   NAMESPACE_ACCESS_TYPES,
   COMPLETE_FINE_GRAINED_PERSONAL_ACCESS_TOKEN_FORM,
   ABANDON_FINE_GRAINED_PERSONAL_ACCESS_TOKEN_FORM,
 } from '~/personal_access_tokens/constants';
+import { ACCESS_USER_ENUM, ACCESS_INSTANCE_ENUM } from '~/vue_shared/access_tokens/constants';
 import ConfirmUnsavedChangesDialog from '~/vue_shared/components/confirm_unsaved_changes_dialog.vue';
-import { defaultDate } from '~/vue_shared/access_tokens/utils';
-import { emptyByScope } from '~/personal_access_tokens/utils';
+import { defaultDate, emptyByScope } from '~/vue_shared/access_tokens/utils';
+import GranularPermissionsSelector from '~/vue_shared/access_tokens/components/granular_permissions_selector.vue';
 import CreatedPersonalAccessToken from '../created_personal_access_token.vue';
 import PersonalAccessTokenExpirationDate from './personal_access_token_expiration_date.vue';
 import PersonalAccessTokenScopeSelector from './personal_access_token_scope_selector.vue';
 import PersonalAccessTokenNamespaceSelector from './personal_access_token_namespace_selector.vue';
-import PersonalAccessTokenPermissionsSelector from './personal_access_token_permissions_selector.vue';
 
 export default {
   name: 'CreateGranularPersonalAccessTokenForm',
@@ -54,7 +52,7 @@ export default {
     PersonalAccessTokenExpirationDate,
     PersonalAccessTokenScopeSelector,
     PersonalAccessTokenNamespaceSelector,
-    PersonalAccessTokenPermissionsSelector,
+    GranularPermissionsSelector,
     GlButton,
     ConfirmUnsavedChangesDialog,
     CreatedPersonalAccessToken,
@@ -474,7 +472,7 @@ export default {
               </template>
             </gl-sprintf>
           </p>
-          <personal-access-token-permissions-selector
+          <granular-permissions-selector
             v-model="form.permissions"
             :error="errors.permissions"
             :ai-permissions="aiPermissions"
@@ -487,7 +485,7 @@ export default {
                 @permissions-cleared="handlePermissionsCleared"
               />
             </template>
-          </personal-access-token-permissions-selector>
+          </granular-permissions-selector>
         </section>
 
         <div class="settings-sticky-footer gl-flex gl-flex-wrap gl-gap-3">

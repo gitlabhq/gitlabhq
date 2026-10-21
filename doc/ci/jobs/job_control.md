@@ -49,7 +49,7 @@ In blocking manual jobs:
   defined inside [`rules`](../yaml/_index.md#rules).
 - The pipeline stops at the stage where the job is defined. To let the pipeline
   continue running, [run the manual job](#run-a-manual-job).
-- Merge requests in projects with [**Pipelines must succeed**](../../user/project/merge_requests/auto_merge.md#require-a-successful-pipeline-for-merge)
+- Merge requests in projects with [{{< ui text="MergeChecks|Pipelines must succeed" >}}](../../user/project/merge_requests/auto_merge.md#require-a-successful-pipeline-for-merge)
   enabled can't be merged with a blocked pipeline.
 - The pipeline shows a status of **blocked**.
 
@@ -62,7 +62,7 @@ To run a manual job, you must have permission to merge to the assigned branch:
 
 1. Go to the pipeline, job, [environment](../environments/deployments.md#configure-manual-deployments),
    or deployment view.
-1. Next to the manual job, select **Run** ({{< icon name="play" >}}).
+1. Next to the manual job, select {{< ui text="Run" >}} ({{< icon name="play" >}}).
 
 ### Specify variables when running manual jobs
 
@@ -75,9 +75,9 @@ use [job inputs](job_inputs.md) instead.
 
 To run a manual job and specify additional variables:
 
-- Select the **name** of the manual job in the pipeline view, not **Run** ({{< icon name="play" >}}).
+- Select the **name** of the manual job in the pipeline view, not {{< ui text="Run" >}} ({{< icon name="play" >}}).
 - In the form, add variable key and value pairs.
-- Select **Run job**.
+- Select {{< ui text="CiVariables|Run job" >}}.
 
 > [!warning]
 > Any project member with permissions to run a manual job can retry the job and view the variables
@@ -103,12 +103,12 @@ To retry manual jobs with typed, validated parameters, use [job inputs](job_inpu
 To retry a manual job with previously-specified variables:
 
 - With the same variables:
-  - From the job details page, select **Retry** ({{< icon name="retry" >}}).
+  - From the job details page, select {{< ui text="Job|Retry" >}} ({{< icon name="retry" >}}).
 - With updated variables:
-  - From the job details page, select **Retry job with modified values** in the dropdown list.
+  - From the job details page, select {{< ui text="Job|Retry job with modified values" >}} in the dropdown list.
   - The variables that were specified in the previous run are prefilled in the form.
     You can add, modify, or delete CI/CD variables from this form.
-  - Select **Run job again**.
+  - Select {{< ui text="CiVariables|Run job again" >}}.
 
 ### Require confirmation for manual jobs
 
@@ -152,7 +152,7 @@ To protect a manual job:
 
 1. In the [protected environments settings](../environments/protected_environments.md#protecting-environments),
    select the environment (`production` in this example) and add the users, roles, or groups
-   that are authorized to run the manual job to the **Allowed to Deploy** list. Only users in
+   that are authorized to run the manual job to the {{< ui text="ProtectedEnvironments|Allowed to deploy" >}} list. Only users in
    this list or GitLab administrators can run this manual job.
 
 You can use protected environments with blocking manual jobs to have a list of users
@@ -192,10 +192,10 @@ timed rollout 10%:
   environment: production
 ```
 
-To stop the active timer of a delayed job, select **Unschedule** ({{< icon name="time-out" >}}).
+To stop the active timer of a delayed job, select {{< ui text="DelayedJobs|Unschedule" >}} ({{< icon name="time-out" >}}).
 This job can no longer be scheduled to run automatically. You can, however, execute the job manually.
 
-To start a delayed job manually, select **Unschedule** ({{< icon name="time-out" >}}) to stop the delay timer and then select **Run** ({{< icon name="play" >}}).
+To start a delayed job manually, select {{< ui text="DelayedJobs|Unschedule" >}} ({{< icon name="time-out" >}}) to stop the delay timer and then select {{< ui text="Run" >}} ({{< icon name="play" >}}).
 Soon GitLab Runner starts the job.
 
 Delayed jobs that are [archived](../../administration/settings/continuous_integration.md#archive-pipelines)
@@ -226,7 +226,7 @@ test:
     - bundle exec rspec_booster --job $CI_NODE_INDEX/$CI_NODE_TOTAL
 ```
 
-You can then go to the **Jobs** tab of a new pipeline build and see your RSpec
+You can then go to the {{< ui text="Jobs" >}} tab of a new pipeline build and see your RSpec
 job split into three separate jobs.
 
 > [!warning]

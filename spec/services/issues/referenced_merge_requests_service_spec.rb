@@ -151,16 +151,6 @@ RSpec.describe Issues::ReferencedMergeRequestsService, feature_category: :team_p
       expect(service.related_merge_requests(issue)).not_to include(referencing_mr_other_project)
     end
 
-    context 'when the explicit_mr_work_item_relations feature flag is disabled' do
-      before do
-        stub_feature_flags(explicit_mr_work_item_relations: false)
-      end
-
-      it 'returns only the referenced merge requests' do
-        expect(service.related_merge_requests(issue)).not_to include(explicitly_related_mr)
-      end
-    end
-
     context 'performance' do
       it 'does not run extra queries for each explicitly related merge request' do
         service.related_merge_requests(issue) # warm cache

@@ -111,10 +111,10 @@ describe('RelatedWorkItemsAddForm', () => {
     await waitForPromises();
   };
 
-  const readRelationsFromCache = (explicitMrWorkItemRelations = true) =>
+  const readRelationsFromCache = () =>
     mockApollo.clients.defaultClient.cache.readQuery({
       query: mergeRequestRelatedWorkItemsQuery,
-      variables: { id: MOCK_MERGE_REQUEST_ID, explicitMrWorkItemRelations },
+      variables: { id: MOCK_MERGE_REQUEST_ID },
     })?.mergeRequest;
 
   const createComponent = ({
@@ -123,7 +123,6 @@ describe('RelatedWorkItemsAddForm', () => {
       .mockResolvedValue(recentlyViewedResponse([issueItem, issueItemWithoutIcon])),
     mutationHandler = jest.fn().mockResolvedValue(createMutationResponse()),
     propsData = {},
-    provide = {},
   } = {}) => {
     mockApollo = createMockApollo([
       [recentlyViewedWorkItemsQuery, queryHandler],
@@ -132,10 +131,6 @@ describe('RelatedWorkItemsAddForm', () => {
 
     wrapper = shallowMountExtended(RelatedWorkItemsAddForm, {
       apolloProvider: mockApollo,
-      provide: {
-        glFeatures: { explicitMrWorkItemRelations: true },
-        ...provide,
-      },
       propsData: {
         fullPath: 'group/project',
         mergeRequestId: MOCK_MERGE_REQUEST_ID,
@@ -327,29 +322,24 @@ describe('RelatedWorkItemsAddForm', () => {
   });
 
   describe('linking work items', () => {
-    const seedCache = ({ explicitMrWorkItemRelations = true } = {}) => {
+    const seedCache = () => {
       mockApollo.clients.defaultClient.cache.writeQuery({
         query: mergeRequestRelatedWorkItemsQuery,
-        variables: { id: MOCK_MERGE_REQUEST_ID, explicitMrWorkItemRelations },
+        variables: { id: MOCK_MERGE_REQUEST_ID },
         data: {
           mergeRequest: {
             id: MOCK_MERGE_REQUEST_ID,
             iid: MOCK_MERGE_REQUEST_IID,
             title: 'Fix the bug',
             reference: 'group/project!1',
-            ...(explicitMrWorkItemRelations
-              ? {
-                  userPermissions: {
-                    adminMergeRequest: true,
-                    __typename: 'MergeRequestPermissions',
-                  },
-                  workItemRelations: {
-                    nodes: [],
-                    __typename: 'MergeRequestWorkItemRelationConnection',
-                  },
-                }
-              : {}),
-            linkedWorkItems: [],
+            userPermissions: {
+              adminMergeRequest: true,
+              __typename: 'MergeRequestPermissions',
+            },
+            workItemRelations: {
+              nodes: [],
+              __typename: 'MergeRequestWorkItemRelationConnection',
+            },
             __typename: 'MergeRequest',
           },
         },
@@ -441,21 +431,6 @@ describe('RelatedWorkItemsAddForm', () => {
         await selectAndAdd();
 
         expect(readRelationsFromCache().workItemRelations.nodes).toEqual([createdRelation]);
-      });
-
-      it('adds the new relation to the linked work items when the feature flag is disabled', async () => {
-        createComponent({ provide: { glFeatures: { explicitMrWorkItemRelations: false } } });
-        seedCache({ explicitMrWorkItemRelations: false });
-
-        await selectAndAdd();
-
-        expect(readRelationsFromCache(false).linkedWorkItems).toEqual([
-          {
-            linkType: createdRelation.linkType,
-            workItem: workItemToLink,
-            __typename: 'LinkedWorkItem',
-          },
-        ]);
       });
     });
 

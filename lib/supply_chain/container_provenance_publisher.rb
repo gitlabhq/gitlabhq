@@ -39,11 +39,11 @@ module SupplyChain
 
     def attest_container(hash)
       attestation, duration = cosign_attest_blob(hash: hash)
-      log(message: "Container attestation successful", duration: duration, hash: hash)
+      log(message: "Container attestation successful", duration: duration, hash: hash, signing_method: signing_method)
 
       [attestation, true]
     rescue StandardError => e
-      log(message: "Container attestation failure", hash: hash)
+      log(message: "Container attestation failure", hash: hash, signing_method: signing_method)
 
       Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e, project_id: @build.project.id)
 

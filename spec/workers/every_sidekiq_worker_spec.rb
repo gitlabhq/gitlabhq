@@ -490,7 +490,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :sidekiq do
         'Search::Zoekt::TaskFailedEventWorker' => 1,
         'Search::Zoekt::UpdateIndexUsedStorageBytesEventWorker' => 1,
         'Security::ProcessScanEventsWorker' => 3,
-        'Security::StoreScansWorker' => 3,
+        'Security::StoreScansWorker' => 5,
         'Security::TrackSecureScansWorker' => 1,
         'SecretsManagement::ProvisionGroupSecretsManagerTaskWorker' => false,
         'SecretsManagement::ProvisionProjectSecretsManagerTaskWorker' => false,

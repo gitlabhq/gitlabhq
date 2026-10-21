@@ -1,4 +1,4 @@
-import { cloneDeep, isEqual, mapValues } from 'lodash-es';
+import { cloneDeep, groupBy, isEqual, map, mapValues } from 'lodash-es';
 import {
   getDateInFuture,
   getDayDifference,
@@ -6,7 +6,9 @@ import {
   setUTCTime,
   toISODateFormat,
 } from '~/lib/utils/datetime_utility';
+import { humanize } from '~/lib/utils/text_utility';
 import { STATISTICS_CONFIG } from '~/access_tokens/constants';
+import { ACCESS_SCOPE_KEYS } from './constants';
 
 /**
  * Return the default expiration date.
@@ -130,3 +132,58 @@ export function utcExpiredDate(isoDateString) {
  */
 export const isWithin2Weeks = (timestamp) =>
   setUTCTime(timestamp) <= setUTCTime(nDaysAfter(new Date(), 14));
+
+/**
+ * Builds an empty permissions object keyed by access scope,
+ * with each scope initialized to an empty array.
+ * @param {string[]} [keys] - Scope keys to include; defaults to every access scope
+ * @returns {Object} e.g. { namespace: [], user: [], instance: [] }
+ */
+export const emptyByScope = (keys = ACCESS_SCOPE_KEYS) =>
+  Object.fromEntries(keys.map((key) => [key, []]));
+
+/**
+ * Groups a flat list of permissions by category and resource, with actions nested under each resource.
+ *
+ * @param {Array} permissions
+ * @returns {Array}
+ *
+ * @example
+ * const permissions = [
+ *   { name: 'read_runner', action: 'read', resource: 'runner', resourceName: 'Runner', resourceDescription: 'Grants the ability to read runners', category: 'ci_cd', categoryName: 'CI/CD' },
+ * ];
+ * // Returns:
+ * // [
+ * //   {
+ * //     key: 'ci_cd',
+ * //     name: 'CI/CD',
+ * //     resources: [
+ * //       {
+ * //         key: 'runner',
+ * //         name: 'Runner',
+ * //         description: 'Grants the ability to read runners',
+ * //         actions: [
+ * //           { value: 'read_runner', text: 'read' }
+ * //         ]
+ * //       }
+ * //     ]
+ * //   }
+ * // ]
+ */
+export function groupPermissionsByResourceAndCategory(permissions) {
+  const groupedByCategory = groupBy(permissions, 'category');
+
+  return map(groupedByCategory, (items, category) => ({
+    key: category,
+    name: items[0]?.categoryName,
+    resources: map(groupBy(items, 'resource'), (resourceItems, resource) => ({
+      key: resource,
+      name: resourceItems[0]?.resourceName,
+      description: resourceItems[0]?.resourceDescription,
+      actions: resourceItems.map((permission) => ({
+        key: permission.name,
+        name: humanize(permission.action),
+      })),
+    })),
+  }));
+}

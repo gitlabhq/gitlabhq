@@ -1,14 +1,14 @@
 import { GlSearchBoxByType, GlSkeletonLoader, GlSegmentedControl } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import PersonalAccessTokenResourcePanel from '~/personal_access_tokens/components/create_granular_token/personal_access_token_resource_panel.vue';
-import PersonalAccessTokenResourcesList from '~/personal_access_tokens/components/create_granular_token/personal_access_token_resources_list.vue';
-import { mockGroupPermissions } from '../../mock_data';
+import GranularResourcePanel from '~/vue_shared/access_tokens/components/granular_resource_panel.vue';
+import GranularResourcesList from '~/vue_shared/access_tokens/components/granular_resources_list.vue';
+import { mockGroupPermissions } from '../mock_data';
 
-describe('PersonalAccessTokenResourcePanel', () => {
+describe('GranularResourcePanel', () => {
   let wrapper;
 
   const createComponent = ({ props = {} } = {}) => {
-    wrapper = shallowMountExtended(PersonalAccessTokenResourcePanel, {
+    wrapper = shallowMountExtended(GranularResourcePanel, {
       propsData: {
         activeBoundary: 'namespace',
         permissions: mockGroupPermissions,
@@ -21,7 +21,7 @@ describe('PersonalAccessTokenResourcePanel', () => {
   const findSegmentedControl = () => wrapper.findComponent(GlSegmentedControl);
   const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
-  const findResourcesList = () => wrapper.findComponent(PersonalAccessTokenResourcesList);
+  const findResourcesList = () => wrapper.findComponent(GranularResourcesList);
 
   beforeEach(() => {
     createComponent();
@@ -77,6 +77,27 @@ describe('PersonalAccessTokenResourcePanel', () => {
 
       expect(findResourcesList().exists()).toBe(false);
       expect(wrapper.text()).toContain('No resources found');
+    });
+  });
+
+  describe('with a subset of scopes', () => {
+    beforeEach(() => {
+      createComponent({
+        props: {
+          scopes: [
+            { key: 'namespace', boundaries: ['GROUP', 'PROJECT'] },
+            { key: 'user', boundaries: ['USER'] },
+          ],
+          selectedResources: { namespace: ['project'], user: [] },
+        },
+      });
+    });
+
+    it('renders an access toggle option for the given scopes only', () => {
+      expect(findSegmentedControl().props('options')).toEqual([
+        { value: 'namespace', text: 'Group and project', count: 1 },
+        { value: 'user', text: 'User', count: 0 },
+      ]);
     });
   });
 

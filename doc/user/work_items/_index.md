@@ -261,12 +261,9 @@ header to expand it. Select any work item to open it in a drawer.
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/238648) in GitLab 19.1 [with a feature flag](../../administration/feature_flags/_index.md) named `explicit_mr_work_item_relations`. Disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256281) in GitLab 19.5.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/263133) in GitLab 19.6. Feature flag `explicit_mr_work_item_relations` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 You can also link work items to a merge request without editing the merge request description.
 Work items you link this way appear in the **Closing** or **Related** group, and the merge request

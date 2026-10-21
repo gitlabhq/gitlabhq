@@ -45,18 +45,6 @@ RSpec.describe WorkItems::Callbacks::Development, feature_category: :code_review
         expect { before_create }.not_to raise_error
       end
     end
-
-    context 'when the feature flag is disabled' do
-      before do
-        stub_feature_flags(explicit_mr_work_item_relations: false)
-      end
-
-      let(:current_user) { create(:user) }
-
-      it 'does not validate (and does not raise) for flag-off merge requests' do
-        expect { before_create }.not_to raise_error
-      end
-    end
   end
 
   describe '#after_save_commit' do
@@ -101,35 +89,6 @@ RSpec.describe WorkItems::Callbacks::Development, feature_category: :code_review
 
         expect(merge_request.merge_request_issues.exists?(issue_id: work_item.id)).to be(true)
         expect(other_merge_request.merge_request_issues.exists?(issue_id: work_item.id)).to be(true)
-      end
-    end
-
-    context 'when the feature flag is disabled' do
-      before do
-        stub_feature_flags(explicit_mr_work_item_relations: false)
-      end
-
-      it 'does not link the work item' do
-        expect(::MergeRequests::WorkItemRelations::CreateService).not_to receive(:new)
-
-        expect { development_callback }.not_to change { merge_request.merge_request_issues.count }
-      end
-    end
-
-    context "when the flag is off for the work item project but on for the merge request project" do
-      let_it_be(:other_project) { create(:project, :repository, :private, developers: developer) }
-      let_it_be(:other_work_item) { create(:work_item, :issue, project: other_project) }
-
-      let(:service) { described_class.new(issuable: other_work_item, current_user: current_user, params: params) }
-
-      before do
-        stub_feature_flags(explicit_mr_work_item_relations: merge_request.project)
-      end
-
-      it 'links the work item, gating only on the merge request project' do
-        expect(::MergeRequests::WorkItemRelations::CreateService).to receive(:new).and_call_original
-
-        expect { development_callback }.to change { merge_request.merge_request_issues.count }.by(1)
       end
     end
 

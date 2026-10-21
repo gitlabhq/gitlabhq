@@ -10,14 +10,13 @@ import PersonalAccessTokenNamespaceSelector from '~/personal_access_tokens/compo
 import getUserGroupsAndProjects from '~/personal_access_tokens/graphql/get_user_groups_and_projects.query.graphql';
 import { DEBOUNCE_DELAY } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
-  mockGroups,
-  mockProjects,
   mockNonMemberProject,
   mockNonMemberGroup,
   mockFullPathProjectQueryResponse,
   mockFullPathGroupQueryResponse,
   mockSearchGroupsAndProjectsQueryResponse,
 } from '../../mock_data';
+import { mockGroups, mockProjects } from '../../../vue_shared/access_tokens/mock_data';
 
 Vue.use(VueApollo);
 

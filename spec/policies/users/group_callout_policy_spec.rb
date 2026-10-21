@@ -9,14 +9,6 @@ RSpec.describe Users::GroupCalloutPolicy, feature_category: :shared do
   subject(:policy) { described_class.new(user, group_callout) }
 
   describe 'delegation' do
-    let(:delegations) { policy.delegated_policies }
-
-    it 'delegates to UserPolicy' do
-      expect(delegations.size).to eq(1)
-
-      delegations.each_value do |delegated_policy|
-        expect(delegated_policy).to be_instance_of(::UserPolicy)
-      end
-    end
+    it { is_expected.to delegate_to(::UserPolicy) }
   end
 end

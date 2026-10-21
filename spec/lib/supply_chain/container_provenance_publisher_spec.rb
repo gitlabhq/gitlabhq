@@ -14,7 +14,13 @@ RSpec.describe SupplyChain::ContainerProvenancePublisher, feature_category: :art
 
     let(:result_status) { result[1] }
     let(:attestations) { result[0] }
-    let(:yaml_variables) { [{ key: 'IMAGE_DIGEST', value: hash, public: true }] }
+    let(:attest_method) { 'SIGSTORE' }
+    let(:yaml_variables) do
+      [
+        { key: 'IMAGE_DIGEST', value: hash, public: true },
+        { key: 'ATTEST_METHOD', value: attest_method, public: true }
+      ]
+    end
 
     before do
       allow(Gitlab::Ci::JwtV2).to receive(:for_build).and_return(id_token)
@@ -29,12 +35,14 @@ RSpec.describe SupplyChain::ContainerProvenancePublisher, feature_category: :art
       expect(attestations).to all(be_persisted)
       expect(attestations).to all(be_success)
       expect(attestations).to all(be_provenance)
+      expect(attestations).to all(be_signing_method_sigstore)
 
       attestations.each do |att|
         expect(att.project_id).to eq(project.id)
         expect(att.build_id).to eq(build.id)
         expect(att.predicate_type).to eq(expected_predicate_type)
         expect(att.file.read).to eq(signature_bundle)
+        expect(att.signing_certificate_id).to be_nil
       end
 
       expect(attestations).to include(an_object_having_attributes(subject_digest: hash))
@@ -53,7 +61,8 @@ RSpec.describe SupplyChain::ContainerProvenancePublisher, feature_category: :art
         message: "Container attestation successful",
         hash: hash,
         duration: expected_duration,
-        build_id: build.id
+        build_id: build.id,
+        signing_method: :sigstore
       }))
     end
 
@@ -103,6 +112,7 @@ RSpec.describe SupplyChain::ContainerProvenancePublisher, feature_category: :art
         expect(attestations).to all(be_persisted)
         expect(attestations).to all(be_error)
         expect(attestations).to all(be_provenance)
+        expect(attestations).to all(be_signing_method_sigstore)
 
         att = attestations[0]
 
@@ -115,7 +125,8 @@ RSpec.describe SupplyChain::ContainerProvenancePublisher, feature_category: :art
         expect(Gitlab::AppJsonLogger).to have_received(:info).with(a_hash_including({
           message: "Container attestation failure",
           hash: hash,
-          build_id: build.id
+          build_id: build.id,
+          signing_method: :sigstore
         }))
       end
     end

@@ -26,7 +26,7 @@ import CreateGranularPersonalAccessTokenForm from '~/personal_access_tokens/comp
 import PersonalAccessTokenExpirationDate from '~/personal_access_tokens/components/create_granular_token/personal_access_token_expiration_date.vue';
 import PersonalAccessTokenScopeSelector from '~/personal_access_tokens/components/create_granular_token/personal_access_token_scope_selector.vue';
 import PersonalAccessTokenNamespaceSelector from '~/personal_access_tokens/components/create_granular_token/personal_access_token_namespace_selector.vue';
-import PersonalAccessTokenPermissionsSelector from '~/personal_access_tokens/components/create_granular_token/personal_access_token_permissions_selector.vue';
+import GranularPermissionsSelector from '~/vue_shared/access_tokens/components/granular_permissions_selector.vue';
 import ConfirmUnsavedChangesDialog from '~/vue_shared/components/confirm_unsaved_changes_dialog.vue';
 import CreatedPersonalAccessToken from '~/personal_access_tokens/components/created_personal_access_token.vue';
 import createGranularPersonalAccessTokenMutation from '~/personal_access_tokens/graphql/create_granular_personal_access_token.mutation.graphql';
@@ -41,9 +41,8 @@ import {
   mockUserScopedTokenQueryResponse,
   mockNullDescriptionTokenQueryResponse,
   mockLegacySourceTokenQueryResponse,
-  mockProjects,
-  mockGroups,
 } from '../../mock_data';
+import { mockGroups, mockProjects } from '../../../vue_shared/access_tokens/mock_data';
 
 const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
@@ -99,8 +98,7 @@ describe('CreateGranularPersonalAccessTokenForm', () => {
   const findLink = () => wrapper.findComponent(GlLink);
   const findLinks = () => wrapper.findAllComponents(GlLink);
 
-  const findPermissionsSelector = () =>
-    wrapper.findComponent(PersonalAccessTokenPermissionsSelector);
+  const findPermissionsSelector = () => wrapper.findComponent(GranularPermissionsSelector);
   const emitPermissions = ({ groupPermissions, userPermissions, instancePermissions } = {}) =>
     findPermissionsSelector().vm.$emit('input', {
       namespace: groupPermissions ? mockCreateMutationInput.group.permissions : [],

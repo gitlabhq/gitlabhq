@@ -41,11 +41,11 @@ Prerequisites:
 
 To create a trigger token:
 
-1. In the top bar, select **Search or go to** and find your project.
-1. In the left sidebar, select **Settings** > **CI/CD**.
-1. Expand **Pipeline trigger tokens**.
-1. Select **Add new token**
-1. Enter a description and select **Create pipeline trigger token**.
+1. In the top bar, select {{< ui text="Search or go to" >}} and find your project.
+1. In the left sidebar, select {{< ui text="Settings" >}} > {{< ui text="CI/CD" >}}.
+1. Expand {{< ui text="Pipeline trigger tokens" >}}.
+1. Select {{< ui text="Add new token" >}}
+1. Enter a description and select {{< ui text="PipelineTriggerTokens|Create pipeline trigger token" >}}.
    - You can view and copy the full token for all triggers you have created.
    - You can only see the first 4 characters for tokens created by other project members.
 
@@ -201,10 +201,10 @@ spec:
 
 To revoke a pipeline trigger token:
 
-1. In the top bar, select **Search or go to** and find your project.
-1. In the left sidebar, select **Settings** > **CI/CD**.
-1. Expand **Pipeline triggers**.
-1. To the left of the trigger token you want to revoke, select **Revoke** ({{< icon name="remove" >}}).
+1. In the top bar, select {{< ui text="Search or go to" >}} and find your project.
+1. In the left sidebar, select {{< ui text="Settings" >}} > {{< ui text="CI/CD" >}}.
+1. Expand {{< ui text="Pipeline trigger tokens" >}}.
+1. To the left of the trigger token you want to revoke, select {{< ui text="Pipelines|Revoke trigger" >}} ({{< icon name="remove" >}}).
 
 A revoked trigger token cannot be added back.
 
@@ -227,10 +227,10 @@ in pipelines triggered with a pipeline trigger token.
 ## See which pipeline trigger token was used
 
 You can see which pipeline trigger token caused a job to run by visiting the single job page.
-A part of the trigger token displays in the right sidebar, under **Job details**.
+A part of the trigger token displays in the right sidebar, in the {{< ui text="Trigger token:" >}} section.
 
 In pipelines triggered with a trigger token, jobs are labeled as `triggered` in
-**Build** > **Jobs**.
+{{< ui text="Navigation|Build" >}} > {{< ui text="Jobs" >}}.
 
 ## Troubleshooting
 

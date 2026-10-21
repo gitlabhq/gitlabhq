@@ -958,14 +958,30 @@ class Note < ApplicationRecord
   end
 
   def ensure_confidentiality_discussion_compliance
-    return if start_of_discussion?
+    if Feature.enabled?(:reply_confidentiality_check_loads_first_note, resource_parent)
+      first_note = discussion_first_note
+      return if first_note == self
+    else
+      return if start_of_discussion?
 
-    if discussion.first_note.confidential? != confidential?
+      first_note = discussion.first_note
+    end
+
+    if first_note.confidential? != confidential?
       errors.add(:confidential, _('reply should have same confidentiality as top-level note'))
     end
 
   ensure
     clear_memoization(:discussion)
+  end
+
+  # Validation runs on every save, twice per reply, so load only the first note instead of the whole
+  # thread. A discussion that is already loaded is reused, as callers that save every note of a thread rely on it.
+  def discussion_first_note
+    return discussion.first_note if strong_memoized?(:discussion)
+    return self unless noteable && part_of_discussion?
+
+    noteable.notes.with_discussion_ids(discussion_id).order_created_at_id_asc.first || self
   end
 
   def ensure_noteable_can_have_confidential_note

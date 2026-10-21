@@ -58,6 +58,16 @@ RSpec.describe ::Gitlab::Housekeeper::Change do
 
       expect(change.labels).to eq(['existing-label', 'automation:gitlab-housekeeper-authored'])
     end
+
+    it 'adds the housekeeper label without modifying frozen labels' do
+      labels = ['existing-label'].freeze
+      change.labels = labels
+
+      change.add_standard_data!
+
+      expect(change.labels).to eq(['existing-label', 'automation:gitlab-housekeeper-authored'])
+      expect(labels).to eq(['existing-label'])
+    end
   end
 
   describe '#mr_description' do

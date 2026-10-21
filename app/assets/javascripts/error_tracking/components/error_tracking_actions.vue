@@ -24,6 +24,10 @@ export default {
       required: true,
       validator: ({ status }) => statusValidation.includes(status),
     },
+    detailsPath: {
+      type: String,
+      required: true,
+    },
   },
   emits: ['update-issue-status'],
   computed: {
@@ -36,9 +40,6 @@ export default {
       return this.error.status !== RESOLVED
         ? { status: RESOLVED, icon: 'check-circle', title: __('Resolve') }
         : { status: UNRESOLVED, icon: 'canceled-circle', title: __('Unresolve') };
-    },
-    detailsLink() {
-      return `error_tracking/${this.error.id}/details`;
     },
   },
 };
@@ -93,7 +94,7 @@ export default {
       </gl-button>
     </div>
     <gl-button
-      :href="detailsLink"
+      :href="detailsPath"
       category="primary"
       variant="confirm"
       class="gl-mb-0 gl-ml-3 @md/panel:!gl-hidden"

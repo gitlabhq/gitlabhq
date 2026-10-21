@@ -3,7 +3,7 @@
 module Mutations
   module MergeRequests
     module WorkItemRelations
-      class Create < Base
+      class Create < ::Mutations::MergeRequests::Base
         graphql_name 'MergeRequestCreateWorkItemRelations'
         description 'Links work items to a merge request.'
 
@@ -26,7 +26,6 @@ module Mutations
 
         def resolve(project_path:, iid:, work_item_ids:, link_type:)
           merge_request = authorized_find!(project_path: project_path, iid: iid)
-          raise_resource_not_available_error! unless feature_enabled?(merge_request)
 
           work_items = ::WorkItem.id_in(work_item_ids.map(&:model_id))
 

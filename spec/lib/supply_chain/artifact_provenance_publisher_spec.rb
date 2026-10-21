@@ -13,6 +13,7 @@ RSpec.describe SupplyChain::ArtifactProvenancePublisher, feature_category: :arti
 
     let(:result_status) { result[1] }
     let(:attestations) { result[0] }
+    let(:attest_method) { 'SIGSTORE' }
 
     let(:expected_hashes) do
       {
@@ -35,12 +36,14 @@ RSpec.describe SupplyChain::ArtifactProvenancePublisher, feature_category: :arti
       expect(attestations).to all(be_persisted)
       expect(attestations).to all(be_success)
       expect(attestations).to all(be_provenance)
+      expect(attestations).to all(be_signing_method_sigstore)
 
       attestations.each do |att|
         expect(att.project_id).to eq(project.id)
         expect(att.build_id).to eq(build.id)
         expect(att.predicate_type).to eq(expected_predicate_type)
         expect(att.file.read).to eq(signature_bundle)
+        expect(att.signing_certificate_id).to be_nil
       end
 
       expected_hashes.each_value do |hash|
@@ -63,7 +66,8 @@ RSpec.describe SupplyChain::ArtifactProvenancePublisher, feature_category: :arti
           hash: hash,
           blob_name: File.basename(path),
           duration: expected_duration,
-          build_id: build.id
+          build_id: build.id,
+          signing_method: :sigstore
         }))
       end
     end
@@ -145,6 +149,7 @@ RSpec.describe SupplyChain::ArtifactProvenancePublisher, feature_category: :arti
         expect(attestations).to all(be_persisted)
         expect(attestations).to all(be_error)
         expect(attestations).to all(be_provenance)
+        expect(attestations).to all(be_signing_method_sigstore)
 
         attestations.each do |att|
           expect(att.project_id).to eq(project.id)
@@ -159,7 +164,8 @@ RSpec.describe SupplyChain::ArtifactProvenancePublisher, feature_category: :arti
             message: "Attestation failure",
             hash: hash,
             blob_name: File.basename(path),
-            build_id: build.id
+            build_id: build.id,
+            signing_method: :sigstore
           }))
         end
       end

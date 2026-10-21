@@ -19,6 +19,7 @@ describe('Error Tracking Actions', () => {
           lastSeen: '2019-11-06T03:21:39Z',
           status: 'unresolved',
         },
+        detailsPath: '/project/path/-/error_tracking/1/details',
         ...props,
       },
       stubs: { GlButton },
@@ -30,6 +31,8 @@ describe('Error Tracking Actions', () => {
   });
 
   const findButtons = () => wrapper.findAllComponents(GlButton);
+  const findDetailsButton = () =>
+    findButtons().wrappers.find((button) => button.text() === 'More details');
 
   describe('when error status is unresolved', () => {
     it('renders the correct actions buttons to allow ignore and resolve', async () => {
@@ -65,5 +68,9 @@ describe('Error Tracking Actions', () => {
       await nextTick();
       expect(findButtons().at(1).attributes('title')).toBe('Unresolve');
     });
+  });
+
+  it('links the details button to the details path', () => {
+    expect(findDetailsButton().attributes('href')).toBe('/project/path/-/error_tracking/1/details');
   });
 });

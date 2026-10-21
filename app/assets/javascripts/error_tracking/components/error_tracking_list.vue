@@ -24,6 +24,7 @@ import AccessorUtils from '~/lib/utils/accessor';
 import { __ } from '~/locale';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { joinPaths } from '~/lib/utils/url_utility';
+import { updateProjectErrorTrackingIndexPath } from '~/lib/utils/path_helpers/project';
 import {
   trackErrorListViewsOptions,
   trackErrorStatusUpdateOptions,
@@ -236,7 +237,7 @@ export default {
       if (!isValidErrorId(errorId)) {
         return 'about:blank';
       }
-      return `/${this.projectPath}/-/error_tracking/${errorId}.json`;
+      return updateProjectErrorTrackingIndexPath(this.projectPath, errorId, { format: 'json' });
     },
     filterErrors(status, label) {
       this.filterValue = label;
@@ -461,7 +462,11 @@ export default {
           </template>
 
           <template #cell(status)="errors">
-            <error-tracking-actions :error="errors.item" @update-issue-status="updateErrosStatus" />
+            <error-tracking-actions
+              :error="errors.item"
+              :details-path="getDetailsLink(errors.item.id)"
+              @update-issue-status="updateErrosStatus"
+            />
           </template>
 
           <template #empty>

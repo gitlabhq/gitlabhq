@@ -9,6 +9,8 @@ module Resolvers
       include LooksAhead
       include ResolvesPipelines
 
+      authorize_granular_token permissions: :read_pipeline, boundary: :itself, boundary_type: :project
+
       alias_method :project, :object
 
       def resolve_with_lookahead(**args)
