@@ -6,6 +6,14 @@ module MergeRequests
     # transitions are excluded: they aren't a review the user is submitting.
     REVIEWER_ASSIGNMENT_STATES = %w[reviewed approved requested_changes].freeze
 
+    # Duo Code Review passes `review_workflow_id` for a review session that it authorized.
+    # It is a keyword argument, not a param, so request params cannot set it.
+    def initialize(project:, current_user: nil, params: {}, review_workflow_id: nil)
+      super(project: project, current_user: current_user, params: params)
+
+      @review_workflow_id = review_workflow_id
+    end
+
     def execute(merge_request, state)
       return error("Invalid permissions") unless can?(current_user, :update_merge_request, merge_request)
 
@@ -35,6 +43,8 @@ module MergeRequests
           return error("Failed to remove approval")
         end
 
+        publish_requested_changes_event(merge_request)
+
         success
       else
         error("Reviewer not found")
@@ -42,6 +52,21 @@ module MergeRequests
     end
 
     private
+
+    attr_reader :review_workflow_id
+
+    def publish_requested_changes_event(merge_request)
+      root_namespace = merge_request.project.root_ancestor
+      return unless Feature.enabled?(:dap_software_factory, root_namespace)
+
+      Gitlab::EventStore.publish(
+        MergeRequests::RequestedChangesCloudEvent.build(
+          merge_request: merge_request,
+          current_user: current_user,
+          review_workflow_id: review_workflow_id
+        )
+      )
+    end
 
     def create_requested_changes(merge_request)
       merge_request.create_requested_changes(current_user)

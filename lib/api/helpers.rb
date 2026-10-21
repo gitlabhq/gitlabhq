@@ -1360,7 +1360,7 @@ module API
 
     def authorize_granular_token?(token)
       token.respond_to?(:granular?) &&
-        (token.granular? || token.subject_to_granular_enforcement?) &&
+        token.subject_to_granular_authorization? &&
         !authorization_settings[:skip_granular_token_authorization]
     end
 

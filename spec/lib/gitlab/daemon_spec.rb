@@ -24,7 +24,9 @@ RSpec.describe Gitlab::Daemon do
     end
 
     it 'subsequent invocations provide the same instance' do
-      expect(described_class.instance).to eq(described_class.instance)
+      first_instance = described_class.instance
+
+      expect(described_class.instance).to be(first_instance)
     end
 
     it 'creates at_exit hook when instance is created' do

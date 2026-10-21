@@ -150,7 +150,8 @@ module API
           failure [
             { code: 401, message: 'Unauthorized' },
             { code: 403, message: 'Forbidden' },
-            { code: 404, message: 'Not found' }
+            { code: 404, message: 'Not found' },
+            { code: 429, message: 'Too Many Requests' }
           ]
           tags ['ci_jobs']
         end
@@ -165,13 +166,18 @@ module API
 
           build = find_build!(params[:job_id])
           authorize!(:cancel_build, build)
+          authorize!(:force_cancel_build, build) if params[:force]
 
-          if params[:force]
-            authorize!(:force_cancel_build, build)
-            build.force_cancel
-          else
-            build.cancel
+          response = ::Ci::BuildCancelService.new(build, current_user, params[:force]).execute
+
+          if response.error? && response.reason == :rate_limited
+            too_many_requests!(response.message, retry_after: ::Gitlab::ApplicationRateLimiter.period_for(:job_cancel))
           end
+
+          # The service rejects manual and scheduled jobs as not cancelable, but this
+          # endpoint has always canceled them. It also answers any other job with nothing
+          # left to cancel with the unchanged job, so keep doing so.
+          build.cancel if response.error? && !params[:force] && (build.manual? || build.scheduled?)
 
           present build, with: Entities::Ci::Job
         end

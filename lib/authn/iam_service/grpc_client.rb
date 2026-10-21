@@ -33,6 +33,9 @@ module Authn
         GRPC::Core::StatusCodes::FAILED_PRECONDITION => :failed_precondition
       }.freeze
 
+      # IAM is down or slow, rather than the request being wrong.
+      TRANSIENT_REASONS = %i[unavailable timeout].freeze
+
       TIMEOUT_SECONDS = 5
 
       # Workaround: the GATE sandbox Envoy gateway requires this header to route
@@ -63,8 +66,12 @@ module Authn
         error.class.name
       end
 
-      def initialize(timeout: nil)
+      # Callers that run on every authenticated request pass
+      # report_transient_errors: false, so an IAM outage does not send one
+      # Sentry event per request.
+      def initialize(timeout: nil, report_transient_errors: true)
         @timeout = timeout || TIMEOUT_SECONDS
+        @report_transient_errors = report_transient_errors
       end
 
       def health(**kwargs)
@@ -141,11 +148,14 @@ module Authn
         Gitlab::ErrorTracking.track_exception(e)
         raise RequestError.new('IAM auth service is not configured', reason: :unavailable)
       rescue GRPC::BadStatus => e
-        Gitlab::ErrorTracking.track_exception(e)
-        raise RequestError.new(
-          "IAM service request failed: #{e.code}",
-          reason: ERROR_REASONS.fetch(e.code, :unknown)
-        )
+        raise request_error_from(e)
+      end
+
+      def request_error_from(error)
+        reason = ERROR_REASONS.fetch(error.code, :unknown)
+        Gitlab::ErrorTracking.track_exception(error) if @report_transient_errors || TRANSIENT_REASONS.exclude?(reason)
+
+        RequestError.new("IAM service request failed: #{error.code}", reason: reason)
       end
 
       def stub

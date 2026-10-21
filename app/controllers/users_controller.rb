@@ -84,9 +84,7 @@ class UsersController < ApplicationController
         @is_personal_homepage = permitted_params[:is_personal_homepage].present?
 
         if raw_feed
-          events = @events.to_a
-          set_feed_has_more_header(events)
-          @events = events_visible_to_viewer(events.first(feed_limit))
+          @events = feed_page_events(@events)
 
           render json: ::Profile::EventSerializer.new(current_user: current_user, target_user: user)
                                                  .represent(@events)
@@ -206,9 +204,9 @@ class UsersController < ApplicationController
     if permitted_params[:format] == 'json'
       # The Vue feed pages through a day's events, so honor limit/offset here
       # (events_by_date otherwise returns every event for the date).
-      events = events.paginate_by_created_at(probe_limit, calendar_activities_offset).map(&:present)
-      set_feed_has_more_header(events)
-      @events = events_visible_to_viewer(events.first(feed_limit))
+      @events = feed_page_events(
+        events.paginate_by_created_at(probe_limit, calendar_activities_offset).map(&:present)
+      )
 
       Events::RenderService.new(current_user).execute(@events)
 
@@ -265,30 +263,18 @@ class UsersController < ApplicationController
     )
   end
 
-  # Both feeds apply limit/offset in SQL and only then drop events the viewer
-  # may not see, so the client cannot tell a filtered page from the last one.
-  # Fetching one row beyond the page answers that exactly.
-  def set_feed_has_more_header(events)
-    response.set_header(FEED_HAS_MORE_HEADER, more_events_after_page?(events).to_s)
-  end
-
-  def more_events_after_page?(events)
-    return false unless feed_limit > 0
-    return events.size > feed_limit if probe_limit > feed_limit
-
-    # The caller asked for the largest page we serve, so there is no room for
-    # the probe row and a full page is the best signal available.
-    events.size == feed_limit
+  # Both feeds fetch `probe_limit` rows, one beyond the page, so the client can
+  # tell a page shortened by visibility filtering from the last one.
+  def feed_page_events(events)
+    page = ::Users::ActivityFeedPage.new(
+      events, feed_limit: feed_limit, probe_limit: probe_limit, viewer: current_user, target_user: user
+    )
+    response.set_header(FEED_HAS_MORE_HEADER, page.more?.to_s)
+    page.visible_events
   end
 
   def probe_limit
     [feed_limit + 1, MAX_FEED_LIMIT].min
-  end
-
-  def events_visible_to_viewer(events)
-    return events.reject(&:target_deleted?) if user.include_private_contributions?
-
-    events.select { |event| event.visible_to_user?(current_user) }
   end
 
   def feed_limit

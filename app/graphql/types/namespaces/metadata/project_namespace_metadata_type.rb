@@ -10,12 +10,15 @@ module Types
         field :default_branch,
           GraphQL::Types::String,
           null: true,
-          description: 'Default branch of the project.',
+          description: 'Default branch of the project. Returns null ' \
+            'if the user does not have permission to read the repository.',
           fallback_value: nil,
           calls_gitaly: true,
           experiment: { milestone: '18.6' }
 
         def default_branch
+          return unless can?(current_user, :read_code, project)
+
           project.default_branch_or_main
         end
 

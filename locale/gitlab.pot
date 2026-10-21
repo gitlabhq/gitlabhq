@@ -7015,6 +7015,9 @@ msgstr ""
 msgid "AdminSettings|Maximum includes"
 msgstr ""
 
+msgid "AdminSettings|Maximum job cancellations per project"
+msgstr ""
+
 msgid "AdminSettings|Maximum job erasures per project"
 msgstr ""
 
@@ -7277,6 +7280,9 @@ msgid "AdminSettings|The maximum number of downstream pipelines that can be trig
 msgstr ""
 
 msgid "AdminSettings|The maximum number of included files per pipeline."
+msgstr ""
+
+msgid "AdminSettings|The maximum number of job cancellations allowed per minute for a given project. Set to 0 to disable this limit."
 msgstr ""
 
 msgid "AdminSettings|The maximum number of job erasures allowed per minute for a given project. Set to 0 to disable this limit."
@@ -10183,7 +10189,7 @@ msgstr ""
 msgid "AiPowered|…and %{count} more"
 msgstr ""
 
-msgid "AiSuggestedReviewers|A suggested user or approval rule no longer exists"
+msgid "AiSuggestedReviewers|A suggested user does not exist"
 msgstr ""
 
 msgid "AiSuggestedReviewers|Each user can only be suggested once per merge request"
@@ -11259,6 +11265,9 @@ msgid "An error occurred while editing lock information, please try again."
 msgstr ""
 
 msgid "An error occurred while enabling Service Desk."
+msgstr ""
+
+msgid "An error occurred while exporting merge requests."
 msgstr ""
 
 msgid "An error occurred while fetching Markdown preview"
@@ -33915,6 +33924,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Interest recorded"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Last 30 days"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Learn more about GitLab Duo"
 msgstr ""
 
@@ -34039,6 +34051,9 @@ msgid "DuoAgentsPlatform|Run on"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Run only when the work item changes to one of the selected statuses. Leave empty to run on any status change."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Run volume"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Run volume, last 30 days"
@@ -42370,6 +42385,9 @@ msgstr ""
 msgid "Globally-allowed IP ranges"
 msgstr ""
 
+msgid "Glql|%{metric} trend"
+msgstr ""
+
 msgid "Glql|Description placeholders cannot be used with dimensions."
 msgstr ""
 
@@ -42383,6 +42401,9 @@ msgid "Glql|Light (1–4)"
 msgstr ""
 
 msgid "Glql|May include subgroups you cannot see"
+msgstr ""
+
+msgid "Glql|No data for the previous period"
 msgstr ""
 
 msgid "Glql|No group"
@@ -85595,6 +85616,9 @@ msgstr ""
 msgid "Table|%{columnName} sorted descending."
 msgstr ""
 
+msgid "Table|Collapse table"
+msgstr ""
+
 msgid "Table|Column %{columnNumber}"
 msgstr ""
 
@@ -85602,6 +85626,9 @@ msgid "Table|Original row order restored."
 msgstr ""
 
 msgid "Table|Reset sorting"
+msgstr ""
+
+msgid "Table|Show full table"
 msgstr ""
 
 msgid "Table|Sort ascending"
@@ -93212,6 +93239,9 @@ msgid "UserMapping|You can assign active users with regular, auditor, or adminis
 msgstr ""
 
 msgid "UserMapping|You can assign only enterprise users in the top-level group you're importing to."
+msgstr ""
+
+msgid "UserMapping|You can assign only enterprise users or existing members of the top-level group you're importing to, its subgroups, or its projects."
 msgstr ""
 
 msgid "UserMapping|You can assign only users with linked SAML and SCIM identities. Ensure the user has signed into GitLab through your SAML SSO provider and has an active SCIM identity for this group."

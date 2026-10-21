@@ -18,7 +18,10 @@ module Mutations
         def resolve(id:)
           job = authorized_find!(id: id)
 
-          ::Ci::BuildCancelService.new(job, current_user).execute
+          response = ::Ci::BuildCancelService.new(job, current_user).execute
+
+          return { job: nil, errors: [response.message] } if response.error? && response.reason == :rate_limited
+
           {
             job: job,
             errors: errors_on_object(job)

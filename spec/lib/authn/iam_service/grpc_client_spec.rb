@@ -330,6 +330,31 @@ RSpec.describe Authn::IamService::GrpcClient, feature_category: :system_access d
       end
     end
 
+    context 'when report_transient_errors is false' do
+      subject(:client) { described_class.new(report_transient_errors: false) }
+
+      where(:error_class, :tracked) do
+        GRPC::Unavailable      | false
+        GRPC::DeadlineExceeded | false
+        GRPC::Internal         | true
+        GRPC::Unauthenticated  | true
+      end
+
+      with_them do
+        let(:error) { error_class.new('upstream details') }
+
+        it 'still raises, and tracks only non-transient errors', :aggregate_failures do
+          expect { client.health }.to raise_error(described_class::RequestError)
+
+          if tracked
+            expect(Gitlab::ErrorTracking).to have_received(:track_exception).with(error)
+          else
+            expect(Gitlab::ErrorTracking).not_to have_received(:track_exception)
+          end
+        end
+      end
+    end
+
     # A failed check must surface as an error, never as "not revoked".
     context 'when IsRevoked fails' do
       let(:error) { GRPC::Unavailable.new('upstream details') }

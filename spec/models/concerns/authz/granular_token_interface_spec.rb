@@ -51,6 +51,29 @@ RSpec.describe Authz::GranularTokenInterface, feature_category: :permissions do
     end
   end
 
+  describe '#subject_to_granular_authorization?' do
+    context 'when the token is granular' do
+      it 'returns true' do
+        expect(token_class.new(true).subject_to_granular_authorization?).to be(true)
+      end
+    end
+
+    context 'when the token is legacy and subject to granular enforcement' do
+      it 'returns true' do
+        expect(token_class.new(false).subject_to_granular_authorization?).to be(true)
+      end
+    end
+
+    context 'when the token is legacy and not subject to granular enforcement' do
+      it 'returns false' do
+        token = token_class.new(false)
+        allow(token).to receive(:subject_to_granular_enforcement?).and_return(false)
+
+        expect(token.subject_to_granular_authorization?).to be(false)
+      end
+    end
+  end
+
   describe '#permitted_for_boundary?' do
     subject(:permitted_for_boundary) { token.permitted_for_boundary?(boundary, permissions) }
 
@@ -100,7 +123,7 @@ RSpec.describe Authz::GranularTokenInterface, feature_category: :permissions do
       token = build_stubbed(:personal_access_token)
 
       expect(token).to respond_to(:granular?, :legacy?, :permitted_for_boundary?, :can?, :granular_scopes,
-        :subject_to_granular_enforcement?)
+        :subject_to_granular_enforcement?, :subject_to_granular_authorization?)
     end
   end
 
@@ -113,7 +136,7 @@ RSpec.describe Authz::GranularTokenInterface, feature_category: :permissions do
       token = build_stubbed(:oauth_access_token)
 
       expect(token).to respond_to(:granular?, :legacy?, :permitted_for_boundary?, :can?, :granular_scopes,
-        :subject_to_granular_enforcement?)
+        :subject_to_granular_enforcement?, :subject_to_granular_authorization?)
     end
   end
 end

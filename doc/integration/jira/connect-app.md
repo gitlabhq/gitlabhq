@@ -313,28 +313,47 @@ If you installed the GitLab for Jira Cloud app from the
 - You do not have to change your GitLab configuration.
 
 If you previously installed the GitLab for Jira Cloud app manually with the Connect-based
-**App descriptor URL** workflow, you must migrate to the Forge-based method.
+**App descriptor URL** workflow, you must move to a private Forge app.
 Atlassian [disabled Connect-based private installs on 2026-03-31](https://www.atlassian.com/blog/developer/announcing-connect-end-of-support-timeline-and-next-steps),
 so the previous workflow no longer works.
 
-To migrate and preserve your existing data:
-
-1. [Convert your Connect app descriptor to a Forge manifest](https://developer.atlassian.com/platform/adopting-forge-from-connect/how-to-adopt/#part-2--convert-your-descriptor-to-a-manifest).
-1. [Register the new Forge app](https://developer.atlassian.com/platform/adopting-forge-from-connect/how-to-adopt/#part-3--register-and-deploy-your-app-to-your-forge-development-site)
-   using the converted manifest.
-
-These steps ensure the new Forge app retains the original `connect.app.key`.
-Jira uses this key, together with the new Forge app ID, to recognize both
-installations as linked, so your previously synced development data remains intact.
-
-After conversion, follow the
-[Forge-based manual install instructions](../../administration/settings/jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-manually)
-to publish a private copy of the
-[GitLab for Jira Cloud Forge app](https://gitlab.com/gitlab-org/gitlab-jira-forge) under your own
-Atlassian developer account.
+To switch between the Atlassian Marketplace listing and a private Forge app, see
+[Switch installation methods](../../administration/settings/jira_cloud_app.md#switch-installation-methods).
 
 For more information about the transition from Connect to Forge, see
 [the Atlassian guide on how to adopt Forge](https://developer.atlassian.com/platform/adopting-forge-from-connect/how-to-adopt/).
+
+### Migrate a manual Connect installation to a private Forge app
+
+If the Forge app registers with the same app key as your Connect app,
+this migration keeps group links and synced development data.
+
+Prerequisites:
+
+- Administrator access.
+- A blank **Jira Connect Proxy URL** setting.
+- The redirect URI of your instance on the OAuth application.
+
+> [!warning]
+> Do not uninstall the old app first.
+> Jira deletes the development information that the app sent,
+> and GitLab deletes the installation record and its group links.
+> Install the private Forge app while the old app is still installed.
+
+To migrate:
+
+1. [Record your group links](../../administration/settings/jira_cloud_app.md#record-your-group-links).
+1. Publish the private Forge app by following
+   [Install the GitLab for Jira Cloud app manually](../../administration/settings/jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-manually).
+   The wrapper script derives the same `gitlab-jira-connect-<host>` key from `GITLAB_URL`.
+   If the hostname that Jira uses differs from the `external_url` of your instance,
+   also set `GITLAB_APP_KEY_HOST`.
+   For more information, see
+   [when the Forge URL and `external_url` hosts differ](https://gitlab.com/gitlab-org/gitlab-jira-forge/-/blob/main/docs/self-managed-install.md#when-the-forge-url-and-external_url-hosts-differ).
+1. In Jira, confirm that the app shows as updated and not as a second app.
+1. Record your group links again.
+   Confirm that the linked groups are the same as before.
+   If you use the Rails console, also confirm that the installation ID is unchanged.
 
 ## Security considerations
 

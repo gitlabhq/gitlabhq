@@ -1,6 +1,11 @@
 import { __, s__, sprintf } from '~/locale';
 import { FIELD_TYPES, TREND_TYPENAME } from '../../../constants';
-import { baseFieldKeyOf, dimensionsOf, metricsOf } from '../../../utils/chart_data';
+import {
+  baseFieldKeyOf,
+  dimensionsOf,
+  labelWithParameter,
+  metricsOf,
+} from '../../../utils/chart_data';
 import {
   TREND_CHANGE_KEY,
   TREND_KEY,
@@ -73,10 +78,13 @@ export const trendColumnFor = ({ fields, data, comparisonData, pending, metric, 
   const dimensions = dimensionsOf(fields);
   if (hasTemporalDimension(dimensions)) return null;
 
+  const metricLabel = labelWithParameter(metric);
   const column = {
     key: TREND_KEY,
     sortKey: TREND_CHANGE_KEY,
-    label: s__('Glql|vs previous period'),
+    label: metricLabel
+      ? sprintf(s__('Glql|%{metric} trend'), { metric: metricLabel }, false)
+      : s__('Glql|vs previous period'),
     type: FIELD_TYPES.METRIC,
   };
 

@@ -122,10 +122,10 @@ To protect a branch for all projects in a group:
 The **Allowed to merge** and **Allowed to push and merge** settings control different
 aspects of branch protection:
 
-| Setting                       | Purpose                                                                                                        | Default behavior (not configured) |
-|-------------------------------|----------------------------------------------------------------------------------------------------------------|-----------------------------------|
+| Setting                       | Purpose                                                                                                        | Behavior when every selection is cleared                           |
+|-------------------------------|----------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------|
 | **Allowed to merge**          | Controls who can merge changes through merge requests and create new protected branches through the UI and API | No one can merge (unless they have **Allowed to push and merge**). |
-| **Allowed to push and merge** | Controls who can push directly to existing protected branches and merge through merge requests                 | No one can push.                  |
+| **Allowed to push and merge** | Controls who can push directly to existing protected branches and merge through merge requests                 | No one can push.                                                   |
 
 > [!note]
 > **Allowed to push and merge** grants both push and merge capabilities.
@@ -146,7 +146,7 @@ security requirements.
 For branches deployed to production environments:
 
 - Set **Allowed to merge** to **Maintainers** only.
-- Set **Allowed to push and merge** to **No one** (not empty).
+- Set **Allowed to push and merge** to **No one**.
 - Enable **Require approval from code owners**.
 - Consider requiring multiple approvals.
 
@@ -155,15 +155,15 @@ With this configuration, all changes require merge requests with maintainer appr
 For active development branches:
 
 - Set **Allowed to merge** to **Developers + Maintainers**.
-- Set **Allowed to push and merge** to **No one** (not empty).
+- Set **Allowed to push and merge** to **No one**.
 
 With this configuration, developers can merge approved merge requests while requiring
 all changes to go through code review.
 
 > [!note]
-> When **Allowed to push and merge** is not configured, it does not restrict
-> push access. To prevent direct pushes, you must explicitly set **Allowed to push and merge**
-> to **No one**.
+> When you clear every selection in **Allowed to push and merge** on an existing rule, no one can push.
+> When you create a branch rule, GitLab selects **Maintainers** for **Allowed to push and merge**.
+> To prevent direct pushes, set **Allowed to push and merge** to **No one**.
 
 ### Permission combinations for Developer role
 

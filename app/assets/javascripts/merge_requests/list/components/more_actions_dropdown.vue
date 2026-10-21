@@ -28,6 +28,11 @@ export default {
       type: Number,
       required: true,
     },
+    exportVariables: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
   },
   data() {
     return {
@@ -87,6 +92,7 @@ export default {
         v-if="isSignedIn"
         :issuable-count="count"
         :export-csv-path="exportCsvPathWithQuery"
+        :export-variables="exportVariables"
       />
       <gl-disclosure-dropdown-group :bordered="isSignedIn">
         <gl-disclosure-dropdown-item :item="subscribeToRSSItem" />

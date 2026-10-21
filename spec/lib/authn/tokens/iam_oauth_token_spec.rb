@@ -267,8 +267,110 @@ RSpec.describe Authn::Tokens::IamOauthToken, feature_category: :system_access do
   end
 
   describe '#revoked?' do
-    it 'always returns false' do
+    it 'returns false when IAM does not hold the jti' do
       expect(token.revoked?).to be(false)
+    end
+
+    it 'returns true when IAM holds the jti' do
+      stub_iam_revocation_check(revoked: true)
+
+      expect(token.revoked?).to be(true)
+    end
+
+    it 'asks IAM about the jti, not the token' do
+      expect_next_instance_of(Authn::IamService::GrpcClient,
+        timeout: described_class::REVOCATION_CHECK_TIMEOUT_SECONDS, report_transient_errors: false) do |client|
+        expect(client).to receive(:token_revoked?).with(jti: token.id).and_return(false)
+      end
+
+      expect(token.revoked?).to be(false)
+    end
+
+    it 'checks once per token however often the predicate is called' do
+      expect_next_instance_of(Authn::IamService::GrpcClient) do |client|
+        expect(client).to receive(:token_revoked?).once.and_return(false)
+      end
+
+      3.times { token.revoked? }
+    end
+
+    it 'checks once per request across token objects for the same jti', :request_store do
+      expect_next_instance_of(Authn::IamService::GrpcClient) do |client|
+        expect(client).to receive(:token_revoked?).once.and_return(false)
+      end
+
+      2.times { described_class.from_jwt(valid_token_string).revoked? }
+    end
+
+    it 're-checks after reload', :request_store do
+      expect_next_instances_of(Authn::IamService::GrpcClient, 2) do |client|
+        expect(client).to receive(:token_revoked?).once.and_return(false)
+      end
+
+      token.revoked?
+      token.reload
+      token.revoked?
+    end
+
+    context 'when IAM cannot answer' do
+      before do
+        stub_iam_revocation_check_failure
+      end
+
+      it 'fails closed' do
+        expect(token.revoked?).to be(true)
+      end
+
+      it 'logs the failure without tracking it' do
+        expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
+        expect(Gitlab::AuthLogger).to receive(:error).with(
+          message: 'IAM token revocation check failed, treating token as revoked',
+          iam_token_jti: token.id,
+          Labkit::Fields::ERROR_TYPE => 'unavailable',
+          Labkit::Fields::ERROR_MESSAGE => 'IAM service request failed'
+        )
+
+        token.revoked?
+      end
+    end
+
+    context 'when the check raises something other than a RequestError' do
+      let(:error) { TypeError.new('Invalid argument for string field') }
+
+      before do
+        allow_next_instance_of(Authn::IamService::GrpcClient) do |client|
+          allow(client).to receive(:token_revoked?).and_raise(error)
+        end
+      end
+
+      it 'fails closed and tracks the error' do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(error)
+
+        expect(token.revoked?).to be(true)
+      end
+    end
+  end
+
+  describe '#revocation_check_failed?' do
+    it 'returns false when IAM answers' do
+      stub_iam_revocation_check(revoked: true)
+
+      expect(token.revocation_check_failed?).to be(false)
+    end
+
+    it 'returns true when IAM cannot answer' do
+      stub_iam_revocation_check_failure
+
+      expect(token.revocation_check_failed?).to be(true)
+    end
+
+    it 'shares the check with #revoked?' do
+      expect_next_instance_of(Authn::IamService::GrpcClient) do |client|
+        expect(client).to receive(:token_revoked?).once.and_return(false)
+      end
+
+      token.revoked?
+      token.revocation_check_failed?
     end
   end
 

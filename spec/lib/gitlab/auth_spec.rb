@@ -675,6 +675,54 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
             stub_feature_flags(iam_svc_oauth: user)
           end
 
+          context 'when the token is revoked' do
+            before do
+              stub_iam_revocation_check(revoked: true)
+            end
+
+            it_behaves_like 'an oauth failure'
+
+            it 'does not try the token as a password' do
+              expect(gl_auth).not_to receive(:find_with_user_password)
+
+              authenticate(username: user.username, password: iam_jwt_token)
+            end
+
+            it 'counts toward the IP ban' do
+              stub_rack_attack_setting(enabled: true, ip_whitelist: [])
+
+              expect_next_instance_of(Gitlab::Auth::IpRateLimiter) do |rate_limiter|
+                expect(rate_limiter).to receive(:register_fail!)
+              end
+
+              authenticate(username: user.username, password: iam_jwt_token)
+            end
+          end
+
+          context 'when IAM cannot answer the revocation check' do
+            before do
+              stub_iam_revocation_check_failure
+            end
+
+            it 'fails without counting toward the IP ban' do
+              stub_rack_attack_setting(enabled: true, ip_whitelist: [])
+
+              expect_next_instance_of(Gitlab::Auth::IpRateLimiter) do |rate_limiter|
+                expect(rate_limiter).not_to receive(:register_fail!)
+                expect(rate_limiter).not_to receive(:reset!)
+              end
+
+              expect(authenticate(username: user.username, password: iam_jwt_token))
+                .to be_iam_revocation_check_failed.and(be_failed)
+            end
+
+            it 'does not try the token as a password' do
+              expect(gl_auth).not_to receive(:find_with_user_password)
+
+              authenticate(username: user.username, password: iam_jwt_token)
+            end
+          end
+
           context 'with specified scopes' do
             using RSpec::Parameterized::TableSyntax
 
@@ -1881,6 +1929,16 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
         expect(gl_auth).not_to receive(:find_with_user_password)
 
         result = gl_auth.send(:user_with_password_for_git, user.username, pat.token)
+        expect(result).to be_nil
+      end
+    end
+
+    context 'when password is an IAM access token' do
+      it 'returns nil immediately without calling find_with_user_password' do
+        expect(gl_auth).not_to receive(:find_with_user_password)
+
+        result = gl_auth.send(:user_with_password_for_git, user.username,
+          "#{Authn::Tokens::IamOauthToken::ACCESS_TOKEN_PREFIX}not-a-valid-jwt")
         expect(result).to be_nil
       end
     end

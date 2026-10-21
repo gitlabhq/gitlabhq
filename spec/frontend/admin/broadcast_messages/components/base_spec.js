@@ -69,6 +69,7 @@ describe('BroadcastMessagesBase', () => {
 
     expect(axiosMock.history.delete).toHaveLength(0);
     expect(findTable().props('messages')).toHaveLength(MOCK_MESSAGES.length);
+    expect(createAlert).not.toHaveBeenCalled();
   });
 
   it('does not remove a deleted message if the request fails', async () => {

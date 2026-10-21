@@ -89,6 +89,24 @@ RSpec.describe Gitlab::Database::PgAsh::Installer, feature_category: :database d
     end
   end
 
+  describe '#sampling_error' do
+    it 'returns nil' do
+      expect(installer.sampling_error).to be_nil
+    end
+
+    context 'when the user cannot read pg_stat_activity' do
+      before do
+        allow(connection).to receive(:select_value)
+          .with(described_class::PG_STAT_ACTIVITY_READABLE_QUERY).and_return(false)
+      end
+
+      it 'explains how to grant the privileges' do
+        expect(installer.sampling_error)
+          .to match(/permission denied for view pg_stat_activity.*GRANT SELECT ON pg_catalog\.pg_stat_activity TO/m)
+      end
+    end
+  end
+
   describe '#uninstall' do
     it 'drops the schema through the pg_ash uninstall function' do
       expect(connection).to receive(:execute).with("SELECT ash.uninstall('yes')")

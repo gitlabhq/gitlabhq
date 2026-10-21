@@ -26,12 +26,12 @@ RSpec.describe GitlabSchema.types['BoardList'], feature_category: :planning_view
     subject(:field) { described_class.fields['title'] }
 
     it 'preloads the label association' do
-      a, b, c = create_list(:list, 3).map { _1.class.find(_1.id) }
+      a, b, c = create_list(:list, 3).map { |list| list.class.find(list.id) }
 
       baseline = ActiveRecord::QueryRecorder.new { force(resolve_field(field, a)) }
 
       expect do
-        [resolve_field(field, b), resolve_field(field, c)].each { force _1 }
+        [resolve_field(field, b), resolve_field(field, c)].each { |result| force result }
       end.not_to exceed_query_limit(baseline)
     end
   end

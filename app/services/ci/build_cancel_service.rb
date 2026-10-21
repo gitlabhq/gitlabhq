@@ -2,6 +2,8 @@
 
 module Ci
   class BuildCancelService
+    include Ci::JobRateLimitable
+
     def initialize(build, user, force = false)
       @build = build
       @user = user
@@ -9,6 +11,9 @@ module Ci
     end
 
     def execute
+      throttled_response = rate_limited_response
+      return throttled_response if throttled_response
+
       return forbidden unless allowed?
       return unprocessable_entity unless build.cancelable? || (force && allowed_to_force?)
 
@@ -24,6 +29,19 @@ module Ci
     private
 
     attr_reader :build, :user, :force
+    alias_method :current_user, :user
+
+    def project
+      build.project
+    end
+
+    def rate_limited_response
+      return unless Feature.enabled?(:rate_limit_job_cancel, project)
+
+      job_rate_limited_response(
+        build, key: :job_cancel, per_project_key: :job_cancel_per_project, log_message: 'Job cancel rate limit exceeded'
+      )
+    end
 
     def allowed?
       user.can?(:cancel_build, build)

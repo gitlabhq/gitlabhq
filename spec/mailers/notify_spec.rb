@@ -2627,11 +2627,10 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
           expect(instance).to receive(:deliver!).and_raise(error_class, 'Error!')
         end
 
-        expect do
-          perform_enqueued_jobs do
-            described_class.new_issue_email(assignee.id, issue.id).deliver_later
-          end
-        end.to raise_error(ApplicationMailer::SMTPConnectionError)
+        perform_enqueued_jobs do
+          expect { described_class.new_issue_email(assignee.id, issue.id).deliver_later }
+            .to raise_error(ApplicationMailer::SMTPConnectionError)
+        end
       end
     end
   end

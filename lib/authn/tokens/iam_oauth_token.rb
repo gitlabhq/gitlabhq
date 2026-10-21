@@ -13,6 +13,9 @@ module Authn
 
       REQUIRED_CLAIMS = %w[sub jti exp iat iss aud scope].freeze
       CLOCK_SKEW_SECONDS = 30
+      # Tighter than the client default: a timeout fails closed, and revoked?
+      # sits on the request path.
+      REVOCATION_CHECK_TIMEOUT_SECONDS = 2
 
       class << self
         # Primary public interface for creating validated tokens.
@@ -38,6 +41,10 @@ module Authn
           return unless Feature.enabled?(:iam_svc_oauth, token.user)
 
           token
+        end
+
+        def prefix?(token_string)
+          token_string.is_a?(String) && token_string.start_with?(ACCESS_TOKEN_PREFIX)
         end
 
         private
@@ -67,7 +74,7 @@ module Authn
 
         # Cheap prefix check before expensive JWT validation.
         def strip_access_token_prefix(token_string)
-          return unless token_string.is_a?(String) && token_string.start_with?(ACCESS_TOKEN_PREFIX)
+          return unless prefix?(token_string)
 
           token_string.delete_prefix(ACCESS_TOKEN_PREFIX)
         end
@@ -109,13 +116,19 @@ module Authn
       def reload
         clear_memoization(:user)
         clear_memoization(:scope_user)
+        clear_memoization(:revocation_status)
+        Gitlab::SafeRequestStore.delete(revoked_rs_key)
         self
       end
 
-      # IAM JWTs are stateless and cannot be revoked individually by default.
-      # TODO: Implement JTI-based revocation list to support token invalidation.
+      # Fails closed: any failed check reads as revoked, because honouring a
+      # withdrawn token is worse than rejecting a live one.
       def revoked?
-        false
+        revocation_status != :not_revoked
+      end
+
+      def revocation_check_failed?
+        revocation_status == :check_failed
       end
 
       # Extracted scoped user from 'user:X' scope (for composite identity)
@@ -135,6 +148,39 @@ module Authn
         User.find_by_id(user_id)
       end
       strong_memoize_attr :user
+
+      private
+
+      # Keyed by jti so the check runs once per request: one API request builds
+      # several token objects for the same JWT (Rack::Attack, APIGuard, admin mode).
+      def revoked_rs_key
+        { res: :iam_oauth_token, jti: id, method: :revocation_status }
+      end
+
+      def revocation_status
+        Gitlab::SafeRequestStore.fetch(revoked_rs_key) { revocation_status_from_iam }
+      end
+      strong_memoize_attr :revocation_status
+
+      def revocation_status_from_iam
+        revoked = Authn::IamService::GrpcClient
+          .new(timeout: REVOCATION_CHECK_TIMEOUT_SECONDS, report_transient_errors: false)
+          .token_revoked?(jti: id)
+
+        revoked ? :revoked : :not_revoked
+      rescue StandardError => e
+        # GrpcClient decides which of its RequestErrors reach Sentry.
+        Gitlab::ErrorTracking.track_exception(e) unless e.is_a?(Authn::IamService::GrpcClient::RequestError)
+
+        Gitlab::AuthLogger.error(
+          message: 'IAM token revocation check failed, treating token as revoked',
+          iam_token_jti: id,
+          Labkit::Fields::ERROR_TYPE => Authn::IamService::GrpcClient.error_label(e),
+          Labkit::Fields::ERROR_MESSAGE => e.message
+        )
+
+        :check_failed
+      end
     end
   end
 end

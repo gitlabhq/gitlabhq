@@ -103,6 +103,8 @@ Prerequisites:
 PostgreSQL grants the `pg_stat_activity` privileges to all users by default.
 If a privilege is missing, the install Rake task stops and prints the `GRANT` statements
 to run as a database superuser.
+If the `pg_stat_activity` privileges are missing after the install, the status Rake task
+prints the same statements.
 
 {{< tabs >}}
 

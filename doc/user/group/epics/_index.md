@@ -46,6 +46,10 @@ The possible relationships between epics and other items are:
 - An epic is the parent of one or more issues.
 - An epic is the parent of one or more [child epics](../../work_items/child_items.md#work-with-multi-level-hierarchies). Ultimate only.
 - An epic is [linked](linked_epics.md) to one or more tasks, objectives, or key results.
+- An epic can be assigned one [group milestone](../../project/milestones/_index.md).
+  The epic's own milestone does not affect its dates.
+- An epic can [inherit its start and due dates](manage_epics.md#start-and-due-date-inheritance)
+  from its child items, including the milestones assigned to them.
 
 Example set of relationships:
 

@@ -116,7 +116,7 @@ To start a GitLab Duo Enterprise trial on GitLab.com:
 Prerequisites:
 
 - You must have an active paid Ultimate subscription.
-- You must have GitLab 17.3 or later and your instance must be able to [synchronize your subscription data](manage_subscription.md#subscription-data-synchronization) with GitLab.
+- You must have GitLab 17.3 or later and your instance must [synchronize your subscription data](manage_subscription.md#subscription-data-synchronization) with GitLab.
 
 To start a GitLab Duo Enterprise trial on GitLab Self-Managed or GitLab Dedicated, reach out to your Sales contact.
 

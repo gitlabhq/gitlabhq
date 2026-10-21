@@ -69,9 +69,31 @@ describe('trendColumnFor', () => {
     expect(build().column).toEqual({
       key: '__trend',
       sortKey: '__trendChange',
-      label: 'vs previous period',
+      label: 'Total count trend',
       type: 'metric',
     });
+  });
+
+  it('falls back to an unnamed header for a metric without a label', () => {
+    const mockUnlabelledMetric = { key: 'totalCount', type: 'metric' };
+
+    expect(
+      build({
+        fields: [mockLanguageDimension, mockUnlabelledMetric],
+        metric: mockUnlabelledMetric,
+      }).column.label,
+    ).toBe('vs previous period');
+  });
+
+  it('keeps special characters in the metric label unescaped', () => {
+    const mockSpecialCharMetric = { key: 'totalCount', label: "R&D's users", type: 'metric' };
+
+    expect(
+      build({
+        fields: [mockLanguageDimension, mockSpecialCharMetric],
+        metric: mockSpecialCharMetric,
+      }).column.label,
+    ).toBe("R&D's users trend");
   });
 
   it('builds a badge for a row that pairs, without the "vs prior" suffix', () => {

@@ -107,6 +107,75 @@ RSpec.describe 'Organization routes', feature_category: :organization do
     end
   end
 
+  # Every route cloned into /o/:organization_path must keep working there for every HTTP method.
+  # Unscoped routes are drawn first, so one that claims /o/ paths breaks this:
+  # https://gitlab.com/gitlab-org/gitlab/-/work_items/634141
+  describe 'parity with unscoped routes' do
+    # Values tried for each path segment; the first combination that the unscoped twin
+    # route accepts is the sample path for that route.
+    existing_paths = %w[gitlab gitlab/gitlabhq]
+    segment_samples = ['gitlab', 'gitlabhq', 'gitlab/gitlabhq', 'gitlab/gitlabhq.git', '1', 'abc', 'a' * 64]
+
+    before do
+      [Project, Group].each do |model|
+        allow(model).to receive(:find_by_full_path) { |path, **| existing_paths.include?(path) }
+      end
+    end
+
+    def recognize(path, verb)
+      Rails.application.routes.recognize_path(path, method: verb)
+    rescue ActionController::RoutingError
+      nil
+    end
+
+    def segment_candidates(route, name, samples)
+      requirement = route.requirements[name]
+      return samples unless requirement
+
+      source = requirement.is_a?(Regexp) ? requirement.source : requirement
+      # Enumerated requirements such as `project|group` need their own alternatives.
+      alternatives = source.match?(/\A[\w|]+\z/) ? source.split('|') : []
+
+      (samples + alternatives).select { |sample| sample.match?(/\A(?:#{source})\z/) }
+    end
+
+    # The unscoped path that reaches the route's unscoped twin, or nil when no sample does.
+    def unscoped_sample(route, verb, samples)
+      segments = route.required_parts - [:organization_path]
+      candidates = segments.map { |name| segment_candidates(route, name, samples) }
+      combinations = candidates.empty? ? [[]] : candidates.first.product(*candidates.drop(1))
+
+      combinations.lazy.filter_map do |values|
+        path = route.format(segments.zip(values).to_h.merge(organization_path: 'my-org')).delete_prefix('/o/my-org')
+        path = '/' if path.empty?
+        params = recognize(path, verb)
+
+        [path, params] if params&.values_at(:controller, :action) == route.defaults.values_at(:controller, :action)
+      end.first
+    end
+
+    it 'routes each organization-scoped path like its unscoped twin' do
+      org_routes = Rails.application.routes.routes.select do |route|
+        route.path.spec.to_s.start_with?('/o/:organization_path') && route.defaults[:controller]
+      end
+
+      mismatches = org_routes.filter_map do |route|
+        verb = route.verb.split('|').first
+        path, unscoped_params = unscoped_sample(route, verb, segment_samples)
+        next unless path
+
+        scoped_params = recognize("/o/my-org#{path.delete_suffix('/')}", verb)
+        next if scoped_params == unscoped_params.merge(organization_path: 'my-org')
+        # Org-native pages deliberately replace their cloned twin.
+        next if scoped_params&.dig(:controller)&.start_with?('organizations/')
+
+        "#{verb} /o/my-org#{path} -> #{scoped_params&.values_at(:controller, :action)&.join('#')}"
+      end
+
+      expect(mismatches).to be_empty, "Routes that behave differently under /o/:\n#{mismatches.join("\n")}"
+    end
+  end
+
   describe 'groups' do
     specify "to #new" do
       expect(get("/o/my-org/groups/new")).to route_to('groups#new', organization_path: 'my-org')

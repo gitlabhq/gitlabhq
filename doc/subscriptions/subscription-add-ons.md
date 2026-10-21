@@ -70,7 +70,7 @@ Your access to these features is subject to the
 
 GitLab will provide 30 days prior notice before enforcement of these limits takes effect.
 At that time, organization administrators will have tools to monitor and manage
-consumption and will be able to purchase additional capacity.
+consumption and can purchase additional capacity.
 
 Limits do not apply to GitLab Duo Pro or Enterprise.
 

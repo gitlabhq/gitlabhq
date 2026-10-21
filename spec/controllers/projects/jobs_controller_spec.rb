@@ -1139,6 +1139,33 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
         sign_in(user)
       end
 
+      context 'when the job cancel rate limit is exceeded', :clean_gitlab_redis_rate_limiting, :freeze_time do
+        let(:job) { create(:ci_build, :running, pipeline: pipeline) }
+        let(:other_job) { create(:ci_build, :running, pipeline: pipeline) }
+        let(:throttle_message) { ::Gitlab::ApplicationRateLimiter.throttled_error_message }
+
+        before do
+          stub_application_setting(job_cancel_limit_per_user_project: 1)
+          post_cancel(id: other_job.id)
+        end
+
+        it 'redirects back to the job with a flash alert for HTML', :aggregate_failures do
+          post_cancel
+
+          expect(response).to have_gitlab_http_status(:found)
+          expect(response).to redirect_to(namespace_project_job_path(id: job.id))
+          expect(flash[:alert]).to eq(throttle_message)
+        end
+
+        it 'returns 429 with Retry-After for JSON', :aggregate_failures do
+          post_cancel(format: :json)
+
+          expect(response).to have_gitlab_http_status(:too_many_requests)
+          expect(response.headers['Retry-After']).to eq(::Gitlab::ApplicationRateLimiter.period_for(:job_cancel).to_s)
+          expect(json_response['message']).to eq(throttle_message)
+        end
+      end
+
       context 'a running job which supports canceling' do
         let(:job) { create(:ci_build, :running, pipeline: pipeline) }
 
@@ -1294,10 +1321,10 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
       end
     end
 
-    def post_cancel(additional_params = {})
+    def post_cancel(format: nil, **additional_params)
       post :cancel, params: { namespace_id: project.namespace,
                               project_id: project,
-                              id: job.id }.merge(additional_params)
+                              id: job.id }.merge(additional_params), format: format
     end
   end
 

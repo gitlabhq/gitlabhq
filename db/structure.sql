@@ -6878,6 +6878,21 @@ CREATE TABLE p_ai_active_context_code_repositories (
 )
 PARTITION BY RANGE (project_id);
 
+CREATE TABLE p_ai_suggested_reviewers (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    merge_request_id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    approval_merge_request_rule_id bigint,
+    approval_project_rule_id bigint,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    reason text,
+    CONSTRAINT check_1f35a1c038 CHECK ((char_length(reason) <= 2048)),
+    CONSTRAINT check_p_ai_suggested_reviewers_one_approval_rule CHECK ((num_nonnulls(approval_merge_request_rule_id, approval_project_rule_id) <= 1))
+)
+PARTITION BY RANGE (created_at);
+
 CREATE TABLE p_batched_git_ref_updates_deletions (
     id bigint NOT NULL,
     project_id bigint NOT NULL,
@@ -26861,6 +26876,15 @@ CREATE SEQUENCE p_ai_active_context_code_repositories_id_seq
 
 ALTER SEQUENCE p_ai_active_context_code_repositories_id_seq OWNED BY p_ai_active_context_code_repositories.id;
 
+CREATE SEQUENCE p_ai_suggested_reviewers_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE p_ai_suggested_reviewers_id_seq OWNED BY p_ai_suggested_reviewers.id;
+
 CREATE SEQUENCE p_batched_git_ref_updates_deletions_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -38308,6 +38332,8 @@ ALTER TABLE ONLY p_ai_active_context_code_enabled_namespaces ALTER COLUMN id SET
 
 ALTER TABLE ONLY p_ai_active_context_code_repositories ALTER COLUMN id SET DEFAULT nextval('p_ai_active_context_code_repositories_id_seq'::regclass);
 
+ALTER TABLE ONLY p_ai_suggested_reviewers ALTER COLUMN id SET DEFAULT nextval('p_ai_suggested_reviewers_id_seq'::regclass);
+
 ALTER TABLE ONLY p_batched_git_ref_updates_deletions ALTER COLUMN id SET DEFAULT nextval('p_batched_git_ref_updates_deletions_id_seq'::regclass);
 
 ALTER TABLE ONLY p_catalog_resource_sync_events ALTER COLUMN id SET DEFAULT nextval('p_catalog_resource_sync_events_id_seq'::regclass);
@@ -42201,6 +42227,9 @@ ALTER TABLE ONLY p_ai_active_context_code_enabled_namespaces
 
 ALTER TABLE ONLY p_ai_active_context_code_repositories
     ADD CONSTRAINT p_ai_active_context_code_repositories_pkey PRIMARY KEY (id, project_id);
+
+ALTER TABLE ONLY p_ai_suggested_reviewers
+    ADD CONSTRAINT p_ai_suggested_reviewers_pkey PRIMARY KEY (id, created_at);
 
 ALTER TABLE ONLY p_batched_git_ref_updates_deletions
     ADD CONSTRAINT p_batched_git_ref_updates_deletions_pkey PRIMARY KEY (id, partition_id);
@@ -50688,6 +50717,16 @@ CREATE UNIQUE INDEX index_organizations_on_unique_name_per_group ON customer_rel
 CREATE UNIQUE INDEX index_organizations_on_uuid ON organizations USING btree (uuid);
 
 CREATE INDEX index_p_ai_active_context_code_repositories_on_last_queried_at ON ONLY p_ai_active_context_code_repositories USING btree (last_queried_at);
+
+CREATE INDEX index_p_ai_suggested_reviewers_on_approval_mr_rule_id ON ONLY p_ai_suggested_reviewers USING btree (approval_merge_request_rule_id);
+
+CREATE INDEX index_p_ai_suggested_reviewers_on_approval_project_rule_id ON ONLY p_ai_suggested_reviewers USING btree (approval_project_rule_id);
+
+CREATE UNIQUE INDEX index_p_ai_suggested_reviewers_on_mr_id_user_id_created_at ON ONLY p_ai_suggested_reviewers USING btree (merge_request_id, user_id, created_at);
+
+CREATE INDEX index_p_ai_suggested_reviewers_on_project_id ON ONLY p_ai_suggested_reviewers USING btree (project_id);
+
+CREATE INDEX index_p_ai_suggested_reviewers_on_user_id ON ONLY p_ai_suggested_reviewers USING btree (user_id);
 
 CREATE INDEX index_p_catalog_resource_sync_events_on_id_where_pending ON ONLY p_catalog_resource_sync_events USING btree (id) WHERE (status = 1);
 

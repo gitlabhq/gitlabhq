@@ -1,10 +1,9 @@
 ---
 table_name: ai_suggested_reviewers
-classes:
-- MergeRequests::AiSuggestedReviewer
+classes: []
 feature_categories:
 - code_review_workflow
-description: Stores AI-recommended reviewers for merge requests, with the model rationale
+description: Replaced by p_ai_suggested_reviewers. No code uses this table, and a later release drops it.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/251644
 milestone: '19.4'
 gitlab_schema: gitlab_main_org

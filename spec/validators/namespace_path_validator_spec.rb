@@ -9,6 +9,11 @@ RSpec.describe NamespacePathValidator, feature_category: :source_code_management
     it 'handles invalid utf8' do
       expect(described_class.valid_path?(+"a\0weird\255path")).to be_falsey
     end
+
+    it 'accepts organization-scoped and unscoped paths' do
+      expect(described_class.valid_path?('my-group/subgroup')).to be_truthy
+      expect(described_class.valid_path?('o/acme/my-group/subgroup')).to be_truthy
+    end
   end
 
   describe '#validates_each' do
@@ -26,6 +31,15 @@ RSpec.describe NamespacePathValidator, feature_category: :source_code_management
       validator.validate_each(group, :path, 'help')
 
       expect(group.errors[:path]).to include('help is a reserved name')
+    end
+
+    # The organization scope stays unambiguous only while no group can be named `o`.
+    it 'adds a message when a root group is named after the organization scope' do
+      group = build(:group, path: Gitlab::PathRegex::ORGANIZATION_ROUTE_SCOPE)
+
+      validator.validate_each(group, :path, group.path)
+
+      expect(group.errors[:path]).to include('o is a reserved name')
     end
 
     it 'adds a message when the path is reserved when updating' do

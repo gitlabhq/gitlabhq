@@ -1,0 +1,18 @@
+---
+description: A user has toggled a long Markdown table between expanded and collapsed
+internal_events: true
+action: toggle_markdown_table_full_height
+identifiers:
+  - user
+additional_properties:
+  property:
+    description: "'expanded' or 'collapsed'"
+product_group: planner_intelligence
+product_categories:
+  - markdown
+milestone: '19.6'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/260206
+tiers:
+  - free
+  - premium
+  - ultimate

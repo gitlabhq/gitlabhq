@@ -58,6 +58,29 @@ RSpec.describe 'rendering project storage type routes', feature_category: :share
     end
   end
 
+  context 'when the repository is disabled' do
+    let_it_be(:project) { create(:project, :repository_disabled, maintainers: user) }
+
+    it 'returns the project path for repository' do
+      post_graphql(query, current_user: user)
+
+      expect(graphql_data['project']['statisticsDetailsPaths']['repository'])
+        .to eq(Gitlab::Routing.url_helpers.project_url(project))
+    end
+
+    it 'returns the other paths' do
+      post_graphql(query, current_user: user)
+
+      expect(graphql_data['project']['statisticsDetailsPaths']).to include(
+        'wiki' => Gitlab::Routing.url_helpers.project_wikis_pages_url(project),
+        'buildArtifacts' => Gitlab::Routing.url_helpers.project_artifacts_url(project),
+        'packages' => Gitlab::Routing.url_helpers.project_packages_url(project),
+        'snippets' => Gitlab::Routing.url_helpers.project_snippets_url(project),
+        'containerRegistry' => Gitlab::Routing.url_helpers.project_container_registry_index_url(project)
+      )
+    end
+  end
+
   context 'when project is private' do
     let_it_be(:project) { create(:project, :private, reporters: user) }
 

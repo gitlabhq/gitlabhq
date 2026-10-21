@@ -3,7 +3,7 @@
 scope(
   path: '*namespace_id',
   as: :namespace,
-  namespace_id: Gitlab::PathRegex.full_namespace_route_regex
+  namespace_id: Gitlab::PathRegex.without_organization_scope(Gitlab::PathRegex.full_namespace_route_regex)
 ) do
   scope(
     path: ':project_id',

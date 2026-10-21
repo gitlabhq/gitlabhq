@@ -3,8 +3,12 @@ import { nextTick } from 'vue';
 import { computeAccessibleName } from 'dom-accessibility-api';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_frame';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import MarkdownTable from '~/behaviors/components/markdown_table.vue';
+import AccessorUtilities from '~/lib/utils/accessor';
 
 describe('MarkdownTable', () => {
   let wrapper;
@@ -69,13 +73,14 @@ describe('MarkdownTable', () => {
 
   const createWrapper = (
     rows,
-    { headers = ['Name', 'Age'], stubTooltip = true, ...props } = {},
+    { headers = ['Name', 'Age'], stubTooltip = true, attachTo = document.body, ...props } = {},
   ) => {
     const fields = buildFields(headers);
     const items = buildItems(fields, rows);
 
     wrapper = mountExtended(MarkdownTable, {
-      attachTo: document.body,
+      attachTo,
+      directives: { GlResizeObserver: createMockDirective('gl-resize-observer') },
       stubs: {
         GlTooltip: stubTooltip
           ? {
@@ -98,6 +103,14 @@ describe('MarkdownTable', () => {
   const findSortIcon = (columnIndex) => findSortButton(columnIndex).findComponent(GlIcon);
   const clickHeader = (columnIndex) => findSortButton(columnIndex).trigger('click');
   const findSortStatus = () => wrapper.findByRole('status');
+  const findHeightToggle = () => wrapper.findComponentByTestId('markdown-table-height-toggle');
+
+  const resizeTable = async (height) => {
+    const table = wrapper.find('table').element;
+    Object.defineProperty(table, 'offsetHeight', { configurable: true, value: height });
+    getBinding(table, 'gl-resize-observer').value();
+    await nextTick();
+  };
 
   describe('rendering', () => {
     it('renders a plain table (not GlTable) with the provided headers', () => {
@@ -852,6 +865,304 @@ describe('MarkdownTable', () => {
       );
       expect(wrapper.find('table').attributes('data-print-scale-target')).toBe('');
       expect(wrapper.find('table').attributes('data-print-scale-container')).toBeUndefined();
+    });
+  });
+
+  describe('height toggle', () => {
+    useLocalStorageSpy();
+    useFakeRequestAnimationFrame();
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+    const MAX_HEIGHT_CLASS = 'gl-max-h-[70vh]';
+    const SHORT_TABLE_HEIGHT = 100;
+    const TALL_TABLE_HEIGHT = 1000;
+
+    let panel;
+    let panelContent;
+
+    beforeEach(() => {
+      jest.spyOn(AccessorUtilities, 'canUseLocalStorage').mockReturnValue(true);
+
+      panel = document.createElement('div');
+      panel.classList.add('js-static-panel-inner');
+      panel.scrollBy = jest.fn();
+      panelContent = document.createElement('div');
+      panel.appendChild(panelContent);
+      document.body.appendChild(panel);
+    });
+
+    afterEach(() => {
+      panel.remove();
+    });
+
+    describe('with no stored preference', () => {
+      beforeEach(() => {
+        createWrapper([['Alice', '25']], { attachTo: panelContent });
+      });
+
+      it('caps the table height', () => {
+        expect(findStickyHeaderWrapper().classes()).toContain(MAX_HEIGHT_CLASS);
+      });
+
+      it('keeps the other sticky-header classes', () => {
+        expect(findStickyHeaderWrapper().classes()).toEqual(
+          expect.arrayContaining([
+            'gl-w-fit',
+            'gl-max-w-full',
+            'gl-overflow-x-auto',
+            'gl-overflow-y-auto',
+            'print:gl-max-h-none',
+          ]),
+        );
+      });
+
+      it('does not render the toggle before the table is measured', () => {
+        expect(findHeightToggle().exists()).toBe(false);
+      });
+
+      describe('when the table resizes', () => {
+        let runFrame;
+
+        beforeEach(async () => {
+          jest.spyOn(window, 'requestAnimationFrame').mockImplementation((callback) => {
+            runFrame = callback;
+            return 42;
+          });
+          await resizeTable(TALL_TABLE_HEIGHT);
+        });
+
+        it('does not render the toggle before the next animation frame', () => {
+          expect(findHeightToggle().exists()).toBe(false);
+        });
+
+        describe('on the next animation frame', () => {
+          beforeEach(async () => {
+            runFrame();
+            await nextTick();
+          });
+
+          it('renders the toggle', () => {
+            expect(findHeightToggle().exists()).toBe(true);
+          });
+        });
+
+        describe('when destroyed before the next animation frame', () => {
+          beforeEach(() => {
+            jest.spyOn(window, 'cancelAnimationFrame');
+            wrapper.destroy();
+          });
+
+          it('cancels the pending measurement', () => {
+            expect(window.cancelAnimationFrame).toHaveBeenCalledWith(42);
+          });
+        });
+      });
+
+      describe('when the table fits within the height cap', () => {
+        beforeEach(async () => {
+          await resizeTable(SHORT_TABLE_HEIGHT);
+        });
+
+        it('does not render the toggle', () => {
+          expect(findHeightToggle().exists()).toBe(false);
+        });
+      });
+
+      describe('when the table is taller than the height cap', () => {
+        beforeEach(async () => {
+          await resizeTable(TALL_TABLE_HEIGHT);
+        });
+
+        it('renders the toggle outside the shadow overlay', () => {
+          expect(findHeightToggle().exists()).toBe(true);
+          expect(findShadowOverlayWrapper().element.contains(findHeightToggle().element)).toBe(
+            false,
+          );
+        });
+
+        it('shows the expand action', () => {
+          expect(findHeightToggle().text()).toBe('Show full table');
+          expect(findHeightToggle().props('icon')).toBe('expand');
+          expect(findHeightToggle().attributes('aria-expanded')).toBe('false');
+        });
+
+        it('points the toggle at the scroll container', () => {
+          expect(findHeightToggle().attributes('aria-controls')).toBe(
+            findStickyHeaderWrapper().attributes('id'),
+          );
+        });
+
+        describe('when the toggle is clicked', () => {
+          let trackEventSpy;
+
+          beforeEach(async () => {
+            ({ trackEventSpy } = bindInternalEventDocument(wrapper.element));
+            await findHeightToggle().vm.$emit('click');
+          });
+
+          it('removes the height cap', () => {
+            expect(findStickyHeaderWrapper().classes()).not.toContain(MAX_HEIGHT_CLASS);
+            expect(findStickyHeaderWrapper().classes()).toContain('print:gl-max-h-none');
+          });
+
+          it('shows the collapse action', () => {
+            expect(findHeightToggle().text()).toBe('Collapse table');
+            expect(findHeightToggle().props('icon')).toBe('collapse');
+            expect(findHeightToggle().attributes('aria-expanded')).toBe('true');
+          });
+
+          it('stores the preference', () => {
+            expect(localStorage.setItem).toHaveBeenCalledWith('markdown_table_expanded', 'true');
+          });
+
+          it('tracks the expansion', () => {
+            expect(trackEventSpy).toHaveBeenCalledWith(
+              'toggle_markdown_table_full_height',
+              { property: 'expanded' },
+              undefined,
+            );
+          });
+
+          describe('when the toggle is clicked again', () => {
+            beforeEach(async () => {
+              jest
+                .spyOn(findHeightToggle().element, 'getBoundingClientRect')
+                .mockReturnValueOnce({ top: 900 })
+                .mockReturnValueOnce({ top: 100 });
+
+              findHeightToggle().vm.$emit('click');
+              await waitForPromises();
+            });
+
+            it('restores the height cap', () => {
+              expect(findStickyHeaderWrapper().classes()).toContain(MAX_HEIGHT_CLASS);
+              expect(findHeightToggle().attributes('aria-expanded')).toBe('false');
+            });
+
+            it('stores the preference', () => {
+              expect(localStorage.setItem).toHaveBeenLastCalledWith(
+                'markdown_table_expanded',
+                'false',
+              );
+            });
+
+            it('tracks the collapse', () => {
+              expect(trackEventSpy).toHaveBeenLastCalledWith(
+                'toggle_markdown_table_full_height',
+                { property: 'collapsed' },
+                undefined,
+              );
+            });
+
+            it('scrolls the panel to keep the toggle where it was', () => {
+              expect(panel.scrollBy).toHaveBeenCalledWith({ top: -800 });
+            });
+          });
+        });
+
+        describe('when the viewport grows to fit the table', () => {
+          const { innerHeight } = window;
+
+          beforeEach(async () => {
+            window.innerHeight = TALL_TABLE_HEIGHT * 2;
+            window.dispatchEvent(new Event('resize'));
+            await nextTick();
+          });
+
+          afterEach(() => {
+            window.innerHeight = innerHeight;
+          });
+
+          it('hides the toggle', () => {
+            expect(findHeightToggle().exists()).toBe(false);
+          });
+        });
+      });
+    });
+
+    describe('with an expanded preference stored', () => {
+      beforeEach(async () => {
+        localStorage.setItem('markdown_table_expanded', 'true');
+        createWrapper([['Alice', '25']]);
+        await resizeTable(TALL_TABLE_HEIGHT);
+      });
+
+      it('renders at full height', () => {
+        expect(findStickyHeaderWrapper().classes()).not.toContain(MAX_HEIGHT_CLASS);
+        expect(findHeightToggle().attributes('aria-expanded')).toBe('true');
+      });
+    });
+
+    describe('with another table on the page', () => {
+      let otherWrapper;
+
+      beforeEach(async () => {
+        createWrapper([['Bob', '35']]);
+        otherWrapper = wrapper;
+        createWrapper([['Alice', '25']]);
+        await resizeTable(TALL_TABLE_HEIGHT);
+      });
+
+      describe('when the toggle is clicked', () => {
+        beforeEach(async () => {
+          jest
+            .spyOn(wrapper.element, 'getBoundingClientRect')
+            .mockReturnValueOnce({ top: 300 })
+            .mockReturnValueOnce({ top: 1100 });
+
+          findHeightToggle().vm.$emit('click');
+          await waitForPromises();
+        });
+
+        it('removes the height cap from the other table', () => {
+          expect(otherWrapper.find('[data-sticky-header]').classes()).not.toContain(
+            MAX_HEIGHT_CLASS,
+          );
+        });
+
+        it('scrolls the panel to keep the clicked table where it was', () => {
+          expect(panel.scrollBy).toHaveBeenCalledWith({ top: 800 });
+        });
+      });
+
+      describe('when the other table is destroyed', () => {
+        beforeEach(() => {
+          jest.spyOn(window, 'removeEventListener');
+          otherWrapper.destroy();
+        });
+
+        it('stops listening for preference and viewport changes', () => {
+          expect(window.removeEventListener).toHaveBeenCalledWith(
+            'gl-markdown-table-expanded',
+            expect.any(Function),
+          );
+          expect(window.removeEventListener).toHaveBeenCalledWith('resize', expect.any(Function));
+        });
+      });
+    });
+
+    describe('when local storage is unavailable', () => {
+      beforeEach(async () => {
+        AccessorUtilities.canUseLocalStorage.mockReturnValue(false);
+        createWrapper([['Alice', '25']]);
+        await resizeTable(TALL_TABLE_HEIGHT);
+      });
+
+      it('defaults to the capped height without reading local storage', () => {
+        expect(localStorage.getItem).not.toHaveBeenCalled();
+        expect(findStickyHeaderWrapper().classes()).toContain(MAX_HEIGHT_CLASS);
+      });
+
+      describe('when the toggle is clicked', () => {
+        beforeEach(async () => {
+          await findHeightToggle().vm.$emit('click');
+        });
+
+        it('toggles without writing to local storage', () => {
+          expect(findStickyHeaderWrapper().classes()).not.toContain(MAX_HEIGHT_CLASS);
+          expect(localStorage.setItem).not.toHaveBeenCalled();
+        });
+      });
     });
   });
 });

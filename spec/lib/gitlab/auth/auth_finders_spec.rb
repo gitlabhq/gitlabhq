@@ -738,6 +738,33 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
       it 'returns user for valid IAM JWT token' do
         expect(find_user_from_access_token).to eq(user)
       end
+
+      shared_examples 'a revoked IAM token' do
+        it 'raises RevokedError and records the failure' do
+          expect { find_user_from_access_token }.to raise_error(Gitlab::Auth::RevokedError)
+
+          expect(Gitlab::ApplicationContext.current).to include(
+            'meta.auth_fail_reason' => 'token_revoked',
+            'meta.auth_fail_token_id' => a_string_starting_with('Authn::Tokens::IamOauthToken/')
+          )
+        end
+      end
+
+      context 'when IAM reports the token revoked' do
+        before do
+          stub_iam_revocation_check(revoked: true)
+        end
+
+        it_behaves_like 'a revoked IAM token'
+      end
+
+      context 'when IAM cannot answer' do
+        before do
+          stub_iam_revocation_check_failure
+        end
+
+        it_behaves_like 'a revoked IAM token'
+      end
     end
   end
 

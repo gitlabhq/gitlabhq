@@ -278,7 +278,7 @@ You can use the following template for the Support request:
 ```plaintext
 Hi Support,
 
-Please update subscription ownership for my subscription/billing account. I confirm that I am not able to make this change in the Customers Portal. Here are the relevant details:
+Please update subscription ownership for my subscription/billing account. I confirm that I can't make this change in the Customers Portal. Here are the relevant details:
 
 - Old subscription contact's email address:
 - New subscription contact's email address:

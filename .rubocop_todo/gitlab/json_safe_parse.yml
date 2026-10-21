@@ -151,7 +151,6 @@ Gitlab/JsonSafeParse:
     - 'ee/spec/requests/api/duo_code_review_spec.rb'
     - 'ee/spec/requests/api/epics_spec.rb'
     - 'ee/spec/requests/api/geo_spec.rb'
-    - 'ee/spec/requests/api/graphql/boards/board_lists_query_spec.rb'
     - 'ee/spec/requests/api/graphql/compliance_management/compliance_requirements_spec.rb'
     - 'ee/spec/requests/api/graphql/container_repository/container_repository_details_spec.rb'
     - 'ee/spec/requests/api/graphql/group/value_stream_dashboard_usage_overview_spec.rb'

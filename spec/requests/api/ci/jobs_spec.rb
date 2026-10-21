@@ -1232,6 +1232,18 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
           json_response = Gitlab::Json.parse(response.body)
           expect(json_response['status']).to eq('canceled')
         end
+
+        %i[manual scheduled].each do |trait|
+          it "cancels a #{trait} job", :aggregate_failures do
+            inactive_job = create(:ci_build, trait, pipeline: pipeline)
+
+            post api("/projects/#{project.id}/jobs/#{inactive_job.id}/cancel", api_user)
+
+            expect(response).to have_gitlab_http_status(:created)
+            expect(json_response['status']).to eq('canceled')
+            expect(inactive_job.reload).to be_canceled
+          end
+        end
       end
 
       context 'user without :cancel_build permission' do
@@ -1248,6 +1260,21 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
 
       it 'does not cancel job' do
         expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'when the job cancel rate limit is exceeded', :clean_gitlab_redis_rate_limiting, :freeze_time do
+      before do
+        stub_application_setting(job_cancel_limit_per_user_project: 1)
+      end
+
+      # The outer before block already made one cancel call.
+      it 'returns 429 with Retry-After', :aggregate_failures do
+        post api("/projects/#{project.id}/jobs/#{job.id}/cancel", api_user)
+
+        expect(response).to have_gitlab_http_status(:too_many_requests)
+        expect(response.headers['Retry-After']).to be_present
+        expect(json_response['message']).to eq(::Gitlab::ApplicationRateLimiter.throttled_error_message)
       end
     end
 

@@ -1,7 +1,9 @@
 <script>
 import { GlModal, GlSprintf, GlIcon } from '@gitlab/ui';
+import { createAlert } from '~/alert';
 import { TYPE_ISSUE } from '~/issues/constants';
 import { __, n__ } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   name: 'CsvExportModal',
@@ -18,6 +20,7 @@ export default {
     GlSprintf,
     GlIcon,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: {
     issuableType: {
       default: TYPE_ISSUE,
@@ -25,11 +28,19 @@ export default {
     email: {
       default: '',
     },
+    exportMergeRequestsCsvMutation: {
+      default: null,
+    },
   },
   props: {
     exportCsvPath: {
       type: String,
       required: true,
+    },
+    exportVariables: {
+      type: Object,
+      required: false,
+      default: () => ({}),
     },
     issuableCount: {
       type: Number,
@@ -40,18 +51,32 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      isExporting: false,
+    };
+  },
   computed: {
+    exportsThroughGraphql() {
+      return Boolean(
+        this.exportMergeRequestsCsvMutation && this.glFeatures.mergeRequestsCsvExportGraphql,
+      );
+    },
     actionPrimary() {
+      const attributes = {
+        variant: 'confirm',
+        'data-testid': 'export-issues-button',
+        'data-track-action': 'click_button',
+        'data-track-label': this.dataTrackLabel,
+      };
+
+      if (this.exportsThroughGraphql) {
+        return { text: this.exportText, attributes: { ...attributes, loading: this.isExporting } };
+      }
+
       return {
         text: this.exportText,
-        attributes: {
-          href: this.exportCsvPath,
-          variant: 'confirm',
-          'data-method': 'post',
-          'data-testid': 'export-issues-button',
-          'data-track-action': 'click_button',
-          'data-track-label': this.dataTrackLabel,
-        },
+        attributes: { ...attributes, href: this.exportCsvPath, 'data-method': 'post' },
       };
     },
     isIssue() {
@@ -69,6 +94,29 @@ export default {
         : n__('1 merge request selected', '%d merge requests selected', this.issuableCount);
     },
   },
+  methods: {
+    async exportMergeRequests() {
+      if (!this.exportsThroughGraphql) return;
+
+      this.isExporting = true;
+
+      try {
+        const { data } = await this.$apollo.mutate({
+          mutation: this.exportMergeRequestsCsvMutation,
+          variables: this.exportVariables,
+        });
+        const { message, errors } = data.mergeRequestsCsvExport;
+
+        if (errors.length) throw new Error(errors.join(', '));
+
+        createAlert({ message, variant: 'success' });
+      } catch {
+        createAlert({ message: __('An error occurred while exporting merge requests.') });
+      } finally {
+        this.isExporting = false;
+      }
+    },
+  },
 };
 </script>
 
@@ -80,6 +128,7 @@ export default {
     body-class="!gl-p-0"
     :title="exportText"
     data-testid="export-issuable-modal"
+    @primary="exportMergeRequests"
   >
     <div
       class="gl-items-center gl-justify-start gl-border-1 gl-border-subtle gl-p-4 gl-border-b-solid"

@@ -99,7 +99,8 @@ Gitlab::Application.config.to_prepare do
         Ai::DuoWorkflows::CheckpointBlob,
         Ai::DuoWorkflows::CheckpointHeader,
         Analytics::KnowledgeGraph::CodeIndexingTask,
-        AuditEvents::AiAuditEvent
+        AuditEvents::AiAuditEvent,
+        MergeRequests::AiSuggestedReviewer
       ])
   else
     Gitlab::Database::Partitioning.register_tables(

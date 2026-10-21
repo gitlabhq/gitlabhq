@@ -1,6 +1,7 @@
 import getMergeRequestsQuery from 'ee_else_ce/merge_requests/list/queries/project/get_merge_requests.query.graphql';
 import getMergeRequestsCountsQuery from 'ee_else_ce/merge_requests/list/queries/project/get_merge_requests_counts.query.graphql';
 import getMergeRequestsApprovalsQuery from 'ee_else_ce/merge_requests/list/queries/project/get_merge_requests_approvals.query.graphql';
+import exportMergeRequestsCsvMutation from 'ee_else_ce/merge_requests/list/queries/project/export_merge_requests_csv.mutation.graphql';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import { initBulkUpdateSidebar, mountMergeRequestListsApp } from '~/merge_requests/list';
@@ -13,4 +14,5 @@ mountMergeRequestListsApp({
   getMergeRequestsQuery,
   getMergeRequestsApprovalsQuery,
   getMergeRequestsCountsQuery,
+  exportMergeRequestsCsvMutation,
 });

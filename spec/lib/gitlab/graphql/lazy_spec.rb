@@ -25,7 +25,9 @@ RSpec.describe Gitlab::Graphql::Lazy, feature_category: :api do
     it 'only evaluates once' do
       expect(value).to receive(:x).once
 
-      expect(subject.force).to eq(subject.force)
+      first_result = subject.force
+
+      expect(subject.force).to eq(first_result)
     end
 
     it 'deals with nested laziness' do

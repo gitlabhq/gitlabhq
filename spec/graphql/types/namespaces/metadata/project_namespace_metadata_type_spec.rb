@@ -17,7 +17,6 @@ RSpec.describe Types::Namespaces::Metadata::ProjectNamespaceMetadataType, featur
     it_behaves_like "common namespace metadata values"
 
     where(:field, :value) do
-      :default_branch | lazy { project.default_branch_or_main }
       :is_issue_repositioning_disabled | lazy { project.root_namespace.issue_repositioning_disabled? }
       :group_id | lazy { project.group&.id&.to_s }
     end
@@ -88,23 +87,37 @@ RSpec.describe Types::Namespaces::Metadata::ProjectNamespaceMetadataType, featur
   end
 
   describe '#default_branch' do
-    context 'when project has a default branch' do
-      before do
-        allow(project).to receive(:default_branch_or_main).and_return('main')
+    context 'when user can read code' do
+      let_it_be(:reporter) { create(:user, reporter_of: project) }
+
+      context 'when project has a default branch' do
+        before do
+          allow(project).to receive(:default_branch_or_main).and_return('main')
+        end
+
+        it 'returns the default branch' do
+          expect(resolve_field(:default_branch, namespace, current_user: reporter)).to eq('main')
+        end
       end
 
-      it 'returns the default branch' do
-        expect(resolve_field(:default_branch, namespace, current_user: user)).to eq('main')
+      context 'when project has no default branch' do
+        before do
+          allow(project).to receive(:default_branch_or_main).and_return(nil)
+        end
+
+        it 'returns nil' do
+          expect(resolve_field(:default_branch, namespace, current_user: reporter)).to be_nil
+        end
       end
     end
 
-    context 'when project has no default branch' do
-      before do
-        allow(project).to receive(:default_branch_or_main).and_return(nil)
-      end
+    context 'when the repository is disabled' do
+      let_it_be(:owner) { create(:user) }
+      let_it_be(:project) { create(:project, :repository_disabled, owners: owner) }
+      let_it_be(:namespace) { project.project_namespace }
 
       it 'returns nil' do
-        expect(resolve_field(:default_branch, namespace, current_user: user)).to be_nil
+        expect(resolve_field(:default_branch, namespace, current_user: owner)).to be_nil
       end
     end
   end

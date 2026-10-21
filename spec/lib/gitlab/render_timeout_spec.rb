@@ -6,8 +6,8 @@ RSpec.describe Gitlab::RenderTimeout do
   def expect_timeout(period)
     block = proc {}
 
-    expect(Timeout).to receive(:timeout).with(period) do |_, &block|
-      expect(block).to eq(block)
+    expect(Timeout).to receive(:timeout).with(period) do |_, &timeout_block|
+      expect(timeout_block).to eq(block)
     end
 
     described_class.timeout(&block)

@@ -166,6 +166,7 @@ RSpec.describe 'Database schema',
       packages_helm_metadata_cache_states: %w[project_id],
       p_ci_builds: %w[erased_by_id scoped_user_id],
       p_ci_build_trace_metadata: %w[project_id],
+      p_ai_suggested_reviewers: %w[approval_merge_request_rule_id approval_project_rule_id],
       p_batched_git_ref_updates_deletions: %w[project_id partition_id],
       p_catalog_resource_sync_events: %w[catalog_resource_id project_id partition_id],
       p_catalog_resource_component_usages: %w[used_by_project_id], # No FK constraint because we want to preserve historical usage data

@@ -31564,6 +31564,12 @@
               "deprecationReason": null
             },
             {
+              "name": "REPORT_AGENT_PLATFORM_TOKEN_USAGE",
+              "description": "Agent platform session checkpoint reported its token usage per model.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "ENCOUNTER_DUO_CODE_REVIEW_ERROR_DURING_REVIEW",
               "description": "Duo Code Review encountered an error.",
               "isDeprecated": false,
@@ -359224,7 +359230,7 @@
           "fields": [
             {
               "name": "defaultBranch",
-              "description": "Default branch of the project. Introduced in GitLab 18.6: Status: Experiment.",
+              "description": "Default branch of the project. Returns null if the user does not have permission to read the repository. Introduced in GitLab 18.6: Status: Experiment.",
               "args": [],
               "type": {
                 "kind": "SCALAR",

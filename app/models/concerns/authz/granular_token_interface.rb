@@ -26,6 +26,10 @@ module Authz
       legacy?
     end
 
+    def subject_to_granular_authorization?
+      granular? || subject_to_granular_enforcement?
+    end
+
     def permitted_for_boundary?(boundary, permissions)
       return false if legacy?
 

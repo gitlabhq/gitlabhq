@@ -77069,6 +77069,8 @@ paths:
           description: Forbidden
         '404':
           description: Not found
+        '429':
+          description: Too Many Requests
         '400':
           description: Bad Request
       parameters:
@@ -93530,6 +93532,8 @@ components:
         pipeline_delete_limit_per_user_project:
           type: string
         job_erase_limit_per_user_project:
+          type: string
+        job_cancel_limit_per_user_project:
           type: string
         asciidoc_max_includes:
           type: string
@@ -111271,6 +111275,11 @@ components:
           type: integer
           description: Maximum number of job erasures allowed per minute for a given
             project.
+          nullable: true
+        job_cancel_limit_per_user_project:
+          type: integer
+          description: Maximum number of job cancellations allowed per minute for
+            a given project.
           nullable: true
         ai_action_api_rate_limit:
           type: integer

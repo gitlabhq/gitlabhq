@@ -85,13 +85,34 @@ When you reassign contributions to a user on the destination instance, the user 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/510673) in GitLab 18.0.
+- [Added an opt-in for non-enterprise member reassignment](https://gitlab.com/gitlab-org/gitlab/-/issues/593295) in GitLab 19.5 [with a feature flag](../../../administration/feature_flags/_index.md) named `setting_allow_non_enterprise_placeholder_reassignment`. Disabled by default.
 
 {{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
 
 If your top-level group has at least one [enterprise user](../../enterprise_user/_index.md), you can reassign contributions
 only to enterprise users in your organization.
 
 This means you cannot accidentally reassign to users outside your organization.
+
+A group Owner can also allow reassignment to non-enterprise users who are already members of the group.
+To turn this on:
+
+1. In the top bar, select **Search or go to** and find your group.
+1. In the left sidebar, select **Settings** > **General**.
+1. Expand **Permissions and group features**.
+1. Select the **Allow reassigning placeholder users to all group members** checkbox.
+
+When you turn on this setting, you can reassign contributions to any active member of the top-level group,
+its subgroups, or its projects who has at least the Guest role.
+Members of groups invited to any of these groups or projects also qualify.
+Pending invitations, access requests, and Minimal Access members do not qualify.
+Members of a group invited with Minimal Access do not qualify either.
+This setting does not expose GitLab.com users outside your group's membership as reassignment targets.
 
 ## Deleted users
 

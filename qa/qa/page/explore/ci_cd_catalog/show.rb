@@ -26,7 +26,8 @@ module QA
             has_element?('input-name', text: name) &&
               has_element?('input-required', text: required) &&
               has_element?('input-type', text: type) &&
-              has_element?('input-description', text: description) &&
+              # An empty description renders a zero-size span, which Selenium does not count as visible.
+              has_element?('input-description', text: description, visible: !description.empty?) &&
               has_element?('input-default', text: default)
           end
 

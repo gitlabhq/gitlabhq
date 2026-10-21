@@ -96,7 +96,7 @@ To start a trial for GitLab Self-Managed, complete a form to receive a trial lic
 Prerequisites:
 
 - You must have a GitLab Self-Managed instance [installed](../install/_index.md) and configured.
-- Your instance must be able to [synchronize your subscription data](manage_subscription.md#subscription-data-synchronization) with GitLab.
+- Your instance must [synchronize your subscription data](manage_subscription.md#subscription-data-synchronization) with GitLab.
 - You must be an administrator.
 
 To start a trial:

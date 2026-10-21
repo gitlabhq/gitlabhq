@@ -343,7 +343,7 @@ To manually renew your subscription for fewer seats, you can either:
 about the renewal.
 
 - If your credit card is expired, the email tells you how to update it.
-- If you have any outstanding overages or your subscription is not able to automatically
+- If you have any outstanding overages or your subscription can't automatically
   renew for any other reason, the email tells you to contact our Sales team or
   manually renew in the Customers Portal.
 - If there are no issues, the email specifies the:

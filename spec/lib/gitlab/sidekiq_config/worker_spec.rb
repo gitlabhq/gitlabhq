@@ -43,8 +43,11 @@ RSpec.describe Gitlab::SidekiqConfig::Worker do
     end
 
     it 'defines two workers as equal if their YAML representations are equal' do
-      expect(worker_with_yaml('a')).to eq(worker_with_yaml('a'))
-      expect(worker_with_yaml('a')).not_to eq(worker_with_yaml('b'))
+      worker_a = worker_with_yaml('a')
+      other_worker_a = worker_with_yaml('a')
+
+      expect(worker_a).to eq(other_worker_a)
+      expect(worker_a).not_to eq(worker_with_yaml('b'))
     end
 
     it 'returns true when a worker is compared with its YAML representation' do

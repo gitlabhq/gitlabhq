@@ -1,0 +1,6 @@
+---
+event: MergeRequests::RequestedChangesCloudEvent
+description: Published for each verdict that requests changes on a merge request, also when the
+  reviewer already requested changes. A GitLab Duo Code Review verdict has no composite actor in the
+  envelope, so `review_workflow_id` names the review session, when Duo Code Review authorized one.
+feature_category: dap_triggers

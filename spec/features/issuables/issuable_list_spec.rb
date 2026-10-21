@@ -77,11 +77,11 @@ RSpec.describe 'issuable list', :js, feature_category: :planning_views do
       create(:award_emoji, :upvote, awardable: issuable)
     end
 
-    if issuable_type == :issue
-      issue = Issue.reorder(:iid).first
-      merge_request = create(:merge_request, :unique_branches, source_project: project)
+    return unless issuable_type == :issue
 
-      create(:merge_request_issue, issue: issue, merge_request: merge_request)
-    end
+    issue = Issue.reorder(:iid).first
+    merge_request = create(:merge_request, :unique_branches, source_project: project)
+
+    create(:merge_request_issue, issue: issue, merge_request: merge_request)
   end
 end

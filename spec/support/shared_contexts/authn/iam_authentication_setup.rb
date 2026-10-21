@@ -11,6 +11,9 @@ RSpec.shared_context 'with IAM authentication setup' do
     stub_iam_service_config(enabled: true, url: iam_service_url, jwt_audience: iam_audience,
       jwt_issuer: iam_issuer)
     stub_iam_jwks_endpoint
+    # Revocation checks fail closed, so every token would look revoked without
+    # this. Specs that care about revocation re-stub it.
+    stub_iam_revocation_check(revoked: false)
   end
 
   def stub_iam_service_config(enabled:, url:, jwt_audience: 'gitlab-rails', jwt_issuer: nil)
@@ -32,6 +35,19 @@ RSpec.shared_context 'with IAM authentication setup' do
 
   def stub_jwks_endpoint_connection_error(url:, error:)
     stub_request(:get, "#{url}/.well-known/jwks.json").to_raise(error)
+  end
+
+  def stub_iam_revocation_check(revoked:)
+    allow_next_instance_of(Authn::IamService::GrpcClient) do |client|
+      allow(client).to receive(:token_revoked?).and_return(revoked)
+    end
+  end
+
+  def stub_iam_revocation_check_failure
+    allow_next_instance_of(Authn::IamService::GrpcClient) do |client|
+      allow(client).to receive(:token_revoked?)
+        .and_raise(Authn::IamService::GrpcClient::RequestError.new('IAM service request failed', reason: :unavailable))
+    end
   end
 
   def create_iam_jwt(user:, issuer:, private_key:, kid:, **options)

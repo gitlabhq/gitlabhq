@@ -128,6 +128,8 @@ class Projects::JobsController < Projects::ApplicationController
     if service_response.success?
       destination = continue_params[:to].presence || builds_project_pipeline_path(@project, @build.pipeline.id)
       redirect_to destination
+    elsif service_response.reason == :rate_limited
+      respond_rate_limited(service_response, :job_cancel)
     elsif service_response.http_status == :forbidden
       access_denied!
     else

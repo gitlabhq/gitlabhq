@@ -15,7 +15,7 @@ RSpec.describe 'get board lists', feature_category: :planning_views do
   let_it_be(:group_label2)   { create(:group_label, group: group, name: 'Testing') }
 
   let(:params)            { '' }
-  let(:board)             {}
+  let(:board)             { nil }
   let(:board_parent_type) { board_parent.class.to_s.downcase }
   let(:board_data)        { graphql_data[board_parent_type]['boards']['edges'].first['node'] }
   let(:lists_data)        { board_data['lists']['edges'] }

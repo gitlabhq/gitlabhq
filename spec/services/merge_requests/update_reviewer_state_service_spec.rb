@@ -249,6 +249,101 @@ RSpec.describe MergeRequests::UpdateReviewerStateService, feature_category: :cod
         end
       end
 
+      describe 'requested changes cloud event' do
+        let(:event_data) do
+          { merge_request_id: merge_request.id, merge_request_iid: merge_request.iid, project_id: project.id }
+        end
+
+        it 'publishes MergeRequests::RequestedChangesCloudEvent' do
+          expect { result }.to publish_event(MergeRequests::RequestedChangesCloudEvent).with(event_data)
+        end
+
+        it 'attributes the event to the reviewer' do
+          expect(MergeRequests::RequestedChangesCloudEvent).to receive(:build)
+            .with(merge_request: merge_request, current_user: current_user, review_workflow_id: nil)
+            .and_call_original
+
+          result
+        end
+
+        context 'with a review workflow' do
+          let(:review_workflow_id) { non_existing_record_id }
+          let(:service) do
+            described_class.new(project: project, current_user: current_user, review_workflow_id: review_workflow_id)
+          end
+
+          it 'names the review workflow in the event' do
+            expect { result }.to publish_event(MergeRequests::RequestedChangesCloudEvent)
+              .with(event_data.merge(review_workflow_id: review_workflow_id))
+          end
+        end
+
+        context 'when params include review_workflow_id' do
+          let(:service) do
+            described_class.new(
+              project: project, current_user: current_user, params: { review_workflow_id: non_existing_record_id }
+            )
+          end
+
+          it 'does not name a review workflow in the event' do
+            expect { result }.to publish_event(MergeRequests::RequestedChangesCloudEvent).with(event_data)
+          end
+        end
+
+        context 'when the reviewer already requested changes' do
+          before do
+            reviewer.update!(state: :requested_changes)
+          end
+
+          it 'publishes the event for the new verdict' do
+            expect { result }.to publish_event(MergeRequests::RequestedChangesCloudEvent).with(event_data)
+          end
+        end
+
+        context 'when the reviewer has approved' do
+          before do
+            create(:approval, user: current_user, merge_request: merge_request)
+          end
+
+          it 'removes the approval and publishes the event' do
+            expect { result }.to publish_event(MergeRequests::RequestedChangesCloudEvent).with(event_data)
+            expect(merge_request.reload.approved_by?(current_user)).to be(false)
+          end
+        end
+
+        context 'when the state is not requested_changes' do
+          let(:state) { 'reviewed' }
+
+          it 'does not publish the event' do
+            expect { result }.not_to publish_event(MergeRequests::RequestedChangesCloudEvent)
+          end
+        end
+
+        context 'when removing the approval fails' do
+          before do
+            create(:approval, user: current_user, merge_request: merge_request)
+
+            allow_next_instance_of(MergeRequests::RemoveApprovalService) do |service|
+              allow(service).to receive(:execute).and_return(nil)
+            end
+          end
+
+          it 'does not publish the event' do
+            expect { result }.not_to publish_event(MergeRequests::RequestedChangesCloudEvent)
+          end
+        end
+
+        context 'when dap_software_factory is disabled' do
+          before do
+            stub_feature_flags(dap_software_factory: false)
+          end
+
+          it 'does not publish the event' do
+            expect { result }.not_to publish_event(MergeRequests::RequestedChangesCloudEvent)
+          end
+        end
+      end
+
       describe 'webhooks' do
         before do
           reviewer.update!(state: 'unreviewed')

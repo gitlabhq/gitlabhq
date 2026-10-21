@@ -69,14 +69,28 @@ RSpec.describe 'gitlab:db:pg_ash namespace rake tasks', feature_category: :datab
 
   describe 'status' do
     it 'prints every metric' do
-      allow(installer).to receive(:status).and_return('version' => '2.0-beta1', 'sampling_enabled' => 'false')
+      allow(installer).to receive_messages(
+        status: { 'version' => '2.0-beta1', 'sampling_enabled' => 'false' }, sampling_error: nil
+      )
 
       expect { run_rake_task('gitlab:db:pg_ash:status') }
         .to output("version                      2.0-beta1\nsampling_enabled             false\n").to_stdout
     end
 
+    it 'prints the metrics and aborts with the guidance message when the user cannot read pg_stat_activity' do
+      allow(installer).to receive_messages(
+        status: { 'version' => '2.0-beta1' }, sampling_error: 'GRANT SELECT ON pg_catalog.pg_stat_activity'
+      )
+
+      expect { run_rake_task('gitlab:db:pg_ash:status') }
+        .to raise_error(SystemExit)
+        .and output("version                      2.0-beta1\n").to_stdout
+        .and output(/GRANT SELECT ON pg_catalog.pg_stat_activity/).to_stderr
+    end
+
     it 'reports when pg_ash is not installed' do
       allow(installer).to receive(:status).and_return(nil)
+      expect(installer).not_to receive(:sampling_error)
 
       expect { run_rake_task('gitlab:db:pg_ash:status') }.to output("pg_ash is not installed.\n").to_stdout
     end

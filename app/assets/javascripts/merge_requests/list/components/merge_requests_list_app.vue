@@ -266,6 +266,14 @@ export default {
         search: this.searchQuery,
       };
     },
+    csvExportVariables() {
+      return {
+        fullPath: this.fullPath,
+        state: this.state,
+        ...this.apiFilterParams,
+        search: this.searchQuery,
+      };
+    },
     hasSearch() {
       return Boolean(
         this.searchQuery ||
@@ -917,7 +925,10 @@ export default {
             with-local-storage
           />
 
-          <merge-request-more-actions-dropdown :count="currentTabCount" />
+          <merge-request-more-actions-dropdown
+            :count="currentTabCount"
+            :export-variables="csvExportVariables"
+          />
         </div>
       </template>
 

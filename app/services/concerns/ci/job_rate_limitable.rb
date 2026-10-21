@@ -1,14 +1,18 @@
 # frozen_string_literal: true
 
 module Ci
-  # Per-user rate limiting for job actions (retry, play, erase), checked before
+  # Per-user rate limiting for job actions (retry, play, erase, cancel), checked before
   # any other step of the service so a rejected call still costs a request.
   #
-  # Expects the including service to expose `current_user`, `project` and `rate_limit?`
-  # (false for internal callers that must never be throttled). The feature flag check
-  # stays in the service, because the flag key must be a literal.
+  # Expects the including service to expose `current_user` and `project`. Services with
+  # internal callers that must never be throttled override `rate_limit?`. The feature
+  # flag check stays in the service, because the flag key must be a literal.
   module JobRateLimitable
     private
+
+    def rate_limit?
+      true
+    end
 
     # Returns a throttled ServiceResponse, or nil when the call may proceed.
     def job_rate_limited_response(job, key:, per_project_key:, log_message:)

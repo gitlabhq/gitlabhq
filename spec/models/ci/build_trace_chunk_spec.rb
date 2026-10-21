@@ -1001,7 +1001,7 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state, :clean_git
         let(:chunk) { create(:ci_build_trace_chunk) }
 
         it 'indicates that the chunks are equal' do
-          expect(chunk).to eq chunk
+          expect(chunk).to eq described_class.find(chunk.id)
         end
       end
 

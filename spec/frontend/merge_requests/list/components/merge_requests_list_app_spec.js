@@ -50,6 +50,7 @@ import getMergeRequestsApprovalsQuery from 'ee_else_ce/merge_requests/list/queri
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import MergeRequestReviewers from '~/merge_requests/list/components/merge_request_reviewers.vue';
 import MergeRequestByEmail from '~/merge_requests/list/components/merge_request_by_email.vue';
+import MergeRequestMoreActionsDropdown from '~/merge_requests/list/components/more_actions_dropdown.vue';
 import issuableEventHub from '~/merge_requests/list/eventhub';
 
 jest.mock('~/merge_requests/list', () => ({ initBulkUpdateSidebar: jest.fn() }));
@@ -549,6 +550,31 @@ describe('Merge requests list app', () => {
         { type: TOKEN_TYPE_SUBSCRIBED },
         { type: TOKEN_TYPE_SEARCH_WITHIN },
       ]);
+    });
+  });
+
+  describe('CSV export variables', () => {
+    beforeEach(async () => {
+      setWindowLocation('?state=merged&merge_user=cleveland&target_branches[]=main');
+
+      createComponent();
+
+      await waitForPromises();
+    });
+
+    afterEach(() => {
+      setWindowLocation('?');
+    });
+
+    it('passes the list filters to the actions dropdown', () => {
+      expect(
+        wrapper.findComponent(MergeRequestMoreActionsDropdown).props('exportVariables'),
+      ).toMatchObject({
+        fullPath: 'gitlab-org/gitlab',
+        state: 'merged',
+        mergeUser: 'cleveland',
+        targetBranches: 'main',
+      });
     });
   });
 

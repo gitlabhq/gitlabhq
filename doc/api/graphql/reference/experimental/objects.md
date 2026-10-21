@@ -16857,7 +16857,7 @@ Paginated collection of [`ProjectMember`](#projectmember). See [Standard connect
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `defaultBranch` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.6.<br/><br/>Default branch of the project. |
+| `defaultBranch` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.6.<br/><br/>Default branch of the project. Returns null if the user does not have permission to read the repository. |
 | `groupId` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.6.<br/><br/>ID of the group. Returns null for user namespaces. |
 | `initialSort` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.6.<br/><br/>User preference for initial sort order. |
 | `isIssueRepositioningDisabled` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.6.<br/><br/>Whether issue repositioning is disabled for the namespace. |

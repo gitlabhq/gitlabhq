@@ -62918,7 +62918,7 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="projectnamespacemetadata-defaultbranch"></a>`defaultBranch` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 18.6. Status: Experiment. Default branch of the project. |
+| <a id="projectnamespacemetadata-defaultbranch"></a>`defaultBranch` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 18.6. Status: Experiment. Default branch of the project. Returns null if the user does not have permission to read the repository. |
 | <a id="projectnamespacemetadata-groupid"></a>`groupId` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 18.6. Status: Experiment. ID of the group. Returns null for user namespaces. |
 | <a id="projectnamespacemetadata-initialsort"></a>`initialSort` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 18.6. Status: Experiment. User preference for initial sort order. |
 | <a id="projectnamespacemetadata-isissuerepositioningdisabled"></a>`isIssueRepositioningDisabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 18.6. Status: Experiment. Whether issue repositioning is disabled for the namespace. |
@@ -70870,6 +70870,7 @@ Type of AI usage event.
 | <a id="aiusageeventtype-react_thumbs_down_on_duo_code_review_comment"></a>`REACT_THUMBS_DOWN_ON_DUO_CODE_REVIEW_COMMENT` | User gave thumbs-down reaction to Duo Code Review comment. |
 | <a id="aiusageeventtype-react_thumbs_up_on_duo_code_review_comment"></a>`REACT_THUMBS_UP_ON_DUO_CODE_REVIEW_COMMENT` | User gave thumbs-up reaction to Duo Code Review comment. |
 | <a id="aiusageeventtype-refactor_code"></a>`REFACTOR_CODE` | Code refactor was requested with the GitLab Duo Chat /refactor command. |
+| <a id="aiusageeventtype-report_agent_platform_token_usage"></a>`REPORT_AGENT_PLATFORM_TOKEN_USAGE` | Agent platform session checkpoint reported its token usage per model. |
 | <a id="aiusageeventtype-report_duo_chat_token_usage"></a>`REPORT_DUO_CHAT_TOKEN_USAGE` | Duo Chat agent turn reported its token usage per model. |
 | <a id="aiusageeventtype-request_duo_chat_response"></a>`REQUEST_DUO_CHAT_RESPONSE` | Duo Chat response was requested. |
 | <a id="aiusageeventtype-request_duo_vulnerability_resolution"></a>`REQUEST_DUO_VULNERABILITY_RESOLUTION` | An AI vulnerability resolution was requested with GitLab Duo. |

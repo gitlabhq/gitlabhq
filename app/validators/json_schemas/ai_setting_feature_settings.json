@@ -23,6 +23,11 @@
       "type": "boolean",
       "default": true,
       "description": "Record the tokens each GitLab Duo Non-Agentic Chat request uses, per user and model"
+    },
+    "duo_agent_platform_token_usage_tracking_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Record the tokens that GitLab Duo Agentic Chat and Agent Platform flows use, per user and model"
     }
   }
 }

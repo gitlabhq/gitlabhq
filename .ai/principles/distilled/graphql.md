@@ -1,6 +1,6 @@
 ---
-source_checksum: 69b6b03c5d6c83ff
-distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
+source_checksum: 670fe4a484270d13
+distilled_at_sha: 0598d6c1b5bb294276c7c644f29291505d54c4c1
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -38,13 +38,14 @@ distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
 - Treat fields tagged for the backend's current or a later milestone as a compatibility window: resolve them normally when present and return `null` when absent; require fields tagged for an older milestone to exist.
 - DO NOT use `@gl_introduced` on arguments or fragments; apply it to fields used by fragments instead.
 - Treat non-nullable fields with `@gl_introduced` as still requiring null-checks on the frontend.
+- Remove `@gl_introduced` directives manually when they live outside frontend `*.graphql` files (for example, in a JavaScript query string); the `Keeps::CleanupGlIntroduced` housekeeper keep only cleans up `*.graphql` files.
 
 ### Descriptions
 
 - Ensure every field and argument has a `description:` value ending with a period (`.`).
 - DO NOT start descriptions with `The` or `A`.
 - Use `{x} of the {y}` phrasing for field descriptions where possible.
-- Use `Types::TimeType` for all `Time`/`DateTime` fields and include the word `timestamp` in the description.
+- Include the word `timestamp` in the description of every `Types::TimeType` field.
 - For boolean fields, start the description with a verb (for example, `Indicates the issue is confidential.`).
 - For sort enum descriptions, use `Values for sorting {x}.`
 - When a feature flag toggles a field's value or behavior, state the flag name, what it toggles, and the behavior when disabled in the `description:`.
@@ -100,10 +101,9 @@ distilled_at_sha: f821a52e7e6c48d5eb961fe53f9049f25bb4d274
 - Define a method under `GraphqlTriggers` to trigger subscriptions; DO NOT call `GitlabSchema.subscriptions.trigger` directly in application code.
 - Implement `#authorized?` in subscription classes and call `unauthorized!` when authorization fails; use `#authorize_object_or_gid!` for the typical permission check on the subscribed object.
 - Return `errors` as an empty array on success and populate it with user-relevant error messages on failure; raise `raise_resource_not_available_error!` for authorization/not-found errors.
-- Mutation payload fields must have `null: true`.
+- Set `null: true` on mutation payload fields.
 - Return the current true state of the resource in update mutation failures (call `#reset` if needed).
 - Catch all anticipated errors and convert them to `Gitlab::Graphql::Errors` types; DO NOT let `StandardError` propagate uncaught (it becomes `Internal server error`).
-- DO NOT close over instance state in batch loader blocks; pass all needed data through the `for(data)` call.
 
 ### Authorization
 
@@ -157,3 +157,4 @@ For the full picture, see:
 - doc/development/graphql_guide/batchloader.md
 - doc/development/graphql_guide/pagination.md
 - doc/development/graphql_guide/array_argument_validation.md
+

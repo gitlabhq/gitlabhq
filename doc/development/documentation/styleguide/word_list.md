@@ -606,7 +606,7 @@ If you can, rather focus on the fact that this subscription is synchronized with
 
 For example:
 
-- Your instance must be able to synchronize your subscription data with GitLab.
+- Your instance must synchronize your subscription data with GitLab.
 
 ## cloud-native
 

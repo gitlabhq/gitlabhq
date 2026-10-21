@@ -348,6 +348,108 @@ RSpec.describe Member, feature_category: :groups_and_projects do
 
         it { is_expected.to match_array(expected_members) }
       end
+
+      describe '.user_in_hierarchy_or_invited_groups?' do
+        using RSpec::Parameterized::TableSyntax
+
+        let_it_be(:other_root) { create(:group) }
+        let_it_be(:invited_group_member) { create(:group_member) }
+        let_it_be(:project_invited_group_member) { create(:group_member) }
+        let_it_be(:other_root_invited_group_member) { create(:group_member) }
+
+        before_all do
+          create(:group_group_link, shared_group: subgroup, shared_with_group: invited_group_member.group)
+          create(:project_group_link, project: subgroup_project, group: project_invited_group_member.group)
+          create(:group_group_link, shared_group: other_root, shared_with_group: other_root_invited_group_member.group)
+        end
+
+        def in_hierarchy?(user_id, namespace = root_ancestor)
+          described_class.user_in_hierarchy_or_invited_groups?(user_id, namespace)
+        end
+
+        shared_examples 'a hierarchy membership check' do
+          context 'when the user is a member of the hierarchy or of a group invited to it' do
+            where(:membership) do
+              [
+                :root_ancestor_member,
+                :subgroup_member,
+                :project_member,
+                :subgroup_project_member,
+                :invited_group_member,
+                :project_invited_group_member
+              ]
+            end
+
+            with_them do
+              it 'returns true' do
+                expect(in_hierarchy?(public_send(membership).user_id)).to be(true)
+              end
+            end
+          end
+
+          it 'checks the whole hierarchy when given a subgroup' do
+            expect(in_hierarchy?(root_ancestor_member.user_id, subgroup)).to be(true)
+          end
+
+          it 'returns false for a user without memberships in the hierarchy' do
+            expect(in_hierarchy?(create(:user).id)).to be(false)
+          end
+
+          it 'returns false for a member of a group invited to another hierarchy' do
+            expect(in_hierarchy?(other_root_invited_group_member.user_id)).to be(false)
+          end
+
+          it 'returns false for a member of a group invited with Minimal Access' do
+            member = create(:group_member)
+            # Minimal Access links need an EE license, which CE specs can't stub.
+            build(:group_group_link, shared_group: root_ancestor, shared_with_group: member.group,
+              group_access: Gitlab::Access::MINIMAL_ACCESS).save!(validate: false)
+
+            expect(in_hierarchy?(member.user_id)).to be(false)
+          end
+
+          context 'when the membership does not grant access' do
+            where(:trait) { [:access_request, :awaiting, :minimal_access] }
+
+            with_them do
+              it 'returns false' do
+                member = create(:group_member, trait, source: root_ancestor)
+
+                expect(in_hierarchy?(member.user_id)).to be(false)
+              end
+            end
+          end
+        end
+
+        it_behaves_like 'a hierarchy membership check'
+
+        context 'when anchoring on the hierarchy is cheaper' do
+          before do
+            allow(described_class).to receive(:user_anchored_cheaper?).and_return(false)
+          end
+
+          it_behaves_like 'a hierarchy membership check'
+        end
+
+        describe 'choosing the query' do
+          it 'anchors on the user when they have no more memberships than the hierarchy has groups and projects' do
+            expect(described_class).to receive(:user_anchored_memberships).and_call_original
+            expect(described_class).not_to receive(:hierarchy_anchored_memberships)
+
+            in_hierarchy?(subgroup_member.user_id)
+          end
+
+          it 'anchors on the hierarchy when the user has more memberships than it has groups and projects' do
+            user = create(:user)
+            create_list(:group_member, 5, user: user)
+
+            expect(described_class).to receive(:hierarchy_anchored_memberships).and_call_original
+            expect(described_class).not_to receive(:user_anchored_memberships)
+
+            expect(in_hierarchy?(user.id)).to be(false)
+          end
+        end
+      end
     end
 
     describe '.seat_assignable' do

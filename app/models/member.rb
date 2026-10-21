@@ -125,6 +125,67 @@ class Member < ApplicationRecord
     ], remove_duplicates: false)
   end
 
+  # Whether `user_id` has an active membership in the hierarchy of `namespace`, directly or through a group
+  # invited to one of its groups or projects.
+  def self.user_in_hierarchy_or_invited_groups?(user_id, namespace)
+    root = namespace.root_ancestor
+    memberships = for_users(user_id).without_invites_and_requests
+
+    if user_anchored_cheaper?(user_id, root)
+      user_anchored_memberships(memberships, root)
+    else
+      hierarchy_anchored_memberships(memberships, root)
+    end.exists?
+  end
+
+  # Both queries cost about the same per row visited, so pick the smaller side. Unfiltered, the count is index-only.
+  def self.user_anchored_cheaper?(user_id, root)
+    hierarchy_size = root.self_and_descendant_ids.count + root.all_project_ids.count
+
+    for_users(user_id).limit(hierarchy_size + 1).count <= hierarchy_size
+  end
+  private_class_method :user_anchored_cheaper?
+
+  def self.user_anchored_memberships(memberships, namespace)
+    group_memberships = memberships.where(source_type: GroupMember::SOURCE_TYPE)
+    in_hierarchy = Namespace.by_root_id(namespace.traversal_ids.first)
+
+    Member.unscoped.from_union([
+      memberships.joins(:member_namespace).merge(in_hierarchy).select(:id),
+      # The link's access level caps the member's role, so a Minimal Access link grants no access.
+      group_memberships
+        .joins('INNER JOIN group_group_links ON group_group_links.shared_with_group_id = members.source_id')
+        .joins('INNER JOIN namespaces ON namespaces.id = group_group_links.shared_group_id')
+        .where('group_group_links.group_access > ?', MINIMAL_ACCESS)
+        .merge(in_hierarchy)
+        .select(:id),
+      group_memberships
+        .joins('INNER JOIN project_group_links ON project_group_links.group_id = members.source_id')
+        .joins('INNER JOIN projects ON projects.id = project_group_links.project_id')
+        .joins('INNER JOIN namespaces ON namespaces.id = projects.namespace_id')
+        .merge(in_hierarchy)
+        .select(:id)
+    ], remove_duplicates: false)
+  end
+  private_class_method :user_anchored_memberships
+
+  def self.hierarchy_anchored_memberships(memberships, root)
+    group_memberships = memberships.where(source_type: GroupMember::SOURCE_TYPE)
+    invited_group_ids = GroupGroupLink
+      .for_shared_groups(root.self_and_descendant_ids)
+      .where('group_group_links.group_access > ?', MINIMAL_ACCESS)
+      .select(:shared_with_group_id)
+    project_invited_group_ids = ProjectGroupLink.for_projects(root.all_project_ids).select(:group_id)
+
+    Member.unscoped.from_union([
+      memberships.where(source_type: GroupMember::SOURCE_TYPE, source_id: root.self_and_descendant_ids).select(:id),
+      memberships.where(source_type: ProjectMember::SOURCE_TYPE, source_id: root.all_project_ids).select(:id),
+      group_memberships.where(source_id: invited_group_ids).select(:id),
+      group_memberships.where(source_id: project_invited_group_ids).select(:id)
+    ], remove_duplicates: false)
+  end
+  private_class_method :hierarchy_anchored_memberships
+
   scope :including_user_ids, ->(user_ids) do
     where(user_id: user_ids)
   end

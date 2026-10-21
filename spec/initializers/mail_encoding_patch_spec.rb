@@ -196,12 +196,14 @@ RSpec.describe 'Mail quoted-printable transfer encoding patch and Unicode charac
       # reverted some upstream changes in order to properly support SMIME signatures
       # See https://gitlab.com/gitlab-org/gitlab/issues/197386
       it 'content cannot be decoded back' do
+        new_email = Mail.new(email)
+
         # Headers are ok
-        expect(email.subject).to eq(email.subject)
-        expect(email.from).to eq(email.from)
-        expect(email.to).to eq(email.to)
-        expect(email.content_type).to eq(email.content_type)
-        expect(email.content_transfer_encoding).to eq(email.content_transfer_encoding)
+        expect(new_email.subject).to eq(email.subject)
+        expect(new_email.from).to eq(email.from)
+        expect(new_email.to).to eq(email.to)
+        expect(new_email.content_type).to eq(email.content_type)
+        expect(new_email.content_transfer_encoding).to eq(email.content_transfer_encoding)
 
         # Content cannot be recovered
         expect(email.parts.first.decoded).not_to eq(image)

@@ -167,11 +167,9 @@ class SessionsController < Devise::SessionsController
 
   # TODO: Replace !Group.exists? with a cookie-based approach in a follow-up MR.
   # See issue #579942 / epic #19488 for the onboarding presenter plan.
-  # Overridden in EE to add SaaS guard.
+  # Overridden in EE to add SaaS and Dedicated guards.
   def should_redirect_to_sm_onboarding?(resource)
-    !Gitlab::CurrentSettings.gitlab_dedicated_instance? &&
-      resource.can_admin_all_resources? &&
-      !Group.exists?
+    resource.can_admin_all_resources? && !Group.exists?
   end
 
   # Overridden in EE

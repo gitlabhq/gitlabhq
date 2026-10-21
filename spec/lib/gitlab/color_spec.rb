@@ -68,7 +68,7 @@ RSpec.describe Gitlab::Color do
 
   describe '#new' do
     it 'handles nil values' do
-      expect(described_class.new(nil)).to eq(described_class.new(nil))
+      expect(described_class.new(nil)).to eq(described_class.new(''))
     end
 
     it 'strips input' do

@@ -93,7 +93,9 @@ RSpec.describe Resolvers::BaseResolver, feature_category: :api do
     end
 
     it 'returns the same subclass every time' do
-      expect(resolver.single.object_id).to eq(resolver.single.object_id)
+      first_single = resolver.single
+
+      expect(resolver.single).to be(first_single)
     end
 
     it 'returns a resolver that gives the first result from the original resolver' do
@@ -220,7 +222,9 @@ RSpec.describe Resolvers::BaseResolver, feature_category: :api do
     end
 
     it 'returns the same subclass every time' do
-      expect(last_resolver.last.object_id).to eq(last_resolver.last.object_id)
+      first_last = last_resolver.last
+
+      expect(last_resolver.last).to be(first_last)
     end
 
     it 'returns a resolver that gives the last result from the original resolver' do

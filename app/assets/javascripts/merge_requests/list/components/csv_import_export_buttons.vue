@@ -38,6 +38,11 @@ export default {
       required: false,
       default: '',
     },
+    exportVariables: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
     issuableCount: {
       type: Number,
       required: false,
@@ -95,6 +100,7 @@ export default {
       v-if="showExportButton"
       :modal-id="exportModalId"
       :export-csv-path="exportCsvPath"
+      :export-variables="exportVariables"
       :issuable-count="issuableCount"
     />
     <csv-import-modal v-if="showImportButton" :modal-id="importModalId" />

@@ -95,5 +95,42 @@ namespace :gitlab do
 
       logger.info Rainbow("Classification complete. Results saved to #{output_file}").green
     end
+
+    desc 'GitLab | Pool Repositories | Remediate classified dead-shard pool members (relink)'
+    task remediate_dead_shard_members: :gitlab_environment do
+      warn_user_is_not_gitlab
+
+      input_file = ENV['INPUT_FILE']
+      output_file = ENV['OUTPUT_FILE']
+      dry_run = ENV['DRY_RUN'] != 'false'
+      classifications = ENV.fetch('CLASSIFICATIONS', 'silently_linked').split(',')
+      logger = Gitlab::PoolRepositories::RakeTask.logger
+
+      if input_file.blank? || output_file.blank?
+        logger.error Rainbow('ERROR: INPUT_FILE and OUTPUT_FILE environment variables are required').red
+        logger.info 'Usage: bin/rake gitlab:pool_repositories:remediate_dead_shard_members ' \
+          'INPUT_FILE=/path/to/classification.csv OUTPUT_FILE=/path/to/output.csv ' \
+          '[DRY_RUN=false] [CLASSIFICATIONS=silently_linked]'
+        exit 1
+      end
+
+      begin
+        remediator = Gitlab::PoolRepositories::DeadShardMemberRemediator.new(
+          input_file: input_file,
+          output_file: output_file,
+          logger: logger,
+          dry_run: dry_run,
+          classifications: classifications
+        )
+
+        remediator.run!
+      rescue Gitlab::PoolRepositories::DeadShardMemberRemediator::ValidationError => e
+        logger.error Rainbow("ERROR: #{e.message}").red
+        exit 1
+      end
+
+      logger.info Rainbow("Remediation complete. Results saved to #{output_file}").green
+      logger.info Rainbow('To apply changes run this command with DRY_RUN=false').yellow if dry_run
+    end
   end
 end

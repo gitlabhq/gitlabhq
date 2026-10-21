@@ -93,7 +93,7 @@ export default {
     },
     async deleteMessage(messageId) {
       const index = this.visibleMessages.findIndex((m) => m.id === messageId);
-      if (!index === -1) return;
+      if (index === -1) return;
 
       const message = this.visibleMessages[index];
       this.setVisibleMessages({ index, message, value: true });

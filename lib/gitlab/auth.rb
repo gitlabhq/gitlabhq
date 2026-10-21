@@ -132,7 +132,11 @@ module Gitlab
 
         result = git_client_checks(login, password, project, request)
 
-        rate_limit!(rate_limiter, success: result.success?, login: login, request: request)
+        # An IAM outage says nothing about the client, so it must not ban the IP.
+        unless result.iam_revocation_check_failed?
+          rate_limit!(rate_limiter, success: result.success?, login: login, request: request)
+        end
+
         look_to_limit_user(result.actor)
 
         return result if result.success? || authenticate_using_internal_or_ldap_password?
@@ -254,6 +258,9 @@ module Gitlab
       def user_with_password_for_git(login, password)
         # Prevent LDAP and database authentication attempts when password is a token
         return if password.present? && Authn::AgnosticTokenIdentifier.token?(password)
+        # IAM access tokens are not AgnosticTokenIdentifier types, so a revoked or
+        # unverifiable one would otherwise be tried as a password.
+        return if Authn::Tokens::IamOauthToken.prefix?(password)
 
         user = find_with_user_password(login, password, activity: :git)
         return unless user
@@ -289,7 +296,13 @@ module Gitlab
           return unless user && (user.can_log_in_with_non_expired_password? || valid_composite_identity?(user))
 
           Gitlab::Auth::Result.new(user, nil, :oauth, abilities_for_scopes(token.scopes), oauth_access_token: token)
+        elsif iam_revocation_check_failed?(token)
+          Gitlab::Auth::Result::IAM_REVOCATION_CHECK_FAILED
         end
+      end
+
+      def iam_revocation_check_failed?(token)
+        token.is_a?(Authn::Tokens::IamOauthToken) && !token.expired? && token.revocation_check_failed?
       end
 
       def personal_access_token_check(password, project)

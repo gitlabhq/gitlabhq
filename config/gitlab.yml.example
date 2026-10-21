@@ -1632,6 +1632,13 @@ production: &base
     # JetStream stream replication factor. Defaults to 1 for single-node
     # deployments; set to 3 for a clustered NATS deployment.
     # stream_replicas: 1
+    # Audit event streaming partition topology. drain_partition_count is how
+    # many partitions (and durable consumers) are provisioned and drained;
+    # publish_partition_count is how many of those publishing spreads across
+    # (capped at drain). Both default to 1, which suits a small install; a
+    # high-volume deployment raises them.
+    # drain_partition_count: 1
+    # publish_partition_count: 1
 
   ## GitLab Elasticsearch settings
   elasticsearch:

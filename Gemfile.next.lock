@@ -61,7 +61,7 @@ PATH
       json (~> 2.7)
       jwt (~> 2.5)
       logger (~> 1.5)
-      minitest (~> 5.11.0)
+      minitest (~> 5.27.0)
       mutex_m (~> 0.3)
       parallel (~> 1.19)
       pg (~> 1.6.1)
@@ -1417,7 +1417,7 @@ GEM
     mini_magick (4.13.2)
     mini_mime (1.1.5)
     mini_portile2 (2.8.9)
-    minitest (5.11.3)
+    minitest (5.27.0)
     mixlib-cli (2.1.8)
     mixlib-config (3.0.27)
       tomlrb
@@ -2687,7 +2687,7 @@ DEPENDENCIES
   memory_profiler (~> 1.0)
   microsoft_graph_mailer (~> 0.1.0)!
   mini_magick (~> 4.12)
-  minitest (~> 5.11.0)
+  minitest (~> 5.27.0)
   multi_json (~> 1.17.0)
   nats-pure (~> 2.5.0)
   net-http (= 0.6.0)
@@ -3288,7 +3288,7 @@ CHECKSUMS
   mini_magick (4.13.2) sha256=71d6258e0e8a3d04a9a0a09784d5d857b403a198a51dd4f882510435eb95ddd9
   mini_mime (1.1.5) sha256=8681b7e2e4215f2a159f9400b5816d85e9d8c6c6b491e96a12797e798f8bccef
   mini_portile2 (2.8.9) sha256=0cd7c7f824e010c072e33f68bc02d85a00aeb6fce05bb4819c03dfd3c140c289
-  minitest (5.11.3) sha256=78e18aa2c49c58e9bc53c54a0b900e87ad0a96394e92fbbfa58d3ff860a68f45
+  minitest (5.27.0) sha256=2d3b17f8a36fe7801c1adcffdbc38233b938eb0b4966e97a6739055a45fa77d5
   mixlib-cli (2.1.8) sha256=e6f27be34d580f6ed71731ca46b967e57793a627131c1f6e1ed2dad39ea3bdf9
   mixlib-config (3.0.27) sha256=d7748b1898e4f16502afec1de00b5ad65c6de405114b1b0c65ec61b1a9100148
   mixlib-log (3.2.3) sha256=2a1d3fa83522a320edd493827c901b773fb5d185fac7efd81d028d8e1166a768

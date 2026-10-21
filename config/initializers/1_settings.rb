@@ -664,6 +664,13 @@ Gitlab.ee do
   # NATS overrides this to 3. A value > 1 on a non-clustered server is
   # rejected by JetStream (err 10074).
   Settings.nats['stream_replicas'] ||= 1
+  # Audit event streaming partition topology. drain is how many partitions (and
+  # durable consumers) are provisioned and drained; publish is how many of those
+  # publishing spreads across (capped at drain). Unset means a single partition
+  # (fine for a small install); a high-volume deployment raises both. Read via
+  # AuditEvents::Streaming::NatsPartitioning, which supplies the default.
+  Settings.nats['drain_partition_count'] ||= nil
+  Settings.nats['publish_partition_count'] ||= nil
 end
 
 #

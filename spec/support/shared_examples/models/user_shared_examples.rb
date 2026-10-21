@@ -107,6 +107,7 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
     %w[
       abuse_report_uploads
       achievement_uploads
+      ai_suggested_reviewers
       ai_vectorizable_file_uploads
       alert_management_alert_metric_image_uploads
       appearance_uploads

@@ -1226,10 +1226,8 @@ module Types
     end
 
     def statistics_details_paths
-      root_ref = project.repository.root_ref || project.default_branch_or_main
-
       {
-        repository: Gitlab::Routing.url_helpers.project_tree_url(project, root_ref),
+        repository: statistics_repository_path,
         wiki: Gitlab::Routing.url_helpers.project_wikis_pages_url(project),
         build_artifacts: Gitlab::Routing.url_helpers.project_artifacts_url(project),
         packages: Gitlab::Routing.url_helpers.project_packages_url(project),
@@ -1305,6 +1303,14 @@ module Types
     end
 
     private
+
+    def statistics_repository_path
+      return Gitlab::Routing.url_helpers.project_url(project) unless Ability.allowed?(current_user, :read_code, project)
+
+      root_ref = project.repository.root_ref || project.default_branch_or_main
+
+      Gitlab::Routing.url_helpers.project_tree_url(project, root_ref)
+    end
 
     def project
       @project ||= object.respond_to?(:sync) ? object.sync : object

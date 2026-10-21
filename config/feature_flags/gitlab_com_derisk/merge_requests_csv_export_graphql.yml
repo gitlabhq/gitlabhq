@@ -1,0 +1,11 @@
+---
+name: merge_requests_csv_export_graphql
+description: Export merge request CSVs through the mergeRequestsCsvExport GraphQL
+  mutation so the export applies the same filters as the list
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/583992
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/261946
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/633656
+milestone: '19.6'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

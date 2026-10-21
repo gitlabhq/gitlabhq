@@ -796,6 +796,9 @@ Cancel a single job of a project.
 POST /projects/:id/jobs/:job_id/cancel
 ```
 
+If you exceed the [job cancellation rate limits](../administration/cicd/limits.md#job-cancellation-rate-limits),
+this endpoint returns a `429 Too Many Requests` status code with a `Retry-After` header.
+
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
 | `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |

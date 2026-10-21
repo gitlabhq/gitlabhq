@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 scope(path: '*repository_path', format: false) do
-  constraints(repository_path: Gitlab::PathRegex.repository_git_route_regex) do
+  constraints(
+    repository_path: Gitlab::PathRegex.without_organization_scope(Gitlab::PathRegex.repository_git_route_regex)
+  ) do
     scope(module: :repositories) do
       # Git HTTP API
       scope(controller: :git_http) do
@@ -44,7 +46,9 @@ scope(path: '*repository_path', format: false) do
   end
 
   # Redirect /group/project.wiki.git to the project wiki
-  constraints(repository_path: Gitlab::PathRegex.repository_wiki_git_route_regex) do
+  constraints(
+    repository_path: Gitlab::PathRegex.without_organization_scope(Gitlab::PathRegex.repository_wiki_git_route_regex)
+  ) do
     wiki_redirect = redirect do |params, request|
       container_path = params[:repository_path].delete_suffix('.wiki.git')
       path = File.join(container_path, '-', 'wikis')
@@ -57,7 +61,9 @@ scope(path: '*repository_path', format: false) do
 
   # Redirect /group/project/info/refs to /group/project.git/info/refs
   # This allows cloning a repository without the trailing `.git`
-  constraints(repository_path: Gitlab::PathRegex.repository_route_regex) do
+  constraints(
+    repository_path: Gitlab::PathRegex.without_organization_scope(Gitlab::PathRegex.repository_route_regex)
+  ) do
     ref_redirect = redirect do |params, request|
       path = "#{params[:repository_path]}.git/info/refs"
       path += "?#{request.query_string}" unless request.query_string.blank?

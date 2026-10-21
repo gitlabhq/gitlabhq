@@ -9,13 +9,31 @@ RSpec.describe 'Merge Requests > Exports as CSV', :js, feature_category: :code_r
 
   before do
     sign_in(user)
+  end
+
+  def open_export_modal
     visit(project_merge_requests_path(project))
+    click_button 'Actions'
+    click_button 'Export as CSV'
   end
 
   context 'button is clicked' do
     before do
-      click_button 'Actions'
-      click_button 'Export as CSV'
+      open_export_modal
+    end
+
+    it 'shows a success message' do
+      click_button('Export merge requests')
+
+      expect(page).to have_content 'Your CSV export request has succeeded. ' \
+        "The result will be emailed to #{user.notification_email_or_default}."
+    end
+  end
+
+  context 'when the merge_requests_csv_export_graphql feature flag is disabled' do
+    before do
+      stub_feature_flags(merge_requests_csv_export_graphql: false)
+      open_export_modal
     end
 
     it 'shows a success message' do

@@ -151,7 +151,7 @@ Prerequisites:
 Prerequisites:
 
 - You must be an administrator.
-- Your instance must be able to synchronize your subscription data with GitLab.
+- Your instance must synchronize your subscription data with GitLab.
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **GitLab Credits**.
@@ -239,8 +239,8 @@ GraphQL mutations.
 
 How the cap value is applied then depends on the cap type:
 
-- A **subscription-level cap** applies to on-demand usage only. The cap is the amount of on-demand usage allowed across the subscription, in addition to every user's included credits.
-- A **per-user cap** applies to a user's total usage, including their included credits, for usage the user triggers directly. A user can therefore consume up to whichever is larger: their included allocation, or their cap.
+- A subscription-level cap applies to on-demand usage only. The cap is the amount of on-demand usage allowed across the subscription, in addition to every user's included credits.
+- A per-user cap applies to a user's total usage, including their included credits, for usage the user triggers directly. A user can therefore consume up to whichever is larger: their included allocation, or their cap.
 
 > [!note]
 > Usage from [GitLab Duo Agent Platform flows](../user/duo_agent_platform/_index.md)

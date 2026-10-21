@@ -12,7 +12,7 @@ module Gitlab
             def preload_boundaries(type, nodes, context)
               token = context[:access_token]
               return unless token && token.respond_to?(:granular?)
-              return unless token.granular? || token.subject_to_granular_enforcement?
+              return unless token.subject_to_granular_authorization?
 
               nodes = nodes.compact
               return if nodes.empty?

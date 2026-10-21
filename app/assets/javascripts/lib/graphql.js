@@ -52,6 +52,9 @@ export const typePolicies = {
   TimelogConnection: {
     merge: true,
   },
+  AiFlowTriggerConnection: {
+    merge: true,
+  },
   BranchList: {
     merge: true,
   },

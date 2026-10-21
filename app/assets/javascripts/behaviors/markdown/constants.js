@@ -3,6 +3,9 @@ export const GFM_POPOVER_SELECTOR =
 
 export const GFM_LIGHTBOX_IMAGE_SELECTOR = 'a>img';
 
+export const MARKDOWN_TABLE_EXPANDED_KEY = 'markdown_table_expanded';
+export const MARKDOWN_TABLE_EXPANDED_EVENT = 'gl-markdown-table-expanded';
+
 export const unrestrictedPages = [
   // Group wiki
   'groups:wikis:show',

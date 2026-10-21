@@ -974,6 +974,16 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
         expect(json_response['compare_same_ref']).to be_truthy
       end
 
+      it "requests the diff from Gitaly once" do
+        expect(Gitlab::Git::Diff).to receive(:between).once.and_call_original
+
+        get api(route, current_user), params: { from: 'master', to: 'feature' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['diffs']).to be_present
+        expect(json_response['compare_timeout']).to be(false)
+      end
+
       context 'when unidiff format is requested' do
         let(:commit) { project.repository.commit('feature') }
         let(:diff) { commit.diffs.diffs.first }

@@ -9,6 +9,11 @@ RSpec.describe ProjectPathValidator, feature_category: :source_code_management d
     it 'handles invalid utf8' do
       expect(described_class.valid_path?(+"a\0weird\255path")).to be_falsey
     end
+
+    it 'accepts organization-scoped and unscoped paths' do
+      expect(described_class.valid_path?('my-group/my-project')).to be_truthy
+      expect(described_class.valid_path?('o/acme/my-group/my-project')).to be_truthy
+    end
   end
 
   describe '#validates_each' do

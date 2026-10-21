@@ -14,6 +14,7 @@ module Gitlab
       end
 
       EMPTY = self.new(nil, nil, nil, nil).freeze
+      IAM_REVOCATION_CHECK_FAILED = self.new(nil, nil, :iam_revocation_check_failed, nil).freeze
 
       def ci?(for_project)
         type == :ci &&
@@ -28,6 +29,10 @@ module Gitlab
       def lfs_deploy_token?(for_project)
         type == :lfs_deploy_token &&
           actor.try(:has_access_to?, for_project)
+      end
+
+      def iam_revocation_check_failed?
+        type == :iam_revocation_check_failed
       end
 
       def success?

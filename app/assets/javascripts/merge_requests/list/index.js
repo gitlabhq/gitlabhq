@@ -23,6 +23,7 @@ export async function mountMergeRequestListsApp({
   getMergeRequestsQuery,
   getMergeRequestsCountsQuery,
   getMergeRequestsApprovalsQuery,
+  exportMergeRequestsCsvMutation,
   isProject = true,
 } = {}) {
   const el = document.querySelector('.js-merge-request-list-root');
@@ -102,6 +103,7 @@ export async function mountMergeRequestListsApp({
       getMergeRequestsQuery,
       getMergeRequestsCountsQuery,
       getMergeRequestsApprovalsQuery,
+      exportMergeRequestsCsvMutation,
       isProject,
       namespaceId: namespaceId ? `${namespaceId}` : null,
       showNewResourceDropdown: parseBoolean(showNewResourceDropdown),

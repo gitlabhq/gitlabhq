@@ -2850,7 +2850,9 @@ RSpec.describe API::Helpers, feature_category: :api do
     context 'when access token is not granular' do
       context 'when token responds to granularity (legacy personal access token)' do
         before do
-          allow(token).to receive_messages(granular?: false, subject_to_granular_enforcement?: true)
+          allow(token).to receive_messages(
+            granular?: false, subject_to_granular_enforcement?: true, subject_to_granular_authorization?: true
+          )
         end
 
         it 'returns true' do
@@ -2865,7 +2867,10 @@ RSpec.describe API::Helpers, feature_category: :api do
       end
 
       context 'when token is not subject to granular enforcement (legacy OAuth token)' do
-        let(:token) { instance_double(OauthAccessToken, granular?: false, subject_to_granular_enforcement?: false) }
+        let(:token) do
+          instance_double(OauthAccessToken,
+            granular?: false, subject_to_granular_enforcement?: false, subject_to_granular_authorization?: false)
+        end
 
         it 'returns false' do
           allow(helper).to receive(:authorization_settings).and_return({})
@@ -2901,7 +2906,7 @@ RSpec.describe API::Helpers, feature_category: :api do
 
     context 'when access token is granular' do
       before do
-        allow(token).to receive(:granular?).and_return(true)
+        allow(token).to receive_messages(granular?: true, subject_to_granular_authorization?: true)
       end
 
       context 'when skip_granular_token_authorization is not set' do

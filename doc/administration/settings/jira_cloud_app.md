@@ -181,7 +181,7 @@ to check if Jira Cloud is linked to:
 > The previous manual install method relied on Atlassian Connect development mode. Atlassian
 > [disabled Connect-based private installs on 2026-03-31](https://www.atlassian.com/blog/developer/announcing-connect-end-of-support-timeline-and-next-steps).
 > If you previously installed the app manually with the **App descriptor URL** workflow,
-> migrate to the Forge-based install described in [this section](../../integration/jira/connect-app.md#migration-from-atlassian-connect-to-forge).
+> see [migrate a manual Connect installation to a private Forge app](../../integration/jira/connect-app.md#migrate-a-manual-connect-installation-to-a-private-forge-app).
 
 Install the GitLab for Jira Cloud app manually if you cannot
 [use the official Atlassian Marketplace listing](#install-the-gitlab-for-jira-cloud-app-from-the-atlassian-marketplace).
@@ -287,6 +287,171 @@ The script fast-forwards the local clone, regenerates the manifest, and redeploy
 For more information about minor and major version upgrades, see
 [Upgrading](https://gitlab.com/gitlab-org/gitlab-jira-forge/-/blob/main/docs/self-managed-install.md#upgrading)
 in the GitLab Self-Managed install guide.
+
+## Switch installation methods
+
+You can switch the GitLab for Jira Cloud app between a manual installation and the Atlassian Marketplace listing.
+A switch in either direction does not keep group links.
+If you have a Connect-based manual installation, you can
+[migrate it to a private Forge app](../../integration/jira/connect-app.md#migrate-a-manual-connect-installation-to-a-private-forge-app)
+and keep your links.
+
+### Compare installation methods
+
+You can install the GitLab for Jira Cloud app from the Atlassian Marketplace
+or as a private Forge app that you publish yourself.
+Each method has different requirements.
+
+<!-- markdownlint-disable MD044 -->
+
+| Consideration | Atlassian Marketplace | Manual installation (private Forge app) |
+|---------------|-----------------------|-----------------------------------------|
+| Updates | GitLab publishes updates. A Jira administrator approves major versions in Jira. | You re-run the wrapper script with `--update` to pull upstream changes. |
+| Accounts and tooling | A Jira administrator. | An Atlassian developer account, the Forge CLI, and Node.js. |
+| GitLab.com involvement | GitLab.com receives install and uninstall events from Jira and forwards them to your instance. It also redirects branch-creation links to your instance. | None. GitLab.com does not know about your instance. |
+| Instances for each Atlassian organization | One | No limit |
+| **Jira Connect Proxy URL** | `https://gitlab.com` | Blank |
+| OAuth redirect URI | `https://gitlab.com/-/jira_connect/oauth_callbacks` | `https://gitlab.example.com/-/jira_connect/oauth_callbacks` |
+| Name shown in Jira | **GitLab for Jira (gitlab.com)** | The name you enter at `forge register`. The wrapper script suggests **GitLab for Jira (gitlab.example.com)**. |
+
+<!-- markdownlint-enable MD044 -->
+
+Group links and synced data belong to the installed app.
+
+### App keys and group links
+
+GitLab stores group links on the installation record of each installed app.
+Jira gives each installed app on a site its own client key.
+GitLab keeps links only when the new app registers with the same Connect app key as the old app.
+
+GitLab builds the Connect app key as `gitlab-jira-connect-<host>`.
+When **Jira Connect Proxy URL** is blank, `<host>` is the hostname of your instance.
+When **Jira Connect Proxy URL** is `https://gitlab.com`, `<host>` is `gitlab.com`.
+The Marketplace app therefore never matches a manual installation,
+and links do not carry over between the two methods.
+
+> [!warning]
+> GitLab signs every call to Jira with the Connect app key.
+> Changing **Jira Connect Proxy URL** changes the key immediately for the whole instance.
+> From that moment, Jira rejects data sync (HTTP 401) from the app you installed with the previous value,
+> for every Jira site connected to your instance.
+> Make this change as the first step of the switch, not as a preparation step.
+
+Replacing the **Jira Connect Application ID** does not affect data sync.
+It affects only the sign-in step on the app configuration page.
+
+### Record your group links
+
+Record the linked groups before a switch or migration,
+and compare them with the linked groups afterward.
+Use one of these methods:
+
+- In Jira, open the [GitLab for Jira Cloud app configuration page](../../integration/jira/connect-app.md#configure-the-gitlab-for-jira-cloud-app).
+  The page lists the linked groups.
+  Use this method on GitLab Dedicated.
+- In a [Rails console](../operations/rails_console.md#starting-a-rails-console-session), run the following.
+  Replace the URL with your Jira site:
+
+  ```ruby
+  JiraConnectInstallation.where(base_url: 'https://example.atlassian.net').map do |installation|
+    [installation.id, installation.subscriptions.map { |subscription| subscription.namespace.full_path }]
+  end
+  ```
+
+### Switch from a manual installation to the Atlassian Marketplace listing
+
+This switch does not keep group links.
+GitLab deletes the links of the manual installation when you uninstall the manual app.
+Jira deletes the development information that the manual app sent.
+This deletion is asynchronous and can take several hours.
+After you link the groups again, GitLab runs an initial sync.
+For each project, the initial sync includes the last 400 merge requests
+and the last 400 branches (with last commit) that mention a Jira issue key.
+GitLab processes projects in batches of 20 per minute.
+Pipelines, deployments, and feature flags sync only for events after you link the groups.
+
+Nothing syncs between when you change **Jira Connect Proxy URL** and when you link the groups again.
+Merge requests and branches from that window sync during the initial sync, up to its limits.
+
+Prerequisites:
+
+- Administrator access.
+- An instance that meets the [Marketplace prerequisites](#prerequisites).
+- No other instance in your Atlassian organization that uses the Marketplace listing.
+
+To switch:
+
+1. [Record your group links](#record-your-group-links).
+1. Add `https://gitlab.com/-/jira_connect/oauth_callbacks` as an additional
+   redirect URI to your existing OAuth application.
+   You do not need a second OAuth application.
+   In the **Redirect URI** text box, put each URI on its own line.
+   Keep the **Jira Connect Application ID** unchanged.
+1. In the **Admin** area, in **Settings** > **General**, in the **GitLab for Jira App** section,
+   set **Jira Connect Proxy URL** to `https://gitlab.com` and select **Save changes**.
+   This step starts the switch.
+   Sync of the manual app stops now.
+1. Install the Marketplace app.
+   Link your instance and the groups from your list.
+   For more information, see [Link your instance](#link-your-instance).
+1. Wait for the initial sync, then check the development panel in Jira.
+1. Uninstall the manual app.
+
+While both apps are installed on the same Jira site,
+the development panel can show data from both.
+
+### Switch from the Atlassian Marketplace listing to a private Forge app
+
+This switch does not keep group links.
+The effects on links and development data are the same as in
+[Switch from a manual installation to the Atlassian Marketplace listing](#switch-from-a-manual-installation-to-the-atlassian-marketplace-listing).
+
+Prerequisites:
+
+- Administrator access.
+- An instance and tools that meet the [manual installation prerequisites](#prerequisites-1).
+
+To switch:
+
+1. [Record your group links](#record-your-group-links).
+1. Add `https://gitlab.example.com/-/jira_connect/oauth_callbacks` as an additional
+   redirect URI to your existing OAuth application.
+   You do not need a second OAuth application.
+   In the **Redirect URI** text box, put each URI on its own line.
+   Keep the **Jira Connect Application ID** unchanged.
+1. In the **Admin** area, in **Settings** > **General**, in the **GitLab for Jira App** section,
+   clear **Jira Connect Proxy URL** and select **Save changes**.
+   This step starts the switch.
+   Sync of the Marketplace app stops now.
+1. Publish and install the private Forge app.
+   For more information, see [Publish a private Forge app](#publish-a-private-forge-app).
+1. Link your groups again from your list.
+1. Uninstall the Marketplace app.
+
+### Roll back a switch
+
+To roll back a switch from a manual installation to the Marketplace listing
+before you uninstall the manual app,
+clear **Jira Connect Proxy URL** and uninstall the Marketplace app.
+The manual app resumes with its links intact.
+
+After you uninstall the manual app, GitLab deletes its group links.
+You cannot reinstall a Connect-based manual app, because Atlassian disabled Connect-based private installations.
+A new private Forge app starts with no links.
+
+To roll back a switch from the Marketplace listing to a private Forge app
+before you uninstall the Marketplace app,
+set **Jira Connect Proxy URL** back to `https://gitlab.com` and uninstall the private Forge app.
+The Marketplace app resumes with its links intact.
+
+### Test a switch on a Jira sandbox site
+
+Each Jira sandbox site has its own app installation,
+so you can test the installation, sign-in, and linking steps there.
+**Jira Connect Proxy URL** is an instance-wide setting,
+so a test on your production GitLab instance also stops sync for your production Jira site.
+Test with a non-production GitLab instance, or plan for the sync pause.
+A test on a sandbox site cannot confirm that links carry over for your production Jira site.
 
 ## Connect multiple GitLab instances
 

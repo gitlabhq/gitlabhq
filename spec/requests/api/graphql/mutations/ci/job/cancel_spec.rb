@@ -40,6 +40,24 @@ RSpec.describe "JobCancel", feature_category: :continuous_integration do
     expect(graphql_errors).not_to be_empty
   end
 
+  context 'when the job cancel rate limit is exceeded', :clean_gitlab_redis_rate_limiting, :freeze_time do
+    before_all do
+      project.add_maintainer(user)
+    end
+
+    before do
+      stub_application_setting(job_cancel_limit_per_user_project: 1)
+    end
+
+    it 'returns the throttle message in errors', :aggregate_failures do
+      2.times { post_graphql_mutation(mutation, current_user: user) }
+
+      expect(response).to have_gitlab_http_status(:success)
+      expect(mutation_response['job']).to be_nil
+      expect(mutation_response['errors']).to contain_exactly(::Gitlab::ApplicationRateLimiter.throttled_error_message)
+    end
+  end
+
   it 'cancels a job' do
     job_id = ::Gitlab::GlobalId.build(job, id: job.id).to_s
     project.add_maintainer(user)

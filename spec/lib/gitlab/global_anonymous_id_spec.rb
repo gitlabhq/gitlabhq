@@ -55,7 +55,7 @@ RSpec.describe Gitlab::GlobalAnonymousId, feature_category: :code_suggestions do
       user_id_2 = described_class.user_id(user)
 
       expect(user_id_1).to be_instance_of(String)
-      expect(user_id_2).to eq(user_id_2)
+      expect(user_id_2).to eq(user_id_1)
     end
 
     it 'is different for the same user but different instance UUIDs' do

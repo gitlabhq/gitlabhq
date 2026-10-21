@@ -233,7 +233,7 @@ On the Free tier:
 Prerequisites:
 
 - You must be an administrator.
-- Your instance must be able to synchronize your subscription data with GitLab.
+- Your instance must synchronize your subscription data with GitLab.
 
 On the Premium and Ultimate tier:
 

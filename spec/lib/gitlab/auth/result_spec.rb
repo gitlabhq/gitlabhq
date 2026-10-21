@@ -31,6 +31,13 @@ RSpec.describe Gitlab::Auth::Result do
     end
   end
 
+  describe '#iam_revocation_check_failed?' do
+    it 'is true only for IAM_REVOCATION_CHECK_FAILED' do
+      expect(described_class::IAM_REVOCATION_CHECK_FAILED).to be_iam_revocation_check_failed.and(be_failed)
+      expect(described_class::EMPTY).not_to be_iam_revocation_check_failed
+    end
+  end
+
   describe '#authentication_abilities_include?' do
     context 'when authentication abilities are empty' do
       it 'returns false' do

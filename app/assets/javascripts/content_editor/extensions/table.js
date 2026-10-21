@@ -4,6 +4,7 @@ import { debounce } from 'lodash-es';
 import { VARIANT_WARNING } from '~/alert';
 import {
   STICKY_HEADER_CLASSES,
+  STICKY_HEADER_MAX_HEIGHT_CLASS,
   STICKY_TABLE_WRAPPER_CLASSES,
 } from '~/lib/utils/table_sticky_header';
 import { __ } from '~/locale';
@@ -41,7 +42,7 @@ export default Table.extend({
           'div',
           {
             'data-sticky-header': true,
-            class: STICKY_HEADER_CLASSES.join(' '),
+            class: [STICKY_HEADER_MAX_HEIGHT_CLASS, ...STICKY_HEADER_CLASSES].join(' '),
           },
           tableEl,
         ],

@@ -30,7 +30,6 @@ Style/NumberedParameters:
     - 'rubocop/cop/graphql/enum_values.rb'
     - 'rubocop/formatter/graceful_formatter.rb'
     - 'spec/graphql/resolvers/concerns/resolves_ids_spec.rb'
-    - 'spec/graphql/types/board_list_type_spec.rb'
     - 'spec/graphql/types/current_user_todos_type_spec.rb'
     - 'spec/lib/gitlab/quick_actions/users_extractor_spec.rb'
     - 'spec/lib/gitlab/web_hooks/recursion_detection_spec.rb'

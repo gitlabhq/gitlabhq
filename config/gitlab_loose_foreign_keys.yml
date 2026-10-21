@@ -673,6 +673,16 @@ p_ai_active_context_code_repositories:
   - table: ai_active_context_connections
     column: connection_id
     on_delete: async_delete
+p_ai_suggested_reviewers:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+  - table: merge_requests
+    column: merge_request_id
+    on_delete: async_delete
+  - table: users
+    column: user_id
+    on_delete: async_delete
 p_ci_build_names:
   - table: projects
     column: project_id

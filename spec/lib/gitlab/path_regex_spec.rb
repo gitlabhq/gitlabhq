@@ -284,6 +284,24 @@ RSpec.describe Gitlab::PathRegex, feature_category: :groups_and_projects do
   describe '.full_namespace_path_regex' do
     subject { described_class.full_namespace_path_regex }
 
+    context 'with an organization scope' do
+      it 'accepts organization-scoped namespace paths' do
+        expect(subject).to match('o/acme/gitlab-org/')
+        expect(subject).to match('o/acme/gitlab-org/subgroup/')
+      end
+
+      it 'rejects the scope without a namespace, or a reserved organization path' do
+        expect(subject).not_to match('o/')
+        expect(subject).not_to match('o/acme/')
+        expect(subject).not_to match('o/admin/gitlab-org/')
+      end
+
+      it 'applies the same reserved words to the namespace inside the scope' do
+        expect(subject).not_to match('o/acme/admin/')
+        expect(subject).not_to match('o/acme/gitlab-org/-/')
+      end
+    end
+
     context 'at the top level' do
       context 'when the final level' do
         it 'rejects top level routes' do
@@ -410,6 +428,16 @@ RSpec.describe Gitlab::PathRegex, feature_category: :groups_and_projects do
   describe '.full_project_path_regex' do
     subject { described_class.full_project_path_regex }
 
+    context 'with an organization scope' do
+      it 'accepts organization-scoped project paths' do
+        expect(subject).to match('o/acme/root/project/')
+      end
+
+      it 'applies the same reserved words to the project inside the scope' do
+        expect(subject).not_to match('o/acme/root/blob/')
+      end
+    end
+
     it 'accepts top level routes' do
       expect(subject).to match('root/admin/')
       expect(subject).to match('root/api/')
@@ -535,6 +563,15 @@ RSpec.describe Gitlab::PathRegex, feature_category: :groups_and_projects do
       it 'matches the expected paths' do
         expect_route_match(git_paths + wiki_git_paths)
         expect_no_route_match(container_paths + invalid_paths + invalid_git_paths)
+      end
+    end
+
+    describe '.without_organization_scope' do
+      subject { %r{\A#{described_class.without_organization_scope(described_class.repository_git_route_regex)}\z} }
+
+      it 'rejects organization-scoped paths and keeps the rest' do
+        expect_route_match(git_paths + wiki_git_paths)
+        expect_no_route_match(%w[o/acme/group/project.git o/acme/project.git])
       end
     end
 

@@ -92,7 +92,7 @@ RSpec.describe Ci::Tag, feature_category: :continuous_integration do
     let(:subclass) { Class.new(described_class) }
 
     it 'is equal to itself' do
-      expect(tag).to eq(tag)
+      expect(tag).to eq(described_class.find(tag.id))
     end
 
     it 'is equal to another tag when the name matches' do

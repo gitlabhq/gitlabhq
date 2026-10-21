@@ -1,0 +1,11 @@
+---
+name: dap_software_factory
+description: Controls the Software Factory features of the GitLab Duo Agent Platform. The first
+  feature publishes a cloud event when a reviewer requests changes on a merge request.
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/21067
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/263602
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/634801
+milestone: '19.6'
+group: group::dap events
+type: wip
+default_enabled: false

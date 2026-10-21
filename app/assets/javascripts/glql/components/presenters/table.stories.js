@@ -14,7 +14,6 @@ const TIER_DATA = { nodes: [{ usersCount: 1747, totalCount: 18294 }] };
 const TREND_FIELDS = [
   { key: 'Group', label: 'Group', field: 'group', name: 'group', type: 'dimension' },
   { key: 'Project', label: 'Project', field: 'project', name: 'project', type: 'dimension' },
-  { key: 'Users', label: 'Users', field: 'usersCount', name: 'usersCount', type: 'metric' },
   {
     key: 'Credits',
     label: 'Credits',
@@ -22,6 +21,7 @@ const TREND_FIELDS = [
     name: 'creditsUsedSum',
     type: 'metric',
   },
+  { key: 'Users', label: 'Users', field: 'usersCount', name: 'usersCount', type: 'metric' },
 ];
 
 // Rows pair across periods on the dimension values' `id`.

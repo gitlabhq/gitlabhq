@@ -285,7 +285,7 @@ describe('DataPresenter', () => {
       it('adds a column comparing against the previous period', async () => {
         await createWrapper(trendProps);
 
-        expect(headerLabels()).toEqual(['Language', 'Total count', 'vs previous period']);
+        expect(headerLabels()).toEqual(['Language', 'Total count', 'Total count trend']);
       });
 
       it('renders a badge describing how each row moved', async () => {
@@ -347,7 +347,7 @@ describe('DataPresenter', () => {
         it('reserves the column so it does not pop in later', async () => {
           await createWrapper(pendingProps);
 
-          expect(headerLabels()).toEqual(['Language', 'Total count', 'vs previous period']);
+          expect(headerLabels()).toEqual(['Language', 'Total count', 'Total count trend']);
         });
 
         // An em dash would read as "no counterpart in the previous period", which is not known yet.
@@ -367,13 +367,13 @@ describe('DataPresenter', () => {
           });
 
           expect(wrapper.emitted('error')).toBeUndefined();
-          expect(headerLabels()).toContain('vs previous period');
+          expect(headerLabels()).toContain('Acceptance rate trend');
         });
 
         it('reserves the column from the first paint, before any rows arrive', async () => {
           await createWrapper({ ...pendingProps, data: { nodes: [] }, loading: 2 });
 
-          expect(headerLabels()).toEqual(['Language', 'Total count', 'vs previous period']);
+          expect(headerLabels()).toEqual(['Language', 'Total count', 'Total count trend']);
           expect(wrapper.findAll('tbody tr').at(0).findAll('td')).toHaveLength(3);
         });
 
@@ -450,7 +450,7 @@ describe('DataPresenter', () => {
         });
 
         it('still adds the column', () => {
-          expect(headerLabels()).toEqual(['Group', 'Total count', 'vs previous period']);
+          expect(headerLabels()).toEqual(['Group', 'Total count', 'Total count trend']);
         });
 
         it('shows every change as unknown rather than pairing rows on their label', () => {
@@ -472,7 +472,7 @@ describe('DataPresenter', () => {
         });
 
         it('still adds the column', () => {
-          expect(headerLabels()).toEqual(['Language', 'Total count', 'vs previous period']);
+          expect(headerLabels()).toEqual(['Language', 'Total count', 'Total count trend']);
         });
 
         it('shows only the ambiguous row as unknown, since the rest still pair', () => {
@@ -500,6 +500,12 @@ describe('DataPresenter', () => {
           await createWrapper(withTrendMetric(twoMetricProps, 'acceptanceRate'));
 
           expect(badges().wrappers.map((badge) => badge.text())).toEqual(['25%', '16.8%']);
+        });
+
+        it('names the compared metric in the header', async () => {
+          await createWrapper(withTrendMetric(twoMetricProps, 'acceptanceRate'));
+
+          expect(headerLabels().at(-1)).toBe('Acceptance rate trend');
         });
 
         it('reports an error when the named metric is not selected', async () => {

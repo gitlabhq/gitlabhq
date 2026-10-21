@@ -39,6 +39,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:show_merge_request_status_draft, current_user)
   end
 
+  before_action only: [:index] do
+    push_frontend_feature_flag(:merge_requests_csv_export_graphql, project)
+  end
+
   before_action only: [:show, :diffs, :reports] do
     push_frontend_feature_flag(:mr_pipelines_graphql, project)
     push_frontend_feature_flag(:rapid_diffs_on_mr_show, current_user, type: :beta)

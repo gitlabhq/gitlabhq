@@ -2235,7 +2235,6 @@
 - './spec/controllers/admin/impersonations_controller_spec.rb'
 - './spec/controllers/admin/instance_review_controller_spec.rb'
 - './spec/controllers/admin/integrations_controller_spec.rb'
-- './spec/controllers/admin/jobs_controller_spec.rb'
 - './spec/controllers/admin/plan_limits_controller_spec.rb'
 - './spec/controllers/admin/projects_controller_spec.rb'
 - './spec/controllers/admin/sessions_controller_spec.rb'

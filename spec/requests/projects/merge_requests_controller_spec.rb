@@ -165,6 +165,30 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
           headers: { 'REMOTE_ADDR' => '1.2.3.5' }
       end
     end
+
+    describe 'merge_requests_csv_export_graphql feature flag' do
+      before do
+        sign_in(user)
+      end
+
+      it 'pushes the feature flag to the frontend' do
+        get project_merge_requests_path(project)
+
+        expect(response.body).to have_pushed_frontend_feature_flags(mergeRequestsCsvExportGraphql: true)
+      end
+
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(merge_requests_csv_export_graphql: false)
+        end
+
+        it 'pushes the disabled feature flag to the frontend' do
+          get project_merge_requests_path(project)
+
+          expect(response.body).to have_pushed_frontend_feature_flags(mergeRequestsCsvExportGraphql: false)
+        end
+      end
+    end
   end
 
   describe 'GET #discussions' do

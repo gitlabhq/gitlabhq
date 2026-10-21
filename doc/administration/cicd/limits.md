@@ -582,6 +582,43 @@ To configure the per user and project limit:
 1. Set a value for **Maximum job erasures per project**.
 1. Select **Save changes**.
 
+## Job cancellation rate limits
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/627274) in GitLab 19.6 [with a feature flag](../feature_flags/_index.md) named `rate_limit_job_cancel`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag. For more information, see the history.
+
+A single user who sends many cancel requests can put significant load on your instance.
+To protect against this, you can limit how many cancel requests each user can send.
+
+This rate limit applies to job cancellations made with the
+[cancel job REST API](../../api/jobs.md#cancel-a-job), the
+[`jobCancel`](../../api/graphql/reference/_index.md#mutationjobcancel) GraphQL mutation, or the GitLab UI.
+The limit does not apply to jobs canceled as part of
+[canceling a whole pipeline](#pipeline-cancellation-rate-limits), which has its own limit,
+or to automatic cancellations, such as auto-cancel of redundant pipelines.
+
+GitLab enforces the following limits:
+
+- Per user and job: Fixed at `5` requests each minute. This limit is not configurable and always applies.
+- Per user and project: Configurable, with a default of `150` requests each minute.
+  Set the limit to `0` to disable this per-project limit. The per user and job limit still applies.
+
+If either limit is exceeded, the cancellation request is blocked.
+
+To configure the per user and project limit:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
+1. Expand **Continuous Integration and Deployment**.
+1. Set a value for **Maximum job cancellations per project**.
+1. Select **Save changes**.
+
 ## Maximum artifacts size
 
 Set size limits for job artifacts to control storage use.

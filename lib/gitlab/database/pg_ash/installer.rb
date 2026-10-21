@@ -33,7 +33,9 @@ module Gitlab
         def install
           current = installed_version
           raise VersionMismatchError, version_mismatch_message(current) if current && current != VENDORED_VERSION
-          raise PermissionError, pg_stat_activity_denied_message unless pg_stat_activity_readable?
+
+          error = sampling_error
+          raise PermissionError, error if error
 
           execute(PgAsh.install_sql)
 
@@ -42,6 +44,11 @@ module Gitlab
           raise unless e.cause.is_a?(PG::InsufficientPrivilege)
 
           raise PermissionError, permission_denied_message
+        end
+
+        # @return [String, nil] why every sample fails, or nil when the user can read pg_stat_activity
+        def sampling_error
+          pg_stat_activity_denied_message unless pg_stat_activity_readable?
         end
 
         # @return [Boolean] false when pg_ash was not installed to begin with
@@ -119,7 +126,7 @@ module Gitlab
 
           <<~MSG
             pg_ash samples pg_stat_activity as user '#{database.username}', but that user is not
-            allowed to read it in database '#{database.database_name}'. Every sample would fail
+            allowed to read it in database '#{database.database_name}'. Every sample fails
             with "permission denied for view pg_stat_activity".
 
             Grant the privileges using a database superuser:

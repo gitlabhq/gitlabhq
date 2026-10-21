@@ -29,10 +29,14 @@ namespace :gitlab do
 
       desc "GitLab | DB | Show pg_ash status on the main database"
       task status: :environment do
-        status = Gitlab::Database::PgAsh::Installer.new.status
+        installer = Gitlab::Database::PgAsh::Installer.new
+        status = installer.status
 
         if status
           status.each { |metric, value| puts format('%-28<metric>s %<value>s', metric: metric, value: value) }
+
+          sampling_error = installer.sampling_error
+          abort(sampling_error) if sampling_error
         else
           puts "pg_ash is not installed."
         end

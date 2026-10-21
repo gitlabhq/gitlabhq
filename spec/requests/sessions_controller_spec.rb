@@ -213,20 +213,6 @@ RSpec.describe SessionsController, feature_category: :system_access do
         expect(response).to redirect_to(root_path)
       end
     end
-
-    context 'when on a Dedicated instance' do
-      before do
-        stub_application_setting(gitlab_dedicated_instance: true)
-        stub_application_setting(admin_mode: false)
-        allow(Group).to receive(:exists?).and_return(false)
-      end
-
-      it 'redirects to root path' do
-        sign_in_as(admin)
-
-        expect(response).to redirect_to(root_path)
-      end
-    end
   end
 
   describe 'private methods' do

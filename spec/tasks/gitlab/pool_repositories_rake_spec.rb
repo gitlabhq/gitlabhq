@@ -311,4 +311,105 @@ RSpec.describe 'gitlab:pool_repositories namespace rake task', :silence_stdout, 
       end
     end
   end
+
+  describe 'remediate_dead_shard_members' do
+    subject(:run_task) { run_rake_task(task_name) }
+
+    let(:task_name) { 'gitlab:pool_repositories:remediate_dead_shard_members' }
+    let(:remediator) { instance_double(Gitlab::PoolRepositories::DeadShardMemberRemediator) }
+    let(:logger) { instance_double(Logger, info: nil, error: nil) }
+
+    before do
+      Rake::Task[task_name].reenable
+      allow(Gitlab::PoolRepositories::RakeTask).to receive(:logger).and_return(logger)
+      allow(Gitlab::PoolRepositories::DeadShardMemberRemediator).to receive(:new).and_return(remediator)
+      allow(remediator).to receive(:run!)
+    end
+
+    context 'when required environment variables are missing' do
+      where(:input_file_env, :output_file_env) do
+        [
+          [nil, '/tmp/output.csv'],
+          ['/tmp/input.csv', nil],
+          [nil, nil]
+        ]
+      end
+
+      with_them do
+        before do
+          stub_env('INPUT_FILE', input_file_env)
+          stub_env('OUTPUT_FILE', output_file_env)
+        end
+
+        it 'logs an error and exits without running the remediator' do
+          expect { run_task }.to raise_error(SystemExit) { |e| expect(e.status).to eq(1) }
+
+          expect(logger).to have_received(:error).with(/INPUT_FILE and OUTPUT_FILE/)
+          expect(Gitlab::PoolRepositories::DeadShardMemberRemediator).not_to have_received(:new)
+        end
+      end
+    end
+
+    context 'with required environment variables set' do
+      before do
+        stub_env('INPUT_FILE', '/tmp/classification.csv')
+        stub_env('OUTPUT_FILE', '/tmp/remediation.csv')
+      end
+
+      it 'runs the remediator in dry-run mode by default and hints at DRY_RUN=false' do
+        run_task
+
+        expect(Gitlab::PoolRepositories::DeadShardMemberRemediator).to have_received(:new).with(
+          input_file: '/tmp/classification.csv',
+          output_file: '/tmp/remediation.csv',
+          logger: logger,
+          dry_run: true,
+          classifications: %w[silently_linked]
+        )
+        expect(remediator).to have_received(:run!)
+        expect(logger).to have_received(:info).with(/DRY_RUN=false/)
+      end
+
+      context 'when DRY_RUN=false' do
+        before do
+          stub_env('DRY_RUN', 'false')
+        end
+
+        it 'runs the remediator with dry_run: false' do
+          run_task
+
+          expect(Gitlab::PoolRepositories::DeadShardMemberRemediator).to have_received(:new).with(
+            hash_including(dry_run: false)
+          )
+        end
+      end
+
+      context 'when CLASSIFICATIONS is set' do
+        before do
+          stub_env('CLASSIFICATIONS', 'silently_linked')
+        end
+
+        it 'passes the specified classifications' do
+          run_task
+
+          expect(Gitlab::PoolRepositories::DeadShardMemberRemediator).to have_received(:new).with(
+            hash_including(classifications: ['silently_linked'])
+          )
+        end
+      end
+
+      context 'when the remediator raises a validation error' do
+        before do
+          allow(remediator).to receive(:run!)
+            .and_raise(Gitlab::PoolRepositories::DeadShardMemberRemediator::ValidationError, 'bad input')
+        end
+
+        it 'logs the error and exits' do
+          expect { run_task }.to raise_error(SystemExit) { |e| expect(e.status).to eq(1) }
+
+          expect(logger).to have_received(:error).with(/bad input/)
+        end
+      end
+    end
+  end
 end

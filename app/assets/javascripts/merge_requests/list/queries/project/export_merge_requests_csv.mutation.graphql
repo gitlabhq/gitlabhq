@@ -1,0 +1,63 @@
+# @feature_category: code_review_workflow
+mutation exportProjectMergeRequestsCsv(
+  $fullPath: ID!
+  $state: MergeRequestState
+  $search: String
+  $approvedBy: [String!]
+  $assigneeUsernames: String
+  $assigneeWildcardId: AssigneeWildcardId
+  $reviewerUsername: String
+  $reviewerWildcardId: ReviewerWildcardId
+  $authorUsername: String
+  $draft: Boolean
+  $labelName: [String!]
+  $releaseTag: String
+  $mergeUser: String
+  $milestoneTitle: String
+  $milestoneWildcardId: MilestoneWildcardId
+  $myReactionEmoji: String
+  $sourceBranches: [String!]
+  $targetBranches: [String!]
+  $deployedBefore: Time
+  $deployedAfter: Time
+  $environmentName: String
+  $subscribed: SubscriptionStatus
+  $mergedBefore: Time
+  $mergedAfter: Time
+  $not: MergeRequestsResolverNegatedParams
+  $or: UnionedMergeRequestFilterInput
+) {
+  mergeRequestsCsvExport(
+    input: {
+      projectPath: $fullPath
+      state: $state
+      search: $search
+      approvedBy: $approvedBy
+      assigneeUsername: $assigneeUsernames
+      assigneeWildcardId: $assigneeWildcardId
+      reviewerUsername: $reviewerUsername
+      reviewerWildcardId: $reviewerWildcardId
+      authorUsername: $authorUsername
+      draft: $draft
+      labelName: $labelName
+      releaseTag: $releaseTag
+      mergedBy: $mergeUser
+      milestoneTitle: $milestoneTitle
+      milestoneWildcardId: $milestoneWildcardId
+      myReactionEmoji: $myReactionEmoji
+      sourceBranches: $sourceBranches
+      targetBranches: $targetBranches
+      deployedBefore: $deployedBefore
+      deployedAfter: $deployedAfter
+      environmentName: $environmentName
+      subscribed: $subscribed
+      mergedBefore: $mergedBefore
+      mergedAfter: $mergedAfter
+      not: $not
+      or: $or
+    }
+  ) {
+    message
+    errors
+  }
+}

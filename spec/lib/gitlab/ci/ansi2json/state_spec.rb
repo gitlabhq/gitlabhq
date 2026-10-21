@@ -90,7 +90,7 @@ RSpec.describe Gitlab::Ci::Ansi2json::State, feature_category: :continuous_integ
 
   describe '#encode' do
     it 'deterministically signs the state' do
-      expect(state.encode).to eq state.encode
+      expect(state.encode).to eq build_state.encode
     end
   end
 end
