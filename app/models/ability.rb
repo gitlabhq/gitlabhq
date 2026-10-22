@@ -54,11 +54,28 @@ class Ability
     def issues_readable_by_user(issues, user = nil, filters: {})
       issues = apply_filters_if_needed(issues, user, filters)
 
-      DeclarativePolicy.user_scope do
-        issues.select { |issue| allowed?(user, :read_issue, issue) }
-      end
+      filter_allowed(user, :read_issue, issues)
     end
     alias_method :work_items_readable_by_user, :issues_readable_by_user
+
+    # Returns the subjects the user has the given ability on. All subjects must
+    # be the same type, so their policy can preload what its conditions read in
+    # one go. See BasePolicy.preload_for_batch_checks.
+    def filter_allowed(user, ability, subjects)
+      subjects = subjects.to_a
+      return [] if subjects.empty?
+
+      # One subject has nothing to batch, and the preload loads more than a single check reads.
+      if subjects.many? && Feature.enabled?(:batch_permission_check_preloads, Feature.current_request)
+        ::Gitlab::Instrumentation::Authz.measure do
+          DeclarativePolicy.class_for(subjects.first).preload_for_batch_checks(subjects, user)
+        end
+      end
+
+      DeclarativePolicy.user_scope do
+        subjects.select { |subject| allowed?(user, ability, subject) }
+      end
+    end
 
     # Returns an Array of MergeRequests that can be read by the given user.
     #

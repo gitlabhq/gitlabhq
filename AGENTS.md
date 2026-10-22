@@ -49,7 +49,7 @@ Skip the failing job whose name equals `danger-review`. Do not fetch its logs or
 When opening a merge request as part of the Fix Pipeline flow (the title contains `[FixPipeline]`), apply labels based on the source of the run. The `<fix_pipeline_source>` block in your instructions contains exactly one of `merge_request`, `default_branch`, or `branch` — use it to determine which case applies.
 
 - **`merge_request`**: apply `pipeline::tier-1`. This runs the cheaper tier-1 pipeline instead of the full default pipeline.
-- **`default_branch`**: apply both `pipeline::expedited` and `master:broken`. The expedited label fast-tracks the fix through CI by skipping non-essential jobs; the master:broken label marks the MR as a broken-master fix. Do not apply `pipeline::tier-1` in this case.
+- **`default_branch`**: apply `pipeline::expedited` and `ci-health:fix` (or `ci-health:fix-foss` when the broken pipeline is GitLab FOSS `master`). The expedited label fast-tracks the fix through CI by skipping non-essential jobs; the ci-health:fix label marks the MR as a broken-master fix and announces it in the `#ci-health-incidents` Slack channel. Do not apply `pipeline::tier-1` in this case.
 - **`branch`**: apply `pipeline::tier-1`. Same treatment as the `merge_request` case — a fix MR for a non-default branch pipeline failure with no originating MR.
 
 ### Known failures and CI health context

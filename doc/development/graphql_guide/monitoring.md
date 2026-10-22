@@ -50,6 +50,7 @@ Some relevant Kibana fields include:
 | `json.query_analysis.duration_s` | Duration of query execution in seconds. |
 | `json.query_analysis.complexity` | The [complexity](../api_graphql_styleguide.md#max-complexity) score of the query, rounded down to an integer. |
 | `json.query_analysis.graphql_complexity_raw` | The exact, unrounded complexity score of the query, as a decimal. |
+| `json.user_agent` | The user agent of the client that made the request. |
 
 ### Useful filters
 

@@ -73,8 +73,7 @@ your environment. Geo continuously replicates data between these regions, includ
 {{< tab title="GitLab Dedicated for Government" >}}
 
 GitLab Dedicated for Government does not support Geo. Your instance runs in a single
-AWS GovCloud region (US-West), with backups replicated to a separate AWS GovCloud region
-(US-East) for redundancy.
+AWS GovCloud region, with backups replicated to a separate AWS GovCloud region for redundancy.
 
 {{< /tab >}}
 

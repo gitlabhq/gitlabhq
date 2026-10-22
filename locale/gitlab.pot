@@ -3651,6 +3651,12 @@ msgstr ""
 msgid "AICatalog|Trigger %{itemType} on a recurring schedule."
 msgstr ""
 
+msgid "AICatalog|Trigger %{itemType} when a merge request is created, ready, approved, has changes requested, or has conflicts."
+msgstr ""
+
+msgid "AICatalog|Trigger %{itemType} when a merge request is created, ready, approved, merged, has changes requested, or has conflicts."
+msgstr ""
+
 msgid "AICatalog|Trigger %{itemType} when a merge request is created, ready, approved, merged, or has conflicts."
 msgstr ""
 
@@ -33535,6 +33541,11 @@ msgid_plural "DuoAgentsPlatform|%{count} sessions"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "DuoAgentsPlatform|%{count} work item type"
+msgid_plural "DuoAgentsPlatform|%{count} work item types"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "DuoAgentsPlatform|%{event}: %{conditions}"
 msgstr ""
 
@@ -33598,6 +33609,9 @@ msgid "DuoAgentsPlatform|Analyze pipeline failures and get fix suggestions"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Any status"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Any type"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Approval gate"
@@ -33724,6 +33738,9 @@ msgid "DuoAgentsPlatform|Confirm action"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Could not load statuses. Refresh the page to try again."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Could not load work item types. Refresh the page to try again."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Create a trigger to run a flow or external agent based on project events."
@@ -34029,6 +34046,12 @@ msgstr ""
 msgid "DuoAgentsPlatform|No triggers yet"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Not used by any type"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Not used by the selected types"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Note on %{reference}"
 msgstr ""
 
@@ -34087,6 +34110,9 @@ msgid "DuoAgentsPlatform|Run command"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Run on"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Run only for work items of the selected types. Leave empty to run for any type."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Run only when the work item changes to one of the selected statuses. Leave empty to run on any status change."
@@ -34206,6 +34232,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Select work item actions"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Select work item types"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Service account"
 msgstr ""
 
@@ -34227,7 +34256,7 @@ msgstr ""
 msgid "DuoAgentsPlatform|Something went wrong while fetching Agent Flows"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Something went wrong while fetching work item statuses. Please try again."
+msgid "DuoAgentsPlatform|Something went wrong while fetching work item types and statuses. Please try again."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Specify the path to a YAML file that contains a flow definition."
@@ -34249,6 +34278,9 @@ msgid "DuoAgentsPlatform|Status"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Status changed to %{statusNames}"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Statuses"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Success rate"
@@ -34339,6 +34371,9 @@ msgid "DuoAgentsPlatform|Turn automation on or off: %{description}"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Turn trigger on or off: %{description}"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Type"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Unknown"
@@ -53653,6 +53688,9 @@ msgid "MergeRequest|Change reviewer"
 msgstr ""
 
 msgid "MergeRequest|Changes already merged"
+msgstr ""
+
+msgid "MergeRequest|Changes requested"
 msgstr ""
 
 msgid "MergeRequest|Compare %{target} and %{source}"
@@ -74414,7 +74452,13 @@ msgstr ""
 msgid "ScanProfiles|A scan is automatically run when changes are merged or pushed to the default branch. All vulnerabilities found are reported, providing a complete picture of your default branch's security posture."
 msgstr ""
 
+msgid "ScanProfiles|A scan runs after a merge request's head pipeline succeeds. Only the AI agent skill files in the repository are scanned, not all source code."
+msgstr ""
+
 msgid "ScanProfiles|A scan runs after a merge request's head pipeline succeeds. Stale and merge train pipelines are skipped. Only the files the merge request adds or modifies are scanned, not the full repository."
+msgstr ""
+
+msgid "ScanProfiles|AI agent skill files in the repository"
 msgstr ""
 
 msgid "ScanProfiles|API download delay"
@@ -74712,6 +74756,9 @@ msgid "ScanProfiles|Scan the full Git history instead of only the current state.
 msgstr ""
 
 msgid "ScanProfiles|Scan triggers"
+msgstr ""
+
+msgid "ScanProfiles|Scans AI agent skill files after the pipeline succeeds"
 msgstr ""
 
 msgid "ScanProfiles|Scans commits to the default branch"
@@ -77747,6 +77794,9 @@ msgstr ""
 msgid "SecurityInventory|SD"
 msgstr ""
 
+msgid "SecurityInventory|SG"
+msgstr ""
+
 msgid "SecurityInventory|Scanners configuration"
 msgstr ""
 
@@ -77787,6 +77837,12 @@ msgid "SecurityInventory|Severity medium"
 msgstr ""
 
 msgid "SecurityInventory|Severity unknown"
+msgstr ""
+
+msgid "SecurityInventory|SkillGuard"
+msgstr ""
+
+msgid "SecurityInventory|SkillGuard (SG)"
 msgstr ""
 
 msgid "SecurityInventory|Stale"
@@ -79143,6 +79199,9 @@ msgstr ""
 msgid "SecurityOrchestration|Remove row %{number}"
 msgstr ""
 
+msgid "SecurityOrchestration|Remove scanner values"
+msgstr ""
+
 msgid "SecurityOrchestration|Require %{approvals} %{plural} from %{approvers}"
 msgstr ""
 
@@ -79645,6 +79704,9 @@ msgid "SecurityOrchestration|This project"
 msgstr ""
 
 msgid "SecurityOrchestration|This rule is an allow list. New license rules can only deny; to change this rule back to a deny list, edit the policy YAML directly."
+msgstr ""
+
+msgid "SecurityOrchestration|This scanner has severity or status values that are not shown here and override global settings. Remove the values to use global settings instead."
 msgstr ""
 
 msgid "SecurityOrchestration|This schedule uses a format rule mode cannot display, like a range, step, or minute offset. The YAML is valid and the policy still runs. Switch to YAML mode to change the schedule."
@@ -80341,6 +80403,9 @@ msgstr ""
 msgid "SecurityProfiles|Security configuration illustration"
 msgstr ""
 
+msgid "SecurityProfiles|SkillGuard"
+msgstr ""
+
 msgid "SecurityProfiles|Static application security testing (SAST)"
 msgstr ""
 
@@ -80365,6 +80430,9 @@ msgstr ""
 msgid "SecurityProfiles|Uses an AI agent to find business logic vulnerabilities in your source code, like missing authorization, broken object-level access, and mass assignment. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
+msgid "SecurityProfiles|Uses an AI agent to find security risks in the AI agent skill files in your repository, like prompt injection, credential exfiltration, and unsafe command execution. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
 msgid "SecurityProfiles|View failed job #%{jobId}"
 msgstr ""
 
@@ -80381,6 +80449,9 @@ msgid "SecurityProfiles|What is Automated Triage and Remediation?"
 msgstr ""
 
 msgid "SecurityProfiles|What is SAST?"
+msgstr ""
+
+msgid "SecurityProfiles|What is SkillGuard?"
 msgstr ""
 
 msgid "SecurityProfiles|What is business logic scanning?"
@@ -99310,6 +99381,9 @@ msgid "WorkItem|Something went wrong when fetching status. Please try again."
 msgstr ""
 
 msgid "WorkItem|Something went wrong when fetching the to-do state. Please try again."
+msgstr ""
+
+msgid "WorkItem|Something went wrong when fetching the workplan. Please refresh this page."
 msgstr ""
 
 msgid "WorkItem|Something went wrong when fetching user permissions"

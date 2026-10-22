@@ -1243,6 +1243,8 @@
   - 1
 - - security_delete_security_policy
   - 1
+- - security_dependency_firewall_refresh_group_prevented_stats
+  - 1
 - - security_generate_policy_violation_comment
   - 1
 - - security_inventory_filters_update_traversal_ids

@@ -203,12 +203,6 @@ class DeployToken < ApplicationRecord
 
   private
 
-  def expired?
-    return false unless expires_at
-
-    expires_at < Date.today
-  end
-
   def ensure_at_least_one_scope
     errors.add(:base, _("Scopes can't be blank")) unless scopes.any?
   end

@@ -300,7 +300,7 @@ We don't have a specific number, but we need to have better numbers for flaky te
 
 When you need to [fix a broken `master`](https://handbook.gitlab.com/handbook/engineering/workflow/#resolution-of-broken-master), you can add the `pipeline::expedited` label to expedite the pipelines that run on the merge request.
 
-Note that the merge request also needs to have the `master:broken` or `master:foss-broken` label set.
+Note that the merge request also needs to have the `ci-health:fix` or `ci-health:fix-foss` label set.
 
 ### Revert MRs
 

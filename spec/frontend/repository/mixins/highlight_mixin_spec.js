@@ -35,6 +35,7 @@ describe('HighlightMixin', () => {
       name = nameMock,
       externalStorageUrl,
       rawPath,
+      worker = workerMock,
     } = {},
     isUsingLfs = false,
   ) => {
@@ -43,7 +44,7 @@ describe('HighlightMixin', () => {
     dummyComponent = {
       mixins: [highlightMixin],
       inject: {
-        highlightWorker: { default: workerMock },
+        highlightWorker: { default: worker },
       },
       template: `<div>
           <div v-for="(chunk, index) in chunks">
@@ -87,6 +88,19 @@ describe('HighlightMixin', () => {
         language: languageMock,
         fileType: TEXT_FILE_TYPE,
       });
+    });
+  });
+
+  describe('when no highlight worker is available', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+      createComponent({ worker: null });
+    });
+
+    it('falls back via onError without instructing a worker', () => {
+      expect(onErrorMock).toHaveBeenCalled();
+      expect(splitIntoChunks).not.toHaveBeenCalled();
+      expect(workerMock.postMessage).not.toHaveBeenCalled();
     });
   });
 

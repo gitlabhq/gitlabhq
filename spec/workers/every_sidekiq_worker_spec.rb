@@ -489,6 +489,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :sidekiq do
         'Search::Zoekt::TaskClaimExpiredEventWorker' => 1,
         'Search::Zoekt::TaskFailedEventWorker' => 1,
         'Search::Zoekt::UpdateIndexUsedStorageBytesEventWorker' => 1,
+        'Security::DependencyFirewall::RefreshGroupPreventedStatsWorker' => 3,
         'Security::ProcessScanEventsWorker' => 3,
         'Security::StoreScansWorker' => 5,
         'Security::TrackSecureScansWorker' => 1,

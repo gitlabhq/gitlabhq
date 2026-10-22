@@ -55,7 +55,7 @@ RSpec.describe 'Projects > Files > User wants to edit a file', :js, feature_cate
           Files::UpdateService.new(forked_project, user, commit_params).execute
         end
 
-        it 'renders an error message' do
+        it 'commits to a new fork branch started from the upstream project' do
           expect(page).to have_field('file_path', with: '.gitignore')
 
           click_button 'Commit changes'
@@ -65,8 +65,27 @@ RSpec.describe 'Projects > Files > User wants to edit a file', :js, feature_cate
           end
 
           expect(page).to have_content(
-            'You are attempting to update a file that has changed since you started editing it.'
+            "From #{forked_project.full_path}:patch-1 into #{project.full_path}:#{project.default_branch}"
           )
+          expect(forked_project.repository.commit('patch-1').parent_id).to eq(project.commit.id)
+        end
+      end
+
+      context 'and the upstream project changed the file since the user opened the edit page' do
+        before do
+          Files::UpdateService.new(project, project.first_owner, commit_params).execute
+        end
+
+        it 'renders an error message' do
+          expect(page).to have_field('file_path', with: '.gitignore')
+
+          click_button 'Commit changes'
+
+          within_testid('commit-change-modal') do
+            click_button('Commit changes')
+          end
+
+          expect(page).to have_content('The file has changed since you started editing it: .gitignore')
         end
       end
     end

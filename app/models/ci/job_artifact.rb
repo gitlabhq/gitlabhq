@@ -174,6 +174,30 @@ module Ci
       where(job_id: job_id).trace.take&.stored?
     end
 
+    # The same subjects as Authz::JobArtifactAccess.for, built from plucked columns so no artifact
+    # or job records are loaded. Returns the subjects of each job's artifacts, by job id.
+    def self.access_subjects_by_job_id(jobs)
+      jobs = jobs.pluck(:id, :partition_id, :project_id)
+      return {} if jobs.empty?
+
+      project_id_by_job_id = jobs.to_h { |(id, _partition_id, project_id)| [id, project_id] }
+      projects = ::Project.id_in(project_id_by_job_id.values.uniq).index_by(&:id)
+
+      # Job artifacts are co-partitioned with their job, so scoping by the jobs'
+      # partitions keeps the query correct across pipelines while still pruning.
+      where(job_id: project_id_by_job_id.keys, partition_id: jobs.map(&:second).uniq)
+        .pluck(:job_id, :accessibility, :file_type)
+        .group_by(&:first)
+        .to_h do |job_id, rows|
+          project = projects[project_id_by_job_id[job_id]]
+          subjects = rows.map do |(_job_id, accessibility, file_type)|
+            ::Authz::JobArtifactAccess.new(project: project, accessibility: accessibility, file_type: file_type)
+          end
+
+          [job_id, subjects]
+        end
+    end
+
     def self.max_artifact_size(type:, project:)
       limit_name = "#{PLAN_LIMIT_PREFIX}#{type}"
 

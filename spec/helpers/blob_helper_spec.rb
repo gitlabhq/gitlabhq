@@ -543,6 +543,7 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
         })
 
         expect(app_data).not_to have_key(:next_fork_branch_name)
+        expect(app_data).not_to have_key(:fork_start_project_id)
       end
 
       it 'returns data related to update action in a forked project when user lacks push_code' do
@@ -550,6 +551,7 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
         fork_repository = instance_double(Repository, next_branch: 'patch-1')
         allow(user).to receive(:fork_of).with(project).and_return(fork_project)
         allow(fork_project).to receive_messages(repository: fork_repository, full_path: 'user/fork-project')
+        allow(fork_project).to receive(:forked_from?).with(project).and_return(true)
         allow(helper).to receive(:can?).with(user, :push_code, project).and_return(false)
         allow(project_presenter).to receive(:can_current_user_push_to_branch?).with(ref).and_return(false)
 
@@ -561,8 +563,24 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
           can_push_to_branch: 'false',
           target_project_id: 999,
           target_project_path: 'user/fork-project',
-          next_fork_branch_name: 'patch-1'
+          next_fork_branch_name: 'patch-1',
+          fork_start_project_id: project.id
         })
+      end
+
+      it 'omits fork_start_project_id when the fork was not forked directly from the project' do
+        fork_project = build_stubbed(:project, id: 999)
+        fork_repository = instance_double(Repository, next_branch: 'patch-1')
+        allow(user).to receive(:fork_of).with(project).and_return(fork_project)
+        allow(fork_project).to receive_messages(repository: fork_repository, full_path: 'user/fork-project')
+        allow(fork_project).to receive(:forked_from?).with(project).and_return(false)
+        allow(helper).to receive(:can?).with(user, :push_code, project).and_return(false)
+        allow(project_presenter).to receive(:can_current_user_push_to_branch?).with(ref).and_return(false)
+
+        app_data = helper.edit_blob_app_data(project, id, blob, ref, "update")
+
+        expect(app_data).to include(target_project_id: 999, next_fork_branch_name: 'patch-1')
+        expect(app_data).not_to have_key(:fork_start_project_id)
       end
 
       context 'when maintainer has fork and default branch is fully protected' do

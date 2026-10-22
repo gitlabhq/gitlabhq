@@ -1,0 +1,10 @@
+---
+name: batch_permission_check_preloads
+description: Preload policy data once when checking permissions on a list of issues
+feature_issue_url:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/263779
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/635008
+milestone: '19.6'
+group: group::authorization
+type: gitlab_com_derisk
+default_enabled: false

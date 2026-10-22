@@ -117,6 +117,7 @@ module Gitlab
 
           info.merge!(::Gitlab::ApplicationContext.current)
           info.merge!(analysis_info) if analysis_info
+          info[Labkit::Fields::HTTP_USER_AGENT] = query.context[:request]&.env&.fetch("HTTP_USER_AGENT", nil)
 
           ::Gitlab::GraphqlLogger.info(info)
         end

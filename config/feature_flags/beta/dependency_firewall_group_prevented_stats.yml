@@ -3,7 +3,7 @@ name: dependency_firewall_group_prevented_stats
 description: Gates the group-level prevented-package stats of the dependency firewall dashboard (scheduling and running refreshes, and the read path)
 feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/631890
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/261477
-rollout_issue_url:
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/634919
 milestone: '19.6'
 group: group::dependency firewall
 type: beta

@@ -160,6 +160,7 @@ export const SCAN_PROFILE_TYPE_SAST = 'SAST';
 export const SCAN_PROFILE_TYPE_DEPENDENCY_SCANNING = 'DEPENDENCY_SCANNING';
 export const SCAN_PROFILE_TYPE_BUSINESS_LOGIC = 'BUSINESS_LOGIC';
 export const SCAN_PROFILE_TYPE_TRIAGE_AND_REMEDIATION = 'TRIAGE_AND_REMEDIATION';
+export const SCAN_PROFILE_TYPE_SKILLGUARD = 'SKILLGUARD';
 
 export const SCAN_TRIGGER_DEFINITIONS = {
   GIT_PUSH_EVENT: {
@@ -209,6 +210,16 @@ export const SCAN_TRIGGER_DEFINITION_OVERRIDES = {
         "ScanProfiles|A scan runs after a merge request's head pipeline succeeds. Stale and merge train pipelines are skipped. Only the files the merge request adds or modifies are scanned, not the full repository.",
       ),
       scope: s__('ScanProfiles|Changed files in the merge request'),
+    },
+  },
+  [SCAN_PROFILE_TYPE_SKILLGUARD]: {
+    MERGE_REQUEST_PIPELINE: {
+      subtitle: s__('ScanProfiles|Scans AI agent skill files after the pipeline succeeds'),
+      description: s__(
+        "ScanProfiles|A scan runs after a merge request's head pipeline succeeds. Only the AI agent skill files in the repository are scanned, not all source code.",
+      ),
+      scope: s__('ScanProfiles|AI agent skill files in the repository'),
+      results: s__('ScanProfiles|All vulnerabilities'),
     },
   },
 };
@@ -264,6 +275,20 @@ export const SCAN_PROFILE_CATEGORIES = {
     helpTitle: s__('SecurityProfiles|What is Automated Triage and Remediation?'),
     helpDescription: s__(
       'SecurityProfiles|Opens fix merge requests, flags likely false positives, and adds risk context across code, dependencies, and secrets.',
+    ),
+  },
+  // ScanProfilesResolver already filters SkillGuard out while skillguard_analyzer is off, so this
+  // entry needs no frontend gate.
+  [SCAN_PROFILE_TYPE_SKILLGUARD]: {
+    name: s__('SecurityProfiles|SkillGuard'),
+    displayName: s__('SecurityProfiles|SkillGuard'),
+    label: 'SG',
+    helpTitle: s__('SecurityProfiles|What is SkillGuard?'),
+    helpDescription: s__(
+      'SecurityProfiles|Uses an AI agent to find security risks in the AI agent skill files in your repository, like prompt injection, credential exfiltration, and unsafe command execution. %{linkStart}Learn more%{linkEnd}.',
+    ),
+    helpLink: helpPagePath(
+      '/user/application_security/configuration/security_configuration_profiles',
     ),
   },
 };

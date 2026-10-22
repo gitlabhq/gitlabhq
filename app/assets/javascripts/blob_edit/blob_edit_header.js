@@ -27,6 +27,7 @@ export default function initBlobEditHeader(editor) {
     targetProjectId,
     targetProjectPath,
     nextForkBranchName,
+    forkStartProjectId,
   } = el.dataset;
 
   return initVueApp({
@@ -47,6 +48,7 @@ export default function initBlobEditHeader(editor) {
       targetProjectId,
       targetProjectPath,
       nextForkBranchName,
+      forkStartProjectId,
       emptyRepo: parseBoolean(emptyRepo),
       canPushCode: parseBoolean(canPushCode),
       canPushToBranch: parseBoolean(canPushToBranch),

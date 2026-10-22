@@ -147,10 +147,13 @@ export default {
       return this.discussion.id || '';
     },
     shouldShowReplyForm() {
-      return this.showForm || this.hasReplies;
+      return this.showForm || this.hasReplies || this.isResolvableSingleComment;
+    },
+    isResolvableSingleComment() {
+      return !this.hasReplies && this.isDiscussionResolvable;
     },
     isOnlyCommentOfAThread() {
-      return !this.hasReplies && !this.showForm;
+      return !this.hasReplies && !this.shouldShowReplyForm;
     },
     isDiscussionResolved() {
       return this.discussion.resolved;
@@ -346,7 +349,7 @@ export default {
                     :replies="replies"
                     @toggle="toggleDiscussion({ discussionId })"
                   />
-                  <template v-if="isExpanded">
+                  <template v-if="isExpanded || isResolvableSingleComment">
                     <work-item-note
                       v-for="reply in replies"
                       :key="threadKey(reply)"
@@ -400,7 +403,6 @@ export default {
                       :is-discussion-resolved="isDiscussionResolved"
                       :is-discussion-resolvable="isDiscussionResolvable"
                       :is-resolving="isResolving"
-                      :has-replies="hasReplies"
                       :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
                       :uploads-path="uploadsPath"
                       @start-replying="showReplyForm"

@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class BasePolicy < DeclarativePolicy::Base
+  # Loads, for a batch of subjects, the data this policy's conditions read.
+  # Ability.filter_allowed calls it so each check doesn't query on its own.
+  def self.preload_for_batch_checks(_subjects, _user); end
+
   desc "User is an instance admin"
   with_options scope: :user, score: 0
   condition(:admin) do

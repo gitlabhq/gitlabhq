@@ -46,7 +46,7 @@ trigger-omnibus-env:
       ruby -e 'puts "FULL_RUBY_VERSION=#{RUBY_VERSION}"' >> $BUILD_ENV
       # Must match RELEASE_IMAGE_TAG in .e2e-trigger-base
       echo "OMNIBUS_IMAGE_TAG=${CI_COMMIT_SHA}-ruby${RUBY_VERSION}${GLCI_RAILS_IMAGE_TAG_SUFFIX}" >> $BUILD_ENV
-      echo "GITLAB_ASSETS_TAG=$(assets_image_tag)" >> $BUILD_ENV
+      echo "GITLAB_ASSETS_TAG=${GLCI_ASSETS_IMAGE_TAG}" >> $BUILD_ENV
       echo "EE=$([[ $FOSS_ONLY == '1' ]] && echo 'false' || echo 'true')" >> $BUILD_ENV
       echo "GITLAB_BUNDLE_GEMFILE=${GLCI_RAILS_BUNDLE_GEMFILE:-Gemfile}" >> $BUILD_ENV
       define_trigger_branch_in_build_env

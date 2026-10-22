@@ -1,8 +1,6 @@
 ---
 API/DescriptionFailureResponse:
   Exclude:
-    - 'ee/lib/api/ai/duo_workflows/audit_events.rb'
-    - 'ee/lib/api/ai/duo_workflows/workflows_internal.rb'
     - 'ee/lib/api/ai/llm/git_command.rb'
     - 'ee/lib/api/analytics/code_review_analytics.rb'
     - 'ee/lib/api/analytics/group_activity_analytics.rb'
@@ -10,7 +8,6 @@ API/DescriptionFailureResponse:
     - 'ee/lib/api/audit_events.rb'
     - 'ee/lib/api/chat.rb'
     - 'ee/lib/api/clusters/agent_url_configurations.rb'
-    - 'ee/lib/api/code_suggestions.rb'
     - 'ee/lib/api/compliance_external_controls.rb'
     - 'ee/lib/api/dependency_list_exports.rb'
     - 'ee/lib/api/duo_code_review.rb'

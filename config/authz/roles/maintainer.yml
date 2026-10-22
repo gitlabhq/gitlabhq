@@ -96,6 +96,7 @@ project:
   - create_squash_option
   - create_timeline_event_tag
   - create_web_ide_terminal
+  - create_webhook
   - delete_approval_rule
   - delete_branch_rule
   - delete_external_status_check
@@ -107,6 +108,9 @@ project:
   - delete_service_account
   - delete_squash_option
   - delete_timelog
+  - delete_webhook
+  - delete_webhook_custom_header
+  - delete_webhook_url_variable
   - destroy_deploy_token
   - destroy_deployment
   - destroy_package
@@ -172,12 +176,16 @@ project:
   - read_squash_option
   - read_usage_quotas
   - read_web_hook
+  - read_webhook
+  - read_webhook_event
   - read_work_item_setting
   - remove_pages
   - rename_project
+  - resend_webhook_event
   - restore_ai_catalog_item
   - set_license_information_source
   - stop_environment
+  - test_webhook
   - toggle_license_scanning_for_cyclonedx
   - update_ai_tool_rule
   - update_approval_rule
@@ -204,6 +212,9 @@ project:
   - update_snippet
   - update_squash_option
   - update_terraform_state_protection_rule
+  - update_webhook
+  - update_webhook_custom_header
+  - update_webhook_url_variable
   - update_work_item_type_visibility
   - use_protected_cache
   - view_edit_page

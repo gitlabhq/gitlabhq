@@ -1,4 +1,5 @@
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
+import HighlightWorker from '~/highlight_js/workers/highlight_worker?worker';
 import initRepositoryPage from '~/repository/init_repository_page';
 import initFileTreeBrowser from '~/repository/file_tree_browser';
 import initHeaderApp from '~/repository/init_header_app';
@@ -135,6 +136,30 @@ describe('initRepositoryPage', () => {
       expect(result).toMatchObject({ projectPath: PROJECT_PATH });
       expect(result.router).toBe(createRouter.mock.results[0].value);
       expect(result.apolloProvider).toBe(apolloProvider);
+    });
+  });
+
+  describe('highlight worker', () => {
+    const providedWorker = () => initVueApp.mock.calls[0][0].provide.highlightWorker;
+
+    beforeEach(() => {
+      setTreeHTML();
+    });
+
+    it('provides a highlight worker instance', () => {
+      initRepositoryPage();
+
+      expect(providedWorker()).toBe(HighlightWorker.mock.instances[0]);
+    });
+
+    it('mounts the app with a null worker when the browser refuses to construct it', () => {
+      HighlightWorker.mockImplementationOnce(() => {
+        throw new Error("SecurityError: Failed to construct 'Worker'");
+      });
+
+      expect(() => initRepositoryPage()).not.toThrow();
+      expect(initVueApp).toHaveBeenCalledTimes(1);
+      expect(providedWorker()).toBe(null);
     });
   });
 });

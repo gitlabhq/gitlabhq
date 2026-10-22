@@ -1623,12 +1623,9 @@ module Ci
     def accessible_test_reports(user)
       # Stream builds in batches and filter per build so a pipeline with a large
       # number of test-report builds (self + descendants) is never fully
-      # materialized up front. authz_cache dedupes the per-artifact authorization
-      # by [user_id, project_id, accessibility, file_type].
-      authz_cache = {}
-
+      # materialized up front.
       collect_test_reports(latest_test_report_builds_in_self_and_project_descendants) do |build|
-        build.test_report_readable_by?(user, authz_cache)
+        build.test_report_readable_by?(user)
       end
     end
 
@@ -1644,11 +1641,9 @@ module Ci
     # nil for an anonymous request (public artifacts only). Mirrors
     # #accessible_test_reports.
     def accessible_accessibility_reports(user)
-      authz_cache = {}
-
       Gitlab::Ci::Reports::AccessibilityReports.new.tap do |accessibility_reports|
         latest_report_builds(Ci::JobArtifact.of_report_type(:accessibility)).each do |build|
-          next unless build.report_readable_by?(:accessibility, user, authz_cache)
+          next unless build.report_readable_by?(:accessibility, user)
 
           build.collect_accessibility_reports!(accessibility_reports)
         end
@@ -1666,11 +1661,9 @@ module Ci
     # Codequality report limited to the artifacts `user` may read. `user` may be
     # nil for an anonymous request (public artifacts only).
     def accessible_codequality_reports(user)
-      authz_cache = {}
-
       Gitlab::Ci::Reports::CodequalityReports.new.tap do |codequality_reports|
         latest_report_builds_in_self_and_project_descendants(Ci::JobArtifact.of_report_type(:codequality)).each do |build|
-          next unless build.report_readable_by?(:codequality, user, authz_cache)
+          next unless build.report_readable_by?(:codequality, user)
 
           build.collect_codequality_reports!(codequality_reports)
         end
@@ -1686,11 +1679,9 @@ module Ci
     end
 
     def accessible_terraform_reports(user)
-      authz_cache = {}
-
       ::Gitlab::Ci::Reports::TerraformReports.new.tap do |terraform_reports|
         latest_report_builds_in_self_and_project_descendants(::Ci::JobArtifact.of_report_type(:terraform)).each do |build|
-          next unless build.report_readable_by?(:terraform, user, authz_cache)
+          next unless build.report_readable_by?(:terraform, user)
 
           build.collect_terraform_reports!(terraform_reports)
         end
@@ -2090,57 +2081,19 @@ module Ci
     # Ids of the test-report builds (self and descendants) whose JUnit report
     # `user` may read. `user` may be `nil` (anonymous, public only).
     #
-    # Authorization is per report artifact, but for a report artifact
-    # :read_job_artifacts is a pure function of the subject attributes
-    # Ci::JobArtifactPolicy reads - (project, accessibility, file_type) at a
-    # fixed user. So we authorize one representative artifact per distinct
-    # combination rather than instantiating every build, which keeps this
-    # proportional to the number of distinct combinations instead of the number
-    # of builds (the summary caller only needs ids, never the build objects).
+    # Authorizes Authz::JobArtifactAccess values built from plucked columns, so no
+    # artifact or build records are instantiated. DeclarativePolicy caches each
+    # distinct value once per request.
     def accessible_test_report_build_ids(user)
       # EXISTS filter only (not the eager-loading `latest_report_builds_*` helper,
       # whose join would return a row per artifact), so each build appears once.
       builds = builds_in_self_and_project_descendants
         .with_existing_job_artifacts(::Ci::JobArtifact.of_report_type(:test))
-        .pluck(:id, :partition_id)
-      return [] if builds.empty?
+      access_by_build_id = ::Ci::JobArtifact.of_report_type(:test).access_subjects_by_job_id(builds)
 
-      build_ids = builds.map(&:first)
-      partition_ids = builds.map(&:second).uniq
-
-      # Job artifacts are co-partitioned with their build, so scoping by the
-      # builds' partitions keeps the query correct across descendants while still
-      # pruning to the relevant partitions.
-      test_artifacts = ::Ci::JobArtifact.of_report_type(:test)
-        .where(job_id: build_ids, partition_id: partition_ids)
-
-      representatives = test_artifacts
-        .group(:project_id, :accessibility, :file_type)
-        .pluck(Arel.sql('MIN(id)'), :project_id, :accessibility, :file_type)
-      # Guard against an over-grant: with no representatives `readable` is empty,
-      # so the `readable.values.all?` short-circuit below would be vacuously true
-      # and return every build id unauthorized.
-      return [] if representatives.empty?
-
-      artifacts_by_id = ::Ci::JobArtifact
-        .where(id: representatives.map(&:first))
-        .preload(job: :project)
-        .index_by(&:id)
-
-      readable = representatives.each_with_object({}) do |(representative_id, project_id, accessibility, file_type), memo|
-        memo[[project_id, accessibility, file_type]] =
-          Ability.allowed?(user, :read_job_artifacts, artifacts_by_id[representative_id])
-      end
-
-      # Every combination is readable, so every build's artifacts are readable.
-      return build_ids if readable.values.all?
-
-      # Otherwise keep only builds whose every test artifact is readable.
-      test_artifacts
-        .pluck(:job_id, :project_id, :accessibility, :file_type)
-        .group_by(&:first)
-        .select { |_job_id, rows| rows.all? { |(_job_id, project_id, accessibility, file_type)| readable[[project_id, accessibility, file_type]] } }
-        .keys
+      access_by_build_id.select do |_build_id, accesses|
+        accesses.all? { |access| Ability.allowed?(user, :read_job_artifacts, access) }
+      end.keys
     end
 
     def age_metric_enabled?

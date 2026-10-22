@@ -2,28 +2,23 @@
 
 require 'spec_helper'
 
-# Reproducible regression example for the pipeline test-report authorization
-# scaling (see !247590). It exercises the MR-widget hot path
-# (Ci::CompareTestReportsService#get_report), which calls
-# Ci::Pipeline#accessible_test_reports on current code and #test_reports on the
-# pre-security-fix baseline.
+# Regression example for the pipeline test-report authorization scaling (see
+# !247590). It exercises the MR-widget hot path
+# (Ci::CompareTestReportsService#get_report), which authorizes every report
+# artifact with :read_job_artifacts.
 #
-# The metric is the number of `read_job_artifacts` policy evaluations - the only
-# quantity that separates the three states (query count and object allocations
-# do not: the baseline actually issues *more* queries):
-#
-#   old baseline  -> PASS  (no per-artifact authorization at all: 0 == 0)
-#   security fix  -> FAIL  (authorizes read_job_artifacts once per artifact: O(N))
-#   perf fix      -> PASS  (memoized by [project_id, accessibility]: O(1))
-RSpec.describe Ci::CompareTestReportsService, feature_category: :continuous_integration do
+# The metric is how many times the read_job_artifacts rules are evaluated.
+# DeclarativePolicy caches the Authz::JobArtifactAccessPolicy per distinct access
+# value within a request, so the count must not grow with the number of builds.
+RSpec.describe Ci::CompareTestReportsService, :request_store, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user, maintainer_of: project) }
   let_it_be(:base_pipeline) { create(:ci_pipeline, project: project) }
 
-  def read_job_artifacts_authorizations
+  def read_job_artifacts_evaluations
     count = 0
-    allow(Ability).to receive(:allowed?).and_wrap_original do |original, *args|
-      count += 1 if args[1] == :read_job_artifacts
+    allow(Authz::JobArtifactAccessPolicy).to receive(:new).and_wrap_original do |original, *args|
+      count += 1
       original.call(*args)
     end
     yield
@@ -38,10 +33,14 @@ RSpec.describe Ci::CompareTestReportsService, feature_category: :continuous_inte
 
   it 'does not scale read_job_artifacts authorization with the number of test-report builds' do
     service = described_class.new(project, user)
+    head_with_one = head_pipeline_with(1)
+    head_with_five = head_pipeline_with(5)
 
-    control = read_job_artifacts_authorizations { service.execute(base_pipeline, head_pipeline_with(1)) }
-    scaled  = read_job_artifacts_authorizations { service.execute(base_pipeline, head_pipeline_with(5)) }
+    control = read_job_artifacts_evaluations { service.execute(base_pipeline, head_with_one) }
+    Gitlab::SafeRequestStore.clear! # each comparison runs in its own request
+    scaled = read_job_artifacts_evaluations { service.execute(base_pipeline, head_with_five) }
 
+    expect(control).to be > 0
     expect(scaled).to eq(control)
   end
 end

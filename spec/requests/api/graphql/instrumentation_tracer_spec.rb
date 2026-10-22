@@ -20,7 +20,8 @@ RSpec.describe 'Gitlab::Graphql::Tracers::Instrumentation integration test', :ag
         "meta.client_id" => "user/#{user.id}",
         "meta.#{Labkit::Fields::GL_USER_ID}" => user.id,
         "query_analysis.duration_s" => be_a(Float),
-        "meta.caller_id" => "graphql:unknown"
+        "meta.caller_id" => "graphql:unknown",
+        Labkit::Fields::HTTP_USER_AGENT => "instrumentation-tracer-test-agent"
       }
     end
 
@@ -45,7 +46,7 @@ RSpec.describe 'Gitlab::Graphql::Tracers::Instrumentation integration test', :ag
         { query: graphql_query_for('currentUser', {}, ["username"]) }
       ]
 
-      post_multiplex(queries, current_user: user)
+      post_multiplex(queries, current_user: user, headers: { 'HTTP_USER_AGENT' => 'instrumentation-tracer-test-agent' })
 
       expect(json_response.size).to eq(2)
     end
@@ -99,7 +100,12 @@ RSpec.describe 'Gitlab::Graphql::Tracers::Instrumentation integration test', :ag
           query_string: sanitized_mutation_query_string
         }))
 
-        post_graphql_mutation(mutation, current_user: user)
+        post_graphql(
+          mutation.query,
+          current_user: user,
+          variables: mutation.variables,
+          headers: { 'HTTP_USER_AGENT' => 'instrumentation-tracer-test-agent' }
+        )
       end
     end
 

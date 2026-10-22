@@ -41,7 +41,7 @@ Workflow for the [broken master](https://handbook.gitlab.com/handbook/engineerin
 1. Reach out to the relevant team that introduced the migration to discuss whether the MR should be reverted or if a fix will be worked on
    - If the team isn't available, post about it in the `#database` Slack channel
 1. While a fix or revert is being worked on, the `master` pipeline can be unblocked by disabling the job temporarily by setting `DISABLE_DB_MULTI_VERSION_UPGRADE=true` in [CI/CD Settings page](https://gitlab.com/gitlab-org/gitlab/-/settings/ci_cd)
-   - When disabling the job, announce it in the `#master-broken` Slack channel
+   - When disabling the job, announce it in the `#ci-health-incidents` Slack channel
 1. Add a note to [job stability tracking issue #458402](https://gitlab.com/gitlab-org/gitlab/-/issues/458402)
 1. Reinstate the job by removing `DISABLE_DB_MULTI_VERSION_UPGRADE` from CI/CD Settings
 

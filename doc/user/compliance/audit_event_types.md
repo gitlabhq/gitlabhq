@@ -114,6 +114,12 @@ Audit event types belong to the following product categories.
 | [`enabled_foundational_flows_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228497) | Enabled foundational flows selection on group changed | {{< yes >}} | GitLab [18.11](https://gitlab.com/gitlab-org/gitlab/-/work_items/593019) | Group |
 | [`q_onbarding_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175501) | Amazon Q instance settings changed | {{< yes >}} | GitLab [17.8](https://gitlab.com/gitlab-org/gitlab/-/issues/508250) | Instance |
 
+### AI governance
+
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
+| [`ai_governance_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/262303) | The umbrella setting for AI Governance features is changed on a group or project | {{< yes >}} | GitLab [19.6](https://gitlab.com/gitlab-org/gitlab/-/work_items/632724) | Group, Project |
+
 ### Audit events
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |

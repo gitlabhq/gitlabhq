@@ -155,6 +155,11 @@ export default {
       required: false,
       default: false,
     },
+    isReplyForm: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     hasEmailParticipantsWidget: {
       type: Boolean,
       required: false,
@@ -222,7 +227,12 @@ export default {
       return this.workItem?.workItemType?.id;
     },
     showResolveDiscussionToggle() {
-      return !this.isNewDiscussion && this.isDiscussionResolvable && this.hasReplies;
+      // The edit form only offers the toggle on the first note of a thread with replies.
+      return (
+        !this.isNewDiscussion &&
+        this.isDiscussionResolvable &&
+        (this.isReplyForm || this.hasReplies)
+      );
     },
     resolveCheckboxLabel() {
       return this.isDiscussionResolved ? __('Reopen thread') : __('Resolve thread');

@@ -2728,7 +2728,19 @@ paths:
         '200':
           description: OK
         '400':
-          description: Bad Request
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+        '413':
+          description: Payload too large
+        '422':
+          description: Unprocessable entity
+        '429':
+          description: Too many requests
       requestBody:
         required: true
         content:
@@ -3201,12 +3213,16 @@ paths:
       - GitLab Duo workflows
       - Internal operations
       responses:
-        '201':
-          description: Created
-        '404':
-          description: Not Found
+        '202':
+          description: Accepted
         '400':
-          description: Bad Request
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
       parameters:
       - name: id
         required: true
@@ -3369,14 +3385,14 @@ paths:
       responses:
         '200':
           description: OK
+        '400':
+          description: Bad request
         '401':
           description: Unauthorized
         '403':
           description: Forbidden
         '422':
           description: Unprocessable Entity
-        '400':
-          description: Bad Request
       requestBody:
         required: true
         content:
@@ -3395,10 +3411,18 @@ paths:
       responses:
         '200':
           description: OK
-        '404':
-          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesAiDuoWorkflowsWorkflow"
         '400':
-          description: Bad Request
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
       parameters:
       - name: id
         required: true
@@ -3417,10 +3441,14 @@ paths:
       responses:
         '200':
           description: OK
-        '404':
-          description: Not Found
         '400':
-          description: Bad Request
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
       parameters:
       - name: id
         required: true
@@ -3446,10 +3474,18 @@ paths:
       responses:
         '201':
           description: Created
-        '404':
-          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesAiDuoWorkflowsBasicCheckpoint"
         '400':
-          description: Bad Request
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
       parameters:
       - name: id
         required: true
@@ -3473,10 +3509,20 @@ paths:
       responses:
         '200':
           description: OK
-        '404':
-          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/APIEntitiesAiDuoWorkflowsCheckpoint"
         '400':
-          description: Bad Request
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
       parameters:
       - name: id
         required: true
@@ -3526,10 +3572,18 @@ paths:
       responses:
         '200':
           description: OK
-        '404':
-          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesAiDuoWorkflowsCheckpoint"
         '400':
-          description: Bad Request
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
       parameters:
       - name: id
         required: true
@@ -3562,10 +3616,18 @@ paths:
       responses:
         '200':
           description: OK
-        '404':
-          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesAiDuoWorkflowsCheckpoint"
         '400':
-          description: Bad Request
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
       parameters:
       - name: id
         required: true
@@ -3596,12 +3658,16 @@ paths:
       - GitLab Duo workflows
       - Internal operations
       responses:
-        '201':
-          description: Created
-        '404':
-          description: Not Found
+        '200':
+          description: OK
         '400':
-          description: Bad Request
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
       parameters:
       - name: id
         required: true
@@ -3626,10 +3692,18 @@ paths:
       responses:
         '201':
           description: Created
-        '404':
-          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesAiDuoWorkflowsEvent"
         '400':
-          description: Bad Request
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
       parameters:
       - name: id
         required: true
@@ -3653,10 +3727,20 @@ paths:
       responses:
         '200':
           description: OK
-        '404':
-          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/APIEntitiesAiDuoWorkflowsEvent"
         '400':
-          description: Bad Request
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
       parameters:
       - name: id
         required: true
@@ -3675,10 +3759,18 @@ paths:
       responses:
         '200':
           description: OK
-        '404':
-          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesAiDuoWorkflowsEvent"
         '400':
-          description: Bad Request
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
       parameters:
       - name: id
         required: true
@@ -24214,8 +24306,10 @@ paths:
       tags:
       - MCP
       responses:
-        '201':
-          description: Created
+        '200':
+          description: OK
+        '202':
+          description: Accepted (JSON-RPC notification)
         '400':
           description: Bad request
         '401':
@@ -24237,14 +24331,12 @@ paths:
       tags:
       - MCP
       responses:
-        '200':
-          description: OK
+        '405':
+          description: Method not allowed
         '401':
           description: Unauthorized
         '403':
           description: Forbidden
-        '405':
-          description: Method not allowed
   "/api/v4/groups/{id}/service_accounts":
     post:
       operationId: postApiV4GroupsIdServiceAccounts
@@ -84698,6 +84790,114 @@ components:
         created_at:
           type: string
           example: '2026-06-17T00:00:00.000Z'
+    APIEntitiesAiDuoWorkflowsWorkflow:
+      type: object
+      properties:
+        id:
+          type: string
+        web_url:
+          type: string
+          example: https://gitlab.example.com/group/project/-/automate/agent-sessions/42
+        project_id:
+          type: string
+        namespace_id:
+          type: string
+        agent_privileges:
+          type: string
+        agent_privileges_names:
+          type: string
+        pre_approved_agent_privileges:
+          type: string
+        pre_approved_agent_privileges_names:
+          type: string
+        workflow_definition:
+          type: string
+        status:
+          type: string
+        summary:
+          type: string
+        title:
+          type: string
+        allow_agent_to_request_user:
+          type: string
+        image:
+          type: string
+        environment:
+          type: string
+        ai_catalog_item_version_id:
+          type: string
+        workload:
+          type: string
+        mcp_enabled:
+          type: string
+        incremental_checkpoints_enabled:
+          type: string
+        gitlab_url:
+          type: string
+    APIEntitiesAiDuoWorkflowsBasicCheckpoint:
+      type: object
+      properties:
+        id:
+          type: string
+        thread_ts:
+          type: string
+        parent_ts:
+          type: string
+        checkpoint_ns:
+          type: string
+    APIEntitiesAiDuoWorkflowsCheckpointWrite:
+      type: object
+      properties:
+        id:
+          type: string
+        thread_ts:
+          type: string
+        task:
+          type: string
+        idx:
+          type: string
+        channel:
+          type: string
+        write_type:
+          type: string
+        data:
+          type: string
+    APIEntitiesAiDuoWorkflowsCheckpoint:
+      type: object
+      properties:
+        id:
+          type: string
+        thread_ts:
+          type: string
+        parent_ts:
+          type: string
+        checkpoint_ns:
+          type: string
+        checkpoint:
+          type: string
+        compressed_checkpoint:
+          type: string
+        checkpoint_writes:
+          type: array
+          items:
+            "$ref": "#/components/schemas/APIEntitiesAiDuoWorkflowsCheckpointWrite"
+        current_thread:
+          type: string
+        metadata:
+          type: string
+    APIEntitiesAiDuoWorkflowsEvent:
+      type: object
+      properties:
+        id:
+          type: string
+        correlation_id:
+          type: string
+        event_type:
+          type: string
+        event_status:
+          type: string
+        message:
+          type: string
     APIEntitiesCustomAttribute:
       type: object
       properties:
@@ -104217,6 +104417,13 @@ components:
           description: Status event to apply to the workflow, for example `finish`.
           example: finish
           nullable: true
+        drop_reason:
+          type: string
+          description: Why the service dropped the session. Ignored unless status_event
+            is drop; a value the service may not name is recorded as api_reported
+          example: token_rejected
+          nullable: true
+          maxLength: 64
       required:
       - status_event
     postApiV4AiDuoWorkflowsWorkflowsIdCheckpointsRequest:

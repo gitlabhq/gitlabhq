@@ -70,6 +70,14 @@ RSpec.describe Projects::CleanupService, feature_category: :source_code_manageme
 
       expect(project.bfg_object_map).not_to be_exist
     end
+
+    it 'keeps the repository read-only if removing the BFG object map fails', :aggregate_failures do
+      allow(project.bfg_object_map).to receive(:remove!).and_raise(IOError, 'remove failed')
+
+      expect { cleanup_after }.to raise_error(IOError, 'remove failed')
+      expect(project.reload.repository_read_only?).to be(true)
+      expect(project.bfg_object_map).to be_exist
+    end
   end
 
   describe '#execute' do

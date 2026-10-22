@@ -69,6 +69,7 @@ describe('BlobEditHeader', () => {
         targetProjectId: 123,
         targetProjectPath: 'gitlab-org/gitlab',
         nextForkBranchName: null,
+        forkStartProjectId: null,
         ...provided,
       },
       stubs: {
@@ -501,14 +502,12 @@ describe('BlobEditHeader', () => {
               targetProjectId: 456,
               targetProjectPath: 'user/gitlab-fork',
               nextForkBranchName: 'patch-1',
+              forkStartProjectId: 123,
             },
           });
 
           await clickCommitChangesButton();
-          mock.onPut().replyOnce(HTTP_STATUS_OK, {
-            branch: 'patch-1',
-            file_path: 'test.js',
-          });
+          mock.onPost().replyOnce(HTTP_STATUS_OK, {});
 
           const formData = new FormData();
           formData.append('commit_message', 'Test commit');
@@ -520,12 +519,19 @@ describe('BlobEditHeader', () => {
           await axios.waitForAll();
         });
 
-        it('on submit, redirects to merge request creation', () => {
-          expect(mock.history.put).toHaveLength(1);
-          expect(mock.history.put[0].url).toBe('/api/v4/projects/456/repository/files/test.js');
-          const putData = JSON.parse(mock.history.put[0].data);
-          expect(putData.content).toBe(content);
+        it('commits to the fork with a new branch started from the upstream project', () => {
+          expect(mock.history.put).toHaveLength(0);
+          expect(mock.history.post).toHaveLength(1);
+          expect(mock.history.post[0].url).toBe('/api/v4/projects/456/repository/commits');
+          expect(JSON.parse(mock.history.post[0].data)).toMatchObject({
+            branch: 'patch-1',
+            start_branch: 'main',
+            start_project: 123,
+            actions: [expect.objectContaining({ action: 'update', file_path: 'test.js' })],
+          });
+        });
 
+        it('on submit, redirects to merge request creation', () => {
           expect(redirectUtils.redirectToForkMergeRequest).toHaveBeenCalledWith({
             url: window.location.href,
             forkProjectPath: 'user/gitlab-fork',
@@ -537,7 +543,7 @@ describe('BlobEditHeader', () => {
         });
       });
 
-      describe('when working on a fork and user deselects "Create a merge request for this change"', () => {
+      describe('when working on a fork that was not forked directly from the project', () => {
         beforeEach(async () => {
           createWrapper({
             provided: {
@@ -549,10 +555,39 @@ describe('BlobEditHeader', () => {
           });
 
           await clickCommitChangesButton();
-          mock.onPut().replyOnce(HTTP_STATUS_OK, {
-            branch: 'patch-1',
-            file_path: 'test.js',
+          mock.onPut().replyOnce(HTTP_STATUS_OK, {});
+
+          const formData = new FormData();
+          formData.append('commit_message', 'Test commit');
+          formData.append('branch_name', 'patch-1');
+          formData.append('original_branch', 'main');
+
+          findCommitChangesModal().vm.$emit('submit-form', formData);
+          await axios.waitForAll();
+        });
+
+        it('commits to the fork with the Repository Files API', () => {
+          expect(mock.history.post).toHaveLength(0);
+          expect(mock.history.put).toHaveLength(1);
+          expect(mock.history.put[0].url).toBe('/api/v4/projects/456/repository/files/test.js');
+          expect(JSON.parse(mock.history.put[0].data)).not.toHaveProperty('start_project');
+        });
+      });
+
+      describe('when working on a fork and user deselects "Create a merge request for this change"', () => {
+        beforeEach(async () => {
+          createWrapper({
+            provided: {
+              canPushToBranch: false,
+              targetProjectId: 456,
+              targetProjectPath: 'user/gitlab-fork',
+              nextForkBranchName: 'patch-1',
+              forkStartProjectId: 123,
+            },
           });
+
+          await clickCommitChangesButton();
+          mock.onPost().replyOnce(HTTP_STATUS_OK, {});
 
           // NOT appending create_merge_request - simulates unchecked checkbox
           await submitForm();
@@ -562,7 +597,7 @@ describe('BlobEditHeader', () => {
           expect(redirectUtils.redirectToBlobWithAlert).toHaveBeenCalledWith({
             url: window.location.href,
             resultingBranch: 'patch-1',
-            responseData: { branch: 'patch-1', file_path: 'test.js' },
+            responseData: {},
             formData: expect.objectContaining({
               file_path: 'test.js',
               file: content,
@@ -585,6 +620,7 @@ describe('BlobEditHeader', () => {
               targetProjectId: 456,
               targetProjectPath: 'user/gitlab-fork',
               nextForkBranchName: 'patch-1',
+              forkStartProjectId: 123,
             },
           });
           mockEditor.filepathFormMediator.$filenameInput.val.mockReturnValue('renamed_test.js');
@@ -610,6 +646,11 @@ describe('BlobEditHeader', () => {
         it('redirects to merge request creation page after renaming file', () => {
           expect(mock.history.post).toHaveLength(1);
           expect(mock.history.post[0].url).toBe('/api/v4/projects/456/repository/commits');
+          expect(JSON.parse(mock.history.post[0].data)).toMatchObject({
+            start_branch: 'main',
+            start_project: 123,
+            actions: [expect.objectContaining({ action: 'move', previous_path: 'test.js' })],
+          });
           expect(redirectUtils.redirectToForkMergeRequest).toHaveBeenCalledWith({
             url: window.location.href,
             forkProjectPath: 'user/gitlab-fork',

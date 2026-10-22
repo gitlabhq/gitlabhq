@@ -1171,6 +1171,37 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
           end
         end
       end
+
+      context 'with a deploy token the lookup finds but that has expired' do
+        # The token is found through the DeployToken.active scope, in the
+        # database, and is then checked again with DeployToken#expired?, in
+        # Ruby. This stands for the two disagreeing.
+        before do
+          allow_next_found_instance_of(DeployToken) do |token|
+            allow(token).to receive(:expired?).and_return(true)
+          end
+        end
+
+        it 'responds with forbidden and says why' do
+          download_file(deploy_token_header(deploy_token_ro.token))
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(json_response['message']).to eq('403 Forbidden - This deploy token has expired.')
+        end
+      end
+
+      context 'with a deploy token that expires in an hour' do
+        let(:deploy_token) do
+          create(:deploy_token, read_package_registry: true, expires_at: 1.hour.from_now.to_datetime,
+            projects: [project])
+        end
+
+        it 'responds with success' do
+          download_file(deploy_token_header(deploy_token.token))
+
+          expect(response).to have_gitlab_http_status(:success)
+        end
+      end
     end
 
     context 'with access to package registry for everyone' do

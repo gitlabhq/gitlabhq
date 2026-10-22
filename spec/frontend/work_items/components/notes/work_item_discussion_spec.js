@@ -88,9 +88,45 @@ describe('Work Item Discussion', () => {
     it('passes an empty array of replies to the first note when there are none', () => {
       expect(findThreadAtIndex(0).props('replies')).toEqual([]);
     });
+  });
 
-    it('should not show the comment form by default', () => {
+  describe('when a single-comment discussion is resolvable', () => {
+    beforeEach(() => {
+      createComponent({ isExpandedOnLoad: false });
+    });
+
+    it('shows the reply form so the thread can be replied to or resolved', () => {
+      expect(findWorkItemAddNote().exists()).toBe(true);
+      expect(findWorkItemAddNote().props('isDiscussionResolvable')).toBe(true);
+    });
+
+    it('does not mark the first note as the only comment of the thread', () => {
+      expect(findThreadAtIndex(0).props('isOnlyCommentOfAThread')).toBe(false);
+    });
+
+    it('keeps the reply form after cancelling a reply', async () => {
+      findWorkItemAddNote().vm.$emit('cancel-editing');
+      await nextTick();
+
+      expect(findWorkItemAddNote().exists()).toBe(true);
+    });
+  });
+
+  describe.each`
+    description                                       | discussion
+    ${'is not resolvable'}                            | ${{ ...mockWorkItemDiscussion, resolvable: false }}
+    ${'is resolvable without the resolve permission'} | ${{ ...mockWorkItemDiscussion, userPermissions: { resolveNote: false } }}
+  `('when a single-comment discussion $description', ({ discussion }) => {
+    beforeEach(() => {
+      createComponent({ discussion, isExpandedOnLoad: false });
+    });
+
+    it('does not show the reply form', () => {
       expect(findWorkItemAddNote().exists()).toBe(false);
+    });
+
+    it('marks the first note as the only comment of the thread', () => {
+      expect(findThreadAtIndex(0).props('isOnlyCommentOfAThread')).toBe(true);
     });
   });
 
@@ -237,18 +273,26 @@ describe('Work Item Discussion', () => {
       beforeEach(() => {
         createComponent({
           discussion: { ...mockWorkItemDiscussion, resolved },
+          isExpandedOnLoad: false,
         });
       });
 
-      it('toggles resolution without adding a reply', () => {
-        findThreadAtIndex(0).vm.$emit('resolve');
+      it.each`
+        source              | findSource
+        ${'note menu'}      | ${() => findThreadAtIndex(0)}
+        ${'Resolve button'} | ${() => findWorkItemAddNote()}
+      `('toggles resolution from the $source without adding a reply', ({ findSource }) => {
+        findSource().vm.$emit('resolve');
 
         expect(toggleWorkItemResolveDiscussionHandler).toHaveBeenCalledWith({
           id: mockWorkItemDiscussion.id,
           resolve: !resolved,
         });
         expect(findAllThreads()).toHaveLength(1);
-        expect(findWorkItemAddNote().exists()).toBe(false);
+      });
+
+      it('passes the resolved state to the reply form', () => {
+        expect(findWorkItemAddNote().props('isDiscussionResolved')).toBe(resolved);
       });
     });
 

@@ -27,8 +27,6 @@ methods:
     - toggle_award_emoji_project_project_snippet_url: Rails' dynamic route creation in app/helpers/award_emoji_helper.rb
   app/helpers/sorting_titles_values_helper.rb:
     - sort_value_stars_desc: Used to build sorting dropdowns in app/helpers/sorting_helper.rb
-  app/models/authz/project_grant_sources.rb:
-    - shares_into: Called by Authz::UserProjectGrants once shares are added (!263757)
   app/models/authz/user_project_grants.rb:
     - self.forget_memberships: Will be called by ProjectTeam#purge_member_access_cache_for_user_id in a follow-up MR (!263759)
   app/models/concerns/forced_email_confirmation.rb:

@@ -1,6 +1,7 @@
 <script>
 import { GlFormRadio, GlFormRadioGroup, GlLink, GlTooltipDirective } from '@gitlab/ui';
 import { getWeekdayNames } from '~/lib/utils/datetime_utility';
+import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
 import { __, s__, sprintf } from '~/locale';
 import { DOCS_URL } from '~/constants';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
@@ -67,17 +68,10 @@ export default {
         [KEY_EVERY_MONTH]: `${this.randomMinute} ${this.randomHour} ${this.randomDay} * *`,
       };
     },
-    formattedMinutes() {
-      return String(this.randomMinute).padStart(2, '0');
-    },
     formattedTime() {
-      if (this.randomHour > 12) {
-        return `${this.randomHour - 12}:${this.formattedMinutes}pm`;
-      }
-      if (this.randomHour === 12) {
-        return `12:${this.formattedMinutes}pm`;
-      }
-      return `${this.randomHour}:${this.formattedMinutes}am`;
+      return localeDateFormat.asTime.format(
+        new Date(2000, 0, 1, this.randomHour, this.randomMinute),
+      );
     },
     radioOptions() {
       return [

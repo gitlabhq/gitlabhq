@@ -3,7 +3,6 @@ API/DescriptionSuccessResponse:
   Exclude:
     - 'ee/lib/api/admin/search/migrations.rb'
     - 'ee/lib/api/admin/search/zoekt.rb'
-    - 'ee/lib/api/ai/duo_workflows/workflows_internal.rb'
     - 'ee/lib/api/ai/llm/git_command.rb'
     - 'ee/lib/api/chat.rb'
     - 'ee/lib/api/compliance_external_controls.rb'
@@ -41,7 +40,6 @@ API/DescriptionSuccessResponse:
     - 'lib/api/internal/kubernetes.rb'
     - 'lib/api/internal/lfs.rb'
     - 'lib/api/internal/pages.rb'
-    - 'lib/api/mcp/base.rb'
     - 'lib/api/merge_request_approvals.rb'
     - 'lib/api/ml/mlflow/entrypoint.rb'
     - 'lib/api/ml/mlflow/experiments.rb'

@@ -5,6 +5,10 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   include ::Authz::RolePermissions
   include ::Authn::SubgroupProvisionedServiceAccountRestriction
 
+  def self.preload_for_batch_checks(groups, user)
+    Preloaders::GroupPolicyPreloader.new(groups, user).execute
+  end
+
   define_role_permissions(:group)
 
   desc "Group is public"

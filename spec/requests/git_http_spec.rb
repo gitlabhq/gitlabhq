@@ -2218,7 +2218,8 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
 
     context 'when the project does not exist yet (push-to-create)' do
       before do
-        allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(120)
+        # Push-to-create runs Projects::CreateService; each synced cascading setting adds an ancestor lookup.
+        allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(125)
       end
 
       it 'resolves the organization from the namespace in the URL path' do

@@ -76,12 +76,16 @@ permissions:
   - create_subgroup
   - create_test_case
   - create_vulnerability_export
+  - create_webhook
   - create_wiki
   - delete_achievement
   - delete_custom_emoji
   - delete_label
   - delete_note
   - delete_timelog
+  - delete_webhook
+  - delete_webhook_custom_header
+  - delete_webhook_url_variable
   - destroy_deploy_token
   - destroy_epic
   - destroy_issue
@@ -100,6 +104,7 @@ permissions:
   - register_group_runners
   - reopen_issue
   - request_access
+  - resend_webhook_event
   - resolve_note
   - revoke_achievement
   - rollover_issues
@@ -111,6 +116,7 @@ permissions:
   - set_new_work_item_metadata
   - set_note_created_at
   - set_show_diff_preview_in_email
+  - test_webhook
   - transfer_projects
   - update_achievement
   - update_approval_rule
@@ -126,5 +132,8 @@ permissions:
   - update_runners_registration_token
   - update_saved_replies
   - update_security_orchestration_policy_project
+  - update_webhook
+  - update_webhook_custom_header
+  - update_webhook_url_variable
   - update_wiki
   - upload_file

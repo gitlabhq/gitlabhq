@@ -100,6 +100,7 @@ describe('Work item comment form component', () => {
     workItemState = STATE_OPEN,
     workItemType = 'Task',
     hasReplies = false,
+    isReplyForm = false,
     isDiscussionResolved = false,
     isDiscussionResolvable = false,
     hasEmailParticipantsWidget = false,
@@ -145,6 +146,7 @@ describe('Work item comment form component', () => {
         isDiscussionResolvable,
         isDiscussionResolved,
         hasReplies,
+        isReplyForm,
         hasEmailParticipantsWidget,
         parentId,
         hideFullscreenMarkdownButton,
@@ -607,6 +609,35 @@ describe('Work item comment form component', () => {
       });
 
       expect(findToggleResolveCheckbox().exists()).toBe(true);
+    });
+
+    it('renders when replying to a resolvable discussion without replies', () => {
+      createComponent({
+        isReplyForm: true,
+        isDiscussionResolvable: true,
+      });
+
+      expect(findToggleResolveCheckbox().exists()).toBe(true);
+    });
+
+    it.each`
+      description                                          | props
+      ${'editing a note in a thread without replies'}      | ${{ isDiscussionResolvable: true }}
+      ${'replying to a discussion that is not resolvable'} | ${{ isReplyForm: true }}
+    `('does not render when $description', ({ props }) => {
+      createComponent(props);
+
+      expect(findToggleResolveCheckbox().exists()).toBe(false);
+    });
+
+    it('renders "Reopen thread" when replying to a resolved discussion', () => {
+      createComponent({
+        isReplyForm: true,
+        isDiscussionResolvable: true,
+        isDiscussionResolved: true,
+      });
+
+      expect(findToggleResolveCheckbox().text()).toBe('Reopen thread');
     });
 
     it('emits the `toggle-resolve-discussion` event on submit-form when resolved', async () => {

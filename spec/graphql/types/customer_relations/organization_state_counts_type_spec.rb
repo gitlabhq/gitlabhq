@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['OrganizationStateCounts'] do
+RSpec.describe GitlabSchema.types['OrganizationStateCounts'], feature_category: :team_planning do
   include GraphqlHelpers
 
   let(:fields) do

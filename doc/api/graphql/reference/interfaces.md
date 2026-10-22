@@ -382,7 +382,7 @@ Represents signing information for a commit.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | `componentVersion` | [`ComponentVersion`](objects.md#componentversion) | Version of the dependency. |
-| `dependencyPaths` | [`DependencyPathPage`](objects.md#dependencypathpage) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.2.<br/><br/>Ancestor dependency paths for a dependency. Returns `null` if `dependency_graph_graphql` feature flag is disabled. <br><br> <strong>Arguments for `dependencyPaths`:</strong> <dl><dt>`after` ([`String`](scalars.md#string))</dt><dd>Fetch paths after the cursor.</dd><dt>`before` ([`String`](scalars.md#string))</dt><dd>Fetch paths before the cursor.</dd><dt>`limit` ([`Int`](scalars.md#int))</dt><dd>Number of paths to fetch.</dd></dl> |
+| `dependencyPaths` | [`DependencyPathPage`](objects.md#dependencypathpage) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.2.<br/><br/>Ancestor dependency paths for a dependency. Returns `null` if `dependency_graph_graphql` feature flag is disabled. <br><br> <strong>Arguments for `dependencyPaths`:</strong> <dl><dt>`after` ([`String`](scalars.md#string))</dt><dd>Fetch paths after the cursor.</dd><dt>`before` ([`String`](scalars.md#string))</dt><dd>Fetch paths before the cursor.</dd><dt>`limit` ([`Int`](scalars.md#int))</dt><dd>Number of paths to fetch. Maximum is 100.</dd></dl> |
 | `id` | [`GlobalID!`](scalars.md#globalid) | ID of the dependency. |
 | `licenses` | [`[License!]`](objects.md#license) | Licenses associated to the dependency. |
 | `location` | [`Location`](objects.md#location) | Information about where the dependency is located. |

@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 module Authz
-  # Resolves every role a user holds on a set of projects from memberships, instead of the single
-  # maximum stored in project_authorizations. Covers direct project memberships, memberships of the
-  # project's group and its ancestors, and personal projects.
+  # Resolves every role a user holds on a set of projects from memberships and shares,
+  # instead of the single maximum stored in project_authorizations.
+  #
+  # Uses the same rules as Gitlab::ProjectAuthorizations, so the maximum per project matches
+  # project_authorizations once it is up to date.
   class UserProjectGrants
     include Gitlab::Utils::StrongMemoize
 
@@ -39,9 +41,12 @@ module Authz
       return {} unless user_id
 
       rows = sources.project_rows(projects)
-      load_relevant_memberships(rows)
+      links = sources.project_shares(rows.keys)
+      load_relevant_memberships(rows, links)
 
-      rows.to_h { |project_id, project| [project_id, project_grants(project_id, project)] }
+      rows.to_h do |project_id, project|
+        [project_id, project_grants(project_id, project, links.fetch(project_id, []))]
+      end
     end
 
     # Returns the same shape as the project_authorizations lookup.
@@ -58,7 +63,7 @@ module Authz
 
     attr_reader :user_id
 
-    def project_grants(project_id, project)
+    def project_grants(project_id, project, project_shares)
       grants = []
       grants << Grant.new(Gitlab::Access::OWNER, nil, :personal) if personal_project_owner?(project)
 
@@ -66,27 +71,74 @@ module Authz
       grants << Grant.new(membership[:access_level], membership[:member_role_id], :project) if membership
 
       grants.concat(group_grants(project[:traversal_ids])) if project[:namespace_type] == ::Group.sti_name
+      # Like project_authorizations, only an explicit false allows project shares; NULL counts as locked.
+      grants.concat(project_share_grants(project_shares)) if project[:share_with_group_lock] == false
       grants
     end
 
-    # Grants on a group from direct memberships in it or its ancestors.
+    # Grants on a group from direct memberships in it or its ancestors, and from group shares into them.
     def group_grants(traversal_ids)
-      traversal_ids.filter_map do |group_id|
+      traversal_ids.flat_map do |group_id|
         direct = memberships[:group][group_id]
-        Grant.new(direct[:access_level], direct[:member_role_id], :group) if direct
+        grants = []
+        grants << Grant.new(direct[:access_level], direct[:member_role_id], :group) if direct
+
+        sources.shares_into(group_id).each do |share|
+          member = memberships[:group][share[:shared_with_group_id]]
+          grants << shared_grant(member, share, :group_share) if member
+        end
+
+        grants
       end
+    end
+
+    # A project share grants access to the invited group's members, including inherited ones and
+    # those reaching it through a group share, capped by the share's access level. Like
+    # Authz::UserProjectMemberRoles, the custom role only comes from a direct membership of the invited group.
+    def project_share_grants(project_shares)
+      project_shares.filter_map do |share|
+        best = group_grants(share[:group_traversal_ids]).select(&:grants_access?).max_by(&:access_level)
+        direct = memberships[:group][share[:group_traversal_ids].last]
+        next unless best || direct
+
+        Grant.new(
+          [best ? best.access_level : direct[:access_level], share[:group_access]].min,
+          (shared_member_role_id(direct, share) if direct),
+          :project_share
+        )
+      end
+    end
+
+    def shared_grant(member, share, source)
+      Grant.new(
+        [member[:access_level], share[:group_access]].min,
+        shared_member_role_id(member, share),
+        source
+      )
+    end
+
+    # Matches Authz::MemberRoleInSharedResource: the custom role follows the side with the lower access level.
+    def shared_member_role_id(member, share)
+      return share[:member_role_id] if member[:access_level] > share[:group_access]
+      return if member[:access_level] == share[:group_access] && share[:member_role_id].nil?
+
+      member[:member_role_id]
     end
 
     def personal_project_owner?(project)
       project[:namespace_type] == ::Namespaces::UserNamespace.sti_name && project[:owner_id] == user_id
     end
 
-    # Loads only the user's memberships that can grant access to these projects: the projects themselves
-    # and the groups in each project's hierarchy. This keeps the cost independent of how many memberships
-    # the user has elsewhere.
-    def load_relevant_memberships(rows)
+    # Loads only the user's memberships that can grant access to these projects: the projects themselves,
+    # groups in each project's and each invited group's hierarchy, and groups shared into those.
+    # This keeps the cost independent of how many memberships the user has elsewhere.
+    def load_relevant_memberships(rows, links)
+      group_ids = sources.hierarchy_group_ids(rows, links)
+      invited_group_ids = sources.group_shares(group_ids).values.flatten
+        .filter_map { |share| share[:shared_with_group_id] }
+
       load_memberships(
-        ::GroupMember::SOURCE_TYPE => sources.hierarchy_group_ids(rows, {}),
+        ::GroupMember::SOURCE_TYPE => (group_ids + invited_group_ids).uniq,
         ::ProjectMember::SOURCE_TYPE => rows.keys
       )
     end

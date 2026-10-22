@@ -85,6 +85,12 @@ To authenticate with a CI/CD job token:
       - gem push my_gem-0.0.1.gem --host ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/rubygems
   ```
 
+  > [!note]
+  > The `gem` client uses the `GEM_HOST_API_KEY` environment variable before it reads `~/.gem/credentials`.
+  > If a CI/CD variable named `GEM_HOST_API_KEY` exists, for example one inherited from a group,
+  > `gem push` ignores the job token and fails with `401 Unauthorized`.
+  > Remove that variable from the job, or set `GEM_HOST_API_KEY` to `${CI_JOB_TOKEN}`.
+
   You can also use `CI_JOB_TOKEN` in a `~/.gem/credentials` file you check in to GitLab:
 
   ```ini

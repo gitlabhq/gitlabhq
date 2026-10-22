@@ -104,8 +104,6 @@ export default {
       if (!showDateRangePicker && startDate && endDate) {
         this.dateRange = { startDate, endDate };
       }
-
-      this.showDateRangePicker = showDateRangePicker;
     },
   },
   DATE_RANGE_OPTIONS,

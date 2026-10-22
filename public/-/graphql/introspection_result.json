@@ -37808,7 +37808,7 @@
                 },
                 {
                   "name": "dropReason",
-                  "description": "Filter by one or many drop reasons (job_failed, no_status_reported, no_activity, workload_not_created, api_reported, preconditions_not_met, start_failed). Unrecognized values match nothing",
+                  "description": "Filter by one or many drop reasons (job_failed, no_status_reported, no_activity, workload_not_created, api_reported, preconditions_not_met, start_failed, token_rejected). Unrecognized values match nothing",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -137198,7 +137198,7 @@
                 },
                 {
                   "name": "limit",
-                  "description": "Number of paths to fetch.",
+                  "description": "Number of paths to fetch. Maximum is 100.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -137497,7 +137497,7 @@
                 },
                 {
                   "name": "limit",
-                  "description": "Number of paths to fetch.",
+                  "description": "Number of paths to fetch. Maximum is 100.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -138512,7 +138512,7 @@
                 },
                 {
                   "name": "limit",
-                  "description": "Number of paths to fetch.",
+                  "description": "Number of paths to fetch. Maximum is 100.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",
@@ -157961,7 +157961,7 @@
             },
             {
               "name": "dropReason",
-              "description": "Why a failed flow was dropped (job_failed, no_status_reported, no_activity, workload_not_created, api_reported, preconditions_not_met, start_failed). Returns `null` for flows that did not fail or whose drop recorded no reason",
+              "description": "Why a failed flow was dropped (job_failed, no_status_reported, no_activity, workload_not_created, api_reported, preconditions_not_met, start_failed, token_rejected). Returns `null` for flows that did not fail or whose drop recorded no reason",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -340253,7 +340253,7 @@
                 },
                 {
                   "name": "limit",
-                  "description": "Number of paths to fetch.",
+                  "description": "Number of paths to fetch. Maximum is 100.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Int",

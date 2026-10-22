@@ -504,6 +504,20 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
 
         it_behaves_like 'post project export start'
 
+        context 'when the limit comes from application settings' do
+          before do
+            stub_application_setting(project_export_limit: 1)
+          end
+
+          it 'returns 429 after the limit is reached' do
+            post api(path, user)
+            expect(response).to have_gitlab_http_status(:accepted)
+
+            post api(path, user)
+            expect(response).to have_gitlab_http_status(:too_many_requests)
+          end
+        end
+
         context 'with excluded_relations param' do
           using RSpec::Parameterized::TableSyntax
 
@@ -727,6 +741,20 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
           end
         end
 
+        context 'when the limit comes from application settings' do
+          before do
+            stub_application_setting(project_relations_export_limit: 1)
+          end
+
+          it 'returns 429 after the limit is reached' do
+            post api(path, user)
+            expect(response).to have_gitlab_http_status(:accepted)
+
+            post api(path, user)
+            expect(response).to have_gitlab_http_status(:too_many_requests)
+          end
+        end
+
         it 'creates new audit event' do
           expect(::Import::BulkImports::Audit::Auditor)
             .to receive(:new)
@@ -805,6 +833,24 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
             get api("/projects/#{other_project.id}/export_relations/download?relation=#{relation}", user)
 
             expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+
+        context 'when the limit comes from application settings' do
+          before do
+            stub_application_setting(project_relations_export_download_limit: 1)
+
+            export = create(:bulk_import_export, project: project, relation: relation, user: user)
+            upload = create(:bulk_import_export_upload, export: export)
+            upload.update!(export_file: fixture_file_upload('spec/fixtures/bulk_imports/gz/labels.ndjson.gz'))
+          end
+
+          it 'returns 429 after the limit is reached' do
+            get api(download_path, user)
+            expect(response).to have_gitlab_http_status(:ok)
+
+            get api(download_path, user)
+            expect(response).to have_gitlab_http_status(:too_many_requests)
           end
         end
 

@@ -1,6 +1,31 @@
 # frozen_string_literal: true
 
 class IssuePolicy < IssuablePolicy
+  # When the issues share one author, project or group, checking them one by one already
+  # reuses its data, so those preloads only run when there is more than one.
+  def self.preload_for_batch_checks(issues, user)
+    group_level, project_level = issues.partition { |issue| issue.project_id.nil? }
+    if issues.map(&:author_id).uniq.size > 1
+      ActiveRecord::Associations::Preloader.new(records: issues, associations: :author).call
+    end
+
+    ActiveRecord::Associations::Preloader.new(records: project_level, associations: :project).call
+    ActiveRecord::Associations::Preloader.new(records: group_level, associations: :namespace).call
+
+    projects = project_level.map(&:project).uniq
+    if projects.size > 1
+      # Checks within one project rarely read assignees, so only preload them across projects.
+      ActiveRecord::Associations::Preloader.new(records: project_level, associations: :assignees).call
+      ActiveRecord::Associations::Preloader.new(records: projects, associations: :project_namespace).call
+      # Share the preloaded project instance: work item type lookups go issue -> namespace -> project -> group.
+      project_level.each { |issue| issue.association(:namespace).target = issue.project.project_namespace }
+      ProjectPolicy.preload_for_batch_checks(projects, user)
+    end
+
+    groups = group_level.map(&:namespace).grep(::Group).uniq
+    GroupPolicy.preload_for_batch_checks(groups, user) if groups.size > 1
+  end
+
   # In FOSS there is no license.
   # This method is overridden in EE
   def epics_license_available?

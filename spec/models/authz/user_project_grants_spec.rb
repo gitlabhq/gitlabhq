@@ -90,22 +90,123 @@ RSpec.describe Authz::UserProjectGrants, feature_category: :permissions do
 
       expect(sources(personal_project)).to include([:personal, Gitlab::Access::OWNER])
     end
+
+    context 'with a group share' do
+      let_it_be(:invited_group) { create(:group) }
+
+      before_all do
+        create(:group_group_link, :reporter, shared_group: root, shared_with_group: invited_group)
+      end
+
+      it 'caps the invited member at the share access level' do
+        invited_group.add_maintainer(user)
+
+        expect(sources(project)).to contain_exactly([:group_share, Gitlab::Access::REPORTER])
+      end
+
+      it 'does not include members inherited from the invited group parent' do
+        parent = create(:group)
+        invited_child = create(:group, parent: parent)
+        create(:group_group_link, :reporter, shared_group: root, shared_with_group: invited_child)
+        parent.add_maintainer(user)
+
+        expect(sources(project)).to be_empty
+      end
+    end
+
+    context 'with a project share' do
+      let_it_be(:invited_parent) { create(:group) }
+      let_it_be(:invited_group) { create(:group, parent: invited_parent) }
+
+      before_all do
+        create(:project_group_link, project: project, group: invited_group, group_access: Gitlab::Access::REPORTER)
+      end
+
+      it 'ignores project shares with groups the user is not a member of' do
+        root.add_developer(user)
+
+        expect(sources(project)).to contain_exactly([:group, Gitlab::Access::DEVELOPER])
+      end
+
+      it 'includes members inherited from the invited group parent, capped at the share access level' do
+        invited_parent.add_maintainer(user)
+
+        expect(sources(project)).to contain_exactly([:project_share, Gitlab::Access::REPORTER])
+      end
+
+      it 'applies both caps when the invited group is reached through a group share' do
+        other_group = create(:group)
+        create(:group_group_link, :guest, shared_group: invited_group, shared_with_group: other_group)
+        other_group.add_owner(user)
+
+        expect(sources(project)).to contain_exactly([:project_share, Gitlab::Access::GUEST])
+      end
+
+      it 'includes members of groups shared into the invited group or its ancestors, as project_authorizations does' do
+        # The project is shared with C in A -> B -> C. C is shared with D, and B is shared with F.
+        # F's members reach C through B, so they count as members of the invited group.
+        group_a = create(:group)
+        group_b = create(:group, parent: group_a)
+        group_c = create(:group, parent: group_b)
+        group_d = create(:group)
+        group_f = create(:group)
+        shared_project = create(:project)
+        create(:project_group_link, project: shared_project, group: group_c, group_access: Gitlab::Access::DEVELOPER)
+        create(:group_group_link, :developer, shared_group: group_c, shared_with_group: group_d)
+        create(:group_group_link, :developer, shared_group: group_b, shared_with_group: group_f)
+
+        { a: group_a, b: group_b, c: group_c, d: group_d, f: group_f }.each do |name, group|
+          member = create(:user)
+          group.add_developer(member)
+          authorized = Gitlab::ProjectAuthorizations.new(member).calculate.any? { |row| row.project_id == shared_project.id }
+
+          expect(authorized).to be(true), "project_authorizations, member of #{name}"
+          expect(described_class.new(member.id).max_access_levels([shared_project.id]))
+            .to eq(shared_project.id => Gitlab::Access::DEVELOPER), "member of #{name}"
+        end
+      end
+
+      it 'ignores project shares when the project group locks sharing' do
+        locked_project = create(:project, group: create(:group, share_with_group_lock: true))
+        create(:project_group_link, project: locked_project, group: invited_group)
+        invited_parent.add_maintainer(user)
+
+        expect(sources(locked_project)).to be_empty
+      end
+
+      it 'treats a share lock that is not set as locked, like project_authorizations' do
+        unset_project = create(:project, group: create(:group))
+        unset_project.namespace.update_column(:share_with_group_lock, nil)
+        create(:project_group_link, project: unset_project, group: invited_group)
+        invited_parent.add_maintainer(user)
+
+        expect(sources(unset_project)).to be_empty
+        expect(Gitlab::ProjectAuthorizations.new(user).calculate.map(&:project_id)).not_to include(unset_project.id)
+      end
+    end
   end
 
   describe '#max_access_levels' do
     it 'matches the access levels calculated for project_authorizations' do
       other_root = create(:group)
+      invited = create(:group)
+      locked_group = create(:group, parent: other_root, share_with_group_lock: true)
 
       projects = [
         project,
         create(:project, group: root),
         create(:project, group: other_root),
+        create(:project, group: locked_group),
+        create(:project, group: invited),
         create(:project, namespace: user.namespace)
       ]
 
       root.add_member(user, Gitlab::Access::PLANNER)
       subgroup.add_developer(user)
-      projects[2].add_maintainer(user)
+      invited.add_maintainer(user)
+      create(:group_group_link, :reporter, shared_group: other_root, shared_with_group: invited)
+      create(:project_group_link, project: projects[2], group: subgroup, group_access: Gitlab::Access::MAINTAINER)
+      create(:project_group_link, project: projects[3], group: invited, group_access: Gitlab::Access::GUEST)
 
       authorized = Gitlab::ProjectAuthorizations.new(user).calculate.to_a
         .group_by(&:project_id).transform_values { |rows| rows.map(&:access_level).max }
@@ -140,6 +241,19 @@ RSpec.describe Authz::UserProjectGrants, feature_category: :permissions do
     end
 
     context 'with a request store', :request_store do
+      it 'reuses project rows and shares across users in the same request' do
+        other_user = create(:user)
+        root.add_developer(user)
+        root.add_reporter(other_user)
+        described_class.new(user.id).for_projects([project.id])
+
+        queries = ActiveRecord::QueryRecorder.new { described_class.new(other_user.id).for_projects([project.id]) }
+
+        expect(queries.log_message).not_to match(/FROM "projects"|FROM "project_group_links"|FROM "group_group_links"/)
+        expect(described_class.new(other_user.id).max_access_levels([project.id]))
+          .to eq(project.id => Gitlab::Access::REPORTER)
+      end
+
       it 'only loads memberships that can grant access to the checked projects' do
         root.add_developer(user)
         unrelated_groups = create_list(:group, 3)

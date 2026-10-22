@@ -28,6 +28,10 @@ module Gitlab
         when :password_expired
           "Your password expired. "\
           "Please access GitLab from a web browser to update your password."
+        when :deploy_token_revoked
+          "This deploy token has been revoked."
+        when :deploy_token_expired
+          "This deploy token has expired."
         else
           "Your request has been rejected for an unknown reason."\
           "Please contact your GitLab administrator and/or GitLab Support."
@@ -37,6 +41,8 @@ module Gitlab
       private
 
       def rejection_type
+        return deploy_token_rejection_type if @user.is_a?(DeployToken)
+
         if @user.internal?
           :internal
         elsif @user.blocked_pending_approval?
@@ -53,6 +59,21 @@ module Gitlab
           :password_expired
         else
           :blocked
+        end
+      end
+
+      # The API authenticates a deploy token in place of a user, but a deploy
+      # token has none of the account states the checks above read. The
+      # revoked branch is defensive: every lookup finds the token through
+      # DeployToken.active, which leaves revoked tokens out. A token can
+      # still expire between the lookup and this check.
+      def deploy_token_rejection_type
+        if @user.revoked?
+          :deploy_token_revoked
+        elsif @user.expired?
+          :deploy_token_expired
+        else
+          :unknown
         end
       end
     end

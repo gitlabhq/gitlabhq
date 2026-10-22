@@ -306,6 +306,35 @@ RSpec.describe Ci::JobArtifact, feature_category: :job_artifacts do
     end
   end
 
+  describe '.access_subjects_by_job_id' do
+    let_it_be(:other_job) { create(:ci_build, project: create(:project)) }
+    let_it_be(:artifacts) do
+      [
+        create(:ci_job_artifact, :junit, :private, job: job),
+        create(:ci_job_artifact, :codequality, :maintainer_only_access, job: job),
+        create(:ci_job_artifact, :junit, :public, job: other_job)
+      ]
+    end
+
+    let(:jobs) { Ci::Build.id_in([job, other_job]) }
+
+    # An attribute set in Authz::JobArtifactAccess.for but not here would make the test
+    # report summary authorize on a different subject than every other path.
+    it 'builds the same subjects as Authz::JobArtifactAccess.for' do
+      expected = artifacts.group_by(&:job_id).transform_values { |list| list.to_set { |a| Authz::JobArtifactAccess.for(a) } }
+
+      expect(described_class.access_subjects_by_job_id(jobs).transform_values(&:to_set)).to eq(expected)
+    end
+
+    it 'skips jobs without artifacts in the relation' do
+      expect(described_class.none.access_subjects_by_job_id(jobs)).to eq({})
+    end
+
+    it 'returns nothing without jobs' do
+      expect(described_class.access_subjects_by_job_id(Ci::Build.none)).to eq({})
+    end
+  end
+
   describe '.archived_trace_exists_for?' do
     subject { described_class.archived_trace_exists_for?(job_id) }
 

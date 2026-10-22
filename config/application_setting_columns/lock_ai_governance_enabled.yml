@@ -1,0 +1,12 @@
+---
+api_type:
+attr: lock_ai_governance_enabled
+clusterwide: true
+column: lock_ai_governance_enabled
+db_type: boolean
+default: 'false'
+description: cascading setting lock for ai_governance_enabled
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: true

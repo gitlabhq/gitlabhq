@@ -608,6 +608,22 @@ describe('Work item add note', () => {
         buttonTitle: 'Resolve thread',
       });
     });
+
+    describe('when the discussion is resolved', () => {
+      beforeEach(async () => {
+        await createComponent({
+          isDiscussionResolvable: true,
+          isDiscussionResolved: true,
+          isEditing: false,
+        });
+      });
+
+      it('emits `resolve` to reopen the thread when the button is clicked', () => {
+        findResolveDiscussionButton().vm.$emit('on-click');
+
+        expect(wrapper.emitted('resolve')).toEqual([[]]);
+      });
+    });
   });
 
   it('passes the `parentId` prop down to the `WorkItemCommentForm` component', async () => {
@@ -620,5 +636,11 @@ describe('Work item add note', () => {
     await createComponent({ hideFullscreenMarkdownButton: true });
 
     expect(findCommentForm().props('hideFullscreenMarkdownButton')).toBe(true);
+  });
+
+  it('marks the comment form as a reply form', async () => {
+    await createComponent();
+
+    expect(findCommentForm().props('isReplyForm')).toBe(true);
   });
 });

@@ -45,7 +45,7 @@ RSpec.describe 'Project Badges', feature_category: :groups_and_projects do
       end
     end
 
-    it do
+    it 'adds the submitted badge to the end of the list' do
       click_button 'Add new badge'
       within_testid('crud-form') do
         fill_in 'Name', with: 'test badge'

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['ContainerExpirationPolicyKeepEnum'] do
+RSpec.describe GitlabSchema.types['ContainerExpirationPolicyKeepEnum'], feature_category: :container_registry do
   let_it_be(:expected_values) { %w[ONE_TAG FIVE_TAGS TEN_TAGS TWENTY_FIVE_TAGS FIFTY_TAGS ONE_HUNDRED_TAGS] }
 
   it_behaves_like 'exposing container expiration policy option', :keep_n

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['SastCiConfiguration'] do
+RSpec.describe GitlabSchema.types['SastCiConfiguration'], feature_category: :static_application_security_testing do
   let(:fields) { %i[global pipeline analyzers] }
 
   it { expect(described_class.graphql_name).to eq('SastCiConfiguration') }

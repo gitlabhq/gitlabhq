@@ -62,6 +62,7 @@ For details about how to start each flow, see the individual
 - Trigger creation form [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248807) to add conditions one at a time in GitLab 19.3.
 - **Merge request** trigger event type with the **Created** action [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/242698) in GitLab 19.4.
 - **Status** filter for the **Work item** trigger event type with the **Status changed** action [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/607577) in GitLab 19.4.
+- **Type** filter for the **Work item** trigger event type [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/633870) in GitLab 19.6.
 
 {{< /history >}}
 
@@ -110,7 +111,52 @@ The trigger now appears in **AI** > **Triggers**.
 | Assign reviewer | When the service account user is assigned as a reviewer to a merge request.           | None |
 | Pipeline events | When a pipeline changes state.                                                        | From the **Run when** dropdown list, select one or more of the following:<br>- **Running**<br>- **Passed**<br>- **Failed**<br>- **Canceled** |
 | Merge request   | When a selected merge request action occurs.                                          | From the **Run when** dropdown list, select one of the following:<br>- **Approved**: When a merge request has all required approvals.<br>- **Created**: When someone creates a merge request, draft or ready, and GitLab generates its diff. GitLab syncs code owner approval rules against that diff before the flow runs, unless the merge request joins a merge train or GitLab cannot reload the diff.<br>- **Marked ready**: When a draft merge request is marked as ready for review.<br>- **Merge conflict**: When a merge request can no longer be merged due to a code conflict. |
-| Work item       | When a selected work item action occurs.                                              | From the **Run when** dropdown list, select one of the following:<br>- **Created**: When a work item is created<br>- **Status changed**: When a work item's status changes. When **Status changed** is the only selected action, you can select one or more statuses to run the flow only when the work item changes to one of them. |
+| Work item       | When a selected work item action occurs.                                              | From the **Run when** dropdown list, select one of the following:<br>- **Created**: When a work item is created<br>- **Status changed**: When a work item's status changes. When **Status changed** is the only selected action, you can select one or more statuses to run the flow only when the work item changes to one of them.<br><br>For both actions, from the **Type** dropdown list, you can select work item types to run the flow only for those types. When you select types, the **Status** dropdown list shows only the statuses of those types. If the selected types do not use a selected status, the list shows that status in a separate group, so that you can clear it. When you select no type, the same applies to a status that no type uses. |
+
+### Work item type IDs
+
+In the GraphQL API, the `filter` argument of the `aiFlowTriggerCreate` and `aiFlowTriggerUpdate`
+mutations sets the work item type filter with a `work_item_type_id` rule.
+The rule uses the `in` operator to run the flow only for the listed types,
+or the `not_in` operator to run the flow for all other types.
+The value is a list of work item type IDs.
+The IDs are integers, for example `5`.
+GitLab rejects a string such as `"5"`.
+For example, this filter runs the flow only when the status of a task changes to `In dev`:
+
+```json
+{
+  "work_item": {
+    "rules": [
+      { "field": "action", "operator": "in", "value": ["status_changed"] },
+      { "field": "status.name", "operator": "in", "value": ["In dev"] },
+      { "field": "work_item_type_id", "operator": "in", "value": [5] }
+    ]
+  }
+}
+```
+
+The default work item types have the same ID on every GitLab instance:
+
+| Work item type | ID  |
+|----------------|-----|
+| Issue          | `1` |
+| Incident       | `2` |
+| Test Case      | `3` |
+| Requirement    | `4` |
+| Task           | `5` |
+| Objective      | `6` |
+| Key Result     | `7` |
+| Epic           | `8` |
+| Ticket         | `9` |
+
+Custom work item types have other IDs.
+To find the ID of a type, query the `workItemTypes` field of the project.
+The ID is the number at the end of the `id` of the type.
+
+The trigger form shows and changes only `in` rules.
+For a `not_in` rule, the **Type** dropdown list shows **Any type**, and the form keeps the rule.
+If you change the types in the form, the form replaces the `not_in` rule.
 
 ## Add instructions
 
@@ -235,6 +281,8 @@ To change the work item when the session finishes:
 You can also set these settings when you [create a trigger](#create-a-trigger).
 
 If you later add the **Created** action, remove the last status, or remove the **Work item** condition, GitLab clears the settings.
+If you change the types so that they do not have the status of **Set work item status**,
+GitLab clears that status.
 
 ### When GitLab applies the settings
 

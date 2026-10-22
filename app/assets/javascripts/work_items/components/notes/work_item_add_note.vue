@@ -119,11 +119,6 @@ export default {
       required: false,
       default: false,
     },
-    hasReplies: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     parentId: {
       type: String,
       required: false,
@@ -485,7 +480,7 @@ export default {
             :is-discussion-resolved="isDiscussionResolved"
             :is-discussion-resolvable="isDiscussionResolvable"
             :full-path="fullPath"
-            :has-replies="hasReplies"
+            is-reply-form
             :work-item-iid="workItemIid"
             :has-email-participants-widget="hasEmailParticipantsWidget"
             :parent-id="parentId"

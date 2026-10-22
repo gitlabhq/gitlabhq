@@ -23,7 +23,6 @@ Your instance has the following capabilities:
 - The complete GitLab Ultimate feature set and DevSecOps platform
 - Isolated infrastructure in a dedicated AWS account deployed on
   [AWS GovCloud](https://docs.aws.amazon.com/govcloud-us/latest/UserGuide/whatis.html)
-  in the US-West region
 - High availability and disaster recovery
 
 ## Compliance certifications
@@ -46,7 +45,7 @@ Your instance includes the following security controls:
 
 - FedRAMP Moderate and GovRAMP compliance with continuous monitoring aligned to
   federal and state requirements
-- Data sovereignty guaranteed through AWS GovCloud infrastructure in the US-West region
+- Data sovereignty guaranteed through AWS GovCloud infrastructure
 - Isolated infrastructure in a dedicated AWS account separate from all other tenants
 - Encryption standards that meet FIPS requirements for data at rest and in transit
 - Access controls that follow the principle of least privilege with comprehensive audit trails
@@ -58,7 +57,7 @@ and the [secure configuration guide](../../security/dedicated_for_government_sec
 ### Data residency and infrastructure isolation
 
 To meet US data residency requirements, your instance is deployed on
-[AWS GovCloud](https://docs.aws.amazon.com/govcloud-us/latest/UserGuide/whatis.html) in the US-West region.
+[AWS GovCloud](https://docs.aws.amazon.com/govcloud-us/latest/UserGuide/whatis.html).
 The GitLab instance runs exclusively on AWS GovCloud. Your own workloads and adjacent systems can run on any platform,
 including GCP or Azure, and integrate with your instance.
 

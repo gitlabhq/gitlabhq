@@ -341,6 +341,7 @@ module BlobHelper
     can_push_to_branch = project.present(current_user: current_user).can_current_user_push_to_branch?(ref)
     can_push_to_project_or_branch = can_push_to_project || can_push_to_branch
     next_fork_branch_name = edit_blob_next_fork_branch_name(project, can_push_to_project_or_branch)
+    fork_start_project_id = edit_blob_fork_start_project_id(project, can_push_to_project_or_branch)
 
     data = {
       action: action.to_s,
@@ -363,6 +364,7 @@ module BlobHelper
 
     # Only include next_fork_branch_name if we're actually using a fork
     data[:next_fork_branch_name] = next_fork_branch_name if next_fork_branch_name
+    data[:fork_start_project_id] = fork_start_project_id if fork_start_project_id
 
     data
   end
@@ -422,6 +424,13 @@ module BlobHelper
     return if can_push_to_project_or_branch
 
     edit_blob_fork_project(project)&.repository&.next_branch('patch')
+  end
+
+  # The Commits API only accepts a start_project that the fork was directly forked from
+  def edit_blob_fork_start_project_id(project, can_push_to_project_or_branch)
+    return if can_push_to_project_or_branch
+
+    project.id if edit_blob_fork_project(project)&.forked_from?(project)
   end
 
   def archive_download_links(project, ref, archive_prefix, ref_type = nil)

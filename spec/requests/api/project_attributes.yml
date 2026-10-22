@@ -225,6 +225,7 @@ project_setting:
     - pipeline_execution_policy_bot_access_file_patterns
     - pipeline_execution_policy_bot_access_group_id
     - ai_audit_events_storage_enabled
+    - ai_governance_enabled
     - dap_session_tracking_enabled
     - tool_approval_for_session_enabled
     - feature_flags_minimum_role

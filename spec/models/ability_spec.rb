@@ -358,6 +358,93 @@ RSpec.describe Ability, feature_category: :system_access do
     end
   end
 
+  describe '.filter_allowed', :request_store do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:guest_project) { create(:project, :private, guests: user) }
+    let_it_be(:other_project) { create(:project, :private) }
+    let_it_be(:public_project) { create(:project, :public, group: create(:group, :public)) }
+
+    let_it_be(:readable_issue) { create(:issue, project: guest_project) }
+    let_it_be(:own_confidential_issue) { create(:issue, :confidential, project: guest_project, author: user) }
+    let_it_be(:confidential_issue) { create(:issue, :confidential, project: guest_project) }
+    let_it_be(:assigned_confidential_issue) do
+      create(:issue, :confidential, project: guest_project, assignee_ids: [user.id])
+    end
+
+    let_it_be(:other_project_issue) { create(:issue, project: other_project) }
+    let_it_be(:public_issue) { create(:issue, project: public_project) }
+
+    let(:projects) { [guest_project, other_project, public_project] }
+
+    def readable_issues(as: user)
+      described_class.filter_allowed(as, :read_issue, Issue.where(project: projects).to_a)
+    end
+
+    def readable_issues_checked_one_by_one(as: user)
+      Issue.where(project: projects).select { |issue| described_class.allowed?(as, :read_issue, issue) }
+        .tap { RequestStore.clear! }
+    end
+
+    it 'returns the same subjects as checking each one' do
+      expected = readable_issues_checked_one_by_one
+
+      expect(readable_issues).to match_array(expected)
+      expect(expected).to contain_exactly(readable_issue, own_confidential_issue, assigned_confidential_issue,
+        public_issue)
+    end
+
+    it 'returns the same subjects as checking each one for an anonymous user' do
+      expected = readable_issues_checked_one_by_one(as: nil)
+
+      expect(readable_issues(as: nil)).to match_array(expected)
+      expect(expected).to contain_exactly(public_issue)
+    end
+
+    it 'does not query per subject' do
+      control = ActiveRecord::QueryRecorder.new { readable_issues }
+
+      RequestStore.clear!
+      create_list(:issue, 2, project: guest_project)
+      new_project = create(:project, :public, group: create(:group, :public))
+      create_list(:issue, 2, project: new_project)
+      projects << new_project
+
+      expect { readable_issues }.not_to exceed_query_limit(control)
+    end
+
+    it 'returns an empty array for no subjects' do
+      expect(described_class.filter_allowed(user, :read_issue, Issue.none)).to eq([])
+    end
+
+    it 'does not preload for a single subject' do
+      expect(IssuePolicy).not_to receive(:preload_for_batch_checks)
+
+      expect(described_class.filter_allowed(user, :read_issue, [readable_issue])).to eq([readable_issue])
+    end
+
+    it 'counts the preload in the authz metrics' do
+      expect(IssuePolicy).to receive(:preload_for_batch_checks).and_wrap_original do |method, *args|
+        expect(Gitlab::SafeRequestStore[Gitlab::Instrumentation::Authz::STATS][:depth]).to eq(1)
+        method.call(*args)
+      end
+
+      readable_issues
+    end
+
+    context 'when batch_permission_check_preloads is disabled' do
+      before do
+        stub_feature_flags(batch_permission_check_preloads: false)
+      end
+
+      it 'checks each subject without preloading' do
+        expect(IssuePolicy).not_to receive(:preload_for_batch_checks)
+
+        expect(readable_issues).to contain_exactly(readable_issue, own_confidential_issue, assigned_confidential_issue,
+          public_issue)
+      end
+    end
+  end
+
   describe '.issues_readable_by_user' do
     it 'is aliased to .work_items_readable_by_user' do
       expect(described_class.method(:issues_readable_by_user))

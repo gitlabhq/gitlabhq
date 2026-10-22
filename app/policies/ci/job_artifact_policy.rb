@@ -2,52 +2,7 @@
 
 module Ci
   class JobArtifactPolicy < BasePolicy
-    delegate { @subject.job.project }
-
-    # Ensure read_job_artifacts does not get prevented due to prevent_all in the delegate
-    # See: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/229560
-    overrides(:read_job_artifacts)
-
-    condition(:public_access, scope: :subject) do
-      @subject.public_access? # public:true | access:all
-    end
-
-    condition(:none_access, scope: :subject) do
-      @subject.none_access? # access:none
-    end
-
-    condition(:maintainer_only_access, scope: :subject) do
-      @subject.maintainer_access?
-    end
-
-    condition(:can_read_project_build) do
-      can?(:read_build, @subject.job.project)
-    end
-
-    condition(:can_read_developer_artifacts) do
-      can?(:_read_developer_job_artifact, @subject.job.project)
-    end
-
-    condition(:can_read_maintainer_artifacts) do
-      can?(:_read_maintainer_job_artifact, @subject.job.project)
-    end
-
-    condition(:can_read_security_report_job_artifacts) do
-      Enums::Ci::JobArtifact.all_security_report_file_types.include?(@subject.file_type) &&
-        can?(:_read_security_report_job_artifact, @subject.job.project)
-    end
-
-    # NOTE: for report artifacts, :read_job_artifacts is memoized keyed by
-    # (user, project, accessibility, file_type) in BOTH
-    # Ci::Build#test_report_readable_by? and
-    # Ci::Pipeline#accessible_test_report_build_ids (incl. its fallback). If you
-    # add or change a condition below to read another subject attribute, extend
-    # the memo key in both. The `read_job_artifacts memoization contract` canary
-    # in spec/policies/ci/job_artifact_policy_spec.rb fails on condition changes
-    # to force this re-check.
-    rule { can_read_project_build & ~none_access }.enable :read_job_artifacts
-    rule { ~public_access & ~can_read_developer_artifacts & ~can_read_security_report_job_artifacts }
-      .prevent :read_job_artifacts
-    rule { maintainer_only_access & ~can_read_maintainer_artifacts }.prevent :read_job_artifacts
+    # Authorized on the artifact's access attributes so equal artifacts share one evaluation
+    delegate { ::Authz::JobArtifactAccess.for(@subject) }
   end
 end

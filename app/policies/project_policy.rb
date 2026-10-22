@@ -17,6 +17,12 @@ class ProjectPolicy < BasePolicy
     update_sec_ai_workflow_settings
   ].freeze
 
+  def self.preload_for_batch_checks(projects, user)
+    Preloaders::ProjectPolicyPreloader.new(projects, user).execute
+    ActiveRecord::Associations::Preloader.new(records: projects, associations: :project_feature).call
+    GroupPolicy.preload_for_batch_checks(projects.filter_map(&:group), user)
+  end
+
   define_role_permissions(:project)
 
   # https://docs.gitlab.com/18.2/ci/pipelines/settings/#change-which-users-can-view-your-pipelines

@@ -61,6 +61,12 @@ export default {
 
       if (simpleViewer?.fileType !== TEXT_FILE_TYPE) return;
 
+      // The worker is null when the browser refused to construct it; use the legacy viewer.
+      if (!this.highlightWorker) {
+        this.onError?.();
+        return;
+      }
+
       if (this.isUnsupportedLanguage(language)) {
         this.handleUnsupportedLanguage(language);
         return;

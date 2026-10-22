@@ -67,5 +67,35 @@ RSpec.describe Gitlab::Auth::UserAccessDeniedReason do
 
       it { is_expected.to eq('Your password expired. Please access GitLab from a web browser to update your password.') }
     end
+
+    context 'when the actor is a deploy token' do
+      context 'when the token has been revoked' do
+        let(:user) { build_stubbed(:deploy_token, :revoked) }
+
+        it { is_expected.to eq('This deploy token has been revoked.') }
+      end
+
+      context 'when the token has expired' do
+        let(:user) { build_stubbed(:deploy_token, :expired) }
+
+        it { is_expected.to eq('This deploy token has expired.') }
+      end
+
+      context 'when the token is active' do
+        let(:user) { build_stubbed(:deploy_token) }
+
+        it { is_expected.to start_with('Your request has been rejected for an unknown reason.') }
+      end
+
+      context 'when the token is inactive but has neither been revoked nor expired' do
+        let(:user) { build_stubbed(:deploy_token) }
+
+        before do
+          allow(user).to receive(:active?).and_return(false)
+        end
+
+        it { is_expected.to start_with('Your request has been rejected for an unknown reason.') }
+      end
+    end
   end
 end

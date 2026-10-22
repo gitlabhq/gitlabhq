@@ -50,6 +50,7 @@ export default {
     'targetProjectId',
     'targetProjectPath',
     'nextForkBranchName',
+    'forkStartProjectId',
   ],
   data() {
     return {
@@ -77,6 +78,9 @@ export default {
     },
     isEditBlob() {
       return this.action === 'update';
+    },
+    isForkEdit() {
+      return this.targetProjectId !== this.projectId;
     },
     updateModalCommitMessage() {
       return this.isEditBlob
@@ -139,9 +143,10 @@ export default {
     editBlob(originalFormData) {
       const filePathChanged = originalFormData.file_path !== this.originalFilePath;
 
-      if (filePathChanged) {
-        // Use Commits API for file rename/move operations
-        return this.editBlobWithCommitsApi(originalFormData);
+      if (filePathChanged || (this.isForkEdit && this.forkStartProjectId)) {
+        // Use Commits API for file rename/move operations, and for direct fork edits
+        // so the new branch can start from the upstream project
+        return this.editBlobWithCommitsApi(originalFormData, { filePathChanged });
       }
 
       // Use Repository Files API for content-only updates
@@ -162,13 +167,13 @@ export default {
 
       return axios.put(url, data);
     },
-    editBlobWithCommitsApi(originalFormData) {
+    editBlobWithCommitsApi(originalFormData, { filePathChanged = true } = {}) {
       const url = buildApiUrl(this.$options.COMMIT_FILE_PATH).replace(':id', this.targetProjectId);
 
       const action = {
-        action: 'move',
+        action: filePathChanged ? 'move' : 'update',
         file_path: originalFormData.file_path,
-        previous_path: this.originalFilePath,
+        ...(filePathChanged && { previous_path: this.originalFilePath }),
         content: originalFormData.file,
         last_commit_id: originalFormData.last_commit_sha,
       };
@@ -177,6 +182,13 @@ export default {
         ...prepareDataForApiEdit(originalFormData),
         actions: [action],
       };
+
+      // The fork may be behind the upstream project, so start the new branch
+      // from the upstream branch the user was editing.
+      if (this.isForkEdit && this.forkStartProjectId) {
+        data.start_branch = originalFormData.original_branch;
+        data.start_project = this.forkStartProjectId;
+      }
 
       return axios.post(url, data);
     },

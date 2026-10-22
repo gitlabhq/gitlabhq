@@ -263,6 +263,10 @@ module API
         # See: https://modelcontextprotocol.io/specification/2025-06-18/basic/transports#sending-messages-to-the-server
         desc 'Create MCP request handler' do
           detail 'Handles Model Context Protocol requests'
+          success [
+            { code: 200 },
+            { code: 202, message: 'Accepted (JSON-RPC notification)' }
+          ]
           failure [
             { code: 400, message: 'Bad request' },
             { code: 401, message: 'Unauthorized' },
@@ -303,10 +307,10 @@ module API
         # See: https://modelcontextprotocol.io/specification/2025-06-18/basic/transports#listening-for-messages-from-the-server
         desc 'Get MCP response listener' do
           detail 'Listens for Model Context Protocol responses'
+          success code: 405, message: 'Method not allowed'
           failure [
             { code: 401, message: 'Unauthorized' },
-            { code: 403, message: 'Forbidden' },
-            { code: 405, message: 'Method not allowed' }
+            { code: 403, message: 'Forbidden' }
           ]
           tags ['mcp']
         end

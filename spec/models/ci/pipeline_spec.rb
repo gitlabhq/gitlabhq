@@ -6744,6 +6744,32 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
+  # Report authorization is cached per request on Authz::JobArtifactAccess#id, so artifacts
+  # of one project and file type that differ only in accessibility must not share a result.
+  shared_context 'with test reports of every accessibility' do
+    let_it_be(:project) { create(:project, :public, public_builds: true) }
+    let_it_be(:pipeline) { create(:ci_pipeline, :success, project: project) }
+    let_it_be(:reporter) { create(:user, reporter_of: project) }
+    let_it_be(:developer) { create(:user, developer_of: project) }
+    let_it_be(:maintainer) { create(:user, maintainer_of: project) }
+
+    before_all do
+      { 'public' => :public, 'private' => :private, 'maintainer' => :maintainer_only_access, 'none' => :none }
+        .each do |name, trait|
+          build = create(:ci_build, :success, name: name, pipeline: pipeline)
+          create(:ci_job_artifact, :junit, trait, job: build)
+          create(:ci_build_report_result, build: build, project: project, test_suite_name: name)
+        end
+    end
+
+    where(:user, :readable) do
+      nil              | %w[public]
+      ref(:reporter)   | %w[public]
+      ref(:developer)  | %w[public private]
+      ref(:maintainer) | %w[public private maintainer]
+    end
+  end
+
   describe '#test_report_summary' do
     subject { pipeline.test_report_summary }
 
@@ -6828,20 +6854,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       it 'treats a nil user as an anonymous request and filters instead of returning everything' do
         expect(pipeline.accessible_test_report_summary(nil).test_suites.keys).to be_empty
       end
-
-      it 'authorizes no builds when the report-artifact lookup is empty (over-grant guard)' do
-        # Force `representatives` empty while builds exist (as if the artifacts were
-        # removed between the build and artifact queries). `of_report_type(:test)`
-        # is called first for the build EXISTS filter, then for the artifact lookup;
-        # the second call returns nothing here.
-        call_count = 0
-        allow(Ci::JobArtifact).to receive(:of_report_type).and_wrap_original do |original, *args|
-          call_count += 1
-          call_count == 1 ? original.call(*args) : Ci::JobArtifact.none
-        end
-
-        expect(pipeline.send(:accessible_test_report_build_ids, maintainer)).to eq([])
-      end
     end
 
     context 'when limited to an anonymous user on a public project' do
@@ -6863,6 +6875,16 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
       it 'returns public suites but omits maintainer-only ones' do
         expect(pipeline.accessible_test_report_summary(nil).test_suites.keys).to contain_exactly('rspec')
+      end
+    end
+
+    context 'when artifacts differ only in accessibility', :request_store do
+      include_context 'with test reports of every accessibility'
+
+      with_them do
+        it 'includes only the suites the user can read' do
+          expect(pipeline.accessible_test_report_summary(user).test_suites.keys).to match_array(readable)
+        end
       end
     end
   end
@@ -7017,6 +7039,16 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
           expect(subject.total_count).to be(3)
           expect(subject.success_count).to be(0)
           expect(subject.failed_count).to be(3)
+        end
+      end
+    end
+
+    context 'when artifacts differ only in accessibility', :request_store do
+      include_context 'with test reports of every accessibility'
+
+      with_them do
+        it 'includes only the suites the user can read' do
+          expect(pipeline.accessible_test_reports(user).test_suites.keys).to match_array(readable)
         end
       end
     end

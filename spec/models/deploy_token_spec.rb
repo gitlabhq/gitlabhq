@@ -215,6 +215,22 @@ RSpec.describe DeployToken, feature_category: :continuous_delivery do
         expect(deploy_token.active?).to be_truthy
       end
     end
+
+    context "when it expired at the start of the current day" do
+      let(:deploy_token) { build_stubbed(:deploy_token, expires_at: Time.current.beginning_of_day) }
+
+      it 'returns false' do
+        expect(deploy_token.active?).to be(false)
+      end
+    end
+
+    context "when it expires at the end of the current day" do
+      let(:deploy_token) { build_stubbed(:deploy_token, expires_at: Time.current.end_of_day) }
+
+      it 'returns true' do
+        expect(deploy_token.active?).to be(true)
+      end
+    end
   end
 
   # override the default PolicyActor implementation that always returns false

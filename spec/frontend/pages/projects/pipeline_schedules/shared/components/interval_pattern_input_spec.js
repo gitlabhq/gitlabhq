@@ -1,6 +1,7 @@
 import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import { trimText } from 'helpers/text_helper';
+import { setLanguage } from 'jest/__helpers__/locale_helper';
+import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
 import IntervalPatternInput from '~/pages/projects/pipeline_schedules/shared/components/interval_pattern_input.vue';
 
 describe('Interval Pattern Input Component', () => {
@@ -28,6 +29,8 @@ describe('Interval Pattern Input Component', () => {
   const findCustomRadio = () => wrapper.findByTestId(customKey);
   const findCustomInput = () => wrapper.find('#schedule_cron');
   const findAllLabels = () => wrapper.findAll('label');
+  const findLabelTexts = () =>
+    findAllLabels().wrappers.map((el) => el.text().replace(/\s+/g, ' ').trim());
   const findSelectedRadio = () =>
     wrapper.findAll('input[type="radio"]').wrappers.find((x) => x.element.checked);
   const findIcon = () => wrapper.findByTestId('daily-limit');
@@ -43,8 +46,8 @@ describe('Interval Pattern Input Component', () => {
       propsData: { ...props },
       data() {
         return {
-          randomMinute: data?.minute || mockMinute,
-          randomHour: data?.hour || mockHour,
+          randomMinute: data?.minute ?? mockMinute,
+          randomHour: data?.hour ?? mockHour,
           randomWeekDayIndex: mockWeekDayIndex,
           randomDay: mockDay,
         };
@@ -124,34 +127,56 @@ describe('Interval Pattern Input Component', () => {
     });
   });
 
-  describe('formattedTime computed property', () => {
-    it.each`
-      desc                                                                                                    | hour  | minute | expectedValue
-      ${'returns a time in the afternoon if the value of `random time` is higher than 12'}                    | ${13} | ${7}   | ${'1:07pm'}
-      ${'returns a time in the morning if the value of `random time` is lower than 12'}                       | ${11} | ${30}  | ${'11:30am'}
-      ${'returns "12:05pm" if the value of `random time` is exactly 12 and the value of random minutes is 5'} | ${12} | ${5}   | ${'12:05pm'}
-    `('$desc', ({ hour, minute, expectedValue }) => {
-      createWrapper({}, { hour, minute });
-
-      expect(wrapper.vm.formattedTime).toBe(expectedValue);
-    });
-  });
-
   describe('Time strings', () => {
-    beforeEach(() => {
-      createWrapper();
+    const presetTimes = [
+      { hour: 0, minute: 5 },
+      { hour: 4, minute: 3 },
+      { hour: 12, minute: 5 },
+      { hour: 13, minute: 7 },
+    ];
+
+    afterEach(() => {
+      setLanguage(null);
+      localeDateFormat.reset();
     });
 
-    it('renders each label for radio options properly', () => {
-      const labels = findAllLabels().wrappers.map((el) => trimText(el.text()));
+    describe.each`
+      preference   | timeDisplayFormat | language   | expectedTimes
+      ${'unset'}   | ${undefined}      | ${'en-US'} | ${['12:05 AM', '4:03 AM', '12:05 PM', '1:07 PM']}
+      ${'unset'}   | ${undefined}      | ${'de-DE'} | ${['00:05', '04:03', '12:05', '13:07']}
+      ${'System'}  | ${0}              | ${'en-US'} | ${['12:05 AM', '4:03 AM', '12:05 PM', '1:07 PM']}
+      ${'System'}  | ${0}              | ${'de-DE'} | ${['00:05', '04:03', '12:05', '13:07']}
+      ${'12-hour'} | ${1}              | ${'en-US'} | ${['12:05 AM', '4:03 AM', '12:05 PM', '1:07 PM']}
+      ${'12-hour'} | ${1}              | ${'de-DE'} | ${['12:05 AM', '04:03 AM', '12:05 PM', '01:07 PM']}
+      ${'24-hour'} | ${2}              | ${'en-US'} | ${['00:05', '04:03', '12:05', '13:07']}
+      ${'24-hour'} | ${2}              | ${'de-DE'} | ${['00:05', '04:03', '12:05', '13:07']}
+    `(
+      'when the time format preference is $preference and the language is $language',
+      ({ timeDisplayFormat, language, expectedTimes }) => {
+        beforeEach(() => {
+          window.gon.time_display_format = timeDisplayFormat;
+          setLanguage(language);
+          localeDateFormat.reset();
+        });
 
-      expect(labels).toEqual([
-        'Every day (at 4:03am)',
-        'Every week (Monday at 4:03am)',
-        'Every month (Day 1 at 4:03am)',
-        'Custom',
-      ]);
-    });
+        it.each(
+          presetTimes.map((time, index) => ({ ...time, expectedTime: expectedTimes[index] })),
+        )(
+          'renders hour $hour, minute $minute as $expectedTime in each preset label',
+          ({ hour, minute, expectedTime }) => {
+            createWrapper({}, { hour, minute });
+
+            expect(findLabelTexts()).toEqual([
+              `Every day (at ${expectedTime})`,
+              `Every week (Monday at ${expectedTime})`,
+              `Every month (Day 1 at ${expectedTime})`,
+              'Custom',
+            ]);
+            expect(findCustomInput().element.value).toBe(`${minute} ${hour} * * *`);
+          },
+        );
+      },
+    );
   });
 
   describe('User Actions with radio buttons', () => {

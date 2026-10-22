@@ -87,6 +87,12 @@ For more information, see the [policy settings API documentation](../api/complia
 
 The selected group becomes your compliance and security policy group, serving as the central place to manage security policies and compliance frameworks across your instance.
 
+If the compliance and security policy group transfers to a different organization,
+the group is no longer the compliance and security policy group of its previous organization.
+GitLab removes the group's compliance frameworks from all projects, including projects in the group,
+the same as when you [change the compliance and security policy group](../user/compliance/compliance_frameworks/centralized_compliance_frameworks.md#changing-the-compliance-and-security-policy-group).
+To keep managing security policies and compliance frameworks centrally, designate a different group.
+
 ### Security policy management in the compliance and security policy group
 
 See the [compliance and security policy group](../user/application_security/policies/enforcement/compliance_and_security_policy_groups.md) documentation for security policies.

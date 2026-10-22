@@ -13,6 +13,16 @@ import projectShortPathQuery from './queries/project_short_path.query.graphql';
 import refsQuery from './queries/ref.query.graphql';
 import createRouter from './router';
 
+// Workers must be same-origin, so construction throws when the page origin differs from the
+// asset origin (for example, proxies or sandboxed iframes). Viewers fall back without a worker.
+const createHighlightWorker = () => {
+  try {
+    return new HighlightWorker();
+  } catch {
+    return null;
+  }
+};
+
 export default function initRepositoryPage() {
   const el = document.getElementById('js-tree-list') || document.getElementById('js-view-blob-app');
   if (!el) return null;
@@ -66,7 +76,7 @@ export default function initRepositoryPage() {
       explainCodeAvailable: parseBoolean(explainCodeAvailable),
       canDownloadCode: parseBoolean(canDownloadCode),
       hasRevsFile: parseBoolean(hasRevsFile),
-      highlightWorker: new HighlightWorker(),
+      highlightWorker: createHighlightWorker(),
     },
     component: RepositoryApp,
   });
