@@ -689,6 +689,8 @@
   - 1
 - - import_sync_repositories_reconcile
   - 1
+- - import_sync_repositories_remove_deleted_review_comment
+  - 1
 - - import_sync_repositories_schedule_repair
   - 1
 - - import_sync_repositories_stop_cleanup
@@ -914,6 +916,8 @@
 - - organizations_hard_delete
   - 1
 - - organizations_root_group_organization_backfill
+  - 1
+- - organizations_transfer_merge_request_diff_commit_users
   - 1
 - - organizations_transfer_sbom
   - 1

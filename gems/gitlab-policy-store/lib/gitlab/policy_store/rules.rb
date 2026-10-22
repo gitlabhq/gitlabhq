@@ -6,7 +6,8 @@ module Gitlab
       ALL = [
         { id: 'custom', name: 'Custom' }.freeze,
         { id: 'calendar', name: 'Calendar' }.freeze,
-        { id: 'environment', name: 'Environment' }.freeze
+        { id: 'environment', name: 'Environment' }.freeze,
+        { id: 'setting_validation', name: 'Project setting validation' }.freeze
       ].freeze
     end
   end

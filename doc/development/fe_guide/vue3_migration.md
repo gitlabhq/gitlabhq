@@ -368,13 +368,23 @@ The fields are:
 1. Usual fix: Move the state into its own module that is not exposed to Vue. It imports nothing, or only modules that are not exposed to Vue themselves.
    The bundler never duplicates such a module, so every lane shares one copy.
    `app/assets/javascripts/lib/graphql_pending_requests.js` and `app/assets/javascripts/graphql_shared/issuable_client_state.js` are existing examples.
-1. Alternative: When the state module must keep its imports, add it to `INFECTION_BLOCKLIST` in `config/vue3migration/aliases.js`.
-   Every lane then shares one copy, but the subtree below the module runs Vue 2 inside a Vue 3 page.
-   `app/assets/javascripts/lib/utils/breadcrumbs_state.js` is an existing example.
+   A module that only configures a library can import the library's config module directly, as
+   `app/assets/javascripts/commons/duo_ui.js` does.
+   When Vue code imports the module only for constants, move the constants to their own module,
+   as `app/assets/javascripts/behaviors/preview_markdown_events.js` does. Then only one lane
+   imports the module with the state.
+1. Alternative: When the state cannot move out of a module that is exposed to Vue, create it with
+   `pageSingleton(key, create)` from `~/lib/utils/page_singleton`. The module is still built
+   twice, but both copies share the value. The copy that runs first creates it, and that is
+   usually `main`. Use this for an app mounted once per page, an Apollo client, or listeners
+   added at import time. `app/assets/javascripts/tooltips/index.js` and
+   `app/assets/javascripts/lib/utils/axios_utils.js` are existing examples.
 1. For flat reactive state, use `observable()` from `~/lib/utils/observable`.
 
-Use the blocklist only for a module that runs no Vue-version-specific setup.
-A Pinia instance or a `VueApollo` provider is bound to the Vue version that built it, so one shared copy binds the wrong one.
+Do not share a Pinia instance or a `VueApollo` provider. Each is bound to the Vue version that built it.
+
+`INFECTION_BLOCKLIST` in `config/vue3migration/aliases.js` is a last resort. A blocklisted module
+and its whole import tree build as Vue 2, also inside a Vue 3 page.
 
 ### Handling libraries that do not work with `@vue/compat`
 

@@ -190,10 +190,8 @@ RSpec.describe Import::Offline::Export, feature_category: :importers do
   end
 
   describe '#update_has_failures!' do
-    subject(:export) { create(:offline_export, has_failures: has_failures) }
-
     context 'when has_failures is currently false' do
-      let(:has_failures) { false }
+      subject(:export) { create(:offline_export, has_failures: false) }
 
       it 'sets the has_failures flag to true' do
         expect { export.update_has_failures! }
@@ -203,7 +201,7 @@ RSpec.describe Import::Offline::Export, feature_category: :importers do
     end
 
     context 'when has_failures is currently true' do
-      let(:has_failures) { true }
+      subject(:export) { build_stubbed(:offline_export, has_failures: true) }
 
       it 'leaves the has_failures flag unchanged' do
         expect { export.update_has_failures! }

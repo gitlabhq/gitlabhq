@@ -49,20 +49,12 @@ module Bitbucket
         raw['full_name']
       end
 
-      def issues_enabled?
-        raw['has_issues']
-      end
-
       def name
         raw['name']
       end
 
       def valid?
         raw['scm'] == 'git'
-      end
-
-      def has_wiki?
-        raw['has_wiki']
       end
 
       def private?

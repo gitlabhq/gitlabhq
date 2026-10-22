@@ -54,6 +54,14 @@ RSpec.describe Gitlab::PolicyStore::RuleTranspiler do
         end
       end
 
+      context "with a setting validation rule" do
+        let(:rule) { { type: "setting_validation", value: { setting: "visibility", value: "private" } } }
+
+        it "regenerates setting_validation byte-for-byte" do
+          expect(rego).to eq(fixture_rego("setting_validation"))
+        end
+      end
+
       context "with two calendar windows authored with different UTC offsets" do
         let(:rule) do
           { type: "calendar",
@@ -192,6 +200,160 @@ RSpec.describe Gitlab::PolicyStore::RuleTranspiler do
 
         it "carries the rule index in the violation, which a merged module needs to tell rules apart" do
           expect(rego).to include('"rule_index": 2')
+        end
+      end
+    end
+
+    context "with a setting validation rule" do
+      let(:rule) { { type: "setting_validation", value: { setting: "visibility", value: "private" } } }
+
+      it "compares the setting under the project the trigger carries", :aggregate_failures do
+        expect(rego)
+          .to include(%(setting_actual_0 := object.get(input, ["project", "settings", "visibility"], null)))
+        expect(rego).to include(%(setting_actual_0 != "private"))
+      end
+
+      it "reports the authored value under expected, the key the violation detail uses" do
+        expect(rego)
+          .to include(%("path": "project.settings.visibility", "expected": "private", "actual": setting_actual_0))
+      end
+
+      # The dotted path is what an enforcement point attributes a violation to its own control
+      # by, so it must stay the path the condition reads, not the bare setting name.
+      it "reports the setting as a dotted context path" do
+        expect(rego).to include(%("path": "project.settings.visibility"))
+      end
+
+      it "names the setting and the expected value in the message the author sees" do
+        expect(rego).to include(%(msg := sprintf("setting %s must be %v", ["visibility", "private"])))
+      end
+
+      # The evaluation context omits a setting that is not enforceable on the subject, so an
+      # absent value is not a violation the policy could ever clear.
+      it "skips an absent value rather than violating on it" do
+        expect(rego).to include("setting_actual_0 != null")
+      end
+
+      context "with a boolean value" do
+        let(:rule) { { type: "setting_validation", value: { setting: "allow_author_approval", value: false } } }
+
+        it "emits a comparison against false, which object.get keeps distinct from an absent key" do
+          expect(rego).to include("setting_actual_0 != false")
+        end
+      end
+
+      # No setting in the catalog carries a number yet, so this covers the emitter's type
+      # handling rather than a rule an author can write today.
+      context "with a numeric value" do
+        let(:rule) { { type: "setting_validation", value: { setting: "approvals_required", value: 2 } } }
+
+        it "emits it unquoted, so the comparison is against a number" do
+          expect(rego).to include("setting_actual_0 != 2")
+        end
+      end
+
+      context "with a value padded with whitespace" do
+        let(:rule) { { type: "setting_validation", value: { setting: "visibility", value: "  private  " } } }
+
+        it "strips it, so the comparison can match a stored value" do
+          expect(rego).to include(%(setting_actual_0 != "private"))
+        end
+      end
+
+      context "with a setting name carrying a quote and a newline" do
+        let(:rule) { { type: "setting_validation", value: { setting: %(a "quoted"\nsetting), value: true } } }
+
+        # A newline is the input that would split the emitted line and defeat the width
+        # guard, so it has to reach the program escaped, in the path as well as the name.
+        it "escapes it, since the name reaches the generated program as source", :aggregate_failures do
+          expect(rego).to include('"a \"quoted\"\nsetting"')
+          expect(rego).to include('"project.settings.a \"quoted\"\nsetting"')
+        end
+      end
+
+      context "without a setting name" do
+        let(:rule) { { type: "setting_validation", value: { value: "private" } } }
+
+        it "refuses it" do
+          expect { rego }.to raise_error(Gitlab::PolicyStore::ValidationError, /requires a setting name/)
+        end
+      end
+
+      context "with a value that is neither a boolean, a string, nor a number" do
+        let(:rule) { { type: "setting_validation", value: { setting: "visibility", value: { nested: true } } } }
+
+        it "refuses it" do
+          expect { rego }
+            .to raise_error(Gitlab::PolicyStore::ValidationError, /requires a boolean, string, or number value/)
+        end
+      end
+
+      context "without a value" do
+        let(:rule) { { type: "setting_validation", value: { setting: "visibility" } } }
+
+        it "refuses it on the type, since nothing was authored to compare against" do
+          expect { rego }
+            .to raise_error(Gitlab::PolicyStore::ValidationError, /requires a boolean, string, or number value/)
+        end
+      end
+
+      context "with a blank value" do
+        let(:rule) { { type: "setting_validation", value: { setting: "visibility", value: "  " } } }
+
+        it "refuses it on blankness rather than on type, which it satisfies" do
+          expect { rego }.to raise_error(Gitlab::PolicyStore::ValidationError, /requires a non-blank value/)
+        end
+      end
+
+      # A refusal somewhere past the cap proves the guard fires; it does not prove the
+      # 256-column budget is calibrated. This pins the boundary: the widest accepted name
+      # must still emit a violation head the engine takes, so shrinking the budget fails
+      # here rather than reaching the engine as a fault on the merged program.
+      context "with the widest setting name the guard accepts" do
+        let(:max_columns) { Gitlab::PolicyStore::RuleTranspiler::Emitters::Base::MAX_LINE_COLUMNS }
+
+        # The guard charges the quoted dotted path and the quoted expected value against the
+        # budget, so this is the longest name that clears it.
+        let(:widest) { max_columns - %("project.settings.").bytesize - %("private").bytesize - 256 }
+
+        def transpile(setting)
+          described_class.new({ type: "setting_validation", value: { setting: setting, value: "private" } })
+            .transpile
+        end
+
+        it "accepts it, refuses one byte more, and stays inside the engine's limit",
+          :aggregate_failures do
+          accepted = transpile("a" * widest)
+          head = accepted.lines.find { |line| line.include?("violation contains") }
+
+          # The violation head carries no leading tab, so its bytes are the columns the
+          # engine counts.
+          expect(head.chomp.bytesize).to be <= max_columns
+          expect { transpile("a" * (widest + 1)) }
+            .to raise_error(Gitlab::PolicyStore::ValidationError, /too long for the engine's line limit/)
+        end
+      end
+
+      # Only a `custom` rule is validated on its own, so a line the engine would refuse has
+      # to be caught here or it surfaces as an engine fault on the merged program.
+      context "with a setting name and value that together overrun the engine's line limit" do
+        let(:rule) do
+          { type: "setting_validation", value: { setting: "a" * 500, value: "b" * 500 } }
+        end
+
+        it "refuses it" do
+          expect { rego }
+            .to raise_error(Gitlab::PolicyStore::ValidationError, /too long for the engine's line limit/)
+        end
+      end
+
+      context "with a rule index supplied" do
+        let(:rule_index) { 3 }
+
+        it "carries the rule index in the violation, which a merged module needs to tell rules apart",
+          :aggregate_failures do
+          expect(rego).to include('"rule_index": 3')
+          expect(rego).to include("setting_actual_3 :=")
         end
       end
     end
@@ -603,7 +765,8 @@ RSpec.describe Gitlab::PolicyStore::RuleTranspiler do
         refusal_for_an_empty_rule = {
           "custom" => "custom rule requires Rego source in value",
           "calendar" => "calendar rule requires at least one window",
-          "environment" => "environment rule requires at least one of names or tiers"
+          "environment" => "environment rule requires at least one of names or tiers",
+          "setting_validation" => "setting_validation rule requires a setting name"
         }
 
         expect(refusal_for_an_empty_rule.keys)

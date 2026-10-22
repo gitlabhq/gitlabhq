@@ -1,8 +1,12 @@
-const shortcutsPromise = import(/* webpackChunkName: 'shortcutsBundle' */ './shortcuts')
-  .then(({ default: Shortcuts }) => new Shortcuts())
-  // Fall back to a no-op instance when the chunk fails to load so callers
-  // never crash on `undefined` (shortcuts are optional).
-  .catch(() => ({ addExtension: () => {}, extensions: new Map() }));
+import { pageSingleton } from '~/lib/utils/page_singleton';
+
+const shortcutsPromise = pageSingleton('shortcuts', () =>
+  import(/* webpackChunkName: 'shortcutsBundle' */ './shortcuts')
+    .then(({ default: Shortcuts }) => new Shortcuts())
+    // Fall back to a no-op instance when the chunk fails to load so callers
+    // never crash on `undefined` (shortcuts are optional).
+    .catch(() => ({ addExtension: () => {}, extensions: new Map() })),
+);
 
 export const addShortcutsExtension = (ShortcutExtension, ...args) =>
   shortcutsPromise.then((shortcuts) => shortcuts.addExtension(ShortcutExtension, args));

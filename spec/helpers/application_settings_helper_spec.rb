@@ -122,6 +122,8 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
           issues_create_limit notes_create_limit project_export_limit
           project_download_export_limit project_export_limit project_import_limit
           raw_blob_request_limit raw_blob_request_limit_unauthenticated group_export_limit group_download_export_limit
+          project_relations_export_limit project_relations_export_download_limit
+          group_relations_export_limit group_relations_export_download_limit
           group_import_limit users_get_by_id_limit search_rate_limit search_rate_limit_unauthenticated
           members_delete_limit downstream_pipeline_trigger_limit_per_project_user_sha
           pipeline_cancel_limit_per_user_project
@@ -145,6 +147,7 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
           runner_jobs_patch_trace_api_limit
           runner_jobs_endpoints_api_limit
           pipeline_limit_per_user
+          project_hooks_create_limit
           web_hook_event_resend_limit
           web_hook_test_limit
         ])

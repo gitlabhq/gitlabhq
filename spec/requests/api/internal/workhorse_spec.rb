@@ -116,4 +116,45 @@ RSpec.describe API::Internal::Workhorse, :allow_forgery_protection, feature_cate
       end
     end
   end
+
+  context '/register_routing', feature_category: :system_access do
+    let(:headers) { workhorse_internal_api_request_header }
+
+    subject(:perform_request) do
+      post(api('/internal/workhorse/register_routing'), headers: headers)
+    end
+
+    context 'without workhorse internal header', :verify_workhorse_jwt do
+      let(:headers) { {} }
+
+      it 'returns 403 forbidden' do
+        perform_request
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'with workhorse internal header' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:flag_enabled, :destination) do
+        true  | 'iam'
+        false | 'rails'
+      end
+
+      with_them do
+        before do
+          stub_feature_flags(proxy_dcr_to_iam: flag_enabled)
+        end
+
+        it 'returns the routing decision', :aggregate_failures do
+          perform_request
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.media_type).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+          expect(json_response).to eq('destination' => destination)
+        end
+      end
+    end
+  end
 end

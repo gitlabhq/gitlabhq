@@ -19,27 +19,10 @@ const CONTEXT_ALIASES = {
 };
 
 const INFECTABLE_RE = /\.(js|mjs|vue)$/;
-const INFECTION_BLOCKLIST = [
-  // Memoises the one mounted invite modal. Two copies mount two apps on the same
-  // element, because each copy sees its own memo as empty.
-  'app/assets/javascripts/invite_members/init_invite_members_modal.js',
-  // Registers document listeners at module scope. Two copies handle one click
-  // twice, and the second handler reads state the first already changed, so the
-  // markdown preview opens and closes again.
-  'app/assets/javascripts/behaviors/preview_markdown.js',
-  // Holds the one work item Apollo cache. `super_sidebar` loads on every page and
-  // reaches it, so a migrated page would otherwise get a second cache. The provider
-  // in `issuable_client.js` stays per-lane, because VueApollo cannot be shared.
-  'app/assets/javascripts/graphql_shared/issuable_default_client.js',
-  // Holds the one `SidebarMediator.singleton`. The Vue 3 sidebar app writes it and
-  // `gfm_auto_complete` in `main.js` reads its store, so the two lanes must share
-  // it. Keeps `services/sidebar_service.js` and its Apollo client single too.
-  'app/assets/javascripts/sidebar/sidebar_mediator.js',
-  // Each configures one shared registry that throws on a second call in
-  // development. Global bundles import `~/commons`, so a Vue 3 lane would run them again.
-  'app/assets/javascripts/commons/duo_ui.js',
-  'app/assets/javascripts/commons/gitlab_ui.js',
-];
+// A blocklisted module and its whole import tree always build as Vue 2. To share
+// page-wide state between the two copies of a module, use
+// `~/lib/utils/page_singleton` instead.
+const INFECTION_BLOCKLIST = [];
 
 module.exports = {
   CONTEXT_ALIASES,

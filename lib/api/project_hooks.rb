@@ -157,12 +157,15 @@ module API
       end
 
       desc 'Add a webhook to a project' do
-        detail 'Adds a webhook to a specified project.'
+        detail 'Adds a webhook to a specified project. This endpoint has a rate limit of five requests per ' \
+          'minute for each authenticated user for a given project. On GitLab Self-Managed and GitLab Dedicated, ' \
+          'an administrator can change this limit in the application settings.'
         success Entities::ProjectHook
         failure [
           { code: 400, message: 'Validation error' },
           { code: 404, message: 'Not found' },
-          { code: 422, message: 'Unprocessable entity' }
+          { code: 422, message: 'Unprocessable entity' },
+          { code: 429, message: 'Too many requests' }
         ]
         tags project_hooks_tags
       end
@@ -172,6 +175,8 @@ module API
       end
       route_setting :authorization, permissions: :create_webhook, boundary_type: :project
       post ":id/hooks" do
+        check_rate_limit!(:project_hooks_create, scope: { project: user_project, user: current_user })
+
         hook_params = create_hook_params
 
         result = WebHooks::CreateService.new(current_user).execute(hook_params, hook_scope)

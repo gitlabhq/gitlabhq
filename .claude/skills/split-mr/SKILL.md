@@ -65,7 +65,7 @@ Prefer the shallowest stack possible (depth 2–3 max). Linear stacks force sequ
 
 ## Generated files
 
-`locale/gitlab.pot`, `doc/api/graphql/reference/_index.md`, and `public/-/graphql/introspection_result.json` are derived from source. Each MR that changes their inputs must regenerate them in the same commit — run `lefthook run autofix` after edits and before each commit.
+`locale/gitlab.pot`, `doc/api/graphql/reference/*.md`, and `public/-/graphql/introspection_result.json` are derived from source. Each MR that changes their inputs must regenerate them in the same commit — run `lefthook run autofix` after edits and before each commit.
 
 ## Execution (only if user confirms)
 

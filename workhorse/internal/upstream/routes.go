@@ -421,6 +421,7 @@ func configureRoutes(u *upstream) {
 	}
 	authorizeRoute := oauthHandler.BuildAuthorizeRoute()
 	tokenRoute := oauthHandler.BuildTokenRoute()
+	registerRoute := oauthHandler.BuildRegisterRoute()
 
 	u.Routes = []routeEntry{
 		// Git Clone
@@ -692,9 +693,9 @@ func configureRoutes(u *upstream) {
 			newRoute(userUploadPattern, "user_uploads", railsBackend), mimeMultipartUploader),
 
 		// AUTH-011: OAuth endpoints routed through the oauthproxy handler. When
-		// IAMServiceURL is unset, authorizeRoute and tokenRoute are the Rails
-		// proxy unchanged, so these entries have no effect on existing
-		// behavior. Static OIDC discovery endpoints
+		// IAMServiceURL is unset, authorizeRoute, tokenRoute, and registerRoute
+		// are the Rails proxy unchanged, so these entries have no effect on
+		// existing behavior. Static OIDC discovery endpoints
 		// (/.well-known/openid-configuration, /oauth/discovery/keys) are
 		// intentionally NOT wired here because AUTH-011 Phase 1 handles them
 		// via a Cloudflare Origin Rule independent of Workhorse.
@@ -710,6 +711,8 @@ func configureRoutes(u *upstream) {
 			newRoute(`^/oauth/revoke\z`, "oauth_revoke", railsBackend), tokenRoute),
 		u.route("",
 			newRoute(`^/oauth/introspect\z`, "oauth_introspect", railsBackend), tokenRoute),
+		u.route("POST",
+			newRoute(`^/oauth/register\z`, "oauth_register", railsBackend), registerRoute),
 
 		// health checks don't intercept errors and go straight to rails
 		// TODO: We should probably not return a HTML deploy page?

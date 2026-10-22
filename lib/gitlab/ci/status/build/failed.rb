@@ -26,6 +26,7 @@ module Gitlab
             runner_configuration_error: 'runner configuration error',
             runner_external_dependency_failure: 'runner external dependency failure',
             runner_interrupted: 'runner interrupted',
+            runtime_environment_unavailable: 'runtime environment unavailable',
             archived_failure: 'archived failure',
             unmet_prerequisites: 'unmet prerequisites',
             scheduler_failure: 'scheduler failure',

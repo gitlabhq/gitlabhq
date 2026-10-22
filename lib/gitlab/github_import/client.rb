@@ -113,6 +113,14 @@ module Gitlab
         with_rate_limit { octokit.remove_hook(repo, hook_id) }
       end
 
+      def each_hook_delivery_page(repo, hook_id, &block)
+        each_page(:get, nil, "#{hook_path(repo, hook_id)}/deliveries", { per_page: @per_page }, &block)
+      end
+
+      def hook_delivery(repo, hook_id, delivery_id)
+        with_rate_limit { octokit.get("#{hook_path(repo, hook_id)}/deliveries/#{delivery_id}").to_h }
+      end
+
       def labels(*args)
         each_object(:labels, *args)
       end
@@ -376,6 +384,10 @@ module Gitlab
         strong_memoize(:api_endpoint_host) do
           URI.parse(api_endpoint).host
         end
+      end
+
+      def hook_path(repo, hook_id)
+        "#{::Octokit::Repository.path(repo)}/hooks/#{hook_id}"
       end
 
       # Never hands an unvalidated URL to callers; an invalid one still raises when followed.

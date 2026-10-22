@@ -9,7 +9,8 @@ RSpec.describe Gitlab::PolicyStore::Rules do
         [
           { id: 'custom', name: 'Custom' },
           { id: 'calendar', name: 'Calendar' },
-          { id: 'environment', name: 'Environment' }
+          { id: 'environment', name: 'Environment' },
+          { id: 'setting_validation', name: 'Project setting validation' }
         ]
       )
     end

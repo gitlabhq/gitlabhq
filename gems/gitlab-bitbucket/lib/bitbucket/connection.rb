@@ -33,10 +33,6 @@ module Bitbucket
       connection.get(...)
     end
 
-    def get_response_code(...)
-      connection.get_response_code(...)
-    end
-
     def refresh_if_expired!
       connection.refresh_if_expired!
     end

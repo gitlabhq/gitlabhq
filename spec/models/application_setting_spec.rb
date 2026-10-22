@@ -167,6 +167,8 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
         group_import_limit: 6,
         group_invited_groups_api_limit: 60,
         group_projects_api_limit: 600,
+        group_relations_export_download_limit: 100,
+        group_relations_export_limit: 6,
         group_shared_groups_api_limit: 60,
         groups_api_limit: 200,
         help_page_documentation_base_url: 'https://docs.gitlab.com',
@@ -247,6 +249,8 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
         project_import_limit: 6,
         project_invited_groups_api_limit: 60,
         project_jobs_api_rate_limit: 600,
+        project_relations_export_download_limit: 100,
+        project_relations_export_limit: 6,
         project_repositories_blame_limit: 400,
         project_repositories_blame_unauthenticated_limit: 400,
         project_repositories_blobs_batch_limit: 5,
@@ -368,6 +372,7 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
         vscode_extension_marketplace_extension_host_domain:
           ::WebIde::ExtensionMarketplace::DEFAULT_EXTENSION_HOST_DOMAIN,
         vscode_extension_marketplace_single_origin_fallback_enabled: true,
+        project_hooks_create_limit: 5,
         web_hook_event_resend_limit: 5,
         web_hook_test_limit: 5,
         whats_new_variant: 'all_tiers', # changed from 0 to "all_tiers" due to enum conversion
@@ -748,7 +753,11 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
           project_create_limit
           group_create_limit
           group_deletion_jobs_concurrency_limit
+          group_relations_export_download_limit
+          group_relations_export_limit
           project_deletion_jobs_concurrency_limit
+          project_relations_export_download_limit
+          project_relations_export_limit
           project_repositories_blame_limit
           project_repositories_blame_unauthenticated_limit
           project_repositories_blobs_batch_limit
@@ -777,6 +786,7 @@ RSpec.describe ApplicationSetting, feature_category: :settings do
           users_api_limit_gpg_key
           git_push_pipeline_limit
           pipeline_limit_per_user
+          project_hooks_create_limit
           web_hook_event_resend_limit
           web_hook_test_limit
         ]

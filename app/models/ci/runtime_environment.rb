@@ -4,12 +4,12 @@ module Ci
   class RuntimeEnvironment < Ci::ApplicationRecord
     include PartitionedTable
 
-    # The environment behind a key is torn down after this TTL, so the row that
-    # holds the key is disposable. Partitions are dropped once every record in
-    # them is older than the TTL.
+    # Partitions whose records are all older than PARTITION_CLEANUP_THRESHOLD are
+    # detached and dropped. This must be longer than the runner's maximum
+    # runtime_environment_ttl (30 days).
     # Read more https://gitlab.com/gitlab-com/content-sites/handbook/-/blob/2f8156f76b80d344b6b0c6c06332b40aa446068b/content/handbook/engineering/architecture/design-documents/runner_suspendable_environments/_index.md?plain=1#L67
     PARTITION_DURATION = 1.day
-    PARTITION_CLEANUP_THRESHOLD = 7.days
+    PARTITION_CLEANUP_THRESHOLD = 31.days
     ENVIRONMENT_KEY_MAX_LENGTH = 512
 
     self.table_name = :p_ci_runtime_environments

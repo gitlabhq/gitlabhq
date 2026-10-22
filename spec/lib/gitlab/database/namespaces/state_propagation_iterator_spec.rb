@@ -92,10 +92,13 @@ RSpec.describe Gitlab::Database::Namespaces::StatePropagationIterator, feature_c
   end
 
   describe '#each_batch with cursor rewind' do
+    let(:on_rewind) { instance_double(Proc, call: nil) }
+
     let(:iterator) do
       described_class.new(
         cursor: cursor,
-        state_filter: state_filter
+        state_filter: state_filter,
+        on_rewind: on_rewind
       )
     end
 
@@ -130,6 +133,26 @@ RSpec.describe Gitlab::Database::Namespaces::StatePropagationIterator, feature_c
           subsubgroup1.id,
           project1.project_namespace_id
         ])
+      end
+
+      it 'calls on_rewind once' do
+        run_with_mutation do |seen|
+          subgroup1.update!(state: :archived) if seen.size == 1
+        end
+
+        expect(on_rewind).to have_received(:call).once
+      end
+
+      context 'without an on_rewind callback' do
+        let(:on_rewind) { nil }
+
+        it 'still rewinds past the boundary' do
+          batches = run_with_mutation do |seen|
+            subgroup1.update!(state: :archived) if seen.size == 1
+          end
+
+          expect(batches.flat_map { |b| b[:ids] }).to include(subgroup2.id)
+        end
       end
     end
 
@@ -166,6 +189,14 @@ RSpec.describe Gitlab::Database::Namespaces::StatePropagationIterator, feature_c
         expect(batches.first[:ids]).to include(group.id)
       end
 
+      it 'does not call on_rewind' do
+        run_with_mutation do |seen|
+          group.update!(state: :archived) if seen.size == 1
+        end
+
+        expect(on_rewind).not_to have_received(:call)
+      end
+
       context 'and the cursor was constructed with a stringified current_id' do
         let(:cursor) { { current_id: namespace_id.to_s, depth: [namespace_id] } }
 
@@ -197,6 +228,12 @@ RSpec.describe Gitlab::Database::Namespaces::StatePropagationIterator, feature_c
           subgroup2.id,
           project2.project_namespace_id
         ])
+      end
+
+      it 'does not call on_rewind' do
+        run_with_mutation
+
+        expect(on_rewind).not_to have_received(:call)
       end
     end
 
@@ -249,6 +286,17 @@ RSpec.describe Gitlab::Database::Namespaces::StatePropagationIterator, feature_c
         # the pre-mutation batch is yielded.
         expect(batches.size).to eq(1)
         expect(all_ids).not_to include(subgroup2.id, project2.project_namespace_id)
+      end
+
+      it 'does not call on_rewind' do
+        run_with_mutation do |seen|
+          if seen.size == 1
+            subgroup1.update!(state: :archived)
+            subgroup2.update!(state: :archived)
+          end
+        end
+
+        expect(on_rewind).not_to have_received(:call)
       end
     end
 

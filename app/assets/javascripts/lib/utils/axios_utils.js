@@ -7,18 +7,7 @@ import csrf from './csrf';
 import { isNavigatingAway } from './is_navigating_away';
 import { BACKGROUND_REQUEST_HEADER, isUserIdle } from './user_activity';
 import suppressAjaxErrorsDuringNavigation from './suppress_ajax_errors_during_navigation';
-
-axios.defaults.headers.common[csrf.headerKey] = csrf.token;
-// Used by Rails to check if it is a valid XHR request
-axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-
-// Maintain a global counter for active requests
-// see: spec/support/wait_for_requests.rb
-axios.interceptors.request.use((config) => {
-  window.pendingRequests = window.pendingRequests || 0;
-  window.pendingRequests += 1;
-  return config;
-});
+import { pageSingleton } from './page_singleton';
 
 // Kept local instead of importing url_utility: many specs replace that module
 // with a partial factory mock, which would turn every request into a TypeError.
@@ -56,30 +45,48 @@ export const addSameOriginHeaders = (config) => {
   };
 };
 
-axios.interceptors.request.use(addSameOriginHeaders);
+// The Vue 3 loader can build this module twice, but `axios` exists once, so
+// its interceptors must be added once.
+const setupAxios = () => {
+  axios.defaults.headers.common[csrf.headerKey] = csrf.token;
+  // Used by Rails to check if it is a valid XHR request
+  axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
-setupAxiosStartupCalls(axios);
+  // Maintain a global counter for active requests
+  // see: spec/support/wait_for_requests.rb
+  axios.interceptors.request.use((config) => {
+    window.pendingRequests = window.pendingRequests || 0;
+    window.pendingRequests += 1;
+    return config;
+  });
 
-// Remove the global counter
-axios.interceptors.response.use(
-  (response) => {
-    window.pendingRequests -= 1;
-    return response;
-  },
-  (err) => {
-    window.pendingRequests -= 1;
-    return Promise.reject(err);
-  },
-);
+  axios.interceptors.request.use(addSameOriginHeaders);
 
-// Ignore AJAX errors caused by requests
-// being cancelled due to browser navigation
-axios.interceptors.response.use(
-  (response) => response,
-  (err) => suppressAjaxErrorsDuringNavigation(err, isNavigatingAway()),
-);
+  setupAxiosStartupCalls(axios);
 
-registerCaptchaModalInterceptor(axios);
+  // Remove the global counter
+  axios.interceptors.response.use(
+    (response) => {
+      window.pendingRequests -= 1;
+      return response;
+    },
+    (err) => {
+      window.pendingRequests -= 1;
+      return Promise.reject(err);
+    },
+  );
+
+  // Ignore AJAX errors caused by requests
+  // being cancelled due to browser navigation
+  axios.interceptors.response.use(
+    (response) => response,
+    (err) => suppressAjaxErrorsDuringNavigation(err, isNavigatingAway()),
+  );
+
+  registerCaptchaModalInterceptor(axios);
+};
+
+pageSingleton('axios_setup', setupAxios);
 
 export default axios;
 

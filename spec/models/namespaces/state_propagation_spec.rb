@@ -137,6 +137,12 @@ RSpec.describe Namespaces::StatePropagation, feature_category: :groups_and_proje
         expect(described_class.next_pending_for(create(:namespace).id, :archived)).to be_nil
       end
     end
+
+    describe '.counts_by_status' do
+      it 'returns the record count keyed by status name' do
+        expect(described_class.counts_by_status).to eq({ 'pending' => 1, 'processing' => 1 })
+      end
+    end
   end
 
   describe '#claim' do

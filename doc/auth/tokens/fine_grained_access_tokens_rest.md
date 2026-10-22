@@ -4216,6 +4216,7 @@ incompatible with personal access tokens.
 | `POST` | `/internal/two_factor_recovery_codes` | GitLab Shell token |
 | `POST` | `/internal/workhorse/authorize_upload` | Workhorse verification |
 | `POST` | `/internal/workhorse/oauth_routing` | Workhorse verification |
+| `POST` | `/internal/workhorse/register_routing` | Workhorse verification |
 | `GET` | `/job` | CI job token |
 | `GET` | `/job/allowed_agents` | CI job token |
 | `POST` | `/job/test_balancing/initialize` | CI job token |

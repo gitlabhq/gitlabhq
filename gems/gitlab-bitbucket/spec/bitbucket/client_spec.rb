@@ -75,71 +75,11 @@ RSpec.describe Bitbucket::Client do
 
     it_behaves_like 'fetching bitbucket data', { fetch_type: :pull_requests, representation_type: :pull_request }
 
-    it_behaves_like 'fetching bitbucket data', { fetch_type: :issues, representation_type: :issue }
-
     context 'when fetch_data not defined' do
       it 'raises argument error' do
         expect { client.each_page(:foo, :pull_request, 'repo') }
           .to raise_error(ArgumentError, 'Unknown data method foo')
       end
-    end
-  end
-
-  describe '#issues_available?' do
-    let(:url) { "#{root_url}/repositories/#{repo}/issues?pagelen=1" }
-
-    using RSpec::Parameterized::TableSyntax
-
-    where(:http_status, :expected) do
-      200 | true
-      401 | true
-      404 | false
-      410 | false
-    end
-
-    with_them do
-      it 'returns expected availability' do
-        stub_request(:get, url).to_return(status: http_status, headers: headers, body: '{}')
-
-        expect(client.issues_available?(repo)).to eq(expected)
-      end
-    end
-  end
-
-  describe '#last_issue' do
-    let(:url) { "#{root_url}/repositories/#{repo}/issues?pagelen=1&sort=-created_on&state=ALL" }
-
-    it 'requests one issue and returns a representation' do
-      stub_request(:get, url).to_return(
-        status: 200,
-        headers: headers,
-        body: { 'values' => [{ 'kind' => 'bug', 'id' => 7 }] }.to_json
-      )
-
-      result = client.last_issue(repo)
-
-      expect(WebMock).to have_requested(:get, url)
-      expect(result).to be_a(Bitbucket::Representation::Issue)
-    end
-
-    it 'returns nil when there are no issues' do
-      stub_request(:get, url).to_return(
-        status: 200,
-        headers: headers,
-        body: { 'values' => [] }.to_json
-      )
-
-      expect(client.last_issue(repo)).to be_nil
-    end
-
-    it 'returns nil when the values key is missing' do
-      stub_request(:get, url).to_return(
-        status: 200,
-        headers: headers,
-        body: {}.to_json
-      )
-
-      expect(client.last_issue(repo)).to be_nil
     end
   end
 
@@ -179,43 +119,6 @@ RSpec.describe Bitbucket::Client do
       )
 
       expect(client.last_pull_request(repo)).to be_nil
-    end
-  end
-
-  describe '#issues' do
-    let(:path) { "/repositories/#{repo}/issues?sort=created_on" }
-
-    it 'requests a collection' do
-      expect(Bitbucket::Paginator).to receive(:new).with(
-        anything, path, :issue, page_number: nil, limit: nil, after_cursor: nil
-      )
-
-      client.issues(repo)
-    end
-
-    context 'with options raw' do
-      let(:url) { "#{root_url}#{path}" }
-
-      it 'returns raw result' do
-        stub_request(:get, url).to_return(status: 200, headers: headers, body: '{}')
-
-        client.issues(repo, raw: true)
-
-        expect(WebMock).to have_requested(:get, url)
-      end
-    end
-  end
-
-  describe '#issue_comments' do
-    let(:issue_id) { 3 }
-    let(:path) { "/repositories/#{repo}/issues/#{issue_id}/comments?sort=created_on" }
-
-    it 'requests a collection' do
-      expect(Bitbucket::Paginator).to receive(:new).with(
-        anything, path, :comment, page_number: nil, limit: nil, after_cursor: nil
-      )
-
-      client.issue_comments(repo, issue_id)
     end
   end
 

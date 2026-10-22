@@ -34,12 +34,6 @@ module Bitbucket
       get_with_retry(path, extra_query).parsed
     end
 
-    def get_response_code(path, extra_query = {})
-      get_with_retry(path, extra_query).status
-    rescue OAuth2::Error => e
-      e.response.status
-    end
-
     delegate :expired?, to: :connection
 
     def refresh!

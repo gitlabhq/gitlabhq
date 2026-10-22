@@ -65,21 +65,42 @@ else
   fi
 fi
 
-if [ "${GLCI_REBUILD_ASSETS_IMAGE}" != "true" ] && docker buildx imagetools inspect "${COMMIT_ASSETS_HASH_DESTINATION}" >/dev/null 2>&1; then
+LAYOUT_LABEL_KEY="org.gitlab.assets-image.layout"
+
+# Whether to reuse the image already on the assets-hash tag instead of building a new one. Only if:
+# - GLCI_REBUILD_ASSETS_IMAGE isn't "true".
+# - The existing image was built for the same bundlers. It's labelled with GLCI_ASSETS_IMAGE_LAYOUT,
+#   for example "webpack-rspack", and an image built for different bundlers is missing assets.
+# - The job pushes no other tags, or this is an MR pipeline that isn't a merge train. Any pipeline can
+#   push the assets-hash tag, so deploy pipelines and merge trains (whose commit becomes the master
+#   commit) build their own image. A reused image never gets the SHA or ref tags that deploys pull.
+function can_reuse_existing_image() {
+  [ "${GLCI_REBUILD_ASSETS_IMAGE}" != "true" ] || return 1
+  [ -n "${GLCI_ASSETS_IMAGE_LAYOUT}" ] || return 1
   if [ -n "${DESTINATIONS}" ]; then
-    echosuccess "Image ${COMMIT_ASSETS_HASH_DESTINATION} already exists, only re-tagging with other destination tags" "yes"
-    docker buildx imagetools create ${DESTINATIONS} "$COMMIT_ASSETS_HASH_DESTINATION"
-  else
-    echosuccess "Image ${COMMIT_ASSETS_HASH_DESTINATION} already exists, nothing to re-tag" "yes"
+    [ -n "${CI_MERGE_REQUEST_IID}" ] || return 1
+    [ "${CI_MERGE_REQUEST_EVENT_TYPE}" != "merge_train" ] || return 1
   fi
+
+  docker buildx imagetools inspect --format '{{json .Image}}' "${COMMIT_ASSETS_HASH_DESTINATION}" 2>/dev/null \
+    | tr -d '[:space:]' \
+    | grep -qF "\"${LAYOUT_LABEL_KEY}\":\"${GLCI_ASSETS_IMAGE_LAYOUT}\""
+}
+
+if can_reuse_existing_image; then
+  echosuccess "Image ${COMMIT_ASSETS_HASH_DESTINATION} already exists with layout ${GLCI_ASSETS_IMAGE_LAYOUT}, reusing it" "yes"
 else
-  echoinfo "Image ${COMMIT_ASSETS_HASH_DESTINATION} doesn't exist, rebuilding" "yes"
+  echoinfo "Image ${COMMIT_ASSETS_HASH_DESTINATION} can't be reused, rebuilding" "yes"
 
   DESTINATIONS="${DESTINATIONS} --tag=${COMMIT_ASSETS_HASH_DESTINATION}"
+  LABELS=""
+  if [ -n "${GLCI_ASSETS_IMAGE_LAYOUT}" ]; then
+    LABELS="--label=${LAYOUT_LABEL_KEY}=${GLCI_ASSETS_IMAGE_LAYOUT}"
+  fi
   build_dir=assets_container.build
   mkdir -p $build_dir/public
   cp -r public/assets ${build_dir}/public/
   cp Dockerfile.assets ${build_dir}/
 
-  docker buildx build --file Dockerfile.assets --platform "${ARCH:-linux/amd64}" ${DESTINATIONS} --push $build_dir
+  docker buildx build --file Dockerfile.assets --platform "${ARCH:-linux/amd64}" ${DESTINATIONS} ${LABELS} --push $build_dir
 fi

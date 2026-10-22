@@ -148,6 +148,7 @@ build-cng:
   variables:
     # use larger runner for complex rails build jobs
     HIGH_CAPACITY_RUNNER_TAG: e2e
+    RAILS_SPLIT_ASSETS_BUILD: "true"
 
 # ==========================================
 # Test stage

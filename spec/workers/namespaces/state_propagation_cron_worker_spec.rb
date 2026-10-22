@@ -87,6 +87,45 @@ RSpec.describe Namespaces::StatePropagationCronWorker, feature_category: :groups
       end
     end
 
+    context 'with pending and processing records' do
+      let!(:pending) { create(:namespace_state_propagation, namespace: group) }
+      let!(:processing) do
+        create(:namespace_state_propagation, :processing, namespace: create(:group), started_at: 1.minute.ago)
+      end
+
+      let(:pending_gauge) { instance_double(Prometheus::Client::Gauge, set: nil) }
+      let(:processing_gauge) { instance_double(Prometheus::Client::Gauge, set: nil) }
+
+      before do
+        allow(Gitlab::Metrics).to receive(:gauge).and_call_original
+        allow(Gitlab::Metrics).to receive(:gauge)
+          .with(:gitlab_namespaces_state_propagation_pending_records, any_args).and_return(pending_gauge)
+        allow(Gitlab::Metrics).to receive(:gauge)
+          .with(:gitlab_namespaces_state_propagation_processing_records, any_args).and_return(processing_gauge)
+      end
+
+      it 'sets the outbox gauges to the record counts', :aggregate_failures do
+        worker.perform
+
+        expect(pending_gauge).to have_received(:set).with({}, 1)
+        expect(processing_gauge).to have_received(:set).with({}, 1)
+      end
+
+      context 'when a processing record is stuck' do
+        let!(:processing) do
+          create(:namespace_state_propagation, :processing, namespace: create(:group),
+            started_at: (described_class::STUCK_THRESHOLD + 1.minute).ago)
+        end
+
+        it 'counts the reset record as pending', :aggregate_failures do
+          worker.perform
+
+          expect(pending_gauge).to have_received(:set).with({}, 2)
+          expect(processing_gauge).to have_received(:set).with({}, 0)
+        end
+      end
+    end
+
     context 'when there are no records' do
       it 'does not enqueue any jobs' do
         expect(Namespaces::StatePropagationWorker).not_to receive(:bulk_perform_async_with_contexts)

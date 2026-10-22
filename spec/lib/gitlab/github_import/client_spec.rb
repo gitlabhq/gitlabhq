@@ -118,6 +118,45 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
     end
   end
 
+  describe '#each_hook_delivery_page' do
+    before do
+      allow(client).to receive(:with_rate_limit).and_yield
+      stub_request(:get, 'https://api.github.com/repositories/1/hooks/2/deliveries?per_page=100')
+        .to_return(
+          status: 200,
+          body: [{ id: 3 }].to_json,
+          headers: {
+            'Content-Type' => 'application/json',
+            link: '<https://api.github.com/repositories/1/hooks/2/deliveries?cursor=a&per_page=100>; rel="next"'
+          }
+        )
+      stub_request(:get, 'https://api.github.com/repositories/1/hooks/2/deliveries?cursor=a&per_page=100')
+        .to_return(status: 200, body: [{ id: 4 }].to_json, headers: { 'Content-Type' => 'application/json' })
+    end
+
+    it 'yields every page of the webhook deliveries' do
+      ids = []
+
+      client.each_hook_delivery_page(1, 2) { |page| ids.concat(page.objects.map { |delivery| delivery.to_h[:id] }) }
+
+      expect(ids).to eq([3, 4])
+    end
+  end
+
+  describe '#hook_delivery' do
+    it 'returns the details of a webhook delivery' do
+      stub_request(:get, 'https://api.github.com/repositories/1/hooks/2/deliveries/3')
+        .to_return(
+          status: 200,
+          body: { id: 3, request: { payload: { comment: { id: 4 } } } }.to_json,
+          headers: { 'Content-Type' => 'application/json' }
+        )
+      expect(client).to receive(:with_rate_limit).and_yield
+
+      expect(client.hook_delivery(1, 2, 3)).to eq({ id: 3, request: { payload: { comment: { id: 4 } } } })
+    end
+  end
+
   describe '#create_hook' do
     let(:config) { { url: 'https://gitlab.example.com/hook', content_type: 'json', secret: 'secret' } }
     let(:options) { { events: %w[push pull_request], active: true } }

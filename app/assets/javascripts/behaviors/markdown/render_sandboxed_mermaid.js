@@ -7,6 +7,7 @@ import { setAttributes, isElementVisible } from '~/lib/utils/dom_utils';
 import { createAlert, VARIANT_WARNING } from '~/alert';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
+import { pageSingleton } from '~/lib/utils/page_singleton';
 import { unrestrictedPages } from './constants';
 import { getRenderedMermaidBlocks, incrementRenderedMermaidBlocks } from './mermaid_render_count';
 
@@ -62,7 +63,7 @@ const ALERT_CONTAINER_CLASS = 'mermaid-alert-container';
 export const LAZY_ALERT_SHOWN_CLASS = 'lazy-alert-shown';
 
 // Keep a map of mermaid blocks we've already rendered.
-const elsProcessingMap = new WeakMap();
+const elsProcessingMap = pageSingleton('render_sandboxed_mermaid_els', () => new WeakMap());
 
 /**
  * Determines whether a given Mermaid diagram is visible.

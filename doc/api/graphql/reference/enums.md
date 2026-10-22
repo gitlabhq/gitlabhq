@@ -1606,6 +1606,7 @@ Values for sorting CI/CD job analytics.
 | `RUNNER_INTERRUPTED` | A job that failed due to runner interrupted. |
 | `RUNNER_SYSTEM_FAILURE` | A job that failed due to runner system failure. |
 | `RUNNER_UNSUPPORTED` | A job that failed due to runner unsupported. |
+| `RUNTIME_ENVIRONMENT_UNAVAILABLE` | A job that failed due to runtime environment unavailable. |
 | `SCHEDULER_FAILURE` | A job that failed due to scheduler failure. |
 | `SCRIPT_FAILURE` | A job that failed due to script failure. |
 | `SECRETS_MANAGER_ACCESS_DENIED` | A job that failed due to secrets manager access denied. |
@@ -2678,8 +2679,9 @@ Where a Duo Workflow session was initiated from.
 | `MERGE_REQUEST_RESOLVE_DISCUSSION` | Session initiated from resolving a discussion on a merge request. |
 | `SLACK` | Session initiated from Slack. |
 | `WEB_CHAT` | Session initiated from GitLab Duo Chat in the web UI. |
-| `WORK_ITEM_PLAN_TO_MERGE_REQUEST` | Session initiated from implementing a work item plan. |
+| `WORK_ITEM_PLAN_TO_MERGE_REQUEST` | Session initiated from creating a merge request from an existing workplan for a work item. |
 | `WORK_ITEM_TO_MERGE_REQUEST` | Session initiated from creating a merge request from a work item. |
+| `WORK_ITEM_WORKPLAN` | Session initiated from generating a workplan for a work item. |
 
 ## `DuoWorkflowStatus`
 

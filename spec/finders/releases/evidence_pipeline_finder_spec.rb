@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Releases::EvidencePipelineFinder, '#execute' do
+RSpec.describe Releases::EvidencePipelineFinder, '#execute', feature_category: :release_evidence do
   let(:params) { {} }
   let_it_be(:project) { create(:project, :repository) }
   let(:tag_name) { project.repository.tag_names.first }

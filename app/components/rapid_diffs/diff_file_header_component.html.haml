@@ -52,8 +52,10 @@
                 %span.rd-stats-removed −#{pretty_print_bytes(binary_size_delta.abs)}
               %span (#{pretty_print_bytes(new_blob_size)})
           - else
-            %span.rd-stats-added +#{@diff_file.added_lines}
-            %span.rd-stats-removed −#{@diff_file.removed_lines}
+            - if @diff_file.added_lines > 0
+              %span.rd-stats-added +#{@diff_file.added_lines}
+            - if @diff_file.removed_lines > 0
+              %span.rd-stats-removed −#{@diff_file.removed_lines}
       = before_file_menu
       - unless menu_items.empty?
         .rd-diff-file-options-menu

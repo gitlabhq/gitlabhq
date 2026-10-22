@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::Releases::Create do
+RSpec.describe Mutations::Releases::Create, feature_category: :release_orchestration do
   include GraphqlHelpers
 
   let_it_be_with_reload(:project) { create(:project, :public, :small_repo) }

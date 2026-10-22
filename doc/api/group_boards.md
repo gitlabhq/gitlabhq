@@ -497,6 +497,12 @@ Example response:
 
 ## Create a group issue board list
 
+{{< history >}}
+
+- `status_id` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/557140) in GitLab 19.6.
+
+{{< /history >}}
+
 Creates a group issue board list for a specified board.
 
 ```plaintext
@@ -511,6 +517,11 @@ POST /groups/:id/boards/:board_id/lists
 | `assignee_id` | integer | no | The ID of a user. Premium and Ultimate only. |
 | `milestone_id` | integer | no | The ID of a milestone. Premium and Ultimate only. |
 | `iteration_id` | integer | no | The ID of an iteration. Premium and Ultimate only. |
+| `status_id` | integer | no | The ID of a status. If the top-level group uses custom statuses, use the ID of a custom status. Premium and Ultimate only. |
+
+> [!note]
+> Label, assignee, milestone, iteration, and status arguments are mutually exclusive.
+> Only one of them is accepted in a request.
 
 ```shell
 curl --request POST \
@@ -537,6 +548,25 @@ Example response:
     "due_date": null,
     "start_date": null,
     "web_url": "https://gitlab.example.com/groups/issue-reproduce/-/milestones/3"
+  }
+}
+```
+
+For status lists, every board list response includes a `status` object. For example:
+
+```json
+{
+  "id": 10,
+  "label": null,
+  "position": 2,
+  "status": {
+    "id": 2,
+    "name": "In progress",
+    "icon_name": "status-running",
+    "color": "#1f75cb",
+    "position": 0,
+    "description": null,
+    "category": "in_progress"
   }
 }
 ```

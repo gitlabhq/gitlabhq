@@ -25,10 +25,6 @@ module Bitbucket
       get_with_retry(path, extra_query).parsed_response
     end
 
-    def get_response_code(path, extra_query = {})
-      get_with_retry(path, extra_query).code.to_i
-    end
-
     # API token credentials don't expire, so there is nothing to refresh.
     def refresh_if_expired!
       nil

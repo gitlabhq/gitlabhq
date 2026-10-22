@@ -225,6 +225,14 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           it { expect(job.reload).to be_unmet_prerequisites }
         end
 
+        context 'when failure_reason is runtime_environment_unavailable' do
+          before do
+            update_job(state: 'failed', failure_reason: 'runtime_environment_unavailable')
+          end
+
+          it { expect(job.reload).to be_runtime_environment_unavailable }
+        end
+
         context 'when failure_reason is job_router_failure' do
           before do
             update_job(state: 'failed', failure_reason: 'job_router_failure')

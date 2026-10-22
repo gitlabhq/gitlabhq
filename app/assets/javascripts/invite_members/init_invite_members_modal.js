@@ -3,12 +3,13 @@ import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { membersProvideData } from 'ee_else_ce/invite_members/utils';
 import InviteMembersModal from '~/invite_members/components/invite_members_modal.vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { pageSingleton } from '~/lib/utils/page_singleton';
 
 export default (function initInviteMembersModal() {
-  let inviteMembersModal;
+  const memo = pageSingleton('invite_members_modal', () => ({ inviteMembersModal: null }));
 
   return () => {
-    if (!inviteMembersModal) {
+    if (!memo.inviteMembersModal) {
       // https://gitlab.com/gitlab-org/gitlab/-/issues/344955
       // bug lying in wait here for someone to put group and project invite in same screen
       // once that happens we'll need to mount these differently, perhaps split
@@ -19,7 +20,7 @@ export default (function initInviteMembersModal() {
         return false;
       }
 
-      inviteMembersModal = initVueApp({
+      memo.inviteMembersModal = initVueApp({
         el,
         name: 'InviteMembersModalRoot',
         provide: membersProvideData(el),
@@ -42,6 +43,6 @@ export default (function initInviteMembersModal() {
         },
       });
     }
-    return inviteMembersModal;
+    return memo.inviteMembersModal;
   };
 })();

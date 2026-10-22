@@ -39,7 +39,7 @@ RSpec.describe 'getting current users assigned or review requested merge request
     reviewer_change_requested.merge_request_reviewers[0].update!(state: :requested_changes)
   end
 
-  it do
+  it 'returns merge requests the user is assigned to or asked to review' do
     post_graphql(query, current_user: current_user)
 
     expect(merge_requests).to contain_exactly(
@@ -50,7 +50,7 @@ RSpec.describe 'getting current users assigned or review requested merge request
   end
 
   context 'when assigned_review_states argument is sent' do
-    it do
+    it 'filters only the assigned merge requests by reviewer state' do
       post_graphql(query({ assigned_review_states: [:REVIEWED] }), current_user: current_user)
 
       expect(merge_requests).to contain_exactly(
@@ -60,7 +60,7 @@ RSpec.describe 'getting current users assigned or review requested merge request
   end
 
   context 'when reviewer_review_states argument is sent' do
-    it do
+    it "filters only the review-requested merge requests by the current user's review state" do
       post_graphql(query({ reviewer_review_states: [:REQUESTED_CHANGES] }), current_user: current_user)
 
       expect(merge_requests).to contain_exactly(
@@ -71,7 +71,7 @@ RSpec.describe 'getting current users assigned or review requested merge request
   end
 
   context 'when reviewer_review_states and assigned_review_states arguments are sent' do
-    it do
+    it 'applies each review state filter only to its own set of merge requests' do
       post_graphql(query({ reviewer_review_states: [:UNREVIEWED], assigned_review_states: [:REQUESTED_CHANGES] }),
         current_user: current_user)
 

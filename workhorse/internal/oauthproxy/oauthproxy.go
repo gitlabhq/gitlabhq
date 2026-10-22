@@ -217,6 +217,45 @@ func (h *Handler) requestRoutingDecision(r *http.Request, clientID string) (stri
 	return decision.Destination, nil
 }
 
+const registerRoutingPath = "/api/v4/internal/workhorse/register_routing"
+
+// BuildRegisterRoute returns the http.Handler for POST /oauth/register. There is
+// no client_id to key a per-application decision on, so register_routing answers
+// from the proxy_dcr_to_iam feature flag instead.
+func (h *Handler) BuildRegisterRoute() http.Handler {
+	if h.IAMServiceURL == nil || h.IAMProxy == nil || h.API == nil {
+		return h.RailsProxy
+	}
+
+	return http.HandlerFunc(h.routeRegisterEndpoint)
+}
+
+func (h *Handler) routeRegisterEndpoint(w http.ResponseWriter, r *http.Request) {
+	decision, err := h.requestRegisterDecision(r)
+	if err != nil {
+		// Route to Rails so a flaky internal API call doesn't break registration.
+		h.logDecision(r, destinationRails, reasonDynamicClientRegistrationPreAuthorizeError)
+		h.RailsProxy.ServeHTTP(w, r)
+		return
+	}
+
+	if decision == string(destinationIAM) {
+		h.logDecision(r, destinationIAM, reasonDynamicClientRegistration)
+		h.IAMProxy.ServeHTTP(w, r)
+		return
+	}
+	h.logDecision(r, destinationRails, reasonDynamicClientRegistrationFFDisabled)
+	h.RailsProxy.ServeHTTP(w, r)
+}
+
+func (h *Handler) requestRegisterDecision(r *http.Request) (string, error) {
+	decision, err := h.API.PreAuthorizeFixedPath(r, http.MethodPost, registerRoutingPath)
+	if err != nil {
+		return "", fmt.Errorf("register_routing: %w", err)
+	}
+	return decision.Destination, nil
+}
+
 // BuildTokenRoute returns the http.Handler for /oauth/token, /oauth/revoke,
 // and /oauth/introspect. Routes to IAM if any body param carries an
 // IAM-prefixed token; otherwise to Rails. Falls back to RailsProxy if
@@ -266,17 +305,20 @@ const (
 )
 
 const (
-	reasonIAMTokenPrefixMatch  = "iam_token_prefix_match"
-	reasonIAMRoutingEnabled    = "iam_routing_enabled"
-	reasonDoorkeeperToken      = "doorkeeper_token"
-	reasonDoorkeeperFFDisabled = "doorkeeper_ff_disabled"
-	reasonNoTokenParam         = "no_token_param" // #nosec G101 -- routing-decision log reason, not a credential
-	reasonBodyReadError        = "body_read_error"
-	reasonBodyParseError       = "body_parse_error"
-	reasonBodyTooLarge         = "body_too_large"
-	reasonPreAuthorizeError    = "preauthorize_error"
-	reasonClientIDTooLong      = "client_id_too_long"
-	reasonIAMFlowVerifier      = "iam_flow_verifier"
+	reasonIAMTokenPrefixMatch                        = "iam_token_prefix_match"
+	reasonIAMRoutingEnabled                          = "iam_routing_enabled"
+	reasonDoorkeeperToken                            = "doorkeeper_token"
+	reasonDoorkeeperFFDisabled                       = "doorkeeper_ff_disabled"
+	reasonNoTokenParam                               = "no_token_param" // #nosec G101 -- routing-decision log reason, not a credential
+	reasonBodyReadError                              = "body_read_error"
+	reasonBodyParseError                             = "body_parse_error"
+	reasonBodyTooLarge                               = "body_too_large"
+	reasonPreAuthorizeError                          = "preauthorize_error"
+	reasonClientIDTooLong                            = "client_id_too_long"
+	reasonIAMFlowVerifier                            = "iam_flow_verifier"
+	reasonDynamicClientRegistration                  = "dynamic_client_registration"
+	reasonDynamicClientRegistrationFFDisabled        = "dynamic_client_registration_ff_disabled"
+	reasonDynamicClientRegistrationPreAuthorizeError = "dynamic_client_registration_preauthorize_error"
 )
 
 // iamFlowVerifierParams are query parameters the IAM Auth service sets when it

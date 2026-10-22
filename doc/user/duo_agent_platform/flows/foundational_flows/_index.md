@@ -60,6 +60,9 @@ In the GitLab UI, the Developer Flow starts when you:
 - Select **Implement**.
 - Change a work item status.
 
+Some foundational flows use triggers that you can create or manage.
+For more information, see [foundational flow triggers](../../triggers/_index.md#foundational-flow-triggers).
+
 ## For developers
 
 To learn how to create and add new foundational flows to GitLab, see the [foundational flows development guide](../../../../development/ai_features/foundational_flows.md).

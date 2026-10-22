@@ -18,6 +18,15 @@ module Namespaces
 
     def perform(namespace_id, target_state)
       Namespaces::StatePropagationService.new(namespace_id, target_state).execute
+    rescue StandardError
+      Gitlab::NamespaceStatePropagation::Metrics.increment_failures(failure_label(target_state))
+      raise
+    end
+
+    private
+
+    def failure_label(target_state)
+      Namespace.states.key?(target_state.to_s) ? target_state : 'unknown'
     end
   end
 end

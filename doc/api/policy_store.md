@@ -165,7 +165,8 @@ Example response:
 [
   { "id": "custom", "name": "Custom" },
   { "id": "calendar", "name": "Calendar" },
-  { "id": "environment", "name": "Environment" }
+  { "id": "environment", "name": "Environment" },
+  { "id": "setting_validation", "name": "Project setting validation" }
 ]
 ```
 
@@ -222,7 +223,7 @@ Each entry has the following attributes:
 | Attribute | Type           | Required | Description |
 | --------- | -------------- | -------- | ----------- |
 | `type`    | string         | Yes      | For a rule, one of the IDs returned by [List all rule kinds](#list-all-rule-kinds). For an action, one of the IDs returned by [List all actions](#list-all-actions). |
-| `value`   | string or hash | No       | What the entry acts on. A `custom` rule takes Rego source as a string. A `calendar` or `environment` rule takes a hash, as does every action. |
+| `value`   | string or hash | No       | What the entry acts on. A `custom` rule takes Rego source as a string. Every other rule takes a hash, as does every action. A `setting_validation` rule reports no violation on a project whose evaluation context does not carry the named setting. |
 
 Each array accepts at most 5 entries, and each entry must serialize to at most 4096 bytes.
 The error for an oversized entry names each position, for example

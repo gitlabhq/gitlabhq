@@ -281,7 +281,11 @@ RSpec.describe InstanceConfiguration, feature_category: :configuration do
             throttle_authenticated_files_api_enabled: true,
             throttle_authenticated_files_api_requests_per_period: 1048,
             throttle_authenticated_files_api_period_in_seconds: 1049,
-            create_organization_api_limit: 1050
+            create_organization_api_limit: 1050,
+            project_relations_export_limit: 1051,
+            project_relations_export_download_limit: 1052,
+            group_relations_export_limit: 1053,
+            group_relations_export_download_limit: 1054
           )
         end
 
@@ -303,6 +307,10 @@ RSpec.describe InstanceConfiguration, feature_category: :configuration do
           expect(rate_limits[:group_export]).to eq({ enabled: true, requests_per_period: 1018, period_in_seconds: 60 })
           expect(rate_limits[:group_export_download]).to eq({ enabled: true, requests_per_period: 1019, period_in_seconds: 60 })
           expect(rate_limits[:group_import]).to eq({ enabled: true, requests_per_period: 1020, period_in_seconds: 60 })
+          expect(rate_limits[:project_relations_export]).to eq({ enabled: true, requests_per_period: 1051, period_in_seconds: 60 })
+          expect(rate_limits[:project_relations_export_download]).to eq({ enabled: true, requests_per_period: 1052, period_in_seconds: 60 })
+          expect(rate_limits[:group_relations_export]).to eq({ enabled: true, requests_per_period: 1053, period_in_seconds: 60 })
+          expect(rate_limits[:group_relations_export_download]).to eq({ enabled: true, requests_per_period: 1054, period_in_seconds: 60 })
           expect(rate_limits[:raw_blob]).to eq({ enabled: true, requests_per_period: 1021, period_in_seconds: 60 })
           expect(rate_limits[:search_rate_limit]).to eq({ enabled: true, requests_per_period: 1022, period_in_seconds: 60 })
           expect(rate_limits[:search_rate_limit_unauthenticated]).to eq({ enabled: true, requests_per_period: 1000, period_in_seconds: 60 })

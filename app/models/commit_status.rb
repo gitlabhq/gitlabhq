@@ -401,6 +401,6 @@ class CommitStatus < Ci::ApplicationRecord
 
   def unrecoverable_failure?
     script_failure? || missing_dependency_failure? || archived_failure? || scheduler_failure? ||
-      data_integrity_failure? || pipeline_variables_file_missing?
+      data_integrity_failure? || pipeline_variables_file_missing? || runtime_environment_unavailable?
   end
 end

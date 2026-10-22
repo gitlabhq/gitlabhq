@@ -348,14 +348,14 @@ module Gitlab
             group_relations_export: ::Labkit::RateLimit::Rule.new(
               name: 'limit_group_relations_exports_by_user_group',
               characteristics: %i[user group],
-              limit: 6,
+              limit: -> { Gitlab::CurrentSettings.current_application_settings.group_relations_export_limit },
               period: 1.minute,
               action: :limit
             ),
             group_relations_export_download: ::Labkit::RateLimit::Rule.new(
               name: 'limit_group_relations_export_downloads_by_user_group',
               characteristics: %i[user group],
-              limit: 20,
+              limit: -> { Gitlab::CurrentSettings.current_application_settings.group_relations_export_download_limit },
               period: 1.minute,
               action: :limit
             ),
@@ -713,6 +713,13 @@ module Gitlab
               period: 1.minute,
               action: :limit
             ),
+            project_hooks_create: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_project_hooks_creates_by_project_user',
+              characteristics: %i[project user],
+              limit: -> { Gitlab::CurrentSettings.current_application_settings.project_hooks_create_limit },
+              period: 1.minute,
+              action: :limit
+            ),
             project_import: ::Labkit::RateLimit::Rule.new(
               name: 'limit_project_imports_by_user_action',
               characteristics: %i[user action],
@@ -744,14 +751,16 @@ module Gitlab
             project_relations_export: ::Labkit::RateLimit::Rule.new(
               name: 'limit_project_relations_exports_by_user_project',
               characteristics: %i[user project],
-              limit: 6,
+              limit: -> { Gitlab::CurrentSettings.current_application_settings.project_relations_export_limit },
               period: 1.minute,
               action: :limit
             ),
             project_relations_export_download: ::Labkit::RateLimit::Rule.new(
               name: 'limit_project_relations_export_downloads_by_user_project',
               characteristics: %i[user project],
-              limit: 20,
+              limit: -> {
+                Gitlab::CurrentSettings.current_application_settings.project_relations_export_download_limit
+              },
               period: 1.minute,
               action: :limit
             ),

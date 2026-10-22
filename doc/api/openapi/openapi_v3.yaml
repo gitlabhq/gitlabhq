@@ -40039,7 +40039,10 @@ paths:
     post:
       operationId: postApiV4ProjectsIdHooks
       summary: Add a webhook to a project
-      description: Adds a webhook to a specified project.
+      description: Adds a webhook to a specified project. This endpoint has a rate
+        limit of five requests per minute for each authenticated user for a given
+        project. On GitLab Self-Managed and GitLab Dedicated, an administrator can
+        change this limit in the application settings.
       tags:
       - Hooks
       responses:
@@ -40055,6 +40058,8 @@ paths:
           description: Not found
         '422':
           description: Unprocessable entity
+        '429':
+          description: Too many requests
       parameters:
       - name: id
         required: true
@@ -91576,6 +91581,36 @@ components:
         name:
           type: string
           example: Administrator
+    APIEntitiesWorkItemsStatus:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID of the status.
+          example: 1
+        name:
+          type: string
+          description: Name of the status.
+          example: To do
+        icon_name:
+          type: string
+          description: Icon name of the status.
+          example: status-waiting
+        color:
+          type: string
+          description: Color of the status.
+          example: "#737278"
+        position:
+          type: integer
+          description: Position of the status within its category.
+          example: 0
+        description:
+          type: string
+          description: Description of the status.
+        category:
+          type: string
+          description: Category of the status.
+          example: to_do
     APIEntitiesList:
       type: object
       properties:
@@ -91594,6 +91629,8 @@ components:
           "$ref": "#/components/schemas/APIEntitiesIteration"
         assignee:
           "$ref": "#/components/schemas/APIEntitiesUserSafe"
+        status:
+          "$ref": "#/components/schemas/APIEntitiesWorkItemsStatus"
         max_issue_count:
           type: integer
           example: 0
@@ -93529,6 +93566,14 @@ components:
           type: string
         group_download_export_limit:
           type: string
+        project_relations_export_limit:
+          type: string
+        project_relations_export_download_limit:
+          type: string
+        group_relations_export_limit:
+          type: string
+        group_relations_export_download_limit:
+          type: string
         wiki_page_max_content_bytes:
           type: string
         wiki_asciidoc_allow_uri_includes:
@@ -93686,6 +93731,8 @@ components:
         users_api_limit_gpg_key:
           type: string
         tags_create_limit:
+          type: string
+        project_hooks_create_limit:
           type: string
         web_hook_event_resend_limit:
           type: string
@@ -111355,6 +111402,30 @@ components:
           type: integer
           description: Maximum number of simultaneous batch export jobs to process.
           nullable: true
+        project_relations_export_limit:
+          type: integer
+          description: Maximum number of project relations export requests per minute
+            per user for each project during direct transfer migrations. Set to `0`
+            to disable the rate limit.
+          nullable: true
+        project_relations_export_download_limit:
+          type: integer
+          description: Maximum number of project relations export downloads per minute
+            per user for each project during direct transfer migrations. Set to `0`
+            to disable the rate limit.
+          nullable: true
+        group_relations_export_limit:
+          type: integer
+          description: Maximum number of group relations export requests per minute
+            per user for each group during direct transfer migrations. Set to `0`
+            to disable the rate limit.
+          nullable: true
+        group_relations_export_download_limit:
+          type: integer
+          description: Maximum number of group relations export downloads per minute
+            per user for each group during direct transfer migrations. Set to `0`
+            to disable the rate limit.
+          nullable: true
         bulk_import_enabled:
           type: boolean
           description: If `true`, enables migrating GitLab groups and projects by
@@ -112120,6 +112191,12 @@ components:
         plantuml_diagram_proxy_enabled:
           type: string
           description: Enable PlantUML diagram proxy. Default is `false`.
+          nullable: true
+        project_hooks_create_limit:
+          type: string
+          description: 'Maximum number of project webhooks a user can create per minute
+            for a given project. Default: `5`. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/605597)
+            in GitLab 19.6.'
           nullable: true
         projects_api_rate_limit_unauthenticated:
           type: string
@@ -115013,22 +115090,29 @@ components:
         label_id:
           type: integer
           description: ID of the label. Exactly one of `label_id`, `milestone_id`,
-            `iteration_id`, `assignee_id` must be provided.
+            `iteration_id`, `assignee_id`, `status_id` must be provided.
           nullable: true
         milestone_id:
           type: integer
           description: The ID of an existing milestone. Exactly one of `label_id`,
-            `milestone_id`, `iteration_id`, `assignee_id` must be provided.
+            `milestone_id`, `iteration_id`, `assignee_id`, `status_id` must be provided.
           nullable: true
         iteration_id:
           type: integer
           description: ID of the iteration. Premium and Ultimate only. Exactly one
-            of `label_id`, `milestone_id`, `iteration_id`, `assignee_id` must be provided.
+            of `label_id`, `milestone_id`, `iteration_id`, `assignee_id`, `status_id`
+            must be provided.
           nullable: true
         assignee_id:
           type: integer
           description: ID of the user. Premium and Ultimate only. Exactly one of `label_id`,
-            `milestone_id`, `iteration_id`, `assignee_id` must be provided.
+            `milestone_id`, `iteration_id`, `assignee_id`, `status_id` must be provided.
+          nullable: true
+        status_id:
+          type: integer
+          description: ID of the status. Premium and Ultimate only. Exactly one of
+            `label_id`, `milestone_id`, `iteration_id`, `assignee_id`, `status_id`
+            must be provided.
           nullable: true
     putApiV4GroupsIdBoardsBoardIdListsListIdRequest:
       type: object
@@ -115502,22 +115586,29 @@ components:
         label_id:
           type: integer
           description: ID of the label. Exactly one of `label_id`, `milestone_id`,
-            `iteration_id`, `assignee_id` must be provided.
+            `iteration_id`, `assignee_id`, `status_id` must be provided.
           nullable: true
         milestone_id:
           type: integer
           description: The ID of an existing milestone. Exactly one of `label_id`,
-            `milestone_id`, `iteration_id`, `assignee_id` must be provided.
+            `milestone_id`, `iteration_id`, `assignee_id`, `status_id` must be provided.
           nullable: true
         iteration_id:
           type: integer
           description: ID of the iteration. Premium and Ultimate only. Exactly one
-            of `label_id`, `milestone_id`, `iteration_id`, `assignee_id` must be provided.
+            of `label_id`, `milestone_id`, `iteration_id`, `assignee_id`, `status_id`
+            must be provided.
           nullable: true
         assignee_id:
           type: integer
           description: ID of the user. Premium and Ultimate only. Exactly one of `label_id`,
-            `milestone_id`, `iteration_id`, `assignee_id` must be provided.
+            `milestone_id`, `iteration_id`, `assignee_id`, `status_id` must be provided.
+          nullable: true
+        status_id:
+          type: integer
+          description: ID of the status. Premium and Ultimate only. Exactly one of
+            `label_id`, `milestone_id`, `iteration_id`, `assignee_id`, `status_id`
+            must be provided.
           nullable: true
     putApiV4ProjectsIdBoardsBoardIdListsListIdRequest:
       type: object

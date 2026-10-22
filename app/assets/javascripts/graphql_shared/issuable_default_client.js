@@ -5,6 +5,7 @@ import errorQuery from '~/boards/graphql/client/error.query.graphql';
 import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
 import getIssueStateQuery from '~/issues/show/queries/get_issue_state.query.graphql';
 import createDefaultClient from '~/lib/graphql';
+import { pageSingleton } from '~/lib/utils/page_singleton';
 import typeDefs from '~/work_items/graphql/typedefs.graphql';
 import {
   WIDGET_TYPE_NOTES,
@@ -700,4 +701,7 @@ export const resolvers = {
   },
 };
 
-export const defaultClient = createDefaultClient(resolvers, config);
+// The Vue 3 loader can build this module twice. Both copies must use one cache.
+export const defaultClient = pageSingleton('issuable_default_client', () =>
+  createDefaultClient(resolvers, config),
+);

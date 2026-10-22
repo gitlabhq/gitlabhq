@@ -32036,7 +32036,10 @@ paths:
       operationId: getApiV4ProjectsIdHooks
     post:
       summary: Add a webhook to a project
-      description: Adds a webhook to a specified project.
+      description: Adds a webhook to a specified project. This endpoint has a rate
+        limit of five requests per minute for each authenticated user for a given
+        project. On GitLab Self-Managed and GitLab Dedicated, an administrator can
+        change this limit in the application settings.
       produces:
       - application/json
       consumes:
@@ -32063,6 +32066,8 @@ paths:
           description: Not found
         '422':
           description: Unprocessable entity
+        '429':
+          description: Too many requests
       tags:
       - hooks
       operationId: postApiV4ProjectsIdHooks

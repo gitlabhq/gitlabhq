@@ -296,7 +296,7 @@ You can use the GraphQL API to [view usage caps](../api/graphql/reference/object
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/628559) in GitLab 19.4 [with a feature flag](../administration/feature_flags/_index.md) named `credit_caps_ui`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/628559) in GitLab 19.4 [with a feature flag](../administration/feature_flags/_index.md) named `credit_caps_ui`. Enabled by default.
 
 {{< /history >}}
 
@@ -320,7 +320,7 @@ Prerequisites:
 
 {{< /tab >}}
 
-{{< tab title="GitLab Self-Managed" >}}
+{{< tab title="GitLab Self-Managed and GitLab Dedicated" >}}
 
 Prerequisites:
 
@@ -350,13 +350,19 @@ To set a flat user cap that applies to all users by default:
 #### Set per-user cap overrides
 
 You can add, update, and turn off cap overrides for individual users.
+The **Per-user cap overrides** section is displayed only when you save a flat user cap value.
+You can leave flat user cap enforcement turned off.
+
+Prerequisites:
+
+- A [flat user cap](#set-a-flat-user-cap) value.
 
 To add an override:
 
 1. Select **Add override**.
 1. Select one or more users.
 1. Set the cap value and turn the **Enabled** toggle on or off.
-1. Select **Save**.
+1. Select **Save override**.
 
 To update an override:
 
@@ -458,14 +464,15 @@ and never display **Blocked usage**, because per-user caps do not apply to them.
 
 ### Unblock a user who reached their credit cap
 
-You can restore access for a blocked user by using the per-user override GraphQL API.
+You can restore access for a blocked user by setting a per-user override cap that is higher than the user's current usage.
 
-To unblock a user, either:
+To unblock a user that has an override:
 
-- Increase the cap: Set a higher per-user override cap so the user's
-  usage falls below the new limit.
-- Remove the cap: Delete the per-user override so the user is no longer
-  subject to an individual cap.
+1. Go to the [**Credit caps** page](#manage-credit-caps).
+1. Under **Per-user cap overrides**, set a higher cap value for the user.
+1. Select **Save**.
+
+To unblock a user that doesn't have an override, set a [per-user cap override](#set-per-user-cap-overrides) with a cap value higher than their current usage.
 
 After you update the cap, the user's status changes to **Regular usage** and they
 can use credit-based features again.

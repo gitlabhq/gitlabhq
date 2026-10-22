@@ -27,6 +27,10 @@ module Namespaces
       pending.for_namespace_and_target(namespace_id, target_state).first
     end
 
+    def self.counts_by_status
+      group(:status).count
+    end
+
     def claim
       now = Time.current
 

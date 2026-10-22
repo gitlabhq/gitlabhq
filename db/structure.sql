@@ -23000,6 +23000,7 @@ CREATE TABLE import_sync_repositories (
     provider_webhook_xid bigint,
     webhook_secret jsonb,
     consecutive_auth_failures smallint DEFAULT 0 NOT NULL,
+    webhook_deliveries_checked_at timestamp with time zone,
     CONSTRAINT check_40e5f3d631 CHECK ((char_length(provider_default_branch) <= 255)),
     CONSTRAINT check_6e9da9633d CHECK ((char_length(provider_account_login) <= 255)),
     CONSTRAINT check_94a7426e52 CHECK ((char_length(provider_repository_node_id) <= 255)),

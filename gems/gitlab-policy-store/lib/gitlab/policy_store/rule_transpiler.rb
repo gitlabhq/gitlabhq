@@ -26,6 +26,8 @@ module Gitlab
         when "calendar"
           calendar = Emitters::Calendar.new(**emitter_kwargs, max_projected_bytes: max_projected_bytes)
           program(calendar.calendar_statements)
+        when "setting_validation"
+          program(Emitters::SettingValidation.new(**emitter_kwargs).setting_validation_statements)
         else invalid!("unsupported rule type #{reported_value(source['type'])}")
         end
       end

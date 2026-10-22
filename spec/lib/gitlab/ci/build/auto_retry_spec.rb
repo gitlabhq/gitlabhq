@@ -12,6 +12,7 @@ RSpec.describe Gitlab::Ci::Build::AutoRetry, feature_category: :pipeline_composi
 
     subject { auto_retry.allowed? }
 
+    # rubocop:disable Layout/LineLength -- table rows name the failure reason twice
     where(:description, :retry_count, :options, :failure_reason, :exit_code, :result) do
       # retry:max
       "retries are disabled" | 0 | { max: 0 } | nil | nil | false
@@ -44,7 +45,11 @@ RSpec.describe Gitlab::Ci::Build::AutoRetry, feature_category: :pipeline_composi
       "environment creation failure" | 0 | { max: 2 } | :environment_creation_failure | nil | false
       "pipeline variables file missing" | 0 | { max: 2 } | :pipeline_variables_file_missing | nil | false
       "secrets manager source not accessible" | 0 | { max: 2 } | :secrets_manager_source_not_accessible | nil | false
+      "runtime environment unavailable, max" | 0 | { max: 2 } | :runtime_environment_unavailable | nil | false
+      "runtime environment unavailable, when always" | 0 | { when: %w[always], max: 2 } | :runtime_environment_unavailable | nil | false
+      "runtime environment unavailable, when matching" | 0 | { when: %w[runtime_environment_unavailable], max: 2 } | :runtime_environment_unavailable | nil | false
     end
+    # rubocop:enable Layout/LineLength
 
     with_them do
       before do

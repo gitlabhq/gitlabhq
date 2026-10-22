@@ -6,9 +6,11 @@ import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 import { toggleDisplay } from '~/lib/utils/dom_utils';
 
-export const MARKDOWN_EVENT_SHOW = 'markdown-preview:show';
-export const MARKDOWN_EVENT_HIDE = 'markdown-preview:hide';
-export const MARKDOWN_EVENT_TOGGLE = 'markdown-preview:toggle';
+import {
+  MARKDOWN_EVENT_SHOW,
+  MARKDOWN_EVENT_HIDE,
+  MARKDOWN_EVENT_TOGGLE,
+} from './preview_markdown_events';
 
 // MarkdownPreview
 //

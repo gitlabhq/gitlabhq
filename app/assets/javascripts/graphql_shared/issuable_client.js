@@ -4,8 +4,8 @@ import { defaultClient } from './issuable_default_client';
 /**
  * The work item Apollo provider.
  *
- * The client it wraps lives in `./issuable_default_client`, which is on
- * `INFECTION_BLOCKLIST`, so every Vue lane reads and writes one cache. The provider
+ * The client it wraps lives in `./issuable_default_client`, which creates it with
+ * `pageSingleton`, so every Vue lane reads and writes one cache. The provider
  * cannot be shared the same way: `vue-apollo` resolves to a different package per
  * lane, so a provider built for Vue 2 does not work in a Vue 3 app. Each lane
  * therefore builds its own provider around that one client.

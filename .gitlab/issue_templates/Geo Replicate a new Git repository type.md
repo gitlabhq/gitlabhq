@@ -1,5 +1,4 @@
 
-
 ## Replicate Cool Widgets - Repository
 
 This issue is for implementing Geo replication and verification of Cool Widgets.
@@ -14,6 +13,7 @@ There are two main sections below. It is a good idea to structure your merge req
 1. Release Geo support of Cool Widgets
 
 You can look into the following example for implementing replication/verification for a new Git repository type:
+
 - [Add snippet repository verification](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56596)
 
 ### Generate Geo SSF boilerplate
@@ -41,6 +41,7 @@ The `geo:repository_replicator` Rails generator automates the creation of all bo
   ```
 
   **Options:**
+
   | Option | Description |
   |---|---|
   | `NAME` | Snake_case replicable name, passed as the positional argument (e.g. `cool_widget`) |
@@ -49,8 +50,8 @@ The `geo:repository_replicator` Rails generator automates the creation of all bo
   | `--sharding-key` | Sharding key column(s): `project_id`, `namespace_id`, `organization_id`, or `uploaded_by_user_id`. Space- or comma-separated for multiple keys. |
   | `--milestone` | Milestone version (e.g. `18.10`) |
   | `--pretend` | Preview without writing |
-  | `--skip-post-generate` | Skip the post-generation rake tasks and RuboCop autocorrect |
-  | `--only-post-generate` | Post-rebase: skip new-file creation, but re-apply the (idempotent) framework patches and re-run the derived-doc regeneration rake tasks (and RuboCop autocorrect) |
+  | `--skip-post-generate` | Skip the post-generation Rake tasks and RuboCop autocorrect |
+  | `--only-post-generate` | Post-rebase: skip new-file creation, but re-apply the (idempotent) framework patches and re-run the derived-doc regeneration Rake tasks (and RuboCop autocorrect) |
 
   The generator creates the replicator (using `RepositoryReplicatorStrategy`), the registry and
   state models, the Geo tracking-DB registry migration and main-DB states migration, the registry
@@ -93,7 +94,7 @@ cannot infer:
   examples (namespace/shard/organization filtering). Ensure it is well-tested.
 - [ ] **Implement `#repository`** in `ee/app/replicators/geo/cool_widget_replicator.rb` to return the
   `<Repository>` instance for the model record, and decide `housekeeping_enabled?` (the generated
-  stub returns `false`; return `true` only if the type supports git housekeeping and implements
+  stub returns `false`; return `true` only if the type supports Git housekeeping and implements
   `#git_garbage_collect_worker_klass`).
 - [ ] Add verification traits to the `cool_widget` factory and the Geo replication shared examples to
   its model spec (`ee/spec/models/ee/cool_widget_spec.rb`):

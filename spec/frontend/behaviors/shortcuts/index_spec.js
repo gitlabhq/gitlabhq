@@ -1,8 +1,11 @@
+import { clearPageSingleton } from '~/lib/utils/page_singleton';
+
 const SHORTCUTS_MODULE_PATH = '~/behaviors/shortcuts/shortcuts';
 
 // The shortcuts promise is created at module load, so each context needs a
-// freshly isolated copy of the module.
+// freshly isolated copy of the module and a cleared page singleton.
 const loadModule = () => {
+  clearPageSingleton('shortcuts');
   let mod;
   jest.isolateModules(() => {
     // eslint-disable-next-line global-require

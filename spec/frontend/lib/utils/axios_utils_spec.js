@@ -3,6 +3,7 @@
 import AxiosMockAdapter from 'axios-mock-adapter';
 
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { clearPageSingleton } from '~/lib/utils/page_singleton';
 import { defaultOrganization as currentOrganization } from 'jest/organizations/mock_data';
 
 describe('axios_utils', () => {
@@ -20,6 +21,7 @@ describe('axios_utils', () => {
 
   beforeEach(() => {
     jest.resetModules();
+    clearPageSingleton('axios_setup');
   });
 
   afterEach(() => {

@@ -59,16 +59,6 @@ RSpec.describe Bitbucket::Connection do
     end
   end
 
-  describe '#get_response_code' do
-    it 'delegates to underlying connection' do
-      oauth_connection = instance_double(Bitbucket::OauthConnection)
-      allow(Bitbucket::OauthConnection).to receive(:new).and_return(oauth_connection)
-      expect(oauth_connection).to receive(:get_response_code).with('/path')
-
-      bitbucket_connection.get_response_code('/path')
-    end
-  end
-
   describe '#refresh_if_expired!' do
     it 'delegates to underlying connection' do
       oauth_connection = instance_double(Bitbucket::OauthConnection)

@@ -34257,6 +34257,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|The trigger could not be updated. Try again."
 msgstr ""
 
+msgid "DuoAgentsPlatform|This flow might not use these instructions, depending on how it's configured. %{linkStart}How flows use instructions%{linkEnd}"
+msgstr ""
+
 msgid "DuoAgentsPlatform|This trigger runs on this status, so setting it can start another session."
 msgstr ""
 
@@ -43311,6 +43314,12 @@ msgstr ""
 msgid "Group overview content"
 msgstr ""
 
+msgid "Group relations export download requests (direct transfer)"
+msgstr ""
+
+msgid "Group relations export requests (direct transfer)"
+msgstr ""
+
 msgid "Group requires separate account"
 msgstr ""
 
@@ -49414,7 +49423,7 @@ msgstr ""
 msgid "Job|Download SAST report"
 msgstr ""
 
-msgid "Job|Duo Agent Platform cannot run on this runner. Duo jobs can only run on instance wide or top level group runners. Be sure to remove the gitlab--duo tag from this runner to avoid it picking these jobs."
+msgid "Job|Duo Agent Platform cannot run on this runner. Duo jobs run only on instance-wide or top-level group runners, and some flows only on GitLab-hosted runners. Be sure to remove the gitlab--duo tag from this runner to avoid it picking these jobs."
 msgstr ""
 
 msgid "Job|Duration"
@@ -49670,6 +49679,9 @@ msgid "Job|The script exceeded the maximum execution time set for the job"
 msgstr ""
 
 msgid "Job|The secrets provider can not be found. Check your CI/CD variables and try again."
+msgstr ""
+
+msgid "Job|The suspended environment is no longer available. It may have expired."
 msgstr ""
 
 msgid "Job|The user who created this job is blocked"
@@ -52156,6 +52168,12 @@ msgstr ""
 msgid "Maximum group import requests per minute"
 msgstr ""
 
+msgid "Maximum group relations export download requests per minute during direct transfer migrations"
+msgstr ""
+
+msgid "Maximum group relations export requests per minute during direct transfer migrations"
+msgstr ""
+
 msgid "Maximum import size"
 msgstr ""
 
@@ -52292,6 +52310,15 @@ msgid "Maximum project export requests per minute"
 msgstr ""
 
 msgid "Maximum project import requests per minute"
+msgstr ""
+
+msgid "Maximum project relations export download requests per minute during direct transfer migrations"
+msgstr ""
+
+msgid "Maximum project relations export requests per minute during direct transfer migrations"
+msgstr ""
+
+msgid "Maximum project webhook creation requests allowed per minute on a project for each user"
 msgstr ""
 
 msgid "Maximum projects allowed in the filter is %{count}"
@@ -67525,6 +67552,12 @@ msgstr ""
 msgid "Project path"
 msgstr ""
 
+msgid "Project relations export download requests (direct transfer)"
+msgstr ""
+
+msgid "Project relations export requests (direct transfer)"
+msgstr ""
+
 msgid "Project security status"
 msgstr ""
 
@@ -82506,7 +82539,7 @@ msgstr ""
 msgid "Set the per-user rate limits for the requests to Organizations API."
 msgstr ""
 
-msgid "Set the per-user rate limits for webhook test and event resend requests."
+msgid "Set the per-user rate limits for webhook creation, test, and event resend requests."
 msgstr ""
 
 msgid "Set this %{item_type} as blocked by %{target}."

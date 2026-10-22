@@ -263,6 +263,7 @@ Common values:
   unrelated to the job script.
 - `job_execution_timeout`: The job exceeded the maximum execution time set for the job.
 - `downstream_pipeline_creation_failed`: A trigger job could not create the downstream pipeline.
+- `runtime_environment_unavailable`: A job resuming a suspended environment found it expired, released, or lost. Never retried automatically.
 - `unknown_failure`: No specific failure reason was recorded.
 
 For the full list of values, see [`retry:when`](../../../ci/yaml/_index.md#retrywhen).
@@ -857,6 +858,12 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `gitlab_maintenance_mode`                                | Gauge     | 15.11 |                                                                                           | Is GitLab Maintenance Mode enabled? |
 | `gitlab_memwd_violations_handled_total`                  | Counter   | 15.9  |                                                                                           | Total number of times Sidekiq process memory violations were handled |
 | `gitlab_memwd_violations_total`                          | Counter   | 15.9  |                                                                                           | Total number of times a Sidekiq process violated a memory threshold |
+| `gitlab_namespaces_state_propagation_batches_total`      | Counter   | 19.6  | `target_state`                                                                            | Number of descendant batches updated by namespace state propagation |
+| `gitlab_namespaces_state_propagation_boundary_rewinds_total` | Counter   | 19.6  |                                                                                           | Number of times namespace state propagation rewound its cursor past a boundary |
+| `gitlab_namespaces_state_propagation_duration_seconds`   | Histogram | 19.6  | `target_state`                                                                            | Time to propagate a namespace state to its descendants, in seconds |
+| `gitlab_namespaces_state_propagation_failures_total`     | Counter   | 19.6  | `target_state`                                                                            | Number of namespace state propagation jobs that failed |
+| `gitlab_namespaces_state_propagation_pending_records`    | Gauge     | 19.6  |                                                                                           | Number of pending namespace state propagation records |
+| `gitlab_namespaces_state_propagation_processing_records` | Gauge     | 19.6  |                                                                                           | Number of namespace state propagation records being processed |
 | `gitlab_optimistic_locking_retries`                      | Histogram | 13.10 |                                                                                           | Number of retry attempts to execute optimistic retry lock |
 | `gitlab_pg_ash_consecutive_rotate_failures`              | Gauge     | 19.5  |                                                                                           | Number of [active session history](../performance/_index.md#active-session-history) partition rotations that failed in a row; a successful rotation resets it |
 | `gitlab_pg_ash_insert_errors`                            | Gauge     | 19.4  |                                                                                           | Number of errors `pg_ash` hit while writing [active session history](../performance/_index.md#active-session-history) samples |

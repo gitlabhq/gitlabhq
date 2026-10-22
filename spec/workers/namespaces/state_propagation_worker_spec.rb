@@ -32,6 +32,32 @@ RSpec.describe Namespaces::StatePropagationWorker, feature_category: :groups_and
       expect(leaf_group.reload.state).to eq('archived')
       expect(Namespaces::StatePropagation.exists?(propagation.id)).to be(false)
     end
+
+    it 'does not count a failure' do
+      expect(Gitlab::NamespaceStatePropagation::Metrics).not_to receive(:increment_failures)
+
+      worker.perform(root_group.id, 'archived')
+    end
+
+    context 'when the service raises an error' do
+      before do
+        allow_next_instance_of(Namespaces::StatePropagationService) do |service|
+          allow(service).to receive(:execute).and_raise(ActiveRecord::StatementInvalid)
+        end
+      end
+
+      it 'counts the failure and re-raises', :aggregate_failures do
+        expect(Gitlab::NamespaceStatePropagation::Metrics).to receive(:increment_failures).with('archived')
+
+        expect { worker.perform(root_group.id, 'archived') }.to raise_error(ActiveRecord::StatementInvalid)
+      end
+
+      it 'labels an unknown target state as unknown' do
+        expect(Gitlab::NamespaceStatePropagation::Metrics).to receive(:increment_failures).with('unknown')
+
+        expect { worker.perform(root_group.id, 'bogus') }.to raise_error(ActiveRecord::StatementInvalid)
+      end
+    end
   end
 
   describe '#perform state preservation' do

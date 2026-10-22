@@ -37,6 +37,8 @@ module Namespaces
 
       return unless propagation.claim
 
+      start_time = ::Gitlab::Metrics::System.monotonic_time
+
       # These steps are intentionally not wrapped in a single transaction: propagation
       # can update very large descendant subtrees in batches, and one transaction would
       # hold locks for too long. If it fails mid-run the record stays `processing` and
@@ -44,6 +46,11 @@ module Namespaces
       propagate(propagation, overwritable_states)
 
       propagation.destroy!
+
+      Gitlab::NamespaceStatePropagation::Metrics.observe_duration(
+        propagation.target_state,
+        ::Gitlab::Metrics::System.monotonic_time - start_time
+      )
     end
 
     private
@@ -64,7 +71,8 @@ module Namespaces
 
       iterator = Gitlab::Database::Namespaces::StatePropagationIterator.new(
         cursor: cursor,
-        state_filter: state_filter
+        state_filter: state_filter,
+        on_rewind: -> { Gitlab::NamespaceStatePropagation::Metrics.increment_boundary_rewinds }
       )
 
       iterator.each_batch(of: STATE_PROPAGATION_ITERATOR_BATCH_SIZE) do |ids|
@@ -78,6 +86,8 @@ module Namespaces
         # Heartbeat: keeps a long-running propagation from being treated as stuck by
         # StatePropagationCronWorker and re-run concurrently.
         propagation.touch(:started_at)
+
+        Gitlab::NamespaceStatePropagation::Metrics.increment_batches(target_state)
       end
     end
 

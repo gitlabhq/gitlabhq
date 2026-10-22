@@ -27,16 +27,17 @@ module Gitlab
       # See the ADR for the full design:
       # https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/group_and_project_operations_and_state_management/decisions/003_state_propagation_model/
       class StatePropagationIterator < ::Gitlab::Database::NamespaceEachBatch
-        def initialize(cursor:, state_filter:)
+        def initialize(cursor:, state_filter:, on_rewind: nil)
           super(namespace_class: Namespace, cursor: cursor)
 
           @state_filter = state_filter
+          @on_rewind = on_rewind
           @root_id = @cursor[:current_id]
         end
 
         private
 
-        attr_reader :state_filter
+        attr_reader :state_filter, :on_rewind
 
         # Called by the base iterator after each batch is loaded but before it
         # is yielded. We use it to react to ancestors that changed state while
@@ -55,6 +56,8 @@ module Gitlab
 
           rewound = rewind_past_boundary(new_cursor, boundary_id)
           return [:stop, nil] if rewound.nil?
+
+          on_rewind&.call
 
           [:reseed, rewound]
         end

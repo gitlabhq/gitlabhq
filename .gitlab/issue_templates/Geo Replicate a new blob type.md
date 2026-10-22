@@ -1,5 +1,4 @@
 
-
 ## Replicate Cool Widgets - Blob
 
 This issue is for implementing Geo replication and verification of Cool Widgets.
@@ -14,6 +13,7 @@ There are three main sections below. It is a good idea to structure your merge r
 1. Release Geo support of Cool Widgets
 
 You can look into the following examples of MRs for implementing replication/verification for a new blob type:
+
 - [Add db changes](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60935) and [add verification for MR diffs using SSF](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63309)
 - [Verify Terraform state versions](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/58800)
 - [Verify LFS objects](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63981)
@@ -51,6 +51,7 @@ The `geo:blob_replicator` Rails generator automates the creation of all boilerpl
   ```
 
   **Options:**
+
   | Option | Description |
   |---|---|
   | `NAME` | Snake_case replicable name, passed as the positional argument (e.g. `cool_widget`) |
@@ -61,8 +62,8 @@ The `geo:blob_replicator` Rails generator automates the creation of all boilerpl
   | `--model-class` | Ruby model class name (required unless `--upload-partition`; then defaults to the CamelCase of `NAME`) |
   | `--parent-factory` | Parent model factory in upload-partition mode (defaults to `NAME` minus `_upload`) |
   | `--pretend` | Preview without writing |
-  | `--skip-post-generate` | Skip the post-generation rake tasks and RuboCop autocorrect |
-  | `--only-post-generate` | Post-rebase: skip new-file creation, but re-apply the (idempotent) framework patches and re-run the derived-doc regeneration rake tasks (and RuboCop autocorrect) |
+  | `--skip-post-generate` | Skip the post-generation Rake tasks and RuboCop autocorrect |
+  | `--only-post-generate` | Post-rebase: skip new-file creation, but re-apply the (idempotent) framework patches and re-run the derived-doc regeneration Rake tasks (and RuboCop autocorrect) |
 
   After writing the files and applying the patches, the generator regenerates the derived docs/metrics (gettext, SSF metrics, DB dictionary, GraphQL and OpenAPI docs) and runs `rubocop --autocorrect` over the generated and patched Ruby.
 
@@ -213,7 +214,6 @@ The generator handles most of the boilerplate, but some steps still require manu
 - [ ] Run: `tooling/bin/gettext_extractor locale/gitlab.pot`
 - [ ] Run: `bundle exec rake gitlab:geo:dev:ssf_metrics`
 - [ ] Run: `bundle exec rake gitlab:graphql:update_all`
-- [ ] Run: `bundle exec rake gitlab:graphql:generate_all_introspection_schemas`
 - [ ] Run: `bundle exec rake gitlab:openapi:v3:generate`
 
 #### Step 5. Handle batch destroy

@@ -52,6 +52,25 @@ module API
             status 200
             { destination: destination }
           end
+
+          desc 'OAuth dynamic client registration routing decision for Workhorse' do
+            detail 'Workhorse calls this on POST /oauth/register to decide whether ' \
+              'to proxy dynamic client registration to the IAM Auth Service. ' \
+              'Registration creates a new client, so there is no client_id to key a ' \
+              'per-application decision on. The answer is the per-request state of ' \
+              'the proxy_dcr_to_iam feature flag. See ' \
+              'https://gitlab.com/gitlab-org/gitlab/-/work_items/623577.'
+            success code: 200, message: 'Routing decision: "iam" or "rails"'
+            tags %w[internal]
+          end
+          route_setting :authorization, skip_granular_token_authorization: :workhorse_verification_auth
+          post 'register_routing', feature_category: :system_access do
+            route_to_iam = Feature.enabled?(:proxy_dcr_to_iam, Feature.current_request)
+            destination = route_to_iam ? 'iam' : 'rails'
+
+            status 200
+            { destination: destination }
+          end
         end
       end
     end

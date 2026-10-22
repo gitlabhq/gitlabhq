@@ -32,7 +32,7 @@ RSpec.describe Packages::Protection::UpdateRuleService, '#execute', feature_cate
     end
 
     it_behaves_like 'returning a success service response' do
-      it do
+      it 'returns no errors and the rule with the expected attributes' do
         is_expected.to have_attributes(
           errors: be_blank,
           payload: {
@@ -49,7 +49,7 @@ RSpec.describe Packages::Protection::UpdateRuleService, '#execute', feature_cate
 
   shared_examples 'an erroneous service response with side effect' do |message: nil|
     it_behaves_like 'returning an error service response', message: message do
-      it do
+      it 'returns errors and no rule in the payload' do
         is_expected.to have_attributes(errors: be_present,
           payload: { package_protection_rule: nil })
       end
@@ -123,7 +123,7 @@ RSpec.describe Packages::Protection::UpdateRuleService, '#execute', feature_cate
     it_behaves_like 'an erroneous service response with side effect',
       message: ['Package name pattern has already been taken', 'Pattern has already been taken']
 
-    it do
+    it 'does not change the package name pattern of the other rule' do
       expect { service_execute }.not_to(
         change { other_existing_package_protection_rule.reload.package_name_pattern }
       )

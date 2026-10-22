@@ -1,4 +1,6 @@
-import { setConfigs } from '@gitlab/duo-ui';
+// The config module, not the package index, so this file never reaches Vue and
+// every lane shares the one registry.
+import setConfigs from '@gitlab/duo-ui/dist/config';
 import { __, s__ } from '~/locale';
 
 setConfigs({

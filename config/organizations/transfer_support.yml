@@ -108,7 +108,7 @@ labels: no_work_needed
 ldap_admin_role_links: no_work_needed
 loose_foreign_keys_organization_deleted_records: no_work_needed
 member_roles: no_work_needed
-merge_request_diff_commit_users: https://gitlab.com/gitlab-org/gitlab/-/issues/611965
+merge_request_diff_commit_users: https://gitlab.com/gitlab-org/gitlab/-/work_items/635030
 namespaces: supported
 non_sql_service_pings: no_work_needed
 notes: supported

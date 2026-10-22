@@ -1,11 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe Bitbucket::Representation::Repo do
-  describe '#has_wiki?' do
-    it { expect(described_class.new({ 'has_wiki' => false }).has_wiki?).to be_falsey }
-    it { expect(described_class.new({ 'has_wiki' => true }).has_wiki?).to be_truthy }
-  end
-
   describe '#name' do
     it { expect(described_class.new({ 'name' => 'test' }).name).to eq('test') }
   end
@@ -21,11 +16,6 @@ RSpec.describe Bitbucket::Representation::Repo do
 
   describe '#description' do
     it { expect(described_class.new({ 'description' => 'desc' }).description).to eq('desc') }
-  end
-
-  describe '#issues_enabled?' do
-    it { expect(described_class.new({ 'has_issues' => false }).issues_enabled?).to be_falsey }
-    it { expect(described_class.new({ 'has_issues' => true }).issues_enabled?).to be_truthy }
   end
 
   describe '#owner_and_slug' do

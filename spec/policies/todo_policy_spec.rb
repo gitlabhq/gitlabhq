@@ -14,7 +14,7 @@ RSpec.describe TodoPolicy, feature_category: :notifications do
   end
 
   shared_examples 'grants the expected permissions' do |policy|
-    it do
+    it "grants #{policy} only when allowed" do
       if allowed
         expect(permissions(user, todo)).to be_allowed(policy)
       else

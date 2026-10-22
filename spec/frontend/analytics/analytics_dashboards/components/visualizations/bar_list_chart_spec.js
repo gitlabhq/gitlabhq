@@ -1,4 +1,4 @@
-import { nextTick } from 'vue';
+import { markRaw, nextTick } from 'vue';
 import * as echarts from 'echarts';
 import { GlChart, GlChartLegend } from '@gitlab/ui/src/charts';
 import {
@@ -503,13 +503,14 @@ describe('BarListChart', () => {
 
       beforeEach(() => {
         const dom = document.createElement('div');
-        const chart = {
+        // GlChart emits its instance marked raw, so Vue 3 does not proxy it
+        const chart = markRaw({
           getDom: () => dom,
           on: (event, handler) => {
             onLegendChange = handler;
           },
           off: () => {},
-        };
+        });
         jest.spyOn(echarts, 'getInstanceByDom').mockReturnValue(chart);
         findChart().vm.$emit('created', chart);
       });

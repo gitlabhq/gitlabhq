@@ -140,8 +140,34 @@ On a fixed schedule defined in `config/schedule.yml`, the worker:
 
 1. Resets `processing` records that exceeded the stuck threshold back to `pending` and clears `started_at`.
 1. Re-enqueues all `pending` records with `StatePropagationWorker`.
+1. Refreshes the `pending` and `processing` outbox gauges described in [Metrics](#metrics).
 
 Deduplication on `StatePropagationWorker` ensures that a record still being processed is not run twice.
+
+## Metrics
+
+`Gitlab::NamespaceStatePropagation::Metrics` defines the Prometheus metrics for propagation.
+The `target_state` label is the propagated state, such as `archived`.
+No metric has a `namespace_id` label, to keep cardinality bounded.
+
+| Name | Type | Labels | Description |
+|------|------|--------|-------------|
+| `gitlab_namespaces_state_propagation_duration_seconds` | Histogram | `target_state` | Time from marking an outbox record `processing` to deleting it. Observed only for successful runs that propagate a state. |
+| `gitlab_namespaces_state_propagation_batches_total` | Counter | `target_state` | Descendant batches that the iterator yields and the worker updates. |
+| `gitlab_namespaces_state_propagation_boundary_rewinds_total` | Counter | None | Times the iterator rewinds its cursor past a boundary. A boundary that ends the walk is not counted. |
+| `gitlab_namespaces_state_propagation_failures_total` | Counter | `target_state` | `StatePropagationWorker` runs that raise an error. The error is re-raised. A `target_state` that is not a namespace state is labeled `unknown`. |
+| `gitlab_namespaces_state_propagation_pending_records` | Gauge | None | Number of `pending` records in `namespace_state_propagations`. |
+| `gitlab_namespaces_state_propagation_processing_records` | Gauge | None | Number of `processing` records in `namespace_state_propagations`. |
+
+The duration histogram uses buckets of 0.1, 0.5, 1, 5, 15, 30, 60, 120, 300, 600, and 1800 seconds.
+
+`StatePropagationCronWorker` refreshes both gauges at the end of every run.
+The gauges use the `max` multiprocess mode, because each count is table-wide and summing it across Sidekiq processes would over-count.
+A process keeps the last value it set until the cron worker runs on it again or the process restarts.
+As a result, after the outbox drains, a gauge can report a stale value from a process that ran the cron worker earlier.
+
+`StatePropagationCronWorker` failures are not counted separately.
+Use the standard `sidekiq_jobs_failed_total` metric for the worker instead.
 
 ## Walkthrough
 

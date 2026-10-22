@@ -253,6 +253,10 @@ module API
       optional :jira_forge_app_id, type: String, desc: "Atlassian Forge app ID (ARI) of the GitLab for Jira Cloud app, used to verify inbound Forge Invocation Tokens."
       optional :bulk_import_concurrent_pipeline_batch_limit, type: Integer, desc: 'Maximum number of simultaneous direct transfer batch exports to process.'
       optional :concurrent_relation_batch_export_limit, type: Integer, desc: 'Maximum number of simultaneous batch export jobs to process.'
+      optional :project_relations_export_limit, type: Integer, desc: 'Maximum number of project relations export requests per minute per user for each project during direct transfer migrations. Set to `0` to disable the rate limit.'
+      optional :project_relations_export_download_limit, type: Integer, desc: 'Maximum number of project relations export downloads per minute per user for each project during direct transfer migrations. Set to `0` to disable the rate limit.'
+      optional :group_relations_export_limit, type: Integer, desc: 'Maximum number of group relations export requests per minute per user for each group during direct transfer migrations. Set to `0` to disable the rate limit.'
+      optional :group_relations_export_download_limit, type: Integer, desc: 'Maximum number of group relations export downloads per minute per user for each group during direct transfer migrations. Set to `0` to disable the rate limit.'
       optional :bulk_import_enabled, type: Boolean, desc: 'If `true`, enables migrating GitLab groups and projects by direct transfer.'
       optional :bulk_import_max_download_file, type: Integer, desc: 'Maximum download file size, in MB, when importing from source GitLab instances by direct transfer.'
       optional :autocomplete_users_limit, type: Integer, desc: 'Maximum number of authenticated requests per minute per user to the users autocomplete endpoint.'
@@ -497,6 +501,8 @@ module API
       optional :pages_unique_domain_default_enabled,
         desc: 'If `true`, enables unique domains by default for Pages sites to avoid cookie sharing between sites under a given namespace. Defaults to `true`.'
       optional :plantuml_diagram_proxy_enabled, desc: 'Enable PlantUML diagram proxy. Default is `false`.'
+      optional :project_hooks_create_limit,
+        desc: 'Maximum number of project webhooks a user can create per minute for a given project. Default: `5`. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/605597) in GitLab 19.6.'
       optional :projects_api_rate_limit_unauthenticated,
         desc: 'Maximum number of requests per 10 minutes per IP address for unauthenticated requests to the [list all projects API](https://docs.gitlab.com/api/projects/#list-all-projects). Default: `400`. To disable throttling, set to `0`.'
       optional :protected_ci_variables, desc: 'If `true`, CI/CD variables are protected by default.'

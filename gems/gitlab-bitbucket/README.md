@@ -51,12 +51,11 @@ response-size limit. The GitLab monolith injects `Import::Clients::HTTP` (a thin
 | `multi_workspace_repos(filter:, limit:, workspace_paging_info:)` | repositories across all of the user's workspaces |
 | `repo(name)` | a single repository |
 | `pull_requests(repo, options)`, `pull_request_comments(repo, pr)`, `pull_request_diff(repo, pr)` | pull request data |
-| `issues(repo, options)`, `issue_comments(repo, issue_id)`, `issues_available?(repo)` | issue data |
-| `last_pull_request(repo)`, `last_issue(repo)` | the most recent PR/issue |
+| `last_pull_request(repo)` | the most recent PR |
 | `user`, `users(workspace_key, page_number:, limit:)` | the authenticated account and workspace members |
 | `each_page(method, representation_type, *args)` | streams pages without loading them all into memory |
 
-Collections (`pull_requests`, `issues`, …) are lazy `Bitbucket::Collection`s that paginate on
+Collections (`pull_requests`, …) are lazy `Bitbucket::Collection`s that paginate on
 demand. Records are wrapped in `Bitbucket::Representation::*` objects (e.g. `Repo#private?`,
 `#full_name`, `#clone_url`, `#default_branch`). Mapping a repository's `private?` flag to a
 GitLab visibility level is the caller's responsibility.

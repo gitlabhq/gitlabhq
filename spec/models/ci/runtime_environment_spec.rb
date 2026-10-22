@@ -10,6 +10,12 @@ RSpec.describe Ci::RuntimeEnvironment, feature_category: :runner_core do
   it { is_expected.to validate_length_of(:environment_key).is_at_most(512) }
   it { is_expected.to validate_presence_of(:project) }
 
+  describe 'PARTITION_CLEANUP_THRESHOLD' do
+    it 'is longer than the runner maximum TTL of 30 days' do
+      expect(described_class::PARTITION_CLEANUP_THRESHOLD).to be > 30.days
+    end
+  end
+
   describe '.find_by_key_and_project' do
     let_it_be(:project) { create(:project) }
     let_it_be(:other_project) { create(:project) }

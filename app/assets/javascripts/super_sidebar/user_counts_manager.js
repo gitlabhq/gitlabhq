@@ -1,4 +1,5 @@
 import { observable } from '~/lib/utils/observable';
+import { pageSingleton } from '~/lib/utils/page_singleton';
 import { getUserCounts } from '~/api/user_api';
 import { getStorageValue, saveStorageValue } from '~/lib/utils/local_storage';
 
@@ -29,12 +30,12 @@ function updateCounts(payload = {}) {
 }
 
 // The hybrid Vue 2/Vue 3 build compiles this module once per lane, so listener
-// references are per-copy. The active registration lives in a cross-lane global
-// (like `~/lib/utils/observable`) so destroy can tear down the other copy's.
-const REGISTRATION_KEY = Symbol.for('__gitlab_user_counts_manager__');
+// references are per-copy. The active registration is shared, so destroy can
+// tear down the other copy's.
+const holder = pageSingleton('user_counts_manager', () => ({ registration: null }));
 
 function broadcastUserCounts(data) {
-  globalThis[REGISTRATION_KEY]?.broadcastChannel?.postMessage({ ...data });
+  holder.registration?.broadcastChannel?.postMessage({ ...data });
 }
 
 export function useCachedUserCounts() {
@@ -75,14 +76,14 @@ function updateTodos(e) {
 export function destroyUserCountsManager() {
   // Fall back to this copy's own references so removal is attempted even
   // when nothing registered, matching the previous behavior.
-  const registration = globalThis[REGISTRATION_KEY];
+  const { registration } = holder;
   document.removeEventListener(
     'userCounts:fetch',
     registration?.retrieveUserCountsFromApi ?? retrieveUserCountsFromApi,
   );
   document.removeEventListener('todo:toggle', registration?.updateTodos ?? updateTodos);
   registration?.broadcastChannel?.close();
-  delete globalThis[REGISTRATION_KEY];
+  holder.registration = null;
 }
 
 /**
@@ -99,7 +100,7 @@ export function createUserCountsManager() {
   document.addEventListener('todo:toggle', updateTodos);
 
   const registration = { retrieveUserCountsFromApi, updateTodos, broadcastChannel: null };
-  globalThis[REGISTRATION_KEY] = registration;
+  holder.registration = registration;
 
   if (window.BroadcastChannel && gon?.current_user_id) {
     registration.broadcastChannel = new BroadcastChannel(`user_counts_${gon?.current_user_id}`);

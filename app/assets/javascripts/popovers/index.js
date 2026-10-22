@@ -1,25 +1,23 @@
 import { toArray } from 'lodash-es';
 import Vue from 'vue';
+import { pageSingleton, clearPageSingleton } from '~/lib/utils/page_singleton';
 import PopoversComponent from './components/popovers.vue';
 
-let app;
-let isInitialized = false;
+const SINGLETON_KEY = 'popovers';
 
 const APP_ELEMENT_ID = 'gl-popovers-app';
 
-const getPopoversApp = () => {
-  if (!app) {
+const getPopoversApp = () =>
+  pageSingleton(SINGLETON_KEY, () => {
     const container = document.createElement('div');
     container.setAttribute('id', APP_ELEMENT_ID);
     document.body.appendChild(container);
 
     const Popovers = Vue.extend(PopoversComponent);
-    app = new Popovers({ name: 'PopoversRoot' });
+    const app = new Popovers({ name: 'PopoversRoot' });
     app.$mount(`#${APP_ELEMENT_ID}`);
-  }
-
-  return app;
-};
+    return app;
+  });
 
 const isPopover = (node, selector) => node.matches && node.matches(selector);
 
@@ -33,7 +31,7 @@ const handlePopoverEvent = (rootTarget, e, selector) => {
 };
 
 export const initPopovers = () => {
-  if (!isInitialized) {
+  pageSingleton('popovers_listeners', () => {
     ['mouseenter', 'focus', 'click'].forEach((event) => {
       document.addEventListener(
         event,
@@ -41,8 +39,8 @@ export const initPopovers = () => {
         true,
       );
     });
-    isInitialized = true;
-  }
+    return true;
+  });
 
   return getPopoversApp();
 };
@@ -51,5 +49,5 @@ export const dispose = (elements) => toArray(elements).forEach(getPopoversApp().
 
 export const destroy = () => {
   getPopoversApp().$destroy();
-  app = null;
+  clearPageSingleton(SINGLETON_KEY);
 };

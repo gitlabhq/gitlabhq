@@ -92,7 +92,7 @@ module RapidDiffs
       counters = []
       counters << (ns_('RapidDiffs|Added %d line.', 'RapidDiffs|Added %d lines.', added) % added) if added > 0
       counters << (ns_('RapidDiffs|Removed %d line.', 'RapidDiffs|Removed %d lines.', removed) % removed) if removed > 0
-      counters.join(' ')
+      counters.join(' ').presence
     end
 
     # Gitlab::Diff::File#new_blob/#old_blob can resolve to nil through Blob.lazy

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::ProjectHooks, 'ProjectHooks', feature_category: :webhooks do
+RSpec.describe API::ProjectHooks, 'ProjectHooks', :clean_gitlab_redis_rate_limiting, feature_category: :webhooks do
   let_it_be(:user) { create(:user) }
   let_it_be(:user2) { create(:user) }
   let_it_be_with_reload(:project) do
@@ -79,6 +79,64 @@ RSpec.describe API::ProjectHooks, 'ProjectHooks', feature_category: :webhooks do
 
     it_behaves_like 'get web-hook event endpoint' do
       let(:unauthorized_user) { user2 }
+    end
+  end
+
+  describe "POST /projects/:id/hooks rate limit", :aggregate_failures do
+    let_it_be(:other_maintainer) { create(:user, maintainer_of: project) }
+    let_it_be(:other_project) { create(:project, maintainers: user) }
+
+    let(:params) { { url: 'http://example.com/new-hook' } }
+
+    it_behaves_like 'rate limited endpoint', rate_limit_key: :project_hooks_create do
+      let(:current_user) { user }
+
+      def request
+        post api("/projects/#{project.id}/hooks", user), params: params
+      end
+
+      def request_with_second_scope
+        post api("/projects/#{project.id}/hooks", other_maintainer), params: params
+      end
+    end
+
+    context 'when the limit is reached', :freeze_time do
+      before do
+        stub_application_setting(project_hooks_create_limit: 2)
+      end
+
+      it 'blocks further requests for the same user and project only' do
+        2.times do
+          post api("/projects/#{project.id}/hooks", user), params: params
+
+          expect(response).to have_gitlab_http_status(:created)
+        end
+
+        expect { post api("/projects/#{project.id}/hooks", user), params: params }
+          .not_to change { project.hooks.count }
+
+        expect(response).to have_gitlab_http_status(:too_many_requests)
+
+        post api("/projects/#{project.id}/hooks", other_maintainer), params: params
+        expect(response).to have_gitlab_http_status(:created)
+
+        post api("/projects/#{other_project.id}/hooks", user), params: params
+        expect(response).to have_gitlab_http_status(:created)
+      end
+    end
+
+    context 'when the limit is disabled in application settings' do
+      before do
+        stub_application_setting(project_hooks_create_limit: 0)
+      end
+
+      it 'does not block requests' do
+        3.times do
+          post api("/projects/#{project.id}/hooks", user), params: params
+
+          expect(response).to have_gitlab_http_status(:created)
+        end
+      end
     end
   end
 

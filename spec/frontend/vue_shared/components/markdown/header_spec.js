@@ -2,7 +2,7 @@ import $ from 'jquery';
 import { nextTick } from 'vue';
 import { GlToggle, GlButton } from '@gitlab/ui';
 import { createWrapper as createVueTestWrapper } from '@vue/test-utils';
-import { MARKDOWN_EVENT_SHOW } from '~/behaviors/preview_markdown';
+import { MARKDOWN_EVENT_SHOW } from '~/behaviors/preview_markdown_events';
 import HeaderComponent from '~/vue_shared/components/markdown/header.vue';
 import { FIND_AND_REPLACE_FOCUSABLE_SELECTOR } from '~/vue_shared/components/markdown/constants';
 import HeaderDividerComponent from '~/vue_shared/components/markdown/header_divider.vue';

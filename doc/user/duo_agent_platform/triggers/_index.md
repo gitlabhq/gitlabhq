@@ -31,6 +31,20 @@ A trigger cannot be created for a custom agent or foundational agent.
 For example, you can specify flows to be triggered when you mention them
 in a discussion, or when you assign them as a reviewer.
 
+## Foundational flow triggers
+
+A trigger runs only when its foundational flow is turned on for your group or project. For more information, see [turn foundational flows on or off](../flows/foundational_flows/_index.md#turn-foundational-flows-on-or-off).
+
+Foundational flows can start in the following ways:
+
+- Default triggers that GitLab adds when you turn on the flow.
+- Triggers that you create for events the flow supports.
+- Another way, such as when a security scan finishes.
+  These flows don't use triggers, so you don't see them listed in **AI** > **Triggers**.
+
+For details about how to start each flow, see the individual
+[foundational flow documentation](../flows/foundational_flows/_index.md).
+
 ## Create a trigger
 
 {{< history >}}
@@ -335,3 +349,45 @@ This billing applies to every trigger event type, including a pipeline state cha
 a work item status change, or a mention.
 
 For more information, see [billing subjects for credit usage](../../../subscriptions/gitlab_credits.md#billing-subjects-for-credit-usage).
+
+## Troubleshooting
+
+### Error: `Event types contains event types not supported`
+
+When you create or edit a foundational flow trigger, you might get this error:
+
+```plaintext
+Event types contains event types not supported by this foundational flow
+```
+
+The trigger includes an event type that the flow does not accept.
+To resolve this error, check the flow's documentation for the events it supports, then do one of the following:
+
+- If the flow uses triggers, edit the trigger to remove the events the flow
+  does not support. For example, Fix CI/CD Pipeline accepts only Pipeline events.
+- If the flow starts another way, delete the trigger because the flow doesn't need one.
+  For example, [SAST False Positive Detection](../../application_security/vulnerabilities/false_positive_detection.md)
+  runs after a security scan.
+
+### Service account shows `No triggers for this event`
+
+When you assign a service account to a merge request or request a review from it,
+the service account might be disabled with the message `No triggers for this event`.
+In mention autocomplete, a service account without a mention trigger doesn't appear.
+In each case, the project has no trigger for that service account and event:
+
+- The assignee menu requires **Assign**.
+- The reviewer menu requires **Assign reviewer**.
+- Mention autocomplete requires **Mention**.
+
+To resolve this issue:
+
+1. In your project, select **AI** > **Triggers**.
+1. Check for a trigger that uses the service account and the event you want.
+1. Check the flow's documentation to confirm that the flow supports that event.
+1. If the flow supports the event, create or edit a trigger to include it.
+   Otherwise, use the method described in the flow's documentation.
+
+An event that you can save in a trigger is not necessarily an event the flow can run.
+For example, Developer cannot run from **Pipeline events**.
+Use a supported event rather than adding an event only to make a service account selectable.

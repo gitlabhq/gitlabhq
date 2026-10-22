@@ -85,6 +85,7 @@ compile-production-assets istanbul:
     # compile-production-assets no longer builds an image (build-assets-image does), but the
     # istanbul job still builds its own instrumented image, so re-enable it here.
     GLCI_BUILD_ASSETS_IMAGE: "true"
+    GLCI_ASSETS_IMAGE_LAYOUT: "webpack-istanbul"
     # Instrumented code is much bigger, so a default build exhausts the pod
     NO_SOURCEMAPS: "true"
     NO_COMPRESSION: "true"
@@ -806,11 +807,9 @@ build-assets-image:
       artifacts: true
   variables:
     GLCI_BUILD_ASSETS_IMAGE: "true"
-    # The assets hash doesn't cover .gitlab/ci/** or app/helpers/**, so the assets-hash tag
-    # may already hold a Webpack-only image from master; without this the script would
-    # re-tag it and the Rspack assets would never ship. Drop this (and restore the free
-    # registry-side re-tag) once Webpack is gone.
-    GLCI_REBUILD_ASSETS_IMAGE: "true"
+    # The assets hash doesn't cover which bundlers go into the image, so an existing image is
+    # only reused if it has this label. Change it when that changes, e.g. when Webpack is removed.
+    GLCI_ASSETS_IMAGE_LAYOUT: "webpack-rspack"
     GLCI_ASSETS_TAG_ENV_FILE_PATH: "assets-tag-env.env"
     ARCH: linux/amd64,linux/arm64
     HEALTHCHECK_TCP_PORT: "2375"

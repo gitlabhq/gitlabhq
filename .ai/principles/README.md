@@ -193,7 +193,7 @@ account**, not by any individual. The bus-factor risk is mitigated by:
   revoke old). The PAT credential is stored in a 1Password vault named
   on the access request.
 - GitLab's
-  [`pipelineScheduleTakeOwnership`](https://docs.gitlab.com/api/graphql/reference/#mutationpipelinescheduletakeownership)
+  [`pipelineScheduleTakeOwnership`](https://docs.gitlab.com/api/graphql/reference/mutations/#pipelinescheduletakeownership)
   mutation lets any project Maintainer or Owner reassign schedule
   ownership if the SA becomes unavailable.
 

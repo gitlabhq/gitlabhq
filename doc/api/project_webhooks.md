@@ -416,6 +416,7 @@ Example response:
 - `signing_token` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/231325) in GitLab 19.0 [with a feature flag](../administration/feature_flags/_index.md) named `webhook_signing_token`. Enabled by default.
 - Feature flag `webhook_signing_token` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/596374) in GitLab 19.1.
 - `duo_flow_callback_enabled` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249149) in GitLab 19.4 [with a feature flag](../administration/feature_flags/_index.md) named `duo_flow_callback_hooks`. Disabled by default.
+- Rate limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/605597) in GitLab 19.6.
 
 {{< /history >}}
 
@@ -426,6 +427,10 @@ Example response:
 > Disabling it is always accepted.
 
 Add a webhook to a specified project.
+
+This endpoint has a rate limit of five requests per minute for each authenticated user for a given project.
+On GitLab Self-Managed and GitLab Dedicated, administrators can
+[change this limit](../administration/settings/rate-limit-on-webhook-operations.md).
 
 ```plaintext
 POST /projects/:id/hooks

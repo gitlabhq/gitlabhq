@@ -1,7 +1,7 @@
 ---
 name: gitlab-mcp-tool-builder
 description: "Build a new GraphQL-backed MCP server tool in gitlab-org/gitlab. Use when adding or scaffolding a GitLab Duo Agent Platform MCP tool that follows the app/services/mcp/tools/ *Tool + Graphql*Service pattern — covers GraphQL API discovery, the two-class-plus-registration build recipe, and gotchas. Keywords: MCP tool, MCP server, GraphQL tool, GitLab Duo Agent Platform."
-version: 1.21.0
+version: 1.21.1
 license: MIT
 compatibility: opencode
 metadata:
@@ -378,7 +378,7 @@ what you promised. Restart the app first (`gdk restart rails-web`) so the new to
 - **`curl`** works too if unblocked: `POST {url}/api/v4/mcp -k -H "Authorization: Bearer <PAT>"`
   with the same JSON-RPC body.
 - **MCP Inspector:** `npx @modelcontextprotocol/inspector` → Streamable HTTP → the
-  endpoint + bearer header. 
+  endpoint + bearer header.
 -  **Claude Code:** `claude mcp add --transport http gitlab-gdk <url> --header "Authorization: Bearer <PAT>"`.
 - **Console:** introspect the GraphQL query directly with `GitlabSchema.execute(...)`.
 

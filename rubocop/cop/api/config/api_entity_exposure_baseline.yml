@@ -178,6 +178,16 @@ ee/lib/api/entities/work_items/features/weight.rb:
   - rolled_up_completed_weight
   - rolled_up_weight
   - weight
+ee/lib/api/entities/work_items/status.rb:
+  usage_radius: 20
+  fields:
+  - category
+  - color
+  - description
+  - icon_name
+  - id
+  - name
+  - position
 lib/api/entities/award_emoji.rb:
   usage_radius: 27
   fields:

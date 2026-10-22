@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::Clusters::AgentActivityEventsResolver do
+RSpec.describe Resolvers::Clusters::AgentActivityEventsResolver, feature_category: :deployment_management do
   include GraphqlHelpers
 
   it { expect(described_class.type).to eq(Types::Clusters::AgentActivityEventType) }

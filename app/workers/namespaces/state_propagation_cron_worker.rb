@@ -24,6 +24,8 @@ module Namespaces
     def perform
       log_extra_metadata_on_done(:reset_count, reset_stuck_processing_records)
       log_extra_metadata_on_done(:reenqueued_count, reenqueue_pending_records)
+
+      Gitlab::NamespaceStatePropagation::Metrics.update_outbox_gauges
     end
 
     private

@@ -803,6 +803,8 @@ class ApplicationSetting < ApplicationRecord
       :group_archive_unarchive_api_limit,
       :group_invited_groups_api_limit,
       :group_projects_api_limit,
+      :group_relations_export_download_limit,
+      :group_relations_export_limit,
       :group_shared_groups_api_limit,
       :groups_api_limit,
       :project_members_api_limit,
@@ -841,6 +843,8 @@ class ApplicationSetting < ApplicationRecord
       :project_create_limit,
       :project_deletion_jobs_concurrency_limit,
       :project_invited_groups_api_limit,
+      :project_relations_export_download_limit,
+      :project_relations_export_limit,
       :project_repositories_blame_limit,
       :project_repositories_blame_unauthenticated_limit,
       :project_repositories_blobs_batch_limit,
@@ -869,6 +873,7 @@ class ApplicationSetting < ApplicationRecord
       :users_api_limit_gpg_keys,
       :users_api_limit_gpg_key,
       :git_push_pipeline_limit,
+      :project_hooks_create_limit,
       :web_hook_event_resend_limit,
       :web_hook_test_limit
   end
@@ -1517,6 +1522,8 @@ class ApplicationSetting < ApplicationRecord
       group_api_limit: [:integer, { default: 400 }],
       group_invited_groups_api_limit: [:integer, { default: 60 }],
       group_projects_api_limit: [:integer, { default: 600 }],
+      group_relations_export_download_limit: [:integer, { default: 100 }],
+      group_relations_export_limit: [:integer, { default: 6 }],
       group_shared_groups_api_limit: [:integer, { default: 60 }],
       groups_api_limit: [:integer, { default: 200 }],
       job_cancel_limit_per_user_project: [:integer, { default: 150 }],
@@ -1538,6 +1545,8 @@ class ApplicationSetting < ApplicationRecord
       project_repositories_blobs_batch_limit: [:integer, { default: 5 }],
       projects_api_limit: [:integer, { default: 2000 }],
       project_members_api_limit: [:integer, { default: 200 }],
+      project_relations_export_download_limit: [:integer, { default: 100 }],
+      project_relations_export_limit: [:integer, { default: 6 }],
       runner_jobs_request_api_limit: [:integer, { default: 2000 }],
       runner_jobs_patch_trace_api_limit: [:integer, { default: 200 }],
       runner_jobs_endpoints_api_limit: [:integer, { default: 200 }],
@@ -1567,6 +1576,7 @@ class ApplicationSetting < ApplicationRecord
       users_api_limit_gpg_key: [:integer, { default: 120 }],
       pipeline_limit_per_user: [:integer, { default: 0 }],
       raw_blob_request_limit_unauthenticated: [:integer, { default: DEFAULT_RAW_BLOB_UNAUTHENTICATED_REQUEST_LIMIT }],
+      project_hooks_create_limit: [:integer, { default: 5 }],
       web_hook_event_resend_limit: [:integer, { default: 5 }],
       web_hook_test_limit: [:integer, { default: 5 }]
     }

@@ -9,6 +9,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/sirupsen/logrus"
+	logrustest "github.com/sirupsen/logrus/hooks/test"
 	"github.com/stretchr/testify/require"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
@@ -20,6 +22,8 @@ const (
 	decisionRailsBody = `{"destination":"rails"}`
 	decisionIAMBody   = `{"destination":"iam"}`
 )
+
+var testIAMServiceURL = helper.URLMustParse("http://iam.test:8084")
 
 // recordingHandler captures invocation count and request body so tests can
 // verify which proxy received the request and that the body survived the
@@ -40,8 +44,7 @@ func (h *recordingHandler) ServeHTTP(_ http.ResponseWriter, r *http.Request) {
 func newTestHandler() (*Handler, *recordingHandler, *recordingHandler) {
 	rails := &recordingHandler{}
 	iam := &recordingHandler{}
-	iamURL, _ := url.Parse("http://iam.test:8084")
-	return &Handler{RailsProxy: rails, IAMProxy: iam, IAMServiceURL: iamURL}, rails, iam
+	return &Handler{RailsProxy: rails, IAMProxy: iam, IAMServiceURL: testIAMServiceURL}, rails, iam
 }
 
 func formPost(path, body string) *http.Request {
@@ -68,11 +71,11 @@ func TestBuildAuthorizeRoute_FallsBackToRailsWhenDependenciesMissing(t *testing.
 	}{
 		{
 			name:    "IAMProxy nil",
-			handler: &Handler{RailsProxy: &recordingHandler{}, API: &api.API{}, IAMServiceURL: mustURL(t, "http://iam.test:8084")},
+			handler: &Handler{RailsProxy: &recordingHandler{}, API: &api.API{}, IAMServiceURL: testIAMServiceURL},
 		},
 		{
 			name:    "API nil",
-			handler: &Handler{RailsProxy: &recordingHandler{}, IAMProxy: &recordingHandler{}, IAMServiceURL: mustURL(t, "http://iam.test:8084")},
+			handler: &Handler{RailsProxy: &recordingHandler{}, IAMProxy: &recordingHandler{}, IAMServiceURL: testIAMServiceURL},
 		},
 	}
 
@@ -266,13 +269,18 @@ func TestBuildAuthorizeRoute_RoutesToRailsWhenPOSTBodyReadFails(t *testing.T) {
 // request — e.g. to verify client_id propagation.
 func newAuthorizeTestHandler(t *testing.T, decisionFn func(r *http.Request) (status int, body string)) (*Handler, *recordingHandler, *recordingHandler) {
 	t.Helper()
+	return newRoutingTestHandler(t, oauthRoutingPath, decisionFn)
+}
+
+func newRoutingTestHandler(t *testing.T, routingPath string, decisionFn func(r *http.Request) (status int, body string)) (*Handler, *recordingHandler, *recordingHandler) {
+	t.Helper()
 
 	// api.PreAuthorize signs outbound requests via secret.RoundTripper, which
 	// requires the test secret file to be wired up.
 	testhelper.ConfigureSecret()
 
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != oauthRoutingPath {
+		if r.URL.Path != routingPath {
 			w.WriteHeader(http.StatusNotFound)
 			return
 		}
@@ -288,7 +296,7 @@ func newAuthorizeTestHandler(t *testing.T, decisionFn func(r *http.Request) (sta
 	h := &Handler{
 		RailsProxy:    rails,
 		IAMProxy:      iam,
-		IAMServiceURL: mustURL(t, "http://iam.test:8084"),
+		IAMServiceURL: testIAMServiceURL,
 		API:           api.NewAPI(helper.URLMustParse(ts.URL), "test", http.DefaultTransport),
 	}
 	return h, rails, iam
@@ -321,11 +329,89 @@ func expectedClientID(query, body string) string {
 	return ""
 }
 
-func mustURL(t *testing.T, raw string) *url.URL {
+// === BuildRegisterRoute ===
+
+func TestBuildRegisterRoute_FallsBackToRailsWhenDependenciesMissing(t *testing.T) {
+	tests := []struct {
+		name    string
+		handler *Handler
+	}{
+		{
+			name:    "IAMServiceURL nil",
+			handler: &Handler{RailsProxy: &recordingHandler{}, IAMProxy: &recordingHandler{}},
+		},
+		{
+			name:    "IAMProxy nil",
+			handler: &Handler{RailsProxy: &recordingHandler{}, IAMServiceURL: testIAMServiceURL},
+		},
+		{
+			name:    "API nil",
+			handler: &Handler{RailsProxy: &recordingHandler{}, IAMProxy: &recordingHandler{}, IAMServiceURL: testIAMServiceURL},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			require.Same(t, tt.handler.RailsProxy, tt.handler.BuildRegisterRoute())
+		})
+	}
+}
+
+func TestBuildRegisterRoute_Routing(t *testing.T) {
+	const body = `{"client_name":"MCP Client","redirect_uris":["http://localhost:1234/cb"]}`
+
+	tests := []struct {
+		name       string
+		status     int
+		decision   string
+		wantIAM    bool
+		wantReason string
+	}{
+		{"iam decision routes to IAM", http.StatusOK, decisionIAMBody, true, reasonDynamicClientRegistration},
+		{"rails decision routes to Rails", http.StatusOK, decisionRailsBody, false, reasonDynamicClientRegistrationFFDisabled},
+		{"unknown decision falls back to Rails", http.StatusOK, `{"destination":"elsewhere"}`, false, reasonDynamicClientRegistrationFFDisabled},
+		{"register_routing error fails safe to Rails", http.StatusInternalServerError, "", false, reasonDynamicClientRegistrationPreAuthorizeError},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			hook := logrustest.NewLocal(logrus.StandardLogger())
+			t.Cleanup(hook.Reset)
+
+			var decisionMethod string
+			h, rails, iam := newRoutingTestHandler(t, registerRoutingPath, func(r *http.Request) (int, string) {
+				decisionMethod = r.Method
+				return tt.status, tt.decision
+			})
+
+			req := httptest.NewRequest(http.MethodPost, "/oauth/register", strings.NewReader(body))
+			req.Header.Set("Content-Type", "application/json")
+			h.BuildRegisterRoute().ServeHTTP(httptest.NewRecorder(), req)
+
+			require.Equal(t, http.MethodPost, decisionMethod)
+			wantDest, got, other := destinationRails, rails, iam
+			if tt.wantIAM {
+				wantDest, got, other = destinationIAM, iam, rails
+			}
+			require.Equal(t, 1, got.called)
+			require.Equal(t, 0, other.called)
+			require.JSONEq(t, body, got.lastBody, "body must be preserved")
+			requireRoutingDecisionLogged(t, hook, wantDest, tt.wantReason)
+		})
+	}
+}
+
+func requireRoutingDecisionLogged(t *testing.T, hook *logrustest.Hook, dest destination, reason string) {
 	t.Helper()
-	u, err := url.Parse(raw)
-	require.NoError(t, err)
-	return u
+
+	for _, e := range hook.AllEntries() {
+		if e.Message == "oauthproxy: routing decision" {
+			require.Equal(t, string(dest), e.Data["destination"])
+			require.Equal(t, reason, e.Data["reason"])
+			return
+		}
+	}
+	require.Fail(t, "routing decision was not logged")
 }
 
 // === BuildTokenRoute ===
@@ -339,10 +425,9 @@ func TestBuildTokenRoute_ReturnsRailsProxyUnchangedWhenIAMURLIsNil(t *testing.T)
 
 func TestBuildTokenRoute_FallsBackToRailsWhenIAMProxyIsNil(t *testing.T) {
 	rails := &recordingHandler{}
-	iamURL, _ := url.Parse("http://iam.test:8084")
 	// IAMServiceURL set but IAMProxy left nil: misconfiguration must degrade
 	// to RailsProxy at build time rather than panic on the first request.
-	built := (&Handler{RailsProxy: rails, IAMServiceURL: iamURL}).BuildTokenRoute()
+	built := (&Handler{RailsProxy: rails, IAMServiceURL: testIAMServiceURL}).BuildTokenRoute()
 
 	require.Same(t, rails, built)
 }

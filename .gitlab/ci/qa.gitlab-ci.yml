@@ -206,11 +206,11 @@ e2e:test-on-cng:
     - .qa:rules:e2e:test-on-cng
   stage: qa
   needs:
-    - compile-production-assets
+    - cache:assets-hash
+    # Child jobs need its artifacts but don't wait for it: https://gitlab.com/gitlab-org/gitlab/-/work_items/356016
+    - clone-gitlab-repo
     - job: compile-production-assets istanbul
       optional: true
-    # Gate on the combined assets image so CNG doesn't pull a stale Webpack-only one.
-    - build-assets-image
     - e2e-test-pipeline-generate
     - job: coverage-frontend
       optional: true
@@ -218,6 +218,7 @@ e2e:test-on-cng:
     QA_RUN_TYPE: e2e-test-on-cng
     PIPELINE_NAME: E2E CNG
     DYNAMIC_PIPELINE_YML: ${CI_PROJECT_DIR}/qa/tmp/test-on-cng-pipeline.yml
+    GLCI_ASSETS_IMAGE_TAG: $GLCI_ASSETS_HASH_IMAGE_TAG
     GLCI_ISTANBUL_ASSETS_IMAGE_TAG: $GLCI_ISTANBUL_ASSETS_IMAGE_TAG
 
 e2e:perf-on-cng:

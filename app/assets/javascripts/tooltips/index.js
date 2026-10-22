@@ -1,8 +1,9 @@
 import { toArray, isElement } from 'lodash-es';
 import Vue from 'vue';
+import { pageSingleton, clearPageSingleton } from '~/lib/utils/page_singleton';
 import Tooltips from './components/tooltips.vue';
 
-let app;
+const SINGLETON_KEY = 'tooltips';
 
 const EVENTS_MAP = {
   hover: 'mouseenter',
@@ -13,25 +14,25 @@ const EVENTS_MAP = {
 const DEFAULT_TRIGGER = 'hover focus';
 const APP_ELEMENT_ID = 'gl-tooltips-app';
 
-const tooltipsApp = () => {
-  if (!app) {
-    const container = document.createElement('div');
+const mountTooltipsApp = () => {
+  const container = document.createElement('div');
 
-    container.setAttribute('id', APP_ELEMENT_ID);
-    document.body.appendChild(container);
+  container.setAttribute('id', APP_ELEMENT_ID);
+  document.body.appendChild(container);
 
-    app = new Vue({
-      name: 'TooltipsRoot',
-      render(h) {
-        return h(Tooltips, {
-          ref: 'tooltips',
-        });
-      },
-    }).$mount(container);
-  }
-
-  return app.$refs.tooltips;
+  return new Vue({
+    name: 'TooltipsRoot',
+    render(h) {
+      return h(Tooltips, {
+        ref: 'tooltips',
+      });
+    },
+  }).$mount(container);
 };
+
+const getApp = () => pageSingleton(SINGLETON_KEY, mountTooltipsApp);
+
+const tooltipsApp = () => getApp().$refs.tooltips;
 
 const isTooltip = (node, selector) => node.matches && node.matches(selector);
 
@@ -90,6 +91,6 @@ export const show = createTooltipApiInvoker((element) =>
 );
 export const once = (event, cb) => tooltipsApp().$once(event, cb);
 export const destroy = () => {
-  tooltipsApp().$destroy();
-  app = null;
+  getApp().$destroy();
+  clearPageSingleton(SINGLETON_KEY);
 };

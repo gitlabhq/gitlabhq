@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::CustomEmoji::Create do
+RSpec.describe Mutations::CustomEmoji::Create, feature_category: :code_review_workflow do
   include GraphqlHelpers
   let_it_be(:group) { create(:group) }
   let_it_be(:current_user) { create(:user, developer_of: group) }

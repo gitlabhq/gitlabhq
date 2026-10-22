@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe UserGroupsCounter do
+RSpec.describe UserGroupsCounter, feature_category: :groups_and_projects do
   subject { described_class.new(user_ids).execute }
 
   describe '#execute' do

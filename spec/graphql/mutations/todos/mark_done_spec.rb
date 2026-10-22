@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::Todos::MarkDone do
+RSpec.describe Mutations::Todos::MarkDone, feature_category: :notifications do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }

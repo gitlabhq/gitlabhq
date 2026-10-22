@@ -83,6 +83,30 @@ RSpec.describe RapidDiffs::DiffFileHeaderComponent, feature_category: :code_revi
     expect(page.find(selector)).to have_text("+#{diff_file.added_lines} −#{diff_file.removed_lines}")
   end
 
+  it "hides the removed line count when no lines are removed", :aggregate_failures do
+    allow(diff_file).to receive_messages(added_lines: 3, removed_lines: 0)
+    render_component
+    stats = find_by_testid('rd-diff-file-stats')
+    expect(stats['aria-label']).to eq('Added 3 lines.')
+    expect(stats).to have_text('+3', exact: true)
+  end
+
+  it "hides the added line count when no lines are added", :aggregate_failures do
+    allow(diff_file).to receive_messages(added_lines: 0, removed_lines: 2)
+    render_component
+    stats = find_by_testid('rd-diff-file-stats')
+    expect(stats['aria-label']).to eq('Removed 2 lines.')
+    expect(stats).to have_text('−2', exact: true)
+  end
+
+  it "hides both line counts when no lines changed", :aggregate_failures do
+    allow(diff_file).to receive_messages(added_lines: 0, removed_lines: 0)
+    render_component
+    stats = find_by_testid('rd-diff-file-stats')
+    expect(stats['aria-label']).to be_nil
+    expect(stats).to have_text('', exact: true)
+  end
+
   context 'with a submodule diff' do
     let(:instance) { create_instance }
     let(:submodule_link) { nil }

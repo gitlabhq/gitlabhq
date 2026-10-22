@@ -5054,6 +5054,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: organizations_transfer_merge_request_diff_commit_users
+  :worker_name: Organizations::TransferMergeRequestDiffCommitUsersWorker
+  :feature_category: :code_review_workflow
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: organizations_transfer_topic_avatar
   :worker_name: Organizations::TransferTopicAvatarWorker
   :feature_category: :organization

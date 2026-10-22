@@ -13219,11 +13219,27 @@ Response for `MergeRequests` aggregation engine.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | `acceptanceRate` | [`Float`](scalars.md#float) | Share of merge requests that were merged. |
+| `codeReviewTime` | [`MergeRequestsAggregationResponseCodeReviewTimeMetrics`](#mergerequestsaggregationresponsecodereviewtimemetrics) | Aggregated `code_review_time` metrics. |
 | `dimensions` | [`MergeRequestsAggregationResponseDimensions`](#mergerequestsaggregationresponsedimensions) | Aggregation dimensions. Every selected dimension will be used for aggregation. |
 | `throughputCount` | [`Int`](scalars.md#int) | Number of merged merge requests. |
+| `timeToFirstReview` | [`MergeRequestsAggregationResponseTimeToFirstReviewMetrics`](#mergerequestsaggregationresponsetimetofirstreviewmetrics) | Aggregated `time_to_first_review` metrics. |
 | `timeToMerge` | [`MergeRequestsAggregationResponseTimeToMergeMetrics`](#mergerequestsaggregationresponsetimetomergemetrics) | Aggregated `time_to_merge` metrics. |
 | `timeToMergeQuantile` | [`Float`](scalars.md#float) | Time to merge quantile in milliseconds. <br><br> <strong>Arguments for `timeToMergeQuantile`:</strong> <dl><dt>`quantile` ([`Float`](scalars.md#float))</dt><dd>Quantile level between 0.0 and 1.0 (e.g. 0.5 for median).</dd></dl> |
 | `totalCount` | [`Int`](scalars.md#int) | Total number of merge requests. |
+
+## `MergeRequestsAggregationResponseCodeReviewTimeMetrics`
+
+Aggregated `code_review_time` metrics for `MergeRequests` aggregation engine.
+
+### `MergeRequestsAggregationResponseCodeReviewTimeMetrics` fields {.no_toc}
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `max` | [`Int`](scalars.md#int) | Maximum time from first non-author human comment to merge in seconds. Excludes merge requests first commented on after the merge. |
+| `mean` | [`Float`](scalars.md#float) | Mean time from first non-author human comment to merge in seconds. Excludes merge requests first commented on after the merge. |
+| `min` | [`Int`](scalars.md#int) | Minimum time from first non-author human comment to merge in seconds. Excludes merge requests first commented on after the merge. |
+| `quantile` | [`Float`](scalars.md#float) | Quantile of time from first non-author human comment to merge in seconds. Excludes merge requests first commented on after the merge. <br><br> <strong>Arguments for `quantile`:</strong> <dl><dt>`quantile` ([`Float`](scalars.md#float))</dt><dd></dd></dl> |
+| `sum` | [`Float`](scalars.md#float) | Sum of time from first non-author human comment to merge in seconds. Excludes merge requests first commented on after the merge. |
 
 ## `MergeRequestsAggregationResponseConnection`
 
@@ -13248,9 +13264,25 @@ Response dimensions for `MergeRequests` aggregation engine.
 | `author` | [`UserCore`](#usercore) | Merge request author. |
 | `createdAt` | [`Date`](scalars.md#date) | Merge request creation date. <br><br> <strong>Arguments for `createdAt`:</strong> <dl><dt>`granularity` ([`String`](scalars.md#string))</dt><dd>Date granularity: daily, weekly, monthly, or a fixed number of days between 1d and 399d (for example 30d).</dd><dt>`origin` ([`Time`](scalars.md#time))</dt><dd>Anchor for fixed-day granularities: buckets start at this timestamp and repeat every N days. Only valid with a fixed-day granularity.</dd></dl> |
 | `createdByDuo` | [`Boolean`](scalars.md#boolean) | Whether the merge request was created by a GitLab Duo session. |
+| `group` | [`Group`](#group) | Group at the requested depth of the hierarchy. NULL for merge requests in projects above that depth. Merge requests in a project at that depth bucket by project namespace ID, which also resolves to NULL. <br><br> <strong>Arguments for `group`:</strong> <dl><dt>`depth` ([`Int`](scalars.md#int))</dt><dd>Depth in the group hierarchy, counted from the top-level group. Defaults to 1.</dd></dl> |
 | `metricMergedAt` | [`Date`](scalars.md#date) | Merge request merge date. <br><br> <strong>Arguments for `metricMergedAt`:</strong> <dl><dt>`granularity` ([`String`](scalars.md#string))</dt><dd>Date granularity: daily, weekly, monthly, or a fixed number of days between 1d and 399d (for example 30d).</dd><dt>`origin` ([`Time`](scalars.md#time))</dt><dd>Anchor for fixed-day granularities: buckets start at this timestamp and repeat every N days. Only valid with a fixed-day granularity.</dd></dl> |
+| `project` | [`Project`](#project) | Target project of the merge request. |
 | `stateId` | [`String`](scalars.md#string) | Merge request state. |
 | `targetBranch` | [`String`](scalars.md#string) | Target branch of the merge request. |
+
+## `MergeRequestsAggregationResponseTimeToFirstReviewMetrics`
+
+Aggregated `time_to_first_review` metrics for `MergeRequests` aggregation engine.
+
+### `MergeRequestsAggregationResponseTimeToFirstReviewMetrics` fields {.no_toc}
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| `max` | [`Int`](scalars.md#int) | Maximum time from merge request creation to first non-author human comment in seconds. Excludes merged merge requests first commented on after the merge. |
+| `mean` | [`Float`](scalars.md#float) | Mean time from merge request creation to first non-author human comment in seconds. Excludes merged merge requests first commented on after the merge. |
+| `min` | [`Int`](scalars.md#int) | Minimum time from merge request creation to first non-author human comment in seconds. Excludes merged merge requests first commented on after the merge. |
+| `quantile` | [`Float`](scalars.md#float) | Quantile of time from merge request creation to first non-author human comment in seconds. Excludes merged merge requests first commented on after the merge. <br><br> <strong>Arguments for `quantile`:</strong> <dl><dt>`quantile` ([`Float`](scalars.md#float))</dt><dd></dd></dl> |
+| `sum` | [`Float`](scalars.md#float) | Sum of time from merge request creation to first non-author human comment in seconds. Excludes merged merge requests first commented on after the merge. |
 
 ## `MergeRequestsAggregationResponseTimeToMergeMetrics`
 

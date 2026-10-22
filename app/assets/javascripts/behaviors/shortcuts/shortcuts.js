@@ -2,7 +2,7 @@ import $ from 'jquery';
 import { flatten } from 'lodash-es';
 import Vue, { defineAsyncComponent } from 'vue';
 import { parseBoolean } from '@gitlab/frontend-utils';
-import { MARKDOWN_EVENT_TOGGLE } from '~/behaviors/preview_markdown';
+import { MARKDOWN_EVENT_TOGGLE } from '~/behaviors/preview_markdown_events';
 import { InternalEvents } from '~/tracking';
 import { FIND_FILE_SHORTCUT_CLICK } from '~/tracking/constants';
 import { Mousetrap, addStopCallback, suppressShortcutsUntilInputFocus } from '~/lib/mousetrap';

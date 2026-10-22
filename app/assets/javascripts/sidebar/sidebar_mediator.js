@@ -2,10 +2,23 @@ import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import toast from '~/vue_shared/plugins/global_toast';
 import { visitUrl } from '~/lib/utils/url_utility';
+import { pageSingleton } from '~/lib/utils/page_singleton';
 import Service from './services/sidebar_service';
 import Store from './stores/sidebar_store';
 
+// The Vue 3 loader can build this module twice. Both copies, and `gfm_auto_complete`,
+// must see one mediator.
+const holder = pageSingleton('sidebar_mediator', () => ({ instance: null }));
+
 export default class SidebarMediator {
+  static get singleton() {
+    return holder.instance;
+  }
+
+  static set singleton(instance) {
+    holder.instance = instance;
+  }
+
   constructor(options) {
     if (!SidebarMediator.singleton) {
       this.initSingleton(options);

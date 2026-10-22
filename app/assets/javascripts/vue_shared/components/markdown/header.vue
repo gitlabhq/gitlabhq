@@ -3,7 +3,7 @@ import { defineAsyncComponent } from 'vue';
 import { GlPopover, GlButton, GlTooltipDirective, GlFormInput } from '@gitlab/ui';
 import $ from 'jquery';
 import { escapeRegExp } from 'lodash-es';
-import { MARKDOWN_EVENT_SHOW, MARKDOWN_EVENT_HIDE } from '~/behaviors/preview_markdown';
+import { MARKDOWN_EVENT_SHOW, MARKDOWN_EVENT_HIDE } from '~/behaviors/preview_markdown_events';
 import {
   keysFor,
   BOLD_TEXT,

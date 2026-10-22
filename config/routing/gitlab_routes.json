@@ -10168,6 +10168,11 @@
     "acceptsFormat": true
   },
   {
+    "template": "/api/:version/internal/workhorse/register_routing",
+    "example": "/api/v4/internal/workhorse/register_routing",
+    "acceptsFormat": true
+  },
+  {
     "template": "/api/:version/issues",
     "example": "/api/v4/issues",
     "acceptsFormat": true

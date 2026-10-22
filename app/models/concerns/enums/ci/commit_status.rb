@@ -41,6 +41,7 @@ module Enums
           runner_configuration_error: 31,
           runner_external_dependency_failure: 32,
           runner_interrupted: 33,
+          runtime_environment_unavailable: 34,
           protected_environment_failure: 1_000,
           insufficient_bridge_permissions: 1_001,
           downstream_bridge_project_not_found: 1_002,

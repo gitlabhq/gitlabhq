@@ -68,20 +68,6 @@ RSpec.describe Bitbucket::ApiConnection do
     end
   end
 
-  describe '#get_response_code' do
-    subject(:connection) do
-      described_class.new({ email: 'user@example.com', api_token: 'token123' }, http_client: http_client)
-    end
-
-    it 'returns the HTTP status code as an integer' do
-      expect(http_client)
-        .to receive(:get)
-        .and_return(instance_double(HTTParty::Response, code: 404, success?: false, parsed_response: {}))
-
-      expect(connection.get_response_code('/repositories/workspace/repo/issues')).to eq(404)
-    end
-  end
-
   describe '#refresh_if_expired!' do
     subject(:connection) do
       described_class.new({ email: 'user@example.com', api_token: 'token123' }, http_client: http_client)

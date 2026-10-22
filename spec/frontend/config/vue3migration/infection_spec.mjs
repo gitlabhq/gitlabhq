@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import vue3InfectionShared from '../../../../config/vue3migration/infection';
+import vue3Aliases from '../../../../config/vue3migration/aliases';
 
 // The module under test is CommonJS; rely on Node's CJS-default-import interop.
 const {
@@ -12,6 +13,7 @@ const {
   isLoaderInjected,
   applyAliasList,
 } = vue3InfectionShared;
+const { INFECTION_BLOCKLIST } = vue3Aliases;
 
 describe('config/vue3migration/infection', () => {
   describe('stripQuery', () => {
@@ -149,7 +151,6 @@ describe('config/vue3migration/infection', () => {
     // Pick a path that matches INFECTABLE_RE (`.js`/`.mjs`/`.vue`) and is not
     // on the INFECTION_BLOCKLIST, so the predicate's "interesting" branches run.
     const INFECTABLE_PATH = '/repo/app/assets/javascripts/some_module.js';
-    const BLOCKED_PATH = 'app/assets/javascripts/behaviors/preview_markdown.js';
     const NON_INFECTABLE_PATH = '/repo/app/assets/javascripts/styles.css';
 
     it('returns false for files that do not match the infectable extensions', () => {
@@ -158,11 +159,15 @@ describe('config/vue3migration/infection', () => {
       expect(isInfectable(NON_INFECTABLE_PATH)).toBe(false);
     });
 
-    it('returns false for files on the infection blocklist', () => {
-      const isInfectable = createIsInfectable(null);
+    // The blocklist is a last resort and can be empty.
+    it.runIf(INFECTION_BLOCKLIST.length > 0)(
+      'returns false for files on the infection blocklist',
+      () => {
+        const isInfectable = createIsInfectable(null);
 
-      expect(isInfectable(BLOCKED_PATH)).toBe(false);
-    });
+        expect(isInfectable(`/repo/${INFECTION_BLOCKLIST[0]}`)).toBe(false);
+      },
+    );
 
     it('returns true for infectable files when no scanner graph is provided', () => {
       const isInfectable = createIsInfectable(null);

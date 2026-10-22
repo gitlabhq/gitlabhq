@@ -1,6 +1,6 @@
-import { setConfigs } from '@gitlab/duo-ui';
+import setConfigs from '@gitlab/duo-ui/dist/config';
 
-jest.mock('@gitlab/duo-ui', () => ({ setConfigs: jest.fn() }));
+jest.mock('@gitlab/duo-ui/dist/config', () => ({ __esModule: true, default: jest.fn() }));
 jest.mock('~/locale', () => ({
   __: jest.fn((str) => str),
   s__: jest.fn((str) => str),

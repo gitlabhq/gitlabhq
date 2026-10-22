@@ -184,7 +184,7 @@ RSpec.describe ProjectExportJob, feature_category: :importers do
     let(:finished) { ProjectExportJob::STATUS[:finished] }
 
     context 'when a new ProjectExportJob is created' do
-      let(:project_export_job) { create(:project_export_job) }
+      let(:project_export_job) { build_stubbed(:project_export_job) }
 
       it 'is initialized in the queued state' do
         expect(project_export_job).to be_queued
@@ -192,7 +192,7 @@ RSpec.describe ProjectExportJob, feature_category: :importers do
     end
 
     context 'when the ProjectExportJob is in queued state' do
-      let(:project_export_job) { create(:project_export_job) }
+      let(:project_export_job) { build(:project_export_job) }
 
       it 'can transition to started state' do
         expect { project_export_job.start }.to change { project_export_job.status }.from(queued).to(started)
@@ -220,7 +220,7 @@ RSpec.describe ProjectExportJob, feature_category: :importers do
     end
 
     context 'when the ProjectExportJob is in finished state' do
-      let(:project_export_job) { create(:project_export_job, status: finished) }
+      let(:project_export_job) { build_stubbed(:project_export_job, status: finished) }
 
       it 'does not transition further' do
         expect { project_export_job.fail_op }.not_to change { project_export_job.status }

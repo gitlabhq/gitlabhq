@@ -1,4 +1,5 @@
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
+import { pageSingleton } from '~/lib/utils/page_singleton';
 import EmbeddedIframe from '../components/embedded_iframe.vue';
 
 export const iframeRenderingEnabled = () =>
@@ -25,7 +26,7 @@ export const iframeProviderFor = (src, providerId) => {
 
 export const isIframeSrcAllowed = (src, providerId) => Boolean(iframeProviderFor(src, providerId));
 
-const elsProcessingMap = new WeakMap();
+const elsProcessingMap = pageSingleton('render_iframe_els', () => new WeakMap());
 
 function renderIframeEl(el) {
   const {

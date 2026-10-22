@@ -6,6 +6,8 @@ module Gitlab
       module Instrumentations
         class OperatingSystemMetric < GenericMetric
           value do
+            require 'ohai'
+
             ohai_data = Ohai::System.new.tap do |oh|
               oh.all_plugins(['platform'])
             end.data

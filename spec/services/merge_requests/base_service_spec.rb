@@ -40,7 +40,7 @@ RSpec.describe MergeRequests::BaseService, feature_category: :code_review_workfl
     end
 
     shared_examples 'does not enqueue Jira sync worker' do
-      it do
+      it 'does not add a job to the Jira merge request sync queue' do
         Sidekiq::Testing.fake! do
           expect { subject }.not_to change { JiraConnect::SyncMergeRequestWorker.jobs.size }
         end

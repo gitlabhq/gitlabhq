@@ -25,7 +25,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
       get api("/internal/check"), headers: headers
     end
 
-    it do
+    it 'returns the API version and reports redis as available' do
       expect_any_instance_of(Redis).to receive(:ping).and_return('PONG')
 
       perform_request
@@ -836,7 +836,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
 
       context "git push" do
         context 'project as namespace/project' do
-          it do
+          it 'allows the push and returns the project and Gitaly details' do
             push(key, project)
 
             expect(response).to have_gitlab_http_status(:ok)
@@ -932,7 +932,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
       end
 
       context "git pull" do
-        it do
+        it 'denies the pull without recording user activity' do
           pull(key, project)
 
           expect(response).to have_gitlab_http_status(:unauthorized)
@@ -942,7 +942,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
       end
 
       context "git push" do
-        it do
+        it 'denies the push without recording user activity' do
           push(key, project)
 
           expect(response).to have_gitlab_http_status(:unauthorized)
@@ -1012,7 +1012,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
       end
 
       context "git push" do
-        it do
+        it 'returns the custom action payload and console messages' do
           push(key, project)
 
           expect(response).to have_gitlab_http_status(:multiple_choices)
@@ -1070,7 +1070,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
       end
 
       context "git pull" do
-        it do
+        it 'denies the pull without recording user activity' do
           pull(key, personal_project)
 
           expect(response).to have_gitlab_http_status(:unauthorized)
@@ -1080,7 +1080,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
       end
 
       context "git push" do
-        it do
+        it 'denies the push without recording user activity' do
           push(key, personal_project)
 
           expect(response).to have_gitlab_http_status(:unauthorized)
@@ -1133,7 +1133,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
       end
 
       context "git pull" do
-        it do
+        it 'allows the pull' do
           pull(key, project)
 
           expect(response).to have_gitlab_http_status(:ok)
@@ -1142,7 +1142,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
       end
 
       context "git push" do
-        it do
+        it 'denies the push' do
           push(key, project)
 
           expect(response).to have_gitlab_http_status(:unauthorized)
@@ -1159,7 +1159,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
           key.projects << project
         end
 
-        it do
+        it 'allows the archive and returns the deploy key and Gitaly details' do
           archive(key, project)
 
           expect(response).to have_gitlab_http_status(:ok)
@@ -1185,7 +1185,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
       end
 
       context "not added to project" do
-        it do
+        it 'returns not found' do
           archive(key, project)
 
           expect(response).to have_gitlab_http_status(:not_found)
@@ -1339,7 +1339,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
     end
 
     context 'user does not exist' do
-      it do
+      it 'returns not found' do
         pull(double('key', id: 0), project)
 
         expect(response).to have_gitlab_http_status(:not_found)

@@ -86954,6 +86954,12 @@
               "deprecationReason": null
             },
             {
+              "name": "RUNTIME_ENVIRONMENT_UNAVAILABLE",
+              "description": "A job that failed due to runtime environment unavailable.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "PROTECTED_ENVIRONMENT_FAILURE",
               "description": "A job that failed due to protected environment failure.",
               "isDeprecated": false,
@@ -156721,13 +156727,19 @@
             },
             {
               "name": "WORK_ITEM_PLAN_TO_MERGE_REQUEST",
-              "description": "Session initiated from implementing a work item plan.",
+              "description": "Session initiated from creating a merge request from an existing workplan for a work item.",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
               "name": "WEB_CHAT",
               "description": "Session initiated from GitLab Duo Chat in the web UI.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "WORK_ITEM_WORKPLAN",
+              "description": "Session initiated from generating a workplan for a work item.",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -266473,6 +266485,18 @@
               "deprecationReason": null
             },
             {
+              "name": "codeReviewTime",
+              "description": "Aggregated `code_review_time` metrics.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "MergeRequestsAggregationResponseCodeReviewTimeMetrics",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "dimensions",
               "description": "Aggregation dimensions. Every selected dimension will be used for aggregation.",
               "args": [],
@@ -266491,6 +266515,18 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "timeToFirstReview",
+              "description": "Aggregated `time_to_first_review` metrics.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "MergeRequestsAggregationResponseTimeToFirstReviewMetrics",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -266540,6 +266576,90 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "MergeRequestsAggregationResponseCodeReviewTimeMetrics",
+          "description": "Aggregated `code_review_time` metrics for `MergeRequests` aggregation engine",
+          "fields": [
+            {
+              "name": "max",
+              "description": "Maximum time from first non-author human comment to merge in seconds. Excludes merge requests first commented on after the merge",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "mean",
+              "description": "Mean time from first non-author human comment to merge in seconds. Excludes merge requests first commented on after the merge",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "min",
+              "description": "Minimum time from first non-author human comment to merge in seconds. Excludes merge requests first commented on after the merge",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "quantile",
+              "description": "Quantile of time from first non-author human comment to merge in seconds. Excludes merge requests first commented on after the merge",
+              "args": [
+                {
+                  "name": "quantile",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Float",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "sum",
+              "description": "Sum of time from first non-author human comment to merge in seconds. Excludes merge requests first commented on after the merge",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -266693,6 +266813,31 @@
               "deprecationReason": null
             },
             {
+              "name": "group",
+              "description": "Group at the requested depth of the hierarchy. NULL for merge requests in projects above that depth. Merge requests in a project at that depth bucket by project namespace ID, which also resolves to NULL.",
+              "args": [
+                {
+                  "name": "depth",
+                  "description": "Depth in the group hierarchy, counted from the top-level group. Defaults to 1.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Group",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "metricMergedAt",
               "description": "Merge request merge date",
               "args": [
@@ -266724,6 +266869,18 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "Date",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "project",
+              "description": "Target project of the merge request",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Project",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -266787,6 +266944,90 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "MergeRequestsAggregationResponse",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "MergeRequestsAggregationResponseTimeToFirstReviewMetrics",
+          "description": "Aggregated `time_to_first_review` metrics for `MergeRequests` aggregation engine",
+          "fields": [
+            {
+              "name": "max",
+              "description": "Maximum time from merge request creation to first non-author human comment in seconds. Excludes merged merge requests first commented on after the merge",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "mean",
+              "description": "Mean time from merge request creation to first non-author human comment in seconds. Excludes merged merge requests first commented on after the merge",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "min",
+              "description": "Minimum time from merge request creation to first non-author human comment in seconds. Excludes merged merge requests first commented on after the merge",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "quantile",
+              "description": "Quantile of time from merge request creation to first non-author human comment in seconds. Excludes merged merge requests first commented on after the merge",
+              "args": [
+                {
+                  "name": "quantile",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Float",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "sum",
+              "description": "Sum of time from merge request creation to first non-author human comment in seconds. Excludes merged merge requests first commented on after the merge",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
                 "ofType": null
               },
               "isDeprecated": false,

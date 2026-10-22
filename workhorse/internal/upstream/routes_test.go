@@ -2,9 +2,12 @@ package upstream
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
+	"strings"
 	"sync/atomic"
 	"testing"
 
@@ -12,6 +15,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
 )
 
@@ -116,6 +120,88 @@ func TestAllowedProxyRoute(t *testing.T) {
 	ws, _ := startWorkhorseServer(t, railsServer.URL, true)
 
 	runTestCasesPost(t, ws, testCases)
+}
+
+func TestOAuthRegisterRoute(t *testing.T) {
+	const (
+		registerPath        = "/oauth/register"
+		registerRoutingPath = "/api/v4/internal/workhorse/register_routing"
+		registerBody        = `{"client_name":"MCP Client","redirect_uris":["http://localhost:1234/cb"]}`
+		railsAnswer         = "Local Rails server received request to path " + registerPath
+		iamAnswer           = "IAM received request to path " + registerPath
+	)
+
+	testhelper.ConfigureSecret()
+
+	var routingDecision string
+	railsServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path == registerRoutingPath {
+			// PreAuthorize only parses the decision when the response carries
+			// the Workhorse API content type.
+			w.Header().Set("Content-Type", "application/vnd.gitlab-workhorse+json")
+			fmt.Fprintf(w, `{"destination":%q}`, routingDecision)
+			return
+		}
+		fmt.Fprintf(w, "Local Rails server received request to path %s", r.URL.Path)
+	}))
+	t.Cleanup(railsServer.Close)
+
+	var iamPath, iamBody string
+	iamServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		raw, _ := io.ReadAll(r.Body)
+		iamPath, iamBody = r.URL.Path, string(raw)
+
+		w.WriteHeader(http.StatusCreated)
+		fmt.Fprint(w, iamAnswer)
+	}))
+	t.Cleanup(iamServer.Close)
+
+	tests := []struct {
+		name          string
+		method        string
+		iamServiceURL *url.URL
+		decision      string
+		wantStatus    int
+		wantBody      string
+	}{
+		{"POST goes to IAM on an iam decision", http.MethodPost, helper.URLMustParse(iamServer.URL), "iam", http.StatusCreated, iamAnswer},
+		{"POST stays on Rails on a rails decision", http.MethodPost, helper.URLMustParse(iamServer.URL), "rails", http.StatusOK, railsAnswer},
+		{"POST stays on Rails when IAMServiceURL is unset", http.MethodPost, nil, "iam", http.StatusOK, railsAnswer},
+		{"GET stays on Rails", http.MethodGet, helper.URLMustParse(iamServer.URL), "iam", http.StatusOK, railsAnswer},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			iamPath, iamBody = "", ""
+			routingDecision = tt.decision
+			cfg := newUpstreamConfig(railsServer.URL)
+			cfg.IAMServiceURL = tt.iamServiceURL
+
+			shutdownChan := make(chan struct{})
+			ws := httptest.NewServer(newUpstream(*cfg, testDependencies(t, withShutdownChan(shutdownChan)), configureRoutes))
+			t.Cleanup(func() {
+				close(shutdownChan)
+				ws.Close()
+			})
+
+			req, err := http.NewRequest(tt.method, ws.URL+registerPath, strings.NewReader(registerBody))
+			require.NoError(t, err)
+			req.Header.Set("Content-Type", "application/json")
+
+			resp, err := http.DefaultClient.Do(req)
+			require.NoError(t, err)
+			defer resp.Body.Close()
+
+			body, err := io.ReadAll(resp.Body)
+			require.NoError(t, err)
+			require.Equal(t, tt.wantStatus, resp.StatusCode)
+			require.Equal(t, tt.wantBody, string(body))
+			if tt.wantBody == iamAnswer {
+				require.Equal(t, registerPath, iamPath)
+				require.JSONEq(t, registerBody, iamBody)
+			}
+		})
+	}
 }
 
 func TestAllowedProxyRouteWithRateLimitCache(t *testing.T) {

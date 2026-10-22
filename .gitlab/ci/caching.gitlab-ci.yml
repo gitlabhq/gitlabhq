@@ -113,7 +113,10 @@ cache:assets-hash:
     - .with-alpine-ruby-image
     - .caching:rules:frontend-asset-hash
   script:
-    - echo "GLCI_GITLAB_ASSETS_HASH=$(ruby scripts/lib/assets_sha.rb)" > build.env
+    - assets_hash=$(ruby scripts/lib/assets_sha.rb)
+    - echo "GLCI_GITLAB_ASSETS_HASH=${assets_hash}" > build.env
+    # Same tag as assets_image_tag in scripts/utils.sh, so jobs can name the assets image before it's built
+    - echo "GLCI_ASSETS_HASH_IMAGE_TAG=assets-hash-$(echo "${assets_hash}" | cut -c1-10)" >> build.env
     - echo "Calculated assets checksum - $(cat build.env)"
   artifacts:
     reports:

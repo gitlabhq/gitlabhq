@@ -29,6 +29,10 @@
   --rd-diff-file-header-radius: var(--rd-diff-file-border-radius) var(--rd-diff-file-border-radius) 0 0;
   --rd-diff-file-header-collapsed-radius: var(--rd-diff-file-border-radius);
   container: diff-file / normal;
+
+  @include gl-container-width-down(sm, panel) {
+    --rd-diff-file-header-height: calc(#{$file-header-height} + #{$gl-spacing-scale-2} + #{$gl-button-small-size});
+  }
 }
 
 // duplicate selector to override styles by .flash-container
@@ -130,6 +134,11 @@ diff-file:has([data-apply-suggestion-toggle] button[aria-expanded='true']) {
   top: calc(var(--rd-app-sticky-top, 1px) - 1px);
   z-index: constants.$diff-file-header-z-index;
   container-type: scroll-state;
+
+  @include gl-container-width-down(md, panel) {
+    position: relative;
+    top: auto;
+  }
 }
 
 // stylelint-disable-next-line gitlab/no-has -- scoped to diff file sticky header
@@ -148,6 +157,11 @@ diff-file:has([data-apply-suggestion-toggle] button[aria-expanded='true']) {
   border-radius: var(--rd-diff-file-header-radius);
   word-break: break-word;
 
+  @include gl-container-width-down(sm, panel) {
+    flex-wrap: wrap;
+    row-gap: $gl-spacing-scale-2;
+  }
+
   @container scroll-state(stuck: top) {
     border-radius: 0 0 var(--rd-diff-file-border-radius) var(--rd-diff-file-border-radius);
   }
@@ -163,6 +177,11 @@ diff-file:has([data-apply-suggestion-toggle] button[aria-expanded='true']) {
   padding: var(--rd-diff-file-header-vertical-padding);
   margin: calc(var(--rd-diff-file-header-vertical-padding) * -1);
   z-index: 1;
+
+  @include gl-container-width-down(sm, panel) {
+    flex: 1 0 100%;
+    order: -1;
+  }
 }
 
 // we shouldn't use flex to align these items because it forces copy button to always wrap to a new line
@@ -241,6 +260,14 @@ diff-file:has([data-apply-suggestion-toggle] button[aria-expanded='true']) {
   margin:  $vertical-padding-inv $horizontal-padding-inv $vertical-padding-inv auto;
   gap: $gl-padding;
   z-index: 1;
+
+  @include gl-container-width-down(sm, panel) {
+    flex: 1 1 0;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    column-gap: $gl-spacing-scale-3;
+    padding-left: 0;
+  }
 }
 
 .rd-diff-file-stats {
@@ -249,6 +276,10 @@ diff-file:has([data-apply-suggestion-toggle] button[aria-expanded='true']) {
   margin: 0 0 0 auto;
   white-space: nowrap;
   gap: $gl-padding-8;
+
+  @include gl-container-width-down(sm, panel) {
+    @apply gl-text-sm;
+  }
 }
 
 .rd-stats-added {
