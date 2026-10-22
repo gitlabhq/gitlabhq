@@ -41,7 +41,6 @@ class SlackIntegration < ApplicationRecord
   # updated marketplace app is published, or new installs fail with invalid_scope.
   AGENT_APP_SCOPES = [SCOPE_IM_HISTORY, SCOPE_MPIM_HISTORY, SCOPE_ASSISTANT_WRITE].freeze
 
-  MCP_URL = 'https://mcp.slack.com/mcp'
   MCP_USER_SCOPES = [SCOPE_CHANNELS_HISTORY, SCOPE_SEARCH_READ_PUBLIC].freeze
 
   DATABASE_ATTRIBUTES = %w[

@@ -16,7 +16,7 @@ RSpec.describe AuditEvents::GoogleCloud::Authentication, feature_category: :audi
     end
 
     context 'with doubled service_account_credentials' do
-      let(:service_account_credentials) { instance_double('Google::Auth::ServiceAccountCredentials') }
+      let(:service_account_credentials) { instance_double(Google::Auth::ServiceAccountCredentials) }
 
       before do
         allow(Google::Auth::ServiceAccountCredentials)

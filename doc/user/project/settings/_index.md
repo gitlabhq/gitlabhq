@@ -156,6 +156,12 @@ Configure your project's merge request settings:
 
 ### Delete the source branch on merge by default
 
+{{< history >}}
+
+- Instance default [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/465720) in GitLab 19.6.
+
+{{< /history >}}
+
 In merge requests, you can change the default behavior so that the
 **Delete the source branch** checkbox is always selected.
 
@@ -168,7 +174,22 @@ To set this default:
 
 This setting applies to merge requests with a source branch in this project.
 For merge requests from a fork, the default comes from the fork's setting, not this project's.
-Forks do not inherit this setting when they are created.
+New forks use the instance default instead of inheriting this setting from the source project.
+
+On GitLab Self-Managed and GitLab Dedicated, administrators can set the default for new projects.
+Changing this default does not affect existing projects.
+
+Prerequisites:
+
+- Administrator access.
+
+To set the default for new projects:
+
+1. In the upper-right corner, select **Admin**.
+1. Select **Settings** > **General**.
+1. Expand **Merge requests**.
+1. Select or clear **Enable "Delete source branch" option by default**.
+1. Select **Save changes**.
 
 ## Add additional webhook triggers for project access token expiration
 

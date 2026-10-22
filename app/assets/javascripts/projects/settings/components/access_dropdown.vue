@@ -123,6 +123,7 @@ export default {
   data() {
     return {
       loading: false,
+      preventClose: false,
       initialLoading: false,
       query: '',
       users: [],
@@ -498,6 +499,7 @@ export default {
       return [...added, ...removed, ...preserved];
     },
     onItemClick(item) {
+      this.preventClose = true;
       this.toggleSelection(item);
       this.emitUpdate();
     },
@@ -537,6 +539,11 @@ export default {
     emitUpdate() {
       this.$emit('select', this.selection);
     },
+    onDropdownHide(event) {
+      // GlDropdownItem closes the dropdown after every click, but this is a multi-select
+      if (this.preventClose) event.preventDefault();
+      this.preventClose = false;
+    },
     onHide() {
       this.$emit('hidden', this.selection);
     },
@@ -568,6 +575,7 @@ export default {
     aria-labelledby="allowed-users-label"
     :data-testid="testId"
     @shown="onShown"
+    @hide="onDropdownHide"
     @hidden="onHide"
   >
     <template v-if="searchEnabled" #header>
@@ -583,7 +591,7 @@ export default {
         data-testid="role-dropdown-item"
         is-check-item
         :is-checked="isSelected(role)"
-        @click.capture.native.stop="onItemClick(role)"
+        @click="onItemClick(role)"
       >
         {{ role.text }}
       </gl-dropdown-item>
@@ -602,7 +610,7 @@ export default {
         data-testid="member-role-dropdown-item"
         is-check-item
         :is-checked="isSelected(role)"
-        @click.capture.native.stop="onItemClick(role)"
+        @click="onItemClick(role)"
       >
         {{ role.name }}
       </gl-dropdown-item>
@@ -620,7 +628,7 @@ export default {
         :avatar-url="group.avatar_url"
         is-check-item
         :is-checked="isSelected(group)"
-        @click.capture.native.stop="onItemClick(group)"
+        @click="onItemClick(group)"
       >
         {{ group.name }}
       </gl-dropdown-item>
@@ -639,7 +647,7 @@ export default {
         :secondary-text="user.username"
         is-check-item
         :is-checked="isSelected(user)"
-        @click.capture.native.stop="onItemClick(user)"
+        @click="onItemClick(user)"
       >
         {{ user.name }}
       </gl-dropdown-item>
@@ -657,7 +665,7 @@ export default {
         is-check-item
         :is-checked="isSelected(key)"
         class="gl-truncate"
-        @click.capture.native.stop="onItemClick(key)"
+        @click="onItemClick(key)"
       >
         <div class="gl-truncate gl-font-bold">{{ key.title }}</div>
         <div class="gl-truncate gl-text-subtle">

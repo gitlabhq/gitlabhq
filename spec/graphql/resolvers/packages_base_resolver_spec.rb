@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::PackagesBaseResolver do
+RSpec.describe Resolvers::PackagesBaseResolver, feature_category: :package_registry do
   include GraphqlHelpers
 
   let(:args) do

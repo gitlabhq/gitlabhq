@@ -9,7 +9,6 @@ import StatesTable from './states_table.vue';
 export default {
   name: 'TerraformList',
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     states: {
       query: getStatesQuery,
       variables() {
@@ -46,6 +45,7 @@ export default {
   },
   data() {
     return {
+      states: undefined,
       cursor: {
         first: MAX_LIST_COUNT,
         after: null,

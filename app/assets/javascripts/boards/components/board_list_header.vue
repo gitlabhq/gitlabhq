@@ -104,6 +104,7 @@ export default {
   emits: ['open-unassigned-lane', 'set-active-list', 'toggle-new-form'],
   data() {
     return {
+      boardList: undefined,
       showMilestonePopover: false,
     };
   },
@@ -225,7 +226,6 @@ export default {
     },
   },
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     boardList: {
       fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
       query() {

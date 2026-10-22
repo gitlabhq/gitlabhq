@@ -103,13 +103,13 @@ export default {
   ],
   data() {
     return {
+      issuableReference: undefined,
       isReportAbuseDrawerOpen: false,
       isUserSignedIn: isLoggedIn(),
       isDesktopDropdownVisible: false,
     };
   },
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     issuableReference: {
       query: issueReferenceQuery,
       variables() {

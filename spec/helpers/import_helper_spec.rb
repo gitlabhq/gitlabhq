@@ -93,13 +93,13 @@ RSpec.describe ImportHelper, feature_category: :importers do
     subject { helper.import_configure_github_admin_message }
 
     it 'returns note for admin' do
-      allow(helper).to receive(:current_user) { instance_double('User', can_admin_all_resources?: true) }
+      allow(helper).to receive(:current_user) { instance_double(User, can_admin_all_resources?: true) }
 
       is_expected.to have_text('Note: As an administrator')
     end
 
     it 'returns note for other user' do
-      allow(helper).to receive(:current_user) { instance_double('User', can_admin_all_resources?: false) }
+      allow(helper).to receive(:current_user) { instance_double(User, can_admin_all_resources?: false) }
 
       is_expected.to have_text('Note: Consider asking your GitLab administrator')
     end

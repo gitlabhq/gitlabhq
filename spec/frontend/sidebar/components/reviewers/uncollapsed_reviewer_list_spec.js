@@ -28,6 +28,8 @@ describe('UncollapsedReviewerList component', () => {
 
   const findAllRerequestButtons = () =>
     wrapper.findAllComponents('[data-testid="re-request-button"]');
+  const findDepthDropdown = () =>
+    wrapper.findComponent('[data-testid="re-request-depth-dropdown"]');
   const findAllReviewerApprovalIcons = () => wrapper.findAll('[name="check-circle"]');
   const findAllReviewerAvatarLinks = () => wrapper.findAllComponents(ReviewerAvatarLink);
 
@@ -37,7 +39,7 @@ describe('UncollapsedReviewerList component', () => {
       .at(0)
       .classes('merge-request-approved-icon');
 
-  function createComponent(props = {}) {
+  function createComponent(props = {}, provide = {}) {
     const propsData = {
       users: [],
       rootPath: TEST_HOST,
@@ -47,6 +49,7 @@ describe('UncollapsedReviewerList component', () => {
 
     wrapper = shallowMount(UncollapsedReviewerList, {
       propsData,
+      provide,
     });
   }
 
@@ -296,6 +299,45 @@ describe('UncollapsedReviewerList component', () => {
         ],
         canRerequest: true,
       });
+      expect(findAllRerequestButtons().exists()).toBe(true);
+    });
+  });
+
+  // The depth choice is EE-only, so FOSS never shows it.
+  (IS_EE ? describe : describe.skip)('when the deep Duo Code Review flow is enabled', () => {
+    const duoBot = {
+      ...userDataMock({ reviewState: 'REVIEWED', approved: false }),
+      type: 'DUO_CODE_REVIEW_BOT',
+    };
+
+    const createWithDeepFlow = (users) =>
+      createComponent({ users }, { glFeatures: { duoCodeReviewDeepFlow: true } });
+
+    it('offers a depth choice instead of the re-request button for the Duo Code Review bot', () => {
+      createWithDeepFlow([duoBot]);
+
+      expect(findDepthDropdown().exists()).toBe(true);
+      expect(findAllRerequestButtons().exists()).toBe(false);
+    });
+
+    it.each`
+      index | depth
+      ${0}  | ${'STANDARD'}
+      ${1}  | ${'DEEP'}
+    `('re-requests a review with depth $depth', async ({ index, depth }) => {
+      createWithDeepFlow([duoBot]);
+
+      findDepthDropdown().props('items')[index].action();
+      await nextTick();
+
+      expect(wrapper.emitted('request-review')[0][0]).toMatchObject({ userId: duoBot.id, depth });
+      expect(findDepthDropdown().props('loading')).toBe(true);
+    });
+
+    it('keeps the re-request button for other reviewers', () => {
+      createWithDeepFlow([userDataMock({ reviewState: 'REVIEWED', approved: false })]);
+
+      expect(findDepthDropdown().exists()).toBe(false);
       expect(findAllRerequestButtons().exists()).toBe(true);
     });
   });

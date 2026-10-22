@@ -384,7 +384,7 @@ RSpec.describe Gitlab::AlertManagement::Payload::Base do
 
     context 'with alerting integration provided' do
       before do
-        parsed_payload.integration = instance_double('::AlertManagement::HttpIntegration', name: 'INTEGRATION')
+        parsed_payload.integration = instance_double(::AlertManagement::HttpIntegration, name: 'INTEGRATION')
       end
 
       it { is_expected.to eq('INTEGRATION') }

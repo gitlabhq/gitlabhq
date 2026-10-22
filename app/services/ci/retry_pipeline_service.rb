@@ -96,7 +96,6 @@ module Ci
     # Returns a throttled ServiceResponse, or nil when the call may proceed.
     def check_rate_limit(pipeline)
       return unless current_user
-      return unless Feature.enabled?(:rate_limit_pipeline_retry, pipeline.project)
 
       limit = throttled_limit(pipeline)
       return unless limit

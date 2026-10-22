@@ -26,11 +26,20 @@ import IssueMilestone from '~/issuable/components/issue_milestone.vue';
 import WorkItemDatesAttribute from '~/work_items/components/shared/work_item_dates_attribute.vue';
 import WorkItemRelationshipIcons from '~/work_items/components/shared/work_item_relationship_icons.vue';
 import WorkItemParentMetadata from '~/work_items/components/shared/work_item_parent_metadata.vue';
-import { BOARD_CARD_NO_DRAG_CLASS } from '../constants';
+import { BOARD_CARD_LINK_CLASS, BOARD_CARD_NO_DRAG_CLASS } from '../constants';
+import {
+  FOCUS_NEXT,
+  FOCUS_PREVIOUS,
+  focusCardInColumn,
+  focusCardInRow,
+} from '../keyboard_navigation';
 
 export default {
   name: 'WorkItemCard',
   noDragClass: BOARD_CARD_NO_DRAG_CLASS,
+  linkClass: BOARD_CARD_LINK_CLASS,
+  FOCUS_NEXT,
+  FOCUS_PREVIOUS,
   i18n: {
     actions: s__('WorkItemBoard|Card actions'),
     moveToStart: s__('WorkItemBoard|Move to start of list'),
@@ -105,6 +114,7 @@ export default {
     return {
       typeDescriptionId: uniqueId('work-item-card-type-'),
       referenceDescriptionId: uniqueId('work-item-card-reference-'),
+      isActionsMenuOpen: false,
     };
   },
   computed: {
@@ -249,6 +259,12 @@ export default {
       }
       this.$emit('set-active-item', this.isActive ? null : this.item);
     },
+    moveFocusInColumn(event, delta) {
+      focusCardInColumn(event.currentTarget, delta);
+    },
+    moveFocusInRow(event, delta) {
+      focusCardInRow(event.currentTarget, delta);
+    },
   },
 };
 </script>
@@ -293,8 +309,13 @@ export default {
             :aria-current="isActive ? 'true' : undefined"
             :aria-describedby="cardDescribedBy"
             data-testid="work-item-link"
+            :class="$options.linkClass"
             class="gl-text-default gl-stretched-link hover:gl-text-default hover:gl-no-underline focus-visible:gl-outline-none focus-visible:after:gl-rounded-lg focus-visible:after:gl-content-[''] focus-visible:after:gl-focus-inset"
             @click="handleCardClick"
+            @keydown.up.exact.prevent="moveFocusInColumn($event, $options.FOCUS_PREVIOUS)"
+            @keydown.down.exact.prevent="moveFocusInColumn($event, $options.FOCUS_NEXT)"
+            @keydown.left.exact.prevent="moveFocusInRow($event, $options.FOCUS_PREVIOUS)"
+            @keydown.right.exact.prevent="moveFocusInRow($event, $options.FOCUS_NEXT)"
           >
             <gl-truncate :text="item.title" with-tooltip class="gl-relative gl-z-1" />
           </a>
@@ -396,7 +417,8 @@ export default {
       :toggle-text="$options.i18n.actions"
       :class="[
         $options.noDragClass,
-        'gl-invisible gl-absolute gl-right-3 gl-top-3 gl-z-1 group-focus-within:gl-visible group-hover:gl-visible',
+        'gl-invisible gl-absolute gl-right-3 gl-top-3 group-focus-within:gl-visible group-hover:gl-visible',
+        isActionsMenuOpen ? 'gl-z-2' : 'gl-z-1',
       ]"
       icon="ellipsis_v"
       category="tertiary"
@@ -405,6 +427,8 @@ export default {
       no-caret
       text-sr-only
       data-testid="card-actions-menu"
+      @shown="isActionsMenuOpen = true"
+      @hidden="isActionsMenuOpen = false"
     />
   </li>
 </template>

@@ -26,6 +26,7 @@ export default {
 
   data() {
     return {
+      projects: undefined,
       initialProjectsLoading: true,
       isLoadingMore: false,
       projectSearchQuery: '',
@@ -34,7 +35,6 @@ export default {
   },
 
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     projects: {
       query: getProjectsQuery,
       variables() {

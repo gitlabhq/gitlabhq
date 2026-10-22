@@ -789,7 +789,7 @@ class Namespace < ApplicationRecord
   end
 
   def actual_plan
-    Plan.default
+    ::GitlabSubscriptions::SystemDefined::Plan.default
   end
 
   def paid?

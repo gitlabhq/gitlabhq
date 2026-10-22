@@ -32,7 +32,6 @@ export default {
   },
   connectModalId: CONNECT_MODAL_ID,
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     clusterAgent: {
       query: getClusterAgentQuery,
       variables() {
@@ -69,6 +68,7 @@ export default {
   inject: ['agentName', 'projectPath'],
   data() {
     return {
+      clusterAgent: undefined,
       cursor: {
         first: MAX_LIST_COUNT,
         last: null,

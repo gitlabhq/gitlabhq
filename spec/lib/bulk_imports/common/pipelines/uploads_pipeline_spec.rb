@@ -83,9 +83,9 @@ RSpec.describe BulkImports::Common::Pipelines::UploadsPipeline, feature_category
       it 'downloads & extracts upload paths' do
         allow(Dir).to receive(:mktmpdir).and_return(tmpdir)
 
-        download_service = instance_double("BulkImports::FileDownloadService")
-        decompression_service = instance_double("BulkImports::FileDecompressionService")
-        extraction_service = instance_double("BulkImports::ArchiveExtractionService")
+        download_service = instance_double(BulkImports::FileDownloadService)
+        decompression_service = instance_double(BulkImports::FileDecompressionService)
+        extraction_service = instance_double(BulkImports::ArchiveExtractionService)
 
         expect(BulkImports::FileDownloadService)
           .to receive(:for_context)

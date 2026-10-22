@@ -2,7 +2,6 @@
 # Cop supports --autocorrect.
 Gitlab/Authz/UsePolicyHelpers:
   Exclude:
-    - 'ee/spec/policies/ai/duo_workflows/workflow_policy_spec.rb'
     - 'ee/spec/policies/compliance_management/compliance_framework/project_control_compliance_status_policy_spec.rb'
     - 'ee/spec/policies/compliance_management/compliance_framework/project_requirement_compliance_status_policy_spec.rb'
     - 'ee/spec/policies/compliance_management/framework_policy_spec.rb'

@@ -94,6 +94,18 @@ RSpec.describe Members::ImportProjectTeamService, feature_category: :groups_and_
         end
       end
 
+      context 'when the target project is archived' do
+        let(:target_project_id) { create(:project, :archived, maintainers: user).id }
+
+        it 'returns unsuccessful response' do
+          result = import.execute
+
+          expect(result.error?).to be(true)
+          expect(result.message).to eq('Forbidden')
+          expect(result.reason).to eq(:import_project_team_forbidden_error)
+        end
+      end
+
       context 'when the source and target project are valid but the ProjectTeam#import command fails' do
         before do
           allow_next_instance_of(ProjectTeam) do |project_team|

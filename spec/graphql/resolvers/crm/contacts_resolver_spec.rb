@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::Crm::ContactsResolver do
+RSpec.describe Resolvers::Crm::ContactsResolver, feature_category: :team_planning do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }

@@ -357,22 +357,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
     shared_examples 'deletion scheduled project behavior' do
       it 'disallows write operations' do
-        expect_disallowed(
-          :create_deployment,
-          :create_environment,
-          :create_issue,
-          :create_merge_request_from,
-          :create_merge_request_in,
-          :create_package,
-          :create_pipeline,
-          :create_pipeline_schedule,
-          :create_release,
-          :create_wiki,
-          :destroy_package,
-          :push_code,
-          :update_pipeline,
-          :update_release
-        )
+        expect_disallowed(*Authz::PermissionGroups::Internal.get('project:archived').permissions)
       end
 
       it 'allows read operations' do

@@ -86,6 +86,7 @@ RSpec.describe Gitlab::SlashCommands::Presenters::Access do
       it 'tells the user to connect their account with Duo-specific context' do
         expect(subject[:text]).to match("connect your GitLab account")
         expect(subject[:text]).to match("GitLab Duo")
+        expect(subject[:text]).to match("read public Slack channels")
         expect(subject[:text]).to match("mention me again")
         expect(subject[:response_type]).to be(:ephemeral)
       end

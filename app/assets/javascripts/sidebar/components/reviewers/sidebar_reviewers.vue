@@ -67,7 +67,6 @@ export default {
     },
   },
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     issuable: {
       query: getMergeRequestReviewersQuery,
       variables() {
@@ -119,6 +118,7 @@ export default {
   },
   data() {
     return {
+      issuable: undefined,
       loading: false,
       initialLoading: true,
       drawerOpen: false,

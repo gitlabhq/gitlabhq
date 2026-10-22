@@ -489496,7 +489496,7 @@
             },
             {
               "name": "comment",
-              "description": "Comment why vulnerability severity was changed (maximum 50,000 characters).",
+              "description": "Comment why vulnerability severity was changed. Cannot be blank (maximum 50,000 characters).",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,

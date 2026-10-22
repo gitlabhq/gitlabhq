@@ -229,8 +229,24 @@ RSpec.describe SupplyChain::ProvenancePublisher, feature_category: :artifact_sec
   end
 
   describe '#with_local_ca_signing_material' do
+    let(:trusted_root_success) { true }
+    let(:signing_config_success) { true }
+
+    before do
+      # These commands take no stdin, so the shared context's and_yield stub would raise for them.
+      allow(Gitlab::Popen).to receive(:popen_with_detail)
+        .with(array_including('trusted-root')).and_return(cosign_result(success: trusted_root_success))
+      allow(Gitlab::Popen).to receive(:popen_with_detail)
+        .with(array_including('signing-config')).and_return(cosign_result(success: signing_config_success))
+    end
+
     def with_signing_material(&block)
       publisher.send(:with_local_ca_signing_material, &block)
+    end
+
+    def cosign_result(success:)
+      Gitlab::Popen::Result.new([], expected_stdout, expected_stderr,
+        instance_double(Process::Status, success?: success), expected_duration)
     end
 
     it 'yields signing material for a fresh leaf certificate and removes it afterwards', :aggregate_failures do
@@ -242,7 +258,7 @@ RSpec.describe SupplyChain::ProvenancePublisher, feature_category: :artifact_sec
         leaf_private_key = satisfy { |pem| OpenSSL::PKey.read(pem).public_to_pem == certificate.public_key.public_to_pem }
 
         # cosign is mocked, so this only proves we never write the plaintext leaf key ourselves.
-        expect(Dir.children(material_dir)).to contain_exactly('leaf.crt.pem')
+        expect(Dir.children(material_dir)).to contain_exactly('leaf.crt.pem', 'ca.crt.pem')
         expect(File.stat(material.certificate_path).mode & 0o777).to eq(0o600)
         expect(certificate.extensions.find { |ext| ext.oid == 'subjectAltName' }.value)
           .to include(pipeline.ci_config_ref_uri)
@@ -255,6 +271,25 @@ RSpec.describe SupplyChain::ProvenancePublisher, feature_category: :artifact_sec
       end
 
       expect(Dir).not_to exist(material_dir)
+    end
+
+    it 'yields a trusted root for the CA that issued the leaf and an offline signing config', :aggregate_failures do
+      with_signing_material do |material|
+        material_dir = File.dirname(material.certificate_path)
+        ca_path = File.join(material_dir, 'ca.crt.pem')
+        certificate = OpenSSL::X509::Certificate.new(File.read(material.certificate_path))
+        ca_certificate = OpenSSL::X509::Certificate.new(File.read(ca_path))
+
+        expect(certificate.verify(ca_certificate.public_key)).to be(true)
+        expect(File.stat(ca_path).mode & 0o777).to eq(0o600)
+        expect(material.trusted_root_path).to eq(File.join(material_dir, 'trusted-root.json'))
+        expect(Gitlab::Popen).to have_received(:popen_with_detail).with(array_including(
+          'trusted-root', "url=#{Gitlab.config.gitlab.url},certificate-chain=#{ca_path}", material.trusted_root_path
+        ))
+        expect(material.signing_config_path).to eq(File.join(material_dir, 'signing-config.json'))
+        expect(Gitlab::Popen).to have_received(:popen_with_detail)
+          .with(['cosign', 'signing-config', 'create', '--out', material.signing_config_path])
+      end
     end
 
     it 'removes the signing material and re-raises errors from the block unchanged', :aggregate_failures do
@@ -303,6 +338,22 @@ RSpec.describe SupplyChain::ProvenancePublisher, feature_category: :artifact_sec
       let(:popen_success) { false }
       let(:expected_error) { described_class::KeyImportFailure }
       let(:expected_message) { "Key import failed after #{expected_duration}s: #{expected_stderr}" }
+
+      it_behaves_like 'a signing material failure'
+    end
+
+    context 'when cosign fails to create the trusted root' do
+      let(:trusted_root_success) { false }
+      let(:expected_error) { described_class::TrustedRootFailure }
+      let(:expected_message) { "Trusted root creation failed after #{expected_duration}s: #{expected_stderr}" }
+
+      it_behaves_like 'a signing material failure'
+    end
+
+    context 'when cosign fails to create the signing config' do
+      let(:signing_config_success) { false }
+      let(:expected_error) { described_class::SigningConfigFailure }
+      let(:expected_message) { "Signing config creation failed after #{expected_duration}s: #{expected_stderr}" }
 
       it_behaves_like 'a signing material failure'
     end

@@ -34,7 +34,6 @@ export default {
     },
   },
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     k8sDeployments: {
       query: k8sDeploymentsQuery,
       variables() {
@@ -63,6 +62,7 @@ export default {
   },
   data() {
     return {
+      k8sDeployments: undefined,
       errorMessage: '',
     };
   },

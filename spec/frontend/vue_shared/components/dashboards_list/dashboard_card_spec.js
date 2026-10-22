@@ -70,7 +70,7 @@ describe('DashboardCard', () => {
 
     it('names the creator link with a full authorship sentence', () => {
       expect(findAvatarLink().attributes('aria-label')).toBe('Created by Fake User');
-      expect(wrapper.findByTestId('dashboard-card-authorship').exists()).toBe(false);
+      expect(wrapper.findByTestId('dashboards-list-authorship').exists()).toBe(false);
     });
 
     it('renders the creator avatar with their name, linking to their profile', () => {
@@ -130,6 +130,25 @@ describe('DashboardCard', () => {
     });
   });
 
+  describe('with names that contain HTML characters', () => {
+    beforeEach(() => {
+      createWrapper({
+        dashboard: {
+          ...mockCustomDashboard,
+          name: 'Issues & MRs',
+          createdBy: { ...mockCustomDashboard.createdBy, name: 'Tom & Jerry' },
+        },
+      });
+    });
+
+    it('does not escape them in the accessible names', () => {
+      expect(findActions().props('actionLabel')).toBe('More actions for Issues & MRs');
+      expect(wrapper.findComponent(GlAvatarLink).attributes('aria-label')).toBe(
+        'Created by Tom & Jerry',
+      );
+    });
+  });
+
   describe('with a custom dashboard whose creator was deleted', () => {
     beforeEach(() => {
       createWrapper({ dashboard: { ...mockCustomDashboard, createdBy: null } });
@@ -142,7 +161,7 @@ describe('DashboardCard', () => {
     });
 
     it('does not announce authorship when there is no creator to name', () => {
-      expect(wrapper.findByTestId('dashboard-card-authorship').exists()).toBe(false);
+      expect(wrapper.findByTestId('dashboards-list-authorship').exists()).toBe(false);
       expect(wrapper.text()).not.toContain('Created by');
     });
 
@@ -163,7 +182,7 @@ describe('DashboardCard', () => {
     });
 
     it('announces authorship as a visually hidden sentence and hides the decorative avatar', () => {
-      expect(wrapper.findByTestId('dashboard-card-authorship').text()).toBe('Created by GitLab');
+      expect(wrapper.findByTestId('dashboards-list-authorship').text()).toBe('Created by GitLab');
       expect(findAvatar().element.closest('[aria-hidden="true"]')).not.toBeNull();
     });
 

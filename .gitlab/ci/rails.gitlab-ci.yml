@@ -943,22 +943,6 @@ rspec:schedule-nightly-pg-next-report-success:
   script:
     - scripts/slack s_database_excellence_alerts "✅ PG NEXT nightly pipeline succeeded! See ${CI_PIPELINE_URL}" ci_passing "GitLab Bot"
 
-rspec:flaky-tests-report:
-  extends:
-    - .default-retry
-    - .rails:rules:flaky-tests-report
-  stage: post-test
-  needs: !reference ["rspec:coverage", "needs"]
-  before_script:
-    - source scripts/utils.sh
-    - source scripts/rspec_helpers.sh
-  script:
-    - generate_flaky_tests_reports
-  artifacts:
-    expire_in: 31d
-    paths:
-      - rspec/
-
 rspec:merge-auto-explain-logs:
   extends:
     - .repo-from-artifacts

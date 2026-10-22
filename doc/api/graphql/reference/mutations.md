@@ -17084,7 +17084,7 @@ Remove all Vulnerabilities and related information from a given project. [Introd
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `comment` | [`String!`](scalars.md#string) | Comment why vulnerability severity was changed (maximum 50,000 characters). |
+| `comment` | [`String!`](scalars.md#string) | Comment why vulnerability severity was changed. Cannot be blank (maximum 50,000 characters). |
 | `severity` | [`VulnerabilitySeverity!`](enums.md#vulnerabilityseverity) | New severity value for the severities. |
 | `vulnerabilityIds` | [`[VulnerabilityID!]!`](scalars.md#vulnerabilityid) | IDs of the vulnerabilities for which severity needs to be changed (maximum 100 entries). |
 

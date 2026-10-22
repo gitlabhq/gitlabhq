@@ -50,6 +50,7 @@ export default {
   emits: ['emoji-updated', 'error'],
   data() {
     return {
+      awardEmoji: undefined,
       newCustomEmojiPath: '',
       isLoading: false,
     };
@@ -91,7 +92,6 @@ export default {
     },
   },
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     awardEmoji: {
       query: projectWorkItemAwardEmojiQuery,
       variables() {

@@ -32,12 +32,12 @@ export default {
   emits: ['loaded', 'empty'],
   data() {
     return {
+      reportArtifacts: undefined,
       hasError: false,
     };
   },
   reportTypes: ['sast', 'secret_detection'],
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     reportArtifacts: {
       query: securityReportMergeRequestDownloadPathsQuery,
       context: {

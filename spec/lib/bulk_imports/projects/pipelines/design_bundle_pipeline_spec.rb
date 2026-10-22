@@ -59,9 +59,9 @@ RSpec.describe BulkImports::Projects::Pipelines::DesignBundlePipeline, feature_c
 
   describe '#extract' do
     it 'downloads & extracts design bundle filepath' do
-      download_service = instance_double("BulkImports::FileDownloadService")
-      decompression_service = instance_double("BulkImports::FileDecompressionService")
-      extraction_service = instance_double("BulkImports::ArchiveExtractionService")
+      download_service = instance_double(BulkImports::FileDownloadService)
+      decompression_service = instance_double(BulkImports::FileDecompressionService)
+      extraction_service = instance_double(BulkImports::ArchiveExtractionService)
 
       expect(BulkImports::FileDownloadService)
         .to receive(:for_context)

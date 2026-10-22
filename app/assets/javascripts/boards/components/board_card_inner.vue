@@ -86,13 +86,13 @@ export default {
   emits: ['set-filters', 'view-all-sessions'],
   data() {
     return {
+      isShowingLabels: undefined,
       limitBeforeCounter: 2,
       maxRender: 3,
       maxCounter: 99,
     };
   },
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     isShowingLabels: {
       query: isShowingLabelsQuery,
       update: (data) => data.isShowingLabels,

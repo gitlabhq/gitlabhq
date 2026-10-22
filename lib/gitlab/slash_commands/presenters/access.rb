@@ -35,7 +35,9 @@ module Gitlab
         def authorize
           message =
             if resource
-              ":wave: Hi there! Before I do anything for you, please [connect your GitLab account](#{resource})."
+              ":wave: Hi there! Before I do anything for you, please [connect your GitLab account](#{resource}). " \
+                "You might also be asked to let GitLab Duo read public Slack channels, " \
+                "so it can use conversation context in its answers."
             else
               ":sweat_smile: Couldn't identify you, nor can I authorize you!"
             end
@@ -47,8 +49,10 @@ module Gitlab
           message =
             if resource
               ":wave: Hi there! To get started, please [connect your GitLab account](#{resource}).\n\n" \
-                "This links your Slack identity to your own GitLab account — " \
-                "GitLab Duo will act on your behalf using only your personal GitLab permissions, " \
+                "This links your Slack identity to your own GitLab account. " \
+                "You might also be asked to let GitLab Duo read public Slack channels, " \
+                "so it can use conversation context in its answers. " \
+                "GitLab Duo acts on your behalf using only your own GitLab and Slack permissions, " \
                 "and your data is never shared with other users in this channel.\n\n" \
                 "Once connected, mention me again to continue."
             else

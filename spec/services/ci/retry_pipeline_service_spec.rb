@@ -653,17 +653,6 @@ RSpec.describe Ci::RetryPipelineService, '#execute', feature_category: :continuo
           expect(service.execute(other_pipeline)).to be_success
         end
       end
-
-      context 'when the feature flag is disabled' do
-        before do
-          stub_feature_flags(rate_limit_pipeline_retry: false)
-          stub_application_setting(pipeline_retry_limit_per_user_project: 1)
-        end
-
-        it 'does not throttle' do
-          2.times { expect(service.execute(pipeline)).to be_success }
-        end
-      end
     end
 
     context 'when the user cannot retry the pipeline' do

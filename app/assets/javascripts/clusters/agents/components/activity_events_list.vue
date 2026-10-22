@@ -37,7 +37,6 @@ export default {
   }),
   borderClasses: 'gl-border-b-1 gl-border-b-solid gl-border-b-default',
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     agentEvents: {
       query: getAgentActivityEventsQuery,
       variables() {
@@ -55,6 +54,7 @@ export default {
   inject: ['agentName', 'projectPath', 'activityEmptyStateImage'],
   data() {
     return {
+      agentEvents: undefined,
       isError: false,
     };
   },

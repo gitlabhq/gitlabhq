@@ -131,6 +131,11 @@ build-cng-env:
         # image tags ignore which assets are inside, so keep these images separate
         export CONTAINER_VERSION_SUFFIX="${CI_PROJECT_PATH_SLUG}-istanbul"
       fi
+    - |
+      if [[ -n "$GLCI_RAILS_IMAGE_TAG_SUFFIX" ]]; then
+        # image tags ignore the Gemfile too, so keep non-default Gemfile images separate
+        export CONTAINER_VERSION_SUFFIX="${CONTAINER_VERSION_SUFFIX:-$CI_PROJECT_PATH_SLUG}${GLCI_RAILS_IMAGE_TAG_SUFFIX}"
+      fi
     - !reference [.build-cng-env, before_script]
   # when running in backport, override CNG_COMMIT so it defaults to release branch instead
   # this ensures images are built using same stable release branch in CNG repository
@@ -149,6 +154,12 @@ build-cng:
     # use larger runner for complex rails build jobs
     HIGH_CAPACITY_RUNNER_TAG: e2e
     RAILS_SPLIT_ASSETS_BUILD: "true"
+  # CNG treats any set GITLAB_BUNDLE_GEMFILE (even empty) as a custom Gemfile, so only pass it when needed
+  rules:
+    - if: '$GLCI_RAILS_BUNDLE_GEMFILE && $GLCI_RAILS_BUNDLE_GEMFILE != "Gemfile"'
+      variables:
+        GITLAB_BUNDLE_GEMFILE: $GLCI_RAILS_BUNDLE_GEMFILE
+    - when: on_success
 
 # ==========================================
 # Test stage

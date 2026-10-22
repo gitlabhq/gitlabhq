@@ -3,7 +3,7 @@ import { convertToGraphQLId } from '~/graphql_shared/utils';
 import createGqClient, { fetchPolicies } from '~/lib/graphql';
 import axios from '~/lib/utils/axios_utils';
 import { pageSingleton } from '~/lib/utils/page_singleton';
-import reviewerRereviewMutation from '../queries/reviewer_rereview.mutation.graphql';
+import reviewerRereviewMutation from 'ee_else_ce/sidebar/queries/reviewer_rereview.mutation.graphql';
 
 export const gqClient = pageSingleton('sidebar_gq_client', () =>
   createGqClient(
@@ -63,13 +63,14 @@ export default class SidebarService {
     });
   }
 
-  requestReview(userId) {
+  requestReview(userId, duoCodeReviewDepth) {
     return gqClient.mutate({
       mutation: reviewerRereviewMutation,
       variables: {
         userId: convertToGraphQLId(TYPENAME_USER, `${userId}`),
         projectPath: this.fullPath,
         iid: this.iid.toString(),
+        duoCodeReviewDepth,
       },
     });
   }

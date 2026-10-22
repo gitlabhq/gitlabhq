@@ -186,8 +186,8 @@ RSpec.describe AuthHelper, feature_category: :system_access do
   end
 
   describe '#link_provider_allowed?' do
-    let(:policy) { instance_double('IdentityProviderPolicy') }
-    let(:current_user) { instance_double('User') }
+    let(:policy) { instance_double(IdentityProviderPolicy) }
+    let(:current_user) { instance_double(User) }
     let(:provider) { double }
 
     before do
@@ -203,8 +203,8 @@ RSpec.describe AuthHelper, feature_category: :system_access do
   end
 
   describe '#unlink_provider_allowed?' do
-    let(:policy) { instance_double('IdentityProviderPolicy') }
-    let(:current_user) { instance_double('User') }
+    let(:policy) { instance_double(IdentityProviderPolicy) }
+    let(:current_user) { instance_double(User) }
     let(:provider) { double }
 
     before do
@@ -811,7 +811,7 @@ RSpec.describe AuthHelper, feature_category: :system_access do
   describe '#step_up_auth_params' do
     using RSpec::Parameterized::TableSyntax
 
-    let(:current_user) { instance_double('User', flipper_id: '1') }
+    let(:current_user) { instance_double(User, flipper_id: '1') }
 
     let(:oidc_setting_with_admin_mode_step_up) do
       build(:omniauth_provider_config,

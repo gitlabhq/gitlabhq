@@ -65,7 +65,7 @@ RSpec.describe Gitlab::BitbucketImport::ParallelScheduling, feature_category: :i
       end
 
       it 'yields every object to import' do
-        page = instance_double('Bitbucket::Page', attrs: [], items: [opened_pull_request])
+        page = instance_double(Bitbucket::Page, attrs: [], items: [opened_pull_request])
         allow(page).to receive_messages(next?: true, next: 'https://example.com/next')
 
         allow_next_instance_of(Bitbucket::Client) do |client|
@@ -94,7 +94,7 @@ RSpec.describe Gitlab::BitbucketImport::ParallelScheduling, feature_category: :i
       end
 
       it 'resumes from the last page' do
-        page = instance_double('Bitbucket::Page', attrs: [], items: [opened_pull_request])
+        page = instance_double(Bitbucket::Page, attrs: [], items: [opened_pull_request])
         allow(page).to receive_messages(next?: true, next: 'https://example.com/next2')
 
         expect(importer.page_keyset)
@@ -129,7 +129,7 @@ RSpec.describe Gitlab::BitbucketImport::ParallelScheduling, feature_category: :i
       end
 
       it 'does not yield the object if it was already imported' do
-        page = instance_double('Bitbucket::Page', attrs: [], items: [opened_pull_request])
+        page = instance_double(Bitbucket::Page, attrs: [], items: [opened_pull_request])
         allow(page).to receive_messages(next?: true, next: 'https://example.com/next')
 
         allow_next_instance_of(Bitbucket::Client) do |client|

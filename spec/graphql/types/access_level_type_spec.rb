@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['AccessLevel'] do
+RSpec.describe GitlabSchema.types['AccessLevel'], feature_category: :groups_and_projects do
   specify { expect(described_class.graphql_name).to eq('AccessLevel') }
   specify { expect(described_class).to require_graphql_authorizations(nil) }
 

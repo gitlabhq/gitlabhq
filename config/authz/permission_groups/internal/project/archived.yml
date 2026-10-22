@@ -1,9 +1,10 @@
-description: Permissions that are disabled when a project is archived
+description: Permissions that are disabled when a project is archived or pending deletion
 permissions:
   - _delete_authored_timelog
   - admin_ai_catalog_item
   - admin_approvers
   - admin_build
+  - admin_cicd_variables
   - admin_cluster
   - admin_commit_status
   - admin_container_image
@@ -12,6 +13,7 @@ permissions:
   - admin_environment
   - admin_feature_flag
   - admin_feature_flags_client
+  - admin_integrations
   - admin_issue
   - admin_issue_board
   - admin_issue_board_list
@@ -27,6 +29,7 @@ permissions:
   - admin_pipeline
   - admin_pipeline_schedule
   - admin_project_member
+  - admin_protected_branch
   - admin_release
   - admin_snippet
   - admin_software_license_policy
@@ -36,14 +39,18 @@ permissions:
   - admin_vulnerability
   - admin_vulnerability_feedback
   - admin_wiki
+  - admin_work_item
   - admin_work_item_link
+  - approve_merge_request
   - award_emoji
   - change_namespace
   - create_approvers
+  - create_branch_rule
   - create_build
   - create_cluster
   - create_commit_status
   - create_container_image
+  - create_deploy_token
   - create_deployment
   - create_design
   - create_environment
@@ -66,6 +73,7 @@ permissions:
   - create_pages
   - create_pipeline
   - create_pipeline_schedule
+  - create_protected_branch
   - create_release
   - create_security_policy
   - create_snippet
@@ -75,6 +83,7 @@ permissions:
   - create_vulnerability
   - create_vulnerability_feedback
   - create_wiki
+  - delete_branch_rule
   - delete_issuable_metric_image
   - delete_label
   - delete_note
@@ -100,6 +109,7 @@ permissions:
   - destroy_pages
   - destroy_pipeline
   - destroy_pipeline_schedule
+  - destroy_protected_branch
   - destroy_release
   - destroy_snippet
   - destroy_timelog
@@ -107,6 +117,8 @@ permissions:
   - destroy_vulnerability
   - destroy_vulnerability_feedback
   - destroy_wiki
+  - import_project_members_from_another_project
+  - invite_member
   - invite_project_members
   - manage_trigger
   - modify_security_policy
@@ -115,9 +127,12 @@ permissions:
   - push_code_to_protected_branches
   - push_to_delete_protected_branch
   - rename_project
+  - reopen_issue
+  - reopen_merge_request
   - request_access
   - resolve_note
   - update_approvers
+  - update_branch_rule
   - update_build
   - update_cluster
   - update_commit_status
@@ -141,6 +156,7 @@ permissions:
   - update_pages
   - update_pipeline
   - update_pipeline_schedule
+  - update_protected_branch
   - update_release
   - update_snippet
   - update_timelog

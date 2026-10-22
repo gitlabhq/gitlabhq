@@ -25,7 +25,11 @@ export default {
     // Full sentence so translations keep their own word order; the visible
     // label shows only the name.
     authorSrLabel() {
-      return sprintf(s__('AnalyticsDashboards|Created by %{name}'), { name: this.authorName });
+      return sprintf(
+        s__('AnalyticsDashboards|Created by %{name}'),
+        { name: this.authorName },
+        false,
+      );
     },
     // Numeric id seeding the identicon's background when the avatar image fails.
     creatorEntityId() {
@@ -43,7 +47,7 @@ export default {
   <!-- The sr-only sentence announces authorship, so the decorative avatar block is
        hidden from assistive technology. -->
   <span v-if="dashboard.system">
-    <span class="gl-sr-only" data-testid="dashboard-card-authorship">{{ authorSrLabel }}</span>
+    <span class="gl-sr-only" data-testid="dashboards-list-authorship">{{ authorSrLabel }}</span>
     <span aria-hidden="true">
       <gl-avatar-labeled
         :src="$options.createdByGitLab.avatarUrl"

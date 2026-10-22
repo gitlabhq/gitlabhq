@@ -15,8 +15,12 @@ export default {
   components: { GlAvatar, GlBadge, GlPopover, GlSprintf },
   mixins: [timeagoMixin],
   inject: ['rootUrl', 'userId'],
+  data() {
+    return {
+      userAchievements: undefined,
+    };
+  },
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     userAchievements: {
       query: getUserAchievements,
       variables() {

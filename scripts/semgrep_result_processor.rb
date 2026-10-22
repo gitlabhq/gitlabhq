@@ -22,9 +22,12 @@ class SemgrepResultProcessor
   PING_LABELS = 'appsec-sast-ping::unresolved,AppSecWorkType::TriageRotation,Application Security Team'
   ESCALATION_LABEL = 'appsec-sast::escalated'
   ESCALATION_LABELS = "#{PING_LABELS},#{ESCALATION_LABEL}".freeze
+  # Keeps fully auto-dismissed MRs discoverable without routing them to AppSec.
+  # The label is scoped, so it must only be applied when no appsec-sast-ping:: label exists.
+  DISMISSAL_LABELS = 'appsec-sast-ping::dismissed'
   # apply_label only accepts these fixed sets so no caller can ever feed
   # model-derived or finding-derived text into the add_labels API field.
-  ALLOWED_LABEL_SETS = [PING_LABELS, ESCALATION_LABELS].freeze
+  ALLOWED_LABEL_SETS = [PING_LABELS, ESCALATION_LABELS, DISMISSAL_LABELS].freeze
 
   # Only definitive verdicts are surfaced to the engineer; 'uncertain' and errored
   # verdicts fall back to the standard comment.
@@ -215,6 +218,15 @@ class SemgrepResultProcessor
   def create_inline_comments(path_line_message_dict)
     base_sha, head_sha, start_sha = populate_commits_from_versions
 
+    # When this run's findings are all auto-dismissed, none of the per-finding
+    # branches below apply a ping/escalation label. Detect that up front so we can
+    # mark the MR once after the loop. Note path_line_message_dict is already
+    # de-duplicated, so this reflects only THIS run's new findings -- the
+    # existing_triage_label? guard below is what prevents clobbering a ping label
+    # left by an earlier run or a human.
+    all_dismissed = path_line_message_dict.any? &&
+      path_line_message_dict.keys.all? { |fingerprint| triage_action_for(fingerprint) == :dismiss }
+
     # Create new comments for remaining findings
     path_line_message_dict.each do |fingerprint, finding|
       header_information = JSON.dump({ 'fingerprint' => fingerprint, 'check_id' => finding[:check_id] })
@@ -270,9 +282,28 @@ class SemgrepResultProcessor
         apply_label(action == :escalate ? ESCALATION_LABELS : PING_LABELS)
       end
     end
+
+    # Fully-dismissed MRs get no ping/escalation label above; mark them once so
+    # they stay discoverable for the dismissal metric and backtesting -- but never
+    # when a triage label is already present (that would clobber the scope).
+    apply_label(DISMISSAL_LABELS) if all_dismissed && !existing_triage_label?
   end
 
   private
+
+  # True when the MR already carries a triage-state label, from an earlier
+  # pipeline run or a human re-opening an auto-dismissed thread. Used to avoid
+  # overriding an existing appsec-sast-ping:: label with the scoped ::dismissed
+  # one, which would drop the MR out of the AppSec queue.
+  #
+  # Known limitation (accepted): stripped_labels is the CI_MERGE_REQUEST_LABELS
+  # pipeline-start snapshot, so a triage label applied by a human while this
+  # job runs is not seen and would be clobbered by the scoped ::dismissed
+  # label. The window is one pipeline run and the trade was judged not worth
+  # an extra API call; revisit if it is observed in practice.
+  def existing_triage_label?
+    stripped_labels.any? { |label| label.start_with?('appsec-sast-ping::') || label == ESCALATION_LABEL }
+  end
 
   def ping_suffix_for(check_id)
     if check_id&.start_with?("builds.sast-custom-rules.secure-coding-guidelines")

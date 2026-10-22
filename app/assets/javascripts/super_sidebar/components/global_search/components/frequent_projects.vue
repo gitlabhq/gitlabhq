@@ -12,8 +12,12 @@ export default {
     FrequentItems,
   },
   emits: ['action', 'nothing-to-render'],
+  data() {
+    return {
+      frecentProjects: undefined,
+    };
+  },
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     frecentProjects: {
       query: currentUserFrecentProjectsQuery,
       skip() {

@@ -49,6 +49,8 @@ export default {
   inject: ['ciConfigPath', 'newMergeRequestPath', 'projectFullPath', 'usesExternalConfig'],
   data() {
     return {
+      commitSha: undefined,
+      currentBranch: undefined,
       ciConfigData: {},
       currentCiFileContent: '',
       failureType: null,
@@ -141,7 +143,6 @@ export default {
         return data.app.status;
       },
     },
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     commitSha: {
       query: getLatestCommitShaQuery,
       skip({ currentBranch }) {
@@ -169,7 +170,6 @@ export default {
         this.reportFailure(LOAD_FAILURE_UNKNOWN);
       },
     },
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     currentBranch: {
       query: getCurrentBranch,
       update(data) {

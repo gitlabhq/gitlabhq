@@ -271,6 +271,8 @@ merge_requests:
 - deployment_merge_requests.merge_request_id
 - description_versions.merge_request_id
 - draft_notes.merge_request_id
+# Cascade-only by design: each row only classifies a Duo Code Review note and has no cleanup of its own.
+- duo_code_review_findings.merge_request_id
 - duo_workflows_workflow_merge_requests.merge_request_id
 - duo_workflows_workflows.merge_request_id
 - environments.merge_request_id
@@ -946,6 +948,8 @@ projects:
 - dora_daily_metrics.project_id
 - dora_performance_scores.project_id
 - draft_notes.project_id
+# Cascade-only by design: each row only classifies a Duo Code Review note and has no cleanup of its own.
+- duo_code_review_findings.project_id
 - duo_workflow_session_artifacts.project_id
 - duo_workflows_checkpoint_writes.project_id
 - duo_workflows_events.project_id

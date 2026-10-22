@@ -14,6 +14,8 @@ module Gitlab
 
         sidekiq_options retry: 6
 
+        concurrency_limit -> { Gitlab::CurrentSettings.import_jobs_concurrency_limit }
+
         attr_reader :project
 
         def perform(project_id)

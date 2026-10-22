@@ -4,7 +4,7 @@ require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Database::HealthStatus::Signals, feature_category: :database do
   shared_examples 'health status signal' do |subclass, stop_signal, log_signal|
-    let(:indicator) { instance_double('Gitlab::Database::HealthStatus::Indicators::PatroniApdex') }
+    let(:indicator) { instance_double(Gitlab::Database::HealthStatus::Indicators::PatroniApdex) }
     let(:reason) { 'Test reason' }
 
     subject { subclass.new(indicator, reason: reason) }

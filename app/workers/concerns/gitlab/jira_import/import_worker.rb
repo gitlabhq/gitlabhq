@@ -11,6 +11,8 @@ module Gitlab
         include ProjectImportOptions
         include Gitlab::JiraImport::QueueOptions
         sidekiq_options retry: 6
+
+        concurrency_limit -> { Gitlab::CurrentSettings.import_jobs_concurrency_limit }
       end
 
       def perform(project_id)

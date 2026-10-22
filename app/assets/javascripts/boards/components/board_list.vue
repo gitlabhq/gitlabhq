@@ -110,6 +110,7 @@ export default {
   ],
   data() {
     return {
+      boardList: undefined,
       showCount: false,
       currentList: null,
       isLoadingMore: false,
@@ -124,7 +125,6 @@ export default {
     };
   },
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     boardList: {
       query: listQuery,
       variables() {

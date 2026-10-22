@@ -69,6 +69,7 @@ export default {
   emits: ['back', 'done', 'update:message'],
   data() {
     return {
+      project: undefined,
       branch: this.defaultBranch,
       loading: false,
       loadError: null,
@@ -118,7 +119,6 @@ export default {
     },
   },
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     project: {
       query: getFileMetaDataQuery,
       variables() {

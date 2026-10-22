@@ -27,7 +27,7 @@ class Profiles::ChatNamesController < Profiles::ApplicationController
     end
 
     delete_chat_name_token
-    redirect_to user_settings_integration_accounts_path
+    redirect_to after_create_path(new_chat_name)
   end
 
   def deny
@@ -52,6 +52,10 @@ class Profiles::ChatNamesController < Profiles::ApplicationController
   end
 
   private
+
+  def after_create_path(_chat_name)
+    user_settings_integration_accounts_path
+  end
 
   def set_hide_search_settings
     @hide_search_settings = true
@@ -87,3 +91,5 @@ class Profiles::ChatNamesController < Profiles::ApplicationController
       chat_name_params[:chat_id].start_with?('U', 'W')
   end
 end
+
+Profiles::ChatNamesController.prepend_mod

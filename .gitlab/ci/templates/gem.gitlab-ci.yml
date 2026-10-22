@@ -19,6 +19,8 @@ spec:
     - if: "'$[[inputs.enabled]]' != 'true'"
       when: never
     - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "maintenance"'
+    # Keep in sync with .if-rails-branch-schedule in .gitlab/ci/rules.gitlab-ci.yml
+    - if: '$CI_COMMIT_BRANCH == "rails-next" && $CI_PIPELINE_SOURCE == "schedule" && $RUN_WITH_NEXT_RAILS_VERSION == "true"'
     - if: '$CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached"'
       changes:
         - "$[[inputs.gem_path_prefix]]$[[inputs.gem_name]]/**/*"

@@ -191,7 +191,7 @@ db:post_deployment_migrations_validator-single-db:
 db:migrate-non-superuser:
   extends:
     - .db-job-base
-    - .rails:rules:ee-and-foss-mr-with-migration
+    - .rails:rules:db:migrate-non-superuser
   script: bundle exec rake gitlab:db:reset_as_non_superuser
 
 db:gitlabcom-database-testing:

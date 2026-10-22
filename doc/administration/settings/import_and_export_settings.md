@@ -416,9 +416,9 @@ To modify the maximum decompressed file size for imports in GitLab:
 
 Every import job holds a Sidekiq thread for its entire duration. The workers that
 orchestrate an import (file-based project and group imports, direct transfer, and the
-stage jobs for the GitHub, Bitbucket Cloud, and Bitbucket Server importers) can run for a
-long time, so if too many run at once they can occupy the whole Sidekiq thread pool and
-block other background work.
+stage jobs for the GitHub, Bitbucket Cloud, Bitbucket Server, and Jira importers) can
+run for a long time, so if too many run at once they can occupy the whole Sidekiq
+thread pool and block other background work.
 
 The `import_jobs_concurrency_limit` setting caps how many of these long-running jobs run
 at the same time. The limit applies independently to each worker type, not as a

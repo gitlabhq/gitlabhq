@@ -1441,6 +1441,7 @@ lib/gitlab/checks/
 /app/**/authz/
 /app/models/ability.rb
 /app/policies/
+/app/services/authz/redaction_service.rb @gitlab-org/software-supply-chain-security/authorization/approvers @gitlab-org/orbit/team
 /config/authz/
 /config/initializers/declarative_policy_cached_attributes.rb
 /config/initializers/declarative_policy.rb
@@ -1450,6 +1451,7 @@ lib/gitlab/checks/
 /ee/app/models/preloaders/user_member_roles_in_groups_preloader.rb
 /ee/app/models/preloaders/user_member_roles_in_projects_preloader.rb
 /ee/app/policies/
+/ee/app/services/ee/authz/redaction_service.rb @gitlab-org/software-supply-chain-security/authorization/approvers @gitlab-org/orbit/team
 /ee/app/services/member_roles/
 /ee/config/custom_abilities/
 /ee/lib/api/member_roles.rb

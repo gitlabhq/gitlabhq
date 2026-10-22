@@ -328,7 +328,7 @@ function retry_failed_rspec_examples() {
     exit $previous_exit_status
   fi
 
-  # Keep track of the tests that are retried, later consolidated in a single file by the `rspec:flaky-tests-report` job
+  # Keep track of the tests that are retried
   local failed_examples=$(grep " failed" ${RSPEC_LAST_RUN_RESULTS_FILE})
   echoinfo "RSPEC_RETRIED_TESTS_REPORT_PATH: ${RSPEC_RETRIED_TESTS_REPORT_PATH:-}"
 
@@ -480,17 +480,6 @@ function cleanup_individual_job_reports() {
     ${RSPEC_LAST_RUN_RESULTS_FILE:-unknown_folder} \
     ${RSPEC_PROFILING_FOLDER_PATH:-unknown_folder}/**/*
   rmdir ${RSPEC_PROFILING_FOLDER_PATH:-unknown_folder} || true
-}
-
-function generate_flaky_tests_reports() {
-  debug_rspec_variables
-
-  mkdir -p rspec/
-
-  find rspec/ -type f -name 'skipped_tests-*.txt' -exec cat {} + >> "rspec/skipped_tests_report.txt"
-  find rspec/ -type f -name 'retried_tests-*.txt' -exec cat {} + >> "rspec/retried_tests_report.txt"
-
-  cleanup_individual_job_reports
 }
 
 function is_rspec_last_run_results_file_missing() {

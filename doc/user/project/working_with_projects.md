@@ -360,8 +360,11 @@ the deletion job instead restores the project, and the project is no longer sche
 
 When a project is marked for deletion, scheduled CI/CD pipelines stop running, and the project
 becomes read-only.
-You can still view its contents, but you cannot add members, create or delete content, or share it
-with other groups.
+You can still view its contents, but you cannot add members, create or delete content, share it
+with other groups, create deploy tokens, or change CI/CD variables, integrations, or protected
+branches.
+You also cannot view CI/CD variables or integration settings.
+You can still revoke deploy tokens, delete uploaded files, and remove sensitive data from the repository.
 To make the project writable again, [restore it](#restore-a-project).
 
 > [!warning]
@@ -427,6 +430,10 @@ When you archive a project:
 
 - The project becomes inactive and displays an `Archived` badge
 - Most features become read-only, including repositories, issues, merge requests, and packages
+- You cannot add members, create deploy tokens, or change CI/CD variables, integrations, or
+  protected branches
+- You cannot view CI/CD variables or integration settings
+- You can still revoke deploy tokens, delete uploaded files, and remove sensitive data from the repository
 - Fork relationships are removed and open merge requests from forks are closed
 - Deployed Pages are removed along with custom domains
 - Scheduled CI/CD pipelines stop running

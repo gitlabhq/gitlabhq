@@ -214,16 +214,16 @@ RSpec.describe WorkItemPolicy, :aggregate_failures, feature_category: :team_plan
       end
     end
 
-    it 'disallows linking work items in an archived project' do
+    it 'disallows administering and linking work items in an archived project' do
       work_item = create(:work_item, project: archived_project)
 
-      expect(permissions(member, work_item)).to be_disallowed(:admin_work_item_link, :admin_parent_link)
+      expect(permissions(member, work_item)).to be_disallowed(:admin_work_item, :admin_work_item_link, :admin_parent_link)
     end
 
-    it 'disallows linking work items in a project whose group is scheduled for deletion' do
+    it 'disallows administering and linking work items in a project whose group is scheduled for deletion' do
       work_item = create(:work_item, project: pending_deletion_project)
 
-      expect(permissions(member, work_item)).to be_disallowed(:admin_work_item_link, :admin_parent_link)
+      expect(permissions(member, work_item)).to be_disallowed(:admin_work_item, :admin_work_item_link, :admin_parent_link)
     end
 
     it 'disallows linking group level work items in a group scheduled for deletion', if: Gitlab.ee? do

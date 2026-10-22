@@ -35,6 +35,7 @@ module API
 
         def render_discussions_for(parent_work_item)
           authorize_work_item_feature!(parent_work_item)
+          check_pagination_param!(params)
           authorize! :read_note, parent_work_item
 
           service = ::Issuable::DiscussionsListService.new(

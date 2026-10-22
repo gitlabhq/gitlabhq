@@ -167,6 +167,13 @@ default:
   FE_COMPRESSION: "false"
   GLCI_ASSETS_TARGET: "ci"
 
+# QA jobs override BUNDLE_GEMFILE back to Gemfile, so E2E Omnibus/CNG builds use GLCI_RAILS_BUNDLE_GEMFILE.
+# The tag suffix keeps their images apart from default-Gemfile images built for the same commit.
+.rails-next-variables: &rails-next-variables
+  BUNDLE_GEMFILE: Gemfile.next
+  GLCI_RAILS_BUNDLE_GEMFILE: Gemfile.next
+  GLCI_RAILS_IMAGE_TAG_SUFFIX: "-gemfile-next"
+
 .if-merge-request-security-canonical-sync: &if-merge-request-security-canonical-sync
   if: '$CI_MERGE_REQUEST_SOURCE_PROJECT_PATH == "gitlab-org/security/gitlab" && $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == $CI_DEFAULT_BRANCH && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'
 
@@ -257,8 +264,7 @@ workflow:
         SKIP_MESSAGE: 'MR only contains changes from the security mirror, which have already been reviewed, tested and deployed.'
     - <<: *if-merge-request-labels-run-with-rails-next
       variables:
-        <<: [*default-ruby-variables, *default-merge-request-variables]
-        BUNDLE_GEMFILE: Gemfile.next
+        <<: [*default-ruby-variables, *default-merge-request-variables, *rails-next-variables]
     # Opt-in to the next Ruby version, like pipeline:run-with-rails-next does
     # for Rails. Excludes merge trains: a train validates what the default
     # branch will run, and that is the default Ruby.
@@ -266,13 +272,10 @@ workflow:
       variables:
         <<: [*next-ruby-variables, *default-merge-request-variables]
         PIPELINE_NAME: 'Ruby $RUBY_VERSION MR (run-with-ruby-next)'
-    # This variable can be specified in manual or scheduled pipelines to run CI with the next Rails version.
-    # Specifying BUNDLE_GEMFILE: Gemfile.next wouldn't work because QA jobs require
-    # BUNDLE_GEMFILE to be Gemfile even with the next Rails version pipelines.
+    # Current Ruby, so failures come from Rails alone; the ruby-next schedule covers the next Ruby.
     - <<: *if-rails-next-schedule
       variables:
-        <<: *next-ruby-variables
-        BUNDLE_GEMFILE: Gemfile.next
+        <<: [*default-ruby-variables, *rails-next-variables]
         PIPELINE_NAME: 'Rails next version (Gemfile.next)'
     # MRs with the 'database' label: opt in to the query log :line annotation so
     # SQL queries carry source-file info (useful when reviewing DB changes).

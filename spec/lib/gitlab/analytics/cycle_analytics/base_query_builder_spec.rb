@@ -30,7 +30,7 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::BaseQueryBuilder do
 
   context 'when an unknown parent class is given' do
     it 'raises error' do
-      stage = instance_double('Analytics::CycleAnalytics::Stage', parent: Issue.new)
+      stage = instance_double(Analytics::CycleAnalytics::Stage, parent: Issue.new)
 
       expect { described_class.new(stage: stage) }.to raise_error(/unknown parent_class: Issue/)
     end

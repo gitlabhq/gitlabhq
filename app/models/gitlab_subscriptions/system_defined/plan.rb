@@ -21,9 +21,9 @@ module GitlabSubscriptions
         { id: 7, name: 'ultimate', title: 'Ultimate' },
         { id: 8, name: 'ultimate_trial', title: 'Ultimate Trial' },
         { id: 9, name: 'premium_trial', title: 'Premium Trial' },
-        { id: 10, name: 'ultimate_trial_paid_customer', title: 'Ultimate Trial Paid Customer' },
-        { id: 11, name: 'opensource', title: 'Opensource' },
-        { id: 12, name: 'early_adopter', title: 'Early Adopter' }
+        { id: 10, name: 'ultimate_trial_paid_customer', title: 'Ultimate Trial for Paid Customer' },
+        { id: 11, name: 'opensource', title: 'Open Source Program' },
+        { id: 12, name: 'early_adopter', title: 'GitLab.com Early Adopter' }
       ].freeze
 
       attribute :name, :string

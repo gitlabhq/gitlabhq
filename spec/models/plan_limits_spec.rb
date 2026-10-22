@@ -382,7 +382,7 @@ RSpec.describe PlanLimits do
 
         limits = described_class.create!(plan_name_uid: opensource_uid)
 
-        expect(limits.plan_id).to eq(Plan.find_by!(name: 'opensource', title: 'Opensource').id)
+        expect(limits.plan_id).to eq(Plan.find_by!(name: 'opensource', title: 'Open Source Program').id)
       end
 
       it 'does not create the plan on validation' do

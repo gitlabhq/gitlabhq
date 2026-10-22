@@ -55,6 +55,8 @@ project:
   - update_cvs_for_dependency_scanning
   - update_on_demand_dast_scan
   - update_sec_ai_workflow_settings
+  - update_secret_detection_validity_check
+  - update_secret_detection_validity_check_status
   - update_security_scan_profiles
   - update_security_setting
   - update_storage_ai_audit_events
@@ -90,5 +92,6 @@ group:
   - read_vulnerability
   - read_vulnerability_statistics
   - update_compliance_violations_report
+  - update_secret_detection_validity_check
   - update_security_scan_profiles
   - update_storage_ai_audit_events

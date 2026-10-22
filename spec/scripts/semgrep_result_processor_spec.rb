@@ -1056,9 +1056,9 @@ RSpec.describe SemgrepResultProcessor, feature_category: :tooling do
             { 'f1' => { verdict: 'fp', confidence: 0.92, rationale: 'Test-only path.', error: nil } })
         end
 
-        it 'posts a no-ping dismissal comment and resolves the thread instead of labeling', :aggregate_failures do
+        it 'applies the dismissal label and resolves the thread', :aggregate_failures do
           expect(processor).to receive(:resolve_discussion).with('ab12cd34')
-          expect(processor).not_to receive(:apply_label)
+          expect(processor).to receive(:apply_label).with(described_class::DISMISSAL_LABELS)
 
           processor.create_inline_comments(finding)
 
@@ -1071,13 +1071,14 @@ RSpec.describe SemgrepResultProcessor, feature_category: :tooling do
 
         it 'keeps the fingerprint header so re-runs still dedupe the finding' do
           allow(processor).to receive(:resolve_discussion)
+          allow(processor).to receive(:apply_label)
 
           processor.create_inline_comments(finding)
 
           expect(captured_bodies.first).to include('<!-- {"fingerprint":"f1"')
         end
 
-        it 'leaves the thread unresolved when resolution fails, without aborting', :aggregate_failures do
+        it 'still applies the dismissal label when thread resolution fails', :aggregate_failures do
           failed_put = instance_double(Net::HTTPBadRequest)
           allow(failed_put).to receive(:instance_of?).with(Net::HTTPOK).and_return(false)
           allow(failed_put).to receive_messages(code: '400', body: 'Bad Request')
@@ -1092,7 +1093,10 @@ RSpec.describe SemgrepResultProcessor, feature_category: :tooling do
             call_count == 1 ? successful_response : failed_put
           end
           allow(Net::HTTP).to receive(:start).and_yield(http_double)
-          expect(processor).not_to receive(:apply_label)
+          # The verdicts are still all-dismissed and the open thread stays
+          # visible to the engineer, so the metric label is applied regardless
+          # of resolution success.
+          expect(processor).to receive(:apply_label).with(described_class::DISMISSAL_LABELS)
 
           expect { processor.create_inline_comments(finding) }
             .to output(/Leaving thread unresolved for human review/).to_stdout
@@ -1107,7 +1111,7 @@ RSpec.describe SemgrepResultProcessor, feature_category: :tooling do
           allow(Net::HTTP).to receive(:start).and_yield(http_double)
           allow(processor).to receive(:post_comment).and_return(successful_response)
           expect(processor).to receive(:resolve_discussion).with('ab12cd34')
-          expect(processor).not_to receive(:apply_label)
+          expect(processor).to receive(:apply_label).with(described_class::DISMISSAL_LABELS)
 
           expect { processor.create_inline_comments(finding) }
             .to output(/Failed to post inline comment/).to_stdout
@@ -1195,11 +1199,24 @@ RSpec.describe SemgrepResultProcessor, feature_category: :tooling do
             })
         end
 
-        it 'applies no labels and resolves both threads' do
-          expect(processor).not_to receive(:apply_label)
+        it 'applies the dismissal label once and resolves both threads' do
+          expect(processor).to receive(:apply_label).with(described_class::DISMISSAL_LABELS).once
           expect(processor).to receive(:resolve_discussion).with('ab12cd34').twice
 
           processor.create_inline_comments(finding)
+        end
+
+        context 'when the MR already carries a ping label' do
+          before do
+            stub_env('CI_MERGE_REQUEST_LABELS', 'appsec-sast-ping::unresolved,Some Other Label')
+          end
+
+          it 'does not apply the dismissal label, to avoid clobbering the existing ping' do
+            expect(processor).not_to receive(:apply_label)
+            expect(processor).to receive(:resolve_discussion).with('ab12cd34').twice
+
+            processor.create_inline_comments(finding)
+          end
         end
       end
 

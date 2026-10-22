@@ -87,6 +87,18 @@ describe('Sidebar mediator', () => {
     });
   });
 
+  it('passes the requested depth to the service', async () => {
+    const serviceSpy = jest
+      .spyOn(mediator.service, 'requestReview')
+      .mockResolvedValue({ data: { mergeRequestReviewerRereview: { errors: [] } } });
+    const callback = jest.fn();
+
+    await mediator.requestReview({ userId: 1, depth: 'DEEP', callback });
+
+    expect(serviceSpy).toHaveBeenCalledWith(1, 'DEEP');
+    expect(callback).toHaveBeenCalledWith(1, true);
+  });
+
   it('fetches the data', async () => {
     const mockData = Mock.responseMap.GET[mediatorMockData.endpoint];
     mock.onGet(mediatorMockData.endpoint).reply(HTTP_STATUS_OK, mockData);

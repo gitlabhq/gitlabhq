@@ -47,6 +47,7 @@ export default {
   },
   data() {
     return {
+      folder: undefined,
       environmentToDelete: {},
       environmentToRollback: {},
       environmentToStop: {},
@@ -56,7 +57,6 @@ export default {
     };
   },
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     folder: {
       query: folderQuery,
       variables() {

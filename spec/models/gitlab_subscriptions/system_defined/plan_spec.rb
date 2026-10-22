@@ -20,9 +20,15 @@ RSpec.describe GitlabSubscriptions::SystemDefined::Plan, feature_category: :plan
       expect(fixed_items).to eq(::Plan::PLAN_NAME_UID_LIST.transform_keys(&:to_s))
     end
 
-    it 'sets title to the titleized name to match how Plan rows are seeded' do
+    it 'sets title to the title of the GitLab.com plans row' do
+      gitlab_com_titles = {
+        'ultimate_trial_paid_customer' => 'Ultimate Trial for Paid Customer',
+        'opensource' => 'Open Source Program',
+        'early_adopter' => 'GitLab.com Early Adopter'
+      }
+
       described_class::ITEMS.each do |item|
-        expect(item[:title]).to eq(item[:name].titleize)
+        expect(item[:title]).to eq(gitlab_com_titles.fetch(item[:name], item[:name].titleize))
       end
     end
   end

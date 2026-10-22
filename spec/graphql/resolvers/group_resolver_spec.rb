@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::GroupResolver do
+RSpec.describe Resolvers::GroupResolver, feature_category: :groups_and_projects do
   include GraphqlHelpers
 
   it_behaves_like 'a resolver that batch resolves by full path' do

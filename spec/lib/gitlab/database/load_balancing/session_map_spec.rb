@@ -143,15 +143,15 @@ RSpec.describe Gitlab::Database::LoadBalancing::SessionMap, feature_category: :d
   end
 
   describe '.with_sessions' do
-    let(:main_lb) { instance_double('Gitlab::Database::LoadBalancing::LoadBalancer', name: :main) }
-    let(:ci_lb) { instance_double('Gitlab::Database::LoadBalancing::LoadBalancer', name: :ci) }
-    let(:sec_lb) { instance_double('Gitlab::Database::LoadBalancing::LoadBalancer', name: :sec) }
-    let(:invalid_lb) { instance_double('Gitlab::Database::LoadBalancing::LoadBalancer', name: :invalid) }
+    let(:main_lb) { instance_double(Gitlab::Database::LoadBalancing::LoadBalancer, name: :main) }
+    let(:ci_lb) { instance_double(Gitlab::Database::LoadBalancing::LoadBalancer, name: :ci) }
+    let(:sec_lb) { instance_double(Gitlab::Database::LoadBalancing::LoadBalancer, name: :sec) }
+    let(:invalid_lb) { instance_double(Gitlab::Database::LoadBalancing::LoadBalancer, name: :invalid) }
 
-    let(:main) { instance_double('ActiveRecord::Base', load_balancer: main_lb) }
-    let(:ci) { instance_double('ActiveRecord::Base', load_balancer: ci_lb) }
-    let(:sec) { instance_double('ActiveRecord::Base', load_balancer: sec_lb) }
-    let(:invalid) { instance_double('ActiveRecord::Base', load_balancer: invalid_lb) }
+    let(:main) { instance_double(ActiveRecord::Base, load_balancer: main_lb) }
+    let(:ci) { instance_double(ActiveRecord::Base, load_balancer: ci_lb) }
+    let(:sec) { instance_double(ActiveRecord::Base, load_balancer: sec_lb) }
+    let(:invalid) { instance_double(ActiveRecord::Base, load_balancer: invalid_lb) }
 
     let(:all_dbs) { [main, ci, sec] }
     let(:scoped_dbs) { [main, ci] }

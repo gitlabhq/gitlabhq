@@ -38,6 +38,7 @@ export default {
   ],
   data() {
     return {
+      activeBoardItem: undefined,
       boardLists: {},
       activeListId: '',
       boardId: this.initialBoardId,
@@ -49,7 +50,6 @@ export default {
     };
   },
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     activeBoardItem: {
       query: activeBoardItemQuery,
       variables() {

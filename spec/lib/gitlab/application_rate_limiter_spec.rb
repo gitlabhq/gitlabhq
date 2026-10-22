@@ -692,7 +692,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
   end
 
   describe '.throttled_request?', :freeze_time do
-    let(:request) { instance_double('Rack::Request') }
+    let(:request) { instance_double(Rack::Request) }
 
     context 'the arguments forwarded to #throttled?' do
       it 'omits :bypass_header when there is no header to report' do

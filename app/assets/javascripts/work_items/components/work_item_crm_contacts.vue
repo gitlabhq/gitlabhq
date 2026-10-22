@@ -48,6 +48,8 @@ export default {
   emits: ['error', 'update-widget-draft'],
   data() {
     return {
+      searchItems: undefined,
+      workItem: undefined,
       searchTerm: '',
       searchStarted: false,
       updateInProgress: false,
@@ -107,7 +109,6 @@ export default {
     },
   },
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     searchItems: {
       query: getGroupContactsQuery,
       variables() {
@@ -131,7 +132,6 @@ export default {
         );
       },
     },
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     workItem: {
       query: workItemCrmContactsQuery,
       variables() {

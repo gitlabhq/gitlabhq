@@ -62,6 +62,10 @@ describe('DashboardsTable', () => {
     expect(labels).toEqual(['Title', 'Created by', 'Last edited', '']);
   });
 
+  it('names the table for screen readers', () => {
+    expect(wrapper.find('table').attributes('aria-label')).toBe('Dashboards');
+  });
+
   it('renders a row for each dashboard', () => {
     expect(findRows()).toHaveLength(2);
   });
@@ -95,15 +99,57 @@ describe('DashboardsTable', () => {
     });
   });
 
+  describe('with a custom dashboard whose creator was deleted', () => {
+    beforeEach(() => {
+      createWrapper([{ ...mockCustomDashboard, createdBy: null }, mockSystemDashboard]);
+    });
+
+    it('hides the empty created by cell only when the table is stacked', () => {
+      const createdByCell = (index) => findRow(index).findAll('td').at(1);
+
+      expect(createdByCell(0).text()).toBe('');
+      expect(createdByCell(0).classes()).toContain('@max-md/panel:!gl-hidden');
+      expect(createdByCell(1).classes()).not.toContain('@max-md/panel:!gl-hidden');
+    });
+  });
+
   describe('with a system dashboard', () => {
     it('attributes the dashboard to GitLab', () => {
-      expect(findRow(1).find('[data-testid="dashboard-card-authorship"]').text()).toBe(
+      expect(findRow(1).find('[data-testid="dashboards-list-authorship"]').text()).toBe(
         'Created by GitLab',
       );
     });
 
     it('does not render a last edited time', () => {
       expect(findRow(1).findComponent(TimeAgoTooltip).exists()).toBe(false);
+    });
+
+    it('hides the empty last edited cell only when the table is stacked', () => {
+      const lastEditedCell = (index) => findRow(index).findAll('td').at(2);
+
+      expect(lastEditedCell(1).classes()).toContain('@max-md/panel:!gl-hidden');
+      expect(lastEditedCell(0).classes()).not.toContain('@max-md/panel:!gl-hidden');
+    });
+  });
+
+  describe('with names that contain HTML characters', () => {
+    beforeEach(() => {
+      createWrapper([
+        {
+          ...mockCustomDashboard,
+          name: 'Issues & MRs',
+          createdBy: { ...mockCustomDashboard.createdBy, name: 'Tom & Jerry' },
+        },
+      ]);
+    });
+
+    it('does not escape them in the accessible names', () => {
+      expect(findRow(0).findComponent(DashboardsListItemActions).props('actionLabel')).toBe(
+        'More actions for Issues & MRs',
+      );
+      expect(findRow(0).findComponent(GlAvatarLink).attributes('aria-label')).toBe(
+        'Created by Tom & Jerry',
+      );
     });
   });
 

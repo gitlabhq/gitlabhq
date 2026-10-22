@@ -238,7 +238,7 @@ describe('Access Level Dropdown', () => {
     });
 
     const findItemByNameAndClick = async (name) => {
-      findDropdownItemWithText(dropdownItems, name).trigger('click');
+      findDropdownItemWithText(dropdownItems, name).vm.$emit('click');
       await nextTick();
     };
 
@@ -257,7 +257,7 @@ describe('Access Level Dropdown', () => {
 
     it('displays selected items for each group level', async () => {
       dropdownItems.wrappers.forEach((item) => {
-        item.trigger('click');
+        item.vm.$emit('click');
       });
       await nextTick();
       expect(findDropdownToggleLabel()).toBe('No role, 3 users, 3 deploy keys, 3 groups');
@@ -308,10 +308,10 @@ describe('Access Level Dropdown', () => {
       await waitForPromises();
 
       const item = findAllDropdownItems().at(1);
-      item.trigger('click');
+      item.vm.$emit('click');
       await nextTick();
       expect(item.props('isChecked')).toBe(true);
-      item.trigger('click');
+      item.vm.$emit('click');
       await nextTick();
       expect(item.props('isChecked')).toBe(false);
     });
@@ -342,15 +342,15 @@ describe('Access Level Dropdown', () => {
       await waitForPromises();
       const dropdownItems = findAllDropdownItems();
       // select new item from each group
-      findDropdownItemWithText(dropdownItems, 'role1').trigger('click');
-      findDropdownItemWithText(dropdownItems, 'group4').trigger('click');
-      findDropdownItemWithText(dropdownItems, 'user7').trigger('click');
-      findDropdownItemWithText(dropdownItems, 'key10').trigger('click');
+      findDropdownItemWithText(dropdownItems, 'role1').vm.$emit('click');
+      findDropdownItemWithText(dropdownItems, 'group4').vm.$emit('click');
+      findDropdownItemWithText(dropdownItems, 'user7').vm.$emit('click');
+      findDropdownItemWithText(dropdownItems, 'key10').vm.$emit('click');
       // deselect one item from each group
-      findDropdownItemWithText(dropdownItems, 'role2').trigger('click');
-      findDropdownItemWithText(dropdownItems, 'group5').trigger('click');
-      findDropdownItemWithText(dropdownItems, 'user8').trigger('click');
-      findDropdownItemWithText(dropdownItems, 'key11').trigger('click');
+      findDropdownItemWithText(dropdownItems, 'role2').vm.$emit('click');
+      findDropdownItemWithText(dropdownItems, 'group5').vm.$emit('click');
+      findDropdownItemWithText(dropdownItems, 'user8').vm.$emit('click');
+      findDropdownItemWithText(dropdownItems, 'key11').vm.$emit('click');
 
       expect(last(wrapper.emitted('select'))[0]).toStrictEqual([
         { access_level: 1 },
@@ -415,10 +415,10 @@ describe('Access Level Dropdown', () => {
       await waitForPromises();
       const dropdownItems = findAllDropdownItems();
       // select new item from each group
-      findDropdownItemWithText(dropdownItems, 'role1').trigger('click');
-      findDropdownItemWithText(dropdownItems, 'group4').trigger('click');
-      findDropdownItemWithText(dropdownItems, 'user7').trigger('click');
-      findDropdownItemWithText(dropdownItems, 'key10').trigger('click');
+      findDropdownItemWithText(dropdownItems, 'role1').vm.$emit('click');
+      findDropdownItemWithText(dropdownItems, 'group4').vm.$emit('click');
+      findDropdownItemWithText(dropdownItems, 'user7').vm.$emit('click');
+      findDropdownItemWithText(dropdownItems, 'key10').vm.$emit('click');
 
       await wrapper.setProps({ items: [{ user_id: 7 }] });
 
@@ -463,8 +463,27 @@ describe('Access Level Dropdown', () => {
       await waitForPromises();
     });
 
+    it('keeps the dropdown open after an item click', () => {
+      const hideEvent = { preventDefault: jest.fn() };
+
+      findAllDropdownItems().at(1).vm.$emit('click');
+      findDropdown().vm.$emit('hide', hideEvent);
+
+      expect(hideEvent.preventDefault).toHaveBeenCalled();
+    });
+
+    it('closes when the hide does not follow an item click', () => {
+      const hideEvent = { preventDefault: jest.fn() };
+
+      findAllDropdownItems().at(1).vm.$emit('click');
+      findDropdown().vm.$emit('hide', { preventDefault: jest.fn() });
+      findDropdown().vm.$emit('hide', hideEvent);
+
+      expect(hideEvent.preventDefault).not.toHaveBeenCalled();
+    });
+
     it('should emit `hidden` event with dropdown selection', () => {
-      findAllDropdownItems().at(1).trigger('click');
+      findAllDropdownItems().at(1).vm.$emit('click');
 
       findDropdown().vm.$emit('hidden');
       expect(wrapper.emitted('hidden')[0][0]).toStrictEqual([{ access_level: 2 }]);
@@ -480,8 +499,8 @@ describe('Access Level Dropdown', () => {
     it('dropdown is single-select', () => {
       const dropdownItems = findAllDropdownItems();
 
-      findDropdownItemWithText(dropdownItems, mockAccessLevelsData[0].text).trigger('click');
-      findDropdownItemWithText(dropdownItems, mockAccessLevelsData[1].text).trigger('click');
+      findDropdownItemWithText(dropdownItems, mockAccessLevelsData[0].text).vm.$emit('click');
+      findDropdownItemWithText(dropdownItems, mockAccessLevelsData[1].text).vm.$emit('click');
 
       expect(wrapper.emitted('select')[1]).toHaveLength(1);
     });
@@ -530,11 +549,11 @@ describe('Access Level Dropdown', () => {
       await waitForPromises();
 
       const role = findMemberRoleDropdownItems().at(0);
-      role.trigger('click');
+      role.vm.$emit('click');
       await nextTick();
       expect(role.props('isChecked')).toBe(true);
 
-      role.trigger('click');
+      role.vm.$emit('click');
       await nextTick();
       expect(role.props('isChecked')).toBe(false);
     });
@@ -543,7 +562,7 @@ describe('Access Level Dropdown', () => {
       createComponent({ showCustomRoles: true, accessLevel: ACCESS_LEVELS.MERGE });
       await waitForPromises();
 
-      findMemberRoleDropdownItems().at(0).trigger('click');
+      findMemberRoleDropdownItems().at(0).vm.$emit('click');
 
       expect(last(wrapper.emitted('select'))[0]).toContainEqual({ member_role_id: 1 });
     });

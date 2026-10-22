@@ -5,7 +5,6 @@ export default {
   files: [
     'app/assets/javascripts/ci/pipeline_details/graph/components/job_item.vue',
     'app/assets/javascripts/ci/pipeline_details/graph/components/stage_column_component.vue',
-    'app/assets/javascripts/projects/settings/components/access_dropdown.vue',
     'app/assets/javascripts/sidebar/components/labels/labels_select_widget/dropdown_contents_labels_view.vue',
     'app/assets/javascripts/sidebar/components/labels/labels_select_widget/dropdown_footer.vue',
     'app/assets/javascripts/vue_shared/components/dropdown/dropdown_widget/dropdown_widget.vue',

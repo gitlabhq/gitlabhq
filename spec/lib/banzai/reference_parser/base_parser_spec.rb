@@ -53,7 +53,7 @@ RSpec.describe Banzai::ReferenceParser::BaseParser, feature_category: :markdown 
   describe '#project_for_node' do
     it 'returns the Project for a node' do
       document = double('document', fragment?: false)
-      project = instance_double('Project')
+      project = instance_double(Project)
       object = double('object', project: project)
       node = double('node', document: document)
 

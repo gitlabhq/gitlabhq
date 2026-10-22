@@ -35,13 +35,13 @@ export default {
     },
   },
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     currentScope: {
       query: currentScopeQuery,
     },
   },
   data() {
     return {
+      currentScope: undefined,
       projectsExpanded: false,
     };
   },

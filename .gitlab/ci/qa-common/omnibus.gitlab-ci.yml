@@ -44,9 +44,11 @@ trigger-omnibus-env:
       for version_file in *_VERSION; do echo "$version_file=$(cat $version_file)" >> $BUILD_ENV; done
       echo "OMNIBUS_GITLAB_BUILD_ON_ALL_OS=${OMNIBUS_GITLAB_BUILD_ON_ALL_OS:-false}" >> $BUILD_ENV
       ruby -e 'puts "FULL_RUBY_VERSION=#{RUBY_VERSION}"' >> $BUILD_ENV
-      echo "SHORT_RUBY_VERSION=${RUBY_VERSION}" >> $BUILD_ENV
+      # Must match RELEASE_IMAGE_TAG in .e2e-trigger-base
+      echo "OMNIBUS_IMAGE_TAG=${CI_COMMIT_SHA}-ruby${RUBY_VERSION}${GLCI_RAILS_IMAGE_TAG_SUFFIX}" >> $BUILD_ENV
       echo "GITLAB_ASSETS_TAG=$(assets_image_tag)" >> $BUILD_ENV
       echo "EE=$([[ $FOSS_ONLY == '1' ]] && echo 'false' || echo 'true')" >> $BUILD_ENV
+      echo "GITLAB_BUNDLE_GEMFILE=${GLCI_RAILS_BUNDLE_GEMFILE:-Gemfile}" >> $BUILD_ENV
       define_trigger_branch_in_build_env
     - |
       echo "Built environment file for omnibus build:"
@@ -83,7 +85,8 @@ trigger-omnibus:
     GITLAB_WORKHORSE_VERSION: $GITLAB_WORKHORSE_VERSION
     GITLAB_VERSION: $CI_COMMIT_SHA
     GITLAB_ASSETS_TAG: $GITLAB_ASSETS_TAG
-    IMAGE_TAG: "${CI_COMMIT_SHA}-ruby${SHORT_RUBY_VERSION}"
+    GITLAB_BUNDLE_GEMFILE: $GITLAB_BUNDLE_GEMFILE
+    IMAGE_TAG: $OMNIBUS_IMAGE_TAG
     TOP_UPSTREAM_SOURCE_PROJECT: $CI_PROJECT_PATH
     SECURITY_SOURCES: $SECURITY_SOURCES
     CACHE_UPDATE: $OMNIBUS_GITLAB_CACHE_UPDATE

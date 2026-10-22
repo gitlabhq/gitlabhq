@@ -57,9 +57,9 @@ RSpec.describe BulkImports::Common::Pipelines::LfsObjectsPipeline, feature_categ
 
   describe '#extract' do
     it 'downloads & extracts lfs objects filepaths' do
-      download_service = instance_double("BulkImports::FileDownloadService")
-      decompression_service = instance_double("BulkImports::FileDecompressionService")
-      extraction_service = instance_double("BulkImports::ArchiveExtractionService")
+      download_service = instance_double(BulkImports::FileDownloadService)
+      decompression_service = instance_double(BulkImports::FileDecompressionService)
+      extraction_service = instance_double(BulkImports::ArchiveExtractionService)
 
       expect(BulkImports::FileDownloadService)
         .to receive(:for_context)

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe API::Helpers::RateLimiter do
   let(:key) { :some_key }
   let(:scope) { { user: :some_scope } }
-  let(:request) { instance_double('Rack::Request') }
+  let(:request) { instance_double(Rack::Request) }
   let(:user) { build_stubbed(:user) }
   let(:ip) { '0.0.0.0' }
 

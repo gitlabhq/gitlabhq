@@ -484,6 +484,10 @@ duo_agent_platform_functional_verification_runs:
   - table: duo_workflows_workflows
     column: workflow_id
     on_delete: async_nullify
+duo_code_review_findings:
+  - table: notes
+    column: note_id
+    on_delete: async_delete
 duo_workflows_workflow_pipelines:
   - table: p_ci_pipelines
     column: pipeline_id

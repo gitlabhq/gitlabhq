@@ -20788,6 +20788,20 @@ CREATE SEQUENCE duo_agent_platform_functional_verification_runs_id_seq
 
 ALTER SEQUENCE duo_agent_platform_functional_verification_runs_id_seq OWNED BY duo_agent_platform_functional_verification_runs.id;
 
+CREATE TABLE duo_code_review_findings (
+    note_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    merge_request_id bigint NOT NULL,
+    workflow_id bigint,
+    created_at timestamp with time zone NOT NULL,
+    severity smallint NOT NULL,
+    depth smallint NOT NULL,
+    confidence smallint,
+    category text NOT NULL,
+    CONSTRAINT check_43b3417b48 CHECK ((char_length(category) <= 255)),
+    CONSTRAINT chk_duo_code_review_findings_confidence CHECK (((confidence >= 0) AND (confidence <= 10)))
+);
+
 CREATE TABLE duo_workflow_session_artifacts (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -41427,6 +41441,9 @@ ALTER TABLE ONLY draft_notes
 ALTER TABLE ONLY duo_agent_platform_functional_verification_runs
     ADD CONSTRAINT duo_agent_platform_functional_verification_runs_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY duo_code_review_findings
+    ADD CONSTRAINT duo_code_review_findings_pkey PRIMARY KEY (note_id);
+
 ALTER TABLE ONLY duo_workflow_session_artifacts
     ADD CONSTRAINT duo_workflow_session_artifacts_pkey PRIMARY KEY (id);
 
@@ -46216,6 +46233,8 @@ CREATE INDEX idx_ai_agent_identities_on_project_id ON ai_agent_identities USING 
 
 CREATE UNIQUE INDEX idx_ai_agent_identities_unique_identity ON ai_agent_identities USING btree (user_id, project_id, agent_type, machine_fingerprint);
 
+CREATE INDEX idx_ai_audit_events_on_ai_governance_session_id_created_at_id ON ONLY ai_audit_events USING btree (ai_governance_session_id, created_at DESC, id DESC) WHERE (ai_governance_session_id IS NOT NULL);
+
 CREATE UNIQUE INDEX idx_ai_audit_events_on_cloud_event_id_created_at_unique ON ONLY ai_audit_events USING btree (cloud_event_id, created_at);
 
 CREATE INDEX idx_ai_audit_events_on_namespace_id_created_at ON ONLY ai_audit_events USING btree (namespace_id, created_at DESC);
@@ -49023,6 +49042,12 @@ CREATE INDEX index_dts_on_expiring_at_seven_days_notification_sent_at ON deploy_
 CREATE INDEX index_dts_on_expiring_at_sixty_days_notification_sent_at ON deploy_tokens USING btree (expires_at, id) WHERE ((revoked = false) AND (sixty_days_notification_sent_at IS NULL));
 
 CREATE INDEX index_dts_on_expiring_at_thirty_days_notification_sent_at ON deploy_tokens USING btree (expires_at, id) WHERE ((revoked = false) AND (thirty_days_notification_sent_at IS NULL));
+
+CREATE INDEX index_duo_code_review_findings_on_merge_request_id ON duo_code_review_findings USING btree (merge_request_id);
+
+CREATE INDEX index_duo_code_review_findings_on_project_id ON duo_code_review_findings USING btree (project_id);
+
+CREATE INDEX index_duo_code_review_findings_on_workflow_id ON duo_code_review_findings USING btree (workflow_id);
 
 CREATE INDEX index_duo_wf_checkpoint_blobs_on_namespace_id ON ONLY p_duo_workflows_checkpoint_blobs USING btree (namespace_id);
 
@@ -60768,6 +60793,9 @@ ALTER TABLE ONLY duo_workflows_workflow_workflows
 ALTER TABLE ONLY mobile_device_push_subscriptions
     ADD CONSTRAINT fk_ce6837f03a FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY duo_code_review_findings
+    ADD CONSTRAINT fk_ce82967001 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY packages_dependencies
     ADD CONSTRAINT fk_cea1124da7 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -61305,6 +61333,9 @@ ALTER TABLE ONLY duo_workflow_session_artifacts
 ALTER TABLE ONLY user_group_member_roles
     ADD CONSTRAINT fk_f3b8fc5e4e FOREIGN KEY (shared_with_group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY duo_code_review_findings
+    ADD CONSTRAINT fk_f42dc67814 FOREIGN KEY (workflow_id) REFERENCES duo_workflows_workflows(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY cd_service_environment_healths
     ADD CONSTRAINT fk_f4b06c9df6 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
@@ -61379,6 +61410,9 @@ ALTER TABLE ONLY clusters
 
 ALTER TABLE ONLY custom_dashboard_search_data
     ADD CONSTRAINT fk_f9b264b416 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY duo_code_review_findings
+    ADD CONSTRAINT fk_f9cbcdf939 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY issuable_severities
     ADD CONSTRAINT fk_f9df19ecb6 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

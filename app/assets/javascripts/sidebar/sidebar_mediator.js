@@ -93,9 +93,9 @@ export default class SidebarMediator {
     }
   }
 
-  requestReview({ userId, callback }) {
+  requestReview({ userId, callback, depth }) {
     return this.service
-      .requestReview(userId)
+      .requestReview(userId, depth)
       .then((e) => {
         const errorMessage = e.data.mergeRequestReviewerRereview.errors?.[0];
 

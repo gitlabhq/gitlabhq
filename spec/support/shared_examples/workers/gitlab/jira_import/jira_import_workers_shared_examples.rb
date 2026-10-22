@@ -10,6 +10,12 @@ RSpec.shared_examples 'include import workers modules' do
   else
     it { expect(described_class).to include_module(Gitlab::JiraImport::ImportWorker) }
   end
+
+  it 'limits concurrency with the import jobs concurrency limit setting' do
+    stub_application_setting(import_jobs_concurrency_limit: 25)
+
+    expect(described_class.get_concurrency_limit).to eq(25)
+  end
 end
 
 RSpec.shared_examples 'does not advance to next stage' do

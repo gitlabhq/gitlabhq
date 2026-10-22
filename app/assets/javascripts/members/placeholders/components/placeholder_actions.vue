@@ -72,6 +72,8 @@ export default {
 
   data() {
     return {
+      users: undefined,
+      nonEnterpriseMembers: undefined,
       isConfirmLoading: false,
       isCancelLoading: false,
       isNotifyLoading: false,
@@ -91,7 +93,6 @@ export default {
   },
 
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     users: {
       query: searchUsersQuery,
       variables() {
@@ -109,7 +110,6 @@ export default {
         this.onError();
       },
     },
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     nonEnterpriseMembers: {
       query: groupNonEnterpriseMembersQuery,
       variables() {

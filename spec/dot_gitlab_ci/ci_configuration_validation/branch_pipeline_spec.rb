@@ -82,6 +82,47 @@ RSpec.describe 'CI configuration validation - branch pipelines', feature_categor
       end
 
       it_behaves_like 'default branch pipeline'
+
+      context 'with RUN_WITH_NEXT_RAILS_VERSION' do
+        let(:variables_attributes) do
+          super() + [
+            { key: 'RUN_WITH_NEXT_RAILS_VERSION', value: 'true' },
+            { key: 'RUBY_VERSION_DEFAULT', value: '3.98.8' },
+            { key: 'RUBY_VERSION_NEXT', value: '3.99.9' }
+          ]
+        end
+
+        it 'runs database checks and gem pipelines' do
+          expect(jobs).to include(
+            'db:check-schema',
+            'db:migrate-non-superuser',
+            'db:docs-up-to-date',
+            'db:migrate:multi-version-upgrade',
+            'db:migrate:multi-version-upgrade-pg18',
+            'gems gitlab-utils'
+          )
+          expect(jobs).not_to include('db:check-migrations', 'db:post_deployment_migrations_validator')
+        end
+
+        it 'passes the next Gemfile to E2E child pipelines' do
+          e2e_triggers = %w[e2e:test-on-omnibus-ee e2e:test-on-cng]
+          bridges = pipeline.stages.flat_map(&:statuses).select { |job| e2e_triggers.include?(job.name) }
+
+          expect(bridges.size).to eq(2)
+          bridges.each do |bridge|
+            expect(bridge.yaml_variables).to include(
+              a_hash_including(key: 'GLCI_RAILS_BUNDLE_GEMFILE', value: 'Gemfile.next'),
+              a_hash_including(key: 'GLCI_RAILS_IMAGE_TAG_SUFFIX', value: '-gemfile-next')
+            )
+          end
+        end
+
+        it 'uses the default Ruby version' do
+          job = pipeline.stages.flat_map(&:statuses).find { |status| status.name == 'setup-test-env' }
+
+          expect(job.scoped_variables.sort_and_expand_all['RUBY_VERSION'].value).to eq('3.98.8')
+        end
+      end
     end
 
     context 'with gitlab.com gitlab-org/gitlab ruby-next branch scheduled pipeline' do

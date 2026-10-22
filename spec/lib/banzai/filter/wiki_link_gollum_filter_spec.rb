@@ -20,8 +20,13 @@ RSpec.describe Banzai::Filter::WikiLinkGollumFilter, feature_category: :wiki do
 
   context 'when linking internal images' do
     it 'creates img tag if image exists' do
-      blob = instance_double('Gitlab::Git::Blob', mime_type: 'image/jpeg',
-        name: 'images/image.jpg', path: 'images/image.jpg', data: '')
+      blob = instance_double(
+        Gitlab::Git::Blob,
+        mime_type: 'image/jpeg',
+        name: 'images/image.jpg',
+        path: 'images/image.jpg',
+        data: ''
+      )
       wiki_file = Gitlab::Git::WikiFile.new(blob)
       expect(wiki).to receive(:find_file).with('images/image.jpg', load_content: false).and_return(wiki_file)
 
@@ -217,8 +222,13 @@ RSpec.describe Banzai::Filter::WikiLinkGollumFilter, feature_category: :wiki do
     end
 
     it 'enforces image limits' do
-      blob = instance_double('Gitlab::Git::Blob', mime_type: 'image/jpeg',
-        name: 'images/image.jpg', path: 'images/image.jpg', data: '')
+      blob = instance_double(
+        Gitlab::Git::Blob,
+        mime_type: 'image/jpeg',
+        name: 'images/image.jpg',
+        path: 'images/image.jpg',
+        data: ''
+      )
       wiki_file = Gitlab::Git::WikiFile.new(blob)
       expect(wiki).to receive(:find_file).with('images/image.jpg', load_content: false).twice.and_return(wiki_file)
 

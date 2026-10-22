@@ -1455,6 +1455,7 @@
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - <<: *if-merge-request-labels-run-all-rspec
+    - <<: *if-rails-branch-schedule
     - <<: *if-merge-request
       changes: *db-docs-patterns
 
@@ -2627,6 +2628,7 @@
       when: never
     - <<: *if-merge-request-targeting-stable-branch
       when: never
+    - <<: *if-rails-branch-schedule
     - <<: *if-not-merge-request
       when: never
     - !reference [".rails:rules:ee-and-foss-migration", rules]
@@ -2796,6 +2798,11 @@
     - <<: *if-merge-request
       changes: *db-patterns
     - <<: *if-merge-request-labels-run-all-rspec
+
+.rails:rules:db:migrate-non-superuser:
+  rules:
+    - !reference [".rails:rules:ee-and-foss-mr-with-migration", rules]
+    - <<: *if-rails-branch-schedule
 
 .rails:rules:db:gitlabcom-database-testing:
   rules:
@@ -3065,6 +3072,7 @@
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - <<: *if-merge-request-labels-run-all-rspec
+    - <<: *if-rails-branch-schedule
     # Remove the rule below once https://gitlab.com/gitlab-org/gitlab/-/issues/503221 is closed.
     - !reference [".prevent-tier-1", rules]
     - <<: *if-merge-request
@@ -3303,18 +3311,6 @@
     - <<: *if-default-refs
       changes: *code-backstage-spec-patterns
 
-.rails:rules:flaky-tests-report:
-  rules:
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-merge-request
-      when: never
-    - if: '$FAST_QUARANTINE == "false" && $RETRY_FAILED_TESTS_IN_NEW_PROCESS != "true"'
-      when: never
-    - <<: *if-default-branch-refs
-      changes: *code-backstage-spec-patterns
-      when: always
-
 .rails:rules:rails-next-dependency-check:
   rules:
     - <<: *if-merge-request
@@ -3450,24 +3446,16 @@
 #################
 # Reports rules #
 #################
-.reports:rules:code_quality:
+.reports:rules:docs_code_quality:
+  # Run even without docs changes, so there is always a report to compare against.
+  # Without one, Code Quality shows every finding on the target branch as fixed.
   rules:
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - if: '$CODE_QUALITY_DISABLED'
       when: never
-    # Run code_quality on master until https://gitlab.com/gitlab-org/gitlab/-/issues/363747 is resolved
     - <<: *if-default-branch-refs
     - <<: *if-default-refs
-      changes: *code-backstage-qa-patterns
-
-.reports:rules:docs_code_quality:
-  # Similar to above, run docs code quality job in every pipeline so there is always
-  # a report artifact to compare against.
-  rules:
-    - !reference [".reports:rules:code_quality", rules]
-    - <<: *if-default-refs
-      changes: *docs-patterns
 
 .reports:rules:gitlab-advanced-sast:
   rules:

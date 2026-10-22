@@ -111,13 +111,13 @@ export default {
   emits: ['add-board', 'cancel', 'show-board-modal', 'shown', 'update-board'],
   data() {
     return {
+      error: undefined,
       board: { ...boardDefaults, ...this.currentBoard },
       isLoading: false,
       isDisabled: false,
     };
   },
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     error: {
       query: errorQuery,
       update: (data) => data.boardsAppError,

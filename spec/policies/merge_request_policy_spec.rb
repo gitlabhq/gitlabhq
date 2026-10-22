@@ -633,4 +633,25 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
       it { expect_disallowed(*work_item_relation_permissions) }
     end
   end
+
+  context 'when the project is archived' do
+    let_it_be(:owner) { create(:user) }
+    let_it_be(:project) { create(:project, :archived, owners: owner) }
+
+    context 'with a closed merge request' do
+      let_it_be(:merge_request) { create(:merge_request, :closed, source_project: project, author: owner) }
+
+      subject { described_class.new(owner, merge_request) }
+
+      it { expect_disallowed(:reopen_merge_request) }
+    end
+
+    context 'with an open merge request' do
+      let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+
+      subject { described_class.new(owner, merge_request) }
+
+      it { expect_disallowed(:approve_merge_request) }
+    end
+  end
 end

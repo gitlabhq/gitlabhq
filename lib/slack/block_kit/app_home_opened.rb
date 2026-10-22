@@ -109,7 +109,9 @@ module Slack
 
       def section_slash_commands_connect
         section(
-          s_("Slack|To start using slash commands, connect your GitLab account.")
+          s_("Slack|To start using slash commands, connect your GitLab account. " \
+            "You might also be asked to let GitLab Duo read public Slack channels, " \
+            "so it can use conversation context in its answers.")
         )
       end
 

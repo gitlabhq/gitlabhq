@@ -16,6 +16,7 @@ import {
   BOARD_DND_GROUP,
   BOARD_CARD_CLASS,
   BOARD_CARD_DROP_INDICATOR_CLASS,
+  BOARD_CARD_LIST_CLASS,
   BOARD_CARD_NO_DRAG_CLASS,
 } from '../constants';
 import ColumnHeader from './column_header.vue';
@@ -25,6 +26,7 @@ import WorkItemCardSkeleton from './work_item_card_skeleton.vue';
 export default {
   name: 'BoardColumn',
   skeletonCount: 3,
+  cardListClass: BOARD_CARD_LIST_CLASS,
   sortableOptions: {
     ...defaultSortableOptions,
     draggable: `.${BOARD_CARD_CLASS}`,
@@ -439,7 +441,7 @@ export default {
         :group="groupConfig"
         :disabled="dragDisabled"
         class="board-card-list gl-m-0 gl-flex gl-flex-1 gl-list-none gl-flex-col gl-gap-3 gl-p-0"
-        :class="{ 'is-drop-target': isDropTarget }"
+        :class="[$options.cardListClass, { 'is-drop-target': isDropTarget }]"
         @start="onDragStart"
         @end="onDragEnd"
       >

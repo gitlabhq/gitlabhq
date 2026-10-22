@@ -124,22 +124,7 @@ RSpec.shared_examples 'a work item discussions endpoint' do
   end
 
   context 'with pagination' do
-    it 'paginates the response and returns a cursor for the next page', :aggregate_failures do
-      get api(api_request_path, user), params: { per_page: 1 }
-
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response.size).to eq(1)
-      expect(response.headers['X-Next-Cursor']).to be_present
-    end
-
-    it 'returns 400 when per_page is outside 1..100' do
-      [0, -1, 101].each do |per_page|
-        get api(api_request_path, user), params: { per_page: per_page }
-
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['error']).to include('per_page')
-      end
-    end
+    it_behaves_like 'a work item endpoint paginated by cursor'
   end
 
   it 'does not issue N+1 queries when more discussions are added', :aggregate_failures do

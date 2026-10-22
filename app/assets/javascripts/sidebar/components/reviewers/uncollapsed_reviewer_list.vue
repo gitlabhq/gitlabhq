@@ -1,9 +1,16 @@
 <script>
-import { GlButton, GlTooltipDirective, GlIcon, GlAnimatedLoaderIcon } from '@gitlab/ui';
+import {
+  GlButton,
+  GlDisclosureDropdown,
+  GlTooltipDirective,
+  GlIcon,
+  GlAnimatedLoaderIcon,
+} from '@gitlab/ui';
 import { TYPE_ISSUE } from '~/issues/constants';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';
+import duoCodeReviewDepthMixin from 'ee_else_ce/sidebar/mixins/duo_code_review_depth';
 import { userTypes } from '../assignees/constants';
 import ReviewerAvatarLink from './reviewer_avatar_link.vue';
 
@@ -47,6 +54,7 @@ export default {
   },
   components: {
     GlButton,
+    GlDisclosureDropdown,
     GlIcon,
     GlAnimatedLoaderIcon,
     ReviewerAvatarLink,
@@ -54,6 +62,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [duoCodeReviewDepthMixin],
   props: {
     users: {
       type: Array,
@@ -114,10 +123,24 @@ export default {
         this.loadingStates[userId] = null;
       }, 1500);
     },
-    reRequestReview(userId) {
+    reRequestReview(userId, depth) {
       this.loadingStates[userId] = LOADING_STATE;
       this.$root.$emit(BV_HIDE_TOOLTIP);
-      this.$emit('request-review', { userId, callback: this.requestReviewComplete });
+      this.$emit('request-review', { userId, depth, callback: this.requestReviewComplete });
+    },
+    duoCodeReviewDepthItems(userId) {
+      return [
+        {
+          text: s__('DuoCodeReview|Standard'),
+          description: s__('DuoCodeReview|Efficient review, limited context'),
+          action: () => this.reRequestReview(userId, 'STANDARD'),
+        },
+        {
+          text: s__('DuoCodeReview|Deep'),
+          description: s__('DuoCodeReview|Extensive analysis, more context'),
+          action: () => this.reRequestReview(userId, 'DEEP'),
+        },
+      ];
     },
     removeReviewer(userId) {
       this.loadingStates[userId] = LOADING_STATE;
@@ -162,6 +185,13 @@ export default {
         user.mergeRequestInteraction.reviewState === 'REVIEW_STARTED'
       );
     },
+    showDuoCodeReviewDepthChoice(user) {
+      return (
+        this.duoCodeReviewDepthChoiceEnabled &&
+        user.type === userTypes.duo_code_review_bot &&
+        this.showRequestReviewButton(user)
+      );
+    },
     showRequestReviewButton(user) {
       if (this.canRerequest) {
         if (!user.mergeRequestInteraction.approved) {
@@ -204,8 +234,35 @@ export default {
           {{ user.name }}
         </div>
       </reviewer-avatar-link>
+      <gl-disclosure-dropdown
+        v-if="showDuoCodeReviewDepthChoice(user)"
+        v-gl-tooltip.left
+        :title="$options.i18n.reRequestReview"
+        :toggle-text="$options.i18n.reRequestReview"
+        :items="duoCodeReviewDepthItems(user.id)"
+        :loading="loadingStates[user.id] === $options.LOADING_STATE"
+        class="gl-float-right gl-mr-2"
+        toggle-class="!gl-text-subtle"
+        size="small"
+        icon="redo"
+        category="tertiary"
+        text-sr-only
+        data-testid="re-request-depth-dropdown"
+      >
+        <template #header>
+          <div
+            class="gl-border-b-1 gl-border-b-dropdown-divider gl-p-3 gl-text-sm gl-font-bold gl-text-strong gl-border-b-solid"
+          >
+            {{ s__('DuoCodeReview|Review depth') }}
+          </div>
+        </template>
+        <template #list-item="{ item }">
+          <span class="gl-block gl-font-bold">{{ item.text }}</span>
+          <span class="gl-block gl-text-sm gl-text-subtle">{{ item.description }}</span>
+        </template>
+      </gl-disclosure-dropdown>
       <gl-button
-        v-if="showRequestReviewButton(user)"
+        v-else-if="showRequestReviewButton(user)"
         v-gl-tooltip.left
         :title="$options.i18n.reRequestReview"
         :aria-label="$options.i18n.reRequestReview"

@@ -20,7 +20,6 @@ export default {
   },
   inject: ['fullPath', 'commitSha'],
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     project: {
       query: commitReferencesQuery,
       variables() {
@@ -45,6 +44,7 @@ export default {
   },
   data() {
     return {
+      project: undefined,
       containingTags: [],
       containingBranches: [],
       tippingTags: [],

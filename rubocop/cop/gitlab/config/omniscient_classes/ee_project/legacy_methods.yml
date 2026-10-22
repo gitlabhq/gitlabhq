@@ -128,6 +128,7 @@ EE::Project:
 - path_locks_changed_epoch_cache_key
 - pipeline_configuration_full_path
 - policy_prevents_editing_approval_rules?
+- policy_store_experiment_active?
 - predefined_push_rule
 - predefined_variables
 - prevent_blocking_non_deployment_jobs?

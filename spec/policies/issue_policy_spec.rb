@@ -566,4 +566,14 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
       end
     end
   end
+
+  context 'when the project is archived' do
+    let_it_be(:owner) { create(:user) }
+    let_it_be(:project) { create(:project, :archived, owners: owner) }
+    let_it_be(:issue) { create(:issue, :closed, project: project, author: owner) }
+
+    subject { described_class.new(owner, issue) }
+
+    it { expect_disallowed(:reopen_issue) }
+  end
 end

@@ -6136,7 +6136,13 @@ msgstr ""
 msgid "AdminAIPoweredFeatures|GitLab Duo for merge requests"
 msgstr ""
 
+msgid "AdminAIPoweredFeatures|GitLab-managed"
+msgstr ""
+
 msgid "AdminAIPoweredFeatures|GitLab-managed model"
+msgstr ""
+
+msgid "AdminAIPoweredFeatures|Managed by"
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|Model"
@@ -6155,6 +6161,9 @@ msgid "AdminAIPoweredFeatures|Select a model"
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|Select all models"
+msgstr ""
+
+msgid "AdminAIPoweredFeatures|Self-hosted"
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|Standard"
@@ -6478,9 +6487,6 @@ msgstr ""
 msgid "AdminSelfHostedModels|Enter a valid role ARN (for example, arn:aws:iam::123456789012:role/role-name)."
 msgstr ""
 
-msgid "AdminSelfHostedModels|GitLab-managed model"
-msgstr ""
-
 msgid "AdminSelfHostedModels|GitLab-managed models"
 msgstr ""
 
@@ -6563,9 +6569,6 @@ msgid "AdminSelfHostedModels|Select an appropriate model family from the list of
 msgstr ""
 
 msgid "AdminSelfHostedModels|Select model"
-msgstr ""
-
-msgid "AdminSelfHostedModels|Self-hosted model"
 msgstr ""
 
 msgid "AdminSelfHostedModels|Self-hosted model was not provided"
@@ -6709,6 +6712,9 @@ msgstr ""
 msgid "AdminSettings|Also emitted as (deprecated)"
 msgstr ""
 
+msgid "AdminSettings|Applies to new projects. Existing projects are not affected."
+msgstr ""
+
 msgid "AdminSettings|Are you sure you want to revert to the default extension host domain?"
 msgstr ""
 
@@ -6809,6 +6815,9 @@ msgid "AdminSettings|During dual-emit, both the standard and deprecated field na
 msgstr ""
 
 msgid "AdminSettings|Emit this version alongside the schema version. Must be strictly greater than the schema version."
+msgstr ""
+
+msgid "AdminSettings|Enable \"Delete source branch\" option by default"
 msgstr ""
 
 msgid "AdminSettings|Enable Registration Features"
@@ -11674,6 +11683,9 @@ msgid "AnalyticsDashboards|Dashboard title"
 msgstr ""
 
 msgid "AnalyticsDashboards|Dashboard title is required."
+msgstr ""
+
+msgid "AnalyticsDashboards|Dashboards"
 msgstr ""
 
 msgid "AnalyticsDashboards|Date range"
@@ -34909,6 +34921,12 @@ msgstr ""
 msgid "DuoCodeReview|Control whether GitLab Duo automatically reviews merge requests. This setting cascades to subgroups and projects but can be overridden."
 msgstr ""
 
+msgid "DuoCodeReview|Deep"
+msgstr ""
+
+msgid "DuoCodeReview|Efficient review, limited context"
+msgstr ""
+
 msgid "DuoCodeReview|Enable Code Review Flow"
 msgstr ""
 
@@ -34919,6 +34937,9 @@ msgid "DuoCodeReview|Enable automatic reviews by GitLab Duo"
 msgstr ""
 
 msgid "DuoCodeReview|Error code: [%{error_code}](%{error_code_url})"
+msgstr ""
+
+msgid "DuoCodeReview|Extensive analysis, more context"
 msgstr ""
 
 msgid "DuoCodeReview|Failed to start the Duo workflow. Please try again."
@@ -34957,10 +34978,16 @@ msgstr ""
 msgid "DuoCodeReview|Requires the Code Review foundational flow to be enabled. %{link_start}Learn how to enable foundational flows%{link_end}."
 msgstr ""
 
+msgid "DuoCodeReview|Review depth"
+msgstr ""
+
 msgid "DuoCodeReview|Something went wrong while running the task. Please try again."
 msgstr ""
 
 msgid "DuoCodeReview|Something went wrong. Please try again."
+msgstr ""
+
+msgid "DuoCodeReview|Standard"
 msgstr ""
 
 msgid "DuoCodeReview|Start a new review on push"
@@ -51452,6 +51479,12 @@ msgid "Low vulnerabilities present"
 msgstr ""
 
 msgid "MB"
+msgstr ""
+
+msgid "MCP server access was not granted."
+msgstr ""
+
+msgid "MCP server access was not granted: %{error}"
 msgstr ""
 
 msgid "MD5"
@@ -83434,7 +83467,7 @@ msgstr ""
 msgid "Slack|To start using notifications, %{startMarkup}enable the GitLab for Slack app integration%{endMarkup} in your project settings."
 msgstr ""
 
-msgid "Slack|To start using slash commands, connect your GitLab account."
+msgid "Slack|To start using slash commands, connect your GitLab account. You might also be asked to let GitLab Duo read public Slack channels, so it can use conversation context in its answers."
 msgstr ""
 
 msgid "Slash commands"

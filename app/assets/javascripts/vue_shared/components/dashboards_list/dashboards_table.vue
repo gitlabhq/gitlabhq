@@ -24,7 +24,7 @@ export default {
   },
   methods: {
     actionsLabel({ name }) {
-      return sprintf(s__('AnalyticsDashboards|More actions for %{name}'), { name });
+      return sprintf(s__('AnalyticsDashboards|More actions for %{name}'), { name }, false);
     },
     // Formats the time the same way as the default-configured TimeAgoTooltip that
     // renders the visible text.
@@ -36,8 +36,20 @@ export default {
   },
   fields: [
     { key: 'name', label: __('Title') },
-    { key: 'author', label: s__('AnalyticsDashboards|Created by') },
-    { key: 'updatedAt', label: s__('AnalyticsDashboards|Last edited') },
+    // Stacked rows drop an empty cell rather than print a label with nothing beside it: a
+    // custom dashboard whose creator was deleted has no author, and a system dashboard has no
+    // edit time. The query matches `stacked="md"`.
+    {
+      key: 'author',
+      label: s__('AnalyticsDashboards|Created by'),
+      tdClass: (value, key, item) =>
+        item.system || item.createdBy ? '' : '@max-md/panel:!gl-hidden',
+    },
+    {
+      key: 'updatedAt',
+      label: s__('AnalyticsDashboards|Last edited'),
+      tdClass: (updatedAt) => (updatedAt ? '' : '@max-md/panel:!gl-hidden'),
+    },
     // No label, so the stacked mobile layout doesn't print a visible "Actions"
     // beside the menu, which already has its own accessible name.
     { key: 'actions', label: '', thClass: 'gl-w-0', tdClass: 'gl-text-right' },
@@ -50,6 +62,7 @@ export default {
     :fields="$options.fields"
     primary-key="id"
     stacked="md"
+    :aria-label="s__('AnalyticsDashboards|Dashboards')"
     data-testid="dashboards-list"
   >
     <template #head(actions)>

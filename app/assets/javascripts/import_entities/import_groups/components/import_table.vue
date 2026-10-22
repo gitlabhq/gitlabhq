@@ -115,6 +115,8 @@ export default {
 
   data() {
     return {
+      bulkImportSourceGroups: undefined,
+      availableNamespaces: undefined,
       filter: '',
       page: 1,
       perPage: DEFAULT_PAGE_SIZE,
@@ -129,7 +131,6 @@ export default {
   },
 
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     bulkImportSourceGroups: {
       query: bulkImportSourceGroupsQuery,
       variables() {
@@ -139,7 +140,6 @@ export default {
         this.showError = true;
       },
     },
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     availableNamespaces: {
       query: searchNamespacesWhereUserCanImportProjectsQuery,
       update(data) {

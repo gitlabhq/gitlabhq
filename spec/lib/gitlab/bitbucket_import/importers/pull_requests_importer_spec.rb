@@ -20,11 +20,15 @@ RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestsImporter, :clean_
 
     before do
       allow_next_instance_of(Bitbucket::Client) do |client|
-        page = instance_double('Bitbucket::Page', attrs: [], items: [
-          Bitbucket::Representation::PullRequest.new({ 'id' => 1, 'state' => 'OPENED' }),
-          Bitbucket::Representation::PullRequest.new({ 'id' => 2, 'state' => 'DECLINED' }),
-          Bitbucket::Representation::PullRequest.new({ 'id' => 3, 'state' => 'MERGED' })
-        ])
+        page = instance_double(
+          Bitbucket::Page,
+          attrs: [],
+          items: [
+            Bitbucket::Representation::PullRequest.new({ 'id' => 1, 'state' => 'OPENED' }),
+            Bitbucket::Representation::PullRequest.new({ 'id' => 2, 'state' => 'DECLINED' }),
+            Bitbucket::Representation::PullRequest.new({ 'id' => 3, 'state' => 'MERGED' })
+          ]
+        )
 
         allow(client).to receive(:each_page).and_yield(page)
         allow(page).to receive_messages(next?: true, next: 'https://example.com/next')

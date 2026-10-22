@@ -12,4 +12,8 @@
           - c.with_label do
             = sprite_icon('lock', css_class: 'gl-align-middle gl-mr-1')
             = s_('CascadingSettings|Enforce this setting for all groups on this instance.')
+    .form-group
+      = f.gitlab_ui_checkbox_component :default_remove_source_branch_after_merge,
+        s_('AdminSettings|Enable "Delete source branch" option by default'),
+        help_text: s_('AdminSettings|Applies to new projects. Existing projects are not affected.')
   = f.submit _('Save changes'), pajamas_button: true

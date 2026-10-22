@@ -192,6 +192,20 @@ RSpec.describe 'Admin updates general settings', feature_category: :settings do
         end
       end
 
+      it 'change the default source branch removal for new projects', :aggregate_failures do
+        label = s_('AdminSettings|Enable "Delete source branch" option by default')
+
+        within_testid('merge-requests-settings') do
+          click_checked_field(label)
+
+          expect_save_settings
+
+          expect_field_unchecked(label)
+        end
+
+        expect(current_settings.default_remove_source_branch_after_merge).to be(false)
+      end
+
       it 'change Diff limits settings', :aggregate_failures do
         within_testid('diff-limits-settings') do
           fill_field_with_new_value(_('Maximum diff versions per merge request'), '500')

@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
   subject(:perform) { described_class.new(connection: connection, metrics: metrics_tracker).perform(job_record) }
 
   let(:connection) { Gitlab::Database.database_base_models[:main].connection }
-  let(:metrics_tracker) { instance_double('::Gitlab::Database::BackgroundMigration::PrometheusMetrics', track: nil) }
+  let(:metrics_tracker) { instance_double(::Gitlab::Database::BackgroundMigration::PrometheusMetrics, track: nil) }
   let(:job_class) { Class.new(Gitlab::BackgroundMigration::BatchedMigrationJob) }
   let(:sub_batch_exception) { Gitlab::Database::BackgroundMigration::SubBatchTimeoutError }
 
@@ -17,7 +17,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
     create(:batched_background_migration_job, batched_migration: active_migration, pause_ms: pause_ms)
   end
 
-  let(:job_instance) { instance_double('Gitlab::BackgroundMigration::BatchedMigrationJob') }
+  let(:job_instance) { instance_double(Gitlab::BackgroundMigration::BatchedMigrationJob) }
 
   around do |example|
     Gitlab::Database::SharedModel.using_connection(connection) do

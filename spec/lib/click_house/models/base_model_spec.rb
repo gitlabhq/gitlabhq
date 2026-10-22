@@ -5,8 +5,8 @@ require 'click_house/client'
 
 RSpec.describe ClickHouse::Models::BaseModel, feature_category: :database do
   let(:table_name) { "dummy_table" }
-  let(:query_builder) { instance_double("ClickHouse::Client::QueryBuilder") }
-  let(:updated_query_builder) { instance_double("ClickHouse::Client::QueryBuilder") }
+  let(:query_builder) { instance_double(ClickHouse::Client::QueryBuilder) }
+  let(:updated_query_builder) { instance_double(ClickHouse::Client::QueryBuilder) }
 
   let(:dummy_class) do
     Class.new(described_class) do

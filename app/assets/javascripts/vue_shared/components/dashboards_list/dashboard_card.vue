@@ -30,9 +30,11 @@ export default {
   },
   computed: {
     actionsLabel() {
-      return sprintf(s__('AnalyticsDashboards|More actions for %{name}'), {
-        name: this.dashboard.name,
-      });
+      return sprintf(
+        s__('AnalyticsDashboards|More actions for %{name}'),
+        { name: this.dashboard.name },
+        false,
+      );
     },
     // The aria-label sentence for the timestamp; must format the time the same
     // way as the default-configured TimeAgoTooltip rendering the visible text.

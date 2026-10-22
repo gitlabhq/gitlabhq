@@ -1,7 +1,10 @@
+import { nextTick } from 'vue';
 import { GlLabel, GlTruncate } from '@gitlab/ui';
+import { resetHTMLFixture, setHTMLFixture } from 'helpers/fixtures';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { visitUrl } from '~/lib/utils/url_utility';
 import WorkItemCard from '~/work_items/board/components/work_item_card.vue';
+import { BOARD_CARD_LINK_CLASS, BOARD_CARD_LIST_CLASS } from '~/work_items/board/constants';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import IssuableAssignees from '~/issuable/components/issue_assignees.vue';
 import IssueMilestone from '~/issuable/components/issue_milestone.vue';
@@ -70,8 +73,10 @@ describe('WorkItemCard', () => {
     canReorder = false,
     isFirst = false,
     isLast = false,
+    attachTo,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemCard, {
+      attachTo,
       propsData: {
         item,
         hiddenMetadataKeys,
@@ -221,6 +226,72 @@ describe('WorkItemCard', () => {
 
       expect(wrapper.emitted('set-active-item')).toBeUndefined();
       expect(visitUrl).toHaveBeenCalledWith('/group/project/-/work_items/1');
+    });
+  });
+
+  describe('keyboard navigation', () => {
+    const otherCard = (testId) =>
+      `<li><a class="${BOARD_CARD_LINK_CLASS}" href="#" data-testid="${testId}"></a></li>`;
+
+    const findOtherCard = (testId) => document.querySelector(`[data-testid="${testId}"]`);
+
+    const pressKey = (element, key, options = {}) => {
+      const event = new KeyboardEvent('keydown', { key, cancelable: true, ...options });
+      element.dispatchEvent(event);
+      return event;
+    };
+
+    beforeEach(() => {
+      setHTMLFixture(`
+        <ul class="${BOARD_CARD_LIST_CLASS}">${otherCard('previous-column-card')}</ul>
+        <ul class="${BOARD_CARD_LIST_CLASS}">
+          ${otherCard('card-above')}
+          ${otherCard('card-below')}
+        </ul>
+        <ul class="${BOARD_CARD_LIST_CLASS}">${otherCard('next-column-card')}</ul>
+      `);
+      // VTU1 replaces the attachTo element and VTU2 appends into it, so mount
+      // detached and move the card in to get a valid ul > li on both.
+      createComponent({ canReorder: true, attachTo: document.createElement('div') });
+      findOtherCard('card-below').parentElement.before(wrapper.element);
+      findLink().element.focus();
+    });
+
+    afterEach(() => {
+      resetHTMLFixture();
+    });
+
+    it.each`
+      key             | testId
+      ${'ArrowDown'}  | ${'card-below'}
+      ${'ArrowUp'}    | ${'card-above'}
+      ${'ArrowLeft'}  | ${'previous-column-card'}
+      ${'ArrowRight'} | ${'next-column-card'}
+    `('moves focus to $testId on $key', ({ key, testId }) => {
+      pressKey(findLink().element, key);
+
+      expect(document.activeElement).toBe(findOtherCard(testId));
+    });
+
+    it.each(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'])(
+      'prevents the default %s scroll on the card link',
+      (key) => {
+        expect(pressKey(findLink().element, key).defaultPrevented).toBe(true);
+      },
+    );
+
+    it('does not handle Shift+ArrowDown on the card link', () => {
+      const event = pressKey(findLink().element, 'ArrowDown', { shiftKey: true });
+
+      expect(event.defaultPrevented).toBe(false);
+      expect(document.activeElement).toBe(findLink().element);
+    });
+
+    it('does not handle ArrowDown on the card actions menu', () => {
+      const event = pressKey(findActionsMenu().element, 'ArrowDown');
+
+      expect(event.defaultPrevented).toBe(false);
+      expect(document.activeElement).toBe(findLink().element);
     });
   });
 
@@ -660,6 +731,25 @@ describe('WorkItemCard', () => {
       findActionItem('Move to end of list').action();
 
       expect(wrapper.emitted('move-to-end')).toEqual([[]]);
+    });
+
+    describe('when opened', () => {
+      beforeEach(async () => {
+        createComponent({ canReorder: true });
+        findActionsMenu().vm.$emit('shown');
+        await nextTick();
+      });
+
+      it('stacks above the content of the next card', () => {
+        expect(findActionsMenu().classes()).toContain('gl-z-2');
+      });
+
+      it('drops back to the card content level when closed', async () => {
+        findActionsMenu().vm.$emit('hidden');
+        await nextTick();
+
+        expect(findActionsMenu().classes()).toContain('gl-z-1');
+      });
     });
   });
 });

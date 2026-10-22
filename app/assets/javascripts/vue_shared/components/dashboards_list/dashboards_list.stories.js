@@ -8,7 +8,7 @@ export default {
 const Template = (args, { argTypes }) => ({
   components: { DashboardsList },
   props: Object.keys(argTypes),
-  template: `<dashboards-list :dashboards="dashboards" />`,
+  template: `<dashboards-list :dashboards="dashboards" :layout="layout" />`,
 });
 
 const createdBy = {
@@ -73,3 +73,7 @@ const defaultArgs = {
 
 export const Default = Template.bind({});
 Default.args = defaultArgs;
+
+// The grid stays available behind the layout prop while its design is explored.
+export const Grid = Template.bind({});
+Grid.args = { ...defaultArgs, layout: 'grid' };

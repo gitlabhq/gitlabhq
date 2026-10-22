@@ -21,8 +21,8 @@ module SupplyChain
     TrustedRootFailure = Class.new(Error)
     LocalCaSigningError = Class.new(Error)
 
-    LocalCaSigningMaterial = Struct.new(:key_path, :password, :certificate_path, :signing_certificate_id,
-      keyword_init: true)
+    LocalCaSigningMaterial = Struct.new(:key_path, :password, :certificate_path, :trusted_root_path,
+      :signing_config_path, :signing_certificate_id, keyword_init: true)
 
     def initialize(build)
       @build = build
@@ -143,11 +143,15 @@ module SupplyChain
       certificate_path = File.join(dir, LEAF_CERTIFICATE_FILE)
       File.write(certificate_path, leaf.certificate.to_pem, perm: 0o600)
       imported = cosign_import_key_pair(key: leaf.key, dir: dir)
+      trusted_root_path = cosign_create_trusted_root(ca_certificate: driver.ca_certificate, dir: dir)
+      signing_config_path = cosign_create_signing_config(dir: dir)
 
       LocalCaSigningMaterial.new(
         key_path: imported[:key_path],
         password: imported[:password],
         certificate_path: certificate_path,
+        trusted_root_path: trusted_root_path,
+        signing_config_path: signing_config_path,
         signing_certificate_id: driver.signing_certificate_id
       )
     rescue SupplyChain::RootCaDriver::Error => e

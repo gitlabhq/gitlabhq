@@ -772,6 +772,7 @@ Audit event types belong to the following product categories.
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
+| [`govern_policy_violation_detected`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/263547) | A settings enforcement policy detected a violation on a governed project | {{< no >}} | GitLab [19.6](https://gitlab.com/gitlab-org/gitlab/-/work_items/630148) | Group, Instance |
 | [`policy_project_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102154) | The security policy project is updated for a project | {{< yes >}} | GitLab [15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/377877) | Group, Project |
 | [`policy_warn_mode_group_protected_branch_modification_override`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213392) | A group is affected by a warn mode policy that prevents modification of the group's protected branches if the policy changes from warn mode to strictly enforced. | {{< no >}} | GitLab [18.7](https://gitlab.com/gitlab-org/gitlab/-/issues/580966) | Group |
 | [`policy_warn_mode_merge_request_approval`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210351) | A merge request approval would have been prevented by a security policy in warn mode. | {{< yes >}} | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/563867) | Project |
