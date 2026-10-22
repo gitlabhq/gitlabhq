@@ -979,7 +979,7 @@ you can configure:
 > [!warning]
 > On GitLab.com, due to the scale of the container registry, the number of tags deleted by this API is limited.
 > If your container registry has a large number of tags to delete, only some of them are deleted. You might need
-> to call the API multiple times. To schedule tags for automatic deletion, use a [cleanup policy](#create-a-cleanup-policy-for-containers) instead.
+> to call the API multiple times. To schedule tags for automatic deletion, use a cleanup policy for containers instead.
 
 The following example uses the [`python-gitlab` API library](https://python-gitlab.readthedocs.io/en/stable/gl_objects/repository_tags.html) to fetch a list of tags, and calls the `delete_in_bulk()` method with filter parameters.
 
@@ -1069,7 +1069,7 @@ glab api --method GET projects/$GL_PROJECT_ID/packages/16669383/package_files | 
 10487563
 ```
 
-A similar automation shell script is created in the [delete old pipelines](#delete-old-pipelines) section.
+A similar automation shell script is created in the delete old pipelines section.
 
 The following script example uses the `python-gitlab` library to fetch all packages in a loop,
 and loops over its package files to print the `file_name` and `size` attributes.

@@ -26,7 +26,6 @@ fragment WorkItemLinkPaths on NamespacesLinkPaths {
   calendarPath
   rssPath
   autocompleteAwardEmojisPath
-  newIssuePath
   groupPath
   namespaceFullPath
   ... on ProjectNamespaceLinks {
@@ -42,7 +41,6 @@ fragment WorkItemMetadata on NamespaceMetadata {
   isIssueRepositioningDisabled
   showNewWorkItem
   maxAttachmentSize
-  groupId
   ... on GroupNamespaceMetadata {
     hasProjects
   }

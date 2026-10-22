@@ -11,7 +11,7 @@ This page is about developing dark mode for GitLab. For more information on how 
 
 ### Current approach
 
-1. GitLab UI includes light and dark mode [design tokens](https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/blob/main/packages/gitlab-ui/doc/contributing/design_tokens.md) CSS custom properties for colors and components. See [design tokens technical implementation](https://design.gitlab.com/product-foundations/design-tokens-technical-implementation).
+1. GitLab UI includes light and dark mode [design tokens](https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/blob/main/packages/gitlab-ui/doc/contributing/design_tokens.md) CSS custom properties for colors and components. See the [design tokens usage guide](https://design.gitlab.com/product-foundations/design-tokens-using).
 1. [Semantic design tokens](https://design.gitlab.com/product-foundations/design-tokens#semantic-design-tokens) provide values for light and dark mode in general usage, for example: background, text, and border colors.
 
 ### Deprecated approach
@@ -34,7 +34,7 @@ Design tokens generate both CSS custom properties and SCSS variables which are i
 
 ### Adding CSS custom properties
 
-Create bespoke CSS custom properties when design tokens cannot be used with either Tailwind utilities or existing CSS custom properties. See [guidance for manually adding CSS custom properties](https://design.gitlab.com/product-foundations/design-tokens-technical-implementation#bespoke-dark-mode-solutions) in projects.
+Create bespoke CSS custom properties when design tokens cannot be used with either Tailwind utilities or existing CSS custom properties. See [guidance for manually adding CSS custom properties](https://design.gitlab.com/product-foundations/design-tokens-using#bespoke-dark-mode-solutions) in projects.
 
 ### Page bundles
 

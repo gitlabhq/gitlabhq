@@ -246,28 +246,32 @@ func TestRunner_handleAgentMessages_runsActionsInOrderWithoutPool(t *testing.T) 
 }
 
 func TestRunner_handleAgentMessages_answersPanickingActionWithError(t *testing.T) {
-	tr := startActionTestRunner(t, 2, func(_ context.Context, action *pb.Action) (*pb.ClientEvent, error) {
-		if action.RequestID == "boom" {
-			panic("unexpected nil")
-		}
-		return mcpResponse(action), nil
-	})
+	for _, size := range []int{1, 2} {
+		t.Run(fmt.Sprintf("size %d", size), func(t *testing.T) {
+			tr := startActionTestRunner(t, size, func(_ context.Context, action *pb.Action) (*pb.ClientEvent, error) {
+				if action.RequestID == "boom" {
+					panic("unexpected nil")
+				}
+				return mcpResponse(action), nil
+			})
 
-	tr.wf.recv <- mcpAction("boom", "gitlab_search")
-	tr.wf.recv <- mcpAction("fine", "gitlab_search")
+			tr.wf.recv <- mcpAction("boom", "gitlab_search")
+			tr.wf.recv <- mcpAction("fine", "gitlab_search")
 
-	responses := map[string]*pb.ActionResponse{}
-	for range 2 {
-		response := receive(t, tr.wf.sent).GetActionResponse()
-		responses[response.RequestID] = response
+			responses := map[string]*pb.ActionResponse{}
+			for range 2 {
+				response := receive(t, tr.wf.sent).GetActionResponse()
+				responses[response.RequestID] = response
+			}
+
+			require.Equal(t, errActionPanicked.Error(), responses["boom"].GetPlainTextResponse().Error)
+			require.Equal(t, "ok", responses["fine"].GetPlainTextResponse().Response)
+
+			close(tr.wf.recv)
+			require.NoError(t, receive(t, tr.errCh), "a panic in one action must not end the run")
+			require.NoError(t, tr.Close())
+		})
 	}
-
-	require.Equal(t, errActionPanicked.Error(), responses["boom"].GetPlainTextResponse().Error)
-	require.Equal(t, "ok", responses["fine"].GetPlainTextResponse().Response)
-
-	close(tr.wf.recv)
-	require.NoError(t, receive(t, tr.errCh), "a panic in one action must not end the run")
-	require.NoError(t, tr.Close())
 }
 
 func TestRunner_handleAgentMessages_endsRunWhenResponseCannotBeSent(t *testing.T) {

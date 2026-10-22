@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['AvailabilityEnum'] do
+RSpec.describe GitlabSchema.types['AvailabilityEnum'], feature_category: :user_profile do
   specify { expect(described_class.graphql_name).to eq('AvailabilityEnum') }
 
   it 'exposes all the existing access levels' do

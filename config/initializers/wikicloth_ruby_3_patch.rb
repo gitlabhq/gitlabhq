@@ -212,7 +212,7 @@ module WikiCloth
           return elem.tag!(params.first) { |e| e << params.last } if params.length == 2
           tag_attrs = {}
           params[1..-2].each do |attr|
-            tag_attrs[$1] = $2 if attr =~ /^\s*([\w]+)\s*=\s*"(.*)"\s*$/
+            tag_attrs[$1] = $2 if attr =~ /^\s*(\w+)\s*=\s*"(.*)"\s*$/
           end
           elem.tag!(params.first,tag_attrs) { |e| e << params.last }
         when "debug"

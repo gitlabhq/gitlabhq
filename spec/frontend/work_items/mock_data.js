@@ -7935,6 +7935,36 @@ export const workItemEmailParticipantsResponse = {
   },
 };
 
+export const workItemEmailParticipantsFeaturesResponse = {
+  data: {
+    namespace: {
+      id: 'gid://gitlab/Namespaces::ProjectNamespace/34',
+      workItem: {
+        id: 'gid://gitlab/WorkItem/689',
+        iid: '68',
+        features: {
+          emailParticipants: {
+            type: 'EMAIL_PARTICIPANTS',
+            emailParticipants: {
+              nodes: [
+                {
+                  email: 'feature-user@example.com',
+                  __typename: 'EmailParticipantType',
+                },
+              ],
+              __typename: 'EmailParticipantTypeConnection',
+            },
+            __typename: 'WorkItemWidgetEmailParticipants',
+          },
+          __typename: 'WorkItemFeatures',
+        },
+        __typename: 'WorkItem',
+      },
+      __typename: 'Namespace',
+    },
+  },
+};
+
 export const workItemEmailParticipantsEmptyResponse = {
   data: {
     namespace: {
@@ -9885,7 +9915,6 @@ export const mockMetadataQueryResponse = {
         calendarPath: '/calendar',
         rssPath: '/rss',
         autocompleteAwardEmojisPath: '/emojis',
-        newIssuePath: '/issues/new',
         groupPath: '/group',
         releasesPath: '/releases',
         projectImportJiraPath: '/jira',
@@ -9911,7 +9940,6 @@ export const mockMetadataQueryResponse = {
       },
       metadata: {
         __typename: 'NamespaceMetadata',
-        groupId: 1,
         isIssueRepositioningDisabled: false,
         maxAttachmentSize: 262144000,
         showNewWorkItem: true,

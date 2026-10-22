@@ -12,21 +12,10 @@ module Gitlab
       def self.fetch_message(user, repository)
         key = message_key(user, repository)
 
-        # Also check for messages in the legacy key
-        # TODO: Remove in the next release
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/292030
-        legacy_key = legacy_message_key(user, repository) if respond_to?(:legacy_message_key)
-
         Gitlab::Redis::SharedState.with do |redis|
           message = redis.get(key)
           redis.del(key)
-
-          if legacy_key
-            legacy_message = redis.get(legacy_key)
-            redis.del(legacy_key)
-          end
-
-          legacy_message || message
+          message
         end
       end
 

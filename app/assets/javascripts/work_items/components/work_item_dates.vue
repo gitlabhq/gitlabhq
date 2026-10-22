@@ -137,15 +137,17 @@ export default {
           errors: [],
           workItem: {
             ...this.workItem,
-            widgets: [
-              ...this.workItem.widgets.filter(
-                (widget) => widget.type !== WIDGET_TYPE_START_AND_DUE_DATE,
-              ),
-              {
-                ...workItemDatesWidget,
-                ...updatedDates,
-              },
-            ],
+            widgets: this.workItem?.features
+              ? []
+              : [
+                  ...this.workItem.widgets.filter(
+                    (widget) => widget.type !== WIDGET_TYPE_START_AND_DUE_DATE,
+                  ),
+                  {
+                    ...workItemDatesWidget,
+                    ...updatedDates,
+                  },
+                ],
             ...editedFeatures,
           },
         },

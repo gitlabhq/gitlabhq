@@ -6,7 +6,8 @@ RSpec.describe 'Session initializer for GitLab' do
   subject { Gitlab::Application.config }
 
   before do
-    allow(subject).to receive_message_chain(:middleware, :insert_after)
+    middleware = instance_double(ActionDispatch::MiddlewareStack, insert_after: nil, insert_before: nil)
+    allow(subject).to receive(:middleware).and_return(middleware)
   end
 
   let(:load_session_store) do

@@ -154,6 +154,16 @@ RSpec.describe API::WorkItems::Children, feature_category: :portfolio_management
       end
     end
 
+    it_behaves_like 'allows access with the ai_workflows scope' do
+      let(:api_request) { get api(api_request_path, oauth_access_token: oauth_token) }
+
+      it 'returns the children' do
+        api_request
+
+        expect(json_response.pluck('id')).to eq([first_child.id, second_child.id, closed_child.id])
+      end
+    end
+
     it 'returns forbidden when the user cannot read the parent' do
       other_user = create(:user)
 
@@ -240,6 +250,19 @@ RSpec.describe API::WorkItems::Children, feature_category: :portfolio_management
     end
 
     it_behaves_like 'attach child work item endpoint'
+
+    it_behaves_like 'denies access with the ai_workflows scope' do
+      let(:api_request) do
+        post api(path_for.call(work_item_iid: parent_work_item.iid, child_id: child.id),
+          oauth_access_token: oauth_token)
+      end
+
+      it 'does not attach the child' do
+        api_request
+
+        expect(child.reload.work_item_parent).to be_nil
+      end
+    end
   end
 
   describe 'POST /namespaces/:id/-/work_items/:work_item_iid/children/:child_id' do
@@ -309,6 +332,19 @@ RSpec.describe API::WorkItems::Children, feature_category: :portfolio_management
     end
 
     it_behaves_like 'detach child work item endpoint'
+
+    it_behaves_like 'denies access with the ai_workflows scope' do
+      let(:api_request) do
+        delete api(path_for.call(work_item_iid: parent_work_item.iid, child_id: attached_child.id),
+          oauth_access_token: oauth_token)
+      end
+
+      it 'keeps the child attached' do
+        api_request
+
+        expect(attached_child.reload.work_item_parent).to eq(parent_work_item)
+      end
+    end
   end
 
   describe 'DELETE /namespaces/:id/-/work_items/:work_item_iid/children/:child_id' do
@@ -368,6 +404,17 @@ RSpec.describe API::WorkItems::Children, feature_category: :portfolio_management
     end
 
     it_behaves_like 'reorder child work item endpoint'
+
+    it_behaves_like 'denies access with the ai_workflows scope' do
+      let(:api_request) do
+        put api(path_for.call(work_item_iid: parent_work_item.iid, child_id: second_child.id),
+          oauth_access_token: oauth_token), params: { move_after_id: first_child.id }
+      end
+
+      it 'does not reorder the child' do
+        expect { api_request }.not_to change { second_child.reload.parent_link.relative_position }
+      end
+    end
   end
 
   describe 'PUT /namespaces/:id/-/work_items/:work_item_iid/children/:child_id' do

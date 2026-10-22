@@ -32,7 +32,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
       @invited_members = invited_members
 
       search_invited = index_params[:search_invited]
-      @invited_members = @invited_members.search_invite_email(search_invited) if search_invited.present?
+      @invited_members = @invited_members.search_by_invite_email_or_user(search_invited) if search_invited.present?
 
       @invited_members = present_invited_members(@invited_members)
     end

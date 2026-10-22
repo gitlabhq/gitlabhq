@@ -18,7 +18,7 @@ import GlobalSearchScopedItems from '~/super_sidebar/components/global_search/co
 import FakeSearchInput from '~/super_sidebar/components/global_search/command_palette/fake_search_input.vue';
 import CommandPaletteItems from '~/super_sidebar/components/global_search/command_palette/command_palette_items.vue';
 import CommandsOverviewDropdown from '~/super_sidebar/components/global_search/command_palette/command_overview_dropdown.vue';
-import ScrollScrim from '~/super_sidebar/components/scroll_scrim.vue';
+import ScrollScrim from '~/vue_shared/components/scroll_scrim/scroll_scrim.vue';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import { stubComponent } from 'helpers/stub_component';

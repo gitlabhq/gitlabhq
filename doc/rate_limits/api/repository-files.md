@@ -56,7 +56,8 @@ To override the general user and IP rate limits for requests to the Repository f
 {{< /history >}}
 
 The [file blame endpoint](../../api/repository_files.md#retrieve-file-blame-history-from-a-repository)
-has its own rate limits. These limits apply in addition to the Files API rate limits, and are enabled by default.
+and the GraphQL `blame` field on `RepositoryBlob` share these rate limits. For GraphQL, each blob in a query counts as one request.
+These limits apply in addition to the Files API rate limits, and are enabled by default.
 
 | Request type    | Default limit             | Applies to            | Application setting |
 |-----------------|---------------------------|-----------------------|---------------------|

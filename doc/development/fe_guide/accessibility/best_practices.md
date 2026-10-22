@@ -173,7 +173,7 @@ Use semantic HTML, such as `a` (`GlLink`) and `button` (`GlButton`), which provi
 Keep in mind that:
 
 - <kbd>Tab</kbd> and <kbd>Shift-Tab</kbd> should only move between interactive elements, not static content.
-- When you add `:hover` styles, in most cases you should add `:focus` styles too so that the styling is applied for both mouse and keyboard users.
+- When you add `:hover` styles, in most cases you should add `:focus-visible` styles too so that the styling is applied for both mouse and keyboard users. Prefer `:focus-visible` over `:focus`, which also applies the styles when a mouse click focuses the element.
 - If you remove an interactive element's `outline`, make sure you maintain visual focus state in another way such as with `box-shadow`.
 
 See the [Pajamas Keyboard-only page](https://design.gitlab.com/accessibility/keyboard-only) for more detail.
@@ -200,7 +200,7 @@ Once the markup is semantically complete, use CSS to update it to its desired vi
 <div role="button" tabindex="0" @click="expand">Expand</div>
 
 <!-- good -->
-<gl-button class="gl-p-0!" category="tertiary" @click="expand">Expand</gl-button>
+<gl-button class="!gl-p-0" category="tertiary" @click="expand">Expand</gl-button>
 ```
 
 ### Do not use `tabindex="0"` on interactive elements

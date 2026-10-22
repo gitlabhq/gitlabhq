@@ -27,10 +27,10 @@ Some LDAP servers have rate limits configured.
 
 GitLab queries the LDAP server once for every:
 
-- User during the scheduled [user sync](#user-sync) process.
-- Group during the scheduled [group sync](#group-sync) process.
+- User during the scheduled user sync process.
+- Group during the scheduled group sync process.
 
-In some cases, more queries to the LDAP server may be triggered. For example, when a [group sync query returns a `memberuid` attribute](#queries).
+In some cases, more queries to the LDAP server may be triggered. For example, when a group sync query returns a `memberuid` attribute.
 
 If the LDAP server has a rate limit configured and that limit is reached during the:
 
@@ -71,7 +71,7 @@ The process also updates the following user information:
 - Kerberos identity if Kerberos is enabled.
 
 > [!note]
-> If your LDAP server has a rate limit, that limit might be reached during the user sync process. Check the [rate limit documentation](#ldap-servers-with-rate-limits) for more information.
+> If your LDAP server has a rate limit, that limit might be reached during the user sync process.
 
 ### Synchronize LDAP user's profile name
 
@@ -183,7 +183,7 @@ To prevent this synchronization, you can set `sync_name` to `false`.
 
 A user is blocked if either the:
 
-- [Access check fails](#user-sync) and that user is set to an `ldap_blocked` state in GitLab.
+- Access check fails on user sync, and that user is set to an `ldap_blocked` state in GitLab.
 - LDAP server is not available when that user signs in.
 
 If a user is blocked, that user cannot sign in or push or pull code.
@@ -221,7 +221,7 @@ be available to GitLab. For example, `group_base` could be
 following.
 
 > [!note]
-> If your LDAP server has a rate limit, that limit might be reached during the group sync process. Check the [rate limit documentation](#ldap-servers-with-rate-limits) for more information.
+> If your LDAP server has a rate limit, that limit might be reached during the group sync process.
 
 {{< tabs >}}
 

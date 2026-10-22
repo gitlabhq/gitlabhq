@@ -29,7 +29,7 @@ import {
 } from '~/vue_shared/global_search/constants';
 import modalKeyboardNavigationMixin from '~/vue_shared/mixins/modal_keyboard_navigation_mixin';
 import { darkModeEnabled } from '~/lib/utils/color_utils';
-import ScrollScrim from '~/super_sidebar/components/scroll_scrim.vue';
+import ScrollScrim from '~/vue_shared/components/scroll_scrim/scroll_scrim.vue';
 import { injectRegexSearch } from '~/search/store/utils';
 import {
   EVENT_PRESS_ENTER_TO_ADVANCED_SEARCH,

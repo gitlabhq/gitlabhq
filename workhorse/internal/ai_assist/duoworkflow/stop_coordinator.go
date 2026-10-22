@@ -61,21 +61,37 @@ var errStopTimedOut = errors.New("workflow didn't stop on time")
 // workflow at the same time. Every caller gets the outcome of that one send,
 // then waits for the same acknowledgment.
 func (s *stopCoordinator) request(send func() error, timeout time.Duration) error {
+	sent := false
 	s.sendOnce.Do(func() {
+		sent = true
 		s.requestedAt.Store(time.Now().UnixNano())
 		s.requested.Store(true)
 		s.sendErr = send()
 	})
 
 	if s.sendErr != nil {
+		if sent {
+			stopRequestsTotal.WithLabelValues(stopOutcomeSendFailed).Inc()
+		}
 		return s.sendErr
 	}
 
-	return s.waitForAck(timeout)
+	// Measured from when the stop was sent, so a caller joining late waits
+	// only for what is left and the handshake takes at most one timeout.
+	err := s.waitForAck(s.remaining(timeout))
+	// Every caller waits for the same acknowledgment; only the sender counts it.
+	if sent {
+		outcome := stopOutcomeAcked
+		if err != nil {
+			outcome = stopOutcomeTimeout
+		}
+		stopRequestsTotal.WithLabelValues(outcome).Inc()
+	}
+
+	return err
 }
 
-// remaining returns what is left of timeout since the stop request, which
-// stopWorkflow has usually spent waiting for the acknowledgment.
+// remaining returns what is left of timeout since the stop request was sent.
 func (s *stopCoordinator) remaining(timeout time.Duration) time.Duration {
 	if at := s.requestedAt.Load(); at != 0 {
 		return time.Until(time.Unix(0, at).Add(timeout))
@@ -89,6 +105,14 @@ func (s *stopCoordinator) acknowledge() {
 }
 
 func (s *stopCoordinator) waitForAck(timeout time.Duration) error {
+	// Checked first: once timeout has run out, select would pick between the
+	// acknowledgment and the timer at random.
+	select {
+	case <-s.acked:
+		return nil
+	default:
+	}
+
 	select {
 	case <-s.acked:
 		return nil

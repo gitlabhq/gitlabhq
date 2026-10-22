@@ -7,7 +7,7 @@ title: Automated accessibility testing
 
 GitLab is committed to ensuring our platform is accessible to all users. We use automated accessibility testing as part of our comprehensive approach to identify and prevent accessibility barriers.
 
-[We aim to conform to level AA of the World Wide Web Consortium (W3C) Web Content Accessibility Guidelines 2.1](https://design.gitlab.com/accessibility/a11y).
+[We aim to conform to level AA of the World Wide Web Consortium (W3C) Web Content Accessibility Guidelines 2.2](https://design.gitlab.com/accessibility/a11y).
 
 ## Our testing approach
 

@@ -19,6 +19,14 @@ import { splitCamelCase, stripHtml, truncateByWords } from '~/lib/utils/text_uti
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import { useNotes } from '~/notes/store/legacy_notes';
 import Tracking from '~/tracking';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { TYPENAME_NOTE } from '~/graphql_shared/constants';
+import todoCreateMutation from '~/sidebar/queries/todo_create.mutation.graphql';
+import todoMarkDoneMutation from '~/sidebar/queries/todo_mark_done.mutation.graphql';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import issueCommentTodosQuery from '../graphql/issue_comment_todos.query.graphql';
+import mergeRequestCommentTodosQuery from '../graphql/merge_request_comment_todos.query.graphql';
 import ReplyButton from './note_actions/reply_button.vue';
 import TimelineEventButton from './note_actions/timeline_event_button.vue';
 
@@ -35,6 +43,11 @@ export default {
     addReactionAriaLabel: __('Add reaction to @%{username}'),
     moreActionsAriaLabel: __('More actions for @%{username}'),
     resolveAriaLabel: __('Resolve, @%{username}'),
+    addCommentTodo: s__('Todos|Add a to-do'),
+    markCommentTodoDone: s__('Todos|Mark as done'),
+    commentTodoAdded: s__('Todos|To-do item added.'),
+    commentTodoMarkedDone: s__('Todos|To-do item marked as done.'),
+    commentTodoError: s__('Todos|Something went wrong while managing the to-do item.'),
   },
   name: 'NoteActions',
   components: {
@@ -54,7 +67,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [resolvedStatusMixin, Tracking.mixin(), GlToastMixin],
+  mixins: [resolvedStatusMixin, Tracking.mixin(), GlToastMixin, glFeatureFlagsMixin()],
   props: {
     author: {
       type: Object,
@@ -175,7 +188,32 @@ export default {
     return {
       isReportAbuseDrawerOpen: false,
       feedbackReceived: false,
+      commentTodoId: null,
+      todoLoading: false,
     };
+  },
+  apollo: {
+    commentTodoId: {
+      query() {
+        return this.commentTodosQuery;
+      },
+      variables() {
+        return { id: this.noteableGlobalId };
+      },
+      skip() {
+        return !this.glFeatures.todoForComment;
+      },
+      update(data) {
+        const todos = data.issuable?.currentUserTodos?.nodes || [];
+        return (
+          todos.find((todo) => getIdFromGraphQLId(todo.note?.id) === Number(this.noteId))?.id ||
+          null
+        );
+      },
+      error(error) {
+        Sentry.captureException(error);
+      },
+    },
   },
   computed: {
     ...mapState(useNotes, [
@@ -193,6 +231,21 @@ export default {
     },
     showDeleteAction() {
       return this.canDelete && !this.canReportAsAbuse && !this.noteUrl;
+    },
+    hasCommentTodo() {
+      return Boolean(this.commentTodoId);
+    },
+    commentTodosQuery() {
+      return this.isIssue ? issueCommentTodosQuery : mergeRequestCommentTodosQuery;
+    },
+    showCommentTodoMenuItem() {
+      return this.glFeatures.todoForComment;
+    },
+    noteGlobalId() {
+      return convertToGraphQLId(TYPENAME_NOTE, this.noteId);
+    },
+    noteableGlobalId() {
+      return convertToGraphQLId(this.getNoteableData.noteableType, this.getNoteableData.id);
     },
     isUserAssigned() {
       return this.assignees && this.assignees.some(({ id }) => id === this.author.id);
@@ -358,6 +411,43 @@ export default {
     toggleReportAbuseDrawer(isOpen) {
       this.isReportAbuseDrawerOpen = isOpen;
     },
+    async onCreateCommentTodo() {
+      const success = await this.runCommentTodoMutation(todoCreateMutation, {
+        targetId: this.noteableGlobalId,
+        noteId: this.noteGlobalId,
+      });
+      if (success) this.$toast.show(this.$options.i18n.commentTodoAdded);
+    },
+    async onMarkCommentTodoDone() {
+      const success = await this.runCommentTodoMutation(todoMarkDoneMutation, {
+        id: this.commentTodoId,
+      });
+      if (success) this.$toast.show(this.$options.i18n.commentTodoMarkedDone);
+    },
+    async runCommentTodoMutation(mutation, input) {
+      if (this.todoLoading || this.$apollo.queries.commentTodoId.loading) return false;
+
+      this.todoLoading = true;
+
+      try {
+        const { data } = await this.$apollo.mutate({ mutation, variables: { input } });
+        if (data.todoMutation.errors.length) throw new Error(data.todoMutation.errors[0]);
+        await this.$apollo
+          .query({
+            query: this.commentTodosQuery,
+            variables: { id: this.noteableGlobalId },
+            fetchPolicy: 'network-only',
+            context: { queryDeduplication: false },
+          })
+          .catch((error) => Sentry.captureException(error));
+        return true;
+      } catch (error) {
+        createAlert({ message: this.$options.i18n.commentTodoError, captureError: true, error });
+        return false;
+      } finally {
+        this.todoLoading = false;
+      }
+    },
   },
 };
 </script>
@@ -480,6 +570,20 @@ export default {
             <template #list-item> {{ $options.i18n.editCommentLabel }} </template>
           </gl-disclosure-dropdown-item>
         </gl-disclosure-dropdown-group>
+        <gl-disclosure-dropdown-item
+          v-if="showCommentTodoMenuItem && !hasCommentTodo"
+          data-testid="comment-todo-action"
+          @action="onCreateCommentTodo"
+        >
+          <template #list-item> {{ $options.i18n.addCommentTodo }} </template>
+        </gl-disclosure-dropdown-item>
+        <gl-disclosure-dropdown-item
+          v-if="showCommentTodoMenuItem && hasCommentTodo"
+          data-testid="comment-todo-done-action"
+          @action="onMarkCommentTodoDone"
+        >
+          <template #list-item> {{ $options.i18n.markCommentTodoDone }} </template>
+        </gl-disclosure-dropdown-item>
         <gl-disclosure-dropdown-item
           v-if="noteUrl"
           class="js-btn-copy-note-link"

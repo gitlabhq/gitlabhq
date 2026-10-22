@@ -95,6 +95,7 @@ export const findCustomFieldsWidget = (workItem) =>
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_CUSTOM_FIELDS);
 
 export const findDescriptionWidget = (workItem) =>
+  workItem?.features?.description ||
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_DESCRIPTION);
 
 export const findDesignsWidget = (workItem) =>
@@ -106,6 +107,7 @@ export const findDevelopmentWidget = (workItem) =>
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_DEVELOPMENT);
 
 export const findEmailParticipantsWidget = (workItem) =>
+  workItem?.features?.emailParticipants ||
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_EMAIL_PARTICIPANTS);
 
 export const findErrorTrackingWidget = (workItem) =>

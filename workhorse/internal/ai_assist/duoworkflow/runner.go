@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"runtime/debug"
 	"time"
 
 	redis "github.com/redis/go-redis/v9"
@@ -18,8 +17,6 @@ import (
 )
 
 var errDuplicateStartRequest = errors.New("handleClientEvent: the workflow was already started on this connection")
-
-var errActionPanicked = errors.New("internal error while executing the action")
 
 // Stamped unconditionally: a client must not get to choose its own value here.
 func markClientInjected(tools []*pb.McpTool) {
@@ -82,16 +79,20 @@ func newRunner(client clientTransport, rails *api.API, backend http.Handler, rel
 
 	sess := newSession(r)
 
+	start := time.Now()
 	streamManager, err := newStreamManager(sess, cfg)
 	if err != nil {
 		sess.Close()
 		return nil, fmt.Errorf("failed to initialize stream manager: %v", err)
 	}
+	sessionSetupDurationSeconds.WithLabelValues(setupStageGRPC).Observe(time.Since(start).Seconds())
 
-	mcpManager, err := newMcpManager(rails, sess, cfg.McpServers)
-	if err != nil {
-		// Log the error while the feature is in development
-		sess.logger().WithError(err).Info("failed to initialize MCP server(s)")
+	// Servers that fail to initialize are reported one by one; the run goes
+	// ahead without their tools.
+	start = time.Now()
+	mcpManager, _ := newMcpManager(rails, sess, cfg.McpServers)
+	if len(cfg.McpServers) > 0 {
+		sessionSetupDurationSeconds.WithLabelValues(setupStageMCP).Observe(time.Since(start).Seconds())
 	}
 
 	httpActionHandler := &runHTTPActionHandler{
@@ -212,6 +213,8 @@ func (r *runner) stopAndWrapError(caller string, reason string, closeErr error) 
 }
 
 func (r *runner) handleAgentMessages(ctx context.Context, errCh chan<- error) {
+	dispatcher := r.actionDispatcher()
+
 	for {
 		action, err := r.streamManager.Recv()
 		if err != nil {
@@ -247,28 +250,11 @@ func (r *runner) handleAgentMessages(ctx context.Context, errCh chan<- error) {
 			return
 		}
 
-		if err := r.dispatchAgentAction(ctx, action); err != nil {
+		if err := dispatcher.dispatch(ctx, action); err != nil {
 			errCh <- err
 			return
 		}
 	}
-}
-
-// dispatchAgentAction hands actions workhorse executes itself to the action
-// pool, if there is one, and handles every other action in receive order.
-func (r *runner) dispatchAgentAction(ctx context.Context, action *pb.Action) error {
-	actionType, ok := r.workhorseActionType(action)
-	if !ok || r.actions == nil {
-		return r.handleAgentAction(ctx, action)
-	}
-
-	if err := r.actions.submit(actionType, func(ctx context.Context) error {
-		return r.executeActionSafe(ctx, action)
-	}); err != nil {
-		return fmt.Errorf("handleAgentMessages: %w", err)
-	}
-
-	return nil
 }
 
 func (r *runner) logClose(name string, err error) error {
@@ -385,132 +371,6 @@ func (r *runner) handleClientEvent(response *pb.ClientEvent) error {
 		}
 
 		return fmt.Errorf("handleClientEvent: failed to write a gRPC message: %v", err)
-	}
-
-	return nil
-}
-
-// Action types workhorse executes itself, as reported in metrics.
-const (
-	actionTypeHTTP               = "http"
-	actionTypeMCP                = "mcp"
-	actionTypeSelfHostedTracking = "self_hosted_tracking"
-)
-
-// workhorseActionType returns the type of an action workhorse executes itself.
-// It reports false for actions forwarded to the client, which must be written
-// in the order they arrive and only from the goroutine receiving them.
-func (r *runner) workhorseActionType(action *pb.Action) (string, bool) {
-	switch action.Action.(type) {
-	case *pb.Action_RunHTTPRequest:
-		return actionTypeHTTP, true
-	case *pb.Action_RunMCPTool:
-		// Tools workhorse doesn't know about come from MCP servers configured
-		// in the client, such as the IDE.
-		return actionTypeMCP, r.mcpManager.HasTool(action.GetRunMCPTool().Name)
-	case *pb.Action_TrackLlmCallForSelfHosted:
-		return actionTypeSelfHostedTracking, true
-	default:
-		return "", false
-	}
-}
-
-// executeActionSafe runs an action on an action pool worker. A worker is
-// outside net/http's recovery, so a panic would take down the whole process:
-// it is answered as a failed action instead.
-func (r *runner) executeActionSafe(ctx context.Context, action *pb.Action) (err error) {
-	defer func() {
-		if p := recover(); p != nil {
-			r.session.logger().WithFields(log.Fields{
-				"request_id": action.RequestID,
-				"panic":      fmt.Sprint(p),
-				"stack":      string(debug.Stack()),
-			}).Error("executeActionSafe: recovered from a panic while executing an action")
-
-			err = r.sendActionError(action, errActionPanicked)
-		}
-	}()
-
-	return r.handleAgentAction(ctx, action)
-}
-
-func (r *runner) handleAgentAction(ctx context.Context, action *pb.Action) error {
-	switch action.Action.(type) {
-	case *pb.Action_RunHTTPRequest:
-		event, err := r.httpActionHandler.Execute(ctx, action)
-		if err != nil {
-			return fmt.Errorf("handleAgentAction: failed to perform API call: %v", err)
-		}
-
-		if err := r.streamManager.Send(event); err != nil {
-			return fmt.Errorf("handleAgentAction: failed to send gRPC message: %v", err)
-		}
-
-		r.session.logger().WithFields(log.Fields{
-			"path": action.GetRunHTTPRequest().Path,
-		}).Info("Successfully sent HTTP response event")
-	case *pb.Action_RunMCPTool:
-		mcpTool := action.GetRunMCPTool()
-
-		// If a tool is not recongnized, propagate the message to the client
-		// It's possible when a user has local MCP servers configured in IDE
-		if !r.mcpManager.HasTool(mcpTool.Name) {
-			return r.writeActionToClient(ctx, action)
-		}
-
-		event, err := r.mcpManager.CallTool(ctx, action)
-		if err != nil {
-			log.WithContextFields(ctx, log.Fields{
-				"request_id": action.RequestID,
-				"name":       mcpTool.Name,
-			}).WithError(err).Error("handleAgentAction: reporting failed MCP tool call back to DWS")
-
-			return r.sendActionError(action, err)
-		}
-
-		if err := r.streamManager.Send(event); err != nil {
-			return fmt.Errorf("handleAgentAction: failed to send gRPC message: %v", err)
-		}
-	case *pb.Action_TrackLlmCallForSelfHosted:
-		return r.streamManager.HandleCloudServiceTracking(ctx, action)
-	default:
-		return r.writeActionToClient(ctx, action)
-	}
-
-	return nil
-}
-
-// writeActionToClient hands an action to the client for execution. Transports
-// whose client cannot execute actions reject them with errActionUnsupported;
-// those are reported back to Duo Workflow Service as a failed action.
-func (r *runner) writeActionToClient(ctx context.Context, action *pb.Action) error {
-	err := r.client.WriteAction(ctx, action)
-	if !errors.Is(err, errActionUnsupported) {
-		return err
-	}
-
-	log.WithContextFields(ctx, log.Fields{
-		"request_id": action.RequestID,
-	}).WithError(err).Info("writeActionToClient: reporting unsupported action back to DWS")
-
-	return r.sendActionError(action, err)
-}
-
-// sendActionError answers the action with an error so DWS does not wait forever.
-func (r *runner) sendActionError(action *pb.Action, actionErr error) error {
-	event := &pb.ClientEvent{
-		Response: &pb.ClientEvent_ActionResponse{
-			ActionResponse: &pb.ActionResponse{
-				RequestID: action.RequestID,
-				ResponseType: &pb.ActionResponse_PlainTextResponse{
-					PlainTextResponse: &pb.PlainTextResponse{Error: actionErr.Error()},
-				},
-			},
-		},
-	}
-
-	if err := r.streamManager.Send(event); err != nil {
-		return fmt.Errorf("sendActionError: failed to send gRPC message: %w", err)
 	}
 
 	return nil

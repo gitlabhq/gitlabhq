@@ -14,7 +14,18 @@ description: View and export usage associated with your GitLab license.
 {{< /details >}}
 
 You can view the usage associated with your GitLab license
-and export the license usage file with the following information:
+and export the license usage file or usage report file.
+
+## License usage file
+
+You can export your license usage into a CSV file.
+
+This file contains the information GitLab uses to manually process
+[quarterly reconciliations](../subscriptions/quarterly_reconciliation.md)
+and [renewals](../subscriptions/manage_subscription.md#renew-subscription).
+If your instance is firewalled or an offline environment, you must provide GitLab with this information.
+
+The license usage file contains the following information:
 
 - License key
 - Licensee email
@@ -29,27 +40,22 @@ and export the license usage file with the following information:
 > [!note]
 > A custom format is used for [dates](https://gitlab.com/gitlab-org/gitlab/blob/3be39f19ac3412c089be28553e6f91b681e5d739/config/initializers/date_time_formats.rb#L7) and [times](https://gitlab.com/gitlab-org/gitlab/blob/3be39f19ac3412c089be28553e6f91b681e5d739/config/initializers/date_time_formats.rb#L13) in CSV files.
 
-## Export license usage
+### Export a license usage file
 
 Prerequisites:
 
-- You must be an administrator.
+- Administrator access.
 
-You can export your license usage into a CSV file.
-
-This file contains the information GitLab uses to manually process
-[quarterly reconciliations](../subscriptions/quarterly_reconciliation.md)
-and [renewals](../subscriptions/manage_subscription.md#renew-subscription). If your instance is firewalled or an
-offline environment, you must provide GitLab with this information.
-
-> [!warning]
-> Do not open the license usage file. If you open the file, failures might occur when [you submit your license usage data](license_file.md#submit-license-usage-data).
+To export your license usage file:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Subscription**.
 1. In the upper-right corner, select **Export license usage file**.
 
-## Export a usage report
+> [!warning]
+> Do not open the license usage file. If you open the file, failures might occur when [you submit your license usage data](license_file.md#submit-license-usage-data).
+
+## Usage report
 
 {{< history >}}
 
@@ -63,7 +69,7 @@ offline environment, you must provide GitLab with this information.
 > This feature is available for testing, but not ready for production use.
 
 If your instance is in an offline environment, it cannot send usage data to GitLab.
-Export a usage report instead, and upload it to the Customers Portal
+You should export a usage report instead, and upload it to Customers Portal
 within three days after the end of each month.
 
 The usage report is a JSON file that covers one subscription term,
@@ -85,6 +91,8 @@ GitLab records each day once, so days you've already uploaded are not counted tw
 
 When the usage report is available, **Export usage report** replaces
 **Export license usage file** on the **Subscription** page.
+
+### Export a usage report
 
 Prerequisites:
 

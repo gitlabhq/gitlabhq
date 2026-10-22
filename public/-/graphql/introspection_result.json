@@ -388521,7 +388521,7 @@
             },
             {
               "name": "blame",
-              "description": "Blob blame. Introduced in GitLab 16.3: Status: Experiment.",
+              "description": "Blob blame. Rate limited for each user and project by the `project_repositories_blame_limit` application setting, and for each IP address for unauthenticated requests by the `project_repositories_blame_unauthenticated_limit` application setting. Each blob in a query counts as one request. Introduced in GitLab 16.3: Status: Experiment.",
               "args": [
                 {
                   "name": "fromLine",

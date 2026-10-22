@@ -741,16 +741,51 @@ RSpec.describe Member, feature_category: :groups_and_projects do
       it { is_expected.not_to include(created_today, created_eleven_days_ago) }
     end
 
-    describe '.search_invite_email' do
-      it 'returns only members the matching e-mail' do
-        invited_member = create(:group_member, :invited, invite_email: 'invited@example.com')
+    describe '.search_by_invite_email_or_user' do
+      let_it_be(:invited_member) { create(:group_member, :invited, invite_email: 'invited@example.com') }
+      let_it_be(:user_member) do
+        user = create(:user, :public_email, name: 'Search Person', username: 'search_person',
+          email: 'public.contact@example.com')
 
-        invited = described_class.search_invite_email(invited_member.invite_email)
+        create(:group_member, user: user)
+      end
 
-        expect(invited.count).to eq(1)
-        expect(invited.first).to eq(invited_member)
+      it 'matches email invites by invite email' do
+        expect(described_class.search_by_invite_email_or_user(invited_member.invite_email))
+          .to contain_exactly(invited_member)
+        expect(described_class.search_by_invite_email_or_user('bad-email@example.com')).to be_empty
+      end
 
-        expect(described_class.search_invite_email('bad-email@example.com').count).to eq(0)
+      it 'matches members with a user by partial name, username or exact public email' do
+        expect(described_class.search_by_invite_email_or_user('Search Pers')).to contain_exactly(user_member)
+        expect(described_class.search_by_invite_email_or_user('SEARCH_person')).to contain_exactly(user_member)
+        expect(described_class.search_by_invite_email_or_user(user_member.user.public_email.upcase))
+          .to contain_exactly(user_member)
+      end
+
+      it 'ignores a leading @ like the Members tab search' do
+        expect(described_class.search_by_invite_email_or_user('@search_person')).to contain_exactly(user_member)
+      end
+
+      it 'matches each word of a multi word search like the Members tab search' do
+        expect(described_class.search_by_invite_email_or_user('Person Search')).to contain_exactly(user_member)
+      end
+
+      it 'returns nothing when the search is only @' do
+        expect(described_class.search_by_invite_email_or_user('@')).to be_empty
+      end
+
+      it 'does not match a partial public email' do
+        expect(described_class.search_by_invite_email_or_user(user_member.user.public_email.split('@').first))
+          .to be_empty
+      end
+
+      it 'treats LIKE wildcards as literal characters' do
+        expect(described_class.search_by_invite_email_or_user('%')).to be_empty
+
+        underscore_results = described_class.search_by_invite_email_or_user('_')
+        expect(underscore_results).to include(user_member)
+        expect(underscore_results).not_to include(invited_member)
       end
     end
 

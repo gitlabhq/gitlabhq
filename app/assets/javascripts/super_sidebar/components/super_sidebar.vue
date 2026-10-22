@@ -8,6 +8,7 @@ import { keysFor, TOGGLE_SUPER_SIDEBAR } from '~/behaviors/shortcuts/keybindings
 import { s__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import AccessorUtilities from '~/lib/utils/accessor';
+import ScrollScrim from '~/vue_shared/components/scroll_scrim/scroll_scrim.vue';
 import {
   JS_TOGGLE_EXPAND_CLASS,
   PANEL_TYPES,
@@ -30,7 +31,6 @@ import ManageOrganizationButton from './manage_organization_button.vue';
 import HelpCenter from './help_center.vue';
 import SidebarMenu from './sidebar_menu.vue';
 import SidebarPreferences from './sidebar_preferences.vue';
-import ScrollScrim from './scroll_scrim.vue';
 
 export default {
   name: 'SuperSidebar',

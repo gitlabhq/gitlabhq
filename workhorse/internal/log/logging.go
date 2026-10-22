@@ -88,6 +88,11 @@ func (b *Builder) Info(args ...interface{}) {
 	b.entry.Info(args...)
 }
 
+// Warn logs messages about failures that don't need exception tracking
+func (b *Builder) Warn(args ...interface{}) {
+	b.entry.Warn(args...)
+}
+
 // Error logs error messages
 func Error(args ...interface{}) {
 	NewBuilder().Error(args...)

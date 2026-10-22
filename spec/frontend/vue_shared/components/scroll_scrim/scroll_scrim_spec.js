@@ -1,6 +1,6 @@
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import ScrollScrim from '~/super_sidebar/components/scroll_scrim.vue';
+import ScrollScrim from '~/vue_shared/components/scroll_scrim/scroll_scrim.vue';
 import { useMockIntersectionObserver } from 'helpers/mock_dom_observer';
 
 describe('ScrollScrim', () => {

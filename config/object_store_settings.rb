@@ -25,10 +25,6 @@ class ObjectStoreSettings
 
   # pages and ci_secure_files may be enabled but use legacy disk storage
   # we don't need to raise an error in that case
-  #
-  # ci_catalog_bundles defaults to enabled, so an install already using
-  # consolidated settings would fail to boot before an administrator has had a
-  # chance to provision a bucket for it. Warn instead.
   ALLOWED_INCOMPLETE_TYPES = %w[pages ci_secure_files ci_catalog_bundles].freeze
 
   attr_accessor :settings

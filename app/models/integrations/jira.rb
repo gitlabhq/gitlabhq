@@ -358,7 +358,11 @@ module Integrations
 
       path = API_ENDPOINTS[:find_issue] % issue_key
 
-      jira_request(path) { client.Issue.find(issue_key, options || {}) }
+      jira_request(path) do
+        jira_client = client
+        issue = jira_client.Issue.find(issue_key, options || {})
+        use_configured_url_for_issue(jira_client, issue)
+      end
     end
 
     def close_issue(entity, external_issue, current_user)
@@ -691,7 +695,19 @@ module Integrations
       links = issue.remotelink.all
       return unless links
 
-      links.find { |link| link.object["url"] == url }
+      link = links.find { |remote_link| remote_link.object["url"] == url }
+      use_configured_url_for_link(link)
+    end
+
+    # Nested requests must use the configured URL, not Jira's `self` (gitlab-org/gitlab#607785)
+    def use_configured_url_for_issue(jira_client, issue)
+      issue.attrs['self'] = JIRA::Resource::Issue.singular_path(jira_client, issue.id)
+      issue
+    end
+
+    def use_configured_url_for_link(link)
+      link&.attrs&.delete('self')
+      link
     end
 
     def build_remote_link_props(url:, title:, resolved: false)

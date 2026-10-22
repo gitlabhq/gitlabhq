@@ -206,6 +206,9 @@ type wsManager struct {
 	// closed records that a close frame was sent or the connection is known dead, so
 	// no further frames should be written. Close still releases the transport.
 	closed atomic.Bool
+	// skipLogged keeps WriteAction to one log line for all the actions it
+	// drops after the connection closed.
+	skipLogged atomic.Bool
 }
 
 func newWsManager(conn websocketConn) *wsManager {
@@ -259,12 +262,18 @@ func (w *wsManager) ReadClientEvent() (*pb.ClientEvent, error) {
 	return event, nil
 }
 
+func (w *wsManager) logSkippedWrite(ctx context.Context) {
+	if w.skipLogged.CompareAndSwap(false, true) {
+		log.WithContextFields(ctx, nil).Info("WriteAction: websocket already closed, skipping writes")
+	}
+}
+
 // WriteAction marshals a proto Action and writes it to the WebSocket connection.
 // It is a no-op when the connection is already closed. It handles ErrCloseSent
 // silently since that indicates the connection is already closing normally.
 func (w *wsManager) WriteAction(ctx context.Context, action *pb.Action) error {
 	if w.closed.Load() {
-		log.WithContextFields(ctx, log.Fields{}).Info("WriteAction: skipping sending WS message because websocket already closed")
+		w.logSkippedWrite(ctx)
 		return nil
 	}
 
@@ -288,7 +297,7 @@ func (w *wsManager) WriteAction(ctx context.Context, action *pb.Action) error {
 
 	if err = w.conn.WriteMessage(websocket.BinaryMessage, buf); err != nil {
 		if err == websocket.ErrCloseSent {
-			log.WithContextFields(ctx, log.Fields{}).Info("WriteAction: websocket already closed, skipping write")
+			w.logSkippedWrite(ctx)
 			return nil
 		}
 		return fmt.Errorf("WriteAction: failed to send WS message: %v", err)

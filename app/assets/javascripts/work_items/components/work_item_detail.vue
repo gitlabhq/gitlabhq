@@ -32,9 +32,7 @@ import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import {
   i18n,
   WIDGET_TYPE_WORKPLAN,
-  WIDGET_TYPE_DESCRIPTION,
   WORK_ITEM_TYPE_NAME_OBJECTIVE,
-  WIDGET_TYPE_DESIGNS,
   WORK_ITEM_REFERENCE_CHAR,
   WORK_ITEM_TYPE_NAME_EPIC,
   STATE_OPEN,
@@ -54,6 +52,8 @@ import {
   findAssigneesWidget,
   findAwardEmojiWidget,
   findCurrentUserTodosWidget,
+  findDescriptionWidget,
+  findDesignsWidget,
   findDevelopmentWidget,
   findErrorTrackingWidget,
   findHierarchyWidget,
@@ -426,10 +426,10 @@ export default {
       return this.parentWorkItem?.confidential;
     },
     hasDescriptionWidget() {
-      return this.findWidget(WIDGET_TYPE_DESCRIPTION);
+      return findDescriptionWidget(this.workItem);
     },
     hasDesignWidget() {
-      return this.findWidget(WIDGET_TYPE_DESIGNS) && (this.$router || this.isBoard);
+      return findDesignsWidget(this.workItem) && (this.$router || this.isBoard);
     },
     showUploadDesign() {
       return this.hasDesignWidget && this.canAddDesign;

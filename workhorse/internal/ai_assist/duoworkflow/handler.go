@@ -162,15 +162,18 @@ func (h *Handler) handleInitializationError(r *http.Request, ws *wsManager) {
 func (h *Handler) registerAndExecuteRunner(r *http.Request, transport string, runner *runner, reportError func(error)) {
 	openConnections := connectionsOpen.WithLabelValues(transport)
 
+	start := time.Now()
+
 	h.runners.Store(runner, true)
 	openConnections.Inc()
 	defer func() {
 		defer openConnections.Dec()
 		h.runners.Delete(runner)
 		_ = runner.Close()
+		// After Close, which waits for Shutdown to record its teardown reason.
+		sessionDurationSeconds.WithLabelValues(transport, runner.teardown.load().String()).Observe(time.Since(start).Seconds())
 	}()
 
-	start := time.Now()
 	if err := runner.Execute(runner.session.Context()); err != nil {
 		log.WithRequest(r).WithError(err).WithFields(log.Fields{
 			"duration_ms": time.Since(start).Milliseconds(),
@@ -182,7 +185,7 @@ func (h *Handler) registerAndExecuteRunner(r *http.Request, transport string, ru
 
 func (h *Handler) handleWebSocketExecutionError(r *http.Request, ws *wsManager, err error) {
 	switch {
-	case errors.Is(err, errFailedToAcquireLockError):
+	case errors.Is(err, errFailedToAcquireLock):
 		// We provide the client with specific error details
 		// for this case so it can tell the user about the
 		// conflicting flow

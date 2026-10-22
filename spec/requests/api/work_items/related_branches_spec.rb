@@ -107,6 +107,16 @@ RSpec.describe API::WorkItems::RelatedBranches, feature_category: :portfolio_man
       end
     end
 
+    it_behaves_like 'allows access with the ai_workflows scope' do
+      let(:api_request) { get api(api_request_path, oauth_access_token: oauth_token) }
+
+      it 'returns the related branches' do
+        api_request
+
+        expect(json_response.pluck('name')).to include(branch_name, other_branch_name)
+      end
+    end
+
     it 'returns not_found when the user cannot read the work item' do
       other_user = create(:user)
       stub_feature_flags(work_item_rest_api: [user, other_user])

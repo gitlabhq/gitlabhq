@@ -77,7 +77,7 @@ class ReleaseEnvironmentsModel
   end
 
   def release_tag_match
-    @release_tag_match ||= ENV['CI_COMMIT_REF_NAME'].match(/^v?([\d]+)\.([\d]+)\.[\d]+[\d\w-]*-ee$/)
+    @release_tag_match ||= ENV['CI_COMMIT_REF_NAME'].match(/^v?(\d+)\.(\d+)\.\d+[\d\w-]*-ee$/)
   end
 
   def security_project?
@@ -87,7 +87,7 @@ class ReleaseEnvironmentsModel
   # Omnibus security stable branch has no -ee suffix
   def security_omnibus_stable_branch
     # Transform RC tags to stable branch format
-    ref_name = ENV['CI_COMMIT_REF_NAME']&.match(/^v?([\d]+)\.([\d]+)\.[\d]+-rc\d+-ee$/)
+    ref_name = ENV['CI_COMMIT_REF_NAME']&.match(/^v?(\d+)\.(\d+)\.\d+-rc\d+-ee$/)
 
     if ref_name
       major = ref_name[1]

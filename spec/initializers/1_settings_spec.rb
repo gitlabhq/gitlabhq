@@ -311,11 +311,11 @@ RSpec.describe '1_settings', feature_category: :settings do
       load_settings
     end
 
-    it 'is enabled by default' do
+    it 'is not enabled by default' do
       Settings.ci_catalog_bundles['enabled'] = nil
       load_settings
 
-      expect(Settings.ci_catalog_bundles.enabled).to be(true)
+      expect(Settings.ci_catalog_bundles.enabled).to be_nil
     end
 
     it 'uses the configured value' do

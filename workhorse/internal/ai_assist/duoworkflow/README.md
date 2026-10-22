@@ -27,6 +27,7 @@ The `duoworkflow` package enables GitLab's AI-assisted features (Duo Chat, Duo A
 - **http_handler.go**: HTTP handler for server-side flow execution, including start request decoding and outcome reporting
 - **stream_manager.go**: Manages gRPC streams to the Duo Workflow Service (primary and optional cloud-tracking stream for self-hosted deployments)
 - **client.go**: gRPC client for communicating with the Duo Workflow Service
+- **action_dispatcher.go**: Routes each action from the Duo Workflow Service to whoever executes it (Workhorse or the client), and reports one log line and one set of metrics per action
 - **actions.go**: Handler for executing HTTP action requests from the Duo Workflow Service
 - **mcp.go**: Model Context Protocol (MCP) client for tool execution
 - **lock.go**: Distributed workflow locking using Redis, and the `workflowLease` a run holds
@@ -210,16 +211,13 @@ type runner struct {
 
 #### Concurrent actions
 
-Actions fall into two groups:
-
-- **Executed by Workhorse**: `RunHTTPRequest`, `RunMCPTool` for a tool Workhorse knows, and `TrackLlmCallForSelfHosted`.
-- **Forwarded to the client**: checkpoints, file and command actions, and MCP tools from servers configured in the client. These are always written by the goroutine that receives them, in the order they arrive.
+Client-bound actions are always written by the goroutine that receives them, in the order they arrive. See [Action dispatch](#action-dispatch).
 
 By default, actions run one at a time on the receiving goroutine, so the next `Recv` waits until the action has completed. When Rails sets `MaxConcurrentActions` above 1, the actions Workhorse executes run on a per-run `actionPool` of that many workers instead, and the receiving goroutine moves straight on. Duo Workflow Service matches responses to actions by request ID, so they can complete in any order.
 
 - **Back-pressure**: when every worker is busy, the receiving goroutine waits for one to free up before it reads the next action.
 - **Errors**: an action that fails is answered with an error response, as before. A response that cannot be sent ends the run and cancels the other actions in flight.
-- **Panics**: a panic in a worker is logged and answered with an error response, so it does not take the process down.
+- **Panics**: a panic while Workhorse executes an action is logged and answered with an error response, so it does not take the process down. This holds with or without a pool.
 - **Close**: actions still in flight are canceled and waited for, up to the stop timeout, before the stream is closed, so no response is sent on a closed stream.
 
 ### Stream manager
@@ -244,6 +242,23 @@ type streamManager struct {
 - Optionally opens a secondary `TrackSelfHostedExecuteWorkflow` stream for self-hosted deployments. Each send is paired with the receive that follows it, so concurrent tracking calls take turns on it
 - Provides mutex-protected `Send` to allow concurrent goroutines to write safely
 - Translates `io.EOF` and quota-exceeded gRPC errors into sentinel errors on `Recv`
+
+### Action dispatch
+
+The `actionDispatcher` classifies each action by who executes it, which is the `type` label on the action metrics:
+
+| Type                   | Actions                                                        | Executed by                     |
+| ---------------------- | -------------------------------------------------------------- | ------------------------------- |
+| `http`                 | `RunHTTPRequest`                                               | Workhorse, through the upstream router |
+| `mcp`                  | `RunMCPTool` for a tool from an MCP server configured in Rails | Workhorse                       |
+| `self_hosted_tracking` | `TrackLlmCallForSelfHosted`                                    | Workhorse, through the cloud tracking stream |
+| `client`               | Everything else, including MCP tools Workhorse doesn't know    | The client                      |
+
+Client-bound actions are written from the goroutine that receives them, in receive order: clients rely on that order, and a WebSocket allows one writer at a time.
+
+An action the client can't execute, or an MCP call that fails, is answered with an error and the run carries on. Only a failure to send a response, to perform an HTTP action, or to track a self-hosted call ends the run.
+
+Each action Workhorse executes produces one `Handled action` log line with its `action_type`, `request_id`, `outcome`, `duration_s` and `response_size`, plus `method`, `path` (without the query string) and `status_code` for HTTP actions. Client-bound actions are logged only when they fail.
 
 ### Action handlers
 
@@ -359,7 +374,7 @@ Client receives action response
 
 ## Metrics
 
-The package exposes five Prometheus counters, one gauge and two histograms.
+The package exposes the Prometheus metrics below. Every label value comes from a fixed set, never from user input, the Duo Workflow Service or the client.
 
 ### `gitlab_workhorse_duo_workflow_connections_open`
 
@@ -401,7 +416,7 @@ sum(rate(gitlab_workhorse_duo_workflow_session_errors_total[5m])) by (grpc_code,
 
 ### `gitlab_workhorse_duo_workflow_http_actions_total`
 
-Incremented once for every HTTP action executed on behalf of the Duo Workflow Service (in `runHTTPActionHandler.Execute`), labelled by `method` and `status_code`.
+Incremented once for every HTTP action executed on behalf of the Duo Workflow Service (in `runHTTPActionHandler.Execute`), labelled by `method` and `status_code`. `method` is one of the standard HTTP methods, or `other`: the Duo Workflow Service can send any valid method token.
 
 `status_code` is `"0"` when the request could not be completed at all, so no response status exists — for example a timeout, an aborted request, or a response exceeding the body size limit. Those cases are also counted in `http_action_errors_total`.
 
@@ -440,6 +455,22 @@ Example query:
 sum(rate(gitlab_workhorse_duo_workflow_http_action_errors_total[5m])) by (method, error_type)
 ```
 
+### `gitlab_workhorse_duo_workflow_actions_total`, `_action_duration_seconds` and `_actions_in_flight`
+
+Every action received from the Duo Workflow Service, labelled by `type` (see [Action dispatch](#action-dispatch)). The counter also carries `outcome`:
+
+| `outcome` | Meaning                                                                            |
+| --------- | ---------------------------------------------------------------------------------- |
+| `ok`      | Answered, or forwarded to the client. HTTP 4xx and 5xx responses count as answered |
+| `error`   | Answered with an error, and the run carried on                                     |
+| `fatal`   | Handling the action ended the run                                                  |
+
+The duration runs from the start of execution until the response is sent, or until the action is written to the client. It excludes the time an action waits for a free worker in the action pool, which `action_queue_wait_seconds` measures.
+
+```promql
+histogram_quantile(0.95, sum(rate(gitlab_workhorse_duo_workflow_action_duration_seconds_bucket[5m])) by (le, type))
+```
+
 ### `gitlab_workhorse_duo_workflow_action_queue_wait_seconds`
 
 Histogram of how long an action waited for a free worker in the run's action pool, in seconds, labelled by `type` (`http`, `mcp` or `self_hosted_tracking`). Only observed when actions run concurrently.
@@ -447,6 +478,26 @@ Histogram of how long an action waited for a free worker in the run's action poo
 ### `gitlab_workhorse_duo_workflow_action_pool_saturated_total`
 
 Incremented when an action finds every worker in the run's action pool busy, so the runner stops receiving from Duo Workflow Service until a worker is free. A rising rate means `MaxConcurrentActions` is too low for the workload, or a slow upstream such as an MCP server is holding workers.
+
+### `gitlab_workhorse_duo_workflow_mcp_calls_total`, `_mcp_call_duration_seconds` and `_mcp_init_failures_total`
+
+MCP tool calls, labelled by `server`: `gitlab`, `orbit` or `slack` for the servers Rails configures itself, and `catalog` for every server added through the AI Catalog, whose names users choose. The `Failed to initialize MCP server` log line carries the actual name. `outcome` on the counter is `ok`, `tool_error` (the server answered with `isError`) or `error` (the call failed). `mcp_init_failures_total` counts servers whose tools are missing from a run because connecting or listing tools failed.
+
+### `gitlab_workhorse_duo_workflow_session_duration_seconds`
+
+How long a run lasts, from the start of execution until the runner is closed, labelled by `transport` and `teardown_reason`. A run that finishes normally ends when DWS closes the stream, so it is labelled `unsolicited`, as is a run ended by an error.
+
+### `gitlab_workhorse_duo_workflow_session_setup_duration_seconds`
+
+The setup that runs before a run starts, labelled by `stage`: `grpc` opens the stream to the Duo Workflow Service, and `mcp` initializes the MCP servers, one at a time. `grpc` is only observed when the stream opens, and `mcp` only when MCP servers are configured. `mcp` includes servers that fail to initialize.
+
+### `gitlab_workhorse_duo_workflow_lock_acquire_total` and `_lock_release_failures_total`
+
+Workflow lock attempts by `outcome`: `acquired`, `taken` (another run holds it, so this one ends) or `transient_error` (Redis failed, so the run goes ahead without a lock). A lock that couldn't be released stays in Redis until it expires after two hours.
+
+### `gitlab_workhorse_duo_workflow_stop_requests_total`
+
+`StopWorkflowRequest`s sent to the Duo Workflow Service, by `outcome`: `acked`, `timeout` (no acknowledgment within the stop timeout) or `send_failed`.
 
 ## Configuration
 
@@ -536,6 +587,7 @@ Test files are located in the same directory:
 - **mcp_test.go**: MCP server communication
 - **lock_test.go**: Distributed workflow locking
 - **metrics_test.go**: Prometheus counter instrumentation
+- **action_dispatcher_test.go**: Action classification, per-action metrics and logging
 
 ### Running tests
 

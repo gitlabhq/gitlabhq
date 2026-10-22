@@ -409,6 +409,16 @@ RSpec.describe API::WorkItems, feature_category: :portfolio_management do
       expect(json_response.pluck('id')).to match_array(expected_work_item_ids)
     end
 
+    it_behaves_like 'allows access with the ai_workflows scope' do
+      let(:api_request) { get api(api_request_path, oauth_access_token: oauth_token) }
+
+      it 'returns the project work items' do
+        api_request
+
+        expect(json_response.pluck('id')).to match_array(expected_work_item_ids)
+      end
+    end
+
     it_behaves_like 'authorizing granular token permissions', :read_work_item do
       let(:boundary_object) { project }
       let(:request) do
@@ -449,11 +459,18 @@ RSpec.describe API::WorkItems, feature_category: :portfolio_management do
     it_behaves_like 'work item show endpoint'
 
     unless Gitlab.ee?
-      it 'returns 400 for a feature that only exists on EE', :aggregate_failures do
+      it 'omits a feature that only exists on EE', :aggregate_failures do
         get api("#{api_request_path}/#{primary_work_item.iid}", user), params: { features: 'weight' }
 
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['error']).to eq('features does not have a valid value: weight')
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['features']).to eq({})
+      end
+
+      it 'renders the CE features and omits the EE-only ones', :aggregate_failures do
+        get api("#{api_request_path}/#{primary_work_item.iid}", user), params: { features: 'labels,weight' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['features'].keys).to contain_exactly('labels')
       end
     end
 

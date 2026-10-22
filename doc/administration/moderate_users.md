@@ -105,13 +105,13 @@ When a user registers for an account while this setting is enabled:
 
 A user pending approval:
 
-- Is functionally identical to a [blocked](#block-a-user) user.
+- Is functionally identical to a blocked user.
 - Cannot sign in.
 - Cannot access Git repositories or the GitLab API.
 - Does not receive any notifications from GitLab.
 - Does not consume a [seat](../subscriptions/manage_seats.md#billable-users).
 
-An administrator must [approve the new user account](#approve-or-reject-a-new-user-account) to allow them to
+An administrator must approve the new user account to allow them to
 sign in.
 
 ### View new user accounts pending approval
@@ -221,8 +221,7 @@ The user's state is set to active and they consume a
 > Users can also be unblocked using the [GitLab API](../api/user_moderation.md#unblock-access-to-a-user).
 
 The unblock option is unavailable for users blocked by LDAP.
-To resync the user with LDAP and unblock them only if the check passes, see
-[Resync a user blocked by LDAP](#resync-a-user-blocked-by-ldap).
+You can resync a user blocked by LDAP, and unblock them only if the check passes.
 
 To unblock the user regardless of what LDAP says, delete the LDAP identity:
 
@@ -298,7 +297,8 @@ To deactivate a user:
 The user receives an email notification that their account has been deactivated. After this email, they no longer receive notifications.
 For more information, see [user deactivation emails](settings/email.md#user-deactivation-emails).
 
-To deactivate users with the GitLab API, see [deactivate user](../api/user_moderation.md#deactivate-a-user). For information about permanent user restrictions, see [block and unblock users](#block-and-unblock-users).
+You can [deactivate users](../api/user_moderation.md#deactivate-a-user) with the GitLab API,
+or block and unblock users.
 
 To remove a user from a GitLab.com subscription, see
 [Remove users from your subscription](../subscriptions/manage_seats.md#remove-users-from-subscription).

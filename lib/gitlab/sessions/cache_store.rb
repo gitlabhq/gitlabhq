@@ -6,6 +6,10 @@ module Gitlab
       DELIMITER = '-'
       ORIGINAL_SESSION_KEY = 'gitlab.original_session_data'
       LAST_WRITE_AT_KEY = '_gitlab_session_last_write_at'
+      # Set on the request env when this request writes the session. Rack hands write_session
+      # a copy of the session, so the timestamp written here never reaches the live session:
+      # a reader later in the same request (SessionExpiryHeader) must take it from env.
+      COMMITTED_LAST_WRITE_AT_KEY = 'gitlab.session_committed_last_write_at'
       # We throttle writes when session is unchanged to prevent session clobbering
       # and reduce load on Redis.
       WRITE_THROTTLE_INTERVAL = 1.hour.to_i
@@ -44,6 +48,7 @@ module Gitlab
         elsif session_changed?(env, sid, session) || !write_throttled?(session, options[:redis_expiry])
           session[LAST_WRITE_AT_KEY] = Time.now.to_i
           @cache.write(key, session, expires_in: options[:redis_expiry])
+          env.set_header(COMMITTED_LAST_WRITE_AT_KEY, session[LAST_WRITE_AT_KEY])
         end
 
         sid

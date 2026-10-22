@@ -34,6 +34,17 @@ RSpec.describe API::WorkItems::Discussions, feature_category: :portfolio_managem
       end
     end
 
+    it_behaves_like 'allows access with the ai_workflows scope' do
+      let(:api_request) { get api(api_request_path, oauth_access_token: oauth_token) }
+
+      it 'returns the discussions' do
+        api_request
+
+        note_ids = json_response.flat_map { |discussion| discussion['notes'].pluck('id') }
+        expect(note_ids).to contain_exactly(comment.id, system_note.id)
+      end
+    end
+
     it 'returns not_found when the user cannot read the work item' do
       get api(api_request_path, non_member)
 
@@ -73,6 +84,16 @@ RSpec.describe API::WorkItems::Discussions, feature_category: :portfolio_managem
       let(:boundary_object) { project }
       let(:request) do
         get api(api_request_path, personal_access_token: pat)
+      end
+    end
+
+    it_behaves_like 'allows access with the ai_workflows scope' do
+      let(:api_request) { get api(api_request_path, oauth_access_token: oauth_token) }
+
+      it 'returns the discussion' do
+        api_request
+
+        expect(json_response['id']).to eq(comment.discussion_id)
       end
     end
 
@@ -118,6 +139,14 @@ RSpec.describe API::WorkItems::Discussions, feature_category: :portfolio_managem
         post api(api_request_path, personal_access_token: pat), params: { body: 'hi!' }
       end
     end
+
+    it_behaves_like 'denies access with the ai_workflows scope' do
+      let(:api_request) { post api(api_request_path, oauth_access_token: oauth_token), params: { body: 'hi!' } }
+
+      it 'does not create the discussion' do
+        expect { api_request }.not_to change { work_item.notes.count }
+      end
+    end
   end
 
   describe 'POST /namespaces/:id/-/work_items/:work_item_iid/discussions' do
@@ -133,6 +162,14 @@ RSpec.describe API::WorkItems::Discussions, feature_category: :portfolio_managem
       let(:boundary_object) { project }
       let(:request) do
         post api(api_request_path, personal_access_token: pat), params: { body: 'hi!' }
+      end
+    end
+
+    it_behaves_like 'denies access with the ai_workflows scope' do
+      let(:api_request) { post api(api_request_path, oauth_access_token: oauth_token), params: { body: 'hi!' } }
+
+      it 'does not create the discussion' do
+        expect { api_request }.not_to change { work_item.notes.count }
       end
     end
 
@@ -160,6 +197,16 @@ RSpec.describe API::WorkItems::Discussions, feature_category: :portfolio_managem
       end
     end
 
+    it_behaves_like 'denies access with the ai_workflows scope' do
+      let(:api_request) { put api(api_request_path, oauth_access_token: oauth_token), params: { resolved: true } }
+
+      it 'does not resolve the discussion' do
+        api_request
+
+        expect(discussion_note.reload).not_to be_resolved
+      end
+    end
+
     it 'returns not_found when the user cannot read the work item' do
       put api(api_request_path, non_member), params: { resolved: true }
 
@@ -181,6 +228,16 @@ RSpec.describe API::WorkItems::Discussions, feature_category: :portfolio_managem
       let(:boundary_object) { project }
       let(:request) do
         put api(api_request_path, personal_access_token: pat), params: { resolved: true }
+      end
+    end
+
+    it_behaves_like 'denies access with the ai_workflows scope' do
+      let(:api_request) { put api(api_request_path, oauth_access_token: oauth_token), params: { resolved: true } }
+
+      it 'does not resolve the discussion' do
+        api_request
+
+        expect(discussion_note.reload).not_to be_resolved
       end
     end
 

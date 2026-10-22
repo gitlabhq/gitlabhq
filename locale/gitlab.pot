@@ -8700,6 +8700,9 @@ msgstr ""
 msgid "AiGovernance|%{value}, set as an override"
 msgstr ""
 
+msgid "AiGovernance|A Compliance Access Key is required"
+msgstr ""
+
 msgid "AiGovernance|AI Governance"
 msgstr ""
 
@@ -8728,6 +8731,9 @@ msgid "AiGovernance|Always ask"
 msgstr ""
 
 msgid "AiGovernance|Always deny"
+msgstr ""
+
+msgid "AiGovernance|Anthropic rate limited the request. Try again shortly."
 msgstr ""
 
 msgid "AiGovernance|Audit events"
@@ -8770,6 +8776,9 @@ msgid "AiGovernance|Control how your AI-powered features are used."
 msgstr ""
 
 msgid "AiGovernance|Could not load group-level rules. Restriction enforcement may be incomplete."
+msgstr ""
+
+msgid "AiGovernance|Could not reach Anthropic to verify the Compliance Access Key. Try again shortly."
 msgstr ""
 
 msgid "AiGovernance|Counts are approximate on this instance."
@@ -8974,6 +8983,9 @@ msgid "AiGovernance|Source"
 msgstr ""
 
 msgid "AiGovernance|Status"
+msgstr ""
+
+msgid "AiGovernance|The Compliance Access Key was rejected by Anthropic. Check the key and its scopes."
 msgstr ""
 
 msgid "AiGovernance|This tool can access any GitLab read endpoint. Changes to other read tools may not take effect if this tool remains on Allow."
@@ -33691,6 +33703,9 @@ msgid "DuoAgentsPlatform|Commit to default branch"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Conditions"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Configuration file"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Configuration path"
@@ -74402,10 +74417,25 @@ msgstr ""
 msgid "ScanProfiles|A scan runs after a merge request's head pipeline succeeds. Stale and merge train pipelines are skipped. Only the files the merge request adds or modifies are scanned, not the full repository."
 msgstr ""
 
+msgid "ScanProfiles|API download delay"
+msgstr ""
+
+msgid "ScanProfiles|API timeout"
+msgstr ""
+
 msgid "ScanProfiles|Add %{scanner} variable"
 msgstr ""
 
 msgid "ScanProfiles|Add variable"
+msgstr ""
+
+msgid "ScanProfiles|Additional Python package indexes to use."
+msgstr ""
+
+msgid "ScanProfiles|Additional arguments passed to Maven during resolution."
+msgstr ""
+
+msgid "ScanProfiles|Additional command-line options passed to Gradle during resolution."
 msgstr ""
 
 msgid "ScanProfiles|Advanced SAST incremental scanning"
@@ -74447,10 +74477,19 @@ msgstr ""
 msgid "ScanProfiles|Apply to all enabled triggers"
 msgstr ""
 
+msgid "ScanProfiles|Base URL of the Python Package Index."
+msgstr ""
+
 msgid "ScanProfiles|Block secrets such as keys and API tokens from being pushed to your repositories. Secret detection is triggered when commits are pushed to a repository. If any secrets are detected, the push is blocked."
 msgstr ""
 
 msgid "ScanProfiles|Branch pipelines (default only)"
+msgstr ""
+
+msgid "ScanProfiles|CA certificate bundle"
+msgstr ""
+
+msgid "ScanProfiles|CA certificate bundle to trust during the scan."
 msgstr ""
 
 msgid "ScanProfiles|Changed files in the merge request"
@@ -74477,6 +74516,9 @@ msgstr ""
 msgid "ScanProfiles|Custom"
 msgstr ""
 
+msgid "ScanProfiles|Debug"
+msgstr ""
+
 msgid "ScanProfiles|Default"
 msgstr ""
 
@@ -74489,7 +74531,13 @@ msgstr ""
 msgid "ScanProfiles|Deleted “%{profileName}”"
 msgstr ""
 
+msgid "ScanProfiles|Dependency resolution jobs that should not run."
+msgstr ""
+
 msgid "ScanProfiles|Differs by trigger"
+msgstr ""
+
+msgid "ScanProfiles|Directory depth the analyzer scans. -1 scans all directories."
 msgstr ""
 
 msgid "ScanProfiles|Disabled"
@@ -74501,7 +74549,19 @@ msgstr ""
 msgid "ScanProfiles|Enabled"
 msgstr ""
 
+msgid "ScanProfiles|Error"
+msgstr ""
+
 msgid "ScanProfiles|FIPS"
+msgstr ""
+
+msgid "ScanProfiles|Fatal"
+msgstr ""
+
+msgid "ScanProfiles|File name pattern of pip manifests to resolve and scan."
+msgstr ""
+
+msgid "ScanProfiles|File name pattern of pip-compile lockfiles to analyze."
 msgstr ""
 
 msgid "ScanProfiles|Full repository"
@@ -74522,19 +74582,64 @@ msgstr ""
 msgid "ScanProfiles|GitLab-managed profiles can't be edited or deleted. Duplicate this profile to make a customized version."
 msgstr ""
 
+msgid "ScanProfiles|Gradle options"
+msgstr ""
+
+msgid "ScanProfiles|Gradle resolution image"
+msgstr ""
+
 msgid "ScanProfiles|Historic scan"
+msgstr ""
+
+msgid "ScanProfiles|Ignore hidden directories"
+msgstr ""
+
+msgid "ScanProfiles|Image used by the Gradle dependency resolution job."
+msgstr ""
+
+msgid "ScanProfiles|Image used by the Maven dependency resolution job."
+msgstr ""
+
+msgid "ScanProfiles|Image used by the Python dependency resolution job."
 msgstr ""
 
 msgid "ScanProfiles|Image variant"
 msgstr ""
 
+msgid "ScanProfiles|Include development and test dependencies in the scan."
+msgstr ""
+
+msgid "ScanProfiles|Include development dependencies"
+msgstr ""
+
+msgid "ScanProfiles|Info"
+msgstr ""
+
 msgid "ScanProfiles|Information about this configuration profile."
+msgstr ""
+
+msgid "ScanProfiles|Log level"
 msgstr ""
 
 msgid "ScanProfiles|Log options"
 msgstr ""
 
+msgid "ScanProfiles|Logging level used by the analyzer."
+msgstr ""
+
 msgid "ScanProfiles|Managed by"
+msgstr ""
+
+msgid "ScanProfiles|Manifest fallback"
+msgstr ""
+
+msgid "ScanProfiles|Maven arguments"
+msgstr ""
+
+msgid "ScanProfiles|Maven resolution image"
+msgstr ""
+
+msgid "ScanProfiles|Maximum directory depth"
 msgstr ""
 
 msgid "ScanProfiles|Merge Request Pipelines"
@@ -74561,6 +74666,9 @@ msgstr ""
 msgid "ScanProfiles|Options passed to git log to control the commit range scanned."
 msgstr ""
 
+msgid "ScanProfiles|Path to install Python packages for analysis."
+msgstr ""
+
 msgid "ScanProfiles|Paths left out of the scan."
 msgstr ""
 
@@ -74576,7 +74684,13 @@ msgstr ""
 msgid "ScanProfiles|Pull analyzer images from your own container registry instead of GitLab's public one."
 msgstr ""
 
+msgid "ScanProfiles|Python resolution image"
+msgstr ""
+
 msgid "ScanProfiles|Remove %{variable} from %{trigger}"
+msgstr ""
+
+msgid "ScanProfiles|Resolution jobs to skip"
 msgstr ""
 
 msgid "ScanProfiles|Results:"
@@ -74615,6 +74729,9 @@ msgstr ""
 msgid "ScanProfiles|Search profiles..."
 msgstr ""
 
+msgid "ScanProfiles|Seconds to wait before downloading vulnerability scan results, from 1 to 120."
+msgstr ""
+
 msgid "ScanProfiles|Secret push protection"
 msgstr ""
 
@@ -74628,6 +74745,12 @@ msgid "ScanProfiles|Settings that apply across this profile"
 msgstr ""
 
 msgid "ScanProfiles|Show %{variable} for each trigger"
+msgstr ""
+
+msgid "ScanProfiles|Skip hidden directories when searching for supported files."
+msgstr ""
+
+msgid "ScanProfiles|Static reachability"
 msgstr ""
 
 msgid "ScanProfiles|Target branch:"
@@ -74648,10 +74771,22 @@ msgstr ""
 msgid "ScanProfiles|Variables passed to the analyzer that override its default behavior."
 msgstr ""
 
+msgid "ScanProfiles|Version of maven-dependency-plugin used during resolution."
+msgstr ""
+
 msgid "ScanProfiles|View documentation"
 msgstr ""
 
 msgid "ScanProfiles|View profile settings and associated projects."
+msgstr ""
+
+msgid "ScanProfiles|Vulnerability scan"
+msgstr ""
+
+msgid "ScanProfiles|Vulnerability scanning API timeout in seconds, from 5 to 300."
+msgstr ""
+
+msgid "ScanProfiles|Warning"
 msgstr ""
 
 msgid "ScanProfiles|What are configuration profiles?"
@@ -74663,10 +74798,37 @@ msgstr ""
 msgid "ScanProfiles|Whether GitLab Advanced SAST incremental scanning is enabled."
 msgstr ""
 
+msgid "ScanProfiles|Whether generated SBOMs are analyzed for vulnerabilities."
+msgstr ""
+
+msgid "ScanProfiles|Whether manifest fallback is enabled."
+msgstr ""
+
+msgid "ScanProfiles|Whether static reachability is enabled."
+msgstr ""
+
 msgid "ScanProfiles|Which build of the analyzer image to pull."
 msgstr ""
 
 msgid "ScanProfiles|You are about to delete “%{profileName}”. Are you sure you want to proceed?"
+msgstr ""
+
+msgid "ScanProfiles|maven-dependency-plugin version"
+msgstr ""
+
+msgid "ScanProfiles|pip dependency path"
+msgstr ""
+
+msgid "ScanProfiles|pip extra index URLs"
+msgstr ""
+
+msgid "ScanProfiles|pip index URL"
+msgstr ""
+
+msgid "ScanProfiles|pip manifest name pattern"
+msgstr ""
+
+msgid "ScanProfiles|pip-compile lockfile name pattern"
 msgstr ""
 
 msgid "ScanResultPolicy|%{boldStart}Warning:%{boldEnd} Using this status in strictly enforced policies can block merge requests even if there are no new vulnerabilities found in the latest scan. It's recommended that you use warn mode only with this status."
@@ -89405,6 +89567,9 @@ msgstr ""
 msgid "Todos|Action failed. Try again later."
 msgstr ""
 
+msgid "Todos|Add a to-do"
+msgstr ""
+
 msgid "Todos|Added approver"
 msgstr ""
 
@@ -89653,6 +89818,9 @@ msgstr ""
 msgid "Todos|Someone"
 msgstr ""
 
+msgid "Todos|Something went wrong while managing the to-do item."
+msgstr ""
+
 msgid "Todos|Something went wrong. Please try again."
 msgstr ""
 
@@ -89678,6 +89846,12 @@ msgid "Todos|There are no snoozed to-do items yet."
 msgstr ""
 
 msgid "Todos|To Do"
+msgstr ""
+
+msgid "Todos|To-do item added."
+msgstr ""
+
+msgid "Todos|To-do item marked as done."
 msgstr ""
 
 msgid "Todos|Undo"

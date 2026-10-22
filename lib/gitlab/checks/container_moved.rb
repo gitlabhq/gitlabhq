@@ -28,14 +28,6 @@ module Gitlab
       def self.message_key(user, repository)
         "#{REDIRECT_NAMESPACE}:#{user.id}:#{repository.gl_repository}"
       end
-
-      # TODO: Remove in the next release
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/292030
-      def self.legacy_message_key(user, repository)
-        return unless repository.project
-
-        "#{REDIRECT_NAMESPACE}:#{user.id}:#{repository.project.id}"
-      end
     end
   end
 end

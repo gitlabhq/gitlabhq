@@ -98,7 +98,11 @@ module Types
         description: 'Web path to blob blame page.'
 
       field :blame, Types::Blame::BlameType, null: true,
-        description: 'Blob blame.', experiment: { milestone: '16.3' }, resolver: Resolvers::BlameResolver
+        description: 'Blob blame. Rate limited for each user and project by the ' \
+          '`project_repositories_blame_limit` application setting, and for each IP address for ' \
+          'unauthenticated requests by the `project_repositories_blame_unauthenticated_limit` ' \
+          'application setting. Each blob in a query counts as one request.',
+        experiment: { milestone: '16.3' }, resolver: Resolvers::BlameResolver
 
       field :history_path, GraphQL::Types::String, null: true,
         description: 'Web path to blob history page.'

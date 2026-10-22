@@ -14,7 +14,7 @@ import {
   HTTP_STATUS_INTERNAL_SERVER_ERROR,
   HTTP_STATUS_TOO_MANY_REQUESTS,
 } from '~/lib/utils/http_status';
-import ScrollScrim from '~/super_sidebar/components/scroll_scrim.vue';
+import ScrollScrim from '~/vue_shared/components/scroll_scrim/scroll_scrim.vue';
 import FeatureLibraryModal from '~/super_sidebar/components/feature_library/feature_library_modal.vue';
 import FeatureLibraryItem from '~/super_sidebar/components/feature_library/feature_library_item.vue';
 import {

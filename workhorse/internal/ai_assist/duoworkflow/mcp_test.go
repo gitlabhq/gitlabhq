@@ -430,16 +430,13 @@ func TestNewMcpManager(t *testing.T) {
 		assert.Empty(t, mgr.tools)
 	})
 
-	t.Run("returns error when servers map is empty", func(t *testing.T) {
+	t.Run("returns nothing when servers map is empty", func(t *testing.T) {
 		req := httptest.NewRequest("GET", "/test", nil)
 
-		servers := map[string]api.McpServerConfig{}
+		mgr, err := newMcpManager(nil, newSession(req), map[string]api.McpServerConfig{})
 
-		mgr, err := newMcpManager(nil, newSession(req), servers)
-
-		require.Error(t, err)
+		require.NoError(t, err)
 		require.Nil(t, mgr)
-		assert.Contains(t, err.Error(), "the list of server configs is empty")
 	})
 
 	t.Run("continues with partial success when one server fails", func(t *testing.T) {
@@ -462,12 +459,15 @@ func TestNewMcpManager(t *testing.T) {
 			},
 		}
 
+		initFailures := counterVecValue(t, mcpInitFailuresTotal, mcpServerCatalog)
+
 		mgr, err := newMcpManager(nil, newSession(req), servers)
 
 		require.Error(t, err)
 		require.NotNil(t, mgr)
 		assert.Len(t, mgr.tools, 1)
 		assert.Contains(t, err.Error(), "failed to initialize MCP session bad-server")
+		assert.InDelta(t, initFailures+1, counterVecValue(t, mcpInitFailuresTotal, mcpServerCatalog), 0)
 	})
 }
 
@@ -591,6 +591,8 @@ func TestManager_CallTool(t *testing.T) {
 			},
 		}
 
+		calls := counterVecValue(t, mcpCallsTotal, mcpServerCatalog, mcpOutcomeOK)
+
 		result, err := mgr.CallTool(context.Background(), action)
 
 		require.NoError(t, err)
@@ -598,6 +600,7 @@ func TestManager_CallTool(t *testing.T) {
 		plainTextResp := result.GetActionResponse().GetPlainTextResponse()
 		assert.Contains(t, plainTextResp.Response, "Test Issue")
 		assert.Empty(t, plainTextResp.Error)
+		assert.InDelta(t, calls+1, counterVecValue(t, mcpCallsTotal, mcpServerCatalog, mcpOutcomeOK), 0)
 	})
 
 	t.Run("returns error for unknown tool", func(t *testing.T) {
@@ -675,6 +678,8 @@ func TestManager_CallTool(t *testing.T) {
 			},
 		}
 
+		toolErrors := counterVecValue(t, mcpCallsTotal, mcpServerCatalog, mcpOutcomeToolError)
+
 		result, err := mgr.CallTool(context.Background(), action)
 
 		require.NoError(t, err)
@@ -682,6 +687,7 @@ func TestManager_CallTool(t *testing.T) {
 		plainTextResp := result.GetActionResponse().GetPlainTextResponse()
 		assert.Equal(t, "Tool execution failed", plainTextResp.Error)
 		assert.Empty(t, plainTextResp.Response)
+		assert.InDelta(t, toolErrors+1, counterVecValue(t, mcpCallsTotal, mcpServerCatalog, mcpOutcomeToolError), 0)
 	})
 
 	t.Run("handles empty MCP response", func(t *testing.T) {

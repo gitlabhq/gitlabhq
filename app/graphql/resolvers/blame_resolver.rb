@@ -31,6 +31,7 @@ module Resolvers
 
     def resolve(from_line:, to_line:, ignore_revs:)
       authorize!
+      check_rate_limit!
 
       Gitlab::Blame.new(
         blob, blob.repository.commit(blob.commit_id), range: (from_line..to_line), ignore_revs: ignore_revs
@@ -49,6 +50,36 @@ module Resolvers
 
     def read_code?
       Ability.allowed?(current_user, :read_code, project)
+    end
+
+    def check_rate_limit!
+      return unless throttled?
+
+      raise_resource_not_available_error!(Gitlab::ApplicationRateLimiter.throttled_error_message)
+    end
+
+    # Runs per blob, so a multi-blob query pays for every blame it asks for.
+    def throttled?
+      request = context[:request]
+
+      if current_user
+        key = :project_repositories_blame
+        scope = { user: current_user, project: project }
+      else
+        # GraphqlChannel carries no request; the ActionCable worker sets IpAddressState.
+        # A blank IP would collapse every anonymous caller into one labkit bucket.
+        ip = request&.ip.presence || ::Gitlab::IpAddressState.current.presence
+        return true unless ip
+
+        key = :project_repositories_blame_unauthenticated
+        scope = { ip: ip }
+      end
+
+      if request
+        ::Gitlab::ApplicationRateLimiter.throttled_request?(request, current_user, key, scope: scope)
+      else
+        ::Gitlab::ApplicationRateLimiter.throttled?(key, scope: scope)
+      end
     end
 
     def validate_line_params!(args)

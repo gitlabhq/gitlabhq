@@ -71,13 +71,17 @@ func TestWsManager_WriteAction(t *testing.T) {
 	})
 
 	t.Run("no-op when connection is already closed", func(t *testing.T) {
+		hook := newLogHook(t)
+
 		mockConn := &mockWebSocketConn{}
 		ws := newWsManager(mockConn)
 		ws.closed.Store(true)
 
 		require.NoError(t, ws.WriteAction(context.Background(), sampleAction()))
+		require.NoError(t, ws.WriteAction(context.Background(), sampleAction()))
 
 		assert.Empty(t, mockConn.writeMessages, "no message should be written to a closed connection")
+		assert.Len(t, entriesWithPrefix(hook, "WriteAction: websocket already closed"), 1, "dropped actions should be logged once")
 	})
 
 	t.Run("ErrCloseSent is swallowed silently", func(t *testing.T) {

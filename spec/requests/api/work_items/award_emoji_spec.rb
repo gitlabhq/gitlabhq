@@ -58,6 +58,16 @@ RSpec.describe API::WorkItems::AwardEmoji, feature_category: :team_planning do
       end
     end
 
+    it_behaves_like 'allows access with the ai_workflows scope' do
+      let(:api_request) { get api(api_request_path, oauth_access_token: oauth_token) }
+
+      it 'returns the award emoji' do
+        api_request
+
+        expect(json_response.pluck('id')).to contain_exactly(thumbs_up.id, rocket.id)
+      end
+    end
+
     it 'returns not_found when the user cannot read the work item' do
       other_user = create(:user)
 

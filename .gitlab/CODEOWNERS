@@ -663,7 +663,7 @@ Dangerfile
 /ee/spec/workers/security/configuration/set_group_validity_checks_worker_spec.rb
 /ee/spec/workers/security/secret_detection/
 
-^[Code Owners] @reprazent @kerrizor @garyh @jwoodwardgl
+^[Code Owners] @kerrizor @garyh @jwoodwardgl
 /ee/lib/gitlab/code_owners.rb
 /ee/lib/gitlab/code_owners/
 /ee/spec/lib/gitlab/code_owners/
@@ -2282,7 +2282,7 @@ frontend/**/geo_* @zcuddy
 /ee/app/controllers/groups/push_rules_controller.rb
 /ee/app/controllers/admin/push_rules_controller.rb
 /ee/app/helpers/push_rules_helper.rb
-/ee/app/finders/push_rule_finder.rb
+/ee/app/finders/organization_push_rule_finder.rb
 
 # Git Checks & Validations
 /lib/gitlab/checks/

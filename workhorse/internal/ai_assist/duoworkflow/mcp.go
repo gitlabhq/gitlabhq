@@ -11,6 +11,7 @@ import (
 	"reflect"
 	"slices"
 	"sync"
+	"time"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
@@ -25,6 +26,9 @@ import (
 
 const gitlabServerName = "gitlab"
 const orbitServerName = "orbit"
+
+// slackServerName is the key Rails gives the Slack MCP server.
+const slackServerName = "slack"
 
 const (
 	externalMcpMaxIdleConns        = 100
@@ -46,6 +50,7 @@ type serverSession struct {
 }
 
 type toolSession struct {
+	serverName   string
 	originalName string
 	session      *mcp.ClientSession
 }
@@ -124,7 +129,7 @@ func (t *roundTripper) RoundTrip(r *http.Request) (*http.Response, error) {
 
 func newMcpManager(rails *api.API, sess *session, servers map[string]api.McpServerConfig) (*manager, error) {
 	if len(servers) == 0 {
-		return nil, fmt.Errorf("the list of server configs is empty")
+		return nil, nil
 	}
 
 	// Servers are set up concurrently, so the session starts after the slowest
@@ -154,12 +159,13 @@ func newMcpManager(rails *api.API, sess *session, servers map[string]api.McpServ
 	}
 
 	var errs []error
-	for _, setup := range setups {
+	for i, setup := range setups {
 		if setup.session != nil {
 			manager.serverSessions = append(manager.serverSessions, setup.session)
 		}
 
 		if setup.err != nil {
+			reportMcpInitFailure(sess, serverNames[i], setup.err)
 			errs = append(errs, setup.err)
 			continue
 		}
@@ -182,12 +188,12 @@ type serverSetup struct {
 func setupServer(rails *api.API, sess *session, serverName string, serverCfg api.McpServerConfig) serverSetup {
 	session, err := buildSession(rails, sess, serverName, serverCfg)
 	if err != nil {
-		return serverSetup{err: fmt.Errorf("failed to initialize MCP session %s: %v", serverName, err)}
+		return serverSetup{err: fmt.Errorf("failed to initialize MCP session %s: %w", serverName, err)}
 	}
 
 	tools, err := session.session.ListTools(sess.Context(), &mcp.ListToolsParams{})
 	if err != nil {
-		return serverSetup{session: session, err: fmt.Errorf("failed to list tools %s: %v", serverName, err)}
+		return serverSetup{session: session, err: fmt.Errorf("failed to list tools %s: %w", serverName, err)}
 	}
 
 	return serverSetup{session: session, tools: tools}
@@ -277,6 +283,7 @@ func (m *manager) addTools(s *serverSession, toolsResult *mcp.ListToolsResult) e
 			m.tools = append(m.tools, mcpTool)
 
 			m.toolSessionsByName[prefixedName] = &toolSession{
+				serverName:   s.name,
 				originalName: tool.Name,
 				session:      s.session,
 			}
@@ -318,12 +325,6 @@ func (m *manager) PreApprovedTools() []string {
 func (m *manager) CallTool(ctx context.Context, action *pb.Action) (*pb.ClientEvent, error) {
 	mcpTool := action.GetRunMCPTool()
 
-	log.WithContextFields(ctx, log.Fields{
-		"name":       mcpTool.Name,
-		"args_size":  len(mcpTool.Args),
-		"request_id": action.RequestID,
-	}).Info("Calling an MCP tool")
-
 	toolSession, ok := m.toolSessionsByName[mcpTool.Name]
 	if !ok {
 		return nil, fmt.Errorf("CallTool: unknown tool: %v", mcpTool.Name)
@@ -338,23 +339,22 @@ func (m *manager) CallTool(ctx context.Context, action *pb.Action) (*pb.ClientEv
 		Arguments: arguments,
 	}
 
+	server := mcpServerLabel(toolSession.serverName)
+	start := time.Now()
 	res, err := toolSession.session.CallTool(ctx, params)
-	if err != nil {
-		return nil, fmt.Errorf("CallTool: failed to call MCP tool: %v", err)
+	mcpCallDurationSeconds.WithLabelValues(server).Observe(time.Since(start).Seconds())
+
+	switch {
+	case err != nil:
+		mcpCallsTotal.WithLabelValues(server, mcpOutcomeError).Inc()
+		return nil, fmt.Errorf("CallTool: failed to call MCP tool: %w", err)
+	case res.IsError:
+		mcpCallsTotal.WithLabelValues(server, mcpOutcomeToolError).Inc()
+	default:
+		mcpCallsTotal.WithLabelValues(server, mcpOutcomeOK).Inc()
 	}
 
-	event := m.buildClientEvent(ctx, action, mcpTool, res)
-
-	log.WithContextFields(ctx, log.Fields{
-		"request_id":           action.GetRequestID(),
-		"name":                 mcpTool.Name,
-		"args_size":            len(action.GetRunMCPTool().Args),
-		"payload_size":         proto.Size(event),
-		"event_type":           fmt.Sprintf("%T", event.Response),
-		"action_response_type": fmt.Sprintf("%T", event.GetActionResponse().GetResponseType()),
-	}).Info("Sending MCP tool response")
-
-	return event, nil
+	return m.buildClientEvent(ctx, action, mcpTool, res), nil
 }
 
 func (m *manager) buildClientEvent(ctx context.Context, action *pb.Action, mcpTool *pb.RunMCPTool, res *mcp.CallToolResult) *pb.ClientEvent {
@@ -404,4 +404,10 @@ func (m *manager) Close() error {
 	}
 
 	return errors.Join(errs...)
+}
+
+// reportMcpInitFailure records a server whose tools are missing from the run.
+func reportMcpInitFailure(sess *session, serverName string, err error) {
+	mcpInitFailuresTotal.WithLabelValues(mcpServerLabel(serverName)).Inc()
+	sess.logger().WithError(err).WithFields(log.Fields{"server": serverName}).Warn("Failed to initialize MCP server")
 }

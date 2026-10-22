@@ -230,6 +230,22 @@ RSpec.describe API::PersonalAccessTokens::SelfInformation, feature_category: :sy
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
+
+    context 'when the token was digested with the previous db_key_base key', :clean_gitlab_redis_shared_state do
+      include DbKeyBaseHelpers
+
+      before do
+        token
+        stub_db_key_base_keys(Settings.db_key_base_keys.last, SecureRandom.hex(64))
+      end
+
+      it 'authenticates and rehashes the digest with the current key', :aggregate_failures do
+        get api(path, personal_access_token: token)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(token.reload.token_digest).to eq(Gitlab::CryptoHelper.sha256(token.token))
+      end
+    end
   end
 
   describe 'GET /personal_access_tokens/self/associations' do

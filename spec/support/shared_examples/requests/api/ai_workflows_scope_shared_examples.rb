@@ -35,3 +35,30 @@ RSpec.shared_examples 'forbids quick actions for ai_workflows scope' do
     end
   end
 end
+
+# `oauth_token` is defined outside the context so a block passed to `it_behaves_like`
+# can add payload assertions that reuse it.
+RSpec.shared_examples 'allows access with the ai_workflows scope' do |status = :ok|
+  let(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+  context 'when authenticated with a token that has the ai_workflows scope' do
+    it "returns #{status}" do
+      api_request
+
+      expect(response).to have_gitlab_http_status(status)
+    end
+  end
+end
+
+RSpec.shared_examples 'denies access with the ai_workflows scope' do
+  let(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+  context 'when authenticated with a token that has the ai_workflows scope' do
+    it 'returns 403 insufficient_scope' do
+      api_request
+
+      expect(response).to have_gitlab_http_status(:forbidden)
+      expect(json_response['error']).to eq('insufficient_scope')
+    end
+  end
+end

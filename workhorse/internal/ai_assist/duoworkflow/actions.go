@@ -15,8 +15,6 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/version"
 
 	pb "gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb/contract"
-
-	"google.golang.org/protobuf/proto"
 )
 
 var (
@@ -77,7 +75,6 @@ type nullResponseWriter struct {
 	// A strings.Builder rather than a bytes.Buffer: the body ends up in a
 	// proto string field, and Builder.String does not copy it.
 	body         strings.Builder
-	logger       *log.Builder
 	sizeLimitHit bool
 }
 
@@ -85,23 +82,12 @@ func (w *nullResponseWriter) Write(p []byte) (int, error) {
 	available := ActionResponseBodyLimit - w.body.Len()
 	if available <= 0 {
 		w.sizeLimitHit = true
-		w.logger.WithFields(log.Fields{
-			"current_size":    w.body.Len(),
-			"limit":           ActionResponseBodyLimit,
-			"attempted_write": len(p),
-		}).Error("nullResponseWriter: response body limit exceeded, dropping data")
 		return 0, io.ErrShortWrite
 	}
 
 	if len(p) > available {
 		w.sizeLimitHit = true
 		// Write only what fits within the limit
-		w.logger.WithFields(log.Fields{
-			"requested_bytes": len(p),
-			"available_bytes": available,
-			"total_written":   w.body.Len(),
-			"limit":           ActionResponseBodyLimit,
-		}).Error("nullResponseWriter: partial write due to size limit")
 		n, _ := w.body.Write(p[:available])
 		return n, io.ErrShortWrite
 	}
@@ -154,15 +140,7 @@ func (a *runHTTPActionHandler) Execute(ctx context.Context, action *pb.Action) (
 		return nil, err
 	}
 
-	method := action.GetRunHTTPRequest().Method
-
-	logger := a.session.logger().WithFields(log.Fields{
-		"path":       action.GetRunHTTPRequest().Path,
-		"method":     method,
-		"request_id": action.GetRequestID(),
-	})
-
-	logger.Info("Executing HTTP request")
+	method := httpMethodLabel(action.GetRunHTTPRequest().Method)
 
 	if a.shouldTimeoutHTTPRequests {
 		timeoutCtx, cancel := context.WithTimeout(req.Context(), httpRequestTimeout)
@@ -171,7 +149,7 @@ func (a *runHTTPActionHandler) Execute(ctx context.Context, action *pb.Action) (
 	}
 
 	start := time.Now()
-	nrw := &nullResponseWriter{header: make(http.Header), logger: logger}
+	nrw := &nullResponseWriter{header: make(http.Header)}
 	err = serveHTTPSafe(a.backend, nrw, req)
 
 	// check if there is context deadline because the roundtripper converts such errors
@@ -189,17 +167,15 @@ func (a *runHTTPActionHandler) Execute(ctx context.Context, action *pb.Action) (
 		httpActionsTotal.WithLabelValues(method, strconv.Itoa(nrw.status)).Inc()
 	}
 
-	clientEvent := a.buildClientEvent(nrw, err, action)
+	// Logged once here: the writer drops every write past the limit.
+	if nrw.sizeLimitHit {
+		a.session.logger().WithFields(log.Fields{
+			"request_id": action.GetRequestID(),
+			"limit":      ActionResponseBodyLimit,
+		}).Warn("HTTP action response truncated at the size limit")
+	}
 
-	logger.WithFields(log.Fields{
-		"status_code":          nrw.status,
-		"error":                clientEvent.GetActionResponse().GetHttpResponse().Error,
-		"payload_size":         proto.Size(clientEvent),
-		"event_type":           fmt.Sprintf("%T", clientEvent.Response),
-		"action_response_type": fmt.Sprintf("%T", clientEvent.GetActionResponse().GetResponseType()),
-	}).Info("Sending HTTP response event")
-
-	return clientEvent, nil
+	return a.buildClientEvent(nrw, err, action), nil
 }
 
 // httpActionErrorType maps a transport-level error to a label value for

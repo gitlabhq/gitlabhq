@@ -51,34 +51,11 @@ click handlers associated with the clipboard package.
 
 `simple_copy_button.vue` does not use the behavior so it is safe to use in modals (and elsewhere).
 
-### 3. A `gitlab-ui` component not conforming to Pajamas Design System
-
-Some [Pajamas Design System](https://design.gitlab.com/) components implemented in
-`gitlab-ui` do not conform with the design system specs. This is because they lack some
-planned features or are not correctly styled yet. In the Pajamas website, a
-banner on top of the component examples indicates that:
-
-> This component does not yet conform to the correct styling defined in our Design
-> System. Refer to the Design System documentation when referencing visuals for this
-> component.
-
-For example, at the time of writing, this type of warning can be observed for
-all form components, such as the [checkbox](https://design.gitlab.com/components/checkbox). It, however,
-doesn't imply that the component should not be used.
-
-GitLab always asks to use `<gl-*>` components whenever a suitable component exists.
-It makes the codebase unified and more comfortable to maintain/refactor in the future.
-
-Ensure a [Product Designer](https://about.gitlab.com/company/team/?department=ux-department)
-reviews the use of the non-conforming component as part of the MR review. Make a
-follow up issue and attach it to the component implementation epic found in the
-[Components of Pajamas Design System epic](https://gitlab.com/groups/gitlab-org/-/epics/973).
-
-### 4. My submit form button becomes disabled after submitting
+### 3. My submit form button becomes disabled after submitting
 
 A Submit button inside of a form attaches an `onSubmit` event listener on the form element. [This code](https://gitlab.com/gitlab-org/gitlab/-/blob/794c247a910e2759ce9b401356432a38a4535d49/app/assets/javascripts/main.js#L225) adds a `disabled` class selector to the submit button when the form is submitted. To avoid this behavior, add the class `js-no-auto-disable` to the button.
 
-### 5. How should I reference URLs or Paths in the Frontend?
+### 4. How should I reference URLs or Paths in the Frontend?
 
 #### Public REST APIs
 
@@ -93,7 +70,7 @@ See [Passing URLs with data attributes](../urls_in_gitlab.md#passing-urls-with-d
 
 See [URLs in GitLab](../urls_in_gitlab.md#frontend-guidelines) for more extensive documentation on how to generate routes in the Frontend.
 
-### 6. How can one test the production build locally?
+### 5. How can one test the production build locally?
 
 Sometimes it's necessary to test locally what the frontend production build would produce, to do so the steps are:
 
@@ -111,7 +88,7 @@ To return to the standard development mode:
 1. Start webpack again: `gdk start webpack`.
 1. Restart GDK: `gdk restart rails-web`.
 
-### 7. Babel polyfills
+### 6. Babel polyfills
 
 GitLab has enabled the Babel `preset-env` option
 [`useBuiltIns: 'usage'`](https://babeljs.io/docs/babel-preset-env#usebuiltins-usage).
@@ -138,11 +115,11 @@ To see what polyfills are being used:
 
    ![A list of core-js polyfills being loaded, including their count and total size, filtered by the Search modules field](img/webpack_report_v12_8.png)
 
-### 8. Why is my page broken in dark mode?
+### 7. Why is my page broken in dark mode?
 
 See [dark mode docs](dark_mode.md)
 
-### 9. How to render GitLab-flavored Markdown?
+### 8. How to render GitLab-flavored Markdown?
 
 If you need to render [GitLab-flavored Markdown](../gitlab_flavored_markdown/_index.md), then there are two things that you require:
 

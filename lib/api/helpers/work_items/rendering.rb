@@ -194,7 +194,10 @@ module API
         end
 
         def requested_feature_keys(requested_features)
-          filter_requested_keys(requested_features, ::API::WorkItems::FEATURE_NAME_LOOKUP)
+          split_requested_values(requested_features)
+            .select { |value| ::API::WorkItems::KNOWN_FEATURE_NAMES.include?(value) }
+            .map(&:to_sym)
+            .uniq
         end
 
         def check_pagination_param!(params)
@@ -209,7 +212,7 @@ module API
 
         def validate_requested_keys!(
           available_fields: ::API::WorkItems::FIELD_NAME_LOOKUP,
-          available_features: ::API::WorkItems::FEATURE_NAME_LOOKUP
+          available_features: ::API::WorkItems::KNOWN_FEATURE_NAMES
         )
           lookups = { fields: available_fields, features: available_features }.compact
           unknown = lookups.filter_map do |param, available|
@@ -226,7 +229,7 @@ module API
         end
 
         def unknown_requested_keys(requested_param, available_keys)
-          split_requested_values(requested_param).reject { |value| available_keys.key?(value) }
+          split_requested_values(requested_param).reject { |value| available_keys.include?(value) }
         end
 
         def filter_requested_keys(requested_param, available_keys)

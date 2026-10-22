@@ -384,16 +384,11 @@ export default {
         newAssignees = [...this.assignees, this.author];
       }
 
-      const assigneesWidgetIndex = this.workItem.widgets.findIndex(isAssigneesWidget);
-
-      const editedWorkItemWidgets = [...this.workItem.widgets];
-
-      editedWorkItemWidgets[assigneesWidgetIndex] = {
-        ...editedWorkItemWidgets[assigneesWidgetIndex],
-        assignees: {
-          nodes: newAssignees,
-        },
-      };
+      const editedWorkItemWidgets = this.workItem?.features
+        ? []
+        : this.workItem.widgets.map((widget) =>
+            isAssigneesWidget(widget) ? { ...widget, assignees: { nodes: newAssignees } } : widget,
+          );
 
       const editedFeatures = this.workItem?.features
         ? {

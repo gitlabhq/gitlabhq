@@ -63,7 +63,7 @@ If you have a license, you can also import it when you install GitLab.
 
 If you use a license file or key to activate your instance in an offline environment, you are encouraged to submit your license
 usage data monthly to simplify future purchases and renewals.
-To submit the data, [export your license usage](license_usage.md#export-license-usage)
+To submit the data, [export your license usage](license_usage.md#export-a-license-usage-file)
 and send it by email to the renewals service, `renewals-service@customers.gitlab.com`. **You must not open the license
 usage file before you send it**. Otherwise, the file's content could be manipulated by the used program (for example,
 timestamps could be converted to another format) and cause failures when the file is being processed.
@@ -96,7 +96,7 @@ To remove the read-only state and resume functionality, [renew your subscription
 
 If the license has been expired for more than 30 days, you must purchase a [new subscription](../subscriptions/manage_subscription.md) to resume functionality.
 
-To go back to Free features, [delete all expired licenses](#remove-a-license).
+To go back to Free features, remove all expired licenses.
 
 ## Remove a license
 
@@ -218,7 +218,7 @@ This is needed for example in a known edge-case with
 
 ### Remove licenses
 
-To clean up the [License History table](#view-license-details-and-history):
+To clean up the license history table:
 
 ```ruby
 TYPE = :trial?

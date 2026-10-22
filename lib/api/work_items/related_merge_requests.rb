@@ -3,6 +3,10 @@
 module API
   module WorkItems
     class RelatedMergeRequests < ::API::Base
+      include APIGuard
+
+      allow_access_with_scope :ai_workflows, if: ->(request) { request.get? || request.head? }
+
       include PaginationParams
 
       before { authenticate! }

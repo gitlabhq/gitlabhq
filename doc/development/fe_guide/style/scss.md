@@ -256,7 +256,7 @@ For CSS properties that are unit-less (for example, `display: flex`) it is okay 
 
 // Good
 .my-class {
-  @apply gl-mt-5;
+  @apply gl-mt-3;
   @apply gl-flex;
 }
 ```
@@ -264,8 +264,6 @@ For CSS properties that are unit-less (for example, `display: flex`) it is okay 
 ## Responsive design
 
 Our UI should work well on mobile and desktop. To accomplish this we use [CSS container queries](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_containment/Container_queries). In general we should take a mobile first approach to container queries. This means writing CSS for mobile, then using min-width container queries to override styles on desktop. An exception to this rule is setting the display mode on child components. For example when hiding `GlButton` on mobile we don't want to override the display mode set by our component CSS so we should use a max-width container query.
-Our current Tailwind configuration does not support max-width container queries, so if such a workaround
-is needed, you'd need to write some custom styles.
 
 ### Tailwind CSS classes
 

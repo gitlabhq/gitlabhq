@@ -324,10 +324,14 @@ func Test_newRunner(t *testing.T) {
 		LockConcurrentFlow: true,
 	}
 
+	setupLabels := map[string]string{"stage": setupStageGRPC}
+	grpcSetups := histogramSampleCount(t, "gitlab_workhorse_duo_workflow_session_setup_duration_seconds", setupLabels)
+
 	runner, err := newRunner(newWsManager(mockConn), apiClient, http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}), "", req, cfg, initRdb(t))
 
 	require.NoError(t, err)
 	require.NotNil(t, runner)
+	require.Equal(t, grpcSetups+1, histogramSampleCount(t, "gitlab_workhorse_duo_workflow_session_setup_duration_seconds", setupLabels))
 	require.Equal(t, "oauth-token-123", runner.httpActionHandler.token)
 	require.Equal(t, req, runner.session.req)
 	// The workflow ID recorded on the start request must reach every part of the run.
@@ -906,7 +910,7 @@ func TestRunner_handleClientEvent(t *testing.T) {
 	}
 }
 
-func TestRunner_handleAgentAction(t *testing.T) {
+func TestActionDispatcher_dispatch(t *testing.T) {
 	tests := []struct {
 		name           string
 		action         *pb.Action
@@ -943,7 +947,7 @@ func TestRunner_handleAgentAction(t *testing.T) {
 				},
 			},
 			wfSendError:    errors.New("workflow send failed"),
-			expectedErrMsg: "handleAgentAction: failed to send gRPC message: workflow send failed",
+			expectedErrMsg: "dispatch: failed to send gRPC message: workflow send failed",
 		},
 		{
 			name: "successful non-HTTP action forwarded to websocket",
@@ -1086,7 +1090,7 @@ func TestRunner_handleAgentAction(t *testing.T) {
 			}
 
 			ctx := context.Background()
-			err := r.handleAgentAction(ctx, tt.action)
+			err := r.actionDispatcher().dispatch(ctx, tt.action)
 
 			if tt.expectedErrMsg != "" {
 				require.EqualError(t, err, tt.expectedErrMsg)
@@ -1135,7 +1139,7 @@ func (t *unsupportedActionTransport) WriteAction(_ context.Context, action *pb.A
 	return fmt.Errorf("%w: RunCommand", errActionUnsupported)
 }
 
-func TestRunner_handleAgentAction_UnsupportedByClient(t *testing.T) {
+func TestActionDispatcher_dispatch_UnsupportedByClient(t *testing.T) {
 	transport := &unsupportedActionTransport{}
 	mockWf := &mockWorkflowStream{}
 
@@ -1154,7 +1158,7 @@ func TestRunner_handleAgentAction_UnsupportedByClient(t *testing.T) {
 		},
 	}
 
-	require.NoError(t, r.handleAgentAction(context.Background(), action))
+	require.NoError(t, r.actionDispatcher().dispatch(context.Background(), action))
 
 	require.Len(t, transport.writtenActions, 1, "the action should still be offered to the client first")
 
@@ -1171,7 +1175,7 @@ func TestRunner_handleAgentAction_UnsupportedByClient(t *testing.T) {
 	require.Empty(t, response.GetPlainTextResponse().Response)
 }
 
-func TestRunner_handleAgentAction_UnknownMcpToolUnsupportedByClient(t *testing.T) {
+func TestActionDispatcher_dispatch_UnknownMcpToolUnsupportedByClient(t *testing.T) {
 	transport := &unsupportedActionTransport{}
 	mockWf := &mockWorkflowStream{}
 
@@ -1192,7 +1196,7 @@ func TestRunner_handleAgentAction_UnknownMcpToolUnsupportedByClient(t *testing.T
 		},
 	}
 
-	require.NoError(t, r.handleAgentAction(context.Background(), action))
+	require.NoError(t, r.actionDispatcher().dispatch(context.Background(), action))
 
 	require.Len(t, transport.writtenActions, 1)
 	require.Empty(t, transport.writtenActions[0].GetRunMCPTool().Args)
@@ -1203,7 +1207,7 @@ func TestRunner_handleAgentAction_UnknownMcpToolUnsupportedByClient(t *testing.T
 	require.NotEmpty(t, sendEvents[0].GetActionResponse().GetPlainTextResponse().Error)
 }
 
-func TestRunner_handleAgentAction_McpToolCallFails(t *testing.T) {
+func TestActionDispatcher_dispatch_McpToolCallFails(t *testing.T) {
 	mockWf := &mockWorkflowStream{}
 	mcpManager := &mockMcpManager{
 		hasToolResult: true,
@@ -1225,7 +1229,7 @@ func TestRunner_handleAgentAction_McpToolCallFails(t *testing.T) {
 		},
 	}
 
-	require.NoError(t, r.handleAgentAction(context.Background(), action), "a failed tool call must not end the workflow")
+	require.NoError(t, r.actionDispatcher().dispatch(context.Background(), action), "a failed tool call must not end the workflow")
 
 	require.Len(t, mcpManager.callToolInvocations, 1)
 
@@ -1238,7 +1242,7 @@ func TestRunner_handleAgentAction_McpToolCallFails(t *testing.T) {
 	require.Empty(t, response.GetPlainTextResponse().Response)
 }
 
-func TestRunner_handleAgentAction_UnsupportedActionSendFails(t *testing.T) {
+func TestActionDispatcher_dispatch_UnsupportedActionSendFails(t *testing.T) {
 	transport := &unsupportedActionTransport{}
 	mockWf := &mockWorkflowStream{sendError: errors.New("stream closed")}
 
@@ -1257,8 +1261,8 @@ func TestRunner_handleAgentAction_UnsupportedActionSendFails(t *testing.T) {
 
 	require.EqualError(
 		t,
-		r.handleAgentAction(context.Background(), action),
-		"sendActionError: failed to send gRPC message: stream closed",
+		r.actionDispatcher().dispatch(context.Background(), action),
+		"dispatch: failed to send gRPC message: stream closed",
 	)
 }
 
@@ -1782,10 +1786,80 @@ func TestRunner_stopWorkflow_reportsSendFailureToEveryCaller(t *testing.T) {
 	}
 }
 
+func TestStopCoordinator_request_metrics(t *testing.T) {
+	send := func() error { return nil }
+
+	t.Run("counts one acknowledged stop for all callers", func(t *testing.T) {
+		acked := counterVecValue(t, stopRequestsTotal, stopOutcomeAcked)
+		s := stopCoordinator{acked: make(chan struct{})}
+		s.acknowledge()
+
+		require.NoError(t, s.request(send, time.Second))
+		require.NoError(t, s.request(send, time.Second))
+
+		require.InDelta(t, acked+1, counterVecValue(t, stopRequestsTotal, stopOutcomeAcked), 0)
+	})
+
+	t.Run("counts a stop that times out", func(t *testing.T) {
+		timeouts := counterVecValue(t, stopRequestsTotal, stopOutcomeTimeout)
+		s := stopCoordinator{acked: make(chan struct{})}
+
+		require.ErrorIs(t, s.request(send, time.Millisecond), errStopTimedOut)
+
+		require.InDelta(t, timeouts+1, counterVecValue(t, stopRequestsTotal, stopOutcomeTimeout), 0)
+	})
+
+	t.Run("counts a stop that could not be sent", func(t *testing.T) {
+		failures := counterVecValue(t, stopRequestsTotal, stopOutcomeSendFailed)
+		s := stopCoordinator{acked: make(chan struct{})}
+		sendErr := errors.New("stream closed")
+
+		require.ErrorIs(t, s.request(func() error { return sendErr }, time.Second), sendErr)
+		require.ErrorIs(t, s.request(send, time.Second), sendErr)
+
+		require.InDelta(t, failures+1, counterVecValue(t, stopRequestsTotal, stopOutcomeSendFailed), 0)
+	})
+}
+
 func TestStopCoordinator_waitForAck_timesOut(t *testing.T) {
 	s := stopCoordinator{acked: make(chan struct{})}
 
 	require.ErrorIs(t, s.waitForAck(10*time.Millisecond), errStopTimedOut)
+}
+
+func TestStopCoordinator_request_joiningCallerWaitsForWhatIsLeft(t *testing.T) {
+	// A stop sent long ago, whose timeout has already run out.
+	newSentStop := func() *stopCoordinator {
+		s := &stopCoordinator{acked: make(chan struct{})}
+		s.sendOnce.Do(func() {})
+		s.requested.Store(true)
+		s.requestedAt.Store(time.Now().Add(-time.Hour).UnixNano())
+		return s
+	}
+
+	request := func(s *stopCoordinator) error {
+		result := make(chan error, 1)
+		go func() { result <- s.request(func() error { return nil }, time.Minute) }()
+
+		select {
+		case err := <-result:
+			return err
+		case <-time.After(5 * time.Second):
+			require.FailNow(t, "a joining caller waited for a fresh timeout")
+			return nil
+		}
+	}
+
+	t.Run("times out at once", func(t *testing.T) {
+		require.ErrorIs(t, request(newSentStop()), errStopTimedOut)
+	})
+
+	t.Run("still reports an acknowledgment that already arrived", func(t *testing.T) {
+		s := newSentStop()
+		s.acknowledge()
+
+		require.NoError(t, request(s))
+	})
 }
 
 func TestRunner_handleAgentMessages_setsWorkflowEndedOnEOF(t *testing.T) {
@@ -2729,7 +2803,7 @@ func TestRunner_handleAgentMessages_invalidRequest(t *testing.T) {
 	})
 }
 
-func TestRunner_handleAgentAction_TrackLlmCallForSelfHosted(t *testing.T) {
+func TestActionDispatcher_dispatch_TrackLlmCallForSelfHosted(t *testing.T) {
 	t.Run("successful tracking of LLM call", func(t *testing.T) {
 		mockConn := &mockWebSocketConn{}
 		mockWf := &mockWorkflowStream{}
@@ -2766,7 +2840,7 @@ func TestRunner_handleAgentAction_TrackLlmCallForSelfHosted(t *testing.T) {
 		}
 
 		ctx := context.Background()
-		err := r.handleAgentAction(ctx, action)
+		err := r.actionDispatcher().dispatch(ctx, action)
 
 		require.NoError(t, err)
 
@@ -2818,7 +2892,7 @@ func TestRunner_handleAgentAction_TrackLlmCallForSelfHosted(t *testing.T) {
 		}
 
 		ctx := context.Background()
-		err := r.handleAgentAction(ctx, action)
+		err := r.actionDispatcher().dispatch(ctx, action)
 
 		require.Error(t, err)
 		require.Contains(t, err.Error(), "cloud service stream not initialized")
@@ -2855,7 +2929,7 @@ func TestRunner_handleAgentAction_TrackLlmCallForSelfHosted(t *testing.T) {
 		}
 
 		ctx := context.Background()
-		err := r.handleAgentAction(ctx, action)
+		err := r.actionDispatcher().dispatch(ctx, action)
 
 		require.Error(t, err)
 		require.Contains(t, err.Error(), "failed to send to cloud service")
@@ -2892,7 +2966,7 @@ func TestRunner_handleAgentAction_TrackLlmCallForSelfHosted(t *testing.T) {
 		}
 
 		ctx := context.Background()
-		err := r.handleAgentAction(ctx, action)
+		err := r.actionDispatcher().dispatch(ctx, action)
 
 		require.Error(t, err)
 		require.Contains(t, err.Error(), "failed to receive from cloud service")

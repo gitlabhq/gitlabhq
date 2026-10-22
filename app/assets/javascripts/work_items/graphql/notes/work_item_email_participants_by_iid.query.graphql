@@ -1,12 +1,26 @@
 # @feature_category: team_planning
-query workItemEmailParticipantsByIid($fullPath: ID!, $iid: String!) {
+query workItemEmailParticipantsByIid(
+  $fullPath: ID!
+  $iid: String!
+  $useWorkItemFeatures: Boolean = false
+) {
   namespace(fullPath: $fullPath) {
     id
     workItem(iid: $iid) {
       id
       iid
-      widgets {
+      widgets @skip(if: $useWorkItemFeatures) {
         ... on WorkItemWidgetEmailParticipants {
+          type
+          emailParticipants {
+            nodes {
+              email
+            }
+          }
+        }
+      }
+      features @include(if: $useWorkItemFeatures) {
+        emailParticipants {
           type
           emailParticipants {
             nodes {

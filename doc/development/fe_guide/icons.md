@@ -22,7 +22,7 @@ The sprite SVG is located under `/assets/icons.svg`.
 To use a sprite Icon in HAML or Rails we use a specific helper function:
 
 ```ruby
-sprite_icon(icon_name, size: nil, css_class: '')
+sprite_icon(icon_name, size: nil, css_class: '', variant: nil)
 ```
 
 - **`icon_name`**: Use the `icon_name` for the SVG sprite in the list of
@@ -30,17 +30,18 @@ sprite_icon(icon_name, size: nil, css_class: '')
 - **`size` (optional)**: Use one of the following sizes: 16, 24, 32, 48, 72 (this
   is translated into an `s16` class)
 - **`css_class` (optional)**: If you want to add additional CSS classes.
+- **`variant` (optional)**: Colors the icon with the matching `gl-fill-icon-*` class, for example `danger` adds `gl-fill-icon-danger`.
 
 **Example**
 
 ```ruby
-= sprite_icon('issues', size: 72, css_class: 'icon-danger')
+= sprite_icon('issues', size: 72, variant: 'danger')
 ```
 
 **Output from example above**
 
 ```html
-<svg class="s72 icon-danger">
+<svg class="s72 gl-fill-icon-danger">
   <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/icons.svg#issues"></use>
 </svg>
 ```

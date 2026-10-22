@@ -9,13 +9,11 @@ import (
 	"sync"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 
 	pb "gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb/contract"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"google.golang.org/protobuf/proto"
 )
 
 var errUsageQuotaExceededError = errors.New("usage quota exceeded")
@@ -116,12 +114,6 @@ func (sm *streamManager) Send(event *pb.ClientEvent) error {
 	sm.sendMu.Lock()
 	defer sm.sendMu.Unlock()
 
-	sm.session.logger().WithFields(log.Fields{
-		"payload_size": proto.Size(event),
-		"event_type":   fmt.Sprintf("%T", event.Response),
-		"request_id":   event.GetActionResponse().GetRequestID(),
-	}).Info("Sending action response")
-
 	return sm.wf.Send(event)
 }
 
@@ -147,19 +139,13 @@ func (sm *streamManager) Close() error {
 	return errors.Join(workflowErr, sm.client.Close(), cloudServiceErrs)
 }
 
-// handleCloudServiceTracking sends tracking data to cloud service for self-hosted deployments
-func (sm *streamManager) HandleCloudServiceTracking(ctx context.Context, action *pb.Action) error {
+// HandleCloudServiceTracking sends tracking data to cloud service for self-hosted deployments
+func (sm *streamManager) HandleCloudServiceTracking(_ context.Context, action *pb.Action) error {
 	if sm.cloudServiceStream == nil {
 		return fmt.Errorf("cloud service stream not initialized")
 	}
 
 	trackAction := action.GetTrackLlmCallForSelfHosted()
-
-	log.WithContextFields(ctx, log.Fields{
-		"request_id":  action.GetRequestID(),
-		"workflow_id": trackAction.WorkflowID,
-		"source_type": trackAction.SourceType,
-	}).Info("Sending TrackLlmCallForSelfHosted to cloud service")
 
 	clientEvent := &pb.TrackSelfHostedClientEvent{
 		RequestID:            action.GetRequestID(),
@@ -169,14 +155,9 @@ func (sm *streamManager) HandleCloudServiceTracking(ctx context.Context, action 
 		SourceType:           trackAction.SourceType,
 	}
 
-	selfHostedAction, err := sm.trackOnCloudService(clientEvent)
-	if err != nil {
+	if err := sm.trackOnCloudService(clientEvent); err != nil {
 		return err
 	}
-
-	log.WithContextFields(ctx, log.Fields{
-		"request_id": selfHostedAction.GetRequestID(),
-	}).Info("Received acknowledgment from cloud service")
 
 	// Send empty event to acknowledge
 	event := &pb.ClientEvent{
@@ -196,20 +177,19 @@ func (sm *streamManager) HandleCloudServiceTracking(ctx context.Context, action 
 	return nil
 }
 
-func (sm *streamManager) trackOnCloudService(event *pb.TrackSelfHostedClientEvent) (*pb.TrackSelfHostedAction, error) {
+func (sm *streamManager) trackOnCloudService(event *pb.TrackSelfHostedClientEvent) error {
 	sm.cloudServiceMu.Lock()
 	defer sm.cloudServiceMu.Unlock()
 
 	if err := sm.cloudServiceStream.Send(event); err != nil {
-		return nil, fmt.Errorf("failed to send to cloud service: %v", err)
+		return fmt.Errorf("failed to send to cloud service: %v", err)
 	}
 
-	selfHostedAction, err := sm.cloudServiceStream.Recv()
-	if err != nil {
-		return nil, fmt.Errorf("failed to receive from cloud service: %v", err)
+	if _, err := sm.cloudServiceStream.Recv(); err != nil {
+		return fmt.Errorf("failed to receive from cloud service: %v", err)
 	}
 
-	return selfHostedAction, nil
+	return nil
 }
 
 // isUsageQuotaExceededError checks if the error is a gRPC RESOURCE_EXHAUSTED error

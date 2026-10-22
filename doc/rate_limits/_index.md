@@ -72,7 +72,9 @@ You can set these rate limits with the [application settings API](../api/setting
 - [Retrieve file blame rate limit](api/repository-files.md#configure-file-blame-rate-limits)
   (`project_repositories_blame_limit`, `project_repositories_blame_unauthenticated_limit`):
   400 requests every minute for each user and project. Unauthenticated requests are limited
-  to 400 requests every minute for each IP address. Applies to the REST API endpoint for file blame.
+  to 400 requests every minute for each IP address. Applies to the REST API endpoint
+  for file blame and to the GraphQL `blame` field on `RepositoryBlob`, which the blame view
+  in the UI uses.
 
 You can set this rate limit with the [plan limits API](../api/plan_limits.md) or the
 [Rails console](../administration/operations/rails_console.md#starting-a-rails-console-session):

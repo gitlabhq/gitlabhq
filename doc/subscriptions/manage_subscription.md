@@ -211,7 +211,7 @@ The following is emailed to you:
 - On GitLab Self-Managed, a new activation code for your license.
 
 On GitLab Self-Managed, the new tier takes effect on the next subscription sync.
-You can also [synchronize your subscription manually](#subscription-data-synchronization)
+You can also synchronize your subscription manually
 to upgrade right away.
 
 On GitLab.com, you can also select a GitLab Credits option when you buy a subscription.
@@ -260,17 +260,17 @@ expires. To check when you can renew:
 
 Prerequisites:
 
-- For GitLab Self-Managed, you must [synchronize subscription data](#subscription-data-synchronization) and review your account at least two days before renewal to ensure your changes are synchronized.
+- For GitLab Self-Managed, you must synchronize subscription data and review your account at least two days before renewal to ensure your changes are synchronized.
 
 When a subscription is set to auto-renew, it renews automatically at midnight UTC on the expiration date without a gap in available service.
-You receive [email notifications](#renewal-notifications) before a subscription automatically renews.
+You receive email notifications before a subscription automatically renews.
 
 Seat counts do not decrease automatically at renewal time. If you have more billable users than your current subscription quantity at renewal time, your seat count increases automatically to match the current number of users in your
 [group](manage_seats.md#view-seat-usage) or [instance](../administration/moderate_users.md#view-users).
-To avoid unexpectedly renewing your subscription for more seats, learn how to [renew for fewer seats](#renew-for-fewer-seats).
+To avoid unexpectedly renewing your subscription for more seats, learn how to renew for fewer seats.
 
 Subscriptions purchased through the Customers Portal are set to auto-renew by default,
-but you can [turn off automatic subscription renewal](#turn-on-or-turn-off-automatic-subscription-renewal).
+but you can turn off automatic subscription renewal.
 
 #### Turn on or turn off automatic subscription renewal
 
@@ -332,9 +332,9 @@ Before you renew your subscription:
 
 To manually renew your subscription for fewer seats, you can either:
 
-- [Manually renew](#renew-manually) within 15 days of the
+- Manually renew within 15 days of the
   subscription renewal date. Ensure that you specify the seat quantity when you renew.
-- [Turn off automatic renewal of your subscription](#turn-on-or-turn-off-automatic-subscription-renewal),
+- Turn off automatic renewal of your subscription,
   and contact the [sales team](https://customers.gitlab.com/contact_us) to renew it for the number of seats you want.
 
 ### Renewal notifications
@@ -422,11 +422,11 @@ Prerequisites:
 - Connection to the internet, and must not have an offline environment.
 - [Activated](../administration/license.md) your instance with an activation code.
 
-Your [subscription data](#subscription-data) is automatically synchronized once
+Your subscription data is automatically synchronized once
 a day between your GitLab Self-Managed instance and GitLab.
 
 At approximately 3:00 AM (UTC), this daily synchronization job sends
-[subscription data](#subscription-data) to the Customers Portal. For this reason,
+subscription data to the Customers Portal. For this reason,
 updates and renewals might not apply immediately.
 
 The data is sent securely through an encrypted HTTPS connection to

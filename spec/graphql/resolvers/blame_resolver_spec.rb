@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::BlameResolver, feature_category: :source_code_management do
+RSpec.describe Resolvers::BlameResolver, :clean_gitlab_redis_rate_limiting, feature_category: :source_code_management do
   include GraphqlHelpers
 
   describe '#resolve' do
@@ -24,13 +24,70 @@ RSpec.describe Resolvers::BlameResolver, feature_category: :source_code_manageme
       Gitlab::Blame.new(blob, commit, range: (1..1), ignore_revs: true).groups.dig(0, :commit)
     end
 
-    subject(:resolve_blame) { resolve(described_class, obj: blob, args: args, ctx: { current_user: user }) }
+    let(:request) { ActionDispatch::TestRequest.create }
+
+    subject(:resolve_blame) do
+      resolve(described_class, obj: blob, args: args, ctx: { current_user: user, request: request })
+    end
 
     context 'when unauthorized' do
       it 'generates an error' do
         expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ResourceNotAvailable) do
           resolve_blame
         end
+      end
+
+      it 'does not consume the rate limit budget' do
+        expect(Gitlab::ApplicationRateLimiter).not_to receive(:throttled_request?)
+
+        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ResourceNotAvailable) do
+          resolve_blame
+        end
+      end
+    end
+
+    context 'when anonymous with no request in the context' do
+      let_it_be(:public_project) { create(:project, :public, :repository) }
+
+      let(:project) { public_project }
+      let(:user) { nil }
+      let(:request) { nil }
+
+      shared_examples 'denies without consulting the limiter' do
+        it 'denies without consulting the limiter' do
+          expect(Gitlab::ApplicationRateLimiter).not_to receive(:throttled?)
+
+          expect_graphql_error_to_be_created(
+            Gitlab::Graphql::Errors::ResourceNotAvailable,
+            'This endpoint has been requested too many times. Try again later.'
+          ) { resolve_blame }
+        end
+      end
+
+      context 'when the ActionCable worker has set an IP address' do
+        it 'counts against the per-IP limit' do
+          expect(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+            .with(:project_repositories_blame_unauthenticated, scope: { ip: '198.51.100.1' })
+            .and_return(false)
+
+          Gitlab::IpAddressState.with('198.51.100.1') do
+            expect(resolve_blame).to be_an_instance_of(Gitlab::Blame)
+          end
+        end
+      end
+
+      context 'when no IP address is available' do
+        it_behaves_like 'denies without consulting the limiter'
+      end
+
+      # Gitlab::Middleware::IpAddress stores remote_ip.to_s, so the state can be blank
+      # rather than nil, which would key every anonymous caller to one bucket.
+      context 'when the IP address is blank' do
+        around do |example|
+          Gitlab::IpAddressState.with('') { example.run }
+        end
+
+        it_behaves_like 'denies without consulting the limiter'
       end
     end
 
@@ -48,6 +105,22 @@ RSpec.describe Resolvers::BlameResolver, feature_category: :source_code_manageme
       shared_examples 'graphql execution error' do |error_message|
         it 'raises a GraphQL::ExecutionError' do
           expect_graphql_error_to_be_created(GraphQL::ExecutionError, error_message) { resolve_blame }
+        end
+      end
+
+      context 'when the context has no request' do
+        let(:request) { nil }
+
+        it 'still counts against the limit, without logging the request' do
+          expect(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+            .with(:project_repositories_blame, scope: { user: user, project: project })
+            .and_return(true)
+          expect(Gitlab::AuthLogger).not_to receive(:error)
+
+          expect_graphql_error_to_be_created(
+            Gitlab::Graphql::Errors::ResourceNotAvailable,
+            'This endpoint has been requested too many times. Try again later.'
+          ) { resolve_blame }
         end
       end
 

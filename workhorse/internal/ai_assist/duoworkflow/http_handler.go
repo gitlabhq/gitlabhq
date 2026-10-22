@@ -106,7 +106,7 @@ func classifyHTTPOutcome(transport *ndjsonTransport, execErr error) (errorType s
 		// The caller hung up. There is nobody left to report to, and this is a
 		// normal way for a run to end, so it is not counted as a failure.
 		return "", 0, ""
-	case errors.Is(execErr, errFailedToAcquireLockError):
+	case errors.Is(execErr, errFailedToAcquireLock):
 		// The workflow is already running somewhere else. Conflict rather than
 		// 429, because retrying will not help until the other run ends.
 		return errorTypeLocked, http.StatusConflict, "failed to acquire lock on workflow"

@@ -1,0 +1,23 @@
+# frozen_string_literal: true
+
+SEARCH_TESTS_LABEL = 'pipeline:run-search-tests'
+
+SEARCH_GEMS_MESSAGE = <<~MSG.freeze
+  ## Elasticsearch client gem change
+
+  This merge request changes an Elasticsearch client gem. The search RSpec jobs, including
+  the Elasticsearch 9 jobs, run only when the merge request has the ~"#{SEARCH_TESTS_LABEL}" label.
+
+  Danger added the label. Start a new pipeline so the search jobs run.
+MSG
+
+changed_lines = helper.changed_lines('Gemfile.lock')
+search_gem_changed = changed_lines.any? do |line|
+  line =~ /^\+\s+(elasticsearch(-api|-model|-rails)?|elastic(search)?-transport) \(/
+end
+
+if search_gem_changed && !helper.mr_has_labels?(SEARCH_TESTS_LABEL)
+  helper.labels_to_add << SEARCH_TESTS_LABEL
+
+  markdown(SEARCH_GEMS_MESSAGE)
+end

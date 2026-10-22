@@ -48,6 +48,8 @@ session_store_class, options = Gitlab::Sessions::StoreBuilder.new(cookie_key, se
 
 Rails.application.configure do
   config.session_store(session_store_class, **options)
+  # Must wrap the session store; see Gitlab::Middleware::SessionExpiryHeader's class comment.
+  config.middleware.insert_before session_store_class, Gitlab::Middleware::SessionExpiryHeader
   config.middleware.insert_after session_store_class, Gitlab::Middleware::UnauthenticatedSessionExpiry
   config.middleware.insert_after session_store_class, Gitlab::Middleware::PreventCrossCellSessionOverwrite,
     session_cookie_token_prefix: session_cookie_token_prefix

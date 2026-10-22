@@ -69,6 +69,16 @@ RSpec.describe API::WorkItems::LinkedResources, feature_category: :portfolio_man
         get api(api_request_path, personal_access_token: pat)
       end
     end
+
+    it_behaves_like 'allows access with the ai_workflows scope' do
+      let(:api_request) { get api(api_request_path, oauth_access_token: oauth_token) }
+
+      it 'returns the linked resources' do
+        api_request
+
+        expect(json_response.pluck('url')).to contain_exactly(added_meeting.url)
+      end
+    end
   end
 
   describe 'GET /namespaces/:id/-/work_items/:work_item_iid/linked_resources' do

@@ -235,10 +235,13 @@ func TestRunHttpActionHandler_Execute(t *testing.T) {
 			session: newSession(&http.Request{}),
 		}
 
+		hook := newLogHook(t)
+
 		result, err := handler.Execute(context.Background(), action)
 
 		require.NoError(t, err)
 		require.NotNil(t, result)
+		require.Len(t, entriesWithPrefix(hook, "HTTP action response truncated"), 1, "the truncation should be logged once, however many writes it drops")
 		require.Equal(t, "req-456", result.GetActionResponse().RequestID)
 		require.Equal(t, body[:ActionResponseBodyLimit], result.GetActionResponse().GetHttpResponse().Body)
 		require.Equal(t, int32(200), result.GetActionResponse().GetHttpResponse().StatusCode)

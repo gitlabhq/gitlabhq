@@ -65,6 +65,8 @@ import {
   findCurrentUserTodosWidget,
   findCustomFieldsWidget,
   findColorWidget,
+  findDescriptionWidget,
+  findEmailParticipantsWidget,
   findHealthStatusWidget,
   findIterationWidget,
   findLabelsWidget,
@@ -1745,6 +1747,56 @@ describe('findWeightWidget', () => {
   });
 });
 
+describe('findEmailParticipantsWidget', () => {
+  const emailParticipantsWidget = {
+    type: 'EMAIL_PARTICIPANTS',
+    emailParticipants: { nodes: [{ email: 'widget@example.com' }] },
+  };
+  const featuresEmailParticipants = {
+    type: 'EMAIL_PARTICIPANTS',
+    emailParticipants: { nodes: [{ email: 'feature@example.com' }] },
+  };
+
+  describe('when both features and widgets are present', () => {
+    let workItem;
+
+    beforeEach(() => {
+      workItem = {
+        features: { emailParticipants: featuresEmailParticipants },
+        widgets: [emailParticipantsWidget],
+      };
+    });
+
+    it('returns features.emailParticipants', () => {
+      expect(findEmailParticipantsWidget(workItem)).toBe(featuresEmailParticipants);
+    });
+  });
+
+  describe('when features is not present', () => {
+    let workItem;
+
+    beforeEach(() => {
+      workItem = { widgets: [emailParticipantsWidget] };
+    });
+
+    it('returns the widget from widgets', () => {
+      expect(findEmailParticipantsWidget(workItem)).toBe(emailParticipantsWidget);
+    });
+  });
+
+  describe('when neither features nor widgets has the widget', () => {
+    let workItem;
+
+    beforeEach(() => {
+      workItem = { widgets: [] };
+    });
+
+    it('returns undefined', () => {
+      expect(findEmailParticipantsWidget(workItem)).toBeUndefined();
+    });
+  });
+});
+
 describe('findWidgetByType', () => {
   const datesWidget = { type: 'START_AND_DUE_DATE', dueDate: '2026-10-01' };
   const featuresDates = { dueDate: '2026-11-01', startDate: null };
@@ -1995,6 +2047,55 @@ describe('findRequesterWidget', () => {
 
   it('returns undefined when it does not exist', () => {
     expect(findRequesterWidget({ widgets: [] })).toBeUndefined();
+  });
+});
+
+describe('findDescriptionWidget', () => {
+  const descriptionWidget = {
+    type: WIDGET_TYPE_DESCRIPTION,
+    description: 'From widgets',
+  };
+  const featuresDescription = {
+    description: 'From features',
+  };
+
+  describe('when both features and widgets are present', () => {
+    let workItem;
+
+    beforeEach(() => {
+      workItem = {
+        features: { description: featuresDescription },
+        widgets: [descriptionWidget],
+      };
+    });
+
+    it('returns features.description', () => {
+      expect(findDescriptionWidget(workItem)).toBe(featuresDescription);
+    });
+  });
+
+  describe('when features is not present', () => {
+    let workItem;
+
+    beforeEach(() => {
+      workItem = { widgets: [descriptionWidget] };
+    });
+
+    it('returns the widget from widgets', () => {
+      expect(findDescriptionWidget(workItem)).toBe(descriptionWidget);
+    });
+  });
+
+  describe('when neither features nor widgets has the widget', () => {
+    let workItem;
+
+    beforeEach(() => {
+      workItem = { widgets: [] };
+    });
+
+    it('returns undefined', () => {
+      expect(findDescriptionWidget(workItem)).toBeUndefined();
+    });
   });
 });
 

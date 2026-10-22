@@ -87,7 +87,7 @@ You can use [GraphQL](https://gitlab.com/-/graphql-explorer) to assign seats to 
 
 1. Copy the add-on purchase ID code excerpt.
 1. Open GraphQL.
-1. In the left window, enter the query for [getting an add-on purchase ID](#get-the-add-on-purchase-id).
+1. In the left window, enter the query for getting an add-on purchase ID.
 1. Select **Play**.
 1. Repeat to assign a GitLab Duo seat to specific users.
 

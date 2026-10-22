@@ -25,9 +25,9 @@ const (
 )
 
 var (
-	errLockIsUnavailable        = errors.New("acquireLock: lock is unavailable")
-	errFailedToAcquireLockError = errors.New("handleClientEvents: failed to acquire lock")
-	errNoWorkflowID             = errors.New("handleClientEvent: no workflow ID provided in StartWorkflowRequest")
+	errLockIsUnavailable   = errors.New("acquireLock: lock is unavailable")
+	errFailedToAcquireLock = errors.New("workflowLease: failed to acquire lock")
+	errNoWorkflowID        = errors.New("workflowLease: no workflow ID provided in StartWorkflowRequest")
 )
 
 type workflowLockManager struct {
@@ -60,15 +60,18 @@ func (m *workflowLockManager) acquireLock(ctx context.Context, workflowID string
 		// For other errors (e.g., network issues), we proceed without the lock.
 		var errTaken *redsync.ErrTaken
 		if errors.As(err, &errTaken) {
+			lockAcquireTotal.WithLabelValues(lockOutcomeTaken).Inc()
 			logger.WithError(err).Error("Failed to acquire workflow lock: already taken")
 			return nil, fmt.Errorf("failed to acquire workflow lock: %w", err)
 		}
 
+		lockAcquireTotal.WithLabelValues(lockOutcomeTransientError).Inc()
 		logger.WithError(err).Error("Failed to acquire workflow lock due to transient error, proceeding without lock")
 
 		return nil, errLockIsUnavailable
 	}
 
+	lockAcquireTotal.WithLabelValues(lockOutcomeAcquired).Inc()
 	logger.Info("Acquired workflow lock")
 
 	return mutex, nil
@@ -88,6 +91,7 @@ func (m *workflowLockManager) releaseLock(ctx context.Context, mutex *redsync.Mu
 			return
 		}
 
+		lockReleaseFailuresTotal.Inc()
 		logger.WithError(err).Error("Failed to release workflow lock")
 		return
 	}
@@ -132,7 +136,7 @@ func (l *workflowLease) acquire(ctx context.Context, workflowID string, workflow
 
 	mutex, err := l.manager.acquireLock(ctx, workflowID, workflowDefinition)
 	if err != nil && !errors.Is(err, errLockIsUnavailable) {
-		return errFailedToAcquireLockError
+		return errFailedToAcquireLock
 	}
 
 	l.mu.Lock()

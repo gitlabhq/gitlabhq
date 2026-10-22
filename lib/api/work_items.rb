@@ -32,5 +32,22 @@ module API
       end.freeze
 
     FEATURE_SUPPORTED_VALUES = FEATURE_NAME_LOOKUP.keys.freeze
+
+    # Features that only the EE entity exposes. CE must still accept them on read endpoints and omit
+    # them, like an unlicensed EE namespace does, instead of returning 400.
+    EE_ONLY_FEATURE_NAMES = %w[
+      color
+      custom_fields
+      health_status
+      iteration
+      linked_items
+      progress
+      requirement_legacy
+      status
+      verification_status
+      weight
+    ].freeze
+
+    KNOWN_FEATURE_NAMES = (FEATURE_SUPPORTED_VALUES + EE_ONLY_FEATURE_NAMES).uniq.freeze
   end
 end

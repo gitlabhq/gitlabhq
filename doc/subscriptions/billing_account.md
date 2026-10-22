@@ -13,11 +13,11 @@ and access your billing details and contact information.
 <!-- vale gitlab_base.OxfordComma = YES -->
 
 If you made your purchase through an authorized reseller, you must contact them directly to make changes to your subscription.
-For more information, see [customers that purchased through a reseller](#subscription-purchased-through-a-reseller).
+For more information, see customers that purchased through a reseller.
 
 ## Sign in to Customers Portal
 
-You can sign in to Customers Portal either with your GitLab.com account or a one-time sign-in link sent to your email (if you have not yet [linked your Customers Portal account to your GitLab.com account](#link-a-gitlabcom-account)).
+You can sign in to Customers Portal either with your GitLab.com account or a one-time sign-in link sent to your email (if you have not yet linked your Customers Portal account to your GitLab.com account).
 
 > [!note]
 > If you created a user account for Customers Portal with your GitLab.com account, sign in with this account.
@@ -49,8 +49,8 @@ if required.
 
 ## Change profile owner information
 
-The profile owner's email address is used for the [Customers Portal legacy sign-in](#sign-in-to-customers-portal).
-If the profile owner is also a [billing account manager](#subscription-and-billing-contacts),
+The profile owner's email address is used for the Customers Portal legacy sign-in.
+If the profile owner is also a billing account manager,
 their personal details are used on invoices, and for license and subscription-related emails.
 
 To change profile details, including name and email address:
@@ -225,12 +225,12 @@ you must use your GitLab.com account to create a user account for a new Customer
 
 If you want to change subscription contacts, you can instead do either of the following:
 
-- [Change the billing contact](#change-your-billing-contact).
-- [Change the subscription contact](#change-your-subscription-contact).
+- Change the billing contact.
+- Change the subscription contact.
 
 If you have a legacy Customers Portal profile that is not linked to a GitLab.com account, you may still
 [sign in](https://customers.gitlab.com/customers/sign_in?legacy=true) using a one-time sign-in link sent to your email.
-However, you should [create](https://gitlab.com/users/sign_up) and [link a GitLab.com account](#change-the-linked-account)
+However, you should [create](https://gitlab.com/users/sign_up) and link a GitLab.com account
 to ensure continued access to Customers Portal.
 
 To change the GitLab.com account linked to your Customers Portal profile:
@@ -330,14 +330,14 @@ After your subscription order is processed, you will receive several emails:
 If the billing account manager's email is linked to contacts with different first or last names,
 you will be prompted to update the name.
 
-If you are the billing account manager, follow the instructions to [update your personal profile](#change-profile-owner-information).
+If you are the billing account manager, follow the instructions to update your personal profile.
 
 If you are not the billing account manager, notify them to update their personal profile.
 
 ### Subscription contact is no longer account manager
 
 If the subscription contact is no longer a billing account manager, you will be prompted to select a new contact.
-Follow the instructions to [change your subscription contact](#change-your-subscription-contact).
+Follow the instructions to change your subscription contact.
 
 ### Error: `Email has already been taken`
 

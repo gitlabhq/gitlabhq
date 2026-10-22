@@ -8,6 +8,8 @@ module Gitlab
     class HttpClient < JIRA::HttpClient
       extend ::Gitlab::Utils::Override
 
+      UnexpectedHostError = Class.new(StandardError)
+
       override :request
       def request(*args)
         result = make_request(*args)
@@ -29,6 +31,8 @@ module Gitlab
 
       override :make_request
       def make_request(http_method, path, body = '', headers = {})
+        ensure_configured_site!(path)
+
         request_params = { headers: headers }
         request_params[:body] = body if body.present?
         request_params[:headers][:Cookie] = get_cookies if options[:use_cookies]
@@ -63,6 +67,24 @@ module Gitlab
       end
 
       private
+
+      def ensure_configured_site!(path)
+        return unless path.to_s.match?(%r{\A(?:[a-z][a-z0-9+.-]*:)?//}i)
+
+        requested = URI.join(uri, path)
+        return if origin_of(requested) == origin_of(uri)
+
+        raise UnexpectedHostError,
+          "Refusing Jira request to #{origin_of(requested).join('://')} " \
+            "(configured site: #{origin_of(uri).join('://')})"
+      rescue URI::InvalidURIError
+        raise UnexpectedHostError,
+          "Refusing Jira request to an invalid URL (configured site: #{origin_of(uri).join('://')})"
+      end
+
+      def origin_of(parsed_uri)
+        [parsed_uri.scheme.to_s.downcase, "#{parsed_uri.host.to_s.downcase}:#{parsed_uri.port}"]
+      end
 
       def default_timeout_for(param)
         Gitlab::HTTP::DEFAULT_TIMEOUT_OPTIONS[param]

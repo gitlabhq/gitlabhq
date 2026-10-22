@@ -57,7 +57,7 @@ Prerequisites:
 
 - You must use the Okta [Lifecycle Management](https://www.okta.com/products/lifecycle-management/) product. This
   product tier is required to use SCIM on Okta.
-- [GitLab is configured](#configure-gitlab).
+- GitLab is configured.
 - SAML application for [Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/main/) set up as
   described in the [Okta setup notes](_index.md#okta).
 - Your Okta SAML setup matches the [configuration steps exactly](_index.md), especially the NameID configuration.
@@ -89,7 +89,7 @@ To configure Okta for SCIM:
 
 Prerequisites:
 
-- [GitLab is configured](#configure-gitlab).
+- GitLab is configured.
 - [Group single sign-on](_index.md) is configured.
 
 The SAML application created during [single sign-on](_index.md) set up for
@@ -133,14 +133,14 @@ Next, provision the users:
 1. Ensure that the **Enabled** toggle is set to **Yes**.
 1. Ensure that all **Target Object Actions** are enabled.
 1. Under **Attribute Mappings**, configure mappings to match
-   the [configured attribute mappings](#configure-attribute-mappings):
+   the configured attribute mappings:
    1. Optional. In the **customappsso Attribute** column, find `externalId` and delete it.
    1. Edit the first attribute to have a:
       - **source attribute** of `objectId`
       - **target attribute** of `externalId`
       - **matching precedence** of `1`
    1. Update the existing **customappsso** attributes to match the
-      [configured attribute mappings](#configure-attribute-mappings).
+      configured attribute mappings.
    1. Delete any additional attributes that are not present in the following table. They do not cause problems if they are
       not deleted, but GitLab does not consume the attributes.
 1. Under the mapping list, select the **Show advanced options** checkbox.
@@ -169,7 +169,7 @@ After you have configured the mappings and the settings, return to the app overv
 > While Microsoft transitions from Azure Active Directory to Entra ID naming schemes, you might notice inconsistencies in
 > your user interface. If you're having trouble, you can view an older version of this document or contact GitLab Support.
 
-While [configuring Entra ID for SCIM](#configure-microsoft-entra-id), you configure
+While configuring Entra ID for SCIM, you configure
 attribute mappings. For an example, see [example configuration](example_saml_config.md#scim-mapping).
 
 The following table provides attribute mappings that are required for GitLab.

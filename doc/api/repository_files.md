@@ -158,6 +158,8 @@ This endpoint has the following rate limits:
 Set a limit to `0` to disable it. Requests over a limit return
 `429 Too Many Requests`.
 `HEAD` requests do not count toward these limits.
+The GraphQL `blame` field on `RepositoryBlob` shares these limits. Each blob in a query
+counts as one request, and requests over a limit return a GraphQL error instead of `429`.
 
 ```plaintext
 GET /projects/:id/repository/files/:file_path/blame

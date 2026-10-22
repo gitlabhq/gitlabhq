@@ -19,5 +19,5 @@ Gitlab::Database::QueryAnalyzer.instance.tap do |query_analyzer|
 end
 
 Gitlab::Application.configure do |config|
-  config.middleware.use(Gitlab::Middleware::QueryAnalyzer)
+  config.middleware.insert_after(RequestStore::Middleware, Gitlab::Middleware::QueryAnalyzer)
 end

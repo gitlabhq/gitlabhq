@@ -490,8 +490,18 @@ class Member < ApplicationRecord
       order.apply_cursor_conditions(scope).reorder(order)
     end
 
-    def search_invite_email(query)
-      invite.where(['invite_email ILIKE ?', "%#{query}%"])
+    def search_by_invite_email_or_user(query)
+      query = query.delete_prefix('@')
+      return none if query.blank?
+
+      users = User.arel_table
+
+      left_join_users.where(
+        arel_table[:invite_email].matches("%#{sanitize_sql_like(query)}%")
+          .or(User.fuzzy_arel_match(users[:name], query, use_minimum_char_limit: false))
+          .or(User.fuzzy_arel_match(users[:username], query, use_minimum_char_limit: false))
+          .or(users[:public_email].eq(query.downcase))
+      )
     end
 
     def filter_by_2fa(value)

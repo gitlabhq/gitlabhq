@@ -48,6 +48,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:rapid_diffs_on_mr_show, current_user, type: :beta)
     push_frontend_feature_flag(:merge_button_shimmer, current_user, type: :beta)
     push_frontend_feature_flag(:merge_request_reports_widget_group, project)
+    push_frontend_feature_flag(:todo_for_comment, current_user)
     gon.push({ rapid_diffs_page_enabled: rapid_diffs_page_enabled? })
   end
 

@@ -35,6 +35,15 @@ func TestLogInfo(t *testing.T) {
 	require.Regexp(t, `level=info msg="an observation"`, logLine)
 }
 
+func TestLogWarn(t *testing.T) {
+	b := NewBuilder()
+	logLine := captureLogs(b, func() {
+		b.WithError(fmt.Errorf("the error")).Warn("a degraded dependency")
+	})
+
+	require.Regexp(t, `level=warning msg="a degraded dependency" error="the error"`, logLine)
+}
+
 func TestLogError(t *testing.T) {
 	b := NewBuilder()
 	logLine := captureLogs(b, func() {

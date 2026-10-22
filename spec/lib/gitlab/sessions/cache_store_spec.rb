@@ -77,6 +77,14 @@ RSpec.describe Gitlab::Sessions::CacheStore, feature_category: :cell do
       expect(write_session).to eq(session_id)
     end
 
+    it 'records the written last_write_at on the request env' do
+      allow(redis_cache_store).to receive(:write)
+
+      write_session
+
+      expect(env.get_header(described_class::COMMITTED_LAST_WRITE_AT_KEY)).to eq(Time.now.to_i)
+    end
+
     context 'when session is nil' do
       let(:session_data) { nil }
 
@@ -103,6 +111,12 @@ RSpec.describe Gitlab::Sessions::CacheStore, feature_category: :cell do
             expect(redis_cache_store).not_to receive(:write)
 
             expect(write_session).to eq(session_id)
+          end
+
+          it 'does not store a committed last_write_at' do
+            expect(write_session).to eq(session_id)
+
+            expect(env.get_header(described_class::COMMITTED_LAST_WRITE_AT_KEY)).to be_nil
           end
         end
 

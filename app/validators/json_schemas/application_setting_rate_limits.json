@@ -132,12 +132,12 @@
     "project_repositories_blame_limit": {
       "type": "integer",
       "minimum": 0,
-      "description": "Number of blame requests allowed per user and project."
+      "description": "Number of blame requests allowed per user and project, across the REST endpoint and the GraphQL blame field."
     },
     "project_repositories_blame_unauthenticated_limit": {
       "type": "integer",
       "minimum": 0,
-      "description": "Number of unauthenticated blame requests allowed per IP address."
+      "description": "Number of unauthenticated blame requests allowed per IP address, across the REST endpoint and the GraphQL blame field."
     },
     "project_repositories_blobs_batch_limit": {
       "type": "integer",

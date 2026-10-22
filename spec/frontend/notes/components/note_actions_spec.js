@@ -5,12 +5,22 @@ import {
 } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
+import VueApollo from 'vue-apollo';
 import Vue, { nextTick } from 'vue';
 import { PiniaVuePlugin } from 'pinia';
 import { createTestingPinia } from '@pinia/testing';
 import { stubComponent } from 'helpers/stub_component';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import { TEST_HOST } from 'spec/test_constants';
 import axios from '~/lib/utils/axios_utils';
+import { createAlert } from '~/alert';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { TYPENAME_NOTE } from '~/graphql_shared/constants';
+import todoCreateMutation from '~/sidebar/queries/todo_create.mutation.graphql';
+import issueCommentTodosQuery from '~/notes/graphql/issue_comment_todos.query.graphql';
+import todoMarkDoneMutation from '~/sidebar/queries/todo_mark_done.mutation.graphql';
 import noteActions from '~/notes/components/note_actions.vue';
 import EmojiPicker from '~/emoji/components/picker.vue';
 import { NOTEABLE_TYPE_MAPPING } from '~/notes/constants';
@@ -21,7 +31,9 @@ import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
 import { useDiscussions } from '~/notes/store/discussions';
 import { globalAccessorPlugin } from '~/pinia/plugins';
-import { userDataMock } from '../mock_data';
+import { userDataMock, noteableDataMock } from '../mock_data';
+
+jest.mock('~/alert');
 
 Vue.use(PiniaVuePlugin);
 
@@ -840,6 +852,253 @@ describe('noteActions', () => {
       wrapper.findComponent('.js-note-edit').vm.$emit('click');
 
       expect(wrapper.emitted('handle-edit')).toEqual([[], []]);
+    });
+  });
+
+  describe('comment todo', () => {
+    const todoGlobalId = 'gid://gitlab/Todo/7';
+    const findAddCommentTodoItem = () => wrapper.findComponentByTestId('comment-todo-action');
+    const findMarkCommentTodoDoneItem = () =>
+      wrapper.findComponentByTestId('comment-todo-done-action');
+    const ownTodoNode = () => ({
+      __typename: 'Todo',
+      id: todoGlobalId,
+      note: { __typename: 'Note', id: `gid://gitlab/DiscussionNote/${props.noteId}` },
+    });
+
+    let todoCreateHandler;
+    let todoMarkDoneHandler;
+    let commentTodosHandler;
+
+    const commentTodosResponse = (nodes) => ({
+      data: {
+        issuable: {
+          __typename: 'Issue',
+          id: 'gid://gitlab/Issue/26',
+          currentUserTodos: { __typename: 'TodoConnection', nodes },
+        },
+      },
+    });
+
+    const mountWithTodo = ({
+      todoForComment = true,
+      pendingTodoNodes = [],
+      seedingPending = false,
+    } = {}) => {
+      Vue.use(VueApollo);
+
+      todoCreateHandler = jest
+        .fn()
+        .mockResolvedValue({ data: { todoMutation: { todo: { id: todoGlobalId }, errors: [] } } });
+      todoMarkDoneHandler = jest
+        .fn()
+        .mockResolvedValue({ data: { todoMutation: { todo: { id: todoGlobalId }, errors: [] } } });
+      commentTodosHandler = seedingPending
+        ? jest.fn().mockReturnValue(new Promise(() => {}))
+        : jest.fn().mockResolvedValue(commentTodosResponse(pendingTodoNodes));
+      useNotes().noteableData = { ...noteableDataMock, targetType: 'issue' };
+
+      const apolloProvider = createMockApollo([
+        [todoCreateMutation, todoCreateHandler],
+        [todoMarkDoneMutation, todoMarkDoneHandler],
+        [issueCommentTodosQuery, commentTodosHandler],
+      ]);
+
+      wrapper = extendedWrapper(
+        shallowMount(noteActions, {
+          pinia,
+          apolloProvider,
+          propsData: props,
+          provide: { glFeatures: { todoForComment } },
+          stubs: {
+            GlDisclosureDropdown: stubComponent(GlDisclosureDropdown, {
+              methods: { close: mockCloseDropdown },
+            }),
+            GlDisclosureDropdownGroup,
+            GlDisclosureDropdownItem,
+          },
+        }),
+      );
+    };
+
+    beforeEach(() => {
+      useNotes().setUserData(userDataMock);
+      useNotes().noteableData = noteableDataMock;
+    });
+
+    it('renders the add to-do menu item when todoForComment is enabled', () => {
+      mountWithTodo({ todoForComment: true });
+
+      expect(findAddCommentTodoItem().exists()).toBe(true);
+      expect(findAddCommentTodoItem().text()).toBe('Add a to-do');
+      expect(findMarkCommentTodoDoneItem().exists()).toBe(false);
+    });
+
+    it('does not render either todo menu item when todoForComment is disabled', () => {
+      mountWithTodo({ todoForComment: false });
+
+      expect(findAddCommentTodoItem().exists()).toBe(false);
+      expect(findMarkCommentTodoDoneItem().exists()).toBe(false);
+    });
+
+    it('calls todoCreate with the noteable and note global ids when actioned', async () => {
+      mountWithTodo();
+      await waitForPromises();
+
+      findAddCommentTodoItem().vm.$emit('action');
+      await waitForPromises();
+
+      expect(todoCreateHandler).toHaveBeenCalledWith({
+        input: {
+          targetId: convertToGraphQLId(noteableDataMock.noteableType, noteableDataMock.id),
+          noteId: convertToGraphQLId(TYPENAME_NOTE, props.noteId),
+        },
+      });
+    });
+
+    it('does not create a to-do while the pending to-dos are still loading', async () => {
+      mountWithTodo({ seedingPending: true });
+
+      findAddCommentTodoItem().vm.$emit('action');
+      await waitForPromises();
+
+      expect(todoCreateHandler).not.toHaveBeenCalled();
+    });
+
+    it('swaps to the mark done item after adding, and back after marking done', async () => {
+      mountWithTodo();
+      await waitForPromises();
+
+      commentTodosHandler.mockResolvedValue(commentTodosResponse([ownTodoNode()]));
+      findAddCommentTodoItem().vm.$emit('action');
+      await waitForPromises();
+
+      expect(findAddCommentTodoItem().exists()).toBe(false);
+      expect(findMarkCommentTodoDoneItem().exists()).toBe(true);
+
+      commentTodosHandler.mockResolvedValue(commentTodosResponse([]));
+      findMarkCommentTodoDoneItem().vm.$emit('action');
+      await waitForPromises();
+
+      expect(todoMarkDoneHandler).toHaveBeenCalledWith({ input: { id: todoGlobalId } });
+      expect(findAddCommentTodoItem().exists()).toBe(true);
+      expect(findMarkCommentTodoDoneItem().exists()).toBe(false);
+    });
+
+    it('refetches the pending to-dos after a mutation so the shared cache stays in sync', async () => {
+      mountWithTodo();
+      await waitForPromises();
+
+      expect(commentTodosHandler).toHaveBeenCalledTimes(1);
+
+      commentTodosHandler.mockResolvedValue(commentTodosResponse([ownTodoNode()]));
+      findAddCommentTodoItem().vm.$emit('action');
+      await waitForPromises();
+
+      expect(commentTodosHandler).toHaveBeenCalledTimes(2);
+    });
+
+    it('syncs from the server when the create payload has no todo and no errors', async () => {
+      mountWithTodo();
+      await waitForPromises();
+
+      todoCreateHandler.mockResolvedValue({ data: { todoMutation: { todo: null, errors: [] } } });
+      commentTodosHandler.mockResolvedValue(commentTodosResponse([ownTodoNode()]));
+
+      findAddCommentTodoItem().vm.$emit('action');
+      await waitForPromises();
+
+      expect(createAlert).not.toHaveBeenCalled();
+      expect(findMarkCommentTodoDoneItem().exists()).toBe(true);
+    });
+
+    it('seeds the mark done item from an existing pending to-do for the note', async () => {
+      mountWithTodo({ pendingTodoNodes: [ownTodoNode()] });
+      await waitForPromises();
+
+      expect(findMarkCommentTodoDoneItem().exists()).toBe(true);
+      expect(findMarkCommentTodoDoneItem().text()).toBe('Mark as done');
+      expect(findAddCommentTodoItem().exists()).toBe(false);
+    });
+
+    it('keeps the add item when the pending to-dos belong to other notes', async () => {
+      mountWithTodo({
+        pendingTodoNodes: [
+          {
+            __typename: 'Todo',
+            id: todoGlobalId,
+            note: { __typename: 'Note', id: 'gid://gitlab/Note/99999' },
+          },
+        ],
+      });
+      await waitForPromises();
+
+      expect(findAddCommentTodoItem().exists()).toBe(true);
+      expect(findMarkCommentTodoDoneItem().exists()).toBe(false);
+    });
+
+    describe('when the mutation fails', () => {
+      it('shows an alert when the payload contains errors', async () => {
+        mountWithTodo();
+        await waitForPromises();
+
+        todoCreateHandler.mockResolvedValue({
+          data: { todoMutation: { todo: null, errors: ['boom'] } },
+        });
+
+        findAddCommentTodoItem().vm.$emit('action');
+        await waitForPromises();
+
+        expect(createAlert).toHaveBeenCalledWith(
+          expect.objectContaining({
+            message: 'Something went wrong while managing the to-do item.',
+          }),
+        );
+        expect(findAddCommentTodoItem().exists()).toBe(true);
+      });
+
+      it('shows an alert when the request fails', async () => {
+        mountWithTodo();
+        await waitForPromises();
+
+        todoCreateHandler.mockRejectedValue(new Error('network'));
+
+        findAddCommentTodoItem().vm.$emit('action');
+        await waitForPromises();
+
+        expect(createAlert).toHaveBeenCalledWith(
+          expect.objectContaining({
+            message: 'Something went wrong while managing the to-do item.',
+          }),
+        );
+      });
+    });
+
+    it('ignores actions until the sync after a mutation settles', async () => {
+      mountWithTodo();
+      await waitForPromises();
+
+      commentTodosHandler.mockReturnValue(new Promise(() => {}));
+      findAddCommentTodoItem().vm.$emit('action');
+      await waitForPromises();
+
+      findAddCommentTodoItem().vm.$emit('action');
+      await waitForPromises();
+
+      expect(todoCreateHandler).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not alert when only the refetch after a successful mutation fails', async () => {
+      mountWithTodo();
+      await waitForPromises();
+
+      commentTodosHandler.mockRejectedValue(new Error('refetch failed'));
+
+      findAddCommentTodoItem().vm.$emit('action');
+      await waitForPromises();
+
+      expect(todoCreateHandler).toHaveBeenCalled();
+      expect(createAlert).not.toHaveBeenCalled();
     });
   });
 });

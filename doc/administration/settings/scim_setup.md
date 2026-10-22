@@ -53,7 +53,7 @@ Prerequisites:
 
 - You must use the [Okta Lifecycle Management](https://www.okta.com/products/lifecycle-management/) product. This
   product tier is required to use SCIM on Okta.
-- [GitLab is configured](#configure-gitlab) for SCIM.
+- GitLab is configured for SCIM.
 - The SAML application for [Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/main/) set up as
   described in the [Okta setup notes](../../integration/saml.md#set-up-okta).
 - Your Okta SAML setup matches the [configuration steps](_index.md), especially the NameID configuration.
@@ -85,7 +85,7 @@ To configure Okta for SCIM:
 
 Prerequisites:
 
-- [GitLab is configured](#configure-gitlab) for SCIM.
+- GitLab is configured for SCIM.
 - The [SAML application for Microsoft Entra ID is set up](../../integration/saml.md#set-up-microsoft-entra-id).
 
 The SAML application created during [single sign-on](../../integration/saml.md) set up for
@@ -139,7 +139,7 @@ Next, provision the users:
 1. Ensure that the **Enabled** toggle is set to **Yes**.
 1. Ensure that all **Target Object Actions** are enabled.
 1. Under **Attribute Mappings**, configure mappings to match
-   the [configured attribute mappings](#configure-attribute-mappings):
+   the configured attribute mappings:
    1. Optional. In the **customappsso Attribute** column, find `externalId` and delete it.
    1. Edit the first attribute to have a:
       - **Source attribute** of `objectId`.
@@ -147,8 +147,8 @@ Next, provision the users:
       - **Matching precedence** of `1`.
       - **Apply this mapping** is set to `Always`
    1. Update the existing **customappsso** attributes to match the
-      [configured attribute mappings](#configure-attribute-mappings).
-   1. Delete any additional attributes that are not present in the [attribute mappings table](#configure-attribute-mappings). They do not cause problems if they are
+      configured attribute mappings.
+   1. Delete any additional attributes that are not present in the attribute mappings table. They do not cause problems if they are
       not deleted, but GitLab does not consume the attributes.
 1. Under the mapping list, select the **Show advanced options** checkbox.
 1. Select the **Edit attribute list for customappsso** link.

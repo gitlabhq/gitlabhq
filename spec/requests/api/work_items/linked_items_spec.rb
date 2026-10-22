@@ -160,6 +160,16 @@ RSpec.describe API::WorkItems::LinkedItems, feature_category: :portfolio_managem
       end
     end
 
+    it_behaves_like 'allows access with the ai_workflows scope' do
+      let(:api_request) { get api(api_request_path, oauth_access_token: oauth_token) }
+
+      it 'returns the linked items' do
+        api_request
+
+        expect(json_response.pluck('id')).to contain_exactly(linked_task_a.id, linked_task_b.id, linked_closed_task.id)
+      end
+    end
+
     it 'returns not_found when the user cannot read the parent' do
       other_user = create(:user)
 

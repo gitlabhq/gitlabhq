@@ -114,6 +114,16 @@ RSpec.describe API::WorkItems::CurrentUserTodos, feature_category: :portfolio_ma
       end
     end
 
+    it_behaves_like 'allows access with the ai_workflows scope' do
+      let(:api_request) { get api(api_request_path, oauth_access_token: oauth_token) }
+
+      it 'returns the todos' do
+        api_request
+
+        expect(json_response.pluck('id')).to contain_exactly(pending_todo.id, done_todo.id)
+      end
+    end
+
     it 'returns not_found when the user cannot read the work item' do
       other_user = create(:user)
 

@@ -2761,7 +2761,7 @@ describe('planning-view', () => {
 
     describe('hasWorkItems query', () => {
       it('includes work items from descendant groups and projects', async () => {
-        await mountComponent({ provide: { isGroupIssuesList: true } });
+        await mountComponent();
 
         expect(defaultHasWorkItemsHandler).toHaveBeenCalledWith(
           expect.objectContaining({ fullPath: 'full/path', includeDescendants: true }),

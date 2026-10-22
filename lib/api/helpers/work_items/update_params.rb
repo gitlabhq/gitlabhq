@@ -12,8 +12,8 @@ module API
         params :work_item_update_features do
           optional :features, type: Hash,
             desc: 'Input for work item features. Features that are not available in the namespace, ' \
-              'for example because of the subscription tier, are ignored. Features that the work item type ' \
-              'does not support return 400 Bad Request.' do
+              'for example because of the subscription tier, are ignored. If the work item type does not ' \
+              'support a feature, the request returns 400 Bad Request.' do
             optional :description, type: Hash, desc: 'Input for description feature.' do
               requires :description, type: String, desc: 'Description text for the work item.'
             end

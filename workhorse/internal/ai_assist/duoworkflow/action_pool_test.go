@@ -7,7 +7,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/prometheus/client_golang/prometheus/testutil"
 	"github.com/stretchr/testify/require"
 )
 
@@ -15,7 +14,7 @@ func TestActionPool_runsUpToSizeConcurrently(t *testing.T) {
 	pool := newActionPool(context.Background(), 2, make(chan error, 1))
 	t.Cleanup(func() { pool.close(time.Second) })
 
-	saturatedBefore := testutil.ToFloat64(actionPoolSaturatedTotal)
+	saturatedBefore := counterValue(t, actionPoolSaturatedTotal)
 
 	started := make(chan struct{}, 3)
 	release := make(chan struct{})
@@ -45,7 +44,7 @@ func TestActionPool_runsUpToSizeConcurrently(t *testing.T) {
 	require.NoError(t, <-third)
 	<-started
 
-	require.InDelta(t, saturatedBefore+1, testutil.ToFloat64(actionPoolSaturatedTotal), 0)
+	require.InDelta(t, saturatedBefore+1, counterValue(t, actionPoolSaturatedTotal), 0)
 }
 
 func TestActionPool_reportsTheFirstErrorAndCancels(t *testing.T) {

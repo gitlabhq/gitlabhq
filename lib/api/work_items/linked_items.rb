@@ -3,6 +3,10 @@
 module API
   module WorkItems
     class LinkedItems < ::API::Base
+      include APIGuard
+
+      allow_access_with_scope :ai_workflows, if: ->(request) { request.get? || request.head? }
+
       before { authenticate! }
       before { check_work_item_rest_api_feature_flag! }
 

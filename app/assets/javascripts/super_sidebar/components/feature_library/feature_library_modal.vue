@@ -18,6 +18,7 @@ import {
   onboardingFeatureLibraryAiSearchPath,
 } from '~/lib/utils/path_helpers/feature_library';
 import { InternalEvents } from '~/tracking';
+import ScrollScrim from '~/vue_shared/components/scroll_scrim/scroll_scrim.vue';
 import {
   EVENT_OPEN_FEATURE_LIBRARY_MODAL,
   EVENT_SEARCH_FEATURES_IN_FEATURE_LIBRARY_MODAL,
@@ -28,7 +29,6 @@ import {
   EVENT_SEARCH_WITH_GEMINI_IN_FEATURE_LIBRARY_MODAL,
 } from '../../tracking_constants';
 import { HIDDEN_NAV_ITEM_CLASS, PANEL_TYPES } from '../../constants';
-import ScrollScrim from '../scroll_scrim.vue';
 import { MODAL_ID, ITEMS_PER_RENDER_FRAME } from './constants';
 import { rankSearchResults } from './search';
 import FeatureLibraryItem from './feature_library_item.vue';

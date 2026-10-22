@@ -15,7 +15,6 @@ RSpec.describe Gitlab::Checks::ContainerMoved, :clean_gitlab_redis_shared_state,
 
   describe '.fetch_message' do
     let(:key) { "redirect_namespace:#{user.id}:#{project.repository.gl_repository}" }
-    let(:legacy_key) { "redirect_namespace:#{user.id}:#{project.id}" }
 
     context 'with a redirect message queue' do
       before do
@@ -32,24 +31,6 @@ RSpec.describe Gitlab::Checks::ContainerMoved, :clean_gitlab_redis_shared_state,
         described_class.fetch_message(user, project.repository)
 
         expect(Gitlab::Redis::SharedState.with { |redis| redis.get(key) }).to be_nil
-      end
-
-      context 'with a message in the legacy key' do
-        before do
-          Gitlab::Redis::SharedState.with do |redis|
-            redis.set(legacy_key, 'legacy message')
-          end
-        end
-
-        it 'returns and deletes the legacy message' do
-          expect(Gitlab::Redis::SharedState.with { |redis| redis.get(key) }).not_to be_nil
-          expect(Gitlab::Redis::SharedState.with { |redis| redis.get(legacy_key) }).not_to be_nil
-
-          expect(described_class.fetch_message(user, project.repository)).to eq('legacy message')
-
-          expect(Gitlab::Redis::SharedState.with { |redis| redis.get(key) }).to be_nil
-          expect(Gitlab::Redis::SharedState.with { |redis| redis.get(legacy_key) }).to be_nil
-        end
       end
     end
 

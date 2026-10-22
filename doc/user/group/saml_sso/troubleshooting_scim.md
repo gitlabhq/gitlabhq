@@ -120,8 +120,8 @@ When the SCIM app changes:
 Changing the SAML or SCIM configuration or provider can cause the following problems:
 
 - SAML and SCIM identity mismatch. To solve this problem:
-  1. [Verify that the user's SAML `NameId` matches the SCIM `extern_uid`](#unsure-if-users-saml-nameid-matches-the-scim-externalid).
-  1. [Update or fix the mismatched SCIM `extern_uid` and SAML `NameId`](#mismatched-scim-extern_uid-and-saml-nameid).
+  1. Verify that the user's SAML `NameId` matches the SCIM `extern_uid`.
+  1. Update or fix the mismatched SCIM `extern_uid` and SAML `NameId`.
 - SCIM identity mismatch between GitLab and the identity provider SCIM app. To solve this problem:
   1. Use the [SCIM API](../../../api/scim.md), which displays the user's `extern_uid` stored in GitLab and compares it with the user `externalId` in
      the SCIM app.

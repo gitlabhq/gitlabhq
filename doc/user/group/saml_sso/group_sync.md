@@ -237,7 +237,7 @@ To configure SAML Group Sync:
 {{< /tabs >}}
 
 The value for `Groups` or `groups` in the SAML response may be either the group name or an ID.
-For example, Azure AD sends the Azure Group Object ID instead of the name. Use the ID value when configuring [SAML Group Links](#configure-saml-group-links).
+For example, Azure AD sends the Azure Group Object ID instead of the name. Use the ID value when configuring SAML Group Links.
 
 ```xml
 <saml:AttributeStatement>
@@ -312,7 +312,7 @@ SAML Group Sync can manage GitLab Duo seat assignment and removal based on IdP g
 
 To configure for GitLab.com:
 
-1. When [configuring a SAML Group Link](#configure-saml-group-links), select the **Assign GitLab Duo seats to users in this group** checkbox.
+1. When configuring a SAML Group Link, select the **Assign GitLab Duo seats to users in this group** checkbox.
 1. Select **Save**.
 1. Repeat to add additional group links for all SAML users that should be assigned a GitLab Duo Pro or GitLab Duo Enterprise seat.
    GitLab Duo seats are unassigned for users whose identity provider group memberships do not match a group link with this setting enabled.

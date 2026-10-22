@@ -192,7 +192,7 @@ module WikiCloth
         # escape all html inside this element
         self.element_content = self.element_content.gsub('<','&lt;').gsub('>','&gt;')
         # hack to fix <code><nowiki> nested mess
-        self.element_content = self.element_content.gsub(/&lt;[\/]*\s*nowiki\s*&gt;/,'')
+        self.element_content = self.element_content.gsub(/&lt;\/*\s*nowiki\s*&gt;/,'')
       end
 
       case self.element_name

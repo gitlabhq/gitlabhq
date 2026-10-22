@@ -1,0 +1,63 @@
+// stylelint-disable gitlab/no-gl-class -- ScrollScrim styles moved from framework/, where this rule is off
+$scroll-scrim-height: 2.25rem;
+
+// switched to child combinators to prevent rules clash where other elements are modifying wrappers
+// https://gitlab.com/gitlab-org/gitlab/-/issues/435538
+.gl-scroll-scrim {
+  > .top-scrim-wrapper,
+  > .bottom-scrim-wrapper {
+    height: $scroll-scrim-height;
+    opacity: 0;
+    position: sticky;
+    z-index: 1;
+    display: block;
+    left: 0;
+    right: 0;
+    pointer-events: none;
+    transition: opacity 0.1s;
+
+    .top-scrim,
+    .bottom-scrim {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    }
+  }
+
+  > .top-scrim-wrapper {
+    top: 0;
+    margin-bottom: -$scroll-scrim-height;
+
+    .top-scrim {
+      background: linear-gradient(180deg, var(--gl-color-alpha-dark-8) 0%, $transparent-rgba 100%);
+
+      .gl-dark & {
+        background: linear-gradient(
+          180deg,
+          var(--gl-color-alpha-dark-24) 0%,
+          $transparent-rgba 100%
+        );
+      }
+    }
+  }
+
+  > .bottom-scrim-wrapper {
+    bottom: 0;
+    margin-top: -$scroll-scrim-height;
+
+    .bottom-scrim {
+      background: linear-gradient(180deg, $transparent-rgba 0%, var(--gl-color-alpha-dark-8));
+
+      .gl-dark & {
+        background: linear-gradient(180deg, $transparent-rgba 0%, var(--gl-color-alpha-dark-24));
+      }
+    }
+  }
+
+  &.top-scrim-visible > .top-scrim-wrapper,
+  &.bottom-scrim-visible > .bottom-scrim-wrapper {
+    opacity: 1;
+  }
+}

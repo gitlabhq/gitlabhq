@@ -26,6 +26,7 @@ import {
   workItemByIidResponseFactory,
   workItemEmailParticipantsResponse,
   workItemEmailParticipantsEmptyResponse,
+  workItemEmailParticipantsFeaturesResponse,
   workItemBlockedByLinkedItemsResponse,
   workItemNoBlockedByLinkedItemsResponse,
   mockOpenChildrenCount,
@@ -110,6 +111,7 @@ describe('Work item comment form component', () => {
     isGroupWorkItem = false,
     workItemLinkedItemsHandler = noBlockedByHandler,
     workItemOpenChildCountHandler = noOpenChildrenHandler,
+    glFeatures = {},
   } = {}) => {
     workItemResponse = workItemByIidResponseFactory({
       canMarkNoteAsInternal,
@@ -147,6 +149,9 @@ describe('Work item comment form component', () => {
         parentId,
         hideFullscreenMarkdownButton,
         isGroupWorkItem,
+      },
+      provide: {
+        glFeatures,
       },
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
@@ -282,6 +287,33 @@ describe('Work item comment form component', () => {
           expect(findCommentFieldLayout().props('noteableData').issue_email_participants).toEqual(
             [],
           );
+        });
+      });
+
+      describe('when workItemFeaturesField is enabled', () => {
+        let featuresHandler;
+
+        beforeEach(async () => {
+          featuresHandler = jest.fn().mockResolvedValue(workItemEmailParticipantsFeaturesResponse);
+
+          await createComponentWithEmailParticipantsWidget({
+            emailParticipantsResponseHandler: featuresHandler,
+            glFeatures: { workItemFeaturesField: true },
+          });
+        });
+
+        it('requests participants with `useWorkItemFeatures`', () => {
+          expect(featuresHandler).toHaveBeenCalledWith({
+            fullPath,
+            iid: '1',
+            useWorkItemFeatures: true,
+          });
+        });
+
+        it('passes participants from `features` to CommentFieldLayout', () => {
+          expect(findCommentFieldLayout().props('noteableData').issue_email_participants).toEqual([
+            { __typename: 'EmailParticipantType', email: 'feature-user@example.com' },
+          ]);
         });
       });
 

@@ -125,6 +125,8 @@ func TestConnectionsOpen(t *testing.T) {
 	}
 
 	before := openWebSocketConns()
+	sessionLabels := map[string]string{"transport": transportWebSocket}
+	sessionsBefore := histogramSampleCount(t, "gitlab_workhorse_duo_workflow_session_duration_seconds", sessionLabels)
 
 	conn := dialTestHandler(t, handler)
 
@@ -140,6 +142,55 @@ func TestConnectionsOpen(t *testing.T) {
 		return openWebSocketConns() == before
 	}, 15*time.Second, time.Millisecond,
 		"connectionsOpen should return to its previous value once the connection closes")
+	require.Equal(t, sessionsBefore+1, histogramSampleCount(t, "gitlab_workhorse_duo_workflow_session_duration_seconds", sessionLabels),
+		"the session duration should be observed once the runner is closed")
+}
+
+// histogramSampleCount returns the number of observations across every series
+// of the histogram that carries the given labels.
+func histogramSampleCount(t *testing.T, name string, labels map[string]string) uint64 {
+	t.Helper()
+
+	families, err := prometheus.DefaultGatherer.Gather()
+	require.NoError(t, err)
+
+	var total uint64
+	for _, f := range families {
+		if f.GetName() != name {
+			continue
+		}
+		for _, m := range f.GetMetric() {
+			matched := 0
+			for _, l := range m.GetLabel() {
+				if v, ok := labels[l.GetName()]; ok && v == l.GetValue() {
+					matched++
+				}
+			}
+			if matched == len(labels) {
+				total += m.GetHistogram().GetSampleCount()
+			}
+		}
+	}
+
+	return total
+}
+
+func TestMcpServerLabel(t *testing.T) {
+	for _, name := range []string{gitlabServerName, orbitServerName, slackServerName} {
+		require.Equal(t, name, mcpServerLabel(name))
+	}
+
+	require.Equal(t, mcpServerCatalog, mcpServerLabel("my_company_jira"))
+}
+
+func TestHTTPMethodLabel(t *testing.T) {
+	for _, method := range []string{http.MethodGet, http.MethodHead, http.MethodPost, http.MethodPut, http.MethodPatch, http.MethodDelete, http.MethodOptions} {
+		require.Equal(t, method, httpMethodLabel(method))
+	}
+
+	for _, method := range []string{"get", "PROPFIND", "X-ANYTHING", ""} {
+		require.Equal(t, httpMethodOther, httpMethodLabel(method))
+	}
 }
 
 // TestSessionsTotal verifies that sessionsTotal increments exactly once for each

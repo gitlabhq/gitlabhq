@@ -25,14 +25,6 @@ module Gitlab
         "#{PROJECT_CREATED}:#{user.id}:#{repository.gl_repository}"
       end
 
-      # TODO: Remove in the next release
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/292030
-      def self.legacy_message_key(user, repository)
-        return unless repository.project
-
-        "#{PROJECT_CREATED}:#{user.id}:#{repository.project.id}"
-      end
-
       def project_url
         Gitlab::Routing.url_helpers.project_url(project)
       end

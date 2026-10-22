@@ -26,7 +26,7 @@ When you purchase a GitLab subscription, your credit card might be declined beca
 - The credit card account has insufficient funds.
 - The credit card has expired.
 - The transaction exceeds the credit limit or the card's maximum transaction amount.
-- The [transaction is not allowed](#error-transaction_not_allowed).
+- The transaction is not allowed.
 
 Check with your financial institution to confirm if any of these reasons apply. If they don't
 apply, contact [GitLab Support](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293).
