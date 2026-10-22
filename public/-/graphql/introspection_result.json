@@ -85987,6 +85987,18 @@
               "deprecationReason": null
             },
             {
+              "name": "userId",
+              "description": "Global ID of the user who created the job, or who last played it.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "UserID",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "userPermissions",
               "description": "Permissions for the current user on the resource",
               "args": [],

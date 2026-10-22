@@ -88,6 +88,7 @@ project:
   - read_compliance_framework
   - read_coverage_fuzzing
   - read_feature_flag
+  - read_govern_policy
   - read_merge_request_status_check_url
   - read_observability_portal
   - read_on_demand_dast_scan

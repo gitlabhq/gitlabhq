@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::CodeLanguageFilter, feature_category: :markdown do
+RSpec.describe Banzai::Filter::CodeLanguageFilter do
   include FilterSpecHelper
 
   shared_examples 'XSS prevention' do |lang|
@@ -132,9 +132,9 @@ RSpec.describe Banzai::Filter::CodeLanguageFilter, feature_category: :markdown d
   end
 
   context 'when lang has extra params' do
-    let_it_be(:lang_params) { 'foo-bar-kux' }
-    let_it_be(:xss_lang) { %(ruby data-meta="foo-bar-kux"&lt;script&gt;alert(1)&lt;/script&gt;) }
-    let_it_be(:expected_result) do
+    let(:lang_params) { 'foo-bar-kux' }
+    let(:xss_lang) { %(ruby data-meta="foo-bar-kux"&lt;script&gt;alert(1)&lt;/script&gt;) }
+    let(:expected_result) do
       <<~HTML
         <pre data-lang="ruby" data-canonical-lang="ruby" data-lang-params="#{lang_params}">
         <code>This is a test</code></pre>

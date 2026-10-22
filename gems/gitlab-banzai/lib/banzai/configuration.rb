@@ -14,20 +14,35 @@ module Banzai
   # builder, is declared as `def url_builder(object)` and configured as
   # `->(object) { ... }`. Reading an input that was never set raises
   # `Banzai::MissingConfigurationError` naming the input.
-  #
-  # No input is declared yet. The filters extracted so far are self-contained;
-  # ports arrive with the first filter that needs one.
   class Configuration
+    attr_writer :timeout_disabled, :with_timeout, :track_exception
+
+    # Whether to skip the pipeline's time budget checks entirely.
+    def timeout_disabled
+      resolve(:timeout_disabled, @timeout_disabled)
+    end
+
+    # Runs the block within a time budget of `seconds`, raising
+    # `Timeout::Error` when the budget runs out.
+    def with_timeout(seconds, &block)
+      resolve(:with_timeout, @with_timeout, seconds, &block)
+    end
+
+    # Reports an exception a filter rescued, with `extra` as context.
+    def track_exception(exception, **extra)
+      resolve(:track_exception, @track_exception, exception, **extra)
+    end
+
     private
 
-    def resolve(name, value, *args)
+    def resolve(name, value, *args, **kwargs, &block)
       if value.nil?
         raise MissingConfigurationError,
           "`Banzai` input `#{name}` is not configured. Set it with " \
             "`Banzai.configure { |config| config.#{name} = ... }`."
       end
 
-      value.respond_to?(:call) ? value.call(*args) : value
+      value.respond_to?(:call) ? value.call(*args, **kwargs, &block) : value
     end
   end
 end

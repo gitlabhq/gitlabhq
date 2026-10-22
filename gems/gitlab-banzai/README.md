@@ -75,9 +75,16 @@ end
 An input without arguments, such as a flag, is configured as a plain value or
 as a callable with no arguments.
 
-No input is declared yet: every file moved so far is self-contained. The
-first port arrives with the first filter that needs one, and the gem's own
-specs drive ports with in-memory fakes.
+The inputs declared so far:
+
+| Input | Shape | GitLab adapter |
+| --- | --- | --- |
+| `timeout_disabled` | flag | `Gitlab::RenderTimeout.banzai_timeout_disabled?` |
+| `with_timeout` | `(seconds) { ... }`, raises `Timeout::Error` | `Gitlab::RenderTimeout.timeout` |
+| `track_exception` | `(exception, **extra)` | `Gitlab::ErrorTracking.track_exception` |
+
+The gem's own specs drive the inputs with in-memory fakes, set in
+`spec/spec_helper.rb`.
 
 ## How it is loaded
 

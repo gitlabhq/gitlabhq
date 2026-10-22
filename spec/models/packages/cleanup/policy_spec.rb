@@ -10,7 +10,7 @@ RSpec.describe Packages::Cleanup::Policy, feature_category: :package_registry do
   describe 'validations' do
     it { is_expected.to validate_presence_of(:project) }
 
-    it do
+    it 'validates keep_n_duplicated_package_files is one of the allowed values' do
       is_expected
         .to validate_inclusion_of(:keep_n_duplicated_package_files)
               .in_array(described_class::KEEP_N_DUPLICATED_PACKAGE_FILES_VALUES)

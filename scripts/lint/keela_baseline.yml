@@ -682,9 +682,6 @@ scopes:
   - by_cve_enrichment_id
   ee/app/models/security/inventory_filter.rb:
   - order_by_project_id_asc
-  ee/app/models/security/scan_result_policy_read.rb:
-  - for_rule_index
-  - without_warn_mode_policy
   ee/app/models/security/scan_result_policy_violation.rb:
   - without_violation_data
   ee/app/models/vulnerabilities/finding.rb:

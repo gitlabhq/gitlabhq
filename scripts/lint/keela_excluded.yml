@@ -27,6 +27,9 @@ methods:
     - toggle_award_emoji_project_project_snippet_url: Rails' dynamic route creation in app/helpers/award_emoji_helper.rb
   app/helpers/sorting_titles_values_helper.rb:
     - sort_value_stars_desc: Used to build sorting dropdowns in app/helpers/sorting_helper.rb
+  app/models/authz/project_grant_sources.rb:
+    - project_rows: Called by Authz::UserProjectGrants in the next MR of the stack (!263756)
+    - shares_into: Called by Authz::UserProjectGrants once shares are added (!263757)
   app/models/concerns/forced_email_confirmation.rb:
     - confirmation_period_expired?: Override of Devise::Models::Confirmable method; called internally by Devise during confirmation
   app/models/concerns/gitlab/encrypted_attribute.rb:

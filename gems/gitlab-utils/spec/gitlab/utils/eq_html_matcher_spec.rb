@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
-require_relative '../../support/matchers/eq_html'
+require 'spec_helper'
+require 'gitlab/utils/eq_html_matcher'
 
 # rubocop: disable RSpec/ExpectActual -- these *are* the actual values we're testing.
-RSpec.describe "eq_html", feature_category: :shared do
+RSpec.describe "eq_html" do
   it "normalizes entities" do
     expect(%( x < y + "1"&'2' )).to eq_html(%( x &lt; y + &quot;1&quot;&amp;&#39;2&#x27; ))
   end

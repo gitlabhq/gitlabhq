@@ -868,7 +868,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, :with_current
             environment.update!(state: :available)
           end
 
-          it do
+          it 'stops the environment and returns no actions' do
             actions = subject
 
             expect(environment).to be_stopped
@@ -894,7 +894,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, :with_current
             environment.update!(state: :stopped)
           end
 
-          it do
+          it 'keeps the environment stopped' do
             subject
 
             expect(environment).to be_stopped
@@ -1916,7 +1916,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, :with_current
 
     with_them do
       shared_examples 'for given values expected result is set' do
-        it do
+        it 'sets auto_stop_in to the expected value or raises the expected error' do
           freeze_time do
             if expected_result.is_a?(Integer) || expected_result.nil?
               subject

@@ -34,6 +34,7 @@ project:
   - read_compliance_dashboard
   - read_compliance_framework
   - read_compliance_violations_report
+  - read_govern_policy
   - read_on_demand_dast_scan
   - read_project_security_dashboard
   - read_project_security_exclusions

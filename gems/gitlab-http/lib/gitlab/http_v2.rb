@@ -18,6 +18,10 @@ module Gitlab
       def configure
         yield(configuration)
       end
+
+      def proxy_no_dns?
+        ENV['GITLAB_PROXY_NO_DNS'] == '1'
+      end
     end
   end
 end

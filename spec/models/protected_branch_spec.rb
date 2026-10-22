@@ -103,7 +103,6 @@ RSpec.describe ProtectedBranch, feature_category: :source_code_management do
     let_it_be(:developer) { create(:user) }
     let_it_be(:maintainer) { create(:user) }
     let_it_be(:owner) { create(:user) }
-    let_it_be(:admin) { create(:user, :admin) }
 
     before_all do
       project.add_guest(guest)
@@ -145,21 +144,9 @@ RSpec.describe ProtectedBranch, feature_category: :source_code_management do
       it { is_expected.to be(true) }
     end
 
-    context 'with admin' do
-      let(:current_user) { admin }
-
-      it { is_expected.to be(true) }
-    end
-
     context 'when project is an empty repository' do
       before do
         allow(project).to receive(:empty_repo?).and_return(true)
-      end
-
-      context 'when user is an admin' do
-        let(:current_user) { admin }
-
-        it { is_expected.to be(true) }
       end
 
       context 'when user is maintainer' do

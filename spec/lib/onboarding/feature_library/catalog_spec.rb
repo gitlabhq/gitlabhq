@@ -22,6 +22,13 @@ RSpec.describe Onboarding::FeatureLibrary::Catalog, feature_category: :onboardin
     Onboarding::FeatureLibrary::Catalog::Enhancement.new(nav_item: item, tier: tier, text: text)
   end
 
+  # Heading anchors as the docs site generates them: lowercased, punctuation removed, spaces to hyphens.
+  def markdown_anchors(file)
+    file.read.scan(/^\#{1,6}\s+(.+?)\s*#*$/).flatten.map do |heading|
+      heading.downcase.gsub(/[^\p{Word}\- ]/, '').tr(' ', '-')
+    end
+  end
+
   # Validates the real content, so a new or edited entry can't ship malformed. Runs in
   # CE too, so a catalog that references EE-only code fails in as-if-FOSS pipelines.
   describe 'catalog content' do
@@ -47,7 +54,7 @@ RSpec.describe Onboarding::FeatureLibrary::Catalog, feature_category: :onboardin
     it 'uses known panels, categories, tiers and deployments', :aggregate_failures do
       nav_items.each do |item|
         expect(described_class::PANELS).to include(item.panel), "#{item.item_id}: unknown panel"
-        expect(described_class::CATEGORIES).to include(item.category), "#{item.item_id}: unknown category"
+        expect(described_class::CATEGORIES).to have_key(item.category), "#{item.item_id}: unknown category"
         expect(nav_item_tiers).to include(item.tier), "#{item.item_id}: unknown tier"
         expect(item.shown_on_deployments).to be_present.and(all(be_in(described_class::DEPLOYMENTS)))
       end
@@ -82,12 +89,50 @@ RSpec.describe Onboarding::FeatureLibrary::Catalog, feature_category: :onboardin
       end
     end
 
-    it 'points every entry at an existing docs page' do
-      missing = (nav_items + capabilities).map(&:docs_path).reject do |path|
-        Rails.root.join('doc', path.split('#').first).exist?
-      end
+    it 'points every entry at an existing docs page and anchor', :aggregate_failures do
+      (nav_items + capabilities).map(&:docs_path).uniq.each do |docs_path|
+        path, anchor = docs_path.split('#', 2)
+        file = Rails.root.join('doc', path)
 
-      expect(missing).to be_empty
+        expect(file).to exist, "#{docs_path}: no such docs page"
+        expect(markdown_anchors(file)).to include(anchor), "#{docs_path}: no such anchor" if anchor && file.exist?
+      end
+    end
+
+    # A highlight only appears on its own tier's page, so pages can only limit add-on cards.
+    it 'limits add-on capabilities to known pages and leaves highlights on the default', :aggregate_failures do
+      every_page = described_class::DEPLOYMENTS.index_with { described_class::TIER_PAGES }
+
+      capabilities.each do |capability|
+        if capability.tier == :add_on
+          expect(capability.pages.keys).to match_array(described_class::DEPLOYMENTS), "#{capability.id}: deployments"
+          expect(capability.pages.values).to all(be_present.and(all(be_in(described_class::TIER_PAGES)))),
+            "#{capability.id}: unknown page"
+        else
+          expect(capability.pages).to eq(every_page), "#{capability.id}: pages has no effect on a highlight"
+        end
+      end
+    end
+
+    it 'declares every placeholder its description uses, from the supported set', :aggregate_failures do
+      capabilities.each do |capability|
+        placeholders = capability.description.scan(/%\{(\w+)\}/).flatten.map(&:to_sym)
+
+        expect(capability.description_variables).to match_array(placeholders), "#{capability.id}: placeholders drifted"
+        expect(capability.description_variables).to all(be_in(described_class::DESCRIPTION_VARIABLES)),
+          "#{capability.id}: unsupported placeholder"
+      end
+    end
+
+    it 'lists a compute minutes capability per page on each panel, on GitLab.com only', :aggregate_failures do
+      compute = capabilities.select { |capability| capability.id.to_s.start_with?('compute_minutes') }
+
+      expect(compute.map { |capability| [capability.panel, capability.id] }).to contain_exactly(
+        [:group, :compute_minutes_premium], [:group, :compute_minutes_ultimate],
+        [:project, :compute_minutes_premium], [:project, :compute_minutes_ultimate]
+      )
+      expect(compute.map(&:shown_on_deployments)).to all(eq([:saas]))
+      expect(compute.map(&:tier)).to all(be_in(described_class::TIER_PAGES))
     end
 
     it 'only supersedes nav items in the same panel' do
@@ -135,12 +180,50 @@ RSpec.describe Onboarding::FeatureLibrary::Catalog, feature_category: :onboardin
   describe described_class::Capability do
     it 'defaults optional attributes', :aggregate_failures do
       expect(capability.shown_on_deployments).to eq(Onboarding::FeatureLibrary::Catalog::DEPLOYMENTS)
+      expect(capability.pages).to eq(saas: %i[premium ultimate], self_managed: %i[premium ultimate])
       expect(capability.supersedes_nav_items).to eq([])
+    end
+
+    describe '#pages_on' do
+      it 'applies an Array to every deployment', :aggregate_failures do
+        limited = capability(pages: [:premium])
+
+        expect(limited.pages_on(:saas)).to eq([:premium])
+        expect(limited.pages_on(:self_managed)).to eq([:premium])
+      end
+
+      it 'applies a Hash per deployment, defaulting the rest to every page', :aggregate_failures do
+        limited = capability(pages: { self_managed: [:premium] })
+
+        expect(limited.pages_on(:saas)).to eq(%i[premium ultimate])
+        expect(limited.pages_on(:self_managed)).to eq([:premium])
+      end
     end
 
     it 'translates the title and description', :aggregate_failures do
       expect(capability.translated_title).to eq('Merge controls')
       expect(capability.translated_description).to eq('Require approvals')
+    end
+
+    describe '#translated_description with variables' do
+      let(:compute) do
+        capability(description: 'Get %{plan_minutes} minutes on %{base_plan}',
+          description_variables: %i[plan_minutes base_plan])
+      end
+
+      it 'fills the declared placeholders and ignores extra variables' do
+        expect(compute.translated_description(plan_minutes: '10,000', base_plan: 'Free', unused: 1))
+          .to eq('Get 10,000 minutes on Free')
+      end
+
+      it 'names the missing variables' do
+        expect { compute.translated_description(plan_minutes: '10,000') }
+          .to raise_error(ArgumentError, 'merge_controls description needs base_plan')
+      end
+
+      it 'ignores variables when the description declares none' do
+        expect(capability.translated_description(plan_minutes: '10,000')).to eq('Require approvals')
+      end
     end
   end
 
@@ -181,6 +264,9 @@ RSpec.describe Onboarding::FeatureLibrary::Catalog, feature_category: :onboardin
     let(:premium_highlight) { capability(supersedes_nav_items: [:group_merge_request_list]) }
     let(:ultimate_highlight) { capability(id: :advanced_sast, tier: :ultimate) }
     let(:credits) { capability(id: :duo_agent_platform, tier: :add_on, supersedes_nav_items: [:ai_agents]) }
+    let(:premium_only_credits) do
+      capability(id: :secrets_manager, tier: :add_on, pages: { self_managed: [:premium] })
+    end
 
     subject(:pages) { described_class.explore_pages(panel: :group, deployment: :self_managed) }
 
@@ -188,7 +274,7 @@ RSpec.describe Onboarding::FeatureLibrary::Catalog, feature_category: :onboardin
       allow(described_class).to receive_messages(
         nav_items: [premium_item, ultimate_item, add_on_item, saas_only_item, other_panel_item, enhanced_item,
           superseded_item],
-        capabilities: [premium_highlight, ultimate_highlight, credits]
+        capabilities: [premium_highlight, ultimate_highlight, credits, premium_only_credits]
       )
     end
 
@@ -197,11 +283,13 @@ RSpec.describe Onboarding::FeatureLibrary::Catalog, feature_category: :onboardin
       expect(pages.values).to all(be_a(Onboarding::FeatureLibrary::Catalog::ExplorePage))
     end
 
-    it 'lists only the page own highlights, and credits on every page', :aggregate_failures do
+    it 'lists only the page own highlights, and credits on the pages they allow', :aggregate_failures do
       expect(pages[:premium].highlights).to contain_exactly(premium_highlight)
       expect(pages[:ultimate].highlights).to contain_exactly(ultimate_highlight)
-      expect(pages[:premium].credits).to contain_exactly(credits)
+      expect(pages[:premium].credits).to contain_exactly(credits, premium_only_credits)
       expect(pages[:ultimate].credits).to contain_exactly(credits)
+      expect(described_class.explore_pages(panel: :group, deployment: :saas)[:ultimate].credits)
+        .to contain_exactly(credits, premium_only_credits)
     end
 
     it 'makes the Ultimate page cumulative', :aggregate_failures do

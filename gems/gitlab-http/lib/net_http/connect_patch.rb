@@ -171,27 +171,55 @@ module Net
     end
     private :connect
 
-    # Override Net::HTTP#proxy_uri to fix incorrect proxy env var lookup
-    # for SSL connections.
-    #
-    # Upstream hardcodes "http" as the scheme, so find_proxy always
-    # consults http_proxy instead of https_proxy for SSL connections.
-    # We use "https" when use_ssl? is true.
-    #
-    # Upstream (net-http v0.6.0): https://github.com/ruby/net-http/blob/v0.6.0/lib/net/http.rb#L1870-L1876
-    # Still broken in v0.9.1:    https://github.com/ruby/net-http/blob/v0.9.1/lib/net/http.rb#L1893-L1899
-    # Context: https://gitlab.com/gitlab-com/request-for-help/-/work_items/4801
-    #
-    # When upgrading net-http, check whether the upstream proxy_uri
-    # has been fixed to use the correct scheme. If so, remove this override.
+    # Override upstream's HTTPS proxy selection and destination DNS lookup until both are fixed.
+    # https://github.com/ruby/net-http/blob/v0.9.1/lib/net/http.rb#L1893-L1899
+    # https://gitlab.com/gitlab-com/request-for-help/-/work_items/4801 and https://gitlab.com/gitlab-org/gitlab/-/issues/602538
     def proxy_uri # rubocop:disable Layout/ClassStructure -- must be public; placed after `private :connect` which only affects connect
       return if @proxy_uri == false
 
-      @proxy_uri ||= URI::HTTP.new(
-        use_ssl? ? "https" : "http", nil, address, port, nil, nil, nil, nil, nil
-      ).find_proxy || false
+      @proxy_uri ||= begin
+        scheme = use_ssl? ? "https" : "http"
+
+        if Gitlab::HTTP_V2.proxy_no_dns?
+          resolve_proxy_uri_without_dns(scheme)
+        else
+          # Preserve DNS-based no_proxy CIDR matching unless explicitly opted out.
+          URI::HTTP.new(scheme, nil, address, port, nil, nil, nil, nil, nil).find_proxy
+        end || false
+      end
       @proxy_uri || nil
     end
+
+    def resolve_proxy_uri_without_dns(scheme)
+      name = "#{scheme}_proxy"
+      # CGI may populate HTTP_PROXY from the request's Proxy header; match URI::Generic#find_proxy.
+      proxy = if name == 'http_proxy' && ENV.include?('REQUEST_METHOD')
+                ENV[name] || ENV['CGI_HTTP_PROXY']
+              else
+                ENV[name] || ENV[name.upcase]
+              end
+      return if proxy.to_s.empty?
+
+      # Never proxy localhost names (RFC 6761).
+      host = address.downcase.delete_suffix(".")
+      return if host == "localhost" || host.end_with?(".localhost")
+
+      addrinfo = numeric_addrinfo(address)
+      return if addrinfo&.ipv4_loopback? || addrinfo&.ipv6_loopback?
+
+      no_proxy = ENV["no_proxy"] || ENV["NO_PROXY"]
+      return if !no_proxy.to_s.empty? && !URI::Generic.use_proxy?(address, addrinfo&.ip_address, port, no_proxy)
+
+      URI.parse(proxy)
+    end
+    private :resolve_proxy_uri_without_dns
+
+    def numeric_addrinfo(host)
+      Addrinfo.getaddrinfo(host, nil, nil, Socket::SOCK_STREAM, nil, Socket::AI_NUMERICHOST).first
+    rescue SocketError
+      nil
+    end
+    private :numeric_addrinfo
 
     # rubocop:enable Cop/LineBreakAroundConditionalBlock
     # rubocop:enable Layout/ArgumentAlignment

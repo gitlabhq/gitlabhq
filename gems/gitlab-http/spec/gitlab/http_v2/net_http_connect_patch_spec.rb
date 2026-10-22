@@ -163,74 +163,280 @@ RSpec.describe 'Net::HTTP#connect DNS rebinding tests', feature_category: :share
   end
 
   describe '#proxy_uri' do
-    context 'when http_proxy and https_proxy have different ports' do
-      before do
-        stub_env('http_proxy', 'http://proxy.example.com:80')
-        stub_env('https_proxy', 'http://proxy.example.com:443')
+    shared_examples 'scheme-aware proxy selection' do
+      context 'when http_proxy and https_proxy have different ports' do
+        before do
+          stub_env('http_proxy', 'http://proxy.example.com:80')
+          stub_env('https_proxy', 'http://proxy.example.com:443')
+        end
+
+        it 'uses https_proxy port for SSL connections', :aggregate_failures do
+          http = Net::HTTP.new('example.com', 443)
+          http.use_ssl = true
+
+          expect(http.proxy?).to be true
+          expect(http.proxy_address).to eq('proxy.example.com')
+          expect(http.proxy_port).to eq(443)
+        end
+
+        it 'uses http_proxy port for non-SSL connections', :aggregate_failures do
+          http = Net::HTTP.new('example.com', 80)
+
+          expect(http.proxy?).to be true
+          expect(http.proxy_address).to eq('proxy.example.com')
+          expect(http.proxy_port).to eq(80)
+        end
       end
 
-      it 'uses https_proxy port for SSL connections' do
-        http = Net::HTTP.new('example.com', 443)
+      context 'when only https_proxy is set' do
+        before do
+          stub_env('https_proxy', 'http://proxy.example.com:8080')
+          stub_env('http_proxy', nil)
+          stub_env('HTTP_PROXY', nil)
+        end
+
+        it 'does not use a proxy for non-SSL connections' do
+          http = Net::HTTP.new('example.com', 80)
+
+          expect(http.proxy?).to be false
+        end
+      end
+
+      context 'when only http_proxy is set' do
+        before do
+          stub_env('http_proxy', 'http://proxy.example.com:80')
+          stub_env('https_proxy', nil)
+          stub_env('HTTPS_PROXY', nil)
+        end
+
+        it 'does not use http_proxy for SSL connections' do
+          http = Net::HTTP.new('example.com', 443)
+          http.use_ssl = true
+
+          expect(http.proxy?).to be false
+        end
+      end
+
+      context 'when no_proxy matches the target host' do
+        before do
+          stub_env('https_proxy', 'http://proxy.example.com:443')
+          stub_env('no_proxy', 'example.com')
+        end
+
+        it 'does not use a proxy for the excluded host' do
+          http = Net::HTTP.new('example.com', 443)
+          http.use_ssl = true
+
+          expect(http.proxy?).to be false
+        end
+      end
+
+      context 'when only uppercase proxy variables are set' do
+        before do
+          stub_env('http_proxy', nil)
+          stub_env('https_proxy', nil)
+          stub_env('HTTPS_PROXY', 'http://proxy.example.com:443')
+          stub_env('HTTP_PROXY', 'http://proxy.example.com:80')
+        end
+
+        it 'selects the proxy for each request scheme', :aggregate_failures do
+          https = Net::HTTP.new('example.com', 443)
+          https.use_ssl = true
+          http = Net::HTTP.new('example.com', 80)
+
+          expect(https.proxy_port).to eq(443)
+          expect(http.proxy_port).to eq(80)
+        end
+      end
+
+      context 'when the proxy value is empty' do
+        before do
+          stub_env('https_proxy', '')
+        end
+
+        it 'does not use a proxy' do
+          http = Net::HTTP.new('example.com', 443)
+          http.use_ssl = true
+
+          expect(http.proxy?).to be false
+        end
+      end
+    end
+
+    context 'when GITLAB_PROXY_NO_DNS is not set (default behavior)' do
+      before do
+        stub_env('GITLAB_PROXY_NO_DNS', nil)
+        stub_env('https_proxy', 'http://proxy.example.com:443')
+        allow(IPSocket).to receive(:getaddress).and_return('203.0.113.1')
+      end
+
+      it_behaves_like 'scheme-aware proxy selection'
+
+      it 'delegates to find_proxy, which resolves the destination hostname', :aggregate_failures do
+        http = Net::HTTP.new('cloud.gitlab.com', 443)
         http.use_ssl = true
 
         expect(http.proxy?).to be true
         expect(http.proxy_address).to eq('proxy.example.com')
-        expect(http.proxy_port).to eq(443)
+        expect(IPSocket).to have_received(:getaddress).with('cloud.gitlab.com')
       end
 
-      it 'uses http_proxy port for non-SSL connections' do
-        http = Net::HTTP.new('example.com', 80)
+      context 'with a CIDR no_proxy entry and a hostname that resolves into the range' do
+        before do
+          stub_env('no_proxy', '10.0.0.0/8')
+          allow(IPSocket).to receive(:getaddress).with('internal.corp').and_return('10.20.30.40')
+        end
+
+        it 'bypasses the proxy because the resolved IP falls inside the CIDR' do
+          http = Net::HTTP.new('internal.corp', 443)
+          http.use_ssl = true
+
+          expect(http.proxy?).to be false
+        end
+      end
+    end
+
+    context 'when GITLAB_PROXY_NO_DNS=1 (opt-in no-DNS behavior)' do
+      before do
+        stub_env('GITLAB_PROXY_NO_DNS', '1')
+        stub_env('https_proxy', 'http://proxy.example.com:443')
+      end
+
+      it_behaves_like 'scheme-aware proxy selection'
+
+      context 'with REQUEST_METHOD set for an HTTP request #security' do
+        before do
+          stub_env('REQUEST_METHOD', 'GET')
+          allow(ENV).to receive(:include?).with('REQUEST_METHOD').and_return(true)
+          stub_env('http_proxy', nil)
+          stub_env('HTTP_PROXY', 'http://attacker.invalid:3128')
+          stub_env('CGI_HTTP_PROXY', nil)
+        end
+
+        it 'ignores HTTP_PROXY from a request header without a CGI fallback' do
+          expect(Net::HTTP.new('example.com', 80).proxy?).to be false
+        end
+
+        it 'uses CGI_HTTP_PROXY when present', :aggregate_failures do
+          stub_env('CGI_HTTP_PROXY', 'http://proxy.example.com:8080')
+
+          http = Net::HTTP.new('example.com', 80)
+
+          expect(http.proxy_address).to eq('proxy.example.com')
+          expect(http.proxy_port).to eq(8080)
+        end
+
+        it 'prefers lowercase http_proxy to the CGI fallback', :aggregate_failures do
+          stub_env('http_proxy', 'http://proxy.example.com:8080')
+          stub_env('CGI_HTTP_PROXY', 'http://fallback.example.com:3128')
+
+          http = Net::HTTP.new('example.com', 80)
+
+          expect(http.proxy_address).to eq('proxy.example.com')
+          expect(http.proxy_port).to eq(8080)
+        end
+
+        it 'does not use the CGI fallback when the lowercase proxy variable is empty' do
+          stub_env('HTTP_PROXY', nil)
+          stub_env('http_proxy', '')
+          stub_env('CGI_HTTP_PROXY', 'http://fallback.example.com:3128')
+
+          http = Net::HTTP.new('example.com', 80)
+
+          expect(http.proxy?).to be false
+        end
+      end
+
+      it 'never resolves the destination hostname to decide on the proxy', :aggregate_failures do
+        expect(IPSocket).not_to receive(:getaddress)
+
+        http = Net::HTTP.new('cloud.gitlab.com', 443)
+        http.use_ssl = true
 
         expect(http.proxy?).to be true
         expect(http.proxy_address).to eq('proxy.example.com')
-        expect(http.proxy_port).to eq(80)
-      end
-    end
-
-    context 'when only https_proxy is set' do
-      before do
-        stub_env('https_proxy', 'http://proxy.example.com:8080')
       end
 
-      it 'uses https_proxy for SSL connections' do
-        http = Net::HTTP.new('example.com', 443)
+      context 'with a domain-suffix no_proxy entry' do
+        before do
+          stub_env('no_proxy', '.internal.example.com')
+        end
+
+        it 'bypasses the proxy for matching hostnames without resolving DNS', :aggregate_failures do
+          expect(IPSocket).not_to receive(:getaddress)
+
+          http = Net::HTTP.new('service.internal.example.com', 443)
+          http.use_ssl = true
+
+          expect(http.proxy?).to be false
+        end
+      end
+
+      context 'with a CIDR no_proxy entry' do
+        before do
+          stub_env('no_proxy', '10.0.0.0/8')
+        end
+
+        it 'matches a literal IP target within the range without resolving DNS', :aggregate_failures do
+          expect(IPSocket).not_to receive(:getaddress)
+
+          http = Net::HTTP.new('10.1.2.3', 443)
+          http.use_ssl = true
+
+          expect(http.proxy?).to be false
+        end
+
+        it 'proxies a hostname target rather than resolving it against the CIDR', :aggregate_failures do
+          expect(IPSocket).not_to receive(:getaddress)
+
+          http = Net::HTTP.new('cloud.gitlab.com', 443)
+          http.use_ssl = true
+
+          expect(http.proxy?).to be true
+        end
+      end
+
+      context 'when the target is a loopback address' do
+        shared_examples 'a loopback address' do |target|
+          it "does not use a proxy for #{target}", :aggregate_failures do
+            expect(IPSocket).not_to receive(:getaddress)
+
+            http = Net::HTTP.new(target, 443)
+            http.use_ssl = true
+
+            expect(http.proxy?).to be false
+          end
+        end
+
+        it_behaves_like 'a loopback address', '127.1'
+        it_behaves_like 'a loopback address', '::1'
+      end
+
+      context 'when the target is a localhost hostname' do
+        shared_examples 'a localhost name' do |host|
+          it "does not proxy #{host}", :aggregate_failures do
+            expect(IPSocket).not_to receive(:getaddress)
+
+            http = Net::HTTP.new(host, 443)
+            http.use_ssl = true
+
+            expect(http.proxy?).to be false
+          end
+        end
+
+        it_behaves_like 'a localhost name', 'localhost'
+        it_behaves_like 'a localhost name', 'gdk.localhost'
+        it_behaves_like 'a localhost name', 'LOCALHOST.'
+      end
+
+      it 'proxies a hostname that would resolve to loopback without looking it up', :aggregate_failures do
+        allow(IPSocket).to receive(:getaddress).with('myalias.internal').and_return('127.0.0.1')
+
+        http = Net::HTTP.new('myalias.internal', 443)
         http.use_ssl = true
 
         expect(http.proxy?).to be true
-        expect(http.proxy_port).to eq(8080)
-      end
-
-      it 'does not use a proxy for non-SSL connections' do
-        http = Net::HTTP.new('example.com', 80)
-
-        expect(http.proxy?).to be false
-      end
-    end
-
-    context 'when only http_proxy is set' do
-      before do
-        stub_env('http_proxy', 'http://proxy.example.com:80')
-      end
-
-      it 'does not use http_proxy for SSL connections' do
-        http = Net::HTTP.new('example.com', 443)
-        http.use_ssl = true
-
-        expect(http.proxy?).to be false
-      end
-    end
-
-    context 'when no_proxy matches the target host' do
-      before do
-        stub_env('https_proxy', 'http://proxy.example.com:443')
-        stub_env('no_proxy', 'example.com')
-      end
-
-      it 'does not use a proxy for the excluded host' do
-        http = Net::HTTP.new('example.com', 443)
-        http.use_ssl = true
-
-        expect(http.proxy?).to be false
+        expect(IPSocket).not_to have_received(:getaddress)
       end
     end
   end

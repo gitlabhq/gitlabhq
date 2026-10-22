@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::Concerns::TimeoutFilterHandler, feature_category: :markdown do
+RSpec.describe Banzai::Filter::Concerns::TimeoutFilterHandler do
   include FilterSpecHelper
 
   context 'when subclassed from HTML filter' do
@@ -39,11 +39,17 @@ RSpec.describe Banzai::Filter::Concerns::TimeoutFilterHandler, feature_category:
     end
   end
 
-  context 'when GITLAB_DISABLE_MARKDOWN_TIMEOUT set' do
+  context 'when the timeout is disabled' do
     before do
-      stub_env('GITLAB_DISABLE_MARKDOWN_TIMEOUT' => '1')
+      Banzai.configure { |banzai| banzai.timeout_disabled = true }
       stub_const 'TimeoutTest', Class.new(HTML::Pipeline::Filter)
-      TimeoutTest.class_eval { include Banzai::Filter::Concerns::TimeoutFilterHandler }
+      TimeoutTest.class_eval do
+        prepend Banzai::Filter::Concerns::TimeoutFilterHandler
+
+        def call
+          doc
+        end
+      end
     end
 
     let(:described_class) { TimeoutTest }

@@ -171,6 +171,111 @@ The following table shows example instructions.
 | Merge request, **Created** action | `Review the code changes and list any missing tests in a comment.` |
 | Work item, **Created** action | `Add a severity label and a test plan.` |
 
+## Change the work item when the session finishes
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/633112) in GitLab 19.6 [with flags](../../../administration/feature_flags/_index.md) named `ai_flow_trigger_status_on_finish` and `ai_flow_trigger_chaining`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by feature flags.
+> For more information, see the history.
+
+A trigger can change a work item after the session that the trigger started finishes.
+Use this to move a work item to the next stage of your process, with no human action between
+the stages.
+
+You can set one or both of these settings:
+
+- **Set work item status**: GitLab sets the work item to this status.
+- **Mark merge requests as ready**: GitLab marks the draft merge requests that the session created
+  as ready.
+  If [automatic reviews](../flows/foundational_flows/code_review/_index.md#automatic-reviews)
+  are on, GitLab then adds GitLab Duo Code Review as a reviewer.
+
+If you set both, GitLab marks the merge requests as ready first.
+If a merge request stays a draft, GitLab does not set the status.
+
+Prerequisites:
+
+- You must have the Maintainer or Owner role for the project.
+- The trigger must have a **Work item** condition with **Status changed** as its only action,
+  and at least one status.
+  Until the condition meets these requirements, the settings are not available.
+
+To change the work item when the session finishes:
+
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **AI** > **Triggers**.
+1. For the trigger you want to change, select **More actions** ({{< icon name="ellipsis_v" >}}) > **Edit trigger**.
+1. In the **Conditions** section, for the **Work item** condition, select **Edit event** ({{< icon name="pencil" >}}).
+1. From the **Run when** dropdown list, select only **Status changed**.
+1. From the **Status** dropdown list, select one or more statuses, then select **Save**.
+1. Under **When the session finishes**, set one or both:
+   - From the **Set work item status** dropdown list, select a status.
+   - Select the **Mark merge requests as ready** checkbox.
+1. Select **Save changes**.
+
+You can also set these settings when you [create a trigger](#create-a-trigger).
+
+If you later add the **Created** action, remove the last status, or remove the **Work item** condition, GitLab clears the settings.
+
+### When GitLab applies the settings
+
+GitLab applies the settings only when all of these conditions are true:
+
+- The session has the `finished` status.
+  A stopped session, a failed session, or a session that waits for input changes nothing.
+- The trigger is turned on.
+- A work item event started the session.
+- A human user started this session, or the first session of its [chain](#chain-triggers),
+  with a **Mention**, **Assign**, or **Work item** event.
+- The work item still has one of the statuses of the trigger.
+  If the status changes to a status that the trigger does not run on while the session runs,
+  GitLab changes nothing.
+  This also applies when the flow sets the status of its own work item.
+- The service account of the session enforces composite identity.
+- The service account and the user who started the session can both update the work item
+  and the merge requests.
+
+GitLab does not set a status that the work item type does not have.
+
+### Chain triggers
+
+GitLab writes the changes as the composite identity of the session.
+For this reason, GitLab treats the status change as an event that a flow caused.
+The status change can start another trigger that runs on the new status.
+The finished session becomes the parent of the next session, inside the chain depth and
+breadth limits.
+
+> [!warning]
+> Do not configure triggers whose statuses form a cycle. For example, trigger A runs on status X
+> and sets status Y, and trigger B runs on status Y and sets status X.
+> The chain limits stop a cycle, but each session in the cycle still runs.
+
+To keep a human decision between two stages, set the status to one that no trigger runs on,
+for example `Plan ready`.
+A user then moves the work item to the status that starts the next stage.
+
+The following table shows two triggers that move a work item through three statuses with no
+human action between the stages.
+
+| Trigger | Runs when the status changes to | Flow | Set work item status | Mark merge requests as ready |
+|---------|---------------------------------|------|----------------------|------------------------------|
+| A | `Planning` | Generate Workplan | `Ready for development` | No |
+| B | `Ready for development` | GitLab Duo Developer | `In review` | Yes |
+
+### Known issues
+
+- A session can finish without the work done. For example, GitLab Duo Developer can decide
+  that no code change is necessary and open no merge request. GitLab still sets the status.
+  If your flow can stop early, make it end as failed or as waiting for input.
+  GitLab then does not set the status.
+- If the status that the trigger sets is also one of the statuses that the trigger runs on,
+  the change can start the trigger again. The form shows a warning for this configuration.
+
 ## Edit a trigger
 
 1. In the top bar, select **Search or go to** and find your project.
@@ -213,6 +318,8 @@ A non-human user such as a bot user, service account user, or another flow, cann
 
 This restriction applies to all [trigger event types](#trigger-event-types).
 For example, a flow cannot trigger another flow by mentioning the service account in a comment.
+The status change from the settings of a trigger is an exception.
+For more information, see [chain triggers](#chain-triggers).
 
 ## GitLab Credits consumption for triggered flows
 

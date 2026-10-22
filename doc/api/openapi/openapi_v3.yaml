@@ -84658,6 +84658,12 @@ components:
         flow_type:
           type: string
           example: external_agent
+        glab_version:
+          type: string
+          example: glab 1.121.0 (abc1234)
+        agent_version:
+          type: string
+          example: 2.1.295
         external_xid:
           type: string
           example: uuid
@@ -103769,6 +103775,16 @@ components:
           type: string
           description: Workflow definition identifier for the session.
           nullable: true
+        glab_version:
+          type: string
+          description: Version of the glab binary that created the session.
+          nullable: true
+          maxLength: 255
+        agent_version:
+          type: string
+          description: Version of the agent that ran the session.
+          nullable: true
+          maxLength: 255
       required:
       - agent_type
       - agent_identity_id

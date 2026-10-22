@@ -547,7 +547,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
 
     shared_examples 'polymorphic membership relationship' do
-      it do
+      it 'stores the project as the polymorphic membership source' do
         expect(membership.attributes).to include(
           'source_type' => 'Project',
           'source_id' => project.id
@@ -556,7 +556,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
 
     shared_examples 'member_namespace membership relationship' do
-      it do
+      it 'stores the project namespace as the member namespace' do
         expect(membership.attributes).to include(
           'member_namespace_id' => project.project_namespace_id
         )
@@ -1015,7 +1015,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         allow(relation).to receive(:reorder)
       end
 
-      it do
+      it 'reorders the relation by namespace_id ascending' do
         relation.projects_order_namespace_id_asc
         expect(relation).to have_received(:reorder).with(arel_table['namespace_id'].asc)
       end
@@ -5773,7 +5773,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
 
       shared_examples 'it always returns false' do
-        it do
+        it 'returns false for both the project and its namespace' do
           expect(project.lfs_enabled?).to be_falsey
           expect(project.namespace.lfs_enabled?).to be_falsey
         end
@@ -7188,7 +7188,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         project_with_pre_defined_var.update!(ci_config_path: 'random.yml')
       end
 
-      it do
+      it 'exposes the overridden path as CI_CONFIG_PATH' do
         expect(subject).to include(
           { key: 'CI_CONFIG_PATH', value: 'random.yml', public: true, masked: false }
         )
@@ -10108,7 +10108,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         allow(project).to receive(:hashed_storage?).with(:repository).and_return(hashed_storage_enabled)
       end
 
-      it do
+      it 'returns true only when LFS and hashed storage are both enabled' do
         expect(project.design_management_enabled?).to be(expectation)
       end
     end

@@ -208,6 +208,36 @@ so the workaround is to either:
 - Remove the `variables` defined in the trigger job to avoid passing variables.
 - [Prevent default variables from being passed to the downstream pipeline](../pipelines/downstream_pipelines.md#prevent-default-variables-from-being-passed).
 
+## Error: `pipeline variables file is missing`
+
+GitLab stores [pipeline variables](_index.md#use-pipeline-variables) in a file
+in the artifacts object storage bucket, or in local artifacts storage.
+If the file is deleted outside GitLab, the pipeline's variables are lost.
+For example, an object storage lifecycle rule or a manual delete can remove the file.
+
+A missing file has these effects:
+
+- Jobs in the pipeline fail with `pipeline_variables_file_missing`
+  when a runner picks them up or when you retry them.
+- Automatic trigger jobs fail instead of creating downstream pipelines, and manual trigger jobs cannot be run.
+- The pipeline page loads, but the **Manual Variables** tab shows that the variables are unavailable.
+- Only users with the Developer, Maintainer, or Owner role can view the logs of the pipeline's jobs.
+- The [retrieve pipeline variables](../../api/pipelines.md#retrieve-pipeline-variables) API
+  endpoint returns a `404` status code.
+- The GraphQL `Pipeline.manualVariables` field returns `null` with an error.
+
+Older pipelines that also have their variables in the database continue to work.
+
+To resolve this issue, run a new pipeline and specify the variables again.
+
+To prevent this issue, do not apply lifecycle or expiry rules to the artifacts bucket,
+and do not delete objects from it outside GitLab.
+For more information, see [object storage](../../administration/object_storage.md).
+
+GitLab logs the missing file as an exception that includes the pipeline ID.
+To find affected pipelines, search the [`exceptions_json.log`](../../administration/logs/_index.md#exceptions_jsonlog)
+file or your Sentry instance.
+
 ## Default variable doesn't expand in job variable of the same name
 
 You cannot use a default variable's value in a job variable of the same name. A default variable

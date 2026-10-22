@@ -83,11 +83,11 @@ formatting is available in titles, see [work item and merge request titles](../.
 It's important to not only have the filters run as fast as possible, but to ensure that they don't take too long in general.
 For this we use several techniques:
 
-- For certain filters that can take a long time, we use a Ruby timeout with `Gitlab::RenderTimeout.timeout` in [TimeoutFilterHandler](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/banzai/filter/concerns/timeout_filter_handler.rb).
+- For certain filters that can take a long time, we use a Ruby timeout with `Gitlab::RenderTimeout.timeout` in `Banzai::Filter::Concerns::TimeoutFilterHandler`.
   This allows us to interrupt the actual processing if it takes too long.
   In general, using Ruby `timeout` is [not considered safe](https://jvns.ca/blog/2015/11/27/why-rubys-timeout-is-dangerous-and-thread-dot-raise-is-terrifying/).
   We therefore only use it when absolutely necessary, preferring to fix an actual performance problem rather than using a timeout.
-- [PipelineTimingCheck](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/banzai/filter/concerns/pipeline_timing_check.rb) allows us to keep track of the cumulative amount of time the pipeline is taking. When we reach a maximum, we can then skip any remaining filters.
+- `Banzai::Filter::Concerns::PipelineTimingCheck` allows us to keep track of the cumulative amount of time the pipeline is taking. When we reach a maximum, we can then skip any remaining filters.
   For nearly all filters, it's generally ok to skip them in a case like this in order to show the user _something_, rather than nothing.
 
   However, there are a couple instances where this is not advisable.

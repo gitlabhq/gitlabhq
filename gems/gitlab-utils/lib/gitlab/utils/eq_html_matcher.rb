@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'nokogiri'
+
 # Assert that the two values are the same in HTML context, modulo escaping operations that
 # do not change the meaning of the value --- i.e. do not change how a web browser or HTML parser
 # would treat them.
@@ -22,8 +24,8 @@
 # The option "trim_text_nodes: true" can be given. This trims whitespace at the start and
 # end of the text content of text nodes on each side. This should be used with care, but can
 # aid in spec clarity by allowing expected DOMs to be written "prettified".
-RSpec::Matchers.define :eq_html do |expected, **normalize_opts|
-  include EqHtmlMatcher
+::RSpec::Matchers.define :eq_html do |expected, **normalize_opts|
+  include Gitlab::Utils::EqHtmlMatcher
 
   match do |actual|
     raise ArgumentError, "expected should be a String, not #{expected.class}" unless expected.is_a?(String)
@@ -58,8 +60,8 @@ end
 # The option "trim_text_nodes: true" can be given. This trims whitespace at the start and
 # end of the text content of text nodes on each side. This should be used with care, but can
 # aid in spec clarity by allowing expected DOMs to be written "prettified".
-RSpec::Matchers.define :include_html do |expected, **normalize_opts|
-  include EqHtmlMatcher
+::RSpec::Matchers.define :include_html do |expected, **normalize_opts|
+  include Gitlab::Utils::EqHtmlMatcher
 
   match do |actual|
     raise ArgumentError, "expected should be a String, not #{expected.class}" unless expected.is_a?(String)
@@ -81,23 +83,27 @@ RSpec::Matchers.define :include_html do |expected, **normalize_opts|
   end
 end
 
-module EqHtmlMatcher
-  def normalize_html(html, trim_text_nodes: false)
-    doc = Nokogiri::HTML5.fragment(html)
-    doc.children.each { |n| normalize_node(n, trim_text_nodes:) }
-    doc.to_html
-  end
+module Gitlab
+  module Utils
+    module EqHtmlMatcher
+      def normalize_html(html, trim_text_nodes: false)
+        doc = ::Nokogiri::HTML5.fragment(html)
+        doc.children.each { |n| normalize_node(n, trim_text_nodes: trim_text_nodes) }
+        doc.to_html
+      end
 
-  def normalize_node(node, trim_text_nodes:)
-    # Sort attributes by name so they normalise the same.
-    attr_nodes = node.attributes.values.sort_by(&:name)
-    attr_nodes.each(&:remove)
-    attr_nodes.each do |attr|
-      node[attr.name] = attr.value
+      def normalize_node(node, trim_text_nodes:)
+        # Sort attributes by name so they normalise the same.
+        attr_nodes = node.attributes.values.sort_by(&:name)
+        attr_nodes.each(&:remove)
+        attr_nodes.each do |attr|
+          node[attr.name] = attr.value
+        end
+
+        node.content = node.content.strip if trim_text_nodes && node.text?
+
+        node.children.each { |n| normalize_node(n, trim_text_nodes: trim_text_nodes) }
+      end
     end
-
-    node.content = node.content.strip if trim_text_nodes && node.text?
-
-    node.children.each { |n| normalize_node(n, trim_text_nodes:) }
   end
 end

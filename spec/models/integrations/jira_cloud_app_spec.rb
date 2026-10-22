@@ -20,7 +20,7 @@ RSpec.describe Integrations::JiraCloudApp, feature_category: :integrations do
 
   it { is_expected.to allow_value(nil).for(:jira_cloud_app_deployment_gating_environments) }
 
-  it do
+  it 'allows a comma-separated list of four deployment gating environments' do
     is_expected.to allow_value('production,development,staging,testing')
     .for(:jira_cloud_app_deployment_gating_environments)
   end

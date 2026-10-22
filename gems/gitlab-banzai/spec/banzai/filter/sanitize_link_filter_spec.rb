@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::SanitizeLinkFilter, feature_category: :markdown do
+RSpec.describe Banzai::Filter::SanitizeLinkFilter do
   include FilterSpecHelper
 
   it_behaves_like 'XSS prevention'

@@ -251,6 +251,14 @@ module Onboarding
             supersedes_nav_items: [:environments]
           ),
           Capability.new(
+            id: :compute_minutes_premium, panel: :project, tier: :premium,
+            title: N_('FeatureLibrary|Compute minutes'),
+            description: N_('FeatureLibrary|Get %{plan_minutes} compute minutes a month, ' \
+              'up from %{base_minutes} minutes on %{base_plan}'),
+            description_variables: %i[plan_minutes base_minutes base_plan],
+            icon: 'rocket', docs_path: 'ci/pipelines/compute_minutes.md', shown_on_deployments: [:saas]
+          ),
+          Capability.new(
             id: :advanced_sast, panel: :project, tier: :ultimate,
             title: N_('FeatureLibrary|Advanced SAST'),
             description: N_('FeatureLibrary|Scan across files and functions with static application security testing'),
@@ -262,6 +270,14 @@ module Onboarding
             description: N_('FeatureLibrary|Find known vulnerabilities in the packages your code depends on'),
             icon: 'shield', docs_path: 'user/application_security/dependency_scanning/_index.md',
             supersedes_nav_items: [:dependency_list]
+          ),
+          Capability.new(
+            id: :compute_minutes_ultimate, panel: :project, tier: :ultimate,
+            title: N_('FeatureLibrary|Compute minutes'),
+            description: N_('FeatureLibrary|Get %{plan_minutes} compute minutes a month, ' \
+              'up from %{base_minutes} minutes on %{base_plan}'),
+            description_variables: %i[plan_minutes base_minutes base_plan],
+            icon: 'rocket', docs_path: 'ci/pipelines/compute_minutes.md', shown_on_deployments: [:saas]
           ),
           Capability.new(
             id: :duo_agent_platform, panel: :project, tier: :add_on,

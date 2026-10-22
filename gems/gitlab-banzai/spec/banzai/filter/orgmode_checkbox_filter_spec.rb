@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
-require 'html/pipeline'
-require_relative '../../../support/shared_examples/lib/banzai/filters/filter_timeout_shared_examples'
+require 'spec_helper'
 
-RSpec.describe Banzai::Filter::OrgmodeCheckboxFilter, :aggregate_failures, feature_category: :markdown do
+RSpec.describe Banzai::Filter::OrgmodeCheckboxFilter, :aggregate_failures do
   def filter(html, context = {})
     described_class.call(html, { pipeline: :orgmode }.merge(context))
   end

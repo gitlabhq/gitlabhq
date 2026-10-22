@@ -2,7 +2,8 @@
 
 module Banzai
   module Filter
-    # Add timeout ability to a Banzai filter by wrapping it in a Gitlab::RenderTimeout.
+    # Add timeout ability to a Banzai filter by running it under the
+    # `with_timeout` port on `Banzai::Configuration`.
     # This way partial results can be returned, and the entire pipeline
     # is not killed.
     #
@@ -32,12 +33,12 @@ module Banzai
           HTML
 
         def call
-          return super if Gitlab::RenderTimeout.banzai_timeout_disabled? || context[:disable_banzai_timeout]
+          return super if Banzai.configuration.timeout_disabled || context[:disable_banzai_timeout]
 
-          Gitlab::RenderTimeout.timeout(foreground: render_timeout, background: render_timeout) { super }
+          Banzai.configuration.with_timeout(render_timeout) { super }
         rescue Timeout::Error => e
           class_name = self.class.name.demodulize
-          Gitlab::ErrorTracking.track_exception(e, project_id: context[:project]&.id, group_id: context[:group]&.id,
+          Banzai.configuration.track_exception(e, project_id: context[:project]&.id, group_id: context[:group]&.id,
             class_name: class_name)
 
           # we've timed out, but some work may have already been completed,

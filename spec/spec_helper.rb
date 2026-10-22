@@ -39,6 +39,7 @@ require 'parslet/rig/rspec'
 require 'axe-rspec'
 
 require 'gitlab/rspec_flaky'
+require 'gitlab/utils/eq_html_matcher'
 
 branch_can_be_profiled = ENV['CI_COMMIT_REF_NAME'] == 'master' || ENV['CI_COMMIT_REF_NAME']&.include?('rspec-profile')
 

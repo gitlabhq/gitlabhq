@@ -390,7 +390,6 @@ Style/IfUnlessModifier:
     - 'lib/backup/gitaly_backup.rb'
     - 'lib/banzai/filter/external_link_filter.rb'
     - 'lib/banzai/filter/gollum_tags_filter.rb'
-    - 'lib/banzai/filter/playable_link_filter.rb'
     - 'lib/banzai/filter/references/commit_reference_filter.rb'
     - 'lib/banzai/filter/references/label_reference_filter.rb'
     - 'lib/banzai/filter/repository_link_filter.rb'

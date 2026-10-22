@@ -538,3 +538,94 @@ Chat responses require a persistent WebSocket connection between your browser an
 - The GitLab Duo Chat UI appears to process the request but never displays a response.
 
 To resolve this issue, ensure your reverse proxy is configured to meet the [inbound connection requirements](../gitlab_duo/configure/_index.md#allow-inbound-connections-from-clients-to-the-gitlab-instance).
+
+## GitLab Duo health check or model-list requests time out behind an HTTP proxy
+
+When GitLab is deployed behind an HTTP or HTTPS proxy, outbound requests such as the
+GitLab Duo health check, GitLab Credits, and model-list calls might time out.
+
+This can happen when the proxy is required to resolve public hostnames, but GitLab
+performs a DNS lookup for the destination hostname before deciding whether to route
+the request through the proxy.
+On hosts where public DNS is only reachable through the proxy, that lookup stalls for
+the operating system DNS timeout (typically tens of seconds) on every outbound request.
+
+### Symptoms
+
+- The GitLab Duo health check fails or times out.
+- GitLab Credits or model-list API calls time out.
+- Slow outbound HTTP requests when a proxy is configured.
+
+### Resolution
+
+In GitLab 19.6 and later, set `GITLAB_PROXY_NO_DNS` to `1` on your GitLab instance.
+This affects all outbound HTTP requests from GitLab Rails and Sidekiq that use proxy environment variables.
+GitLab skips the DNS lookup for the destination hostname when it selects the proxy.
+
+> [!note]
+> When `GITLAB_PROXY_NO_DNS=1` is set, CIDR entries in `no_proxy` match only literal IP destinations
+> during proxy selection. They might no longer match hostnames that resolve into those ranges when URL validation
+> skips the DNS lookup. Domain and domain-suffix entries (for example, `.internal.corp`) continue to work.
+> If you rely on CIDR entries to bypass the proxy for internal hostnames, add the hostnames or domain suffixes
+> to `no_proxy` before you enable this variable. Hostnames other than `localhost` and
+> `*.localhost` that resolve to a loopback address (for example, entries in `/etc/hosts`) are sent through the
+> proxy unless you add them to `no_proxy`.
+
+Independently of this variable, GitLab skips the outbound URL validation lookup only when
+all of these settings apply in **Admin** > **Settings** > **Network** > **Outbound requests**:
+
+- [**Allow requests to the local network from webhooks and integrations**](../../security/webhooks.md#allow-requests-to-the-local-network-from-webhooks-and-integrations)
+  is enabled.
+- [**Enforce DNS-rebinding attack protection**](../../security/webhooks.md#enforce-dns-rebinding-attack-protection)
+  is disabled.
+- [**Block all requests, except for IP addresses, IP ranges, and domain names defined in the allowlist**](../../security/webhooks.md#filter-requests)
+  is disabled.
+
+If any of these settings does not apply, GitLab still resolves the hostname
+during validation, and requests can still time out. To remove the stall
+completely, set the variable and configure these settings.
+
+> [!warning]
+> With these settings, GitLab no longer checks the IP address that a hostname
+> resolves to. GitLab no longer blocks hostnames that resolve to local network
+> addresses or to cloud metadata (IMDS) endpoints, such as `169.254.169.254`.
+> GitLab still blocks requests that target a cloud metadata IP address or
+> hostname literally. For more information, see
+> [cloud metadata endpoints are always blocked](../../security/webhooks.md#cloud-metadata-endpoints-are-always-blocked).
+> Use these settings only if the proxy itself blocks access to internal networks
+> and cloud metadata endpoints.
+
+#### Set the variable for the Linux package
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['env'] = {
+     'http_proxy' => 'http://proxy.example.com:8080',
+     'https_proxy' => 'http://proxy.example.com:8080',
+     'no_proxy' => 'localhost,.internal.example.com',
+     # Keep your existing entries, and add:
+     'GITLAB_PROXY_NO_DNS' => '1'
+   }
+   ```
+
+1. Save the file and reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+#### Set the variable for Docker
+
+In `GITLAB_OMNIBUS_CONFIG`, add `'GITLAB_PROXY_NO_DNS' => '1'` to your existing
+`gitlab_rails['env']` hash, as shown for the Linux package. Keep the other entries in the hash.
+
+#### Set the variable for the Helm chart
+
+Add the variable to `global.extraEnv` in your values file:
+
+```yaml
+global:
+  extraEnv:
+    GITLAB_PROXY_NO_DNS: "1"
+```

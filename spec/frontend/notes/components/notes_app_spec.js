@@ -20,6 +20,7 @@ import CommentForm from '~/notes/components/comment_form.vue';
 import NotesApp from '~/notes/components/notes_app.vue';
 import NotesActivityHeader from '~/notes/components/notes_activity_header.vue';
 import NoteableDiscussion from '~/notes/components/noteable_discussion.vue';
+import NoteableNote from '~/notes/components/noteable_note.vue';
 import * as constants from '~/notes/constants';
 import OrderedLayout from '~/notes/components/ordered_layout.vue';
 import SystemNote from '~/vue_shared/components/notes/system_note.vue';
@@ -818,6 +819,28 @@ describe('note_app', () => {
       wrapper = createComponent('', '');
       expect(wrapper.findComponent(NotesActivityHeader).props('noteableType')).toBe('');
       expect(wrapper.vm.noteableType).toBe('');
+    });
+  });
+
+  describe('individual note discussions', () => {
+    beforeEach(() => {
+      const discussion = createDiscussionMock();
+      discussion.individual_note = true;
+      discussion.notes = [discussion.notes[0]];
+      useNotes()[types.ADD_NEW_NOTE]({ discussion });
+
+      wrapper = shallowMount(NotesApp, {
+        propsData,
+        pinia,
+        stubs: {
+          'ordered-layout': OrderedLayout,
+        },
+      });
+    });
+
+    it('renders the note as a discussion root', () => {
+      expect(wrapper.findComponent(NoteableNote).props('discussionRoot')).toBe(true);
+      expect(wrapper.findComponent(NoteableDiscussion).exists()).toBe(false);
     });
   });
 

@@ -4,6 +4,26 @@ require 'spec_helper'
 require 'rspec-parameterized'
 
 RSpec.describe Gitlab::HTTP_V2, feature_category: :shared do
+  describe '.proxy_no_dns?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:value, :expected) do
+      '1'    | true
+      nil    | false
+      ''     | false
+      '0'    | false
+      'true' | false
+    end
+
+    with_them do
+      it 'enables DNS-free proxy selection only for 1' do
+        stub_env('GITLAB_PROXY_NO_DNS', value)
+
+        expect(described_class.proxy_no_dns?).to be(expected)
+      end
+    end
+  end
+
   context 'when allow_local_requests' do
     it 'sends the request to the correct URI' do
       stub_full_request('https://example.org:8080', ip_address: '8.8.8.8').to_return(status: 200)

@@ -1881,7 +1881,6 @@ Style/InlineDisableAnnotation:
     - 'spec/lib/api/entities/wiki_page_spec.rb'
     - 'spec/lib/backup/manager_spec.rb'
     - 'spec/lib/banzai/filter/footnote_filter_spec.rb'
-    - 'spec/lib/banzai/filter/image_link_filter_spec.rb'
     - 'spec/lib/banzai/pipeline/incident_management/timeline_event_pipeline_spec.rb'
     - 'spec/lib/gitlab/alert_management/payload/base_spec.rb'
     - 'spec/lib/gitlab/audit/target_spec.rb'

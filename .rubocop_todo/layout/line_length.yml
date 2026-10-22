@@ -2426,7 +2426,6 @@ Layout/LineLength:
     - 'spec/lib/banzai/filter/references/project_reference_filter_spec.rb'
     - 'spec/lib/banzai/filter/references/reference_cache_spec.rb'
     - 'spec/lib/banzai/filter/references/reference_filter_spec.rb'
-    - 'spec/lib/banzai/filter/suggestion_filter_spec.rb'
     - 'spec/lib/banzai/filter/syntax_highlight_filter_spec.rb'
     - 'spec/lib/banzai/filter/task_list_filter_spec.rb'
     - 'spec/lib/banzai/filter/wiki_link_filter_spec.rb'

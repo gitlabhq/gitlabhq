@@ -1238,7 +1238,6 @@ RSpec/ContextWording:
     - 'spec/lib/banzai/filter/references/reference_filter_spec.rb'
     - 'spec/lib/banzai/filter/references/snippet_reference_filter_spec.rb'
     - 'spec/lib/banzai/filter/references/user_reference_filter_spec.rb'
-    - 'spec/lib/banzai/filter/suggestion_filter_spec.rb'
     - 'spec/lib/banzai/filter/syntax_highlight_filter_spec.rb'
     - 'spec/lib/banzai/filter/table_of_contents_tag_filter_spec.rb'
     - 'spec/lib/banzai/filter/upload_link_filter_spec.rb'

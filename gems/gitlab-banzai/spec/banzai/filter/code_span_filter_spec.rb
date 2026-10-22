@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::CodeSpanFilter, feature_category: :markdown do
+RSpec.describe Banzai::Filter::CodeSpanFilter do
   include FilterSpecHelper
 
   let(:context) { { pipeline: :issuable_title } }

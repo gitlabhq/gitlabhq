@@ -146,6 +146,9 @@ module Types
       field :exit_code, GraphQL::Types::Int, null: true,
         description: 'Exit code of the job. Available for jobs that started after upgrading to GitLab 16.10 and failed with an exit code.'
 
+      field :user_id, ::Types::GlobalIDType[::User], null: true,
+        description: 'Global ID of the user who created the job, or who last played it.'
+
       field :inputs_spec, [Types::Ci::Inputs::SpecType], null: true,
         description: 'Input specification for the job. Defines the inputs that can be provided when creating or retrying the job. This field can only be resolved for one job in any single request.' do
           extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 1

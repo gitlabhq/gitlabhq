@@ -33642,6 +33642,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Available only when Status changed is the only selected action."
 msgstr ""
 
+msgid "DuoAgentsPlatform|Available only when Status changed is the only selected work item action and at least one status is selected."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Before you can use GitLab Duo Agent Platform, we need to verify your account."
 msgstr ""
 
@@ -33754,6 +33757,9 @@ msgid "DuoAgentsPlatform|Description"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Description is required."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Do not change status"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Edit automation"
@@ -33942,6 +33948,12 @@ msgstr ""
 msgid "DuoAgentsPlatform|List files"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Mark merge requests as ready"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Marks the draft merge requests that the session created as ready. If one stays a draft, the status is not set."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Median duration"
 msgstr ""
 
@@ -34128,6 +34140,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Select a service account"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Select a status"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Select an event"
 msgstr ""
 
@@ -34186,6 +34201,9 @@ msgid "DuoAgentsPlatform|Session has been canceled successfully."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Sessions"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Set work item status"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Something went wrong while fetching Agent Flows"
@@ -34248,6 +34266,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|The trigger could not be updated. Try again."
 msgstr ""
 
+msgid "DuoAgentsPlatform|This trigger runs on this status, so setting it can start another session."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Total runs"
 msgstr ""
 
@@ -34308,6 +34329,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Update merge request"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Update the work item and its merge requests after a session that this trigger started finishes."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Updated %{timeago}"
 msgstr ""
 
@@ -34351,6 +34375,9 @@ msgid "DuoAgentsPlatform|What this automation runs."
 msgstr ""
 
 msgid "DuoAgentsPlatform|What this trigger runs."
+msgstr ""
+
+msgid "DuoAgentsPlatform|When the session finishes"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Write file"
@@ -39063,6 +39090,9 @@ msgstr ""
 msgid "FeatureLibrary|Can't find what you're looking for? Search with AI"
 msgstr ""
 
+msgid "FeatureLibrary|Compute minutes"
+msgstr ""
+
 msgid "FeatureLibrary|Contact a group owner to upgrade"
 msgstr ""
 
@@ -39088,6 +39118,9 @@ msgid "FeatureLibrary|Gemini found %d matching feature."
 msgid_plural "FeatureLibrary|Gemini found %d matching features."
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "FeatureLibrary|Get %{plan_minutes} compute minutes a month, up from %{base_minutes} minutes on %{base_plan}"
+msgstr ""
 
 msgid "FeatureLibrary|GitLab Duo Agent Platform"
 msgstr ""
@@ -43111,6 +43144,9 @@ msgid "GovernPolicies|You are not authorized to perform this action on policies 
 msgstr ""
 
 msgid "GovernPolicies|You are not authorized to perform this action on policies in this organization"
+msgstr ""
+
+msgid "GovernPolicies|You are not authorized to perform this action on policies in this project"
 msgstr ""
 
 msgid "Governance"
@@ -61319,6 +61355,64 @@ msgstr ""
 msgid "Organization quota of %{limit} tracked security contexts has been reached. Contact your administrator to request a quota increase."
 msgstr ""
 
+msgid "OrganizationAccess|%{count} Admin"
+msgid_plural "OrganizationAccess|%{count} Admins"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "OrganizationAccess|%{count} Contributor"
+msgid_plural "OrganizationAccess|%{count} Contributors"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "OrganizationAccess|%{count} Manager"
+msgid_plural "OrganizationAccess|%{count} Managers"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "OrganizationAccess|%{count} Viewer"
+msgid_plural "OrganizationAccess|%{count} Viewers"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "OrganizationAccess|%{count} member"
+msgid_plural "OrganizationAccess|%{count} members"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "OrganizationAccess|An error occurred loading resource access. Please refresh the page to try again."
+msgstr ""
+
+msgid "OrganizationAccess|Artifact Admin"
+msgstr ""
+
+msgid "OrganizationAccess|Artifact Contributor"
+msgstr ""
+
+msgid "OrganizationAccess|Artifact Manager"
+msgstr ""
+
+msgid "OrganizationAccess|Artifact Registry"
+msgstr ""
+
+msgid "OrganizationAccess|Artifact Viewer"
+msgstr ""
+
+msgid "OrganizationAccess|Manage resource access for items at the organization level"
+msgstr ""
+
+msgid "OrganizationAccess|Managers"
+msgstr ""
+
+msgid "OrganizationAccess|Members"
+msgstr ""
+
+msgid "OrganizationAccess|Organization access"
+msgstr ""
+
+msgid "OrganizationAccess|Resource"
+msgstr ""
+
 msgid "Organizations"
 msgstr ""
 
@@ -78748,6 +78842,9 @@ msgid "SecurityOrchestration|Policies"
 msgstr ""
 
 msgid "SecurityOrchestration|Policies are invalid"
+msgstr ""
+
+msgid "SecurityOrchestration|Policies were resynchronized recently. Try again in an hour."
 msgstr ""
 
 msgid "SecurityOrchestration|Policy Bypass Options"

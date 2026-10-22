@@ -29,6 +29,7 @@ module FastSpecHelper
     # has to be real before `rails_autoload` sets up Zeitwerk over `lib/`.
     require 'banzai/all'
     require_relative 'rails_autoload'
+    require_relative '../config/initializers/0_banzai'
     ENV['IN_MEMORY_APPLICATION_SETTINGS'] = 'true'
     require_relative '../config/settings'
     require_relative '../lib/gitlab'

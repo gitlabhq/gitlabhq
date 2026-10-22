@@ -9,17 +9,31 @@ module Onboarding
       TIER_PAGES = %i[premium ultimate].freeze
       DEPLOYMENTS = %i[saas self_managed].freeze
 
-      # Super sidebar category menus, in the order the sidebar renders them.
-      CATEGORIES = %i[
-        manage_menu plan_menu duo_agents_menu code_menu build_menu secure_menu deploy_menu
-        operations_menu monitor_menu analyze_menu observability_menu observe_menu
-      ].freeze
+      # Super sidebar category menus with their titles, in the order the sidebar renders them. Titles
+      # live here because CE can't build the EE-only menus; the drift spec checks they match the nav.
+      CATEGORIES = {
+        manage_menu: N_('Navigation|Manage'),
+        plan_menu: N_('Navigation|Plan'),
+        duo_agents_menu: N_('DuoAgentsPlatform|AI'),
+        code_menu: N_('Navigation|Code'),
+        build_menu: N_('Navigation|Build'),
+        secure_menu: N_('Navigation|Secure'),
+        deploy_menu: N_('Navigation|Deploy'),
+        operations_menu: N_('Navigation|Operate'),
+        monitor_menu: N_('Navigation|Monitor'),
+        analyze_menu: N_('Navigation|Analyze'),
+        observability_menu: N_('Navigation|Observe'),
+        observe_menu: N_('Navigation|Observe')
+      }.freeze
 
       # Nav item tiers each page includes. The Ultimate page is cumulative, so it also includes Premium.
       INCLUDED_TIERS = {
         premium: %i[premium add_on],
         ultimate: %i[premium ultimate add_on]
       }.freeze
+
+      # The placeholders a capability description may declare. The endpoint fills each one per viewer.
+      DESCRIPTION_VARIABLES = %i[plan_minutes base_minutes base_plan].freeze
 
       class << self
         def nav_items
@@ -43,7 +57,7 @@ module Onboarding
         private
 
         def explore_page(page, panel:, deployment:)
-          capabilities = capabilities_for(panel, deployment)
+          capabilities = capabilities_for(panel, deployment, page)
           highlights = capabilities.select { |capability| capability.tier == page }
           credits = capabilities.select { |capability| capability.tier == :add_on }
           superseded = (highlights + credits).flat_map(&:supersedes_nav_items)
@@ -62,9 +76,11 @@ module Onboarding
           nav_items.select { |item| item.panel == panel && item.shown_on_deployments.include?(deployment) }
         end
 
-        def capabilities_for(panel, deployment)
+        def capabilities_for(panel, deployment, page)
           capabilities.select do |capability|
-            capability.panel == panel && capability.shown_on_deployments.include?(deployment)
+            capability.panel == panel &&
+              capability.shown_on_deployments.include?(deployment) &&
+              capability.pages_on(deployment).include?(page)
           end
         end
       end

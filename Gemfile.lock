@@ -75,6 +75,7 @@ PATH
   specs:
     gitlab-banzai (0.1.0)
       activesupport (>= 7.2)
+      gitlab-utils (~> 0.1)
       html-pipeline (~> 2.14.3)
       nokogiri (~> 1.18)
       re2 (~> 2.15)

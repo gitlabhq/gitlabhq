@@ -1,26 +1,17 @@
 <script>
-import { GlButton, GlCollapsibleListbox, GlIcon } from '@gitlab/ui';
-import { keyBy, uniqBy } from 'lodash-es';
+import { uniqBy } from 'lodash-es';
 import { createAlert } from '~/alert';
-import {
-  MINIMUM_SEARCH_LENGTH,
-  TYPENAME_USER,
-  TYPENAME_GROUP,
-  TYPENAME_PROJECT,
-} from '~/graphql_shared/constants';
-import { s__, __, n__, sprintf } from '~/locale';
+import { MINIMUM_SEARCH_LENGTH, TYPENAME_USER } from '~/graphql_shared/constants';
+import { s__ } from '~/locale';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { DEBOUNCE_DELAY } from '~/vue_shared/components/filtered_search_bar/constants';
-import CrudComponent from '~/vue_shared/components/crud_component.vue';
+import GranularNamespaceSelector from '~/vue_shared/access_tokens/components/granular_namespace_selector.vue';
 import getUserGroupsAndProjects from '~/personal_access_tokens/graphql/get_user_groups_and_projects.query.graphql';
 
 export default {
   name: 'PersonalAccessTokenNamespaceSelector',
   components: {
-    GlButton,
-    GlCollapsibleListbox,
-    CrudComponent,
-    GlIcon,
+    GranularNamespaceSelector,
   },
   props: {
     value: {
@@ -81,197 +72,31 @@ export default {
     return {
       groupsAndProjects: { groups: [], projects: [] },
       searchTerm: '',
-      selectedIds: this.value.map((namespace) => namespace.id),
     };
   },
   computed: {
-    selectedItems: {
-      get() {
-        return this.value;
-      },
-      set(val) {
-        this.$emit('input', val);
-      },
-    },
     isLoading() {
       return this.$apollo.queries.groupsAndProjects.loading;
     },
-    projectsById() {
-      return keyBy(this.groupsAndProjects.projects, 'id');
-    },
-    groupsById() {
-      return keyBy(this.groupsAndProjects.groups, 'id');
-    },
-    itemsById() {
-      return { ...this.projectsById, ...this.groupsById };
-    },
-    listboxItems() {
-      const projectItems = this.groupsAndProjects.projects.map((p) => ({
-        value: p.id,
-        text: p.fullPath,
-      }));
-
-      const groupItems = this.groupsAndProjects.groups.map((g) => ({
-        value: g.id,
-        text: g.fullPath,
-      }));
-
-      return [
-        {
-          text: this.$options.i18n.groups,
-          options: groupItems,
-        },
-        {
-          text: this.$options.i18n.projects,
-          options: projectItems,
-        },
-      ];
-    },
-    headerText() {
-      return sprintf(this.$options.i18n.selected, { count: this.selectedIds.length });
-    },
-  },
-  watch: {
-    selectedIds(newIds, oldIds) {
-      // items list changes as a user searches for groups / projects
-      // hence store a list of selectedItems whenever selectedIds is updated
-      this.updateSelectedItems(newIds, oldIds);
-    },
-  },
-  methods: {
-    updateSelectedItems(newIds, oldIds) {
-      const addedIds = newIds.filter((id) => !oldIds.includes(id));
-
-      // Add new objects to selectedObjects
-      addedIds.forEach((id) => {
-        const obj = this.itemsById[id];
-        if (obj && !this.selectedItems.find((item) => item.id === id)) {
-          this.selectedItems.push(obj);
-        }
-      });
-
-      // Remove objects that are no longer selected
-      this.selectedItems = this.selectedItems.filter((obj) => newIds.includes(obj.id));
-    },
-    onSearch(searchTerm) {
-      this.searchTerm = searchTerm;
-    },
-    srOnlyResultsLabel(count) {
-      // The footer hint is not tied to the search input, so screen readers only hear it here
-      return `${n__('%d result', '%d results', count)}. ${this.$options.i18n.fullPathHint}`;
-    },
-    removeNamespace(namespaceId) {
-      this.selectedIds = this.selectedIds.filter((item) => item !== namespaceId);
-    },
-    isGroup(item) {
-      // eslint-disable-next-line no-underscore-dangle
-      return item.__typename === TYPENAME_GROUP;
-    },
-    namespaceIcon(item) {
-      // eslint-disable-next-line no-underscore-dangle
-      return item.__typename === TYPENAME_PROJECT ? 'project' : 'group';
-    },
-    removeNamespaceAriaLabel(item) {
-      const label = this.isGroup(item)
-        ? this.$options.i18n.removeGroup
-        : this.$options.i18n.removeProject;
-
-      return sprintf(label, { name: item.name });
-    },
-    subGroupCount({ descendantGroupsCount }) {
-      return sprintf(n__('%{count} subgroup', '%{count} subgroups', descendantGroupsCount), {
-        count: descendantGroupsCount,
-      });
-    },
-    projectCount({ projectsCount }) {
-      return sprintf(n__('%{count} project', '%{count} projects', projectsCount), {
-        count: projectsCount,
-      });
-    },
-    hasDescendantsCount({ descendantGroupsCount, projectsCount }) {
-      return descendantGroupsCount != null && projectsCount != null;
-    },
   },
   i18n: {
-    title: s__('AccessTokens|Group or project'),
-    selected: __('%{count} selected'),
-    noMatches: __('No matches found'),
-    groups: __('Groups'),
-    projects: __('Projects'),
-    noNamespaces: s__('AccessTokens|No groups or projects added.'),
-    searchPlaceholder: __('Search groups or projects'),
     fullPathHint: s__(
       "AccessTokens|Enter a full path to find groups or projects you're not a member of.",
     ),
-    addButton: s__('AccessTokens|Add group or project'),
-    removeGroup: s__('AccessTokens|Remove group %{name}'),
-    removeProject: s__('AccessTokens|Remove project %{name}'),
     fetchError: s__('AccessTokens|Error loading groups and projects. Please refresh page.'),
   },
 };
 </script>
 
 <template>
-  <div>
-    <crud-component :title="$options.i18n.title" class="gl-mt-0">
-      <template #actions>
-        <gl-collapsible-listbox
-          v-model="selectedIds"
-          :items="listboxItems"
-          :multiple="true"
-          :header-text="headerText"
-          :no-results-text="$options.i18n.noMatches"
-          :searchable="true"
-          :search-placeholder="$options.i18n.searchPlaceholder"
-          :searching="isLoading"
-          :toggle-text="$options.i18n.addButton"
-          :sr-only-results-label="srOnlyResultsLabel"
-          @search="onSearch"
-        >
-          <template #footer>
-            <div
-              class="gl-border-t gl-px-4 gl-py-3 gl-text-sm gl-text-subtle"
-              data-testid="full-path-hint"
-            >
-              {{ $options.i18n.fullPathHint }}
-            </div>
-          </template>
-        </gl-collapsible-listbox>
-      </template>
-
-      <ul
-        v-if="selectedIds.length"
-        class="gl-mb-2 gl-flex gl-list-none gl-flex-col gl-gap-3 gl-pl-2"
-        data-testid="selected-namespaces"
-      >
-        <li v-for="item in selectedItems" :key="item.id" class="gl-mt-2">
-          <div class="gl-flex gl-items-center">
-            <gl-icon :name="namespaceIcon(item)" />
-            <span class="gl-ml-3">{{ item.fullPath }}</span>
-            <gl-button
-              icon="close"
-              category="tertiary"
-              class="gl-ml-auto"
-              data-testid="remove-namespace"
-              :aria-label="removeNamespaceAriaLabel(item)"
-              @click="removeNamespace(item.id)"
-            />
-          </div>
-
-          <div
-            v-if="hasDescendantsCount(item)"
-            class="gl-ml-6 gl-text-sm gl-text-subtle"
-            data-testid="descendant-counts"
-          >
-            {{ subGroupCount(item) }}, {{ projectCount(item) }}
-          </div>
-        </li>
-      </ul>
-      <div v-else class="gl-text-center">
-        {{ $options.i18n.noNamespaces }}
-      </div>
-    </crud-component>
-
-    <div v-if="error" class="invalid-feedback gl-block">{{ error }}</div>
-  </div>
+  <granular-namespace-selector
+    :value="value"
+    :groups="groupsAndProjects.groups"
+    :projects="groupsAndProjects.projects"
+    :is-loading="isLoading"
+    :error="error"
+    :search-hint="$options.i18n.fullPathHint"
+    @input="$emit('input', $event)"
+    @search="searchTerm = $event"
+  />
 </template>

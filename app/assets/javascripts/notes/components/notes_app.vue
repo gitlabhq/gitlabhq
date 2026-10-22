@@ -481,6 +481,7 @@ export default {
                 v-else
                 :key="discussion.id"
                 :note="discussion.notes[0]"
+                discussion-root
                 :show-reply-button="canReply"
                 @start-replying="startReplying(discussion.id)"
               />

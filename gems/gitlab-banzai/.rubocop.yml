@@ -19,13 +19,40 @@ RSpec/MultipleMemoizedHelpers:
 Style/NumericPredicate:
   EnforcedStyle: comparison
 
+Style/HashSyntax:
+  EnforcedShorthandSyntax: either_consistent
+
 Style/RegexpLiteral:
+  Enabled: false
+
+Style/SafeNavigation:
   Enabled: false
 
 Style/SpecialGlobalVars:
   EnforcedStyle: use_builtin_english_names
 
+Lint/BinaryOperatorWithIdenticalOperands:
+  Exclude:
+    - spec/**/*_spec.rb
+
 # Debt inherited with the moved files, previously held in `.rubocop_todo/`.
+Layout/LineLength:
+  Exclude:
+    - spec/banzai/filter/suggestion_filter_spec.rb
+    - spec/support/sanitization_shared_examples.rb
+
+Lint/UnusedMethodArgument:
+  Exclude:
+    - lib/banzai/filter/playable_link_filter.rb
+
+RSpec/ContextWording:
+  Exclude:
+    - spec/banzai/filter/suggestion_filter_spec.rb
+
+Style/IfUnlessModifier:
+  Exclude:
+    - lib/banzai/filter/playable_link_filter.rb
+
 Style/UnlessLogicalOperators:
   Exclude:
     - lib/banzai/filter/truncate_visible_filter.rb

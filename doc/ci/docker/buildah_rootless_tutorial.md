@@ -95,8 +95,11 @@ For these steps, you need to run the commands in a terminal connected to the Ope
    ```toml
    [[runners]]
      [runners.kubernetes]
-         service_account_overwrite_allowed = "buildah-*"
+         service_account_overwrite_allowed = "^buildah-sa$"
    ```
+
+   The value of `service_account_overwrite_allowed` is a regular expression that the
+   `KUBERNETES_SERVICE_ACCOUNT_OVERWRITE` variable, defined later, must match.
 
 1. Create a `ConfigMap` named `custom-config-toml` from the `custom-config.toml` file:
 

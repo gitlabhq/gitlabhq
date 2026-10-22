@@ -12844,6 +12844,7 @@ CREATE TABLE ai_agent_identities (
     updated_at timestamp with time zone NOT NULL,
     agent_type text NOT NULL,
     machine_fingerprint text NOT NULL,
+    last_synced_at timestamp with time zone,
     CONSTRAINT check_0dd47fa572 CHECK ((char_length(machine_fingerprint) <= 64)),
     CONSTRAINT check_4648ea2626 CHECK ((char_length(agent_type) <= 50))
 );
@@ -13254,10 +13255,14 @@ CREATE TABLE ai_governance_sessions (
     agent_type text,
     flow_type text,
     agent_identity_id bigint,
+    glab_version text,
+    agent_version text,
+    CONSTRAINT check_41f35a4745 CHECK ((char_length(agent_version) <= 255)),
     CONSTRAINT check_9a68a35540 CHECK ((char_length(flow_type) <= 255)),
     CONSTRAINT check_9ceb097d60 CHECK ((char_length(external_xid) <= 255)),
     CONSTRAINT check_aaebd6889a CHECK ((char_length(agent_type) <= 50)),
-    CONSTRAINT check_ai_session_is_duo_or_external CHECK ((num_nonnulls(workflow_id, external_xid) = 1))
+    CONSTRAINT check_ai_session_is_duo_or_external CHECK ((num_nonnulls(workflow_id, external_xid) = 1)),
+    CONSTRAINT check_e5536276dc CHECK ((char_length(glab_version) <= 255))
 );
 
 CREATE SEQUENCE ai_governance_sessions_id_seq

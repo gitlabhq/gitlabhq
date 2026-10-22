@@ -1,6 +1,6 @@
 ---
-source_checksum: 7d0a8df84dc633dd
-distilled_at_sha: f881cd88ec49e57cc6d320e2b57c56d80cb06564
+source_checksum: a99d3961c64fc0ce
+distilled_at_sha: 0598d6c1b5bb294276c7c644f29291505d54c4c1
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -38,6 +38,7 @@ distilled_at_sha: f881cd88ec49e57cc6d320e2b57c56d80cb06564
 - DO NOT encode the resource boundary (`project`, `group`, `user`) or the access path into the permission name; pass the subject in the `can?` call to determine scope instead (e.g., use `read_insights_dashboard` not `read_project_insights_dashboard`, and `read_widget` not `read_widget_via_parent_group`).
 - Introduce a new action outside the preferred set only when it represents a distinct lifecycle transition (`archive_project`), a relationship change (`transfer_project`), or a high-impact/irreversible operation (`purge_maven_virtual_registry_cache`) already established in GitLab domain language.
 - Match the permission to the action: use a read permission for read-only fields and endpoints, and a mutating permission for mutations. DO NOT check a permission whose action implies a state change (such as `start_` or `update_`) on a read-only field, and DO NOT guard a write with a read permission.
+- Check the permission for the action the code performs, on the resource it changes; the service, mutation, or endpoint name usually names that action. DO NOT check a different permission just because the same roles happen to hold it.
 - DO NOT reuse one permission for different meanings.
 - Describe what the permission gates in its description; DO NOT mention which roles have it, because roles can change.
 - Create a complete permission definition file for every new permission; DO NOT add entries to the legacy to-do lists `config/authz/permissions/definitions_todo.txt` and `config/authz/graphql/authorization_todo.txt`.
@@ -107,6 +108,7 @@ distilled_at_sha: f881cd88ec49e57cc6d320e2b57c56d80cb06564
 
 - Declare granular token authorization (or an explicit, justified opt-out) for every new REST and GraphQL endpoint.
 - Add a user permission check for other resources a call touches; the token check covers only the resource in the request path.
+- Name the same permission in the user check and the granular token check on the same endpoint or mutation.
 - Choose an assignable permission's `boundaries` from the endpoints it protects, not from every policy that enables its raw permissions; use `instance` sparingly, usually only for admin-facing permissions.
 - Declare GraphQL token authorization once on the type, resolver, or mutation with `authorize_granular_token`; prefer this over adding `granular_scope_directive` to individual fields. Move a response part needing a different token permission or boundary to its own type, resolver, or mutation with its own declaration.
 - DO NOT add a second token permission check inside the code of a mutation or resolver, because the validation task and generated token documentation read only declared directives; make it a separate mutation or resolver with its own declaration.
@@ -135,12 +137,16 @@ distilled_at_sha: f881cd88ec49e57cc6d320e2b57c56d80cb06564
 - Place policy unit tests in `spec/policies/` (CE) or `ee/spec/policies/` (EE).
 - Cover every policy change with policy specs.
 - Use one `describe` block per permission; DO NOT group multiple permissions into a single block.
-- Use `where` table syntax to test each role explicitly, and include every role in the table — DO NOT omit roles expected to be disallowed.
+- DO NOT write role tables (such as a `where` table of guest through owner) to test what each role is granted, because `ee/spec/lib/authz/role_definitions_spec.rb` checks that each role gets exactly the permissions its YAML lists; test what the policy adds instead: prevents (licenses, feature flags, settings, visibility, feature access levels, archived projects, admin mode) and grants outside role YAML (custom roles, deploy tokens).
+- Pair each prevent with one allowed example, so the test fails if no one holds the permission.
+- Test each rule in the spec for the policy that defines it, placing the rule in the policy closest to the one that enables the permission (the subject-only rule in that policy, the more specific-subject rule in the delegating policy); DO NOT re-test logic from delegate policies.
+- Check delegation with `delegate_to` (e.g., `is_expected.to delegate_to(ProjectPolicy)`) and test only the rules the delegating policy adds; when the delegate depends on the subject, check each possible delegate.
+- Create only what the rules need (usually one user and one subject): use `let_it_be` for records and reuse users and projects from the shared policy contexts; DO NOT create extra users, projects, or memberships to fill out a role table.
 - Define the subject explicitly inside each `describe` block using `let_it_be`; DO NOT rely on a subject defined at a higher scope.
 - Use descriptively named fixtures that reflect the visibility or state under test (e.g., `private_project`, `archived_project`) rather than a generic `project`.
 - Test both admin mode enabled (`:enable_admin_mode`) and admin mode disabled contexts for permissions that apply to admins.
 - Test both feature flag disabled and licensed feature disabled contexts for every permission that is gated by either.
-- Use `expect_allowed` and `expect_disallowed` in policy specs (enforced by `Gitlab/Authz/UsePolicyHelpers`).
+- Use `expect_allowed` and `expect_disallowed` in policy specs, not `be_allowed` and `be_disallowed` (enforced by `Gitlab/Authz/UsePolicyHelpers`); pass several permissions to one call when an example checks several, because the helpers report every failing permission.
 - Use real memberships and settings; DO NOT stub `can?` or `Ability.allowed?`.
 
 ### Automated Authorization Checks
