@@ -898,7 +898,7 @@ instructions:
       - Consolidate custom role abilities to a minimum: use `read_*` for all view-related actions and `admin_*` for object updates; avoid introducing additional abilities unless necessary.
       - Ensure `admin_*` custom abilities declare `read_*` as a requirement in the YAML `requirements` field.
       - Add the ability as a trait in the `MemberRoles` factory (`ee/spec/factories/member_roles.rb`) and add request specs under `ee/spec/requests/custom_roles/<ABILITY_NAME>/request_spec.rb`.
-      - Run `bundle exec rake gitlab:custom_roles:compile_docs` and `bundle exec rake gitlab:graphql:compile_docs` to update documentation after adding a custom ability.
+      - Run `bundle exec rake gitlab:custom_roles:compile_docs` and `bundle exec rake gitlab:graphql:update_all` to update documentation after adding a custom ability.
       - Assess privilege escalation risk when adding new custom permissions that interact with GitLab artifacts (such as access tokens) that encode the base role.
       - When changing or removing an existing permission cascade, check `ee/config/custom_abilities/*.yml`, because custom abilities often list only the top-level permission and removing the cascade silently drops access for custom-role users.
       - List custom roles next to default roles in the behavior-change notes of the merge request.
@@ -960,8 +960,8 @@ instructions:
   # <<< end generated: permissions-fundamentals
 
   # >>> generated: documentation — gitlab-ai-principles-distiller (from .ai/principles/manifest.yml; do not edit)
-  # distilled_at_sha: f881cd88ec49e57cc6d320e2b57c56d80cb06564
-  # source_checksum: 95b7345be7837bb6
+  # distilled_at_sha: 0598d6c1b5bb294276c7c644f29291505d54c4c1
+  # source_checksum: a28605a66b3215f0
   - name: Documentation
     fileFilters:
       - "doc/**/*.md"

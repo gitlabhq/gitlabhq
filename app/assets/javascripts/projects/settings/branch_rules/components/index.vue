@@ -94,6 +94,7 @@ export default {
     branchesPath: { default: '' },
     canAdminGroupProtectedBranches: { default: false },
     canAdminProtectedBranches: { default: false },
+    canDeleteCustomBranchRule: { default: false },
     canReadProtectedBranches: { default: false },
     groupSettingsRepositoryPath: { default: '' },
     canReadSquashOption: { default: false },
@@ -277,10 +278,15 @@ export default {
     showEditSquashSetting() {
       return this.canUpdateSquashOption && this.squashOptionsFeatureAvailableForRule;
     },
+    canDeleteRule() {
+      return this.isAllProtectedBranchesRule
+        ? this.canDeleteCustomBranchRule
+        : this.canAdminProtectedBranches;
+    },
     showDeleteRuleBtn() {
       return (
         this.branchRule &&
-        this.canAdminProtectedBranches &&
+        this.canDeleteRule &&
         !this.isAllBranchesRule &&
         !this.branchProtection?.isGroupLevel
       );

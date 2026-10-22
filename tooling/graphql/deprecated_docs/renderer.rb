@@ -33,10 +33,9 @@ module Tooling
         end
 
         def write
-          filename = File.join(@output_dir, '_index.md')
-
-          FileUtils.mkdir_p(@output_dir)
-          File.write(filename, contents)
+          # no-op.
+          # TODO Remove all old GraphQL docs code
+          # https://gitlab.com/gitlab-org/gitlab/-/work_items/593121
         end
 
         private

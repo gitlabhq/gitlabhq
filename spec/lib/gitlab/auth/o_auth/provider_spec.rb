@@ -45,6 +45,75 @@ RSpec.describe Gitlab::Auth::OAuth::Provider, feature_category: :system_access d
     end
   end
 
+  describe '.sign_in_enabled?' do
+    before do
+      allow(described_class).to receive(:providers).and_return([:ldapmain, :google_oauth2, :saml])
+      allow(Gitlab::Auth).to receive(:omniauth_enabled?).and_return(true)
+    end
+
+    it 'returns false for a provider that is not enabled' do
+      expect(described_class.sign_in_enabled?(:github)).to be(false)
+    end
+
+    context 'with an OmniAuth provider' do
+      it 'returns true when the provider is not disabled for sign-in' do
+        expect(described_class.sign_in_enabled?(:saml)).to be(true)
+      end
+
+      it 'accepts the provider name as a string' do
+        expect(described_class.sign_in_enabled?('saml')).to be(true)
+      end
+
+      context 'when the provider is disabled under sign-in restrictions' do
+        before do
+          stub_application_setting(disabled_oauth_sign_in_sources: ['saml'])
+        end
+
+        it 'returns false for that provider' do
+          expect(described_class.sign_in_enabled?(:saml)).to be(false)
+        end
+
+        it 'returns true for other providers' do
+          expect(described_class.sign_in_enabled?(:google_oauth2)).to be(true)
+        end
+      end
+    end
+
+    context 'with the database provider' do
+      it 'returns true when password authentication for the web is enabled' do
+        stub_application_setting(password_authentication_enabled_for_web: true)
+
+        expect(described_class.sign_in_enabled?('database')).to be(true)
+      end
+
+      it 'returns false when password authentication for the web is disabled' do
+        stub_application_setting(password_authentication_enabled_for_web: false)
+
+        expect(described_class.sign_in_enabled?('database')).to be(false)
+      end
+    end
+
+    context 'with an LDAP provider' do
+      it 'returns true when LDAP sign-in is enabled' do
+        allow(Gitlab::Auth::Ldap::Config).to receive(:sign_in_enabled?).and_return(true)
+
+        expect(described_class.sign_in_enabled?('ldapmain')).to be(true)
+      end
+
+      it 'returns false when LDAP sign-in is prevented' do
+        allow(Gitlab::Auth::Ldap::Config).to receive(:sign_in_enabled?).and_return(false)
+
+        expect(described_class.sign_in_enabled?('ldapmain')).to be(false)
+      end
+
+      it 'returns false for an LDAP provider that is not registered' do
+        allow(Gitlab::Auth::Ldap::Config).to receive(:sign_in_enabled?).and_return(true)
+
+        expect(described_class.sign_in_enabled?('ldapsecondary')).to be(false)
+      end
+    end
+  end
+
   describe '.config_for' do
     context 'for an LDAP provider' do
       context 'when the provider exists' do

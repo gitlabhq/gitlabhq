@@ -105,8 +105,8 @@ To browse it, go to [`advisories.gitlab.com`](https://advisories.gitlab.com).
 
 To check which advisories your GitLab instance has, look them up by identifier:
 
-- [`Query.packageMetadataAdvisory` to look up a single advisory](../../../api/graphql/reference/_index.md#querypackagemetadataadvisory)
-- [`Query.packageMetadataAdvisories` to look up multiple advisories](../../../api/graphql/reference/_index.md#querypackagemetadataadvisories)
+- [`Query.packageMetadataAdvisory` to look up a single advisory](../../../api/graphql/reference/queries.md#packagemetadataadvisory)
+- [`Query.packageMetadataAdvisories` to look up multiple advisories](../../../api/graphql/reference/queries.md#packagemetadataadvisories)
 
 Results include proprietary and container scanning advisories, but not malware advisories.
 When several advisories share an identifier, only `Query.packageMetadataAdvisories` returns all of them.

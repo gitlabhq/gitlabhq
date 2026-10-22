@@ -212,7 +212,7 @@ The generator handles most of the boilerplate, but some steps still require manu
 
 - [ ] Run: `tooling/bin/gettext_extractor locale/gitlab.pot`
 - [ ] Run: `bundle exec rake gitlab:geo:dev:ssf_metrics`
-- [ ] Run: `bundle exec rake gitlab:graphql:compile_docs`
+- [ ] Run: `bundle exec rake gitlab:graphql:update_all`
 - [ ] Run: `bundle exec rake gitlab:graphql:generate_all_introspection_schemas`
 - [ ] Run: `bundle exec rake gitlab:openapi:v3:generate`
 
@@ -267,7 +267,7 @@ When requesting review from database reviewers:
   - [ ] Add a step to `Ping the Geo PM and EM to coordinate testing`. For example, you might add steps to generate Cool Widgets, and then a Geo engineer may take it from there.
 - [ ] In the generated feature flag YAML file, set `default_enabled: true`
 - [ ] In `ee/app/graphql/types/geo/geo_node_type.rb`, remove the `experiment` option for the released type.
-- [ ] Run `bundle exec rake gitlab:graphql:compile_docs` after the step above to regenerate the GraphQL docs.
+- [ ] Run `bundle exec rake gitlab:graphql:update_all` after the step above to regenerate the GraphQL docs.
 - [ ] Add a row for Cool Widgets to the `Data types` table in [Geo data types support](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/administration/geo/replication/datatypes.md#data-types)
 - [ ] Add a row for Cool Widgets to the `Limitations on replication/verification` table in [Geo data types support](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/administration/geo/replication/datatypes.md#limitations-on-replicationverification). If the row already exists, then update it to show that Replication and Verification is released in the current version.
 - [ ] Add the `cool_widget` model name to the list of allowed models in the [Data Management API documentation](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/api/admin/data_management.md#retrieve-model-information)

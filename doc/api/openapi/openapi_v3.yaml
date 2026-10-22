@@ -92,7 +92,7 @@ tags:
   description: |-
     Use this API to interact with metric images for [alerts](https://docs.gitlab.com/operations/incident_management/alerts/).
 
-    Additional endpoints are available with the [GraphQL API](https://docs.gitlab.com/api/graphql/reference/#alertmanagementalert).
+    Additional endpoints are available with the [GraphQL API](https://docs.gitlab.com/api/graphql/reference/objects/#alertmanagementalert).
   x-displayName: Alert management
   externalDocs:
     url: https://docs.gitlab.com/api/alert_management_alerts/
@@ -956,10 +956,10 @@ tags:
     than grouped by train:
 
     - For an exact queue position, sort by `id` in ascending order, or use the GraphQL API
-      [`MergeTrainCar.index`](https://docs.gitlab.com/api/graphql/reference/#mergetraincar-index) field.
+      [`MergeTrainCar.index`](https://docs.gitlab.com/api/graphql/reference/objects/#mergetraincar) field.
     - To group merge requests by train, use the `target_branch` attribute, or query the GraphQL API
-      [`Project.mergeTrains`](https://docs.gitlab.com/api/graphql/reference/#projectmergetrains) and
-      [`MergeTrain.cars`](https://docs.gitlab.com/api/graphql/reference/#mergetraincars) fields.
+      [`Project.mergeTrains`](https://docs.gitlab.com/api/graphql/reference/objects/#project) and
+      [`MergeTrain.cars`](https://docs.gitlab.com/api/graphql/reference/objects/#mergetrain) fields.
   x-displayName: Merge trains
   externalDocs:
     url: https://docs.gitlab.com/api/merge_trains/
@@ -1737,7 +1737,7 @@ tags:
     > [!warning]
     > These endpoints are in the process of being deprecated and are considered unstable.
     > The response payload may be subject to change or breakage across GitLab releases. Use the
-    > [GraphQL API](https://docs.gitlab.com/api/graphql/reference/#queryvulnerabilities) instead.
+    > [GraphQL API](https://docs.gitlab.com/api/graphql/reference/queries/#vulnerabilities) instead.
     > For more information, see [replace vulnerability REST API with GraphQL](https://docs.gitlab.com/api/vulnerabilities/#replace-vulnerability-rest-api-with-graphql).
 
     Use this API to manage [vulnerabilities](https://docs.gitlab.com/user/application_security/vulnerabilities/),

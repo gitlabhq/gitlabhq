@@ -137,20 +137,8 @@ describe('CommitPopover', () => {
       await waitForPromises();
     });
 
-    it('does not render the skeleton loader', () => {
-      expect(findSkeletonLoader().exists()).toBe(false);
-    });
-
-    it('does not render commit content', () => {
-      expect(findCommitLink().exists()).toBe(false);
-    });
-
-    it('does not render the error message', () => {
-      expect(findErrorMessage().exists()).toBe(false);
-    });
-
-    it('hides the popover', () => {
-      expect(findPopover().props('show')).toBe(false);
+    it('removes the popover so nothing shows for the reference', () => {
+      expect(findPopover().exists()).toBe(false);
     });
   });
 

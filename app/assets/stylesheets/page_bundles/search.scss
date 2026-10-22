@@ -3,7 +3,6 @@
 $dark-highlight-bg: #ffe792;
 $dark-highlight-color: $black;
 $white-highlight: #fafe3d;
-$search-dropdown-max-height: 400px;
 $search-avatar-size: 16px;
 $search-sidebar-min-width: 240px;
 $search-sidebar-max-width: 300px;
@@ -150,57 +149,6 @@ $black-divider: #666;
     transition: color ease-in-out $default-transition-duration;
   }
 
-  .search-input-wrap {
-    width: 100%;
-
-    .search-icon,
-    .clear-icon {
-      position: absolute;
-      right: 5px;
-      top: 4px;
-    }
-
-    .search-icon {
-      transition: color $default-transition-duration;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
-    }
-
-    .clear-icon {
-      display: none;
-    }
-
-    // Rewrite position. Dropdown menu should be relative to .search-input-container
-    .dropdown {
-      position: static;
-    }
-
-    .dropdown-header {
-      // Necessary because deprecatedJQueryDropdown doesn't support a second style of headers
-      font-weight: $gl-font-weight-bold;
-      color: var(--gl-text-color-strong);
-      font-size: $gl-font-size;
-      line-height: 16px;
-    }
-
-    // Custom dropdown positioning
-    .dropdown-menu {
-      left: -5px;
-      max-height: $search-dropdown-max-height;
-      overflow: auto;
-
-      @include gl-container-width-up(xl, panel) {
-        width: $search-input-xl-width;
-      }
-    }
-
-    .dropdown-content {
-      max-height: $search-dropdown-max-height - 18px;
-    }
-  }
-
   &.has-value {
     .search-icon {
       display: none;
@@ -232,14 +180,6 @@ $black-divider: #666;
   flex: 1 0 auto;
   position: relative;
 
-  .search-holder & {
-    margin-right: 0;
-
-    @include gl-container-width-up(sm, panel) {
-      margin-right: 5px;
-    }
-  }
-
   .search-icon {
     position: absolute;
     left: 10px;
@@ -251,33 +191,6 @@ $black-divider: #666;
   .search-text-input {
     padding-left: $gl-padding + 15px;
     padding-right: $gl-padding + 15px;
-  }
-}
-
-.search-holder {
-  @include gl-container-width-up(sm, panel) {
-    display: flex;
-  }
-
-  // stylelint-disable-next-line gitlab/no-gl-class
-  .btn-search,
-  .dropdown-menu-toggle,
-  .gl-dropdown {
-    width: 100%;
-    margin-top: 5px;
-
-    @include gl-container-width-up(sm, panel) {
-      width: auto;
-      margin-top: 0;
-      margin-left: 5px;
-    }
-  }
-
-  .dropdown {
-    @include gl-container-width-up(sm, panel) {
-      margin-left: 5px;
-      margin-right: 5px;
-    }
   }
 }
 

@@ -105,7 +105,7 @@ To create a contact:
 1. Complete all required fields.
 1. Select **Create new contact**.
 
-You can also [create](../../api/graphql/reference/_index.md#mutationcustomerrelationscontactcreate)
+You can also [create](../../api/graphql/reference/mutations.md#customerrelationscontactcreate)
 contacts using the GraphQL API.
 
 ### Edit a contact
@@ -122,7 +122,7 @@ To edit an existing contact:
 1. Edit the required fields.
 1. Select **Save changes**.
 
-You can also [edit](../../api/graphql/reference/_index.md#mutationcustomerrelationscontactupdate)
+You can also [edit](../../api/graphql/reference/mutations.md#customerrelationscontactupdate)
 contacts using the GraphQL API.
 
 #### Change the state of a contact
@@ -169,7 +169,7 @@ To create an organization:
 1. Complete all required fields.
 1. Select **Create new organization**.
 
-You can also [create](../../api/graphql/reference/_index.md#mutationcustomerrelationsorganizationcreate)
+You can also [create](../../api/graphql/reference/mutations.md#customerrelationsorganizationcreate)
 organizations using the GraphQL API.
 
 ### Edit an organization
@@ -187,7 +187,7 @@ To edit an existing organization:
 1. Edit the required fields.
 1. Select **Save changes**.
 
-You can also [edit](../../api/graphql/reference/_index.md#mutationcustomerrelationsorganizationupdate)
+You can also [edit](../../api/graphql/reference/mutations.md#customerrelationsorganizationupdate)
 organizations using the GraphQL API.
 
 ## Tickets
@@ -231,7 +231,7 @@ You can view contacts associated with a work item in the right sidebar.
 To view a contact's details, hover over the contact's name.
 
 You can also view work item contacts using the
-[GraphQL](../../api/graphql/reference/_index.md#mutationcustomerrelationsorganizationcreate)
+[GraphQL](../../api/graphql/reference/mutations.md#customerrelationsorganizationcreate)
 API.
 
 ### Add contacts to a work item
@@ -243,7 +243,7 @@ Prerequisites:
 To add [active](#change-the-state-of-a-contact) contacts to a work item use the [`/add_contacts` quick action](../project/quick_actions.md#add_contacts) with `[contact:address@example.com]`.
 
 You can also add, remove, or replace work item contacts using the
-[GraphQL](../../api/graphql/reference/_index.md#mutationissuesetcrmcontacts)
+[GraphQL](../../api/graphql/reference/mutations.md#issuesetcrmcontacts)
 API.
 
 ### Remove contacts from a work item
@@ -255,7 +255,7 @@ Prerequisites:
 To remove contacts from a work item use the [`/remove_contacts` quick action](../project/quick_actions.md#remove_contacts) with `[contact:address@example.com]`.
 
 You can also add, remove, or replace work item contacts using the
-[GraphQL](../../api/graphql/reference/_index.md#mutationissuesetcrmcontacts)
+[GraphQL](../../api/graphql/reference/mutations.md#issuesetcrmcontacts)
 API.
 
 ## Autocomplete contacts

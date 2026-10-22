@@ -23,7 +23,7 @@ specific set of allowed values. For more information, see the
 > [!warning]
 > Deprecated items are planned to be removed in a
 > future release. For more information, see the GitLab
-> [deprecation process](../../_index.md#deprecation-and-removal-process).
+> [deprecation process](../_index.md#deprecation-and-removal-process).
 
 ## `AccessLevelEnum`
 
@@ -375,6 +375,7 @@ AI features that can be configured through the Duo self-hosted feature settings.
 | `RESOLVE_VULNERABILITY` | Resolve vulnerability feature setting. |
 | `REVIEW_MERGE_REQUEST` | Review merge request feature setting. |
 | `REVIEW_MERGE_REQUEST_DAP` | Review merge request dap feature setting. |
+| `REVIEW_MERGE_REQUEST_DAP_DEEP` | Review merge request dap deep feature setting. |
 | `RISK_CLASSIFICATION` | Risk classification feature setting. |
 | `SAST_VULNERABILITY_FP_DETECTION` | Sast vulnerability fp detection feature setting. |
 | `SAST_VULNERABILITY_RESOLUTION` | Sast vulnerability resolution feature setting. |
@@ -397,7 +398,7 @@ Possible event types for flow triggers.
 | `MERGE_REQUEST_CODE_CONFLICT` | Flow trigger merge_request_code_conflict event. |
 | `MERGE_REQUEST_READY` | Flow trigger merge_request_ready event. |
 | `PIPELINE_HOOKS` | Flow trigger pipeline_hooks event. |
-| `SCHEDULED` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Flow trigger scheduled event. |
+| `SCHEDULED` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Flow trigger scheduled event. |
 | `WORK_ITEM` | Flow trigger work_item event. |
 
 ## `AiFlowTriggerKind`
@@ -407,7 +408,7 @@ Kinds of flow triggers.
 | Value | Description |
 | ----- | ----------- |
 | `EVENT` | Flow trigger that runs when an event occurs. |
-| `SCHEDULED` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.6.<br/><br/>Flow trigger that runs on a schedule. |
+| `SCHEDULED` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.6.<br/><br/>Flow trigger that runs on a schedule. |
 
 ## `AiFlowTriggerRunStatus`
 
@@ -531,6 +532,7 @@ AI features that can be configured through the Model Selection feature settings.
 | `RESOLVE_VULNERABILITY` | Resolve vulnerability feature setting. |
 | `REVIEW_MERGE_REQUEST` | Review merge request feature setting. |
 | `REVIEW_MERGE_REQUEST_DAP` | Review merge request dap feature setting. |
+| `REVIEW_MERGE_REQUEST_DAP_DEEP` | Review merge request dap deep feature setting. |
 | `RISK_CLASSIFICATION` | Risk classification feature setting. |
 | `SAST_VULNERABILITY_FP_DETECTION` | Sast vulnerability fp detection feature setting. |
 | `SAST_VULNERABILITY_RESOLUTION` | Sast vulnerability resolution feature setting. |
@@ -639,6 +641,7 @@ Type of AI usage event.
 | `REACT_THUMBS_DOWN_ON_DUO_CODE_REVIEW_COMMENT` | User gave thumbs-down reaction to Duo Code Review comment. |
 | `REACT_THUMBS_UP_ON_DUO_CODE_REVIEW_COMMENT` | User gave thumbs-up reaction to Duo Code Review comment. |
 | `REFACTOR_CODE` | Code refactor was requested with the GitLab Duo Chat /refactor command. |
+| `REPORT_AGENT_PLATFORM_TOKEN_USAGE` | Agent platform session checkpoint reported its token usage per model. |
 | `REPORT_DUO_CHAT_TOKEN_USAGE` | Duo Chat agent turn reported its token usage per model. |
 | `REQUEST_DUO_CHAT_RESPONSE` | Duo Chat response was requested. |
 | `REQUEST_DUO_VULNERABILITY_RESOLUTION` | An AI vulnerability resolution was requested with GitLab Duo. |
@@ -961,6 +964,7 @@ Enum for types of analyzers.
 | `SECRET_DETECTION` | Any kind of secret detection. |
 | `SECRET_DETECTION_PIPELINE_BASED` | Secret detection analyzer. |
 | `SECRET_DETECTION_SECRET_PUSH_PROTECTION` | Secret push protection. Managed via project security settings. |
+| `SKILLGUARD` | Skillguard analyzer. |
 
 ## `AnalyzerTypeForStatus`
 
@@ -984,6 +988,7 @@ Analyzer types that can appear in project and group analyzer statuses.
 | `SECRET_DETECTION` | Any kind of secret detection. |
 | `SECRET_DETECTION_PIPELINE_BASED` | Secret detection analyzer. |
 | `SECRET_DETECTION_SECRET_PUSH_PROTECTION` | Secret push protection. Managed via project security settings. |
+| `SKILLGUARD` | Skillguard analyzer. |
 
 ## `ApiFuzzingScanMode`
 
@@ -1789,7 +1794,7 @@ Values for filtering runners in namespaces.
 
 | Value | Description |
 | ----- | ----------- |
-| `ALL_AVAILABLE` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 15.5.<br/><br/>Include all runners. This list includes runners for all projects in the group and subgroups, as well as for the parent groups and instance. |
+| `ALL_AVAILABLE` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 15.5.<br/><br/>Include all runners. This list includes runners for all projects in the group and subgroups, as well as for the parent groups and instance. |
 | `DESCENDANTS` | Include runners that have either a direct or inherited relationship. These runners can be specific to a project or a group. |
 | `DIRECT` | Include runners that have a direct relationship. |
 
@@ -1803,7 +1808,7 @@ Values for sorting runners.
 | `CONTACTED_DESC` | Ordered by contacted_at in descending order. |
 | `CREATED_ASC` | Ordered by created_at in ascending order. |
 | `CREATED_DESC` | Ordered by created_at in descending order. |
-| `MOST_ACTIVE_DESC` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.2.<br/><br/>Ordered by number of running jobs in descending order (only available on Ultimate plans). |
+| `MOST_ACTIVE_DESC` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 16.2.<br/><br/>Ordered by number of running jobs in descending order (only available on Ultimate plans). |
 | `TOKEN_EXPIRES_AT_ASC` | Ordered by token_expires_at in ascending order. |
 | `TOKEN_EXPIRES_AT_DESC` | Ordered by token_expires_at in descending order. |
 
@@ -2608,6 +2613,15 @@ GitLab Duo availability states for an admin-locked namespace override.
 | `DEFAULT_ON` | Duo is on by default but group Owners can turn it off. |
 | `NEVER_ON` | Duo is off and group Owners cannot turn it on. |
 
+## `DuoCodeReviewDepth`
+
+Depth of a GitLab Duo Code Review.
+
+| Value | Description |
+| ----- | ----------- |
+| `DEEP` | Deep review. |
+| `STANDARD` | Standard review. |
+
 ## `DuoLicensedFeature`
 
 List of GitLab Duo licensed features.
@@ -2663,6 +2677,7 @@ Where a Duo Workflow session was initiated from.
 | `MERGE_REQUEST_FIX_PIPELINE` | Session initiated from fixing a failed pipeline on a merge request. |
 | `MERGE_REQUEST_RESOLVE_DISCUSSION` | Session initiated from resolving a discussion on a merge request. |
 | `SLACK` | Session initiated from Slack. |
+| `WEB_CHAT` | Session initiated from GitLab Duo Chat in the web UI. |
 | `WORK_ITEM_PLAN_TO_MERGE_REQUEST` | Session initiated from implementing a work item plan. |
 | `WORK_ITEM_TO_MERGE_REQUEST` | Session initiated from creating a merge request from a work item. |
 
@@ -2701,8 +2716,8 @@ Mechanism that resolved a stored Duo Workflow tool call approval.
 
 | Value | Description |
 | ----- | ----------- |
-| `EXACT_HASH` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Tool call matched a previously approved call by exact argument hash. |
-| `PATTERN` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Tool call matched a stored glob pattern. |
+| `EXACT_HASH` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Tool call matched a previously approved call by exact argument hash. |
+| `PATTERN` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Tool call matched a stored glob pattern. |
 
 ## `DuoWorkflowToolCallApprovalSource`
 
@@ -2710,10 +2725,10 @@ Source of a Duo Workflow tool call approval decision, as reported by the client.
 
 | Value | Description |
 | ----- | ----------- |
-| `AUTO_MODE` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Approval granted automatically by auto-mode. |
-| `PREAPPROVED_CONFIG` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Approval granted through a pre-approved tool or pattern configuration. |
-| `PRETOOLUSE_HOOK` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Approval granted automatically by a PreToolUse hook. |
-| `USER_EXPLICIT` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Explicit approval by a user action. |
+| `AUTO_MODE` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Approval granted automatically by auto-mode. |
+| `PREAPPROVED_CONFIG` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Approval granted through a pre-approved tool or pattern configuration. |
+| `PRETOOLUSE_HOOK` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Approval granted automatically by a PreToolUse hook. |
+| `USER_EXPLICIT` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Explicit approval by a user action. |
 
 ## `DuoWorkflowTriggerSource`
 
@@ -3063,7 +3078,7 @@ Types of add-ons.
 | ----- | ----------- |
 | `CODE_SUGGESTIONS` | GitLab Duo Pro add-on. |
 | `DUO_AMAZON_Q` | GitLab Duo with Amazon Q add-on. |
-| `DUO_CORE` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.0.<br/><br/>GitLab Duo Core add-on. |
+| `DUO_CORE` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.0.<br/><br/>GitLab Duo Core add-on. |
 | `DUO_ENTERPRISE` | GitLab Duo Enterprise add-on. |
 
 ## `GitlabSubscriptionsUserRole`
@@ -3372,8 +3387,8 @@ Values for sorting issues.
 | `SEVERITY_DESC` | Severity from more critical to less critical. |
 | `SLA_DUE_AT_ASC` | Issues with earliest SLA due time shown first. |
 | `SLA_DUE_AT_DESC` | Issues with latest SLA due time shown first. |
-| `STATUS_ASC` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.4.<br/><br/>Status by ascending order. |
-| `STATUS_DESC` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.4.<br/><br/>Status by descending order. |
+| `STATUS_ASC` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.4.<br/><br/>Status by ascending order. |
+| `STATUS_DESC` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.4.<br/><br/>Status by descending order. |
 | `TITLE_ASC` | Title by ascending order. |
 | `TITLE_DESC` | Title by descending order. |
 | `UPDATED_ASC` | Updated at ascending order. |
@@ -3411,11 +3426,11 @@ Issue type.
 
 | Value | Description |
 | ----- | ----------- |
-| `EPIC` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.7.<br/><br/>Epic issue type. Available only when feature epics is available. |
+| `EPIC` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 16.7.<br/><br/>Epic issue type. Available only when feature epics is available. |
 | `INCIDENT` | Incident issue type. |
 | `ISSUE` | Issue issue type. |
-| `KEY_RESULT` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 15.7.<br/><br/>Key Result issue type. Available only when feature flag `okrs_mvc` is enabled. |
-| `OBJECTIVE` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 15.6.<br/><br/>Objective issue type. Available only when feature flag `okrs_mvc` is enabled. |
+| `KEY_RESULT` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 15.7.<br/><br/>Key Result issue type. Available only when feature flag `okrs_mvc` is enabled. |
+| `OBJECTIVE` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 15.6.<br/><br/>Objective issue type. Available only when feature flag `okrs_mvc` is enabled. |
 | `REQUIREMENT` | Requirement issue type. |
 | `TASK` | Task issue type. |
 | `TEST_CASE` | Test Case issue type. |
@@ -3759,6 +3774,7 @@ Licensed features that can be checked for availability on a namespace or project
 | `SELF_HOSTED_MODELS` | Self hosted models feature. |
 | `SEMANTIC_CODE_SEARCH` | Semantic code search feature. |
 | `SEND_EMAILS_FROM_ADMIN_AREA` | Send emails from admin area feature. |
+| `SKILLGUARD` | Skillguard feature. |
 | `SMARTCARD_AUTH` | Smartcard auth feature. |
 | `SSH_CERTIFICATES` | Ssh certificates feature. |
 | `SSH_KEY_EXPIRATION_POLICY` | Ssh key expiration policy feature. |
@@ -4405,14 +4421,14 @@ Cause of an Orbit access state that has more than one cause.
 
 | Value | Description |
 | ----- | ----------- |
-| `BETA` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Access comes from the free-beta program. |
-| `CREDITS_EXHAUSTED` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Trial ran out of credits before its end date. |
-| `FREE_PLAN` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Group is on a Free plan on GitLab.com. |
-| `NO_ACCESS` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Group has no Orbit access under the promo gate. |
-| `NO_LICENSE` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Instance has no Orbit license. |
-| `PLAN` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Access comes from the plan license. |
-| `PROMO_ADD_ON` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Access comes from the Orbit promo add-on. |
-| `TRIAL_EXPIRED` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Trial reached its end date. |
+| `BETA` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Access comes from the free-beta program. |
+| `CREDITS_EXHAUSTED` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Trial ran out of credits before its end date. |
+| `FREE_PLAN` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Group is on a Free plan on GitLab.com. |
+| `NO_ACCESS` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Group has no Orbit access under the promo gate. |
+| `NO_LICENSE` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Instance has no Orbit license. |
+| `PLAN` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Access comes from the plan license. |
+| `PROMO_ADD_ON` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Access comes from the Orbit promo add-on. |
+| `TRIAL_EXPIRED` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Trial reached its end date. |
 
 ## `OrbitAccessState`
 
@@ -4420,14 +4436,14 @@ Access state of a group for Orbit.
 
 | Value | Description |
 | ----- | ----------- |
-| `LICENSED` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Group has Orbit access; see reason for the source. |
-| `NOT_CONFIGURED` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Orbit service is not set up on this instance. |
-| `TRIAL_ACTIVE` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Orbit trial is running. |
-| `TRIAL_ELIGIBLE` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Group can start an Orbit trial. |
-| `TRIAL_ENDED` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Orbit trial has ended; see reason for the cause. |
-| `TRIAL_NOT_ELIGIBLE` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Group is not eligible for an Orbit trial. |
-| `TRIAL_STATUS_UNAVAILABLE` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Trial status could not be read from CustomersDot. |
-| `UNLICENSED` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Group has no Orbit access; see reason for the cause. |
+| `LICENSED` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Group has Orbit access; see reason for the source. |
+| `NOT_CONFIGURED` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Orbit service is not set up on this instance. |
+| `TRIAL_ACTIVE` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Orbit trial is running. |
+| `TRIAL_ELIGIBLE` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Group can start an Orbit trial. |
+| `TRIAL_ENDED` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Orbit trial has ended; see reason for the cause. |
+| `TRIAL_NOT_ELIGIBLE` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Group is not eligible for an Orbit trial. |
+| `TRIAL_STATUS_UNAVAILABLE` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Trial status could not be read from CustomersDot. |
+| `UNLICENSED` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Group has no Orbit access; see reason for the cause. |
 
 ## `OrbitIndexingPhase`
 
@@ -4459,10 +4475,10 @@ State of the Orbit trial for a top-level group.
 
 | Value | Description |
 | ----- | ----------- |
-| `ACTIVE` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Trial is active. |
-| `ELIGIBLE` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Group can start a trial. |
-| `ENDED` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Trial expired or used all its credits. |
-| `NOT_ELIGIBLE` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Group cannot start a trial. |
+| `ACTIVE` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Trial is active. |
+| `ELIGIBLE` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Group can start a trial. |
+| `ENDED` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Trial expired or used all its credits. |
+| `NOT_ELIGIBLE` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Group cannot start a trial. |
 
 ## `OrbitTurnOnDenialReason`
 
@@ -4470,11 +4486,11 @@ Reason the current user cannot turn Orbit on for a group.
 
 | Value | Description |
 | ----- | ----------- |
-| `FORBIDDEN` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>User lacks permission to turn Orbit on for the group. |
-| `PURCHASE_REQUIRED` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.6.<br/><br/>Group must purchase Orbit before it can be turned on, because no trial can start. |
-| `TRIAL_ENDED` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Trial has ended, so Orbit can no longer be turned on. |
-| `TRIAL_REQUIRED` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Group must start a trial before Orbit can be turned on. |
-| `UNAVAILABLE` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Trial status could not be read from CustomersDot. |
+| `FORBIDDEN` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>User lacks permission to turn Orbit on for the group. |
+| `PURCHASE_REQUIRED` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.6.<br/><br/>Group must purchase Orbit before it can be turned on, because no trial can start. |
+| `TRIAL_ENDED` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Trial has ended, so Orbit can no longer be turned on. |
+| `TRIAL_REQUIRED` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Group must start a trial before Orbit can be turned on. |
+| `UNAVAILABLE` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Trial status could not be read from CustomersDot. |
 
 ## `OrganizationClusterAgentFilter`
 
@@ -4491,8 +4507,8 @@ Default list view for organization groups and projects.
 
 | Value | Description |
 | ----- | ----------- |
-| `GROUPS` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.2.<br/><br/>Display organization groups list. |
-| `PROJECTS` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.2.<br/><br/>Display organization projects list. |
+| `GROUPS` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 17.2.<br/><br/>Display organization groups list. |
+| `PROJECTS` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 17.2.<br/><br/>Display organization projects list. |
 
 ## `OrganizationGroupProjectSort`
 
@@ -4502,8 +4518,8 @@ Values for sorting organization groups and projects.
 | ----- | ----------- |
 | `CREATED_ASC` | Created at ascending order. |
 | `CREATED_DESC` | Created at descending order. |
-| `NAME_ASC` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.2.<br/><br/>Name ascending order. |
-| `NAME_DESC` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.2.<br/><br/>Name descending order. |
+| `NAME_ASC` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 17.2.<br/><br/>Name ascending order. |
+| `NAME_DESC` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 17.2.<br/><br/>Name descending order. |
 | `UPDATED_ASC` | Updated at ascending order. |
 | `UPDATED_DESC` | Updated at descending order. |
 | `created_asc` | Deprecated in GitLab 13.5. Renamed. Use `CREATED_ASC` instead. |
@@ -4538,13 +4554,13 @@ State of an organization.
 
 | Value | Description |
 | ----- | ----------- |
-| `ACTIVE` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>Active organization. |
-| `CONFIRMED` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>Confirmed organization. |
-| `DELETION_IN_PROGRESS` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>Deletion In Progress organization. |
-| `MAINTENANCE` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Maintenance organization. |
-| `MAINTENANCE_INITIALIZATION` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Maintenance Initialization organization. |
-| `SOFT_DELETED` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>Soft Deleted organization. |
-| `UNCONFIRMED` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>Unconfirmed organization. |
+| `ACTIVE` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>Active organization. |
+| `CONFIRMED` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>Confirmed organization. |
+| `DELETION_IN_PROGRESS` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>Deletion In Progress organization. |
+| `MAINTENANCE` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Maintenance organization. |
+| `MAINTENANCE_INITIALIZATION` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Maintenance Initialization organization. |
+| `SOFT_DELETED` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>Soft Deleted organization. |
+| `UNCONFIRMED` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>Unconfirmed organization. |
 
 ## `OrganizationUserAccessLevel`
 
@@ -4552,8 +4568,8 @@ Access level of an organization user.
 
 | Value | Description |
 | ----- | ----------- |
-| `DEFAULT` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.11.<br/><br/>Guest access. |
-| `OWNER` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.11.<br/><br/>Owner access. |
+| `DEFAULT` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 16.11.<br/><br/>Guest access. |
+| `OWNER` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 16.11.<br/><br/>Owner access. |
 
 ## `OrganizationUserType`
 
@@ -4561,8 +4577,8 @@ Type of an organization user.
 
 | Value | Description |
 | ----- | ----------- |
-| `ADMIN` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Organization administrator. |
-| `USER` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Regular organization user. |
+| `ADMIN` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Organization administrator. |
+| `USER` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Regular organization user. |
 
 ## `OrganizationVisibility`
 
@@ -4900,7 +4916,7 @@ Lists the status of a virtual registry cleanup policy.
 | Value | Description |
 | ----- | ----------- |
 | `APPROVAL_POLICY` | Approval policy. |
-| `DEPENDENCY_FIREWALL_POLICY` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>Dependency firewall policy. |
+| `DEPENDENCY_FIREWALL_POLICY` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>Dependency firewall policy. |
 | `PIPELINE_EXECUTION_POLICY` | Pipeline execution policy. |
 | `PIPELINE_EXECUTION_SCHEDULE_POLICY` | Pipeline execution schedule policy. |
 | `SCAN_EXECUTION_POLICY` | Scan execution policy. |
@@ -5254,11 +5270,11 @@ Scan profile trigger type.
 | `DEFAULT_BRANCH_PIPELINE` | Default branch pipeline. |
 | `GIT_PUSH_EVENT` | Git push event. |
 | `MERGE_REQUEST_PIPELINE` | Merge request pipeline. |
-| `SAST_FALSE_POSITIVE` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>SAST false positive. |
-| `SAST_VULNERABILITY_RESOLUTION` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>SAST vulnerability resolution. |
-| `SBOM_INGESTED` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>SBOM ingested. |
-| `SECRET_DETECTION_FALSE_POSITIVE` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Secret detection false positive. |
-| `VULNERABILITY_ENRICHMENT` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Vulnerability enrichment. |
+| `SAST_FALSE_POSITIVE` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>SAST false positive. |
+| `SAST_VULNERABILITY_RESOLUTION` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>SAST vulnerability resolution. |
+| `SBOM_INGESTED` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>SBOM ingested. |
+| `SECRET_DETECTION_FALSE_POSITIVE` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Secret detection false positive. |
+| `VULNERABILITY_ENRICHMENT` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Vulnerability enrichment. |
 
 ## `ScanStatus`
 
@@ -5334,11 +5350,11 @@ Reason a Secrets Manager entitlement is blocked.
 
 | Value | Description |
 | ----- | ----------- |
-| `CREDITS_EXHAUSTED` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>No trial credits remain. |
-| `GRACE` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Subscription has expired; access is read-only during the grace window. |
-| `ON_DEMAND_DISABLED` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>On-demand purchasing is disabled for the namespace. |
-| `SUBSCRIPTION_GRACE_PERIOD_EXPIRED` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Subscription is expired and the grace window has elapsed. |
-| `TRIAL_EXPIRED` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Trial period has ended. |
+| `CREDITS_EXHAUSTED` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>No trial credits remain. |
+| `GRACE` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Subscription has expired; access is read-only during the grace window. |
+| `ON_DEMAND_DISABLED` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>On-demand purchasing is disabled for the namespace. |
+| `SUBSCRIPTION_GRACE_PERIOD_EXPIRED` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Subscription is expired and the grace window has elapsed. |
+| `TRIAL_EXPIRED` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Trial period has ended. |
 
 ## `SecretsManagerEntitlementState`
 
@@ -5346,12 +5362,12 @@ State of a Secrets Manager entitlement for a top-level group.
 
 | Value | Description |
 | ----- | ----------- |
-| `BLOCKED` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Entitlement is blocked; see blockedReason for the cause. |
-| `INELIGIBLE` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Not eligible for Secrets Manager. |
-| `OFFLINE_PAID` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Paid subscription on an offline-licensed self-managed install. |
-| `PAID` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Paid subscription on a SaaS or online-cloud-licensed self-managed install. |
-| `TRIAL` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Active trial. |
-| `TRIAL_ELIGIBLE` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Eligible to start a trial. |
+| `BLOCKED` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Entitlement is blocked; see blockedReason for the cause. |
+| `INELIGIBLE` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Not eligible for Secrets Manager. |
+| `OFFLINE_PAID` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Paid subscription on an offline-licensed self-managed install. |
+| `PAID` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Paid subscription on a SaaS or online-cloud-licensed self-managed install. |
+| `TRIAL` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Active trial. |
+| `TRIAL_ELIGIBLE` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Eligible to start a trial. |
 
 ## `SecretsManagerWriteDenialReason`
 
@@ -5429,6 +5445,7 @@ Template type for predefined security categories.
 | `SAST_ADVANCED` | SAST ADVANCED scan report. |
 | `SAST_IAC` | SAST IAC scan report. |
 | `SECRET_DETECTION` | SECRET DETECTION scan report. |
+| `SKILLGUARD` | SKILLGUARD scan report. |
 
 ## `SecurityScanProfileAdvancedSastPartialScan`
 
@@ -5436,8 +5453,8 @@ Controls GitLab Advanced SAST diff-based scanning.
 
 | Value | Description |
 | ----- | ----------- |
-| `DIFFERENTIAL` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Enable diff-based scanning. |
-| `DISABLED` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Disable diff-based scanning. |
+| `DIFFERENTIAL` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Enable diff-based scanning. |
+| `DISABLED` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Disable diff-based scanning. |
 
 ## `SecurityScanProfileAttachMode`
 
@@ -5454,9 +5471,9 @@ Dependency resolution job that can be disabled.
 
 | Value | Description |
 | ----- | ----------- |
-| `GRADLE` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Gradle dependency resolution job. |
-| `MAVEN` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Maven dependency resolution job. |
-| `PYTHON` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Python dependency resolution job. |
+| `GRADLE` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Gradle dependency resolution job. |
+| `MAVEN` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Maven dependency resolution job. |
+| `PYTHON` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Python dependency resolution job. |
 
 ## `SecurityScanProfileFalsePositiveConfidence`
 
@@ -5464,8 +5481,8 @@ False positive assessment a finding must carry to be acted on.
 
 | Value | Description |
 | ----- | ----------- |
-| `LIKELY_FALSE_POSITIVE` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Restrict to findings assessed as likely false positives. |
-| `LIKELY_NOT_FALSE_POSITIVE` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Restrict to findings assessed as likely not false positives. |
+| `LIKELY_FALSE_POSITIVE` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Restrict to findings assessed as likely false positives. |
+| `LIKELY_NOT_FALSE_POSITIVE` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Restrict to findings assessed as likely not false positives. |
 
 ## `SecurityScanProfileImageSuffix`
 
@@ -5473,8 +5490,8 @@ Suffix appended to the analyzer image name.
 
 | Value | Description |
 | ----- | ----------- |
-| `DEFAULT` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>No suffix; use the standard analyzer image. |
-| `FIPS` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Use the FIPS-compliant analyzer image. |
+| `DEFAULT` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>No suffix; use the standard analyzer image. |
+| `FIPS` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Use the FIPS-compliant analyzer image. |
 
 ## `SecurityScanProfileRunMode`
 
@@ -5482,8 +5499,8 @@ Whether a triage and remediation capability runs automatically or on demand.
 
 | Value | Description |
 | ----- | ----------- |
-| `AUTO` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Run automatically as findings appear. |
-| `MANUAL` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Run only when triggered by a user. |
+| `AUTO` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Run automatically as findings appear. |
+| `MANUAL` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Run only when triggered by a user. |
 
 ## `SecurityScanProfileSecureLogLevel`
 
@@ -5491,11 +5508,11 @@ Logging level used by the analyzer.
 
 | Value | Description |
 | ----- | ----------- |
-| `DEBUG` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Debug messages and above. |
-| `ERROR` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Error messages and above. |
-| `FATAL` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Fatal messages only. |
-| `INFO` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Informational messages and above. |
-| `WARN` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Warning messages and above. |
+| `DEBUG` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Debug messages and above. |
+| `ERROR` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Error messages and above. |
+| `FATAL` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Fatal messages only. |
+| `INFO` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Informational messages and above. |
+| `WARN` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Warning messages and above. |
 
 ## `SecurityScanProfileType`
 
@@ -5503,13 +5520,14 @@ Scan profile type.
 
 | Value | Description |
 | ----- | ----------- |
-| `BUSINESS_LOGIC` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Business logic. |
+| `BUSINESS_LOGIC` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Business logic. |
 | `CONTAINER_SCANNING` | Container scanning. |
 | `DEPENDENCY_SCANNING` | Dependency scanning. |
-| `DEPENDENCY_SCANNING_POST_PROCESSING` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Dependency scanning post processing. |
+| `DEPENDENCY_SCANNING_POST_PROCESSING` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.2.<br/><br/>Dependency scanning post processing. |
 | `SAST` | Sast. |
 | `SECRET_DETECTION` | Secret detection. |
-| `TRIAGE_AND_REMEDIATION` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Triage and remediation. |
+| `SKILLGUARD` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.6.<br/><br/>SkillGuard. |
+| `TRIAGE_AND_REMEDIATION` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Triage and remediation. |
 
 ## `SecurityScanProfileUpgradePolicy`
 
@@ -5517,9 +5535,9 @@ Highest version bump allowed when remediating a dependency.
 
 | Value | Description |
 | ----- | ----------- |
-| `MAJOR` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Allow any upgrade. |
-| `MINOR` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Allow patch and minor upgrades. |
-| `PATCH` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Allow patch upgrades only. |
+| `MAJOR` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Allow any upgrade. |
+| `MINOR` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Allow patch and minor upgrades. |
+| `PATCH` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Allow patch upgrades only. |
 
 ## `SecurityScannerType`
 
@@ -5538,6 +5556,7 @@ The type of the security scanner.
 | `SAST_ADVANCED` | SAST advanced scanner. |
 | `SAST_IAC` | SAST IaC scanner. |
 | `SECRET_DETECTION` | Secret detection scanner. |
+| `SKILLGUARD` | Skillguard scanner. |
 
 ## `SecurityTrackedRefScope`
 
@@ -5648,6 +5667,15 @@ How to format SHA strings.
 | `DISABLED_AND_UNOVERRIDABLE` | Sharing of runners is disabled and unoverridable. |
 | `ENABLED` | Sharing of runners is enabled. |
 
+## `SidebarNavigationMode`
+
+Values for the navigation mode of the left sidebar.
+
+| Value | Description |
+| ----- | ----------- |
+| `ALL_CATEGORIES` | Show pinned items and all navigation categories. |
+| `COMPACT` | Show only pinned items. |
+
 ## `SnippetBlobActionEnum`
 
 Type of a snippet blob input action.
@@ -5754,10 +5782,10 @@ Access level for Terraform state protection rule write operations.
 
 | Value | Description |
 | ----- | ----------- |
-| `ADMIN` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.11.<br/><br/>Admin access. |
-| `DEVELOPER` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.11.<br/><br/>Developer access. |
-| `MAINTAINER` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.11.<br/><br/>Maintainer access. |
-| `OWNER` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.11.<br/><br/>Owner access. |
+| `ADMIN` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.11.<br/><br/>Admin access. |
+| `DEVELOPER` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.11.<br/><br/>Developer access. |
+| `MAINTAINER` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.11.<br/><br/>Maintainer access. |
+| `OWNER` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.11.<br/><br/>Owner access. |
 
 ## `TerraformStateProtectionRuleAllowedFrom`
 
@@ -5765,9 +5793,9 @@ Source restriction for Terraform state protection rule write operations.
 
 | Value | Description |
 | ----- | ----------- |
-| `ANYWHERE` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.11.<br/><br/>Anywhere. |
-| `CI_ONLY` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.11.<br/><br/>Ci only. |
-| `CI_ON_PROTECTED_BRANCH_ONLY` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.11.<br/><br/>Ci on protected branch only. |
+| `ANYWHERE` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.11.<br/><br/>Anywhere. |
+| `CI_ONLY` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.11.<br/><br/>Ci only. |
+| `CI_ON_PROTECTED_BRANCH_ONLY` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.11.<br/><br/>Ci on protected branch only. |
 
 ## `TestCaseStatus`
 
@@ -5926,6 +5954,7 @@ Name of the feature that the callout is for.
 | `BRANCH_RULES_TIP_CALLOUT` | Callout feature name for branch_rules_tip_callout. |
 | `BUY_PIPELINE_MINUTES_NOTIFICATION_DOT` | Callout feature name for buy_pipeline_minutes_notification_dot. |
 | `CANARY_DEPLOYMENT` | Callout feature name for canary_deployment. |
+| `CI_CATALOG_RELEASE_ALERT` | Callout feature name for ci_catalog_release_alert. |
 | `CI_DEPRECATION_WARNING_FOR_TYPES_KEYWORD` | Callout feature name for ci_deprecation_warning_for_types_keyword. |
 | `CI_MINUTES_LIMIT_ALERT_DANGER_STAGE` | Callout feature name for ci_minutes_limit_alert_danger_stage. |
 | `CI_MINUTES_LIMIT_ALERT_EXCEEDED_STAGE` | Callout feature name for ci_minutes_limit_alert_exceeded_stage. |
@@ -6331,25 +6360,25 @@ The type of the issue link related to a vulnerability.
 
 | Value | Description |
 | ----- | ----------- |
-| `A01_2021` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.1.<br/><br/>A01:2021-Broken Access Control, OWASP top 10 category. |
-| `A02_2021` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.1.<br/><br/>A02:2021-Cryptographic Failures, OWASP top 10 category. |
-| `A03_2021` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.1.<br/><br/>A03:2021-Injection, OWASP top 10 category. |
-| `A04_2021` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.1.<br/><br/>A04:2021-Insecure Design, OWASP top 10 category. |
-| `A05_2021` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.1.<br/><br/>A05:2021-Security Misconfiguration, OWASP top 10 category. |
-| `A06_2021` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.1.<br/><br/>A06:2021-Vulnerable and Outdated Components, OWASP top 10 category. |
-| `A07_2021` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.1.<br/><br/>A07:2021-Identification and Authentication Failures, OWASP top 10 category. |
-| `A08_2021` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.1.<br/><br/>A08:2021-Software and Data Integrity Failures, OWASP top 10 category. |
-| `A09_2021` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.1.<br/><br/>A09:2021-Security Logging and Monitoring Failures, OWASP top 10 category. |
-| `A10_2021` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.1.<br/><br/>A10:2021-Server-Side Request Forgery, OWASP top 10 category. |
-| `A1_2021` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.1.<br/><br/>A1:2021-Broken Access Control, OWASP top 10 category. |
-| `A2_2021` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.1.<br/><br/>A2:2021-Cryptographic Failures, OWASP top 10 category. |
-| `A3_2021` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.1.<br/><br/>A3:2021-Injection, OWASP top 10 category. |
-| `A4_2021` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.1.<br/><br/>A4:2021-Insecure Design, OWASP top 10 category. |
-| `A5_2021` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.1.<br/><br/>A5:2021-Security Misconfiguration, OWASP top 10 category. |
-| `A6_2021` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.1.<br/><br/>A6:2021-Vulnerable and Outdated Components, OWASP top 10 category. |
-| `A7_2021` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.1.<br/><br/>A7:2021-Identification and Authentication Failures, OWASP top 10 category. |
-| `A8_2021` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.1.<br/><br/>A8:2021-Software and Data Integrity Failures, OWASP top 10 category. |
-| `A9_2021` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.1.<br/><br/>A9:2021-Security Logging and Monitoring Failures, OWASP top 10 category. |
+| `A01_2021` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.1.<br/><br/>A01:2021-Broken Access Control, OWASP top 10 category. |
+| `A02_2021` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.1.<br/><br/>A02:2021-Cryptographic Failures, OWASP top 10 category. |
+| `A03_2021` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.1.<br/><br/>A03:2021-Injection, OWASP top 10 category. |
+| `A04_2021` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.1.<br/><br/>A04:2021-Insecure Design, OWASP top 10 category. |
+| `A05_2021` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.1.<br/><br/>A05:2021-Security Misconfiguration, OWASP top 10 category. |
+| `A06_2021` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.1.<br/><br/>A06:2021-Vulnerable and Outdated Components, OWASP top 10 category. |
+| `A07_2021` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.1.<br/><br/>A07:2021-Identification and Authentication Failures, OWASP top 10 category. |
+| `A08_2021` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.1.<br/><br/>A08:2021-Software and Data Integrity Failures, OWASP top 10 category. |
+| `A09_2021` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.1.<br/><br/>A09:2021-Security Logging and Monitoring Failures, OWASP top 10 category. |
+| `A10_2021` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.1.<br/><br/>A10:2021-Server-Side Request Forgery, OWASP top 10 category. |
+| `A1_2021` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.1.<br/><br/>A1:2021-Broken Access Control, OWASP top 10 category. |
+| `A2_2021` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.1.<br/><br/>A2:2021-Cryptographic Failures, OWASP top 10 category. |
+| `A3_2021` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.1.<br/><br/>A3:2021-Injection, OWASP top 10 category. |
+| `A4_2021` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.1.<br/><br/>A4:2021-Insecure Design, OWASP top 10 category. |
+| `A5_2021` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.1.<br/><br/>A5:2021-Security Misconfiguration, OWASP top 10 category. |
+| `A6_2021` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.1.<br/><br/>A6:2021-Vulnerable and Outdated Components, OWASP top 10 category. |
+| `A7_2021` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.1.<br/><br/>A7:2021-Identification and Authentication Failures, OWASP top 10 category. |
+| `A8_2021` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.1.<br/><br/>A8:2021-Software and Data Integrity Failures, OWASP top 10 category. |
+| `A9_2021` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.1.<br/><br/>A9:2021-Security Logging and Monitoring Failures, OWASP top 10 category. |
 | `NONE` | No OWASP top 10 category. |
 
 ## `VulnerabilityOwasp2025Top10`
@@ -6358,17 +6387,17 @@ The type of the issue link related to a vulnerability.
 
 | Value | Description |
 | ----- | ----------- |
-| `A01_2025` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>A01:2025-Broken Access Control, OWASP top 10 2025 category. |
-| `A02_2025` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>A02:2025-Security Misconfiguration, OWASP top 10 2025 category. |
-| `A03_2025` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>A03:2025-Software Supply Chain Failures, OWASP top 10 2025 category. |
-| `A04_2025` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>A04:2025-Cryptographic Failures, OWASP top 10 2025 category. |
-| `A05_2025` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>A05:2025-Injection, OWASP top 10 2025 category. |
-| `A06_2025` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>A06:2025-Insecure Design, OWASP top 10 2025 category. |
-| `A07_2025` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>A07:2025-Authentication Failures, OWASP top 10 2025 category. |
-| `A08_2025` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>A08:2025-Software or Data Integrity Failures, OWASP top 10 2025 category. |
-| `A09_2025` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>A09:2025-Security Logging and Alerting Failures, OWASP top 10 2025 category. |
-| `A10_2025` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>A10:2025-Mishandling of Exceptional Conditions, OWASP top 10 2025 category. |
-| `NONE` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>No OWASP top 10 2025 category. |
+| `A01_2025` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>A01:2025-Broken Access Control, OWASP top 10 2025 category. |
+| `A02_2025` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>A02:2025-Security Misconfiguration, OWASP top 10 2025 category. |
+| `A03_2025` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>A03:2025-Software Supply Chain Failures, OWASP top 10 2025 category. |
+| `A04_2025` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>A04:2025-Cryptographic Failures, OWASP top 10 2025 category. |
+| `A05_2025` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>A05:2025-Injection, OWASP top 10 2025 category. |
+| `A06_2025` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>A06:2025-Insecure Design, OWASP top 10 2025 category. |
+| `A07_2025` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>A07:2025-Authentication Failures, OWASP top 10 2025 category. |
+| `A08_2025` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>A08:2025-Software or Data Integrity Failures, OWASP top 10 2025 category. |
+| `A09_2025` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>A09:2025-Security Logging and Alerting Failures, OWASP top 10 2025 category. |
+| `A10_2025` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>A10:2025-Mishandling of Exceptional Conditions, OWASP top 10 2025 category. |
+| `NONE` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.0.<br/><br/>No OWASP top 10 2025 category. |
 
 ## `VulnerabilityOwaspTop10`
 
@@ -6576,9 +6605,9 @@ Action that triggered a work item change event.
 
 | Value | Description |
 | ----- | ----------- |
-| `CREATED` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Work item was created. |
-| `DELETED` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Work item was deleted. |
-| `UPDATED` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Work item was updated. |
+| `CREATED` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Work item was created. |
+| `DELETED` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Work item was deleted. |
+| `UPDATED` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Work item was updated. |
 
 ## `WorkItemDecisionState`
 
@@ -6626,37 +6655,37 @@ Values for sorting work items.
 | ----- | ----------- |
 | `BLOCKING_ISSUES_ASC` | Blocking items count by ascending order. |
 | `BLOCKING_ISSUES_DESC` | Blocking items count by descending order. |
-| `CLOSED_AT_ASC` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.10.<br/><br/>Closed time by ascending order. |
-| `CLOSED_AT_DESC` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.10.<br/><br/>Closed time by descending order. |
+| `CLOSED_AT_ASC` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 17.10.<br/><br/>Closed time by ascending order. |
+| `CLOSED_AT_DESC` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 17.10.<br/><br/>Closed time by descending order. |
 | `CREATED_ASC` | Created at ascending order. |
 | `CREATED_DESC` | Created at descending order. |
-| `DUE_DATE_ASC` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.9.<br/><br/>Due date by ascending order. |
-| `DUE_DATE_DESC` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.9.<br/><br/>Due date by descending order. |
-| `ESCALATION_STATUS_ASC` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.10.<br/><br/>Status from triggered to resolved. |
-| `ESCALATION_STATUS_DESC` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.10.<br/><br/>Status from resolved to triggered. |
-| `HEALTH_STATUS_ASC` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.11.<br/><br/>Health status by ascending order. |
-| `HEALTH_STATUS_DESC` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.11.<br/><br/>Health status by descending order. |
+| `DUE_DATE_ASC` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 17.9.<br/><br/>Due date by ascending order. |
+| `DUE_DATE_DESC` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 17.9.<br/><br/>Due date by descending order. |
+| `ESCALATION_STATUS_ASC` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 17.10.<br/><br/>Status from triggered to resolved. |
+| `ESCALATION_STATUS_DESC` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 17.10.<br/><br/>Status from resolved to triggered. |
+| `HEALTH_STATUS_ASC` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 17.11.<br/><br/>Health status by ascending order. |
+| `HEALTH_STATUS_DESC` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 17.11.<br/><br/>Health status by descending order. |
 | `LABEL_PRIORITY_ASC` | Label priority by ascending order. |
 | `LABEL_PRIORITY_DESC` | Label priority by descending order. |
 | `MILESTONE_DUE_ASC` | Milestone due date by ascending order. |
 | `MILESTONE_DUE_DESC` | Milestone due date by descending order. |
-| `POPULARITY_ASC` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.10.<br/><br/>Number of upvotes (awarded "thumbs up" emoji) by ascending order. |
-| `POPULARITY_DESC` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.10.<br/><br/>Number of upvotes (awarded "thumbs up" emoji) by descending order. |
-| `PRIORITY_ASC` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.10.<br/><br/>Priority by ascending order. |
-| `PRIORITY_DESC` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.10.<br/><br/>Priority by descending order. |
-| `RELATIVE_POSITION_ASC` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.10.<br/><br/>Relative position by ascending order. |
-| `SEVERITY_ASC` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.10.<br/><br/>Severity from less critical to more critical. |
-| `SEVERITY_DESC` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.10.<br/><br/>Severity from more critical to less critical. |
-| `START_DATE_ASC` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.9.<br/><br/>Start date by ascending order. |
-| `START_DATE_DESC` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.9.<br/><br/>Start date by descending order. |
-| `STATUS_ASC` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.3.<br/><br/>Status by ascending order. |
-| `STATUS_DESC` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.3.<br/><br/>Status by descending order. |
+| `POPULARITY_ASC` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 17.10.<br/><br/>Number of upvotes (awarded "thumbs up" emoji) by ascending order. |
+| `POPULARITY_DESC` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 17.10.<br/><br/>Number of upvotes (awarded "thumbs up" emoji) by descending order. |
+| `PRIORITY_ASC` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 17.10.<br/><br/>Priority by ascending order. |
+| `PRIORITY_DESC` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 17.10.<br/><br/>Priority by descending order. |
+| `RELATIVE_POSITION_ASC` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 17.10.<br/><br/>Relative position by ascending order. |
+| `SEVERITY_ASC` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 17.10.<br/><br/>Severity from less critical to more critical. |
+| `SEVERITY_DESC` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 17.10.<br/><br/>Severity from more critical to less critical. |
+| `START_DATE_ASC` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 17.9.<br/><br/>Start date by ascending order. |
+| `START_DATE_DESC` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 17.9.<br/><br/>Start date by descending order. |
+| `STATUS_ASC` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.3.<br/><br/>Status by ascending order. |
+| `STATUS_DESC` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.3.<br/><br/>Status by descending order. |
 | `TITLE_ASC` | Title by ascending order. |
 | `TITLE_DESC` | Title by descending order. |
 | `UPDATED_ASC` | Updated at ascending order. |
 | `UPDATED_DESC` | Updated at descending order. |
-| `WEIGHT_ASC` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.11.<br/><br/>Weight by ascending order. |
-| `WEIGHT_DESC` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.11.<br/><br/>Weight by descending order. |
+| `WEIGHT_ASC` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 17.11.<br/><br/>Weight by ascending order. |
+| `WEIGHT_DESC` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 17.11.<br/><br/>Weight by descending order. |
 | `created_asc` | Deprecated in GitLab 13.5. Renamed. Use `CREATED_ASC` instead. |
 | `created_desc` | Deprecated in GitLab 13.5. Renamed. Use `CREATED_DESC` instead. |
 | `updated_asc` | Deprecated in GitLab 13.5. Renamed. Use `UPDATED_ASC` instead. |

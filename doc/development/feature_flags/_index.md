@@ -34,8 +34,8 @@ Moved to the ["When to use feature flags"](https://handbook.gitlab.com/handbook/
 
 Feature flags are internal implementation details and are not part of the public API contract.
 External API consumers (such as IDE extensions, Duo CLI, and CI integrations) that query feature
-flags via the GraphQL [`metadata.featureFlags`](../../api/graphql/reference/_index.md#metadatafeatureflags)
-field or the deprecated [`featureFlagEnabled`](../../api/graphql/reference/_index.md#queryfeatureflagenabled)
+flags via the GraphQL [`metadata.featureFlags`](../../api/graphql/reference/objects.md#metadata)
+field or the deprecated [`featureFlagEnabled`](../../api/graphql/reference/queries.md#featureflagenabled)
 field face a specific risk: when a flag is removed from the monolith, external consumers may not
 have been updated yet, which can range from a minor UI issue to a customer-impacting incident.
 

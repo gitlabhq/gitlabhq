@@ -12,7 +12,7 @@ module Tooling
         # Table cells cannot contain Markdown paragraphs, so descriptions rendered
         # in tables separate paragraphs with HTML line breaks instead.
         TABLE_PARAGRAPH_BREAK = '<br/><br/>'
-        EXPERIMENT_LINK = '../../../../policy/development_stages_support.md#experiment'
+        EXPERIMENT_LINK = '../../../policy/development_stages_support.md#experiment'
 
         def sorted_by_name(collection)
           collection.sort_by(&:name)

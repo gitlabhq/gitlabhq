@@ -65,18 +65,18 @@ To remove your event from the AI usage tracking system:
 
 1. Remove all transformation blocks from the `AiTracking` definition.
 1. Change the event definition to `deprecated_events(troubleshoot_job: 7)`, which will reserve ID and name for old data.
-1. Regenerate the GraphQL docs with `bundle exec rake gitlab:graphql:compile_docs`.
+1. Regenerate the GraphQL docs with `bundle exec rake gitlab:graphql:update_all`.
 
 You can completely remove definition in `AiTracking` only if you are sure no data with such ID exists anymore in databases or buffers.
 
 ## GraphQL exposure
 
 All events declared for AI tracking can be automatically exposed
-in the [`AiUsageData.all`](../../api/graphql/reference/_index.md#aiusagedata) GraphQL field.
+in the [`AiUsageData.all`](../../api/graphql/reference/objects.md#aiusagedata) GraphQL field.
 To make this field support your new event type:
 
 1. Add your event type to `enum` of types in `ee/app/graphql/types/analytics/ai_usage/ai_usage_event_type_enum.rb`.
-1. Regenerate the GraphQL docs with `bundle exec rake gitlab:graphql:compile_docs`.
+1. Regenerate the GraphQL docs with `bundle exec rake gitlab:graphql:update_all`.
 
 You must perform this action manually to prevent occasional breaking changes to the API when
 editing or removing events.

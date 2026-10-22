@@ -7,7 +7,7 @@ module Tooling
   module Graphql
     module Docs
       class Compiler
-        OUTPUT_DIR = Rails.root.join('doc/api/graphql/reference/experimental')
+        OUTPUT_DIR = Rails.root.join('doc/api/graphql/reference')
 
         CompiledDoc = Struct.new(:filename, :doc, keyword_init: true)
 

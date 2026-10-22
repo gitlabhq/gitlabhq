@@ -3,8 +3,6 @@
 module API
   module WorkItems
     class Discussions < ::API::Base
-      include PaginationParams
-
       before { authenticate! }
       before { check_work_item_rest_api_feature_flag! }
 
@@ -12,6 +10,7 @@ module API
       urgency :low
 
       helpers ::API::Helpers::WorkItems::Authorization
+      helpers ::API::Helpers::WorkItems::CursorPaginationParams
       helpers ::API::Helpers::WorkItems::Preloads
       helpers ::API::Helpers::WorkItems::Rendering
       helpers ::API::Helpers::NotesHelpers
@@ -31,9 +30,7 @@ module API
             values: UserPreference::NOTES_FILTERS.stringify_keys.keys,
             default: 'all_notes',
             desc: 'Filter discussions by note type. Supported values: all_notes, only_comments, only_activity.'
-          optional :cursor, type: String, desc: 'Cursor for keyset pagination.'
-          optional :per_page, type: Integer, default: 20, except_values: [0],
-            desc: 'Number of discussions to return per page (maximum 100).'
+          use :work_items_cursor_pagination_params
         end
 
         def render_discussions_for(parent_work_item)

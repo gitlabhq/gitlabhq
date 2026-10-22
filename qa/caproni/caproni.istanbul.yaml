@@ -1,0 +1,16 @@
+# yaml-language-server: $schema=https://gitlab.com/gitlab-org/caproni/-/raw/main/schema/config.v2.schema.json
+# Frontend coverage for the E2E code paths mapping, on scheduled master runs only.
+#
+# Opt-in. A job enables it from caproni.local.yaml with BABEL_ENV=istanbul:
+#
+#   extends:
+#     - caproni.istanbul.yaml
+
+deployers:
+  gitlab:
+    helm:
+      # The layout reads BABEL_ENV at runtime to load coverage_persistence
+      dynamic_overrides:
+        - type: inline
+          value_map:
+            global.extraEnv.BABEL_ENV: istanbul

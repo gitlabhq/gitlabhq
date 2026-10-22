@@ -14,12 +14,25 @@ RSpec.describe Groups::Registry::RepositoriesController, feature_category: :cont
   end
 
   describe 'GET groups/:group_id/-/container_registries.json' do
-    subject do
+    subject(:index_response) do
       get group_container_registries_path(group_id: group)
       response
     end
 
-    it { is_expected.to have_gitlab_http_status(:ok) }
+    it 'renders the page with its title and the group data attributes on the app root' do
+      expect(index_response).to have_gitlab_http_status(:ok)
+      expect(index_response.body).to include("<title>#{_('Container registry')}")
+
+      app_root = Nokogiri::HTML(index_response.body).at_css('#js-container-registry')
+
+      expect(app_root.to_h).to include(
+        'data-endpoint' => "/groups/#{group.full_path}/-/container_registries",
+        'data-is-group-page' => 'true',
+        'data-group-path' => group.full_path
+      )
+    end
+
+    it_behaves_like 'container registry app root with registry errors'
 
     it 'avoids N+1 queries' do
       project = create(:project, group: group)

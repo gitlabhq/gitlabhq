@@ -38,6 +38,10 @@ module Gitlab
             ::AuthHelper.saml_providers.any?
           end
 
+          def sign_in_enabled?
+            ::AuthHelper.saml_providers.any? { |provider| Gitlab::Auth::OAuth::Provider.sign_in_enabled?(provider) }
+          end
+
           def default_attribute_statements
             defaults = OmniAuth::Strategies::SAML.default_options[:attribute_statements].to_hash.deep_symbolize_keys
             defaults[:nickname] = DEFAULT_NICKNAME_ATTRS.dup

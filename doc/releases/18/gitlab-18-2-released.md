@@ -567,7 +567,7 @@ Reachable vulnerabilities represent vulnerabilities that are both:
 
 - Tier: Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Links: [Documentation](../../api/graphql/reference/_index.md#vulnerability) | [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/468913)
+- Links: [Documentation](../../api/graphql/reference/objects.md#vulnerability) | [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/468913)
 
 {{< /details >}}
 

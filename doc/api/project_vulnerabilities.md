@@ -27,7 +27,7 @@ description: Project Vulnerabilities API for listing and creating project vulner
 > This API is in the process of being deprecated and considered unstable.
 > The response payload may be subject to change or breakage
 > across GitLab releases. Use the
-> [GraphQL API](graphql/reference/_index.md#queryvulnerabilities)
+> [GraphQL API](graphql/reference/queries.md#vulnerabilities)
 > instead.
 
 Use this API to manage [project vulnerabilities](../user/application_security/vulnerabilities/_index.md).

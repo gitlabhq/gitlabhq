@@ -291,7 +291,7 @@ To apply a security configuration profile:
    For example: `gid://gitlab/Security::ScanProfile/dependency_scanning_post_processing`.
 
    For more information, see the
-   [`Group.availableSecurityScanProfiles` field](../../../api/graphql/reference/_index.md#groupavailablesecurityscanprofiles).
+   [`Group.availableSecurityScanProfiles` field](../../../api/graphql/reference/objects.md#group).
 
 1. Apply the profile with the `securityScanProfileAttach` mutation, using the virtual ID or
    the real ID of the profile you want:
@@ -308,7 +308,7 @@ To apply a security configuration profile:
 ```
 
    For more information, see the
-   [`securityScanProfileAttach` mutation](../../../api/graphql/reference/_index.md#mutationsecurityscanprofileattach).
+   [`securityScanProfileAttach` mutation](../../../api/graphql/reference/mutations.md#securityscanprofileattach).
 
 1. To choose where the profile applies, set one or both of these arguments:
    - `projectIds`: Applies the profile to specific projects.
@@ -401,7 +401,7 @@ By default, the `stripDefaults` argument removes trigger configuration values th
 defaults before storing the profile, so only your overrides persist.
 
 For the full list of arguments, see the
-[`securityScanProfileCreate` mutation](../../../api/graphql/reference/_index.md#mutationsecurityscanprofilecreate).
+[`securityScanProfileCreate` mutation](../../../api/graphql/reference/mutations.md#securityscanprofilecreate).
 
 ## Customize a SAST profile
 
@@ -485,7 +485,7 @@ By default, the `stripDefaults` argument removes trigger configuration values th
 defaults before storing the profile, so only your overrides are persisted.
 
 For the full list of arguments, see the
-[`securityScanProfileCreate` mutation](../../../api/graphql/reference/_index.md#mutationsecurityscanprofilecreate).
+[`securityScanProfileCreate` mutation](../../../api/graphql/reference/mutations.md#securityscanprofilecreate).
 
 ## Customize a dependency scanning profile
 
@@ -573,7 +573,7 @@ You can set only one configuration member per trigger, and it must match the pro
 For a dependency scanning profile, that member is `dependencyScanning`.
 
 For the full list of arguments, see the
-[`securityScanProfileCreate` mutation](../../../api/graphql/reference/_index.md#mutationsecurityscanprofilecreate).
+[`securityScanProfileCreate` mutation](../../../api/graphql/reference/mutations.md#securityscanprofilecreate).
 
 ## Coverage status indicators
 

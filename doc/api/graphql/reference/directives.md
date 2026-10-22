@@ -23,7 +23,7 @@ in a GraphQL document. For more information, see the
 > [!warning]
 > Deprecated items are planned to be removed in a
 > future release. For more information, see the GitLab
-> [deprecation process](../../_index.md#deprecation-and-removal-process).
+> [deprecation process](../_index.md#deprecation-and-removal-process).
 
 ## `deprecated`
 

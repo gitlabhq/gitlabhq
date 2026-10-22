@@ -63,6 +63,20 @@ class Key < ApplicationRecord
 
   scope :preload_users, -> { preload(:user) }
   scope :for_user, ->(user) { where(user: user) }
+  scope :for_organization, ->(organization) { where(organization: organization) }
+  # Keys usable by a project in `organization`: an isolated organization only uses its own keys,
+  # any other organization uses keys from every organization that is not isolated.
+  scope :within_organization_boundary, ->(organization) do
+    if organization.isolated?
+      for_organization(organization)
+    else
+      where_not_exists(
+        Organizations::OrganizationIsolation
+          .where(isolated: true)
+          .where(Organizations::OrganizationIsolation.arel_table[:organization_id].eq(arel_table[:organization_id]))
+      )
+    end
+  end
   scope :order_last_used_at_desc, -> { reorder(arel_table[:last_used_at].desc.nulls_last) }
   scope :auth, -> { where(usage_type: [:auth, :auth_and_signing]) }
   scope :signing, -> { where(usage_type: [:signing, :auth_and_signing]) }
@@ -170,6 +184,13 @@ class Key < ApplicationRecord
 
   def regular_key?
     type.in?(self.class.regular_key_types)
+  end
+
+  # Whether a project in `other_organization` may use this key. Non-isolated organizations are not a boundary.
+  def within_organization_boundary?(other_organization)
+    return true if organization_id == other_organization.id
+
+    organization.not_isolated? && other_organization.not_isolated?
   end
 
   private

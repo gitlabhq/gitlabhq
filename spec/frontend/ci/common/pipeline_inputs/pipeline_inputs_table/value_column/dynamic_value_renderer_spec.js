@@ -1,5 +1,11 @@
+import {
+  GlCollapsibleListbox,
+  GlFormGroup,
+  GlFormInput,
+  GlFormTextarea,
+  GlSprintf,
+} from '@gitlab/ui';
 import { nextTick } from 'vue';
-import { GlCollapsibleListbox, GlFormInput, GlFormTextarea } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import DynamicValueRenderer from '~/ci/common/pipeline_inputs/pipeline_inputs_table/value_column/dynamic_value_renderer.vue';
 import BooleanCell from '~/ci/common/pipeline_inputs/pipeline_inputs_table/value_column/boolean_cell.vue';
@@ -18,17 +24,21 @@ describe('DynamicValueRenderer', () => {
         ...props,
       },
       stubs: {
+        GlFormGroup,
         GlFormInput,
         GlFormTextarea,
+        GlSprintf,
       },
     });
   };
 
   const findBooleanCellComponent = () => wrapper.findComponent(BooleanCell);
   const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
+  const findFormGroup = () => wrapper.findComponent(GlFormGroup);
   const findInput = () => wrapper.findComponent(GlFormInput);
   const findTextarea = () => wrapper.findComponent(GlFormTextarea);
   const findValidationFeedback = () => wrapper.findByTestId('validation-feedback');
+  const findPattern = () => wrapper.findByTestId('input-pattern');
 
   const getInputType = (type, hasOptions) => {
     if (hasOptions) return 'dropdown';
@@ -283,13 +293,67 @@ describe('DynamicValueRenderer', () => {
     });
   });
 
+  describe('pattern', () => {
+    describe('when the input defines a regex', () => {
+      beforeEach(() => {
+        createComponent({ props: { item: { ...defaultProps.item, regex: '^[a-z]+$' } } });
+      });
+
+      it('renders the pattern', () => {
+        expect(findPattern().exists()).toBe(true);
+        expect(findPattern().text()).toBe('Pattern: ^[a-z]+$');
+      });
+
+      it('accepts a value the regex rejects', async () => {
+        await setInputValue('123');
+
+        expect(findInput().element.checkValidity()).toBe(true);
+        expect(findValidationFeedback().exists()).toBe(false);
+      });
+    });
+
+    describe('when the input defines no regex', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('does not render the pattern', () => {
+        expect(findPattern().exists()).toBe(false);
+      });
+    });
+
+    describe('when the input has options and regex', () => {
+      beforeEach(() => {
+        createComponent({
+          props: { item: { ...defaultProps.item, regex: '^[a-z]+$', options: ['a', 'b'] } },
+        });
+      });
+
+      it('renders the pattern', () => {
+        expect(findPattern().exists()).toBe(true);
+      });
+    });
+  });
+
+  describe('form group association', () => {
+    it.each([
+      ['text input', {}, () => findInput().attributes('id')],
+      ['number input', { type: 'NUMBER' }, () => findInput().attributes('id')],
+      ['textarea', { type: 'ARRAY' }, () => findTextarea().attributes('id')],
+      ['dropdown toggle', { options: ['a', 'b'] }, () => findDropdown().props('toggleId')],
+    ])('sets labelFor to the %s id', (_, itemProps, controlId) => {
+      createComponent({ props: { item: { ...defaultProps.item, ...itemProps } } });
+
+      expect(findFormGroup().attributes('labelfor')).toBe(controlId());
+    });
+  });
+
   describe('validation', () => {
     describe('attributes', () => {
       it.each`
-        description                     | itemProps              | attribute            | expectedValue
-        ${'regex pattern attribute'}    | ${{ regex: '[a-z]+' }} | ${'pattern'}         | ${'[a-z]+'}
-        ${'number type data attribute'} | ${{ type: 'NUMBER' }}  | ${'data-field-type'} | ${'NUMBER'}
-        ${'json array data attribute'}  | ${{ type: 'ARRAY' }}   | ${'data-json-array'} | ${'true'}
+        description                     | itemProps             | attribute            | expectedValue
+        ${'number type data attribute'} | ${{ type: 'NUMBER' }} | ${'data-field-type'} | ${'NUMBER'}
+        ${'json array data attribute'}  | ${{ type: 'ARRAY' }}  | ${'data-json-array'} | ${'true'}
       `('applies $description to input', ({ itemProps, attribute, expectedValue }) => {
         createComponent({
           props: {
@@ -333,26 +397,6 @@ describe('DynamicValueRenderer', () => {
 
         expect(findValidationFeedback().exists()).toBe(true);
         expect(findValidationFeedback().text()).toContain('This is required and must be defined.');
-      });
-
-      it('includes pattern information in validation feedback for regex errors', async () => {
-        const regex = '[a-z]+';
-        createComponent({
-          props: {
-            item: {
-              ...defaultProps.item,
-              regex,
-            },
-          },
-        });
-
-        await setInputValue('123');
-
-        expect(findValidationFeedback().exists()).toBe(true);
-        expect(findValidationFeedback().text()).toContain(
-          'The value must match the defined regular expression.',
-        );
-        expect(findValidationFeedback().text()).toContain(`Pattern: ${regex}`);
       });
     });
   });

@@ -41,6 +41,7 @@ export default {
     return {
       commit: {},
       hasError: false,
+      notFound: false,
     };
   },
 
@@ -54,6 +55,10 @@ export default {
         };
       },
       update: (data) => data.project?.repository?.commit ?? {},
+      result({ data, loading }) {
+        // No record means it does not exist or the viewer cannot read it: show nothing.
+        if (!loading && data) this.notFound = !data.project?.repository?.commit;
+      },
       error() {
         this.hasError = true;
       },
@@ -81,6 +86,7 @@ export default {
 
 <template>
   <gl-popover
+    v-if="!notFound"
     :target="target"
     boundary="viewport"
     placement="top"

@@ -14,7 +14,7 @@ title: Alert management alerts API
 
 Use this API to interact with metric images for [alerts](../operations/incident_management/alerts.md).
 
-Additional endpoints are available with the [GraphQL API](graphql/reference/_index.md#alertmanagementalert).
+Additional endpoints are available with the [GraphQL API](graphql/reference/objects.md#alertmanagementalert).
 
 ## Upload metric image
 

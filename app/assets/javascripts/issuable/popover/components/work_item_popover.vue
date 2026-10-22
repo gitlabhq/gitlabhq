@@ -85,6 +85,7 @@ export default {
     return {
       shouldFetch: false,
       workItem: null,
+      notFound: false,
     };
   },
   apollo: {
@@ -107,6 +108,10 @@ export default {
       update: (data) => data.namespace?.workItem,
       skip() {
         return !this.shouldFetch;
+      },
+      result({ data, loading }) {
+        // No record means it does not exist or the viewer cannot read it: show nothing.
+        if (!loading && data) this.notFound = !data.namespace?.workItem;
       },
     },
   },
@@ -168,6 +173,7 @@ export default {
 
 <template>
   <gl-popover
+    v-if="!notFound"
     :target="target"
     boundary="viewport"
     placement="top"

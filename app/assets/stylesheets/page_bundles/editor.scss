@@ -111,18 +111,6 @@
   }
 }
 
-.blob-new-page-title,
-.blob-edit-page-title {
-  margin: 19px 0 21px;
-  vertical-align: top;
-  display: inline-block;
-
-  @include gl-container-width-down(lg, panel) {
-    display: block;
-    margin: 19px 0 12px;
-  }
-}
-
 .template-selectors-menu {
   display: flex;
   vertical-align: top;

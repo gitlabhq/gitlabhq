@@ -155,7 +155,7 @@ To add a group or project to the allowlist:
 1. Select **Group or project**
 1. Input the path to the group or project to add to the allowlist, and select **Add**.
 
-You can also add a group or project to the allowlist [with the API](../../api/graphql/reference/_index.md#mutationcijobtokenscopeaddgrouporproject).
+You can also add a group or project to the allowlist [with the API](../../api/graphql/reference/mutations.md#cijobtokenscopeaddgrouporproject).
 
 ### Limit job token scope for public or internal projects
 
@@ -230,7 +230,7 @@ To disable the job token allowlist:
 1. Select **All groups and projects**.
 1. Recommended. When finished testing, select **This project and any groups and projects in the allowlist** to re-enable the job token allowlist.
 
-You can also modify this setting with the [GraphQL](../../api/graphql/reference/_index.md#mutationprojectcicdsettingsupdate)
+You can also modify this setting with the [GraphQL](../../api/graphql/reference/mutations.md#projectcicdsettingsupdate)
 (`inboundJobTokenScopeEnabled`) or [REST](../../api/project_job_token_scopes.md#update-the-cicd-job-token-access-settings-for-a-project) API.
 
 ### Allow Git push requests to your project repository

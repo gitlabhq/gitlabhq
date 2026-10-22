@@ -29,7 +29,7 @@
   self-managed: true
   gitlab-com: true
   available_in: [Ultimate]
-  documentation_link: https://docs.gitlab.com/api/graphql/reference/#codesuggestionevent
+  documentation_link: https://docs.gitlab.com/api/graphql/reference/objects/#codesuggestionevent
   published_at: 2024-10-17
   release: "17.5"
 

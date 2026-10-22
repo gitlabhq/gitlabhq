@@ -175,7 +175,7 @@ You can apply multiple compliance frameworks to a project but cannot apply compl
 To apply a compliance framework to a project, apply the compliance framework through the
 [compliance projects report](../compliance_center/compliance_projects_report.md#apply-a-compliance-framework-to-projects-in-a-group).
 
-You can use the [GraphQL API](../../../api/graphql/reference/_index.md#mutationprojectupdatecomplianceframeworks) to apply one or many
+You can use the [GraphQL API](../../../api/graphql/reference/mutations.md#projectupdatecomplianceframeworks) to apply one or many
 compliance frameworks to a project.
 
 If you create compliance frameworks on subgroups with GraphQL, the framework is created on the root ancestor if the user

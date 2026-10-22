@@ -55,22 +55,3 @@
   width: 180px;
   min-width: 180px;
 }
-
-.discussion-toggle-button {
-  padding: 0 $gl-padding-8 0 0;
-  background-color: transparent;
-  border: 0;
-  line-height: 20px;
-  font-size: 13px;
-  transition: color 0.1s linear;
-
-  &:hover,
-  &:focus-visible {
-    @apply gl-text-link;
-  }
-
-  &:focus-visible {
-    text-decoration: underline;
-    outline: none;
-  }
-}

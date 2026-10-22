@@ -132,10 +132,13 @@ RSpec.shared_examples 'a work item discussions endpoint' do
       expect(response.headers['X-Next-Cursor']).to be_present
     end
 
-    it 'rejects a per_page value of 0' do
-      get api(api_request_path, user), params: { per_page: 0 }
+    it 'returns 400 when per_page is outside 1..100' do
+      [0, -1, 101].each do |per_page|
+        get api(api_request_path, user), params: { per_page: per_page }
 
-      expect(response).to have_gitlab_http_status(:bad_request)
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to include('per_page')
+      end
     end
   end
 

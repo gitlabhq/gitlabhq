@@ -556,7 +556,7 @@ To prevent group members and users from publishing duplicate NuGet packages, tur
 1. Optional. In the **Exceptions** text box, enter a regular expression that matches the names and versions of packages to allow.
 
 You can also turn off duplicate NuGet packages with the
-`nuget_duplicates_allowed` setting in the [GraphQL API](../../../api/graphql/reference/_index.md#packagesettings).
+`nuget_duplicates_allowed` setting in the [GraphQL API](../../../api/graphql/reference/objects.md#packagesettings).
 
 > [!warning]
 > If the `.nuspec` file is not located in the root of the package
@@ -732,7 +732,7 @@ can push symbol files.
 
 To use the symbol server:
 
-1. Enable the `nuget_symbol_server_enabled` namespace setting with the [GraphQL API](../../../api/graphql/reference/_index.md#packagesettings).
+1. Enable the `nuget_symbol_server_enabled` namespace setting with the [GraphQL API](../../../api/graphql/reference/objects.md#packagesettings).
 1. Configure your debugger to use the symbol server.
 
 For example, to configure Visual Studio as your debugger:

@@ -5,7 +5,7 @@ external_docs: https://docs.gitlab.com/api/vulnerabilities/
 > [!warning]
 > These endpoints are in the process of being deprecated and are considered unstable.
 > The response payload may be subject to change or breakage across GitLab releases. Use the
-> [GraphQL API](../../../../doc/api/graphql/reference/_index.md#queryvulnerabilities) instead.
+> [GraphQL API](../../../../doc/api/graphql/reference/queries.md#vulnerabilities) instead.
 > For more information, see [replace vulnerability REST API with GraphQL](../../../../doc/api/vulnerabilities.md#replace-vulnerability-rest-api-with-graphql).
 
 Use this API to manage [vulnerabilities](../../../../doc/user/application_security/vulnerabilities/_index.md),

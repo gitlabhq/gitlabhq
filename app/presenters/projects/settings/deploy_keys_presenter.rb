@@ -41,9 +41,12 @@ module Projects
       # - Enabled deploy keys in projects that can be accessed by the user.
       # It excludes:
       # - The deploy keys enabled in the project
+      # - Keys outside the project's organization boundary.
       def available_project_keys
         strong_memoize(:available_project_keys) do
-          current_user.project_deploy_keys.with_projects - enabled_keys
+          current_user.project_deploy_keys
+            .within_organization_boundary(project.organization)
+            .with_projects - enabled_keys
         end
       end
 
@@ -51,9 +54,10 @@ module Projects
       # - Instance-level public deploy keys.
       # It excludes:
       # - The deploy keys enabled in the project.
+      # - Keys outside the project's organization boundary.
       def available_public_keys
         strong_memoize(:available_public_keys) do
-          DeployKey.are_public.with_projects - enabled_keys
+          DeployKey.are_public.within_organization_boundary(project.organization).with_projects - enabled_keys
         end
       end
 

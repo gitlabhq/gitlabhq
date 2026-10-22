@@ -1231,7 +1231,6 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
             "AwardEmoji",
             "BulkImport",
             "DeployKey",
-            "Doorkeeper::AccessToken",
             "Key",
             "OauthAccessGrant",
             "OauthAccessToken",
@@ -1273,6 +1272,7 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
               'BulkImports::Export',
               'Clusters::Cluster',
               'Dependencies::DependencyListExport',
+              'Doorkeeper::AccessToken',
               'GitlabSubscriptions::AddOnPurchase',
               'GitlabSubscriptions::SeatAssignment',
               'GitlabSubscriptions::UserAddOnAssignment',
@@ -1324,6 +1324,24 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
             skipped_models = described_class.skipped_transfer_models
 
             expect(model_names & skipped_models).to be_empty
+          end
+
+          # update_organization_id_for filters on the user foreign key without ORDER BY, so each model
+          # needs a full (non-partial) index leading with that key, or with the organization and that key.
+          it 'has an index on the user foreign key of each model' do
+            models_without_index = described_class.migratable_models.reject do |model|
+              user_key = model.reflect_on_all_associations.find { |assoc| assoc.class_name == 'User' }.foreign_key.to_s
+
+              model.connection.indexes(model.table_name).any? do |index|
+                columns = Array(index.columns).map(&:to_s)
+
+                index.where.nil? && (columns.first == user_key || columns.first(2) == ['organization_id', user_key])
+              end
+            end
+
+            # oauth_access_tokens only has a partial resource_owner_id index (WHERE revoked_at IS NULL).
+            # The full index is tracked in https://gitlab.com/gitlab-org/gitlab/-/issues/633883.
+            expect(models_without_index.map(&:to_s)).to contain_exactly("OauthAccessToken")
           end
 
           def find_factory(model_class)

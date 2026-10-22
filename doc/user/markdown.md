@@ -1806,7 +1806,7 @@ This syntax also works in AsciiDoc wikis and files using `:stem: latexmath`. For
 the [Asciidoctor user manual](https://asciidoctor.org/docs/user-manual/#activating-stem-support).
 
 To prevent malicious activity, GitLab renders only the first 1000 inline math instances.
-You can disable this limit [for a group](../api/graphql/reference/_index.md#mutationgroupupdate)
+You can disable this limit [for a group](../api/graphql/reference/mutations.md#groupupdate)
 or for the entire [GitLab Self-Managed instance](../administration/instance_limits.md#math-rendering-limits).
 
 The number of math blocks is also limited based on render time. If the limit is exceeded,

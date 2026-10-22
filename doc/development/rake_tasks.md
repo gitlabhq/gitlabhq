@@ -486,28 +486,22 @@ complexity is a best-effort assessment of the upper bound.
 To generate GraphQL documentation based on the GitLab schema, run:
 
 ```shell
-bundle exec rake gitlab:graphql:compile_docs
+bundle exec rake gitlab:graphql:docs:compile
 ```
 
 In its current state, the Rake task:
 
-- Generates output for GraphQL objects.
-- Places the output at `doc/api/graphql/reference/_index.md`.
+- Generates output for GraphQL schema.
+- Places the output in `doc/api/graphql/reference`, with one page for each kind of schema item.
 
-This uses some features from `graphql-docs` gem like its schema parser and helper methods.
 The docs generator code comes from our side giving us more flexibility, like using Haml templates and generating Markdown files.
 
 To edit the content, you may need to edit the following:
 
-- The template. You can edit the template at `tooling/graphql/docs/templates/default.md.haml`.
-  The actual renderer is at `Tooling::Graphql::Docs::Renderer`.
+- The generator code and templates at `tooling/graphql/docs/`.
 - The applicable `description` field in the code, which
   [Updates machine-readable schema files](#update-machine-readable-schema-files),
   which is then used by the `rake` task described earlier.
-
-`@parsed_schema` is an instance variable that the `graphql-docs` gem expects to have available.
-`Gitlab::Graphql::Docs::Helper` defines the `object` method we use. This is also where you
-should implement any new methods for new types you'd like to display.
 
 ### Update machine-readable schema files
 

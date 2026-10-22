@@ -242,12 +242,8 @@ describe('IssuePopover component', () => {
       await waitForPromises();
     });
 
-    it('shows cached title', () => {
-      expect(wrapper.find('[data-testid="popover-title"]').text()).toBe(cachedTitle);
-    });
-
-    it('does not show status badge', () => {
-      expect(wrapper.findComponent(StatusBadge).exists()).toBe(false);
+    it('removes the popover so nothing shows for the reference', () => {
+      expect(findGlPopover().exists()).toBe(false);
     });
   });
 });

@@ -930,20 +930,18 @@ RSpec.describe Tooling::Graphql::DeprecatedDocs::Renderer, feature_category: :ap
       FileUtils.remove_entry(output_dir)
     end
 
-    it 'creates the output directory and writes contents to file' do
+    it 'does not write the deprecated documentation, so it cannot overwrite the current docs' do
       renderer = described_class.new(
         mock_schema,
         output_dir: output_dir,
         template: template
       )
 
-      expect(FileUtils).to receive(:mkdir_p).with(output_dir).and_call_original
-      expect(File).to receive(:write).with(expected_file, renderer.contents).and_call_original
+      expect(File).not_to receive(:write)
 
       renderer.write
 
-      expect(File.exist?(expected_file)).to be true
-      expect(File.read(expected_file)).to eq(renderer.contents)
+      expect(File.exist?(expected_file)).to be(false)
     end
   end
 end

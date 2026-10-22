@@ -171,7 +171,7 @@ To view details:
 1. Use the buttons to group the data by either of the following options:
    - **Severity**: Critical, high, medium, low, info, and unknown.
    - **Report type**: SAST, DAST, and dependency scanning and others.
-1. To explore data beyond 90 days, but within the last 365 days, use the [`SecurityMetrics.vulnerabilitiesOverTime` GraphQL API](../../../api/graphql/reference/_index.md#securitymetricsvulnerabilitiesovertime)
+1. To explore data beyond 90 days, but within the last 365 days, use the [`SecurityMetrics.vulnerabilitiesOverTime` GraphQL API](../../../api/graphql/reference/objects.md#securitymetrics)
 
 ![vulnerabilities over time](img/vulnerabilities_over_time_chart_v18_5.png)
 
@@ -485,7 +485,7 @@ To view the group security dashboard:
 1. In the left sidebar, select **Security** > **Security dashboard**.
 1. Hover over the **Vulnerabilities over time** chart to get more details about vulnerabilities.
    - You can display the vulnerability trends over a 30, 60, or 90-day time frame (the default is 90 days).
-   - To view aggregated data beyond a 90-day time frame, use the [`VulnerabilitiesCountByDay` GraphQL API](../../../api/graphql/reference/_index.md#vulnerabilitiescountbyday). GitLab retains the data for 365 days.
+   - To view aggregated data beyond a 90-day time frame, use the [`VulnerabilitiesCountByDay` GraphQL API](../../../api/graphql/reference/objects.md#vulnerabilitiescountbyday). GitLab retains the data for 365 days.
 
 1. Select the arrows under the **Project security status** section to see which projects fall under a particular letter-grade rating:
    - You can see how many vulnerabilities of a particular severity are found in a project

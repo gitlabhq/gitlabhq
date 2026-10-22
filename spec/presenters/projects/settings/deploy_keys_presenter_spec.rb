@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::Settings::DeployKeysPresenter do
+RSpec.describe Projects::Settings::DeployKeysPresenter, feature_category: :continuous_delivery do
   let_it_be_with_refind(:project) { create(:project) }
   let_it_be(:other_project) { create(:project) }
   let_it_be(:user) { create(:user, maintainer_of: [project, other_project]) }
@@ -46,6 +46,52 @@ RSpec.describe Projects::Settings::DeployKeysPresenter do
       it 'returns correct deploy keys' do
         expect(presenter.available_public_keys).to eq([public_deploy_key])
         expect(presenter.available_public_keys_size).to eq(1)
+      end
+    end
+
+    context 'with keys from other organizations' do
+      let_it_be(:isolated_organization) { create(:organization, :isolated) }
+      let_it_be(:isolated_user) { create(:user, organizations: [isolated_organization]) }
+      let_it_be(:isolated_project) do
+        create(:project, organization: isolated_organization, maintainers: isolated_user)
+      end
+
+      let_it_be(:other_isolated_project) do
+        create(:project, organization: isolated_organization, maintainers: isolated_user)
+      end
+
+      let_it_be(:other_organization_project_key) do
+        create(:deploy_key, organization: create(:organization), projects: [other_project, other_isolated_project])
+      end
+
+      let_it_be(:isolated_organization_project_key) do
+        create(:deploy_key, organization: isolated_organization, projects: [other_project, other_isolated_project])
+      end
+
+      let_it_be(:other_organization_public_key) do
+        create(:deploy_key, public: true, organization: create(:organization))
+      end
+
+      let_it_be(:isolated_organization_public_key) do
+        create(:deploy_key, public: true, organization: isolated_organization)
+      end
+
+      it 'excludes keys from isolated organizations', :aggregate_failures do
+        expect(presenter.available_project_keys).to contain_exactly(other_deploy_key, other_organization_project_key)
+        expect(presenter.available_project_keys_size).to eq(2)
+        expect(presenter.available_public_keys).to contain_exactly(public_deploy_key, other_organization_public_key)
+        expect(presenter.available_public_keys_size).to eq(2)
+      end
+
+      context 'when the project organization is isolated' do
+        subject(:presenter) { described_class.new(isolated_project, current_user: isolated_user) }
+
+        it 'returns only keys from the project organization', :aggregate_failures do
+          expect(presenter.available_project_keys).to contain_exactly(isolated_organization_project_key)
+          expect(presenter.available_project_keys_size).to eq(1)
+          expect(presenter.available_public_keys).to contain_exactly(isolated_organization_public_key)
+          expect(presenter.available_public_keys_size).to eq(1)
+        end
       end
     end
   end

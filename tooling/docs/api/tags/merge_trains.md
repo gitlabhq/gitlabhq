@@ -13,7 +13,7 @@ Responses do not include an explicit queue position, and return merge requests a
 than grouped by train:
 
 - For an exact queue position, sort by `id` in ascending order, or use the GraphQL API
-  [`MergeTrainCar.index`](../../../../doc/api/graphql/reference/_index.md#mergetraincar-index) field.
+  [`MergeTrainCar.index`](../../../../doc/api/graphql/reference/objects.md#mergetraincar) field.
 - To group merge requests by train, use the `target_branch` attribute, or query the GraphQL API
-  [`Project.mergeTrains`](../../../../doc/api/graphql/reference/_index.md#projectmergetrains) and
-  [`MergeTrain.cars`](../../../../doc/api/graphql/reference/_index.md#mergetraincars) fields.
+  [`Project.mergeTrains`](../../../../doc/api/graphql/reference/objects.md#project) and
+  [`MergeTrain.cars`](../../../../doc/api/graphql/reference/objects.md#mergetrain) fields.

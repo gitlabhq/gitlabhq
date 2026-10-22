@@ -41,6 +41,13 @@ RSpec.describe WriteLocalConfig do
         .not_to have_key('extends')
     end
 
+    it 'extends the Istanbul fragment only when BABEL_ENV is istanbul' do
+      expect(described_class.build(domain: domain, babel_env: 'istanbul'))
+        .to include('extends' => ['caproni.istanbul.yaml'])
+      expect(described_class.build(domain: domain, babel_env: ''))
+        .not_to have_key('extends')
+    end
+
     it 'extends every fragment a job opted into' do
       config = described_class.build(
         domain: domain, relative_url_root: '/relative', qa_scenario: 'Test::Integration::OAuth'

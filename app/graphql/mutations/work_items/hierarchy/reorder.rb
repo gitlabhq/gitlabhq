@@ -7,6 +7,8 @@ module Mutations
         graphql_name 'workItemsHierarchyReorder'
         description 'Reorder a work item in the hierarchy tree.'
 
+        RATE_LIMIT_KEY = :work_item_hierarchy_reorder
+
         authorize_granular_token permissions: :update_work_item,
           boundaries: [
             { boundary_argument: :id, boundary: :resource_parent, boundary_type: :project },
@@ -55,6 +57,8 @@ module Mutations
         end
 
         def resolve(**args)
+          check_rate_limit!
+
           arguments = {
             target_issuable: work_item,
             adjacent_work_item: adjacent_item,
@@ -74,6 +78,15 @@ module Mutations
         private
 
         attr_reader :work_item, :parent, :adjacent_item
+
+        def check_rate_limit!
+          return unless ::Feature.enabled?(:work_item_hierarchy_reorder_rate_limit, current_user)
+          return unless ::Gitlab::ApplicationRateLimiter.throttled?(RATE_LIMIT_KEY, scope: { user: current_user })
+
+          raise ::RateLimitedService::RateLimitedError.new(
+            key: RATE_LIMIT_KEY, rate_limiter: ::Gitlab::ApplicationRateLimiter
+          ), ::Gitlab::ApplicationRateLimiter.throttled_error_message
+        end
 
         def validate_parent!
           return unless adjacent_item

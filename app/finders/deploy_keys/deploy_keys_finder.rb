@@ -34,11 +34,14 @@ module DeployKeys
     end
 
     def available_project_keys
-      current_user.project_deploy_keys.with_projects.not_in(enabled_keys)
+      current_user.project_deploy_keys
+        .within_organization_boundary(project.organization)
+        .with_projects
+        .not_in(enabled_keys)
     end
 
     def available_public_keys
-      DeployKey.are_public.with_projects.not_in(enabled_keys)
+      DeployKey.are_public.within_organization_boundary(project.organization).with_projects.not_in(enabled_keys)
     end
 
     def empty

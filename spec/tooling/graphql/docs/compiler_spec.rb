@@ -271,7 +271,7 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
 
       {{< history >}}
 
-      - Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab #{milestone}.
+      - Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab #{milestone}.
 
       {{< /history >}}
     MD
@@ -471,7 +471,7 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
           | Name | Type | Description |
           | ---- | ---- | ----------- |
           | `deprecatedField` | [`String`](scalars.md#string) | Deprecated in GitLab 1.0. Use scalarField instead. |
-          | `experimentalField` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 2.0.<br/><br/>An experimental field. |
+          | `experimentalField` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 2.0.<br/><br/>An experimental field. |
           | `id` | [`ID`](scalars.md#id) | ID. |
         MD
       )
@@ -723,7 +723,7 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
           | Name | Type | Description | Default |
           | ---- | ---- | ----------- | ------- |
           | `deprecatedArg` | [`String`](scalars.md#string) | Deprecated in GitLab 1.0. Use scalarArg instead. |  |
-          | `experimentalArg` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 2.0.<br/><br/>An experimental argument. |  |
+          | `experimentalArg` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 2.0.<br/><br/>An experimental argument. |  |
           | `scalarArg` | [`String`](scalars.md#string) | A scalar argument. | `"the default"` |
         MD
       )
@@ -786,7 +786,7 @@ RSpec.describe Tooling::Graphql::Docs::Compiler, feature_category: :api do
           | Value | Description |
           | ----- | ----------- |
           | `DEPRECATED` | Deprecated in GitLab 1.0. Use PLAIN instead. |
-          | `EXPERIMENTAL` | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 2.0.<br/><br/>An experimental value. |
+          | `EXPERIMENTAL` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 2.0.<br/><br/>An experimental value. |
           | `PLAIN` | A plain value. |
         MD
       )

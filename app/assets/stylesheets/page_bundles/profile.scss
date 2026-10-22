@@ -137,19 +137,6 @@ $profile-grid-flex: 1fr;
   min-width: 1px; // grid overflow fix
 }
 
-.provider-btn-group {
-  display: inline-block;
-  margin-right: 10px;
-  margin-bottom: 10px;
-  border-radius: 3px;
-  @apply gl-border;
-
-  &:last-child {
-    margin-right: 0;
-    margin-bottom: 0;
-  }
-}
-
 .social-provider-btn-image {
   > img {
     width: 16px;

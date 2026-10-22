@@ -16,7 +16,7 @@ RSpec.shared_examples 'system hook delivery scoped to the organization' do |hook
   end
 
   it 'queues only the hooks of the organization', :aggregate_failures do
-    execute_system_hooks
+    expect { execute_system_hooks }.not_to query_system_hooks_without_organization_id
 
     expect(WebHookWorker).to have_received(:perform_async).with(organization_hook.id, any_args).once
     expect(WebHookWorker).not_to have_received(:perform_async).with(other_organization_hook.id, any_args)
@@ -44,10 +44,12 @@ RSpec.shared_examples 'system hook presence check scoped to the organization' do
     expect(system_hooks_active?).to be(false)
   end
 
-  it 'finds hooks of the organization' do
+  it 'finds hooks of the organization', :aggregate_failures do
     create(:system_hook, organization: organization, **hook_attributes)
+    active = nil
 
-    expect(system_hooks_active?).to be(true)
+    expect { active = system_hooks_active? }.not_to query_system_hooks_without_organization_id
+    expect(active).to be(true)
   end
 end
 
@@ -58,7 +60,9 @@ RSpec.shared_examples 'system hook listing scoped to the organization' do
   let!(:organization_hook) { create(:system_hook, organization: organization) }
 
   it 'lists only the hooks of the organization', :aggregate_failures do
-    ids = listed_system_hook_ids
+    ids = nil
+
+    expect { ids = listed_system_hook_ids }.not_to query_system_hooks_without_organization_id
 
     expect(ids).to include(organization_hook.id)
     expect(ids).not_to include(other_organization_hook.id)
@@ -73,10 +77,10 @@ RSpec.shared_examples 'system hook lookup scoped to the organization' do |hook_a
   let!(:other_organization_hook) { create(:system_hook, organization: other_organization, **hook_attributes) }
   let!(:organization_hook) { create(:system_hook, organization: organization, **hook_attributes) }
 
-  it 'finds a hook of the organization' do
+  it 'finds a hook of the organization', :aggregate_failures do
     stub_full_request(organization_hook.interpolated_url, method: :post)
 
-    request_system_hook(organization_hook)
+    expect { request_system_hook(organization_hook) }.not_to query_system_hooks_without_organization_id
 
     expect(response).to have_gitlab_http_status(:success).or have_gitlab_http_status(:redirect)
   end

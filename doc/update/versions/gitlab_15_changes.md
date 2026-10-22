@@ -1020,7 +1020,7 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
         ```
 
   1. Only then, continue to upgrade to later versions of GitLab.
-- Unauthenticated requests to the [`ciConfig` GraphQL field](../../api/graphql/reference/_index.md#queryciconfig) are no longer supported.
+- Unauthenticated requests to the [`ciConfig` GraphQL field](../../api/graphql/reference/queries.md#ciconfig) are no longer supported.
   Before you upgrade to GitLab 15.1, add an [access token](../../api/rest/authentication.md) to your requests.
   The user creating the token must have [permission](../../user/permissions.md) to create pipelines in the project.
 

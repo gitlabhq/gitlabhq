@@ -1396,7 +1396,7 @@ This distinction can cause jobs that currently pass to fail in GitLab 18.0.
 - Removal in GitLab 18.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/498671).
 
-In 18.0 we are removing the `duoProAssignedUsersCount` GraphQL field. Users may experience issues if they are using this field with the [`aiMetrics` API](https://docs.gitlab.com/api/graphql/reference/#aimetrics), and instead they can use the `duoAssignedUsersCount`. This removal is part of the [fix to count both GitLab Duo Pro and Duo seats assigned users](https://gitlab.com/gitlab-org/gitlab/-/issues/485510).
+In 18.0 we are removing the `duoProAssignedUsersCount` GraphQL field. Users may experience issues if they are using this field with the [`aiMetrics` API](https://docs.gitlab.com/api/graphql/reference/objects/#aimetrics), and instead they can use the `duoAssignedUsersCount`. This removal is part of the [fix to count both GitLab Duo Pro and Duo seats assigned users](https://gitlab.com/gitlab-org/gitlab/-/issues/485510).
 
 ### Rename `setPreReceiveSecretDetection` GraphQL mutation to `setSecretPushProtection`
 
@@ -1812,7 +1812,7 @@ In GitLab 11.11 the Windows Batch executor, the CMD shell was deprecated in GitL
 - Removal in GitLab 17.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/415185).
 
-These fields (`architectureName`, `ipAddress`, `platformName`, `revision`, `version`) are now deprecated from the [GraphQL `CiRunner`](https://docs.gitlab.com/api/graphql/reference/#cirunner) type as they are duplicated with the introduction of runner managers grouped within a runner configuration.
+These fields (`architectureName`, `ipAddress`, `platformName`, `revision`, `version`) are now deprecated from the [GraphQL `CiRunner`](https://docs.gitlab.com/api/graphql/reference/objects/#cirunner) type as they are duplicated with the introduction of runner managers grouped within a runner configuration.
 
 ### Deprecate `fmt` job in Terraform Module CI/CD template
 
@@ -3179,7 +3179,7 @@ From GitLab 16.0, when you search for environments with the API, you must use at
 - Announced in GitLab 15.9
 - Removal in GitLab 16.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
 
-In the [GraphQL API](https://docs.gitlab.com/api/graphql/), the `external` field of [`ReleaseAssetLink` type](https://docs.gitlab.com/api/graphql/reference/#releaseassetlink) was used to indicate whether a [release link](https://docs.gitlab.com/user/project/releases/release_fields/#links) is internal or external to your GitLab instance.
+In the [GraphQL API](https://docs.gitlab.com/api/graphql/), the `external` field of [`ReleaseAssetLink` type](https://docs.gitlab.com/api/graphql/reference/objects/#releaseassetlink) was used to indicate whether a [release link](https://docs.gitlab.com/user/project/releases/release_fields/#links) is internal or external to your GitLab instance.
 As of GitLab 15.9, we treat all release links as external, and therefore, this field is deprecated in GitLab 15.9, and will be removed in GitLab 16.0.
 To avoid any disruptions to your workflow, please stop using the `external` field because it will be removed and will not be replaced.
 
@@ -3820,7 +3820,7 @@ Previously, the [`PipelineSecurityReportFinding` GraphQL type was updated](https
 - Removal in GitLab 16.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/334018).
 
-The `started` iteration state in the [iterations GraphQL API](https://docs.gitlab.com/api/graphql/reference/#iterationstate)
+The `started` iteration state in the [iterations GraphQL API](https://docs.gitlab.com/api/graphql/reference/enums/#iterationstate)
 and [iterations REST API](https://docs.gitlab.com/api/iterations/#list-project-iterations) is deprecated.
 
 The GraphQL API version will be removed in GitLab 16.0. This state is being replaced with the `current` state (already available)
@@ -4382,10 +4382,10 @@ The GitLab Package stage offers a Package Registry, container registry, and Depe
 
 The permissions model for GraphQL is being updated. After 15.0, users with the Guest, Reporter, and Developer role can no longer update these settings:
 
-- [Package Registry settings](https://docs.gitlab.com/api/graphql/reference/#packagesettings)
-- [Container registry cleanup policy](https://docs.gitlab.com/api/graphql/reference/#containerexpirationpolicy)
-- [Dependency Proxy time-to-live policy](https://docs.gitlab.com/api/graphql/reference/#dependencyproxyimagettlgrouppolicy)
-- [Enabling the Dependency Proxy for your group](https://docs.gitlab.com/api/graphql/reference/#dependencyproxysetting)
+- [Package Registry settings](https://docs.gitlab.com/api/graphql/reference/objects/#packagesettings)
+- [Container registry cleanup policy](https://docs.gitlab.com/api/graphql/reference/objects/#containerexpirationpolicy)
+- [Dependency Proxy time-to-live policy](https://docs.gitlab.com/api/graphql/reference/objects/#dependencyproxyimagettlgrouppolicy)
+- [Enabling the Dependency Proxy for your group](https://docs.gitlab.com/api/graphql/reference/objects/#dependencyproxysetting)
 
 ### Known host required for GitLab Runner SSH executor
 
@@ -4841,7 +4841,7 @@ The new security approvals feature is similar to vulnerability check. For exampl
 - Removal in GitLab 15.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/327453).
 
-As part of the work to create a [Package Registry GraphQL API](https://gitlab.com/groups/gitlab-org/-/epics/6318), the Package group deprecated the `Version` type for the basic `PackageType` type and moved it to [`PackageDetailsType`](https://docs.gitlab.com/api/graphql/reference/#packagedetailstype).
+As part of the work to create a [Package Registry GraphQL API](https://gitlab.com/groups/gitlab-org/-/epics/6318), the Package group deprecated the `Version` type for the basic `PackageType` type and moved it to [`PackageDetailsType`](https://docs.gitlab.com/api/graphql/reference/objects/#packagedetailstype).
 
 In milestone 15.0, we will completely remove `Version` from `PackageType`.
 
@@ -4899,7 +4899,7 @@ Since it isn't used in the context of GitLab (the product), `htpasswd` authentic
 - Removal in GitLab 15.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/342882).
 
-In GraphQL, there are two `pipelines` fields that you can use in a [`PackageDetailsType`](https://docs.gitlab.com/api/graphql/reference/#packagedetailstype) to get the pipelines for package versions:
+In GraphQL, there are two `pipelines` fields that you can use in a [`PackageDetailsType`](https://docs.gitlab.com/api/graphql/reference/objects/#packagedetailstype) to get the pipelines for package versions:
 
 - The `versions` field's `pipelines` field. This returns all the pipelines associated with all the package's versions, which can pull an unbounded number of objects in memory and create performance concerns.
 - The `pipelines` field of a specific `version`. This returns only the pipelines associated with that single package version.
@@ -4911,7 +4911,7 @@ To mitigate possible performance problems, we will remove the `versions` field's
 - Announced in GitLab 14.8
 - Removal in GitLab 15.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
 
-The `projectFingerprint` field in the [`PipelineSecurityReportFinding`](https://docs.gitlab.com/api/graphql/reference/#pipelinesecurityreportfinding)
+The `projectFingerprint` field in the [`PipelineSecurityReportFinding`](https://docs.gitlab.com/api/graphql/reference/objects/#pipelinesecurityreportfinding)
 GraphQL object is being deprecated. This field contains a "fingerprint" of security findings used to determine uniqueness.
 The method for calculating fingerprints has changed, resulting in different values. Going forward, the new values will be
 exposed in the UUID field. Data previously available in the `projectFingerprint` field will eventually be removed entirely.

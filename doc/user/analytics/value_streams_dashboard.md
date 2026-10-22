@@ -201,7 +201,7 @@ To enable or disable the overview count aggregation for the Value Streams Dashbo
 1. In the left sidebar, select **Settings** > **Analytics**.
 1. In **Value Streams Dashboard**, select or clear the **Enable overview background aggregation for Value Streams Dashboard** checkbox.
 
-To retrieve aggregated usage counts in the group, use the [GraphQL API](../../api/graphql/reference/_index.md#groupvaluestreamdashboardusageoverview).
+To retrieve aggregated usage counts in the group, use the [GraphQL API](../../api/graphql/reference/objects.md#group).
 
 ## View the Value Streams Dashboard
 

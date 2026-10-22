@@ -43,6 +43,14 @@ module Gitlab
           Gitlab::Auth.omniauth_enabled? && providers.include?(name.to_sym)
         end
 
+        def self.sign_in_enabled?(provider_name)
+          return false unless enabled?(provider_name)
+          return Gitlab::CurrentSettings.password_authentication_enabled_for_web? if provider_name == 'database'
+          return Gitlab::Auth::Ldap::Config.sign_in_enabled? if ldap_provider?(provider_name)
+
+          Gitlab::CurrentSettings.disabled_oauth_sign_in_sources.exclude?(provider_name.to_s)
+        end
+
         def self.ldap_provider?(name)
           name.to_s.start_with?('ldap')
         end

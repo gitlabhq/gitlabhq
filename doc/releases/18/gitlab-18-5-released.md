@@ -574,7 +574,7 @@ You can now track the progress of issues directly from the child items widget, g
 
 - Tier: Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Links: [Documentation](../../api/graphql/reference/_index.md#pipelinesecurityreportfinding) | [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/557940)
+- Links: [Documentation](../../api/graphql/reference/objects.md#pipelinesecurityreportfinding) | [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/557940)
 
 {{< /details >}}
 

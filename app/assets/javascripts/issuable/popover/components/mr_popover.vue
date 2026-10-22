@@ -46,6 +46,7 @@ export default {
   data() {
     return {
       mergeRequest: {},
+      notFound: false,
     };
   },
   computed: {
@@ -94,13 +95,17 @@ export default {
           iid,
         };
       },
+      result({ data, loading }) {
+        // No record means it does not exist or the viewer cannot read it: show nothing.
+        if (!loading && data) this.notFound = !data.project?.mergeRequest;
+      },
     },
   },
 };
 </script>
 
 <template>
-  <gl-popover :target="target" boundary="viewport" placement="top" show>
+  <gl-popover v-if="!notFound" :target="target" boundary="viewport" placement="top" show>
     <div class="mr-popover">
       <gl-skeleton-loader v-if="$apollo.queries.mergeRequest.loading" :height="15">
         <rect width="250" height="15" rx="4" />

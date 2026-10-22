@@ -212,6 +212,6 @@ For the Vue components that use these documents, see [Secrets Manager frontend d
 1. Mount the mutation with `mount_mutation` in `ee/app/graphql/ee/types/mutation_type.rb`, next to the other `SecretsManagement` mutations.
 1. Add the internal event definition under `config/events/` if the mutation tracks a new event.
 1. Create the frontend `.mutation.graphql` file under `ee/app/assets/javascripts/ci/secrets/graphql/mutations/`.
-1. Regenerate the GraphQL reference documentation and schema with `bundle exec rake gitlab:graphql:compile_docs`, or `bundle exec rake gitlab:graphql:update_all` to also update the schema dump.
+1. Regenerate the GraphQL reference documentation and schema with `bundle exec rake gitlab:graphql:docs:compile`, or `bundle exec rake gitlab:graphql:update_all` to also update the schema dump.
 1. Add a request spec under `ee/spec/requests/api/graphql/secrets_management/`. See [Secrets Manager testing](testing.md).
 1. Add a frontend spec under `ee/spec/frontend/ci/secrets/`.

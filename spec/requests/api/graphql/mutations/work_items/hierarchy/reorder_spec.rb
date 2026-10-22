@@ -105,5 +105,38 @@ RSpec.describe 'Reorder a work item in the hierarchy tree', feature_category: :t
         let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
       end
     end
+
+    context 'with the work item hierarchy reorder rate limit' do
+      let(:current_user) { guest }
+      let(:input) { { 'adjacentWorkItemId' => child1.to_gid.to_s, 'relativePosition' => 'AFTER' } }
+
+      it_behaves_like 'rate limited endpoint', rate_limit_key: :work_item_hierarchy_reorder, graphql: true do
+        let_it_be(:other_guest) { create(:user, guest_of: group) }
+
+        def request
+          post_graphql_mutation(mutation, current_user: current_user)
+        end
+
+        def request_with_second_scope
+          post_graphql_mutation(mutation, current_user: other_guest)
+        end
+      end
+
+      context 'when the work_item_hierarchy_reorder_rate_limit feature flag is disabled' do
+        before do
+          stub_feature_flags(work_item_hierarchy_reorder_rate_limit: false)
+        end
+
+        it 'does not check the rate limit' do
+          allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_call_original
+          expect(::Gitlab::ApplicationRateLimiter).not_to receive(:throttled?)
+            .with(:work_item_hierarchy_reorder, any_args)
+
+          post_graphql_mutation(mutation, current_user: current_user)
+
+          expect(mutation_response['errors']).to be_empty
+        end
+      end
+    end
   end
 end

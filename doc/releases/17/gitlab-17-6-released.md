@@ -317,7 +317,7 @@ To disable this email, an administrator can disable the `duo_seat_assignment_ema
 
 - Tier: Ultimate
 - Offering: GitLab.com, GitLab Self-Managed
-- Links: [Documentation](../../api/graphql/reference/_index.md#cveenrichmenttype) | [Related issue](https://gitlab.com/groups/gitlab-org/-/epics/11544)
+- Links: [Documentation](../../api/graphql/reference/objects.md#cveenrichmenttype) | [Related issue](https://gitlab.com/groups/gitlab-org/-/epics/11544)
 
 {{< /details >}}
 
@@ -591,7 +591,7 @@ need to name your Pages deploy job `pages`. You can now simply use the
 - Tier: Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed
 - Add-ons: Duo Pro, Duo Enterprise
-- Links: [Documentation](../../api/graphql/reference/_index.md#aimetrics)
+- Links: [Documentation](../../api/graphql/reference/objects.md#aimetrics)
 
 {{< /details >}}
 
@@ -620,7 +620,7 @@ You can now hide closed items from the linked and child items lists by turning o
 - Tier: Ultimate
 - Offering: GitLab.com, GitLab Self-Managed
 - Add-ons: Duo Enterprise
-- Links: [Documentation](../../api/graphql/reference/_index.md#aiusermetrics) | [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/483049)
+- Links: [Documentation](../../api/graphql/reference/objects.md#aiusermetrics) | [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/483049)
 
 {{< /details >}}
 

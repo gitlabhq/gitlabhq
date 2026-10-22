@@ -157,7 +157,10 @@ module API
         end
 
         # Check for available deploy keys in other projects
-        key = current_user.accessible_deploy_keys.find_by(key: params[:key])
+        key = current_user.accessible_deploy_keys
+          .within_organization_boundary(user_project.organization)
+          .find_by(key: params[:key])
+
         if key
           deploy_key_project = add_deploy_keys_project(user_project, deploy_key: key, can_push: !!params[:can_push])
 

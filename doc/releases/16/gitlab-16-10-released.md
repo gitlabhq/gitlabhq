@@ -205,7 +205,7 @@ Mattermost 9.5 includes various security updates and the deprecation of support 
 
 - Tier: Free, Silver, Gold
 - Offering: GitLab.com
-- Links: [Documentation](../../api/graphql/reference/_index.md#groupgroupmembers) | [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/356062)
+- Links: [Documentation](../../api/graphql/reference/objects.md#group) | [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/356062)
 
 {{< /details >}}
 

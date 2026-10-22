@@ -27,18 +27,32 @@ module Organizations
         #
         # rubocop:disable CodeReuse/ActiveRecord -- Not every model supports `in_organization` scope yet.
         def update_organization_id_for(model_class, organization_key: :organization_id, &block)
+          raise ArgumentError, 'old and new organization must differ' if old_organization.id == new_organization.id
+
           relation = model_class.where(organization_key => old_organization.id)
           relation = yield(relation) if block
 
           capture_upserts = iam_replicable?(model_class)
+          primary_key = model_class.primary_key
+          partition_key = model_class.try(:partitioning_strategy)&.partitioning_key
+          previous_ids = nil
 
-          # Process in batches
-          relation.each_batch(of: ORGANIZATION_ID_UPDATE_BATCH_SIZE) do |batch|
-            moved_ids = batch.pluck(:id) if capture_upserts # rubocop:disable Database/AvoidUsingPluckWithoutLimit -- bounded by each_batch
+          # No ORDER BY: with one, the planner walks the primary key instead of the filter's index.
+          # Each pass moves its rows out of old_organization, so the next pluck finds new ones.
+          loop do
+            rows = relation.limit(ORGANIZATION_ID_UPDATE_BATCH_SIZE).pluck(*[primary_key, partition_key].compact)
+            # Sorted so the repeat check below does not depend on the unordered pluck's row order.
+            ids = (partition_key ? rows.map(&:first) : rows).sort
+            break if ids.empty? || ids == previous_ids
 
-            batch.update_all(organization_key => new_organization.id)
+            conditions = { primary_key => ids, organization_key => old_organization.id }
+            # Filtering on the partition key lets PostgreSQL prune to the partitions holding these rows.
+            conditions[partition_key] = rows.map(&:last).uniq if partition_key
 
-            model_class.record_iam_outbox_upserts(model_class.where(id: moved_ids)) if moved_ids.present?
+            break if model_class.where(conditions).update_all(organization_key => new_organization.id) == 0
+
+            model_class.record_iam_outbox_upserts(model_class.where(primary_key => ids)) if capture_upserts
+            previous_ids = ids
           end
         end
         # rubocop:enable CodeReuse/ActiveRecord

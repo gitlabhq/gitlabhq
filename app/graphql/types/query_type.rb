@@ -30,7 +30,7 @@ module Types
 
     field :ci_config, resolver: Resolvers::Ci::ConfigResolver, complexity: 126, # AUTHENTICATED_MAX_COMPLEXITY / 2 + 1
       deprecated: {
-        reason: 'Use CiLint mutation: <https://docs.gitlab.com/api/graphql/reference/#mutationcilint>',
+        reason: 'Use CiLint mutation: <https://docs.gitlab.com/api/graphql/reference/mutations/#cilint>',
         milestone: '18.1'
       }
 

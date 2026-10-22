@@ -27,12 +27,12 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
     end
   end
 
-  it do
+  it 'belongs to the pipeline through commit_id, inverse of its statuses' do
     is_expected.to belong_to(:pipeline).class_name('Ci::Pipeline')
       .with_foreign_key(:commit_id).inverse_of(:statuses)
   end
 
-  it do
+  it 'belongs to the stage through stage_id' do
     is_expected.to belong_to(:ci_stage).class_name('Ci::Stage')
       .with_foreign_key(:stage_id)
   end

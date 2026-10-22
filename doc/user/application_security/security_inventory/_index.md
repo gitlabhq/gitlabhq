@@ -94,10 +94,10 @@ You can share or bookmark a filtered view by copying the URL from your browser.
 - [Security dashboard](../security_dashboard/_index.md)
 - [Vulnerability reports](../vulnerability_report/_index.md)
 - GraphQL references:
-  - [AnalyzerGroupStatusType](../../../api/graphql/reference/_index.md#analyzergroupstatustype) - Counts for each analyzer status in the group and subgroups.
-  - [AnalyzerProjectStatusType](../../../api/graphql/reference/_index.md#analyzerprojectstatustype) - Analyzer status (success/fail) for projects.
-  - [VulnerabilityNamespaceStatisticType](../../../api/graphql/reference/_index.md#vulnerabilitynamespacestatistictype) - Counts for each vulnerability severity in the group and its subgroups.
-  - [VulnerabilityStatisticType](../../../api/graphql/reference/_index.md#vulnerabilitystatistictype) - Counts for each vulnerability severity in the project.
+  - [AnalyzerGroupStatusType](../../../api/graphql/reference/objects.md#analyzergroupstatustype) - Counts for each analyzer status in the group and subgroups.
+  - [AnalyzerProjectStatusType](../../../api/graphql/reference/objects.md#analyzerprojectstatustype) - Analyzer status (success/fail) for projects.
+  - [VulnerabilityNamespaceStatisticType](../../../api/graphql/reference/objects.md#vulnerabilitynamespacestatistictype) - Counts for each vulnerability severity in the group and its subgroups.
+  - [VulnerabilityStatisticType](../../../api/graphql/reference/objects.md#vulnerabilitystatistictype) - Counts for each vulnerability severity in the project.
 
 ## Troubleshooting
 

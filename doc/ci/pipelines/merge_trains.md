@@ -335,7 +335,7 @@ To modify this limit for your project:
 The project limit cannot exceed the [instance limit](../../administration/cicd/limits.md#merge-train-parallel-pipeline-limit).
 
 You can also use the [projects API](../../api/projects.md), or the
-[GraphQL API](../../api/graphql/reference/_index.md#projectcicdsetting).
+[GraphQL API](../../api/graphql/reference/objects.md#projectcicdsetting).
 
 ## Enforce merge trains
 

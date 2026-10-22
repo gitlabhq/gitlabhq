@@ -50,6 +50,8 @@ module Organizations
             # cannot be updated independently under the
             # num_nonnulls(group_id, organization_id, project_id) = 1 check constraint.
             "Dependencies::DependencyListExport",
+            # OauthAccessToken subclasses Doorkeeper::AccessToken on the same table, so it moves these rows.
+            "Doorkeeper::AccessToken",
             "GitlabSubscriptions::AddOnPurchase",
             "GitlabSubscriptions::SeatAssignment",
             "GitlabSubscriptions::UserAddOnAssignment",

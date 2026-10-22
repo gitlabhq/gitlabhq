@@ -16,4 +16,4 @@
     We have added the new mutation name, but will no longer remove the old mutation name in GitLab 18.0 as originally announced.
 
     We will still update the database to [remove](https://gitlab.com/gitlab-org/gitlab/-/issues/512996) the old `pre_receive_secret_detection_enabled` database column, but you'll be able to use either mutation name. Both will reflect the value of the new `secret_push_protection_enabled` database column.
-  documentation_url: https://docs.gitlab.com/api/graphql/reference/#mutationsetsecretpushprotection
+  documentation_url: https://docs.gitlab.com/api/graphql/reference/mutations/#setsecretpushprotection

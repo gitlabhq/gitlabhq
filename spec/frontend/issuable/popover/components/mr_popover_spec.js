@@ -1,4 +1,4 @@
-import { GlSkeletonLoader } from '@gitlab/ui';
+import { GlPopover, GlSkeletonLoader } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
@@ -99,6 +99,21 @@ describe('MR Popover', () => {
 
     it('shows CI Icon if there is pipeline data', () => {
       expect(wrapper.findComponent(CiIcon).exists()).toBe(true);
+    });
+  });
+
+  describe('when the merge request is not found', () => {
+    beforeEach(() => {
+      mountComponent({
+        queryResponse: jest.fn().mockResolvedValue({
+          data: { project: { __typename: 'Project', id: '1', mergeRequest: null } },
+        }),
+      });
+      return waitForPromises();
+    });
+
+    it('removes the popover so nothing shows for the reference', () => {
+      expect(wrapper.findComponent(GlPopover).exists()).toBe(false);
     });
   });
 

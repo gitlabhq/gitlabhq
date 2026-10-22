@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Projects::EnableDeployKeyService, feature_category: :continuous_delivery do
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be(:deploy_key) { create(:deploy_key, public: true) }
   let_it_be_with_reload(:project) { create(:project) }
   let_it_be_with_refind(:user) { project.creator }
@@ -60,6 +62,34 @@ RSpec.describe Projects::EnableDeployKeyService, feature_category: :continuous_d
     context 'when not in admin mode' do
       it 'returns nil' do
         expect(service.execute).to be_nil
+      end
+    end
+  end
+
+  context 'with organization boundaries' do
+    let_it_be(:organization) { create(:organization) }
+    let_it_be(:other_organization) { create(:organization) }
+    let_it_be(:isolated_organization) { create(:organization, :isolated) }
+    let_it_be(:other_isolated_organization) { create(:organization, :isolated) }
+
+    let_it_be_with_reload(:project_in_organization) { create(:project, organization: organization) }
+    let_it_be_with_reload(:project_in_isolated_organization) { create(:project, organization: isolated_organization) }
+
+    let(:key) { create(:deploy_key, public: true, organization: key_organization) }
+    let!(:params) { { key_id: key.id } }
+
+    where(:project, :key_organization, :expected_key) do
+      ref(:project_in_isolated_organization) | ref(:isolated_organization)       | ref(:key)
+      ref(:project_in_organization)          | ref(:other_organization)          | ref(:key)
+      ref(:project_in_organization)          | ref(:isolated_organization)       | nil
+      ref(:project_in_isolated_organization) | ref(:organization)                | nil
+      ref(:project_in_isolated_organization) | ref(:other_isolated_organization) | nil
+    end
+
+    with_them do
+      it 'enables the key unless it crosses an isolated organization boundary', :aggregate_failures do
+        expect(service.execute).to eq(expected_key)
+        expect(project.deploy_keys.reload).to match_array([expected_key].compact)
       end
     end
   end

@@ -34,6 +34,7 @@ export default function mountBranchRules(el, store, squashOptionsFeatureAvailabl
     groupSettingsRepositoryPath,
     canReadSquashOption = 'false',
     canUpdateSquashOption = 'false',
+    canDeleteCustomBranchRule = 'false',
   } = el.dataset;
 
   return initVueApp({
@@ -60,6 +61,7 @@ export default function mountBranchRules(el, store, squashOptionsFeatureAvailabl
       squashOptionsFeatureAvailable,
       canReadSquashOption: parseBoolean(canReadSquashOption),
       canUpdateSquashOption: parseBoolean(canUpdateSquashOption),
+      canDeleteCustomBranchRule: parseBoolean(canDeleteCustomBranchRule),
     },
     component: View,
   });

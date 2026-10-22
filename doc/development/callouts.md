@@ -54,7 +54,7 @@ unique name and a sequential value:
 After adding a new callout ID to any of the enum files above, you must update the GraphQL documentation by running:
 
 ```shell
-bundle exec rake gitlab:graphql:compile_docs
+bundle exec rake gitlab:graphql:update_all
 ```
 
 > [!note]

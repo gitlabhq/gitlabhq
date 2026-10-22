@@ -1,0 +1,10 @@
+---
+name: work_item_hierarchy_reorder_rate_limit
+description: Gates the per user rate limit on reordering epics and work items in the hierarchy tree
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/605437
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/263802
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/635031
+milestone: '19.6'
+group: group::portfolio planning
+type: gitlab_com_derisk
+default_enabled: false

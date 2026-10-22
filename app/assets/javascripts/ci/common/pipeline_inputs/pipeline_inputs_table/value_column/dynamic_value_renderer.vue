@@ -1,5 +1,12 @@
 <script>
-import { GlCollapsibleListbox, GlFormInput, GlFormTextarea } from '@gitlab/ui';
+import {
+  GlCollapsibleListbox,
+  GlFormGroup,
+  GlFormInput,
+  GlFormTextarea,
+  GlSprintf,
+} from '@gitlab/ui';
+import { uniqueId } from 'lodash-es';
 import { __, sprintf } from '~/locale';
 import validation, { initForm } from '~/vue_shared/directives/validation';
 import BooleanCell from './boolean_cell.vue';
@@ -33,7 +40,6 @@ const VALIDATION_MESSAGES = {
     'The value must be a valid JSON array format: [1,2,3] or [{"key": "value"}]',
   ),
   GENERAL_FORMAT_MISMATCH: __('Please match the requested format.'),
-  REGEX_MISMATCH: __('The value must match the defined regular expression.'),
   VALUE_MISSING: __('This is required and must be defined.'),
 };
 
@@ -54,10 +60,6 @@ const feedbackMap = {
     },
     message: __('The value must be a valid JSON array format: [1,2,3] or [{"key": "value"}]'),
   },
-  regexMismatch: {
-    isInvalid: (el) => el.validity?.patternMismatch,
-    message: VALIDATION_MESSAGES.REGEX_MISMATCH,
-  },
   valueMissing: {
     isInvalid: (el) => el.validity?.valueMissing,
     message: VALIDATION_MESSAGES.VALUE_MISSING,
@@ -71,8 +73,10 @@ export default {
   components: {
     BooleanCell,
     GlCollapsibleListbox,
+    GlFormGroup,
     GlFormInput,
     GlFormTextarea,
+    GlSprintf,
   },
   directives: {
     validation: validation(feedbackMap),
@@ -138,6 +142,12 @@ export default {
     isNumberType() {
       return this.item.type === INPUT_TYPES.NUMBER && !this.item.options?.length;
     },
+    inputId() {
+      return uniqueId('pipeline-input-');
+    },
+    showPattern() {
+      return Boolean(this.item.regex);
+    },
     isDropdown() {
       return Boolean(this.item.options?.length);
     },
@@ -162,12 +172,7 @@ export default {
     },
 
     validationFeedback() {
-      const field = this.form.fields[this.item.name];
-      const feedback = field?.feedback || '';
-
-      return feedback === feedbackMap.regexMismatch.message && this.item.regex
-        ? `${feedback} ${__('Pattern')}: ${this.item.regex}`
-        : feedback;
+      return this.form.fields[this.item.name]?.feedback || '';
     },
     validationState() {
       // Override validation state for array format errors for our custom validation
@@ -203,7 +208,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <gl-form-group class="gl-mb-0" :label-for="inputId" :state="validationState">
     <!-- Dropdown for any type with options -->
     <gl-collapsible-listbox
       v-if="isDropdown"
@@ -212,6 +217,7 @@ export default {
       searchable
       :multiple="isMultiSelectDropdown"
       :aria-label="item.name"
+      :toggle-id="inputId"
       toggle-class="!gl-pl-4"
       :toggle-text="toggleText"
       :header-text="__('Options')"
@@ -225,6 +231,7 @@ export default {
     <!-- Textarea for arrays without options -->
     <gl-form-textarea
       v-else-if="isArrayType"
+      :id="inputId"
       v-model="inputValue"
       v-validation:[form.showValidation]
       :aria-label="item.name"
@@ -238,6 +245,7 @@ export default {
     <!-- Number input for numbers without options -->
     <gl-form-input
       v-else-if="isNumberType"
+      :id="inputId"
       v-model="inputValue"
       v-validation:[form.showValidation]
       step="any"
@@ -254,23 +262,32 @@ export default {
     <!-- Text input for strings without options -->
     <gl-form-input
       v-else
+      :id="inputId"
       v-model="inputValue"
       v-validation:[form.showValidation]
       :aria-label="item.name"
       :data-field-type="item.type"
       :name="item.name"
-      :pattern="item.regex"
       :required="item.required"
       :state="validationState"
     />
 
+    <!-- Pattern the backend will enforce -->
+
+    <template v-if="showPattern" #description>
+      <span class="gl-break-all gl-text-sm" data-testid="input-pattern">
+        <gl-sprintf :message="s__('Pipelines|Pattern: %{pattern}')">
+          <template #pattern>
+            <code>{{ item.regex }}</code>
+          </template>
+        </gl-sprintf>
+      </span>
+    </template>
+
     <!-- Validation feedback -->
-    <div
-      v-if="hasValidationFeedback"
-      class="gl-mt-4 gl-text-danger"
-      data-testid="validation-feedback"
-    >
-      {{ validationFeedback }}
-    </div>
-  </div>
+
+    <template v-if="hasValidationFeedback" #invalid-feedback>
+      <span data-testid="validation-feedback">{{ validationFeedback }}</span>
+    </template>
+  </gl-form-group>
 </template>

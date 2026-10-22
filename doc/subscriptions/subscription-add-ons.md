@@ -311,7 +311,7 @@ The GitLab Duo seat utilization page shows the following information for each us
 - Last GitLab activity: The date the user last performed any action in GitLab.
 - Last GitLab Duo activity: The date the user last used GitLab Duo features. Refreshes on any GitLab Duo activity.
 
-These fields use data from the `AddOnUser` type in the [GraphQL API](../api/graphql/reference/_index.md#addonuser).
+These fields use data from the `AddOnUser` type in the [GraphQL API](../api/graphql/reference/objects.md#addonuser).
 
 ### For GitLab.com
 

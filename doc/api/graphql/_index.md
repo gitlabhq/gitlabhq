@@ -258,7 +258,7 @@ You should not expect that a cached Global ID will be valid beyond the time of a
 
 ## Available top-level queries
 
-The top-level entry points for all queries are defined in the [`Query` type](reference/_index.md#query-type) in the
+The top-level entry points for all queries are defined in the [`Query` type](reference/queries.md) in the
 GraphQL reference.
 
 ### Multiplex queries
@@ -356,7 +356,7 @@ The following limits apply to the GitLab GraphQL API.
 ### Maximum page size
 
 The default maximum page size for a connection is 100 records (nodes) per page.
-The connection [`subscriptionUsage.usersUsage.users`](reference/_index.md#gitlabsubscriptionusageusersusageusers) has a maximum page size of 20 records (nodes).
+The connection [`subscriptionUsage.usersUsage.users`](reference/objects.md#gitlabsubscriptionusageusersusage) has a maximum page size of 20 records (nodes).
 
 If you request more records than the maximum for a connection, the API returns
 only the maximum number of records.

@@ -2,13 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe 'gitlab:graphql:check_docs rake task', :silence_stdout, feature_category: :api do
+RSpec.describe 'gitlab:graphql docs rake tasks', :silence_stdout, feature_category: :api do
   include RakeHelpers
-
-  let(:committed_docs) { File.read(Rails.root.join('doc/api/graphql/reference/_index.md')) }
 
   before do
     Rake.application.rake_require 'tasks/gitlab/graphql'
+    Rake.application.rake_require 'tasks/gitlab/graphql_introspection'
     Rake::Task.define_task(:environment)
 
     # These prerequisites redefine Gitlab.com? and Feature.enabled? with `def`, which leaks
@@ -16,36 +15,70 @@ RSpec.describe 'gitlab:graphql:check_docs rake task', :silence_stdout, feature_c
     # not `invoke`, so `execute` is the method to stub.
     allow(Rake::Task['gitlab:simulate_saas']).to receive(:execute)
     allow(Rake::Task['gitlab:enable_feature_flags']).to receive(:execute)
-
-    # Rendering the real schema takes minutes, and the task only compares two strings.
-    allow(Tooling::Graphql::DeprecatedDocs::Renderer).to receive(:new).and_return(
-      instance_double(Tooling::Graphql::DeprecatedDocs::Renderer, contents: rendered_docs)
-    )
   end
 
-  context 'when the rendered docs match the committed file' do
-    let(:rendered_docs) { committed_docs }
+  describe 'gitlab:graphql:docs:compile' do
+    it 'compiles the documentation' do
+      expect(Tooling::Graphql::Docs).to receive(:compile!)
 
-    it 'reports that the documentation is up to date' do
-      expect { run_rake_task('gitlab:graphql:check_docs') }
-        .to output(/GraphQL documentation is up to date/).to_stdout
+      expect { run_rake_task('gitlab:graphql:docs:compile') }
+        .to output(/GraphQL documentation compiled/).to_stdout
     end
   end
 
-  context 'when the rendered docs differ from the committed file' do
-    let(:rendered_docs) { "#{committed_docs}\n### `Query.newField`\n" }
+  describe 'gitlab:graphql:docs:check' do
+    context 'when the documentation is up to date' do
+      before do
+        allow(Tooling::Graphql::Docs).to receive(:stale?).and_return(false)
+      end
 
-    it 'aborts, naming the task that regenerates the documentation' do
-      expect { run_rake_task('gitlab:graphql:check_docs') }
-        .to output(/Please update it by running `bundle exec rake gitlab:graphql:compile_docs`/).to_stdout
-        .and raise_error(SystemExit)
+      it 'reports that the documentation is up to date' do
+        expect { run_rake_task('gitlab:graphql:docs:check') }
+          .to output(/GraphQL documentation is up to date/).to_stdout
+      end
     end
 
-    it 'points at master, because the check only sees the current branch' do
-      expect { run_rake_task('gitlab:graphql:check_docs') }
-        .to output(
-          %r{git log --oneline HEAD\.\.origin/master -- doc/api/graphql/reference/_index\.md}
-        ).to_stdout.and raise_error(SystemExit)
+    context 'when the documentation is stale' do
+      before do
+        allow(Tooling::Graphql::Docs).to receive(:stale?).and_return(true)
+      end
+
+      it 'aborts, naming the task that regenerates the documentation and how to check for drift from master' do
+        expect { run_rake_task('gitlab:graphql:docs:check') }
+          .to output(
+            %r{
+              Please\ update\ the\ documentation\ by\ running\ `bundle\ exec\ rake\ gitlab:graphql:docs:compile`
+              .*
+              git\ log\ --oneline\ HEAD\.\.origin/master\ --\ doc/api/graphql/reference/$
+            }xm
+          ).to_stdout.and raise_error(SystemExit)
+      end
+    end
+  end
+
+  describe 'gitlab:graphql:compile_docs (deprecated)' do
+    it 'invokes gitlab:graphql:docs:compile' do
+      expect(Rake::Task['gitlab:graphql:docs:compile']).to receive(:invoke)
+
+      run_rake_task('gitlab:graphql:compile_docs')
+    end
+  end
+
+  describe 'gitlab:graphql:check_docs (deprecated)' do
+    it 'invokes gitlab:graphql:docs:check' do
+      expect(Rake::Task['gitlab:graphql:docs:check']).to receive(:invoke)
+
+      run_rake_task('gitlab:graphql:check_docs')
+    end
+  end
+
+  describe 'gitlab:graphql:update_all' do
+    it 'compiles the documentation, dumps the schema, and generates the introspection schemas' do
+      expect(Rake::Task['gitlab:graphql:update_all'].prerequisite_tasks.map(&:name)).to contain_exactly(
+        'gitlab:graphql:docs:compile',
+        'gitlab:graphql:schema:dump',
+        'gitlab:graphql:generate_all_introspection_schemas'
+      )
     end
   end
 end

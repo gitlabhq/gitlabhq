@@ -21,7 +21,7 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state, :clean_git
   end
 
   describe 'associations' do
-    it do
+    it 'belongs to build, keyed by build_id, with trace_chunks as the inverse' do
       is_expected.to belong_to(:build).class_name('Ci::Build').with_foreign_key(:build_id).inverse_of(:trace_chunks)
     end
   end

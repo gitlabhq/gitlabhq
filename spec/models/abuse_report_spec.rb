@@ -36,7 +36,7 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
     it { is_expected.to validate_presence_of(:message) }
     it { is_expected.to validate_presence_of(:category) }
 
-    it do
+    it 'validates uniqueness of user_id scoped to reporter and category' do
       is_expected.to validate_uniqueness_of(:user_id)
         .scoped_to([:reporter_id, :category])
         .with_message('You have already reported this user')
@@ -65,13 +65,13 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
     it { is_expected.to allow_value(['https://gitlab.com'] * 20).for(:links_to_spam) }
     it { is_expected.not_to allow_value(['https://gitlab.com'] * 21).for(:links_to_spam) }
 
-    it do
+    it 'allows a 512-character link in links_to_spam' do
       is_expected.to allow_value([
         "https://gitlab.com/#{SecureRandom.alphanumeric(493)}"
       ]).for(:links_to_spam)
     end
 
-    it do
+    it 'does not allow a 513-character link in links_to_spam' do
       is_expected.not_to allow_value([
         "https://gitlab.com/#{SecureRandom.alphanumeric(494)}"
       ]).for(:links_to_spam)
@@ -94,7 +94,7 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
 
       it { is_expected.to allow_value(nil).for(:evidence) }
 
-      it do
+      it 'allows a hash of issue, snippet, note, and user evidence' do
         is_expected.to allow_value(
           {
             issues: [

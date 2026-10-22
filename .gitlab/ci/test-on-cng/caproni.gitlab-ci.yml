@@ -80,7 +80,7 @@
     GIT_STRATEGY: "none"
   before_script:
     # Opting in only keeps the schedule's value; export beats pipeline variables
-    - if [ "${E2E_CODE_PATHS_MAPPING}" != "true" ]; then export COVERBAND_ENABLED=false; fi
+    - if [ "${E2E_CODE_PATHS_MAPPING}" != "true" ]; then export COVERBAND_ENABLED=false BABEL_ENV=; fi
     - source $CI_PROJECT_DIR/scripts/utils.sh
     - |
       section_start "install_tools" "Installing caproni and k3d"

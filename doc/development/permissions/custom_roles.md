@@ -359,7 +359,7 @@ Custom roles may impact [advanced search functionality](../../user/search/advanc
 Follow the [Contribute to the GitLab documentation](../documentation/_index.md) page to make the following changes to the documentation:
 
 - Update the list of custom abilities by running `bundle exec rake gitlab:custom_roles:compile_docs`
-- Update the GraphQL documentation by running `bundle exec rake gitlab:graphql:compile_docs`
+- Update the GraphQL documentation by running `bundle exec rake gitlab:graphql:update_all`
 
 ### Privilege escalation consideration
 

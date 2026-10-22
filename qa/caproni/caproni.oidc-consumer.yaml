@@ -163,7 +163,7 @@ deployers:
             gitlab.sidekiq.concurrency: 10
             gitlab.sidekiq.resources.requests.cpu: 500m
             gitlab.sidekiq.resources.requests.memory: 1.5Gi
-            gitlab.sidekiq.resources.limits.cpu: 500m
+            gitlab.sidekiq.resources.limits.cpu: 1200m
             gitlab.sidekiq.resources.limits.memory: 1.5Gi
             gitlab.gitaly.resources.requests.cpu: 200m
             gitlab.gitaly.resources.requests.memory: 256Mi

@@ -201,7 +201,7 @@ Prerequisites:
 To turn on audit events:
 
 - Set `auditEventsEnabled` to `true` for the namespace with the
-  [GraphQL API](../../../api/graphql/reference/_index.md#mutationupdatenamespacepackagesettings).
+  [GraphQL API](../../../api/graphql/reference/mutations.md#updatenamespacepackagesettings).
 
 The setting applies only to projects directly in that namespace.
 For a project in a subgroup, turn on the setting for the subgroup.

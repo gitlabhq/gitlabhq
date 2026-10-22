@@ -1171,7 +1171,7 @@
   - "{,ee/}app/policies/{,**/}*.rb"
   - "{,ee/}app/graphql/{,**/}*.rb"
   - "{,ee/}lib/{,**/}api/{,**/}*.rb"
-  - "doc/api/graphql/reference/_index.md"
+  - "doc/api/graphql/reference/*.md"
   - "doc/auth/tokens/fine_grained_access_tokens_{rest,graphql}.md"
   - "tooling/authz/permissions/docs/templates/*"
 

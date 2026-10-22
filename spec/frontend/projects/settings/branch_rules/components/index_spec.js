@@ -95,6 +95,7 @@ describe('View branch rules', () => {
 
   const createComponent = async ({
     canAdminProtectedBranches = true,
+    canDeleteCustomBranchRule = true,
     canReadProtectedBranches = true,
     squashOptionsFeatureAvailable = true,
     canReadSquashOption = true,
@@ -123,6 +124,7 @@ describe('View branch rules', () => {
         protectedBranchesPath,
         branchRulesPath,
         canAdminProtectedBranches,
+        canDeleteCustomBranchRule,
         canReadProtectedBranches,
         squashOptionsFeatureAvailable,
         canReadSquashOption,
@@ -674,11 +676,46 @@ describe('View branch rules', () => {
       });
     });
 
+    describe('when canDeleteCustomBranchRule is false', () => {
+      beforeEach(async () => {
+        await createComponent({ canDeleteCustomBranchRule: false });
+      });
+
+      it('renders delete rule button for a protected branch rule', () => {
+        expect(findDeleteRuleButton().exists()).toBe(true);
+      });
+    });
+
     it('does not render delete rule button when target is All branches', () => {
       jest.spyOn(util, 'getParameterByName').mockReturnValueOnce('All branches');
       createComponent();
 
       expect(findDeleteRuleButton().exists()).toBe(false);
+    });
+
+    describe('when target is All protected branches', () => {
+      describe.each`
+        canAdminProtectedBranches | canDeleteCustomBranchRule | buttonExists
+        ${true}                   | ${false}                  | ${false}
+        ${false}                  | ${true}                   | ${true}
+        ${true}                   | ${true}                   | ${true}
+      `(
+        'when canAdminProtectedBranches is $canAdminProtectedBranches and canDeleteCustomBranchRule is $canDeleteCustomBranchRule',
+        ({ canAdminProtectedBranches, canDeleteCustomBranchRule, buttonExists }) => {
+          beforeEach(async () => {
+            jest.spyOn(util, 'getParameterByName').mockReturnValueOnce('All protected branches');
+            await createComponent({
+              canAdminProtectedBranches,
+              canDeleteCustomBranchRule,
+              branchRulesQueryHandler: predefinedBranchRulesMockRequestHandler,
+            });
+          });
+
+          it(`${buttonExists ? 'renders' : 'does not render'} delete rule button`, () => {
+            expect(findDeleteRuleButton().exists()).toBe(buttonExists);
+          });
+        },
+      );
     });
 
     it('renders delete rule button', () => {

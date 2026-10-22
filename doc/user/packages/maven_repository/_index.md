@@ -905,7 +905,7 @@ To delete older package versions, consider using the Packages API or the UI.
 
 {{< /history >}}
 
-To prevent users from publishing duplicate Maven packages, you can use the [GraphQL API](../../../api/graphql/reference/_index.md#packagesettings) or the UI.
+To prevent users from publishing duplicate Maven packages, you can use the [GraphQL API](../../../api/graphql/reference/objects.md#packagesettings) or the UI.
 
 In the UI:
 

@@ -19,6 +19,46 @@ RSpec.describe Gitlab::Auth::Saml::Config do
     end
   end
 
+  describe '.sign_in_enabled?' do
+    subject { described_class.sign_in_enabled? }
+
+    before do
+      allow(Gitlab::Auth::OAuth::Provider).to receive(:sign_in_enabled?).and_return(true)
+    end
+
+    it { is_expected.to be(false) }
+
+    context 'when a SAML provider is configured' do
+      before do
+        stub_basic_saml_config
+      end
+
+      it { is_expected.to be(true) }
+
+      context 'when that provider is disabled for sign-in' do
+        before do
+          allow(Gitlab::Auth::OAuth::Provider).to receive(:sign_in_enabled?).with(:saml).and_return(false)
+        end
+
+        it { is_expected.to be(false) }
+      end
+    end
+
+    context 'when one of two SAML providers is disabled for sign-in' do
+      before do
+        stub_omniauth_config(
+          providers: [
+            { name: 'saml', args: {} },
+            { name: 'saml_okta', args: { strategy_class: 'OmniAuth::Strategies::SAML' } }
+          ]
+        )
+        allow(Gitlab::Auth::OAuth::Provider).to receive(:sign_in_enabled?).with(:saml).and_return(false)
+      end
+
+      it { is_expected.to be(true) }
+    end
+  end
+
   describe '.default_attribute_statements' do
     it 'includes upstream defaults, nickname and Microsoft values' do
       expect(described_class.default_attribute_statements).to eq(

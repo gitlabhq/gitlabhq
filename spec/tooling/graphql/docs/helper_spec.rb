@@ -85,7 +85,7 @@ RSpec.describe Tooling::Graphql::Docs::Helper, feature_category: :api do
 
     it 'renders the experiment history text and milestone for experimental items' do
       expect(helper.description(value('EXPERIMENTAL'))).to eq(
-        'Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) ' \
+        'Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) ' \
           'in GitLab 16.0.<br/><br/>An experimental value.'
       )
     end
@@ -112,7 +112,7 @@ RSpec.describe Tooling::Graphql::Docs::Helper, feature_category: :api do
 
           {{< history >}}
 
-          - Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 16.0.
+          - Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 16.0.
 
           {{< /history >}}
         MD

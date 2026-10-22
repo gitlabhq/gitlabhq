@@ -27,7 +27,7 @@ GitLab 17.2 introduced [epics as work items](../../user/group/epics/_index.md#ep
 
 To ensure that your integrations continue working:
 
-- If you use the [epic GraphQL API](reference/_index.md#epic), migrate to the work item API before the epic GraphQL API is removed.
+- If you use the [epic GraphQL API](reference/objects.md#epic), migrate to the work item API before the epic GraphQL API is removed.
 - If you use the [epic REST API](../epics.md), you can continue using it, but you should migrate to future-proof your integrations.
 - For new features (such as assignees, health status, linked items with other types), you must
   use the `WorkItem` GraphQL API.
@@ -52,7 +52,7 @@ The `WorkItem` GraphQL API:
 - Will be [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/500620) before GitLab 19.0
 - Is planned to exit [experimental status](https://gitlab.com/gitlab-org/gitlab/-/issues/500620) before GitLab 19.0
 
-The [epic GraphQL API](reference/_index.md#epic) is planned for removal in GitLab 19.0.
+The [epic GraphQL API](reference/objects.md#epic) is planned for removal in GitLab 19.0.
 
 ## Migrate to the Work Item API
 
@@ -284,7 +284,7 @@ The following example demonstrates how to query an epic's:
 - Health status
 - Start and due dates
 
-For all available widgets, see the [work item widget reference](reference/_index.md#workitemwidget).
+For all available widgets, see the [work item widget reference](reference/interfaces.md#workitemwidget).
 
 To query epics with widgets:
 

@@ -62,6 +62,70 @@ RSpec.describe DeployKeys::DeployKeysFinder, feature_category: :continuous_deliv
         end
       end
 
+      context 'with keys from other organizations' do
+        let_it_be(:isolated_organization) { create(:organization, :isolated) }
+        let_it_be(:isolated_user) { create(:user, organizations: [isolated_organization]) }
+        let_it_be(:isolated_project) do
+          create(:project, organization: isolated_organization, maintainers: isolated_user)
+        end
+
+        let_it_be(:isolated_accessible_project) do
+          create(:project, organization: isolated_organization, developers: isolated_user)
+        end
+
+        let_it_be(:other_organization_project_key) do
+          create(:deploy_key, organization: create(:organization),
+            projects: [accessible_project, isolated_accessible_project])
+        end
+
+        let_it_be(:isolated_organization_project_key) do
+          create(:deploy_key, organization: isolated_organization,
+            projects: [accessible_project, isolated_accessible_project])
+        end
+
+        let_it_be(:other_organization_public_key) do
+          create(:deploy_key, public: true, organization: create(:organization))
+        end
+
+        let_it_be(:isolated_organization_public_key) do
+          create(:deploy_key, public: true, organization: isolated_organization)
+        end
+
+        context 'when filtering for available project keys' do
+          let(:params) { { filter: :available_project_keys } }
+
+          it 'excludes keys from isolated organizations' do
+            expect(result.map(&:id)).to match_array(
+              [deploy_key_for_accessible_project.deploy_key_id, other_organization_project_key.id]
+            )
+          end
+
+          context 'when the project organization is isolated' do
+            subject(:result) { described_class.new(isolated_project, isolated_user, params).execute }
+
+            it 'returns only keys from the project organization' do
+              expect(result.map(&:id)).to match_array([isolated_organization_project_key.id])
+            end
+          end
+        end
+
+        context 'when filtering for available public keys' do
+          let(:params) { { filter: :available_public_keys } }
+
+          it 'excludes keys from isolated organizations' do
+            expect(result.map(&:id)).to match_array([deploy_key_public.id, other_organization_public_key.id])
+          end
+
+          context 'when the project organization is isolated' do
+            subject(:result) { described_class.new(isolated_project, isolated_user, params).execute }
+
+            it 'returns only keys from the project organization' do
+              expect(result.map(&:id)).to match_array([isolated_organization_public_key.id])
+            end
+          end
+        end
+      end
+
       context 'when has search' do
         let_it_be(:another_deploy_key_public) { create(:deploy_key, public: true, title: 'new-key') }
         let(:params) { { filter: :available_public_keys, search: 'key', in: 'title' } }

@@ -85,7 +85,7 @@ Please leave feedback in [the feedback issue](https://gitlab.com/gitlab-org/gitl
 - Tier: Ultimate
 - Offering: GitLab.com, GitLab Self-Managed
 - Add-ons: Duo Enterprise
-- Links: [Documentation](../../api/graphql/reference/_index.md#codesuggestionevent) | [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/477231)
+- Links: [Documentation](../../api/graphql/reference/objects.md#codesuggestionevent) | [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/477231)
 
 {{< /details >}}
 

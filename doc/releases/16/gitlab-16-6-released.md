@@ -402,7 +402,7 @@ You can use the GitLab Package Registry to publish and download your project’s
 
 However, you might want to prevent duplicate uploads, especially for releases. In this release, GitLab has expanded the group setting for the Package Registry so you can allow or deny duplicate package uploads.
 
-You can adjust this setting with the [GitLab API](../../api/graphql/reference/_index.md#packagesettings), or from the UI.
+You can adjust this setting with the [GitLab API](../../api/graphql/reference/objects.md#packagesettings), or from the UI.
 
 ### Upload packages to the Maven repository with basic HTTP authentication
 

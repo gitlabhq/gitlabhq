@@ -278,15 +278,15 @@ To configure group-level network access controls:
 #### Related API resources
 
 - Instance-level booleans:
-  [`duoSettingsUpdate`](../../api/graphql/reference/_index.md#mutationduosettingsupdate)
+  [`duoSettingsUpdate`](../../api/graphql/reference/mutations.md#duosettingsupdate)
   GraphQL mutation.
 - Group-level booleans:
   [Update group attributes](../../api/groups.md#update-group-attributes) REST API, using the
   `ai_settings_attributes` parameter.
 - Domain allowlist and denylist:
-  [`aiDomainSettingsInstanceUpdate`](../../api/graphql/reference/_index.md#mutationaidomainsettingsinstanceupdate)
+  [`aiDomainSettingsInstanceUpdate`](../../api/graphql/reference/mutations.md#aidomainsettingsinstanceupdate)
   and
-  [`aiDomainSettingsNamespaceUpdate`](../../api/graphql/reference/_index.md#mutationaidomainsettingsnamespaceupdate)
+  [`aiDomainSettingsNamespaceUpdate`](../../api/graphql/reference/mutations.md#aidomainsettingsnamespaceupdate)
   GraphQL mutations.
 
 ### Turn on allowed domains

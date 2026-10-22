@@ -36,7 +36,8 @@ pre-push:
     markdownlint:
       tags: documentation style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      exclude: 'doc/api/graphql/reference/_index.md'
+      exclude:
+        - 'doc/api/graphql/reference/*.md'
       glob: 'doc/*.md'
       run: markdownlint-cli2 {files}
     yamllint:
@@ -68,7 +69,7 @@ pre-push:
       tags: documentation
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: '{,ee/}app/graphql/*.rb'
-      run: bundle exec rake gitlab:graphql:check_docs
+      run: bundle exec rake gitlab:graphql:docs:check
     graphql_introspection_check:
       tags: graphql schema backend
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
@@ -87,7 +88,8 @@ pre-push:
     vale: # Requires Vale: https://docs.gitlab.com/development/documentation/testing/vale/
       tags: documentation style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      exclude: 'doc/api/graphql/reference/_index.md'
+      exclude:
+        - 'doc/api/graphql/reference/*.md'
       glob: '{doc/*.md,.ai/*.md,*AGENTS.md}'
       run: 'if [ $VALE_WARNINGS ]; then minWarnings=warning; else minWarnings=error; fi; if command -v vale > /dev/null 2>&1; then if ! vale --config .vale.ini --minAlertLevel $minWarnings {files}; then echo "ERROR: Fix any linting errors and make sure you are using the latest version of Vale."; exit 1; fi; else echo "ERROR: Vale not found. For more information, see https://vale.sh/docs/vale-cli/installation/."; exit 1; fi'
     gettext:
@@ -191,7 +193,7 @@ pre-push:
     permissions-verify:
       tags: documentation
       files: git diff --name-only $(git merge-base origin/master HEAD)..HEAD
-      glob: '{config/authz/{,**/}*,lib/tasks/gitlab/permissions/{,**/}*.rb,{,ee/}app/policies/{,**/}*.rb,{,ee/}app/graphql/{,**/}*.rb,{,ee/}lib/{,**/}api/{,**/}*.rb,doc/api/graphql/reference/_index.md,doc/auth/tokens/fine_grained_access_tokens_{rest,graphql}.md,tooling/authz/permissions/docs/templates/*}'
+      glob: '{config/authz/{,**/}*,lib/tasks/gitlab/permissions/{,**/}*.rb,{,ee/}app/policies/{,**/}*.rb,{,ee/}app/graphql/{,**/}*.rb,{,ee/}lib/{,**/}api/{,**/}*.rb,doc/api/graphql/reference/*.md,doc/auth/tokens/fine_grained_access_tokens_{rest,graphql}.md,tooling/authz/permissions/docs/templates/*}'
       run: bundle exec rake gitlab:permissions:validate
     unused-code-linter:
       tags: backend
@@ -280,7 +282,8 @@ pre-commit:
     markdownlint:
       tags: documentation style
       files: git diff --name-only --diff-filter=d --staged
-      exclude: 'doc/api/graphql/reference/_index.md'
+      exclude:
+        - 'doc/api/graphql/reference/*.md'
       glob: 'doc/*.md'
       run: markdownlint-cli2 {files}
     mermaidlint:
@@ -315,7 +318,8 @@ pre-commit:
     vale: # Requires Vale: https://docs.gitlab.com/development/documentation/testing/vale/
       tags: documentation style
       files: git diff --name-only --diff-filter=d --staged
-      exclude: 'doc/api/graphql/reference/_index.md'
+      exclude:
+        - 'doc/api/graphql/reference/*.md'
       glob: '{doc/*.md,.ai/*.md,*AGENTS.md}'
       run: 'if [ $VALE_WARNINGS ]; then minWarnings=warning; else minWarnings=error; fi; if command -v vale > /dev/null 2>&1; then if ! vale --config .vale.ini --minAlertLevel $minWarnings {files}; then echo "ERROR: Fix any linting errors and make sure you are using the latest version of Vale."; exit 1; fi; else echo "ERROR: Vale not found. For more information, see https://vale.sh/docs/vale-cli/installation/."; exit 1; fi'
     role-permissions-ordering:
@@ -379,7 +383,7 @@ auto-fix:
       tags: documentation
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD) --cached
       glob: '{,ee/}app/graphql/*.rb'
-      run: bundle exec rake gitlab:graphql:compile_docs
+      run: bundle exec rake gitlab:graphql:docs:compile
     role-permissions-ordering:
       tags: backend style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD) --cached
@@ -388,7 +392,8 @@ auto-fix:
     markdownlint:
       tags: documentation style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD) --cached
-      exclude: 'doc/api/graphql/reference/_index.md'
+      exclude:
+        - 'doc/api/graphql/reference/*.md'
       glob: 'doc/*.md'
       run: markdownlint-cli2 --fix {files}
     openapi_generate:

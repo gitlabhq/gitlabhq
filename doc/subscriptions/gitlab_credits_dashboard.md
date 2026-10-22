@@ -236,8 +236,8 @@ To stop all GitLab Credits consumption immediately, regardless of included
 balances, [remove the GitLab Duo seat](subscription-add-ons.md#assign-and-remove-gitlab-duo-seats-in-bulk)
 from the affected users, or [turn off GitLab Duo](../user/gitlab_duo/turn_on_off.md#turn-gitlab-duo-on-or-off)
 for the namespace. To automate seat removal and reassignment, use the
-[`userAddOnAssignmentRemove`](../api/graphql/reference/_index.md#mutationuseraddonassignmentremove) and
-[`userAddOnAssignmentCreate`](../api/graphql/reference/_index.md#mutationuseraddonassignmentcreate)
+[`userAddOnAssignmentRemove`](../api/graphql/reference/mutations.md#useraddonassignmentremove) and
+[`userAddOnAssignmentCreate`](../api/graphql/reference/mutations.md#useraddonassignmentcreate)
 GraphQL mutations.
 
 How the cap value is applied then depends on the cap type:
@@ -290,7 +290,7 @@ To disable the cap, turn off the **Set on-demand credit cap** toggle. When disab
 no subscription on-demand credit cap is enforced, and behavior falls back to
 existing billing behavior.
 
-You can use the GraphQL API to [view usage caps](../api/graphql/reference/_index.md#gitlabsubscriptionbudgetcaps) and set a [flat user cap](../api/graphql/reference/_index.md#mutationupsertflatusercap) or a [per-user override cap](../api/graphql/reference/_index.md#mutationupsertuserbudgetcapoverrides).
+You can use the GraphQL API to [view usage caps](../api/graphql/reference/objects.md#gitlabsubscriptionbudgetcaps) and set a [flat user-level cap](../api/graphql/reference/mutations.md#upsertflatusercap) or a [per-user override cap](../api/graphql/reference/mutations.md#upsertuserbudgetcapoverrides).
 
 ### Manage credit caps
 
@@ -447,7 +447,7 @@ The column displays one of the following statuses:
 | **Blocked usage** | The user has exhausted their included credits and reached their per-user cap. The cap is either the flat user cap set for all users on the subscription, or a per-user override cap set specifically for them. |
 
 The dashboard does not display which type of cap blocked a user.
-To determine the cap type, use the [GraphQL API](../api/graphql/reference/_index.md#gitlabsubscriptionusageblockedstatus).
+To determine the cap type, use the [GraphQL API](../api/graphql/reference/objects.md#gitlabsubscriptionusageblockedstatus).
 
 The **Usage control status** column displays only per-user caps.
 The subscription on-demand cap applies to the entire subscription, not to individual users, and is not listed in this column.

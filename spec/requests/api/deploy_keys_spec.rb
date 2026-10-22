@@ -332,6 +332,46 @@ RSpec.describe API::DeployKeys, :with_current_organization, :aggregate_failures,
       expect(response).to have_gitlab_http_status(:created)
     end
 
+    context 'when the project organization is isolated' do
+      let_it_be(:isolated_organization) { create(:organization, :isolated) }
+      let_it_be(:isolated_project) { create(:project, organization: isolated_organization) }
+      let_it_be(:same_organization_key) { create(:deploy_key, public: true, organization: isolated_organization) }
+
+      let(:isolated_project_path) { "/projects/#{isolated_project.id}/deploy_keys" }
+
+      it 'does not join an existing key from another organization' do
+        expect do
+          post api(isolated_project_path, admin, admin_mode: true), params: { key: deploy_key.key, title: deploy_key.title }
+        end.not_to change { isolated_project.deploy_keys.count }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      it 'joins an existing key from the same organization' do
+        expect do
+          post api(isolated_project_path, admin, admin_mode: true),
+            params: { key: same_organization_key.key, title: same_organization_key.title }
+        end.to change { isolated_project.deploy_keys.count }.by(1)
+
+        expect(response).to have_gitlab_http_status(:created)
+      end
+    end
+
+    context 'when the key organization is isolated' do
+      let_it_be(:isolated_organization_key) do
+        create(:deploy_key, public: true, organization: create(:organization, :isolated))
+      end
+
+      it 'does not join the key to a project in another organization' do
+        expect do
+          post api(project_path, admin, admin_mode: true),
+            params: { key: isolated_organization_key.key, title: isolated_organization_key.title }
+        end.not_to change { project.deploy_keys.count }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+
     it 'accepts can_push parameter' do
       key_attrs = attributes_for(:another_key).merge(can_push: true)
 
@@ -625,6 +665,29 @@ RSpec.describe API::DeployKeys, :with_current_organization, :aggregate_failures,
         post api("/projects/#{project2.id}/deploy_keys/#{deploy_key.id}/enable", user)
 
         expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when the project organization is isolated' do
+      let_it_be(:isolated_organization) { create(:organization, :isolated) }
+      let_it_be(:isolated_project) { create(:project, organization: isolated_organization) }
+      let_it_be(:same_organization_key) { create(:deploy_key, public: true, organization: isolated_organization) }
+
+      it 'returns a 404 error for a key from another organization' do
+        expect do
+          post api("/projects/#{isolated_project.id}/deploy_keys/#{deploy_key.id}/enable", admin, admin_mode: true)
+        end.not_to change { isolated_project.deploy_keys.count }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response['message']).to eq('404 Deploy key Not Found')
+      end
+
+      it 'enables a key from the same organization' do
+        expect do
+          post api("/projects/#{isolated_project.id}/deploy_keys/#{same_organization_key.id}/enable", admin, admin_mode: true)
+        end.to change { isolated_project.deploy_keys.count }.from(0).to(1)
+
+        expect(response).to have_gitlab_http_status(:created)
       end
     end
   end

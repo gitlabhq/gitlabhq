@@ -374079,7 +374079,7 @@
             },
             {
               "name": "ciConfig",
-              "description": "Linted and processed contents of a CI config.\nShould not be requested more than once per request. Deprecated in GitLab 18.1: Use CiLint mutation: <https://docs.gitlab.com/api/graphql/reference/#mutationcilint>.",
+              "description": "Linted and processed contents of a CI config.\nShould not be requested more than once per request. Deprecated in GitLab 18.1: Use CiLint mutation: <https://docs.gitlab.com/api/graphql/reference/mutations/#cilint>.",
               "args": [
                 {
                   "name": "projectPath",
@@ -374156,7 +374156,7 @@
                 "ofType": null
               },
               "isDeprecated": true,
-              "deprecationReason": "Use CiLint mutation: <https://docs.gitlab.com/api/graphql/reference/#mutationcilint>. Deprecated in GitLab 18.1."
+              "deprecationReason": "Use CiLint mutation: <https://docs.gitlab.com/api/graphql/reference/mutations/#cilint>. Deprecated in GitLab 18.1."
             },
             {
               "name": "ciDedicatedHostedRunnerFilters",

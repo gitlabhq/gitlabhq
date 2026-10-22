@@ -31,10 +31,10 @@ The REST API response does not include an explicit queue position for each merge
 returns merge requests as a flat list rather than grouped by train:
 
 - For an exact queue position, sort by `id` in ascending order, or use the GraphQL API
-  [`MergeTrainCar.index`](graphql/reference/_index.md#mergetraincar-index) field.
+  [`MergeTrainCar.index`](graphql/reference/objects.md#mergetraincar) field.
 - To group merge requests by train, use the `target_branch` attribute, or query the GraphQL API
-  [`Project.mergeTrains`](graphql/reference/_index.md#projectmergetrains) and
-  [`MergeTrain.cars`](graphql/reference/_index.md#mergetraincars) fields.
+  [`Project.mergeTrains`](graphql/reference/objects.md#project) and
+  [`MergeTrain.cars`](graphql/reference/objects.md#mergetrain) fields.
 
 ## List all merge trains for a project
 

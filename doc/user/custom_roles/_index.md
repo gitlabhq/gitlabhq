@@ -81,7 +81,7 @@ To create a custom member role:
 1. Select any permissions for the custom role.
 1. Select **Create role**.
 
-You can also [use the API](../../api/graphql/reference/_index.md#mutationmemberrolecreate) to create a custom role.
+You can also [use the API](../../api/graphql/reference/mutations.md#memberrolecreate) to create a custom role.
 
 ## Create a custom admin role
 
@@ -109,7 +109,7 @@ To create a custom admin role:
 1. Select any permissions for the custom role.
 1. Select **Create role**.
 
-You can also [use the API](../../api/graphql/reference/_index.md#mutationmemberroleadmincreate) to create a custom role.
+You can also [use the API](../../api/graphql/reference/mutations.md#memberroleadmincreate) to create a custom role.
 
 ## Edit a custom role
 
@@ -137,7 +137,7 @@ To edit a custom role:
 1. Modify the role.
 1. Select **Save role**.
 
-You can also use the API to edit a [custom member role](../../api/graphql/reference/_index.md#mutationmemberroleupdate) or a [custom admin role](../../api/graphql/reference/_index.md#mutationmemberroleadminupdate).
+You can also use the API to edit a [custom member role](../../api/graphql/reference/mutations.md#memberroleupdate) or a [custom admin role](../../api/graphql/reference/mutations.md#memberroleadminupdate).
 
 ## View details of a custom role
 
@@ -179,7 +179,7 @@ To delete a custom role:
 1. Next to a custom role, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Delete role**.
 1. On the confirmation dialog, select **Delete role**.
 
-You can also use the API to delete a [custom member role](../../api/graphql/reference/_index.md#mutationmemberroledelete) or a [custom admin role](../../api/graphql/reference/_index.md#mutationmemberroleadmindelete).
+You can also use the API to delete a [custom member role](../../api/graphql/reference/mutations.md#memberroledelete) or a [custom admin role](../../api/graphql/reference/mutations.md#memberroleadmindelete).
 
 ## Assign a custom member role
 
@@ -201,7 +201,7 @@ To assign a custom member role to an existing user:
 1. From the **Role** dropdown list, select a role to assign to the member.
 1. Select **Update role** to assign the role.
 
-You can also [use the API](../../api/graphql/reference/_index.md#mutationmemberroletouserassign) to assign or modify custom role assignments.
+You can also [use the API](../../api/graphql/reference/mutations.md#memberroletouserassign) to assign or modify custom role assignments.
 
 ## Assign a custom admin role
 
@@ -225,7 +225,7 @@ To assign a custom admin role to an existing user:
 1. In the **Access** section, set the access level to either **Regular** or **Auditor**.
 1. From the **Admin area** dropdown list, select a custom admin role.
 
-You can also [use the API](../../api/graphql/reference/_index.md#mutationmemberroletouserassign) to assign or modify custom role assignments.
+You can also [use the API](../../api/graphql/reference/mutations.md#memberroletouserassign) to assign or modify custom role assignments.
 
 ## Assign a custom role to an invited group
 

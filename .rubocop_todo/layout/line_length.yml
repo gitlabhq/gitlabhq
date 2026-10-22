@@ -2199,7 +2199,6 @@ Layout/LineLength:
     - 'spec/features/projects/commit/user_reverts_commit_spec.rb'
     - 'spec/features/projects/commits/user_browses_commits_spec.rb'
     - 'spec/features/projects/compare_spec.rb'
-    - 'spec/features/projects/container_registry_spec.rb'
     - 'spec/features/projects/environments/environment_spec.rb'
     - 'spec/features/projects/environments/environments_spec.rb'
     - 'spec/features/projects/features_visibility_spec.rb'

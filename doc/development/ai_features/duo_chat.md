@@ -160,14 +160,14 @@ If you're building features that interact with GitLab Duo Chat conversations, yo
 GitLab Duo Chat supports multiple conversations. Each conversation is represented by a thread, which contains multiple messages. The important attributes of a thread are:
 
 - `id`: The `id` is required when replying to a thread.
-- `conversation_type`: This allows for distinguishing between the different available GitLab Duo Chat conversation types. See the [thread conversation types list](../../api/graphql/reference/_index.md#aiconversationsthreadsconversationtype).
+- `conversation_type`: This allows for distinguishing between the different available GitLab Duo Chat conversation types. See the [thread conversation types list](../../api/graphql/reference/enums.md#aiconversationsthreadsconversationtype).
   - If your feature needs its own conversation type, contact the GitLab Duo Chat team.
 
 If your feature requires calling GraphQL API directly, the following queries and mutations are available, for which you must specify the `conversation_type`.
 
-- [Query.aiConversationThreads](../../api/graphql/reference/_index.md#queryaiconversationthreads): lists threads
-- [Query.aiMessages](../../api/graphql/reference/_index.md#queryaimessages): lists one thread's messages. Must specify `threadId`.
-- [Mutation.aiAction](../../api/graphql/reference/_index.md#mutationaiaction): creates one message. If `threadId` is specified the message is appended into that thread.
+- [Query.aiConversationThreads](../../api/graphql/reference/queries.md#aiconversationthreads): lists threads
+- [Query.aiMessages](../../api/graphql/reference/queries.md#aimessages): lists one thread's messages. Must specify `threadId`.
+- [Mutation.aiAction](../../api/graphql/reference/mutations.md#aiaction): creates one message. If `threadId` is specified the message is appended into that thread.
 
 All chat conversations have a retention period, controlled by the admin. The default retention period is 30 days after last reply.
 

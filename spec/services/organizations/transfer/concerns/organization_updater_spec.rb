@@ -120,6 +120,95 @@ RSpec.describe Organizations::Transfer::Concerns::OrganizationUpdater, feature_c
         expect(token2.reload.organization_id).to eq(new_organization.id)
         expect(token3.reload.organization_id).to eq(new_organization.id)
       end
+
+      it 'selects batches without ORDER BY and updates each batch once' do
+        stub_const("#{described_class}::ORGANIZATION_ID_UPDATE_BATCH_SIZE", 1)
+
+        recorder = ActiveRecord::QueryRecorder.new do
+          service.update_organization_id_for(PersonalAccessToken) do |relation|
+            relation.where(user_id: [user1.id, user2.id, user3.id])
+          end
+        end
+
+        selects = recorder.log.select do |query|
+          query.include?('SELECT "personal_access_tokens"."id" FROM "personal_access_tokens"')
+        end
+        updates = recorder.log.select { |query| query.include?('UPDATE "personal_access_tokens"') }
+
+        expect(selects.size).to eq(4)
+        expect(selects).to all(exclude('ORDER BY'))
+        expect(updates.size).to eq(3)
+      end
+    end
+
+    context 'when old and new organization are the same' do
+      let(:service) { test_class.new(old_organization, old_organization) }
+
+      it 'raises an error' do
+        expect { service.update_organization_id_for(PersonalAccessToken) }
+          .to raise_error(ArgumentError, 'old and new organization must differ')
+      end
+    end
+
+    context 'when the block does not narrow by organization' do
+      let_it_be(:user1) { create(:user, organization: old_organization) }
+      let_it_be(:token1) { create(:personal_access_token, user: user1, organization: old_organization) }
+
+      it 'stops once the plucked ids no longer move' do
+        recorder = ActiveRecord::QueryRecorder.new do
+          service.update_organization_id_for(PersonalAccessToken) do |relation|
+            relation.unscope(where: :organization_id).where(user_id: user1.id)
+          end
+        end
+
+        expect(token1.reload.organization_id).to eq(new_organization.id)
+        expect(recorder.log.count { |query| query.include?('UPDATE "personal_access_tokens"') }).to eq(1)
+      end
+    end
+
+    context 'when the block selects a row in another organization' do
+      let_it_be(:other_organization) { create(:organization) }
+      let_it_be(:user1) { create(:user, organization: other_organization) }
+      let_it_be(:token1) { create(:personal_access_token, user: user1, organization: other_organization) }
+
+      it 'leaves the row in place and stops after the first pluck' do
+        recorder = ActiveRecord::QueryRecorder.new do
+          service.update_organization_id_for(PersonalAccessToken) do |relation|
+            relation.unscope(where: :organization_id).where(user_id: user1.id)
+          end
+        end
+
+        selects = recorder.log.select do |query|
+          query.include?('SELECT "personal_access_tokens"."id" FROM "personal_access_tokens"')
+        end
+
+        expect(token1.reload.organization_id).to eq(other_organization.id)
+        expect(selects.size).to eq(1)
+      end
+    end
+
+    context 'with a partitioned table', if: Gitlab.ee? do
+      let_it_be(:user1) { create(:user, :with_namespace, organization: old_organization) }
+      let_it_be(:user2) { create(:user, :with_namespace, organization: old_organization) }
+      let_it_be(:current_event) { create(:ai_usage_event, user: user1, timestamp: Time.current) }
+      let_it_be(:previous_month_event) { create(:ai_usage_event, user: user1, timestamp: 1.month.ago) }
+      let_it_be(:other_user_event) { create(:ai_usage_event, user: user2, timestamp: Time.current) }
+
+      it 'updates matching rows across partitions' do
+        stub_const("#{described_class}::ORGANIZATION_ID_UPDATE_BATCH_SIZE", 1)
+
+        recorder = ActiveRecord::QueryRecorder.new do
+          service.update_organization_id_for(Ai::UsageEvent) { |relation| relation.where(user_id: user1.id) }
+        end
+
+        updates = recorder.log.select { |query| query.include?('UPDATE "ai_usage_events"') }
+
+        expect(updates.size).to eq(2)
+        expect(updates).to all(include('"ai_usage_events"."timestamp"'))
+        expect(Ai::UsageEvent.where(id: [current_event.id, previous_month_event.id]).pluck(:organization_id))
+          .to all(eq(new_organization.id))
+        expect(Ai::UsageEvent.find_by(id: other_user_event.id).organization_id).to eq(old_organization.id)
+      end
     end
 
     context 'with complex scopes' do

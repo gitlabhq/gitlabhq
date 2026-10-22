@@ -4,12 +4,9 @@ return if Rails.env.production?
 
 namespace :gitlab do
   require 'graphql/rake_task'
-  require_relative '../../../tooling/graphql/deprecated_docs/renderer'
   require_relative '../../../tooling/graphql/docs'
 
-  OUTPUT_DIR = Rails.root.join("doc/api/graphql/reference")
   TEMP_SCHEMA_DIR = Rails.root.join('tmp/tests/graphql')
-  TEMPLATES_DIR = 'tooling/graphql/deprecated_docs/templates/'
 
   # Some schema items are SaaS-only, and as we want to document them,
   # simulate SaaS when generating the GraphQL documentation.
@@ -18,7 +15,7 @@ namespace :gitlab do
   # is hard-coded to be `false` unless in development:
   # https://gitlab.com/gitlab-org/gitlab/-/blob/bc4cbb5d5a4b5e5a7e817f995e8d377978f246d3/lib/gitlab.rb#L58.
   #
-  # `gitlab:graphql:check_docs` is run in our test pipelines so we need to
+  # `gitlab:graphql:docs:check` is run in our test pipelines so we need to
   # override `Gitlab.com?` to simulate SaaS
   task simulate_saas: :environment do
     next if Gitlab.com? # rubocop:disable Gitlab/AvoidGitlabInstanceChecks -- Necessary here.
@@ -138,74 +135,56 @@ namespace :gitlab do
       end
     end
 
-    desc 'GitLab | GraphQL | Generate GraphQL docs'
+    # TODO Remove all old GraphQL docs code in follow-up
+    # https://gitlab.com/gitlab-org/gitlab/-/work_items/593121
+    desc 'GitLab | GraphQL | Generate GraphQL docs (deprecated)'
     task compile_docs: [:simulate_saas, :environment, :enable_feature_flags] do
-      renderer = Tooling::Graphql::DeprecatedDocs::Renderer.new(GitlabSchema, **render_options)
-
-      renderer.write
-
-      puts "Documentation compiled."
+      Rake::Task['gitlab:graphql:docs:compile'].invoke
     end
 
-    desc 'GitLab | GraphQL | Check if GraphQL docs are up to date'
+    # TODO Remove all old GraphQL docs code in follow-up
+    # https://gitlab.com/gitlab-org/gitlab/-/work_items/593121
+    desc 'GitLab | GraphQL | Check if GraphQL docs are up to date (deprecated)'
     task check_docs: [:simulate_saas, :environment, :enable_feature_flags] do
-      renderer = Tooling::Graphql::DeprecatedDocs::Renderer.new(GitlabSchema, **render_options)
-
-      doc = File.read(Rails.root.join(OUTPUT_DIR, '_index.md'))
-
-      if doc == renderer.contents
-        puts "GraphQL documentation is up to date"
-      else
-        format_output(
-          'GraphQL documentation is outdated! Please update it by running `bundle exec rake gitlab:graphql:compile_docs`.',
-          '',
-          'If this merge request does not change the GraphQL schema, the drift probably came',
-          'from master: this check runs against your branch alone, so a schema change that',
-          'landed after you branched fails here until you pick it up. Check with:',
-          '',
-          '  git fetch origin master',
-          '  git log --oneline HEAD..origin/master -- doc/api/graphql/reference/_index.md',
-          '',
-          'and rebase if that lists anything:',
-          '',
-          '  git rebase origin/master'
-        )
-        abort
-      end
+      Rake::Task['gitlab:graphql:docs:check'].invoke
     end
 
     namespace :docs do
-      desc 'GitLab | GraphQL | Generate GraphQL docs (experimental)'
+      desc 'GitLab | GraphQL | Generate GraphQL docs'
       task compile: [:simulate_saas, :environment, :enable_feature_flags] do
         Tooling::Graphql::Docs.compile!
 
-        puts 'Experimental documentation compiled.'
+        puts 'GraphQL documentation compiled.'
       end
 
-      desc 'GitLab | GraphQL | Check if GraphQL docs are up to date (experimental)'
+      desc 'GitLab | GraphQL | Check if GraphQL docs are up to date'
       task check: [:simulate_saas, :environment, :enable_feature_flags] do
         if Tooling::Graphql::Docs.stale?
           format_output(
-            'Experimental GraphQL documentation is outdated!',
-            'Please update the documentation by running `bundle exec rake gitlab:graphql:docs:compile`.'
+            'GraphQL documentation is outdated!',
+            'Please update the documentation by running `bundle exec rake gitlab:graphql:docs:compile`.',
+            '',
+            'If this merge request does not change the GraphQL schema, the drift probably came',
+            'from master. This check runs against your branch alone, so a schema change that',
+            'landed after you branched fails here until you pick it up. Check with:',
+            '',
+            '  git fetch origin master',
+            '  git log --oneline HEAD..origin/master -- doc/api/graphql/reference/',
+            '',
+            'Rebase if that lists anything:',
+            '',
+            '  git rebase origin/master'
           )
           abort
         else
-          puts 'Experimental GraphQL documentation is up to date.'
+          puts 'GraphQL documentation is up to date.'
         end
       end
     end
 
     desc 'GitLab | GraphQL | Update GraphQL docs, schema, and introspection docs'
-    task update_all: [:compile_docs, 'schema:dump', :generate_all_introspection_schemas]
+    task update_all: ['docs:compile', 'schema:dump', :generate_all_introspection_schemas]
   end
-end
-
-def render_options
-  {
-    output_dir: OUTPUT_DIR,
-    template: Rails.root.join(TEMPLATES_DIR, 'default.md.haml')
-  }
 end
 
 def format_output(*strs)

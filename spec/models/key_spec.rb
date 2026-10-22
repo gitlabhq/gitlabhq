@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Key, :mailer, feature_category: :system_access do
+  using RSpec::Parameterized::TableSyntax
+
   it_behaves_like 'having unique enum values'
 
   it_behaves_like 'cells claimable model',
@@ -241,6 +243,44 @@ RSpec.describe Key, :mailer, feature_category: :system_access do
 
       it 'returns keys of the specified user only' do
         expect(described_class.for_user(user_1)).to contain_exactly(key_of_user_1)
+      end
+    end
+
+    describe '.for_organization' do
+      let_it_be(:organization) { create(:organization) }
+      let_it_be(:key_in_organization) { create(:key, organization: organization) }
+      let_it_be(:key_in_other_organization) { create(:key, organization: create(:organization)) }
+
+      it 'returns keys of the specified organization only' do
+        expect(described_class.for_organization(organization)).to contain_exactly(key_in_organization)
+      end
+    end
+
+    describe '.within_organization_boundary' do
+      let_it_be(:organization) { create(:organization) }
+      let_it_be(:isolated_organization) { create(:organization, :isolated) }
+      let_it_be(:key_in_organization) { create(:key, organization: organization) }
+      let_it_be(:key_in_other_organization) { create(:key, organization: create(:organization)) }
+      let_it_be(:key_in_isolated_organization) { create(:key, organization: isolated_organization) }
+      let_it_be(:key_in_other_isolated_organization) { create(:key, organization: create(:organization, :isolated)) }
+
+      context 'when the organization is isolated' do
+        it 'returns keys of that organization only' do
+          expect(keys_within_boundary_of(isolated_organization)).to contain_exactly(key_in_isolated_organization)
+        end
+      end
+
+      context 'when the organization is not isolated' do
+        it 'returns keys of every organization that is not isolated' do
+          expect(keys_within_boundary_of(organization)).to contain_exactly(key_in_organization, key_in_other_organization)
+        end
+      end
+
+      def keys_within_boundary_of(organization)
+        described_class
+          .id_in([key_in_organization, key_in_other_organization, key_in_isolated_organization,
+            key_in_other_isolated_organization])
+          .within_organization_boundary(organization)
       end
     end
 
@@ -612,6 +652,30 @@ RSpec.describe Key, :mailer, feature_category: :system_access do
     context "when type is 'DeployKey'" do
       it 'returns false' do
         expect(build(:deploy_key).regular_key?).to be(false)
+      end
+    end
+  end
+
+  describe '#within_organization_boundary?' do
+    let_it_be(:organization) { create(:organization) }
+    let_it_be(:other_organization) { create(:organization) }
+    let_it_be(:isolated_organization) { create(:organization, :isolated) }
+    let_it_be(:other_isolated_organization) { create(:organization, :isolated) }
+
+    where(:key_organization, :project_organization, :result) do
+      ref(:organization)          | ref(:organization)                | true
+      ref(:isolated_organization) | ref(:isolated_organization)       | true
+      ref(:organization)          | ref(:other_organization)          | true
+      ref(:isolated_organization) | ref(:organization)                | false
+      ref(:organization)          | ref(:isolated_organization)       | false
+      ref(:isolated_organization) | ref(:other_isolated_organization) | false
+    end
+
+    with_them do
+      it 'is true unless the organizations differ and either one is isolated' do
+        key = build_stubbed(:key, organization: key_organization)
+
+        expect(key.within_organization_boundary?(project_organization)).to be(result)
       end
     end
   end

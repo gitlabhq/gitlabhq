@@ -417,7 +417,7 @@ You can limit how often pipelines can be canceled to protect against this.
 
 This rate limit applies to pipeline cancellations made with the
 [cancel pipeline REST API](../../api/pipelines.md#cancel-all-jobs-for-a-pipeline), the
-[`pipelineCancel`](../../api/graphql/reference/_index.md#mutationpipelinecancel) GraphQL mutation, or the GitLab UI.
+[`pipelineCancel`](../../api/graphql/reference/mutations.md#pipelinecancel) GraphQL mutation, or the GitLab UI.
 The limit does not apply to automatic cancellations (for example, `auto_cancel_on_job_failure`).
 
 GitLab enforces the following limits:
@@ -453,7 +453,7 @@ excessive load on your instance. You can limit how often pipelines can be retrie
 
 This rate limit applies to pipeline retries made with the
 [retry pipeline REST API](../../api/pipelines.md#retry-jobs-in-a-pipeline), the
-[`pipelineRetry`](../../api/graphql/reference/_index.md#mutationpipelineretry) GraphQL mutation, or the GitLab UI.
+[`pipelineRetry`](../../api/graphql/reference/mutations.md#pipelineretry) GraphQL mutation, or the GitLab UI.
 The limit does not apply to automatic job retries, such as those triggered by the
 [`retry`](../../ci/yaml/_index.md#retry) keyword, which uses a different code path.
 
@@ -488,8 +488,8 @@ jobs can be retried or run to protect against this.
 
 These rate limits apply to job retries and manual job runs made with the
 [retry job](../../api/jobs.md#retry-a-job) and [run job](../../api/jobs.md#run-a-job) REST API endpoints,
-the [`jobRetry`](../../api/graphql/reference/_index.md#mutationjobretry) and
-[`jobPlay`](../../api/graphql/reference/_index.md#mutationjobplay) GraphQL mutations, or the GitLab UI.
+the [`jobRetry`](../../api/graphql/reference/mutations.md#jobretry) and
+[`jobPlay`](../../api/graphql/reference/mutations.md#jobplay) GraphQL mutations, or the GitLab UI.
 The limits do not apply to automatic retries (for example, `retry:` in the CI/CD configuration) or automatic rollbacks.
 
 GitLab enforces the following limits:
@@ -526,7 +526,7 @@ pipeline to protect your instance from excessive load. Each limit resets after o
 
 This rate limit applies when a user deletes a pipeline with the
 [delete pipeline REST API](../../api/pipelines.md#delete-a-pipeline), the
-[`pipelineDestroy`](../../api/graphql/reference/_index.md#mutationpipelinedestroy) GraphQL mutation,
+[`pipelineDestroy`](../../api/graphql/reference/mutations.md#pipelinedestroy) GraphQL mutation,
 or the GitLab UI. It does not apply to pipelines removed by
 [automatic cleanup](../settings/continuous_integration.md), project deletion, or issue deletion,
 because those use a different code path.
@@ -598,7 +598,7 @@ To protect against this, you can limit how many cancel requests each user can se
 
 This rate limit applies to job cancellations made with the
 [cancel job REST API](../../api/jobs.md#cancel-a-job), the
-[`jobCancel`](../../api/graphql/reference/_index.md#mutationjobcancel) GraphQL mutation, or the GitLab UI.
+[`jobCancel`](../../api/graphql/reference/mutations.md#jobcancel) GraphQL mutation, or the GitLab UI.
 The limit does not apply to jobs canceled as part of
 [canceling a whole pipeline](#pipeline-cancellation-rate-limits), which has its own limit,
 or to automatic cancellations, such as auto-cancel of redundant pipelines.

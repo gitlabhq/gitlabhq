@@ -313,8 +313,8 @@ curl --request POST \
 
 ### Use GraphQL
 
-You can use the [`jobPlay` mutation](../../api/graphql/reference/_index.md#mutationjobplay)
-or [`jobRetry` mutation](../../api/graphql/reference/_index.md#mutationjobretry)
+You can use the [`jobPlay` mutation](../../api/graphql/reference/mutations.md#jobplay)
+or [`jobRetry` mutation](../../api/graphql/reference/mutations.md#jobretry)
 with an `inputs` argument:
 
 ```graphql

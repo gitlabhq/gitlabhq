@@ -123,7 +123,7 @@ Thank you [shangsuru](https://gitlab.com/shangsuru) for your contribution!
 
 - Tier: Premium, Ultimate
 - Offering: GitLab Self-Managed
-- Links: [Documentation](../../api/graphql/reference/_index.md#cicatalogresourcecomponentusage) | [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/466575)
+- Links: [Documentation](../../api/graphql/reference/objects.md#cicatalogresourcecomponentusage) | [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/466575)
 
 {{< /details >}}
 
@@ -205,7 +205,7 @@ If you’ve already enabled Advanced SAST, the new rules are [automatically acti
 
 - Tier: Ultimate
 - Offering: GitLab.com, GitLab Self-Managed
-- Links: [Documentation](../../api/graphql/reference/_index.md#cveenrichmenttype) | [Related issue](https://gitlab.com/groups/gitlab-org/-/epics/11912)
+- Links: [Documentation](../../api/graphql/reference/objects.md#cveenrichmenttype) | [Related issue](https://gitlab.com/groups/gitlab-org/-/epics/11912)
 
 {{< /details >}}
 
@@ -397,7 +397,7 @@ When creating a personal, project, group, or impersonation access token, you can
 
 {{< /details >}}
 
-With this release, you can now enable secret push protection on all projects in your group via the [REST API](../../api/group_security_settings.md) and the [GraphQL API](../../api/graphql/reference/_index.md#mutationsetgroupsecretpushprotection). This allows you to efficiently enable secret push protection on a per-group basis instead of project by project. Audit events are logged every time push protection is enabled or disabled.
+With this release, you can now enable secret push protection on all projects in your group via the [REST API](../../api/group_security_settings.md) and the [GraphQL API](../../api/graphql/reference/mutations.md#setgroupsecretpushprotection). This allows you to efficiently enable secret push protection on a per-group basis instead of project by project. Audit events are logged every time push protection is enabled or disabled.
 
 ### New API endpoint to list enterprise users
 

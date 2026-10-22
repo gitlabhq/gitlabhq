@@ -5,7 +5,7 @@ module Keeps
     class RemoveFeatureFlags
       attr_reader :logger
 
-      SKIP_PATTERNS_FOR_MARKDOWN = ['doc-locale/', 'changelog', 'graphql/reference/_index.md'].freeze
+      SKIP_PATTERNS_FOR_MARKDOWN = ['doc-locale/', 'changelog', 'graphql/reference/'].freeze
 
       def initialize(logger)
         @logger = logger

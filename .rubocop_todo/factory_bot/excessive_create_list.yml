@@ -4,7 +4,6 @@ FactoryBot/ExcessiveCreateList:
     - 'ee/spec/models/license_spec.rb'
     - 'ee/spec/models/package_metadata/advisory_spec.rb'
     - 'spec/features/boards/boards_spec.rb'
-    - 'spec/features/projects/container_registry_spec.rb'
     - 'spec/features/work_items/issues/list/csv_spec.rb'
     - 'spec/features/work_items/issues/user_scrolls_to_deeplinked_note_spec.rb'
     - 'spec/requests/api/project_packages_spec.rb'

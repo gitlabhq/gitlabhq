@@ -95,7 +95,7 @@ You can now track code generation volumes and IDE or language trends for GitLab 
 as your teams adopt new GitLab Duo Agent Platform flows. Enhanced user-level metrics enable teams to gain deeper
 insight into the key Duo features providing continuous value.
 
-A new [endpoint for instance-level AI usage](../../api/graphql/reference/_index.md#aiinstanceusagedata)
+A new [endpoint for instance-level AI usage](../../api/graphql/reference/objects.md#aiinstanceusagedata)
 is now available for instance administrators to extract all Duo data from either Postgres (3-month retention) or
 ClickHouse.
 

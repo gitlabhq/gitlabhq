@@ -63127,9 +63127,6 @@ msgstr ""
 msgid "Paths with rate limiting for POST requests"
 msgstr ""
 
-msgid "Pattern"
-msgstr ""
-
 msgid "Pause"
 msgstr ""
 
@@ -64248,6 +64245,9 @@ msgstr ""
 msgid "Pipelines|Owner"
 msgstr ""
 
+msgid "Pipelines|Pattern: %{pattern}"
+msgstr ""
+
 msgid "Pipelines|Pipeline %{linkStart}#%{pipelineId}%{linkEnd} %{status}"
 msgstr ""
 
@@ -65191,6 +65191,21 @@ msgid "PolicyStore|%{rule} is missing %{field}."
 msgstr ""
 
 msgid "PolicyStore|%{rule} needs at least one of: %{fields}."
+msgstr ""
+
+msgid "PolicyStore|%{rule}: %{setting} is not a setting a policy can govern."
+msgstr ""
+
+msgid "PolicyStore|%{rule}: %{setting} is pinned more than once."
+msgstr ""
+
+msgid "PolicyStore|%{rule}: %{setting} is set to a value a policy cannot require."
+msgstr ""
+
+msgid "PolicyStore|%{rule}: %{setting} needs a required value."
+msgstr ""
+
+msgid "PolicyStore|%{rule}: every selected setting needs a required value."
 msgstr ""
 
 msgid "PolicyStore|%{settings}: a group or instance setting can still override the values not offered here, so only these values can be required."
@@ -87334,9 +87349,6 @@ msgid "The username provided by your identity provider is too long (maximum %{ma
 msgstr ""
 
 msgid "The value must be a valid JSON array format: [1,2,3] or [{\"key\": \"value\"}]"
-msgstr ""
-
-msgid "The value must match the defined regular expression."
 msgstr ""
 
 msgid "The value of the provided variable exceeds the %{count} character limit"

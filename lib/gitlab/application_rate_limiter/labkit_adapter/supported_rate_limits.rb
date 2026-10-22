@@ -1191,6 +1191,13 @@ module Gitlab
               period: 1.minute,
               action: :limit
             ),
+            work_item_hierarchy_reorder: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_work_item_hierarchy_reorders_by_user',
+              characteristics: %i[user],
+              limit: 120,
+              period: 1.minute,
+              action: :limit
+            ),
             work_item_saved_view_broadcast: ::Labkit::RateLimit::Rule.new(
               name: 'limit_work_item_saved_view_broadcasts_by_saved_view',
               characteristics: %i[saved_view],

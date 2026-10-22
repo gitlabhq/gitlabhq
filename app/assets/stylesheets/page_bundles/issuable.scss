@@ -88,18 +88,6 @@
   }
 }
 
-.merge-request-notification-toggle {
-  // stylelint-disable-next-line gitlab/no-gl-class
-  .gl-toggle {
-    margin-left: auto;
-  }
-
-  // stylelint-disable-next-line gitlab/no-gl-class
-  .gl-toggle-label {
-    font-weight: $gl-font-weight-normal;
-  }
-}
-
 .comment-templates-modal {
   padding: 3rem 0.5rem 0;
 

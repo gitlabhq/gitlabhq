@@ -20,6 +20,8 @@ RSpec.describe API::WorkItems::Discussions, feature_category: :portfolio_managem
     stub_feature_flags(work_item_rest_api: true)
   end
 
+  it_behaves_like 'work item list routes declaring cursor pagination', 'discussions'
+
   describe 'GET /projects/:id/-/work_items/:work_item_iid/discussions' do
     let(:api_request_path) { "/projects/#{project.id}/-/work_items/#{work_item.iid}/discussions" }
 

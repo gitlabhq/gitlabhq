@@ -53,6 +53,7 @@ names the upstream issue that would retire it. They are not the intended pattern
 | `caproni.relative-url.yaml` | Opt-in fragment: serves the instance under `QA_RELATIVE_URL_ROOT` |
 | `caproni.openbao.yaml` | Opt-in fragment: OpenBao for `Test::Integration::SecretsManager` |
 | `caproni.coverband.yaml` | Opt-in fragment: sets `COVERBAND_ENABLED` in the GitLab pods for the code paths mapping |
+| `caproni.istanbul.yaml` | Opt-in fragment: sets `BABEL_ENV=istanbul` in the GitLab pods for frontend coverage |
 | `values/gitlab.yaml` | Chart values, ported from the orchestrator's Ruby |
 | `values/gitlab-dev-stack.yaml` | PostgreSQL (CNPG), Valkey and Garage; ClickHouse and NATS disabled; also declares the `openbao` database |
 | `manifests/pre-receive-hook/` | Gitaly pre-receive server hook the E2E suite expects, applied by a kustomize deployer |
@@ -261,6 +262,8 @@ Only jobs with `E2E_CODE_PATHS_MAPPING: "true"` keep it: `cng-instance-caproni`,
 and `cng-secrets-manager-caproni`.
 `export-code-paths-mapping-caproni` merges their mapping files.
 It uploads the result under the `e2e-test-on-cng-caproni` run type.
+
+These jobs also extend `caproni.istanbul.yaml` when `BABEL_ENV=istanbul`.
 
 ## Licensing
 

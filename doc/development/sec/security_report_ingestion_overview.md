@@ -24,7 +24,7 @@ An instance of `Vulnerabilities::MergeRequestLink` class. They are used to link 
 
 ### Security Finding
 
-An instance of `Security::Finding` class. These serve as a meta-data store of a specific vulnerability detected in a specific `Security::Scan`. They store all the required scan information necessary for the [pipeline security report](../../user/application_security/detect/security_scanning_results.md#pipeline-security-report), the [pipeline.securityReportFindings](../../api/graphql/reference/_index.md#pipelinesecurityreportfindings) GraphQL field, and the [Vulnerability Findings](../../api/vulnerability_findings.md) REST API.
+An instance of `Security::Finding` class. These serve as a meta-data store of a specific vulnerability detected in a specific `Security::Scan`. They store all the required scan information necessary for the [pipeline security report](../../user/application_security/detect/security_scanning_results.md#pipeline-security-report), the [pipeline.securityReportFindings](../../api/graphql/reference/objects.md#pipeline) GraphQL field, and the [Vulnerability Findings](../../api/vulnerability_findings.md) REST API.
 
 ### Security Scan
 

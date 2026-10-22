@@ -64,7 +64,7 @@ The mergeability checks live under `app/services/merge_requests/mergeability/`.
 
 1. Add the new check in the `def mergeable_state_checks` method.
 1. Add the new check to the GraphQL enum `app/graphql/types/merge_requests/detailed_merge_status_enum.rb`.
-1. Update the GraphQL documentation with `bundle exec rake gitlab:graphql:compile_docs`.
+1. Update the GraphQL documentation with `bundle exec rake gitlab:graphql:update_all`.
 1. Update the API documentation in `doc/api/merge_requests.md`.
 1. Update the frontend to support the new message: `app/assets/javascripts/vue_merge_request_widget/components/checks/message.vue`.
 

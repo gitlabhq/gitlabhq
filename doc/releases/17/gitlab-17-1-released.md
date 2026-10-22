@@ -255,7 +255,7 @@ GitLab 17.1 includes packages for supporting [Ubuntu Noble 24.04](../../install/
 
 - Tier: Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed
-- Links: [Documentation](../../api/graphql/reference/_index.md#querygroups) | [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/463809)
+- Links: [Documentation](../../api/graphql/reference/queries.md#groups) | [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/463809)
 
 {{< /details >}}
 
@@ -324,7 +324,7 @@ Thank you [@imskr](https://gitlab.com/imskr) for this community contribution!
 
 - Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed
-- Links: [Documentation](../../api/graphql/reference/_index.md#usercontributedprojects) | [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/450191)
+- Links: [Documentation](../../api/graphql/reference/interfaces.md#user) | [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/450191)
 
 {{< /details >}}
 

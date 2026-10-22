@@ -162,7 +162,7 @@ With this change, finding and understanding code patterns across your repositori
 
 - Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Links: [Documentation](../../api/graphql/reference/_index.md#projectprojectmembers) | [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/541386)
+- Links: [Documentation](../../api/graphql/reference/objects.md#project) | [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/541386)
 
 {{< /details >}}
 

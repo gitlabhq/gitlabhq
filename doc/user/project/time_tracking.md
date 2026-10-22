@@ -240,7 +240,7 @@ Prerequisites:
 To delete a timelog, either:
 
 - In the time tracking report, on the right of a timelog entry, select **Delete time spent** ({{< icon name="remove" >}}).
-- Use the [GraphQL API](../../api/graphql/reference/_index.md#mutationtimelogdelete).
+- Use the [GraphQL API](../../api/graphql/reference/mutations.md#timelogdelete).
 
 ### Delete all the time spent
 
@@ -331,10 +331,9 @@ With this option turned on, `75h` is displayed instead of `1w 4d 3h`.
 ## Related topics
 
 - Time tracking GraphQL references:
-  - [Connection](../../api/graphql/reference/_index.md#timelogconnection)
-  - [Edge](../../api/graphql/reference/_index.md#timelogedge)
-  - [Fields](../../api/graphql/reference/_index.md#timelog)
-  - [Timelogs](../../api/graphql/reference/_index.md#querytimelogs)
-  - [Group timelogs](../../api/graphql/reference/_index.md#grouptimelogs)
-  - [Project Timelogs](../../api/graphql/reference/_index.md#projecttimelogs)
-  - [User Timelogs](../../api/graphql/reference/_index.md#usertimelogs)
+  - [Connection](../../api/graphql/reference/objects.md#timelogconnection)
+  - [Fields](../../api/graphql/reference/objects.md#timelog)
+  - [Timelogs](../../api/graphql/reference/queries.md#timelogs)
+  - [Group timelogs](../../api/graphql/reference/objects.md#group)
+  - [Project Timelogs](../../api/graphql/reference/objects.md#project)
+  - [User Timelogs](../../api/graphql/reference/interfaces.md#user)

@@ -22,7 +22,7 @@ information, see the [GraphQL input types documentation](https://graphql.org/lea
 > [!warning]
 > Deprecated items are planned to be removed in a
 > future release. For more information, see the GitLab
-> [deprecation process](../../_index.md#deprecation-and-removal-process).
+> [deprecation process](../_index.md#deprecation-and-removal-process).
 
 ## `AgentPlatformMetricsNotInput`
 
@@ -101,7 +101,7 @@ Conditions for AI Catalog triggers.
 | `mergeRequestCodeConflict` | [`AiCatalogTriggerConditionsGroupInput`](#aicatalogtriggerconditionsgroupinput) | Trigger condition rules for the merge_request_code_conflict event. |
 | `mergeRequestReady` | [`AiCatalogTriggerConditionsGroupInput`](#aicatalogtriggerconditionsgroupinput) | Trigger condition rules for the merge_request_ready event. |
 | `pipelineHooks` | [`AiCatalogTriggerConditionsGroupInput`](#aicatalogtriggerconditionsgroupinput) | Trigger condition rules for the pipeline_hooks event. |
-| `scheduled` | [`AiCatalogTriggerConditionsGroupInput`](#aicatalogtriggerconditionsgroupinput) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Trigger condition rules for the scheduled event. |
+| `scheduled` | [`AiCatalogTriggerConditionsGroupInput`](#aicatalogtriggerconditionsgroupinput) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Trigger condition rules for the scheduled event. |
 | `workItem` | [`AiCatalogTriggerConditionsGroupInput`](#aicatalogtriggerconditionsgroupinput) | Trigger condition rules for the work_item event. |
 
 ## `AiCatalogTriggerConditionsRuleItemInput`
@@ -242,9 +242,9 @@ Upstream credentials for a remote Artifact Registry repository. Write-only: no f
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `authToken` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Bearer token for the upstream. npm only. |
-| `password` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Password for the upstream. Maven and the container formats only; pair it with a username. |
-| `username` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Username for the upstream. Maven and the container formats only; pair it with a password. |
+| `authToken` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Bearer token for the upstream. npm only. |
+| `password` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Password for the upstream. Maven and the container formats only; pair it with a username. |
+| `username` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Username for the upstream. Maven and the container formats only; pair it with a password. |
 
 ## `ArtifactRegistryRemoteSettingsInput`
 
@@ -254,11 +254,11 @@ Writable upstream configuration of a remote Artifact Registry repository.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `cacheValidityHours` | [`Int`](scalars.md#int) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Revalidation window for cached artifacts, in hours. Between 0 and 32767, where 0 means cached artifacts never revalidate. |
-| `credentials` | [`ArtifactRegistryRemoteCredentialsInput`](#artifactregistryremotecredentialsinput) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Upstream credentials. Omit to leave the stored ones unchanged, supply an object to replace them, or, on an update, supply null to clear them. |
-| `metadataCacheValidityHours` | [`Int`](scalars.md#int) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Revalidation window for cached metadata, in hours. Between 1 and 32767, so metadata always revalidates on a schedule. Maven and npm only; other formats reject it. |
-| `snapshotMetadataAlwaysRevalidate` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Whether snapshot metadata revalidates on every read instead of on the metadata window. Maven only; other formats reject it. |
-| `url` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Base URL of the upstream registry, at most 1024 characters. Changing it resets the health fields, evicts the cached artifacts, and clears the stored credentials unless the same request supplies new ones. |
+| `cacheValidityHours` | [`Int`](scalars.md#int) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Revalidation window for cached artifacts, in hours. Between 0 and 32767, where 0 means cached artifacts never revalidate. |
+| `credentials` | [`ArtifactRegistryRemoteCredentialsInput`](#artifactregistryremotecredentialsinput) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Upstream credentials. Omit to leave the stored ones unchanged, supply an object to replace them, or, on an update, supply null to clear them. |
+| `metadataCacheValidityHours` | [`Int`](scalars.md#int) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Revalidation window for cached metadata, in hours. Between 1 and 32767, so metadata always revalidates on a schedule. Maven and npm only; other formats reject it. |
+| `snapshotMetadataAlwaysRevalidate` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Whether snapshot metadata revalidates on every read instead of on the metadata window. Maven only; other formats reject it. |
+| `url` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Base URL of the upstream registry, at most 1024 characters. Changing it resets the health fields, evicts the cached artifacts, and clears the stored credentials unless the same request supplies new ones. |
 
 ## `ArtifactRegistryRoleAssignmentInput`
 
@@ -327,7 +327,7 @@ Input type for filtering projects by security attributes.
 | `assigneeWildcardId` | [`AssigneeWildcardId`](enums.md#assigneewildcardid) | Filter by assignee wildcard. Incompatible with assigneeUsername and assigneeUsernames. |
 | `authorUsername` | [`String`](scalars.md#string) | Filter by author username. |
 | `confidential` | [`Boolean`](scalars.md#boolean) | Filter by confidentiality. |
-| `customField` | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.10.<br/><br/>Filter by custom fields. |
+| `customField` | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 17.10.<br/><br/>Filter by custom fields. |
 | `epicId` | [`EpicID`](scalars.md#epicid) | Deprecated in GitLab 17.5. This will be replaced by WorkItem hierarchyWidget. |
 | `epicWildcardId` | [`EpicWildcardId`](enums.md#epicwildcardid) | Filter by epic ID wildcard. Incompatible with epicId. |
 | `healthStatusFilter` | [`HealthStatusFilter`](enums.md#healthstatusfilter) | Health status of the issue, "none" and "any" values are supported. |
@@ -345,7 +345,7 @@ Input type for filtering projects by security attributes.
 | `or` | [`UnionedIssueFilterInput`](#unionedissuefilterinput) | List of arguments with inclusive OR. |
 | `releaseTag` | [`String`](scalars.md#string) | Filter by release tag. |
 | `search` | [`String`](scalars.md#string) | Search query for issue title or description. |
-| `status` | [`WorkItemWidgetStatusFilterInput`](#workitemwidgetstatusfilterinput) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.0.<br/><br/>Filter by status. |
+| `status` | [`WorkItemWidgetStatusFilterInput`](#workitemwidgetstatusfilterinput) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.0.<br/><br/>Filter by status. |
 | `types` | [`[IssueType!]`](enums.md#issuetype) | Filter by the given issue types. |
 | `weight` | [`String`](scalars.md#string) | Filter by weight. |
 | `weightWildcardId` | [`WeightWildcardId`](enums.md#weightwildcardid) | Filter by weight ID wildcard. Incompatible with weight. |
@@ -373,7 +373,7 @@ Input for a per-user budget cap override.
 | `cap` | [`Float!`](scalars.md#float) | Budget cap amount for the user. |
 | `enabled` | [`Boolean!`](scalars.md#boolean) | Whether the budget cap is enabled for the user. |
 | `userId` | [`UserID`](scalars.md#userid) | Global ID of the user. Exactly one of `userId` or `username` must be provided. |
-| `username` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Username of the user. Exactly one of `userId` or `username` must be provided. |
+| `username` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Username of the user. Exactly one of `userId` or `username` must be provided. |
 
 ## `BulkToolRuleInput`
 
@@ -383,7 +383,7 @@ Input for a single tool rule update within a bulk operation.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `backgroundAccess` | [`AiBackgroundToolPermission`](enums.md#aibackgroundtoolpermission) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Permission mode for the background-flow surface. Omitting the field sets it to null, clearing any existing value. |
+| `backgroundAccess` | [`AiBackgroundToolPermission`](enums.md#aibackgroundtoolpermission) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Permission mode for the background-flow surface. Omitting the field sets it to null, clearing any existing value. |
 | `localAccess` | [`AiToolPermission`](enums.md#aitoolpermission) | Permission mode for local or IDE surface. Omitting the field sets it to null, clearing any existing value. |
 | `toolId` | [`String!`](scalars.md#string) | Tool name string identifying the tool to update. For example, "create_issue". |
 | `webAccess` | [`AiToolPermission`](enums.md#aitoolpermission) | Permission mode for web surface. Omitting the field sets it to null, clearing any existing value. |
@@ -868,7 +868,7 @@ Negated filter arguments for Duo Agent Platform session artifacts.
 | ---- | ---- | ----------- |
 | `authorUsername` | [`String`](scalars.md#string) | Filter by author username. |
 | `confidential` | [`Boolean`](scalars.md#boolean) | Filter by confidentiality. |
-| `customField` | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.10.<br/><br/>Filter by custom fields. |
+| `customField` | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 17.10.<br/><br/>Filter by custom fields. |
 | `labelName` | [`[String]`](scalars.md#string) | Filter by label name. |
 | `myReactionEmoji` | [`String`](scalars.md#string) | Filter by reaction emoji applied by the current user. Wildcard values "NONE" and "ANY" are supported. |
 | `not` | [`NegatedEpicBoardIssueInput`](#negatedepicboardissueinput) | Negated epic arguments. |
@@ -965,7 +965,7 @@ Attributes for a granular scope of an access token.
 | ---- | ---- | ----------- |
 | `includeDescendantWorkItems` | [`Boolean`](scalars.md#boolean) | Whether to include work items of descendant parents when filtering by parent_ids. |
 | `parentIds` | [`[WorkItemID!]`](scalars.md#workitemid) | Filter work items by global IDs of their parent items (maximum is 100 items). |
-| `parentWildcardId` | [`WorkItemParentWildcardId`](enums.md#workitemparentwildcardid) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.3.<br/><br/>Filter by parent ID wildcard. Incompatible with parentIds. |
+| `parentWildcardId` | [`WorkItemParentWildcardId`](enums.md#workitemparentwildcardid) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.3.<br/><br/>Filter by parent ID wildcard. Incompatible with parentIds. |
 
 ## `ItemConsumerTargetInput`
 
@@ -1051,9 +1051,9 @@ Merge request filter values to exclude in a saved view.
 | `labels` | [`[String!]`](scalars.md#string) | Deprecated in GitLab 17.7. Use `labelName`. |
 | `milestoneTitle` | [`String`](scalars.md#string) | Filters merge requests to those not in the given milestone. |
 | `myReactionEmoji` | [`String`](scalars.md#string) | Filters merge requests to those without the given reaction from the authenticated user. |
-| `onlyReviewer` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.11.<br/><br/>Filters out merge requests to those that do not have the reviewer as the only assigned reviewer. |
+| `onlyReviewer` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 17.11.<br/><br/>Filters out merge requests to those that do not have the reviewer as the only assigned reviewer. |
 | `releaseTag` | [`String`](scalars.md#string) | Filters merge requests to those without the given release tag. |
-| `reviewStates` | [`[MergeRequestReviewState!]`](enums.md#mergerequestreviewstate) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.9.<br/><br/>Filters merge requests to those where a reviewer does not have the provided state. |
+| `reviewStates` | [`[MergeRequestReviewState!]`](enums.md#mergerequestreviewstate) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 17.9.<br/><br/>Filters merge requests to those where a reviewer does not have the provided state. |
 | `reviewerUsername` | [`String`](scalars.md#string) | Filters merge requests to those not reviewed by the given user. |
 | `sourceBranches` | [`[String!]`](scalars.md#string) | Filters merge requests to exclude the source branch names provided in the given array. |
 | `targetBranches` | [`[String!]`](scalars.md#string) | Filters merge requests to exclude the target branch names provided in the given array. |
@@ -1067,7 +1067,7 @@ Merge request filter values to exclude in a saved view.
 | `assigneeUsername` | [`[String]`](scalars.md#string) | Filter by assignee username. |
 | `authorUsername` | [`String`](scalars.md#string) | Filter by author username. |
 | `authorUsernames` | [`[String!]`](scalars.md#string) | Filter by author usernames (maximum is 100 usernames). |
-| `customField` | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.4.<br/><br/>Filter by negated custom fields. |
+| `customField` | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.4.<br/><br/>Filter by negated custom fields. |
 | `epicId` | [`EpicID`](scalars.md#epicid) | Deprecated in GitLab 17.5. This will be replaced by WorkItem hierarchyWidget. |
 | `healthStatusFilter` | [`HealthStatus`](enums.md#healthstatus) | Health status not applied to the issue. Includes issues where health status is not set. |
 | `iids` | [`[String!]`](scalars.md#string) | List of IIDs of issues. For example `["1", "2"]`. |
@@ -1100,7 +1100,7 @@ Merge request filter values to exclude in a saved view.
 | ---- | ---- | ----------- |
 | `authorUsername` | [`String`](scalars.md#string) | Filter by author username. |
 | `authorUsernames` | [`[String!]`](scalars.md#string) | Filter by author usernames (maximum is 100 usernames). |
-| `customField` | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.4.<br/><br/>Filter by negated custom fields. |
+| `customField` | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.4.<br/><br/>Filter by negated custom fields. |
 | `labelName` | [`[String]`](scalars.md#string) | Filter by label name. |
 | `myReactionEmoji` | [`String`](scalars.md#string) | Filter by reaction emoji applied by the current user. Wildcard values "NONE" and "ANY" are supported. |
 
@@ -1111,7 +1111,7 @@ Merge request filter values to exclude in a saved view.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | `authorUsername` | [`String`](scalars.md#string) | Filter by author username. |
-| `customField` | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.4.<br/><br/>Filter by negated custom fields. |
+| `customField` | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.4.<br/><br/>Filter by negated custom fields. |
 | `labelName` | [`[String]`](scalars.md#string) | Filter by label name. |
 | `myReactionEmoji` | [`String`](scalars.md#string) | Filter by reaction emoji applied by the current user. |
 
@@ -1124,7 +1124,7 @@ Merge request filter values to exclude in a saved view.
 | `assigneeId` | [`String`](scalars.md#string) | ID of a user not assigned to the issues. |
 | `assigneeUsernames` | [`[String!]`](scalars.md#string) | Usernames of users not assigned to the issue. |
 | `authorUsername` | [`[String!]`](scalars.md#string) | Username of a user who didn't author the issue. |
-| `customField` | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.4.<br/><br/>Filter by negated custom fields. |
+| `customField` | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.4.<br/><br/>Filter by negated custom fields. |
 | `epicId` | [`String`](scalars.md#string) | ID of an epic not associated with the issues. |
 | `healthStatusFilter` | [`[HealthStatus!]`](enums.md#healthstatus) | Health status not applied to the issue. Includes issues where health status is not set. |
 | `iids` | [`[String!]`](scalars.md#string) | List of IIDs of issues to exclude. For example, `[1, 2]`. |
@@ -1161,7 +1161,7 @@ Merge request filter values to exclude in a saved view.
 | ---- | ---- | ----------- |
 | `assigneeUsernames` | [`[String!]`](scalars.md#string) | Usernames of users not assigned to the work item (maximum is 100 usernames). |
 | `authorUsername` | [`[String!]`](scalars.md#string) | Username of a user who didn't author the work item (maximum is 100 usernames). |
-| `customField` | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.4.<br/><br/>Filter by negated custom fields. |
+| `customField` | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.4.<br/><br/>Filter by negated custom fields. |
 | `healthStatusFilter` | [`[HealthStatus!]`](enums.md#healthstatus) | Health status not applied to the work items. Includes work items where health status is not set. |
 | `iterationId` | [`[ID!]`](scalars.md#id) | List of iteration Global IDs not applied to the work items (maximum is 100 IDs). |
 | `iterationWildcardId` | [`IterationWildcardId`](enums.md#iterationwildcardid) | Filter by negated iteration ID wildcard. |
@@ -1169,7 +1169,7 @@ Merge request filter values to exclude in a saved view.
 | `milestoneTitle` | [`[String!]`](scalars.md#string) | Milestone not applied to the work item (maximum is 100 milestones). |
 | `milestoneWildcardId` | [`NegatedMilestoneWildcardId`](enums.md#negatedmilestonewildcardid) | Filter by negated milestone wildcard values. |
 | `myReactionEmoji` | [`String`](scalars.md#string) | Filter by reaction emoji not applied by the current user. |
-| `parentIds` | [`[WorkItemID!]`](scalars.md#workitemid) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.3.<br/><br/>Filter work items by global IDs who don't belong to parent items (maximum is 100 IDs). |
+| `parentIds` | [`[WorkItemID!]`](scalars.md#workitemid) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.3.<br/><br/>Filter work items by global IDs who don't belong to parent items (maximum is 100 IDs). |
 | `releaseTag` | [`[String!]`](scalars.md#string) | Release tag not associated with the work items's milestone (maximum is 100 tags). Ignored when parent is a group . |
 | `types` | [`[IssueType!]`](enums.md#issuetype) | Filter out work items by the given types. |
 | `weight` | [`String`](scalars.md#string) | Weight not applied to the work items. |
@@ -1397,12 +1397,12 @@ Auto-remediation configuration for a dependency scanning post-processing scan pr
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `cooldown` | [`Int`](scalars.md#int) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Minimum number of days after a package is released before it can be used. |
-| `enabled` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Whether auto-remediation is enabled. |
-| `openMergeRequestsLimit` | [`Int`](scalars.md#int) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Maximum number of open auto-remediation merge requests at once. |
-| `runnerTags` | [`[String!]`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.6.<br/><br/>Runner tags applied to the auto-remediation job. |
-| `severityLevel` | [`VulnerabilitySeverity`](enums.md#vulnerabilityseverity) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Minimum vulnerability severity that triggers an automated upgrade. Findings below this threshold are skipped. |
-| `upgradePolicy` | [`SecurityScanProfileUpgradePolicy`](enums.md#securityscanprofileupgradepolicy) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Highest version bump allowed when remediating. |
+| `cooldown` | [`Int`](scalars.md#int) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Minimum number of days after a package is released before it can be used. |
+| `enabled` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Whether auto-remediation is enabled. |
+| `openMergeRequestsLimit` | [`Int`](scalars.md#int) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Maximum number of open auto-remediation merge requests at once. |
+| `runnerTags` | [`[String!]`](scalars.md#string) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.6.<br/><br/>Runner tags applied to the auto-remediation job. |
+| `severityLevel` | [`VulnerabilitySeverity`](enums.md#vulnerabilityseverity) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Minimum vulnerability severity that triggers an automated upgrade. Findings below this threshold are skipped. |
+| `upgradePolicy` | [`SecurityScanProfileUpgradePolicy`](enums.md#securityscanprofileupgradepolicy) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Highest version bump allowed when remediating. |
 
 ## `SecurityScanProfileConfigurationInput`
 
@@ -1412,11 +1412,11 @@ Typed configuration for a scan profile trigger. Exactly one member may be set, a
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `dependencyScanning` | [`SecurityScanProfileDependencyScanningConfigurationInput`](#securityscanprofiledependencyscanningconfigurationinput) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Configuration for a dependency scanning scan profile. |
-| `dependencyScanningPostProcessing` | [`SecurityScanProfileDependencyScanningPostProcessingConfigurationInput`](#securityscanprofiledependencyscanningpostprocessingconfigurationinput) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Configuration for a dependency scanning post-processing scan profile. |
-| `sast` | [`SecurityScanProfileSastConfigurationInput`](#securityscanprofilesastconfigurationinput) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Configuration for a SAST scan profile. |
-| `secretDetection` | [`SecurityScanProfileSecretDetectionConfigurationInput`](#securityscanprofilesecretdetectionconfigurationinput) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Configuration for a secret detection scan profile. |
-| `triageAndRemediation` | [`SecurityScanProfileTriageAndRemediationConfigurationInput`](#securityscanprofiletriageandremediationconfigurationinput) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Configuration for a triage and remediation scan profile. |
+| `dependencyScanning` | [`SecurityScanProfileDependencyScanningConfigurationInput`](#securityscanprofiledependencyscanningconfigurationinput) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Configuration for a dependency scanning scan profile. |
+| `dependencyScanningPostProcessing` | [`SecurityScanProfileDependencyScanningPostProcessingConfigurationInput`](#securityscanprofiledependencyscanningpostprocessingconfigurationinput) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Configuration for a dependency scanning post-processing scan profile. |
+| `sast` | [`SecurityScanProfileSastConfigurationInput`](#securityscanprofilesastconfigurationinput) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Configuration for a SAST scan profile. |
+| `secretDetection` | [`SecurityScanProfileSecretDetectionConfigurationInput`](#securityscanprofilesecretdetectionconfigurationinput) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Configuration for a secret detection scan profile. |
+| `triageAndRemediation` | [`SecurityScanProfileTriageAndRemediationConfigurationInput`](#securityscanprofiletriageandremediationconfigurationinput) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Configuration for a triage and remediation scan profile. |
 
 ## `SecurityScanProfileDependencyScanningConfigurationInput`
 
@@ -1426,30 +1426,30 @@ Configuration for a dependency scanning scan profile.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `additionalCaCertBundle` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>CA certificate bundle to trust. The bundle is added to the system's certificates and used by other tools during the scan. |
-| `apiScanDownloadDelay` | [`Int`](scalars.md#int) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Vulnerability scanning API initial delay in seconds before downloading scan results, from 1 to 120. |
-| `apiTimeout` | [`Int`](scalars.md#int) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Vulnerability scanning API request timeout in seconds, from 5 to 300. |
-| `disabledResolutionJobs` | [`[SecurityScanProfileDependencyResolutionJob!]`](enums.md#securityscanprofiledependencyresolutionjob) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Resolution jobs to disable. By default, all available resolution jobs are enabled. |
-| `enableManifestFallback` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Enable manifest fallback for dependency scanning. |
-| `enableVulnerabilityScan` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Enable the vulnerability analysis of generated SBOMs. |
-| `excludedPaths` | [`[String!]`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Glob paths excluded from the scan. |
-| `gradleCliOpts` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Additional command-line options passed to Gradle during dependency resolution. |
-| `gradleResolutionImage` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Image used by the Gradle dependency resolution job. |
-| `includeDevDependencies` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Include development and test dependencies when scanning a supported file. |
-| `mavenArgs` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Additional arguments passed to Maven during dependency resolution. |
-| `mavenDependencyPluginVersion` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Version of maven-dependency-plugin used during resolution. |
-| `mavenResolutionImage` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Image used by the Maven dependency resolution job. |
-| `maxDepth` | [`Int`](scalars.md#int) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Specifies the directory depth the analyzer should scan. A value of -1 scans all directories. |
-| `pipDependencyPath` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Path to install Python packages for analysis. |
-| `pipExtraIndexUrl` | [`[String!]`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Additional URLs of Python package indexes to use in addition to pipIndexUrl. |
-| `pipIndexUrl` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Base URL of the Python Package Index. |
-| `pipManifestFileNamePattern` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Custom pip manifest file name pattern to use for dependency resolution and manifest scanning. The pattern matches file names only, not directory paths. |
-| `pipcompileLockfileFileNamePattern` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Custom pipcompile lockfile file name pattern to use when analyzing. The pattern matches file names only, not directory paths. |
-| `pythonResolutionImage` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Image used by the Python dependency resolution job. |
-| `searchIgnoreHiddenDirs` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Ignore hidden directories when searching for supported files. |
-| `secureAnalyzersPrefix` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Prefix for the container registry from which the analyzer image is pulled. |
-| `secureLogLevel` | [`SecurityScanProfileSecureLogLevel`](enums.md#securityscanprofilesecureloglevel) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Logging level used by the analyzer. |
-| `staticReachabilityEnabled` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Enable static reachability. |
+| `additionalCaCertBundle` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>CA certificate bundle to trust. The bundle is added to the system's certificates and used by other tools during the scan. |
+| `apiScanDownloadDelay` | [`Int`](scalars.md#int) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Vulnerability scanning API initial delay in seconds before downloading scan results, from 1 to 120. |
+| `apiTimeout` | [`Int`](scalars.md#int) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Vulnerability scanning API request timeout in seconds, from 5 to 300. |
+| `disabledResolutionJobs` | [`[SecurityScanProfileDependencyResolutionJob!]`](enums.md#securityscanprofiledependencyresolutionjob) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Resolution jobs to disable. By default, all available resolution jobs are enabled. |
+| `enableManifestFallback` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Enable manifest fallback for dependency scanning. |
+| `enableVulnerabilityScan` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Enable the vulnerability analysis of generated SBOMs. |
+| `excludedPaths` | [`[String!]`](scalars.md#string) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Glob paths excluded from the scan. |
+| `gradleCliOpts` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Additional command-line options passed to Gradle during dependency resolution. |
+| `gradleResolutionImage` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Image used by the Gradle dependency resolution job. |
+| `includeDevDependencies` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Include development and test dependencies when scanning a supported file. |
+| `mavenArgs` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Additional arguments passed to Maven during dependency resolution. |
+| `mavenDependencyPluginVersion` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Version of maven-dependency-plugin used during resolution. |
+| `mavenResolutionImage` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Image used by the Maven dependency resolution job. |
+| `maxDepth` | [`Int`](scalars.md#int) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Specifies the directory depth the analyzer should scan. A value of -1 scans all directories. |
+| `pipDependencyPath` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Path to install Python packages for analysis. |
+| `pipExtraIndexUrl` | [`[String!]`](scalars.md#string) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Additional URLs of Python package indexes to use in addition to pipIndexUrl. |
+| `pipIndexUrl` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Base URL of the Python Package Index. |
+| `pipManifestFileNamePattern` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Custom pip manifest file name pattern to use for dependency resolution and manifest scanning. The pattern matches file names only, not directory paths. |
+| `pipcompileLockfileFileNamePattern` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Custom pipcompile lockfile file name pattern to use when analyzing. The pattern matches file names only, not directory paths. |
+| `pythonResolutionImage` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Image used by the Python dependency resolution job. |
+| `searchIgnoreHiddenDirs` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Ignore hidden directories when searching for supported files. |
+| `secureAnalyzersPrefix` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Prefix for the container registry from which the analyzer image is pulled. |
+| `secureLogLevel` | [`SecurityScanProfileSecureLogLevel`](enums.md#securityscanprofilesecureloglevel) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Logging level used by the analyzer. |
+| `staticReachabilityEnabled` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Enable static reachability. |
 
 ## `SecurityScanProfileDependencyScanningPostProcessingConfigurationInput`
 
@@ -1459,7 +1459,7 @@ Configuration for a dependency scanning post-processing scan profile.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `autoRemediation` | [`SecurityScanProfileAutoRemediationInput`](#securityscanprofileautoremediationinput) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Auto-remediation configuration. |
+| `autoRemediation` | [`SecurityScanProfileAutoRemediationInput`](#securityscanprofileautoremediationinput) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Auto-remediation configuration. |
 
 ## `SecurityScanProfileSastConfigurationInput`
 
@@ -1469,13 +1469,13 @@ Configuration for a SAST scan profile.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `advancedSastPartialScan` | [`SecurityScanProfileAdvancedSastPartialScan`](enums.md#securityscanprofileadvancedsastpartialscan) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Controls GitLab Advanced SAST diff-based scanning. Use 'differential' to enable, 'false' to disable. |
-| `analyzerImageTag` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Tag of the analyzer image to use. Warning: Setting this value overrides the pinned image tag for all SAST analyzers, which can cause analyzer failures if they require specific versions. |
-| `excludedAnalyzers` | [`[String!]`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Analyzers excluded from the scan. |
-| `excludedPaths` | [`[String!]`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Glob paths excluded from the scan. |
-| `gitlabAdvSastIncrScan` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Whether GitLab Advanced SAST incremental scanning is enabled. |
-| `imageSuffix` | [`SecurityScanProfileImageSuffix`](enums.md#securityscanprofileimagesuffix) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Suffix appended to the analyzer image name. |
-| `secureAnalyzersPrefix` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Prefix for the container registry from which the analyzer image is pulled. |
+| `advancedSastPartialScan` | [`SecurityScanProfileAdvancedSastPartialScan`](enums.md#securityscanprofileadvancedsastpartialscan) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Controls GitLab Advanced SAST diff-based scanning. Use 'differential' to enable, 'false' to disable. |
+| `analyzerImageTag` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Tag of the analyzer image to use. Warning: Setting this value overrides the pinned image tag for all SAST analyzers, which can cause analyzer failures if they require specific versions. |
+| `excludedAnalyzers` | [`[String!]`](scalars.md#string) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Analyzers excluded from the scan. |
+| `excludedPaths` | [`[String!]`](scalars.md#string) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Glob paths excluded from the scan. |
+| `gitlabAdvSastIncrScan` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Whether GitLab Advanced SAST incremental scanning is enabled. |
+| `imageSuffix` | [`SecurityScanProfileImageSuffix`](enums.md#securityscanprofileimagesuffix) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Suffix appended to the analyzer image name. |
+| `secureAnalyzersPrefix` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Prefix for the container registry from which the analyzer image is pulled. |
 
 ## `SecurityScanProfileSastFalsePositiveInput`
 
@@ -1485,9 +1485,9 @@ Configuration for the SAST false positive detection trigger of a triage and reme
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `cweClasses` | [`[CweIdentifier!]`](scalars.md#cweidentifier) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>CWE identifiers to restrict false positive detection to. |
-| `runMode` | [`SecurityScanProfileRunMode`](enums.md#securityscanprofilerunmode) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Whether false positive detection runs automatically or only when triggered by a user. |
-| `severityLevel` | [`VulnerabilitySeverity`](enums.md#vulnerabilityseverity) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Minimum vulnerability severity that triggers false positive detection. Findings below this threshold are skipped. |
+| `cweClasses` | [`[CweIdentifier!]`](scalars.md#cweidentifier) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>CWE identifiers to restrict false positive detection to. |
+| `runMode` | [`SecurityScanProfileRunMode`](enums.md#securityscanprofilerunmode) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Whether false positive detection runs automatically or only when triggered by a user. |
+| `severityLevel` | [`VulnerabilitySeverity`](enums.md#vulnerabilityseverity) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Minimum vulnerability severity that triggers false positive detection. Findings below this threshold are skipped. |
 
 ## `SecurityScanProfileSastVulnerabilityResolutionInput`
 
@@ -1497,11 +1497,11 @@ Configuration for the SAST vulnerability resolution trigger of a triage and reme
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `cweClasses` | [`[CweIdentifier!]`](scalars.md#cweidentifier) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>CWE identifiers to restrict resolution to. |
-| `falsePositiveConfidence` | [`SecurityScanProfileFalsePositiveConfidence`](enums.md#securityscanprofilefalsepositiveconfidence) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Restricts resolution to findings carrying the given false positive assessment. |
-| `openMergeRequestsLimit` | [`Int`](scalars.md#int) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Maximum number of open merge requests resolution may have at once, from 0 to 100. Null means no limit. |
-| `runMode` | [`SecurityScanProfileRunMode`](enums.md#securityscanprofilerunmode) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Whether resolution runs automatically or only when triggered by a user. |
-| `severityLevel` | [`VulnerabilitySeverity`](enums.md#vulnerabilityseverity) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Minimum vulnerability severity that triggers a resolution attempt. Findings below this threshold are skipped. |
+| `cweClasses` | [`[CweIdentifier!]`](scalars.md#cweidentifier) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>CWE identifiers to restrict resolution to. |
+| `falsePositiveConfidence` | [`SecurityScanProfileFalsePositiveConfidence`](enums.md#securityscanprofilefalsepositiveconfidence) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Restricts resolution to findings carrying the given false positive assessment. |
+| `openMergeRequestsLimit` | [`Int`](scalars.md#int) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Maximum number of open merge requests resolution may have at once, from 0 to 100. Null means no limit. |
+| `runMode` | [`SecurityScanProfileRunMode`](enums.md#securityscanprofilerunmode) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Whether resolution runs automatically or only when triggered by a user. |
+| `severityLevel` | [`VulnerabilitySeverity`](enums.md#vulnerabilityseverity) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Minimum vulnerability severity that triggers a resolution attempt. Findings below this threshold are skipped. |
 
 ## `SecurityScanProfileSecretDetectionConfigurationInput`
 
@@ -1511,12 +1511,12 @@ Configuration for a secret detection scan profile.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `excludedPaths` | [`[String!]`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Glob paths excluded from the scan. |
-| `historicScan` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Whether to scan the full git history instead of only the current state. |
-| `imageSuffix` | [`SecurityScanProfileImageSuffix`](enums.md#securityscanprofileimagesuffix) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Suffix appended to the analyzer image name. |
-| `logOptions` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Options passed to git log to control the commit range scanned. |
-| `rulesetGitReference` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Git reference of the remote ruleset configuration to use. |
-| `secureAnalyzersPrefix` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Prefix for the container registry from which the analyzer image is pulled. |
+| `excludedPaths` | [`[String!]`](scalars.md#string) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Glob paths excluded from the scan. |
+| `historicScan` | [`Boolean`](scalars.md#boolean) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Whether to scan the full git history instead of only the current state. |
+| `imageSuffix` | [`SecurityScanProfileImageSuffix`](enums.md#securityscanprofileimagesuffix) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Suffix appended to the analyzer image name. |
+| `logOptions` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Options passed to git log to control the commit range scanned. |
+| `rulesetGitReference` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Git reference of the remote ruleset configuration to use. |
+| `secureAnalyzersPrefix` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Prefix for the container registry from which the analyzer image is pulled. |
 
 ## `SecurityScanProfileSecretDetectionFalsePositiveInput`
 
@@ -1526,8 +1526,8 @@ Configuration for the secret detection false positive detection trigger of a tri
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `runMode` | [`SecurityScanProfileRunMode`](enums.md#securityscanprofilerunmode) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Whether false positive detection runs automatically or only when triggered by a user. |
-| `severityLevel` | [`VulnerabilitySeverity`](enums.md#vulnerabilityseverity) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Minimum vulnerability severity that triggers false positive detection. Findings below this threshold are skipped. |
+| `runMode` | [`SecurityScanProfileRunMode`](enums.md#securityscanprofilerunmode) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Whether false positive detection runs automatically or only when triggered by a user. |
+| `severityLevel` | [`VulnerabilitySeverity`](enums.md#vulnerabilityseverity) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Minimum vulnerability severity that triggers false positive detection. Findings below this threshold are skipped. |
 
 ## `SecurityScanProfileTriageAndRemediationConfigurationInput`
 
@@ -1537,11 +1537,11 @@ Configuration for a triage and remediation scan profile trigger. Exactly one mem
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `sastFalsePositive` | [`SecurityScanProfileSastFalsePositiveInput`](#securityscanprofilesastfalsepositiveinput) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Configuration for the SAST false positive detection trigger. |
-| `sastVulnerabilityResolution` | [`SecurityScanProfileSastVulnerabilityResolutionInput`](#securityscanprofilesastvulnerabilityresolutioninput) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Configuration for the SAST vulnerability resolution trigger. |
-| `sbomIngested` | [`SecurityScanProfileDependencyScanningPostProcessingConfigurationInput`](#securityscanprofiledependencyscanningpostprocessingconfigurationinput) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Configuration for the SBOM ingested trigger. |
-| `secretDetectionFalsePositive` | [`SecurityScanProfileSecretDetectionFalsePositiveInput`](#securityscanprofilesecretdetectionfalsepositiveinput) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Configuration for the secret detection false positive detection trigger. |
-| `vulnerabilityEnrichment` | [`SecurityScanProfileVulnerabilityEnrichmentInput`](#securityscanprofilevulnerabilityenrichmentinput) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Configuration for the vulnerability enrichment trigger. |
+| `sastFalsePositive` | [`SecurityScanProfileSastFalsePositiveInput`](#securityscanprofilesastfalsepositiveinput) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Configuration for the SAST false positive detection trigger. |
+| `sastVulnerabilityResolution` | [`SecurityScanProfileSastVulnerabilityResolutionInput`](#securityscanprofilesastvulnerabilityresolutioninput) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Configuration for the SAST vulnerability resolution trigger. |
+| `sbomIngested` | [`SecurityScanProfileDependencyScanningPostProcessingConfigurationInput`](#securityscanprofiledependencyscanningpostprocessingconfigurationinput) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Configuration for the SBOM ingested trigger. |
+| `secretDetectionFalsePositive` | [`SecurityScanProfileSecretDetectionFalsePositiveInput`](#securityscanprofilesecretdetectionfalsepositiveinput) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Configuration for the secret detection false positive detection trigger. |
+| `vulnerabilityEnrichment` | [`SecurityScanProfileVulnerabilityEnrichmentInput`](#securityscanprofilevulnerabilityenrichmentinput) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Configuration for the vulnerability enrichment trigger. |
 
 ## `SecurityScanProfileTriggerInput`
 
@@ -1551,7 +1551,7 @@ A trigger, with optional configuration, for a scan profile.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `configuration` | [`SecurityScanProfileConfigurationInput`](#securityscanprofileconfigurationinput) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Configuration attached to the trigger. When set, exactly one member must be present and it must match the scan profile type. |
+| `configuration` | [`SecurityScanProfileConfigurationInput`](#securityscanprofileconfigurationinput) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Configuration attached to the trigger. When set, exactly one member must be present and it must match the scan profile type. |
 | `triggerType` | [`ScanProfileTriggerType!`](enums.md#scanprofiletriggertype) | Type of the trigger. |
 
 ## `SecurityScanProfileVulnerabilityEnrichmentInput`
@@ -1562,8 +1562,8 @@ Configuration for the vulnerability enrichment trigger of a triage and remediati
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| `runMode` | [`SecurityScanProfileRunMode`](enums.md#securityscanprofilerunmode) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Whether enrichment runs automatically or only when triggered by a user. |
-| `severityLevel` | [`VulnerabilitySeverity`](enums.md#vulnerabilityseverity) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Minimum vulnerability severity that triggers enrichment. Findings below this threshold are skipped. |
+| `runMode` | [`SecurityScanProfileRunMode`](enums.md#securityscanprofilerunmode) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Whether enrichment runs automatically or only when triggered by a user. |
+| `severityLevel` | [`VulnerabilitySeverity`](enums.md#vulnerabilityseverity) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Minimum vulnerability severity that triggers enrichment. Findings below this threshold are skipped. |
 
 ## `SnippetBlobActionInputType`
 
@@ -1646,7 +1646,7 @@ Attributes for defining a tracking event.
 | ---- | ---- | ----------- |
 | `authorUsername` | [`[String!]`](scalars.md#string) | Deprecated in GitLab 16.6. Use authorUsernames instead. |
 | `authorUsernames` | [`[String!]`](scalars.md#string) | Filters epics that are authored by one of the given users. |
-| `customField` | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.4.<br/><br/>Filter custom fields by one of the given values. |
+| `customField` | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.4.<br/><br/>Filter custom fields by one of the given values. |
 | `labelName` | [`[String!]`](scalars.md#string) | Deprecated in GitLab 16.6. Use labelNames instead. |
 | `labelNames` | [`[String!]`](scalars.md#string) | Filters epics that have at least one of the given labels. |
 
@@ -1658,7 +1658,7 @@ Attributes for defining a tracking event.
 | ---- | ---- | ----------- |
 | `assigneeUsernames` | [`[String!]`](scalars.md#string) | Filters issues that are assigned to at least one of the given users. |
 | `authorUsernames` | [`[String!]`](scalars.md#string) | Filters issues that are authored by one of the given users. |
-| `customField` | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.4.<br/><br/>Filter custom fields by one of the given values. |
+| `customField` | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.4.<br/><br/>Filter custom fields by one of the given values. |
 | `labelNames` | [`[String!]`](scalars.md#string) | Filters issues that have at least one of the given labels. |
 
 ## `UnionedMergeRequestFilterInput`
@@ -1668,9 +1668,9 @@ Attributes for defining a tracking event.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | `assigneeUsernames` | [`[String!]`](scalars.md#string) | Filters MRs that are assigned to at least one of the given users. |
-| `onlyReviewerUsername` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.11.<br/><br/>Filters merge requests that have no reviewer OR only reviewer. Only compatible with reviewerWildcard. |
-| `reviewStates` | [`[MergeRequestReviewState!]`](enums.md#mergerequestreviewstate) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.0.<br/><br/>Filters merge requests that have been reviewed. Only compatible with reviewerWildcard. |
-| `reviewerWildcard` | [`ReviewerWildcardId`](enums.md#reviewerwildcardid) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.11.<br/><br/>Filter by reviewer presence. |
+| `onlyReviewerUsername` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 17.11.<br/><br/>Filters merge requests that have no reviewer OR only reviewer. Only compatible with reviewerWildcard. |
+| `reviewStates` | [`[MergeRequestReviewState!]`](enums.md#mergerequestreviewstate) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.0.<br/><br/>Filters merge requests that have been reviewed. Only compatible with reviewerWildcard. |
+| `reviewerWildcard` | [`ReviewerWildcardId`](enums.md#reviewerwildcardid) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 17.11.<br/><br/>Filter by reviewer presence. |
 
 ## `UnionedWorkItemFilterInput`
 
@@ -1680,7 +1680,7 @@ Attributes for defining a tracking event.
 | ---- | ---- | ----------- |
 | `assigneeUsernames` | [`[String!]`](scalars.md#string) | Filters work items that are assigned to at least one of the given users (maximum is 100 usernames). |
 | `authorUsernames` | [`[String!]`](scalars.md#string) | Filters work items that are authored by one of the given users (maximum is 100 usernames). |
-| `customField` | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.4.<br/><br/>Filter custom fields by one of the given values. |
+| `customField` | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 18.4.<br/><br/>Filter custom fields by one of the given values. |
 | `labelNames` | [`[String!]`](scalars.md#string) | Filters work items that have at least one of the given labels (maximum is 100 labels). |
 
 ## `UpdateDiffImagePositionInput`
@@ -1950,8 +1950,8 @@ Attributes for recording a work item decision as resolved at creation.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | `content` | [`String`](scalars.md#string) | Content of the agent plan. |
-| `readinessScore` | [`Int`](scalars.md#int) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Readiness score of the agent plan (0-100). Null when the score is not yet available. Only available when the `workplan_score` feature flag is enabled. |
-| `readinessScoreFeedback` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Markdown feedback explaining the readiness score. Only available when the `workplan_score` feature flag is enabled. |
+| `readinessScore` | [`Int`](scalars.md#int) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.3.<br/><br/>Readiness score of the agent plan (0-100). Null when the score is not yet available. Only available when the `workplan_score` feature flag is enabled. |
+| `readinessScoreFeedback` | [`String`](scalars.md#string) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.4.<br/><br/>Markdown feedback explaining the readiness score. Only available when the `workplan_score` feature flag is enabled. |
 
 ## `WorkItemWidgetAssigneesInput`
 
