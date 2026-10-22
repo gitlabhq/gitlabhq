@@ -5,7 +5,7 @@ module Mcp
     module Toolsets
       ALWAYS_ON  = %i[meta].freeze
       DEFAULT    = %i[core merge_requests work_items repository ci duo_agent_platform].freeze
-      OPT_IN     = %i[wikis code_security].freeze
+      OPT_IN     = %i[wikis code_security orbit].freeze
       ALL        = (ALWAYS_ON + DEFAULT + OPT_IN).freeze
       UNASSIGNED = :unassigned
 

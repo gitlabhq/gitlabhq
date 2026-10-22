@@ -373,7 +373,7 @@ module Tooling
               .map do |type|
                 name = type[:name]
                 type.merge(
-                  is_edge: name.ends_with?('Edge'),
+                  is_edge: name.ends_with?('Edge') && type[:fields].any? { |field| field[:name] == 'cursor' },
                   is_connection: name.ends_with?('Connection'),
                   is_payload: name.ends_with?('Payload') && mutations.include?(name.chomp('Payload').camelcase(:lower)),
                   fields: type[:fields] + type[:connections]

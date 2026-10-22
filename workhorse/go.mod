@@ -34,7 +34,6 @@ require (
 	gitlab.com/gitlab-org/gitaly/v19 v19.5.0-rc2
 	gitlab.com/gitlab-org/labkit v1.65.0
 	gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb v0.0.0-20260923131449-098cbc7a6bce
-	gitlab.com/gitlab-org/orbit/knowledge-graph/clients/orbitpb v0.137.0
 	go.uber.org/goleak v1.3.0
 	gocloud.dev v0.46.0
 	golang.org/x/image v0.43.0
@@ -224,7 +223,7 @@ require (
 	google.golang.org/api v0.295.0 // indirect
 	google.golang.org/genproto v0.0.0-20260715232425-e75dac1f907d // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20260715232425-e75dac1f907d // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20260825221802-da73d73af1c5
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20260825221802-da73d73af1c5 // indirect
 	gopkg.in/DataDog/dd-trace-go.v1 v1.74.8 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect

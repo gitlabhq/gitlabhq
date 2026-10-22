@@ -10,6 +10,10 @@ prepare-as-if-foss-branch:
   stage: prepare
   needs: []
   timeout: 10m
+  variables:
+    # The script replaces .git with a FOSS clone. Depth 20 on a stable branch
+    # also auto-follows release tags, a second full fetch that exceeds the timeout.
+    GIT_DEPTH: "1"
   environment:
     name: "as-if-foss/${CI_MERGE_REQUEST_IID}"
     auto_stop_in: 2 weeks

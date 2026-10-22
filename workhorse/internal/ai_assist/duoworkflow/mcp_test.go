@@ -1234,63 +1234,6 @@ func TestNewMcpManager_orbitAndGitlabServers(t *testing.T) {
 	})
 }
 
-func TestRoundTripper_serverNameGatesSendData(t *testing.T) {
-	t.Run("non-orbit server ignores SendData header", func(t *testing.T) {
-		responseBody := `{"result": "ok"}`
-		var transportFunc = func(_ *http.Request) (*http.Response, error) {
-			header := make(http.Header)
-			header.Set("Gitlab-Workhorse-Send-Data", "orbit-query:eyJ0ZXN0IjogdHJ1ZX0=")
-			return &http.Response{
-				StatusCode: 200,
-				Body:       io.NopCloser(strings.NewReader(responseBody)),
-				Header:     header,
-			}, nil
-		}
-
-		rt := &roundTripper{
-			serverName: "gitlab",
-			next:       &mockTransportFunc{fn: transportFunc},
-			headers:    map[string]string{},
-		}
-
-		req := httptest.NewRequest("GET", "http://example.com", nil)
-		resp, err := rt.RoundTrip(req)
-		require.NoError(t, err)
-		require.NotNil(t, resp)
-		defer resp.Body.Close()
-
-		// Should NOT have processed the SendData -- body should be the original (wrapped in limitedReadCloser)
-		_, ok := resp.Body.(*limitedReadCloser)
-		assert.True(t, ok, "Non-orbit server should get normal limitedReadCloser wrapping")
-	})
-
-	t.Run("orbit server without SendData header gets normal response", func(t *testing.T) {
-		responseBody := `{"tools": []}`
-		var transportFunc = func(_ *http.Request) (*http.Response, error) {
-			return &http.Response{
-				StatusCode: 200,
-				Body:       io.NopCloser(strings.NewReader(responseBody)),
-				Header:     make(http.Header),
-			}, nil
-		}
-
-		rt := &roundTripper{
-			serverName: "orbit",
-			next:       &mockTransportFunc{fn: transportFunc},
-			headers:    map[string]string{},
-		}
-
-		req := httptest.NewRequest("GET", "http://example.com", nil)
-		resp, err := rt.RoundTrip(req)
-		require.NoError(t, err)
-		require.NotNil(t, resp)
-		defer resp.Body.Close()
-
-		_, ok := resp.Body.(*limitedReadCloser)
-		assert.True(t, ok, "Orbit server without SendData should get normal limitedReadCloser wrapping")
-	})
-}
-
 func TestManager_buildTools_propagatesTrustedFlag(t *testing.T) {
 	t.Run("sets Trusted on tools from trusted server", func(t *testing.T) {
 		mcpServer := setupMockMcpServer(t, "", []mcpTool{

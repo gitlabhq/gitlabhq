@@ -18,8 +18,9 @@ module API
         end
 
         # @param client_info [Gitlab::Mcp::ClientInfo, nil] the identity the client reports, if any
-        def invoke(request, params, current_user = nil, tool_name_prefix: nil, client_info: nil)
+        def invoke(request, params, current_user = nil, context: nil, tool_name_prefix: nil, client_info: nil)
           @client_info = client_info
+          @context = context
           tool_name = params[:name]
           tool_name.delete_prefix!(tool_name_prefix) if tool_name_prefix.present?
           request_id = request[:id] || SecureRandom.uuid
@@ -33,11 +34,11 @@ module API
 
         private
 
-        attr_reader :manager, :client_info
+        attr_reader :manager, :client_info, :context
 
         def fetch_tool(tool_name, request_id, current_user, params)
           start = current_monotonic_time
-          manager.get_tool(name: tool_name)
+          manager.get_tool(name: tool_name, context: context)
         rescue ::Mcp::Tools::Manager::ToolNotFoundError => e
           track_start_event(tool_name, request_id, current_user, params: params)
           track_finish_event(tool_name, request_id, current_user, success: false, error: e, params: params)

@@ -564,6 +564,7 @@ Audit event types belong to the following product categories.
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
 | [`orbit_cloud_connector_token_issued`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253400) | Orbit fetches the instance Cloud Connector token to authenticate billing-event emission | {{< yes >}} | GitLab [19.5](https://gitlab.com/gitlab-org/orbit/knowledge-graph/-/work_items/1229) | Instance |
+| [`orbit_instance_trial_start`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/261678) | Triggered when the instance-wide Orbit trial is started on a GitLab Self-Managed or GitLab Dedicated instance | {{< yes >}} | GitLab [19.6](https://gitlab.com/gitlab-org/orbit/knowledge-graph/-/work_items/1385) | Instance |
 
 ### Mcp server
 

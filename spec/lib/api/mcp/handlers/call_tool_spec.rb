@@ -11,6 +11,7 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
 
   describe '#invoke' do
     let(:tool_name) { 'test_tool' }
+    let(:tool_lookup) { { name: tool_name, context: nil } }
     let(:params) { { name: tool_name, arguments: { param: 'value' } } }
     # EE resolves the telemetry namespace from the tool's own container declaration.
     let(:no_containers) do
@@ -29,7 +30,7 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
 
     context 'when tool is found and version matches' do
       before do
-        allow(manager).to receive(:get_tool).with(name: tool_name).and_return(tool)
+        allow(manager).to receive(:get_tool).with(**tool_lookup).and_return(tool)
         allow(tool).to receive(:is_a?).with(Mcp::Tools::Base::CustomService).and_return(false)
         allow(tool).to receive(:is_a?).with(Mcp::Tools::Base::GraphqlService).and_return(false)
         allow(tool).to receive(:execute).and_return({ content: [{ type: 'text', text: 'Success' }] })
@@ -38,7 +39,7 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
       it 'executes the tool successfully' do
         result = handler.invoke(request, params, current_user)
 
-        expect(manager).to have_received(:get_tool).with(name: tool_name)
+        expect(manager).to have_received(:get_tool).with(**tool_lookup)
         expect(tool).to have_received(:execute).with(request: request, params: params)
         expect(result).to eq({ content: [{ type: 'text', text: 'Success' }] })
       end
@@ -119,7 +120,7 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
 
     context 'when the tool raises during execution' do
       before do
-        allow(manager).to receive(:get_tool).with(name: tool_name).and_return(tool)
+        allow(manager).to receive(:get_tool).with(**tool_lookup).and_return(tool)
         allow(tool).to receive(:is_a?).with(Mcp::Tools::Base::CustomService).and_return(false)
         allow(tool).to receive(:is_a?).with(Mcp::Tools::Base::GraphqlService).and_return(false)
         allow(tool).to receive(:execute).and_raise(StandardError, 'boom')
@@ -168,7 +169,7 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
       end
 
       before do
-        allow(manager).to receive(:get_tool).with(name: tool_name).and_return(tool)
+        allow(manager).to receive(:get_tool).with(**tool_lookup).and_return(tool)
         allow(tool).to receive(:is_a?).with(Mcp::Tools::Base::CustomService).and_return(false)
         allow(tool).to receive(:is_a?).with(Mcp::Tools::Base::GraphqlService).and_return(false)
         allow(tool).to receive(:execute).and_return(error_result)
@@ -219,7 +220,7 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
       let(:custom_tool) { instance_double(Mcp::Tools::Base::CustomService, governed_containers: no_containers) }
 
       before do
-        allow(manager).to receive(:get_tool).with(name: tool_name).and_return(custom_tool)
+        allow(manager).to receive(:get_tool).with(**tool_lookup).and_return(custom_tool)
         allow(custom_tool).to receive(:is_a?).with(Mcp::Tools::Base::CustomService).and_return(true)
         allow(custom_tool).to receive(:is_a?).with(Mcp::Tools::Base::GraphqlService).and_return(false)
         allow(custom_tool).to receive(:set_cred)
@@ -239,7 +240,7 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
       let(:graphql_tool) { instance_double(Mcp::Tools::Base::GraphqlService, governed_containers: no_containers) }
 
       before do
-        allow(manager).to receive(:get_tool).with(name: tool_name).and_return(graphql_tool)
+        allow(manager).to receive(:get_tool).with(**tool_lookup).and_return(graphql_tool)
         allow(graphql_tool).to receive(:is_a?).with(Mcp::Tools::Base::CustomService).and_return(false)
         allow(graphql_tool).to receive(:is_a?).with(Mcp::Tools::Base::GraphqlService).and_return(true)
         allow(graphql_tool).to receive(:set_cred)
@@ -257,7 +258,7 @@ RSpec.describe API::Mcp::Handlers::CallTool, feature_category: :mcp_server do
 
     context 'when tool is not found' do
       before do
-        allow(manager).to receive(:get_tool).with(name: tool_name)
+        allow(manager).to receive(:get_tool).with(**tool_lookup)
           .and_raise(Mcp::Tools::Manager::ToolNotFoundError.new(tool_name))
       end
 

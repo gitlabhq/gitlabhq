@@ -212,10 +212,26 @@ RSpec.describe Authz::RedactionService, feature_category: :permissions do
     end
 
     context 'with unsupported resource type' do
-      let(:resources_by_type) { { 'unknown_type' => { 'ids' => [1, 2, 3], 'ability' => 'read_unknown' } } }
+      let(:resources_by_type) do
+        {
+          'issue' => { 'ids' => [1], 'ability' => 'read_issue' },
+          'unknown_type' => { 'ids' => [1, 2, 3], 'ability' => 'read_unknown' }
+        }
+      end
 
-      it 'denies access for all IDs of unsupported type' do
-        expect(result).to eq({ 'unknown_type' => { 1 => false, 2 => false, 3 => false } })
+      it 'raises in development and test before it loads any resource' do
+        expect(Issue).not_to receive(:where)
+
+        expect { result }.to raise_error(
+          described_class::UnsupportedResourceTypeError, 'unsupported resource_type: "unknown_type"'
+        )
+      end
+
+      it 'reports the type to error tracking and denies every ID of it in production', :aggregate_failures do
+        expect(::Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+          .with(an_instance_of(described_class::UnsupportedResourceTypeError), source: 'test')
+
+        expect(result['unknown_type']).to eq({ 1 => false, 2 => false, 3 => false })
       end
     end
 

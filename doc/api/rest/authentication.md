@@ -40,6 +40,35 @@ status code of `401`:
 }
 ```
 
+If the access token is valid but lacks the scope an endpoint requires, GitLab returns an
+`insufficient_scope` error with a status code of `403`.
+The response body and the `WWW-Authenticate` header both list the scopes that can authorize the request.
+The token needs one of these scopes, not all of them.
+A scope that an endpoint accepts only for some requests is listed only for those requests.
+For example, most endpoints accept the `read_api` scope only for `GET` and `HEAD` requests.
+A request to `GET /namespaces` with a token that has only the `read_user` scope returns this header:
+
+```plaintext
+WWW-Authenticate: Bearer realm="Protected by OAuth 2.0", error="insufficient_scope", error_description="The request requires higher privileges than provided by the access token.", scope="api read_api"
+```
+
+The MCP server endpoints, `/api/v4/mcp` and `/api/v4/orbit/mcp`, answer instead with the challenge
+they send when a request has no token.
+The challenge has the realm `GitLab`, the scope that an OAuth client requests for the endpoint
+(`mcp` or `mcp_orbit`), and the endpoint's protected resource metadata URL in `resource_metadata`.
+An expired or revoked token gets the same challenge with the `invalid_token` error.
+For an `insufficient_scope` error, the challenge lists the same scopes as the response body.
+If the token has none of the scopes that the endpoint accepts:
+
+- `/api/v4/mcp` lists only `mcp`, the one scope that it accepts.
+- `/api/v4/orbit/mcp` lists every scope that it accepts, starting with `mcp_orbit`.
+
+A request to `/api/v4/mcp` with a token that has only the `api` scope returns this header:
+
+```plaintext
+WWW-Authenticate: Bearer realm="GitLab", error="insufficient_scope", error_description="The request requires higher privileges than provided by the access token.", scope="mcp", resource_metadata="https://gitlab.example.com/.well-known/oauth-protected-resource/api/v4/mcp"
+```
+
 > [!note]
 > Deploy tokens can't be used with the GitLab public API. For details, see
 > [Deploy Tokens](../../user/project/deploy_tokens/_index.md).

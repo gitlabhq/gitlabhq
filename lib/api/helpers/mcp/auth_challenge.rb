@@ -3,8 +3,9 @@
 module API
   module Helpers
     module Mcp
-      # Adds an RFC 9728 Section 5.1 WWW-Authenticate challenge to 401 responses so MCP
-      # clients can discover the OAuth protected-resource metadata URL.
+      # Adds an RFC 9728 Section 5.1 WWW-Authenticate challenge to 401 responses, and to the
+      # API guard's insufficient_scope 403, so MCP clients can discover the OAuth
+      # protected-resource metadata URL.
       module AuthChallenge
         extend ::Gitlab::Utils::Override
 
@@ -18,7 +19,13 @@ module API
 
         private
 
-        def mcp_www_authenticate_challenge
+        override :bearer_challenge
+        def bearer_challenge(error:, error_description:, scope: nil)
+          mcp_www_authenticate_challenge(error: error, error_description: error_description, scope: scope)
+        end
+
+        # An empty scope is left out, as in the 403's body.
+        def mcp_www_authenticate_challenge(error: nil, error_description: nil, scope: nil)
           # RFC 9728 Section 3.1 path-insertion: insert the well-known segment between
           # host and resource path, e.g. "<url>/.well-known/oauth-protected-resource/api/v4/mcp".
           # This matches the metadata route registered in config/routes.rb.
@@ -26,7 +33,14 @@ module API
             Gitlab.config.gitlab.url,
             "/.well-known/oauth-protected-resource#{resource_path}"
           )
-          %(Bearer realm="GitLab", scope="#{required_scope}", resource_metadata="#{metadata_url}")
+          attributes = {
+            realm: 'GitLab',
+            error: error,
+            error_description: error_description,
+            scope: scope || required_scope,
+            resource_metadata: metadata_url
+          }.compact_blank
+          "Bearer #{attributes.map { |name, value| %(#{name}="#{value}") }.join(', ')}"
         end
 
         def required_scope

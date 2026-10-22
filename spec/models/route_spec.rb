@@ -128,6 +128,30 @@ RSpec.describe Route do
     end
   end
 
+  describe '.namespace_ids_matching', feature_category: :knowledge_graph do
+    let_it_be(:root_group) { create(:group, path: 'git_lab', name: 'Git Lab') }
+    let_it_be(:nested_group) { create(:group, path: 'foo', name: 'Foo', parent: root_group) }
+    let_it_be(:other_group) { create(:group, path: 'git_lab_other', name: 'Git Lab other') }
+    let_it_be(:project) { create(:project, path: 'git_lab_project', namespace: root_group) }
+
+    def matching_ids(query, within:)
+      Namespace.id_in(described_class.namespace_ids_matching(query, within: within)).pluck(:id)
+    end
+
+    it 'matches the full path and full name, so a subgroup matches by its parent', :aggregate_failures do
+      expect(matching_ids('git_lab', within: [nested_group.id])).to contain_exactly(nested_group.id)
+      expect(matching_ids('Git Lab', within: [nested_group.id])).to contain_exactly(nested_group.id)
+    end
+
+    it 'matches only the given namespaces' do
+      expect(matching_ids('git_lab', within: [root_group.id])).to contain_exactly(root_group.id)
+    end
+
+    it 'leaves out project routes' do
+      expect(matching_ids('git_lab_project', within: [project.id])).to be_empty
+    end
+  end
+
   describe '#rename_descendants' do
     let!(:nested_group) { create(:group, path: 'test', name: 'test', parent: group) }
     let!(:deep_nested_group) { create(:group, path: 'foo', name: 'foo', parent: nested_group) }

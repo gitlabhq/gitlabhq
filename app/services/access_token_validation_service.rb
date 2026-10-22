@@ -54,4 +54,13 @@ class AccessTokenValidationService
       end
     end
   end
+
+  # The passed scopes whose `if` condition holds for the request: the scopes
+  # that `include_any_scope?` would accept from a token for this request.
+  def applicable_scopes(required_scopes)
+    required_scopes.select do |scope|
+      scope = API::Scope.new(scope) unless scope.is_a?(API::Scope)
+      scope.applies_to?(request)
+    end
+  end
 end

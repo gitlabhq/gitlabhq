@@ -1,7 +1,6 @@
 package duoworkflow
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
@@ -15,9 +14,7 @@ import (
 	"sync"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/headers"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/orbit"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/secret"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/transport"
 
@@ -76,31 +73,11 @@ type manager struct {
 }
 
 type roundTripper struct {
-	serverName  string
 	internal    bool
 	next        http.RoundTripper
 	headers     map[string]string
 	originalReq *http.Request
-	rails       *api.API
 	workflow    *workflowState
-}
-
-type responseCapture struct {
-	statusCode int
-	headers    http.Header
-	body       bytes.Buffer
-}
-
-func (rc *responseCapture) Header() http.Header         { return rc.headers }
-func (rc *responseCapture) Write(b []byte) (int, error) { return rc.body.Write(b) }
-func (rc *responseCapture) WriteHeader(statusCode int)  { rc.statusCode = statusCode }
-
-func (rc *responseCapture) toResponse() *http.Response {
-	return &http.Response{
-		StatusCode: rc.statusCode,
-		Header:     rc.headers,
-		Body:       io.NopCloser(&rc.body),
-	}
 }
 
 type limitedReadCloser struct {
@@ -149,24 +126,6 @@ func (t *roundTripper) RoundTrip(r *http.Request) (*http.Response, error) {
 	resp, err := t.next.RoundTrip(r)
 	if err != nil {
 		return resp, err
-	}
-
-	// Orbit MCP tool calls return a Gitlab-Workhorse-Send-Data header that
-	// triggers gRPC streaming to GKG. Process it inline since this transport
-	// bypasses the normal senddata middleware.
-	if t.serverName == orbitServerName {
-		if sendData := resp.Header.Get(headers.GitlabWorkhorseSendDataHeader); sendData != "" {
-			sq := orbit.NewSendQuery(t.rails, t.rails.Version)
-			if sq.Match(sendData) {
-				if resp.Body != nil {
-					_, _ = io.Copy(io.Discard, resp.Body)
-					_ = resp.Body.Close()
-				}
-				rc := &responseCapture{statusCode: http.StatusOK, headers: make(http.Header)}
-				sq.Inject(rc, r, sendData)
-				return rc.toResponse(), nil
-			}
-		}
 	}
 
 	if resp.Body != nil {
@@ -237,15 +196,11 @@ func buildSession(rails *api.API, r *http.Request, serverName string, serverCfg 
 	}
 
 	rt := &roundTripper{
-		serverName:  serverName,
 		internal:    internal,
 		next:        nextTransport,
 		headers:     serverCfg.Headers,
 		originalReq: r,
 		workflow:    state,
-	}
-	if serverName == orbitServerName {
-		rt.rails = rails
 	}
 
 	t = &mcp.StreamableClientTransport{

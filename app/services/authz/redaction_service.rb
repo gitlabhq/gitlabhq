@@ -39,6 +39,8 @@ module Authz
   class RedactionService
     include Gitlab::Allowable
 
+    UnsupportedResourceTypeError = Class.new(StandardError)
+
     RESOURCE_CLASSES = {
       issue: ::Issue,
       merge_request: ::MergeRequest,
@@ -79,6 +81,7 @@ module Authz
     def execute
       return {} if resources_by_type.empty?
 
+      report_unsupported_resource_types
       start = ::Gitlab::Metrics::System.monotonic_time
 
       loaded_resources_by_type = load_all_resources
@@ -104,6 +107,16 @@ module Authz
     private
 
     attr_reader :user, :resources_by_type, :source, :logger, :metrics_observer
+
+    def report_unsupported_resource_types
+      unsupported = resources_by_type.keys.map(&:to_s) - self.class.supported_types
+      return if unsupported.empty?
+
+      ::Gitlab::ErrorTracking.track_and_raise_for_dev_exception(
+        UnsupportedResourceTypeError.new("unsupported resource_type: #{unsupported.map(&:inspect).join(', ')}"),
+        source: source
+      )
+    end
 
     def preseed_authorization_caches(loaded_resources_by_type)
       projects, groups = collect_policy_subjects(loaded_resources_by_type)

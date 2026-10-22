@@ -65,11 +65,20 @@ module API
           forbidden!(mcp_denial_message)
         end
 
-        forbidden! unless AccessTokenValidationService.new(access_token)
+        # API::API registers `api` for every route, so the API guard lets a token without `mcp` through.
+        unless AccessTokenValidationService.new(access_token)
           .include_any_scope?([Gitlab::Auth::MCP_SCOPE, Gitlab::Auth::GRANULAR_SCOPE])
+
+          if access_token
+            save_auth_failure_in_application_context(access_token, :insufficient_scope, [Gitlab::Auth::MCP_SCOPE])
+          end
+
+          raise Gitlab::Auth::InsufficientScopeError, [Gitlab::Auth::MCP_SCOPE]
+        end
       end
 
       helpers do
+        extend ::Gitlab::Utils::Override
         include ::Gitlab::Utils::StrongMemoize
 
         def logger
@@ -91,6 +100,12 @@ module API
 
         def mcp_denial_message
           'MCP server disabled for this instance'
+        end
+
+        # Of the guard's scopes, only `mcp` gets past the check in `before`; a list without it, such as sudo's, is kept.
+        override :bearer_challenge_scopes
+        def bearer_challenge_scopes(scopes)
+          scopes.include?(Gitlab::Auth::MCP_SCOPE) ? [Gitlab::Auth::MCP_SCOPE] : scopes
         end
 
         # Allowed MCP tool names, as set by the Duo Workflow executor.
@@ -137,6 +152,11 @@ module API
         end
         strong_memoize_attr :mcp_client_info
 
+        def mcp_request_context
+          ::Mcp::Tools::RequestContext.new(current_user: current_user, access_token: access_token, request: request)
+        end
+        strong_memoize_attr :mcp_request_context
+
         def method_not_found!(method_name)
           # render error used to stop request and return early
           render_structured_api_error!({
@@ -172,6 +192,10 @@ module API
               id: params[:id]
             }
           end
+        end
+
+        def render_mcp_result(result)
+          format_jsonrpc_response(result)
         end
       end
 
@@ -230,20 +254,21 @@ module API
             case params[:method]
             when 'tools/call'
               Handlers::CallTool.new(namespace_setting(:mcp_manager)).invoke(request, params[:params], current_user,
-                tool_name_prefix: mcp_server_tool_name_prefix, client_info: mcp_client_info)
+                context: mcp_request_context, tool_name_prefix: mcp_server_tool_name_prefix,
+                client_info: mcp_client_info)
             when 'tools/list'
               allowed_tools = enabled_mcp_server_tools
               allowed_toolsets = ::Mcp::Tools::Toolsets.parse(headers['X-Gitlab-Enabled-Mcp-Server-Toolsets'])
               allowed_toolsets = ::Mcp::Tools::Toolsets.defaults if allowed_toolsets.blank? && allowed_tools.blank?
 
               Handlers::ListTools.new(namespace_setting(:mcp_manager)).invoke(current_user,
-                allowed_tools: allowed_tools, allowed_toolsets: allowed_toolsets,
+                context: mcp_request_context, allowed_tools: allowed_tools, allowed_toolsets: allowed_toolsets,
                 tool_name_prefix: mcp_server_tool_name_prefix, include_named_unlisted: list_named_unlisted_tools?)
             else
               invoke_basic_handler
             end
 
-          format_jsonrpc_response(result)
+          render_mcp_result(result)
         end
 
         # See: https://modelcontextprotocol.io/specification/2025-06-18/basic/transports#listening-for-messages-from-the-server

@@ -7020,9 +7020,11 @@ CREATE TABLE p_knowledge_graph_code_indexing_tasks (
     ref text NOT NULL,
     commit_sha text NOT NULL,
     traversal_path text NOT NULL,
+    repository_storage text,
     CONSTRAINT check_291fb206ad CHECK ((char_length(ref) <= 255)),
     CONSTRAINT check_c9cdc501a3 CHECK ((char_length(traversal_path) <= 1024)),
-    CONSTRAINT check_d66fc905af CHECK ((char_length(commit_sha) <= 40))
+    CONSTRAINT check_d66fc905af CHECK ((char_length(commit_sha) <= 40)),
+    CONSTRAINT check_kg_code_indexing_tasks_repository_storage_limit CHECK ((char_length(repository_storage) <= 255))
 )
 PARTITION BY RANGE (created_at);
 

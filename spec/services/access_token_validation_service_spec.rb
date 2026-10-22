@@ -78,6 +78,19 @@ RSpec.describe AccessTokenValidationService, feature_category: :system_access do
     end
   end
 
+  describe '#applicable_scopes' do
+    let(:request) { double('request') }
+    let(:token) { double('token', scopes: [:read_user]) }
+
+    it 'keeps the scopes whose `if` condition holds for the request and those without one' do
+      holds = API::Scope.new(:read_api, if: ->(passed) { passed == request })
+      fails = API::Scope.new(:read_user, if: ->(_) { false })
+
+      expect(described_class.new(token, request: request).applicable_scopes([:api, holds, fails]))
+        .to eq([:api, holds])
+    end
+  end
+
   describe '#validate' do
     context 'with an OAuth access token', feature_category: :permissions do
       using RSpec::Parameterized::TableSyntax

@@ -14595,6 +14595,8 @@ paths:
           description: 403 Forbidden
         '404':
           description: 404 Not found
+        '503':
+          description: 503 Service Unavailable
       parameters:
       - name: id
         required: true

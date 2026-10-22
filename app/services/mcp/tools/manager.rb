@@ -91,18 +91,21 @@ module Mcp
         @alias_map ||= build_alias_map
       end
 
-      def list_tools
-        tools
+      def list_tools(context: nil, toolsets: nil)
+        requested_tools = user_tools(context, Array(toolsets).map(&:to_sym))
+        return tools if requested_tools.empty?
+
+        tools.merge(requested_tools.except(*alias_map.keys)) { |_name, tool, _requested_tool| tool }
       end
 
-      def tools_in_toolsets(toolset_ids)
+      def tools_in_toolsets(toolset_ids, tools: self.tools)
         selected = Array(toolset_ids).map(&:to_sym) | Toolsets::ALWAYS_ON
         tools.each_with_object([]) do |(name, tool), result|
           result << name if selected.include?(tool.toolset)
         end
       end
 
-      def get_tool(name:, version: nil)
+      def get_tool(name:, version: nil, context: nil)
         raise InvalidVersionFormatError, version if version && !validate_semantic_version(version)
 
         canonical_name = resolve_alias(name)
@@ -115,7 +118,7 @@ module Mcp
 
         return get_aggregated_api_tool(canonical_name, version) if discover_aggregated_api_tools.key?(canonical_name)
 
-        raise ToolNotFoundError, name
+        user_tools(context, Toolsets::ALL)[canonical_name] || raise(ToolNotFoundError, name)
       end
 
       def resolve_alias(name)
@@ -273,6 +276,10 @@ module Mcp
 
           pairs.freeze
         end
+      end
+
+      def user_tools(_context, _toolsets)
+        {}
       end
 
       def custom_tools

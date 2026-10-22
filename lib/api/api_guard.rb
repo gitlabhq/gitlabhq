@@ -113,6 +113,23 @@ module API
           end
       end
 
+      # Scopes the insufficient_scope 403 names in its body and its challenge.
+      #
+      # @param scopes [Array<Symbol>] the scopes that can authorize the request
+      # @return [Array<Symbol>]
+      def bearer_challenge_scopes(scopes)
+        scopes
+      end
+
+      # WWW-Authenticate challenge for an RFC 6750 error, on an endpoint that has one of its own.
+      #
+      # @param error [Symbol] the RFC 6750 error code
+      # @param error_description [String]
+      # @param scope [String, nil] the scopes the 403's body names, nil on a 401
+      # @return [String, nil] the challenge, or nil to keep the guard's
+      # @see API::Helpers::Mcp::AuthChallenge
+      def bearer_challenge(error:, error_description:, scope: nil); end
+
       def api_access_allowed?(user)
         user_allowed_or_deploy_token?(user) && user.can?(:access_api)
       end
@@ -170,6 +187,26 @@ module API
       end
     end
 
+    # Rack::OAuth2 writes the WWW-Authenticate challenge for its Unauthorized error only.
+    # RFC 6750 (section 3) asks for it with the insufficient_scope 403 too, so this error
+    # writes it from the parameters its body carries, and the two cannot disagree.
+    class InsufficientScopeForbidden < Rack::OAuth2::Server::Resource::Bearer::Forbidden
+      def finish
+        super do |response|
+          self.realm ||= Rack::OAuth2::Server::Resource::DEFAULT_REALM
+          params = protocol_params
+          challenge = [
+            %(Bearer realm="#{realm}"),
+            %(error="#{params[:error]}"),
+            %(error_description="#{params[:error_description]}")
+          ]
+          # The body leaves out an empty scope list, so the challenge does too.
+          challenge << %(scope="#{params[:scope]}") if params[:scope].present?
+          response.headers['WWW-Authenticate'] = challenge.join(', ')
+        end
+      end
+    end
+
     class_methods do
       private
 
@@ -215,12 +252,10 @@ module API
                 "Token is an impersonation token but impersonation was disabled.")
 
             when Gitlab::Auth::InsufficientScopeError
-              # FIXME: ForbiddenError (inherited from Bearer::Forbidden of Rack::Oauth2)
-              # does not include WWW-Authenticate header, which breaks the standard.
-              Rack::OAuth2::Server::Resource::Bearer::Forbidden.new(
+              InsufficientScopeForbidden.new(
                 :insufficient_scope,
                 Rack::OAuth2::Server::Resource::ErrorMethods::DEFAULT_DESCRIPTION[:insufficient_scope],
-                { scope: e.scopes })
+                { scope: bearer_challenge_scopes(e.scopes) })
 
             when Gitlab::Auth::DpopValidationError
               Rack::OAuth2::Server::Resource::Bearer::Unauthorized.new(
@@ -239,6 +274,12 @@ module API
             end
 
           status, headers, body = response.finish
+
+          # GitLab's own errors, such as DPoP's, keep the guard's challenge.
+          if Rack::OAuth2::Server::Resource::ErrorMethods::DEFAULT_DESCRIPTION.key?(response.error)
+            challenge = bearer_challenge(**response.protocol_params.slice(:error, :error_description, :scope))
+            headers['WWW-Authenticate'] = challenge if challenge
+          end
 
           # Grape expects a Rack::Response
           # (https://github.com/ruby-grape/grape/commit/c117bff7d22971675f4b34367d3a98bc31c8fc02),

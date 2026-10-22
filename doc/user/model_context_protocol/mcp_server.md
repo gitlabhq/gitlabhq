@@ -26,6 +26,7 @@ title: GitLab MCP server
 - Changed from [beta](../../policy/development_stages_support.md#beta) to [generally available](../../policy/development_stages_support.md#generally-available) in GitLab 19.5.
 - `duo_agent_platform` toolset [listed only](https://gitlab.com/gitlab-org/gitlab/-/work_items/631747) when GitLab Duo Agent Platform is available for the user in GitLab 19.5.
 - `code_security` tools [listed only](https://gitlab.com/gitlab-org/gitlab/-/work_items/629267) when the licensed feature behind each tool is available for the user in GitLab 19.5.
+- `orbit` toolset [added](https://gitlab.com/gitlab-org/orbit/knowledge-graph/-/work_items/1294) in GitLab 19.6.
 
 {{< /history >}}
 
@@ -138,6 +139,7 @@ Available toolsets:
 | `duo_agent_platform` | Yes, if GitLab Duo Agent Platform is available |
 | `wikis` | No (opt-in) |
 | `code_security` | No (opt-in) |
+| `orbit` | No (opt-in) |
 
 The `duo_agent_platform` tools are listed only when GitLab Duo Agent Platform is available for you.
 This applies even when you request the toolset in the header or set the header to `all`.
@@ -168,6 +170,13 @@ This applies even when you request the toolset in the header or set the header t
 Both are Ultimate features. On GitLab.com, the tools are listed if you belong to at least one top-level group
 on the Ultimate plan, including Ultimate trials. Access to a project in that group also counts.
 On GitLab Self-Managed and GitLab Dedicated, the tools are listed if the instance license includes the feature.
+
+The `orbit` toolset has one tool for each Orbit command, for example `query_graph`.
+The Orbit server sets the tool names, descriptions, and input schemas.
+The tools are listed and run only when you meet the [Orbit requirements](https://docs.gitlab.com/orbit/).
+
+Orbit tools are listed only when you request the `orbit` toolset or set the header to `all`.
+Naming an Orbit tool in `X-Gitlab-Enabled-Mcp-Server-Tools` does not list it.
 
 Listing a tool does not grant access. Each tool still checks your project and namespace permissions when called.
 
