@@ -8,16 +8,16 @@ module API
           expose :parent,
             using: ::API::Entities::WorkItems::Features::HierarchyParent,
             expose_nil: true,
-            documentation: { type: 'Entities::WorkItems::Features::HierarchyParent' } do |widget, options|
-            parent = widget.parent
+            documentation: { type: 'Entities::WorkItems::Features::HierarchyParent' } do |feature, options|
+            parent = feature.parent
             next unless parent && Ability.allowed?(options[:current_user], :read_work_item, parent)
 
             parent
           end
 
           expose :has_parent,
-            documentation: { type: 'Boolean', example: false } do |widget|
-            widget.parent.present?
+            documentation: { type: 'Boolean', example: false } do |feature|
+            feature.parent.present?
           end
         end
       end

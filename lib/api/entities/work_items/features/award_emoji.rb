@@ -5,18 +5,18 @@ module API
     module WorkItems
       module Features
         class AwardEmoji < Grape::Entity
-          expose :upvotes, documentation: { type: 'Integer', example: 5 } do |widget, options|
-            options.dig(:award_emoji_counts, widget.work_item.id, :up) || 0
+          expose :upvotes, documentation: { type: 'Integer', example: 5 } do |feature, options|
+            options.dig(:award_emoji_counts, feature.work_item.id, :up) || 0
           end
 
-          expose :downvotes, documentation: { type: 'Integer', example: 1 } do |widget, options|
-            options.dig(:award_emoji_counts, widget.work_item.id, :down) || 0
+          expose :downvotes, documentation: { type: 'Integer', example: 1 } do |feature, options|
+            options.dig(:award_emoji_counts, feature.work_item.id, :down) || 0
           end
 
           expose :new_custom_emoji_path,
             documentation: { type: 'String', example: '/groups/gitlab-org/-/custom_emoji/new' },
-            expose_nil: true do |widget, options|
-            widget.new_custom_emoji_path(options[:current_user])
+            expose_nil: true do |feature, options|
+            feature.new_custom_emoji_path(options[:current_user])
           end
         end
       end

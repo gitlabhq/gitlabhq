@@ -1,6 +1,7 @@
 import { nextTick } from 'vue';
 import { NodeViewWrapper, NodeViewContent } from '@tiptap/vue-2';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import { stubComponent } from 'helpers/stub_component';
 import eventHubFactory from '~/helpers/event_hub_factory';
 import SandboxedMermaid from '~/behaviors/components/sandboxed_mermaid.vue';
@@ -415,6 +416,23 @@ describe('content/components/wrappers/code_block', () => {
   </span>
 </code>
 `);
+      });
+    });
+
+    describe('when the file content fails to load', () => {
+      beforeEach(async () => {
+        contentEditorUtils.memoizedGet.mockRejectedValueOnce(new Error('Network Error'));
+
+        createWrapper(nodeAttrs);
+        await waitForPromises();
+      });
+
+      it('shows no deleted lines', () => {
+        expect(findCodeDeleted()).toBe('');
+      });
+
+      it('finishes setting up the code block', () => {
+        expect(updateAttributesFn).toHaveBeenCalledWith({ language: nodeAttrs.language });
       });
     });
 

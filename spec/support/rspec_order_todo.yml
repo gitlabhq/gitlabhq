@@ -3648,7 +3648,6 @@
 - './spec/lib/banzai/filter/asset_proxy_filter_spec.rb'
 - './spec/lib/banzai/filter/audio_link_filter_spec.rb'
 - './spec/lib/banzai/filter/broadcast_message_placeholders_filter_spec.rb'
-- './spec/lib/banzai/filter/broadcast_message_sanitization_filter_spec.rb'
 - './spec/lib/banzai/filter/color_filter_spec.rb'
 - './spec/lib/banzai/filter/commit_trailers_filter_spec.rb'
 - './spec/lib/banzai/filter/custom_emoji_filter_spec.rb'

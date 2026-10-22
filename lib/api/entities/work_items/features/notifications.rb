@@ -6,11 +6,11 @@ module API
       module Features
         class Notifications < Grape::Entity
           expose :subscribed,
-            documentation: { type: 'Boolean', example: true } do |widget, options|
+            documentation: { type: 'Boolean', example: true } do |feature, options|
             current_user = options[:current_user]
             next false unless current_user
 
-            work_item = widget.work_item
+            work_item = feature.work_item
             cache = options[:notifications_subscriptions] || {}
             subscription = cache[work_item.id]
             next subscription.subscribed if subscription

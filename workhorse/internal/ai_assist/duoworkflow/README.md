@@ -17,6 +17,7 @@ The `duoworkflow` package enables GitLab's AI-assisted features (Duo Chat, Duo A
 
 - **handler.go**: HTTP handler for WebSocket connections and graceful shutdown management
 - **runner.go**: Main orchestrator that manages the lifecycle of a single workflow execution
+- **action_pool.go**: Bounded worker pool that runs the actions Workhorse executes itself concurrently
 - **session.go**: State shared by every part of one run: the original request, the run's context, the workflow ID, and the `X-Forwarded-For` value for requests made on the client's behalf
 - **stop_coordinator.go**: The stop handshake with the Duo Workflow Service and the coordination between `Shutdown` and `Close`
 - **teardown.go**: Classifies why a stream ended, for the `teardown_reason` metric label
@@ -184,10 +185,12 @@ type runner struct {
 	serverCapabilities  []string
 	streamManager       *streamManager
 	mcpManager          mcpManager
-	stop                stopCoordinator
-	stopWorkflowTimeout time.Duration
-	started             bool
-	teardown            teardownTracker
+	stop                 stopCoordinator
+	stopWorkflowTimeout  time.Duration
+	maxConcurrentActions int
+	actions              *actionPool
+	started              bool
+	teardown             teardownTracker
 }
 ```
 
@@ -202,8 +205,22 @@ type runner struct {
 **Message handling flow:**
 
 1. **Client events** → Unmarshal JSON to Protocol Buffer → Send to gRPC stream. Only the first start request on a connection is accepted; a client reconnects to start again
-2. **gRPC actions** → Process action type → Execute action → Send response back to gRPC stream
+2. **gRPC actions** → Process action type → Execute action → Send response back to gRPC stream. See [Concurrent actions](#concurrent-actions)
 3. **Client disconnect** → Send StopWorkflow request → Wait for acknowledgment. Concurrent stop requests send a single StopWorkflow request and share its acknowledgment
+
+#### Concurrent actions
+
+Actions fall into two groups:
+
+- **Executed by Workhorse**: `RunHTTPRequest`, `RunMCPTool` for a tool Workhorse knows, and `TrackLlmCallForSelfHosted`.
+- **Forwarded to the client**: checkpoints, file and command actions, and MCP tools from servers configured in the client. These are always written by the goroutine that receives them, in the order they arrive.
+
+By default, actions run one at a time on the receiving goroutine, so the next `Recv` waits until the action has completed. When Rails sets `MaxConcurrentActions` above 1, the actions Workhorse executes run on a per-run `actionPool` of that many workers instead, and the receiving goroutine moves straight on. Duo Workflow Service matches responses to actions by request ID, so they can complete in any order.
+
+- **Back-pressure**: when every worker is busy, the receiving goroutine waits for one to free up before it reads the next action.
+- **Errors**: an action that fails is answered with an error response, as before. A response that cannot be sent ends the run and cancels the other actions in flight.
+- **Panics**: a panic in a worker is logged and answered with an error response, so it does not take the process down.
+- **Close**: actions still in flight are canceled and waited for, up to the stop timeout, before the stream is closed, so no response is sent on a closed stream.
 
 ### Stream manager
 
@@ -217,13 +234,14 @@ type streamManager struct {
     cloudServiceStream selfHostedWorkflowStream
     session            *session
     sendMu             sync.Mutex
+    cloudServiceMu     sync.Mutex
 }
 ```
 
 **Responsibilities:**
 
 - Opens and owns the primary `ExecuteWorkflow` gRPC stream
-- Optionally opens a secondary `TrackSelfHostedExecuteWorkflow` stream for self-hosted deployments
+- Optionally opens a secondary `TrackSelfHostedExecuteWorkflow` stream for self-hosted deployments. Each send is paired with the receive that follows it, so concurrent tracking calls take turns on it
 - Provides mutex-protected `Send` to allow concurrent goroutines to write safely
 - Translates `io.EOF` and quota-exceeded gRPC errors into sentinel errors on `Recv`
 
@@ -341,7 +359,7 @@ Client receives action response
 
 ## Metrics
 
-The package exposes four Prometheus counters, one gauge and one histogram.
+The package exposes five Prometheus counters, one gauge and two histograms.
 
 ### `gitlab_workhorse_duo_workflow_connections_open`
 
@@ -422,6 +440,14 @@ Example query:
 sum(rate(gitlab_workhorse_duo_workflow_http_action_errors_total[5m])) by (method, error_type)
 ```
 
+### `gitlab_workhorse_duo_workflow_action_queue_wait_seconds`
+
+Histogram of how long an action waited for a free worker in the run's action pool, in seconds, labelled by `type` (`http`, `mcp` or `self_hosted_tracking`). Only observed when actions run concurrently.
+
+### `gitlab_workhorse_duo_workflow_action_pool_saturated_total`
+
+Incremented when an action finds every worker in the run's action pool busy, so the runner stops receiving from Duo Workflow Service until a worker is free. A rising rate means `MaxConcurrentActions` is too low for the workload, or a slow upstream such as an MCP server is holding workers.
+
 ## Configuration
 
 ### From GitLab Rails
@@ -434,6 +460,7 @@ type DuoWorkflow struct {
     CloudServiceForSelfHosted *DuoWorkflowServiceConfig // Optional cloud tracking service
     LockConcurrentFlow       bool                      // Enable workflow locking
     McpServers               map[string]*McpServerConfig
+    MaxConcurrentActions     int                       // Actions Workhorse may execute at once; 0 or 1 runs them one at a time
 }
 
 type DuoWorkflowServiceConfig struct {

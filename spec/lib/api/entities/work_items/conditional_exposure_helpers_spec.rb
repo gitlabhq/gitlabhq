@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
-require 'grape_entity'
+require 'spec_helper'
 
 RSpec.describe API::Entities::WorkItems::ConditionalExposureHelpers, feature_category: :team_planning do
   describe '.expose_field' do
@@ -96,7 +95,7 @@ RSpec.describe API::Entities::WorkItems::ConditionalExposureHelpers, feature_cat
   end
 
   describe '.expose_feature' do
-    context 'without widget guard' do
+    context 'with source: nil' do
       let(:callable_guard) do
         Class.new do
           attr_reader :calls
@@ -118,9 +117,9 @@ RSpec.describe API::Entities::WorkItems::ConditionalExposureHelpers, feature_cat
         Class.new(Grape::Entity) do
           include API::Entities::WorkItems::ConditionalExposureHelpers
 
-          expose_feature :widget, if: ->(obj, _options) { obj[:widget] }
-          expose_feature :symbol_feature, if: :allow_symbol_feature
-          expose_feature :callable_feature, if: guard
+          expose_feature :widget, source: nil, if: ->(obj, _options) { obj[:widget] }
+          expose_feature :symbol_feature, source: nil, if: :allow_symbol_feature
+          expose_feature :callable_feature, source: nil, if: guard
         end
       end
 
@@ -176,16 +175,16 @@ RSpec.describe API::Entities::WorkItems::ConditionalExposureHelpers, feature_cat
       end
     end
 
-    context 'with widget guard' do
+    context 'with source guard' do
       let(:entity_class) do
         Class.new(Grape::Entity) do
           include API::Entities::WorkItems::ConditionalExposureHelpers
 
-          expose_feature :widget, widget_name: :widget do |widget|
+          expose_feature :description do |widget|
             widget
           end
 
-          expose_feature :custom_feature, widget_name: :custom_widget do |widget|
+          expose_feature :custom_feature, source: :labels do |widget|
             widget
           end
         end
@@ -214,28 +213,28 @@ RSpec.describe API::Entities::WorkItems::ConditionalExposureHelpers, feature_cat
 
       let(:enabled_work_item) do
         work_item_class.new(
-          enabled_widgets: %i[widget custom_widget],
-          data: { widget: { value: 1 }, custom_widget: { value: 2 } }
+          enabled_widgets: %i[description labels],
+          data: { description: { value: 1 }, labels: { value: 2 } }
         )
       end
 
       let(:disabled_work_item) do
-        work_item_class.new(enabled_widgets: [], data: { widget: { value: 1 } })
+        work_item_class.new(enabled_widgets: [], data: { description: { value: 1 } })
       end
 
-      it 'includes the feature when the widget is available' do
-        representation = entity_class.represent(enabled_work_item, requested_features: [:widget]).as_json
+      it 'defaults the source to the feature name and includes the feature when that widget is available' do
+        representation = entity_class.represent(enabled_work_item, requested_features: [:description]).as_json
 
-        expect(representation).to include(widget: { value: 1 })
+        expect(representation).to include(description: { value: 1 })
       end
 
       it 'omits the feature when the widget is unavailable' do
-        representation = entity_class.represent(disabled_work_item, requested_features: [:widget]).as_json
+        representation = entity_class.represent(disabled_work_item, requested_features: [:description]).as_json
 
-        expect(representation).not_to have_key(:widget)
+        expect(representation).not_to have_key(:description)
       end
 
-      it 'supports custom widget names' do
+      it 'supports a source name that differs from the feature name' do
         representation = entity_class.represent(enabled_work_item, requested_features: [:custom_feature]).as_json
 
         expect(representation).to include(custom_feature: { value: 2 })
@@ -246,7 +245,7 @@ RSpec.describe API::Entities::WorkItems::ConditionalExposureHelpers, feature_cat
           attr_reader :has_widget_calls
 
           def initialize
-            super(enabled_widgets: [:widget], data: { widget: { value: 1 } })
+            super(enabled_widgets: [:description], data: { description: { value: 1 } })
             @has_widget_calls = 0
           end
 
@@ -263,16 +262,16 @@ RSpec.describe API::Entities::WorkItems::ConditionalExposureHelpers, feature_cat
 
       it 'raises when the object does not support widget checks' do
         expect do
-          entity_class.represent({ widget: { value: 1 } }, requested_features: [:widget]).as_json
-        end.to raise_error(ArgumentError, 'Feature widget requires entity object to respond to :has_widget?')
+          entity_class.represent({ description: { value: 1 } }, requested_features: [:description]).as_json
+        end.to raise_error(ArgumentError, 'Feature description requires entity object to respond to :has_widget?')
       end
 
       it 'omits the feature when the widget lookup returns nil' do
-        work_item = work_item_class.new(enabled_widgets: [:widget], data: { widget: nil })
+        work_item = work_item_class.new(enabled_widgets: [:description], data: { description: nil })
 
-        representation = entity_class.represent(work_item, requested_features: [:widget]).as_json
+        representation = entity_class.represent(work_item, requested_features: [:description]).as_json
 
-        expect(representation[:widget]).to be_nil
+        expect(representation[:description]).to be_nil
       end
 
       it 'raises when the object does not respond to #get_widget' do
@@ -287,20 +286,31 @@ RSpec.describe API::Entities::WorkItems::ConditionalExposureHelpers, feature_cat
         end.new
 
         expect do
-          entity_class.represent(work_item, requested_features: [:widget]).as_json
-        end.to raise_error(ArgumentError, 'Feature widget requires entity object to respond to :get_widget')
+          entity_class.represent(work_item, requested_features: [:description]).as_json
+        end.to raise_error(ArgumentError, 'Feature description requires entity object to respond to :get_widget')
       end
     end
 
-    context 'with invalid widget name' do
-      it 'raises an error when the widget name is not a symbol' do
+    context 'with invalid source name' do
+      it 'raises an error when the source name is not a symbol' do
         expect do
           Class.new(Grape::Entity) do
             include API::Entities::WorkItems::ConditionalExposureHelpers
 
-            expose_feature :widget, widget_name: 'not_symbol'
+            expose_feature :widget, source: 'not_symbol'
           end
-        end.to raise_error(ArgumentError, 'Unsupported :widget_name option "not_symbol" for feature widget')
+        end.to raise_error(ArgumentError, 'Unsupported :source option "not_symbol" for feature widget')
+      end
+
+      it 'raises an error when the source is not a known widget type' do
+        expect do
+          Class.new(Grape::Entity) do
+            include API::Entities::WorkItems::ConditionalExposureHelpers
+
+            expose_feature :bogus
+          end
+        end.to raise_error(ArgumentError,
+          'Unknown widget :bogus for feature bogus, pass source: nil for a feature without a backing widget')
       end
     end
   end

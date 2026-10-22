@@ -364,7 +364,6 @@ Gitlab/StrongMemoizeAttr:
     - 'lib/api/unleash.rb'
     - 'lib/atlassian/jira_connect/jwt/asymmetric.rb'
     - 'lib/atlassian/jira_connect/jwt/symmetric.rb'
-    - 'lib/banzai/filter/base_sanitization_filter.rb'
     - 'lib/banzai/filter/references/reference_cache.rb'
     - 'lib/banzai/filter/repository_link_filter.rb'
     - 'lib/bulk_imports/pipeline.rb'

@@ -4,12 +4,15 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
+	"fmt"
 	"io"
 	"net"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"strings"
+	"sync"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -717,6 +720,62 @@ func TestManager_CallTool(t *testing.T) {
 		plainTextResp := result.GetActionResponse().GetPlainTextResponse()
 		assert.Equal(t, "MCP tool response is empty", plainTextResp.Response)
 	})
+}
+
+func TestManager_CallTool_concurrentCallsOnOneServer(t *testing.T) {
+	const calls = 3
+
+	// Every call is held until all of them have reached the server, so the
+	// test only passes if one session carries the calls concurrently.
+	var arrived sync.WaitGroup
+	arrived.Add(calls)
+	allArrived := make(chan struct{})
+	go func() {
+		arrived.Wait()
+		close(allArrived)
+	}()
+
+	mcpServer := setupMockMcpServerWithCallHandler(t, "", []mcpTool{
+		{Name: "slow_tool", Description: "A slow tool"},
+	}, func(_ string, args map[string]any) (string, bool, error) {
+		arrived.Done()
+		select {
+		case <-allArrived:
+		case <-time.After(5 * time.Second):
+			return "", false, errors.New("calls were not concurrent")
+		}
+		return fmt.Sprint(args["n"]), false, nil
+	})
+
+	servers := map[string]api.McpServerConfig{
+		"test-server": {URL: mcpServer.URL, Headers: map[string]string{}},
+	}
+	mgr, err := newMcpManager(nil, newSession(httptest.NewRequest("GET", "/test", nil)), servers)
+	require.NoError(t, err)
+	t.Cleanup(func() { require.NoError(t, mgr.Close()) })
+
+	results := make([]*pb.ClientEvent, calls)
+	errs := make([]error, calls)
+
+	var wg sync.WaitGroup
+	for i := range calls {
+		wg.Go(func() {
+			action := &pb.Action{
+				RequestID: fmt.Sprint(i),
+				Action: &pb.Action_RunMCPTool{
+					RunMCPTool: &pb.RunMCPTool{Name: "test-server_slow_tool", Args: fmt.Sprintf(`{"n": "%d"}`, i)},
+				},
+			}
+
+			results[i], errs[i] = mgr.CallTool(context.Background(), action)
+		})
+	}
+	wg.Wait()
+
+	for i := range calls {
+		require.NoError(t, errs[i])
+		require.Equal(t, fmt.Sprint(i), results[i].GetActionResponse().GetPlainTextResponse().Response)
+	}
 }
 
 func TestManager_Close(t *testing.T) {

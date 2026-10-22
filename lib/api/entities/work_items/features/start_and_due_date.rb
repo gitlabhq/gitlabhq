@@ -13,8 +13,8 @@ module API
             documentation: { type: 'Date', example: '2022-08-30' },
             expose_nil: true
 
-          expose :roll_up, documentation: { type: 'Boolean', example: false } do |widget, _|
-            widget.can_rollup?
+          expose :roll_up, documentation: { type: 'Boolean', example: false } do |feature, _|
+            feature.can_rollup?
           end
         end
       end

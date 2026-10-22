@@ -110,7 +110,6 @@ run-performance-tests:
     RUN_ON_CNG: true
     COMMENT_ON_MR: true
     DATA_SEEDER_FILE_NAME: mr_seed.rb
-    CPT_PACKAGE_REGISTRY_API_TOKEN: $CPT_PACKAGE_REGISTRY_API_TOKEN
     CPT_BASELINE_PACKAGE_NAME: "gitlab-org-gitlab"
     GENERATE_REPORT_FROM_DUO: true
     USE_TELEGRAF_METRICS: false

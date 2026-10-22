@@ -10,7 +10,7 @@ title: GitLab Duo Non-Agentic Chat
 
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Pro or Enterprise, GitLab Duo with Amazon Q
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated, GitLab Dedicated for Government
 
 {{< /details >}}
 

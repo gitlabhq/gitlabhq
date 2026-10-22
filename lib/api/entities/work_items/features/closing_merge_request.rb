@@ -5,7 +5,7 @@ module API
     module WorkItems
       module Features
         # Represents a merge request that closes the work item when merged, exposed by the development
-        # widget's closing_merge_requests sub-endpoint. The presented object is a MergeRequest; its
+        # feature's closing_merge_requests sub-endpoint. The presented object is a MergeRequest; its
         # MergeRequestIssue row (for id and from_mr_description) is looked up from
         # options[:closing_rows_by_mr_id], keyed by merge request id.
         #

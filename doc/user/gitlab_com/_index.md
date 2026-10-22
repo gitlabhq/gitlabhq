@@ -315,7 +315,7 @@ repository mirroring come from these IP addresses. You should allow these connec
 - Outgoing connections from CI/CD runners - We don't provide static IP addresses for outgoing
   connections from CI/CD runners. However, these guidelines can help:
   - Linux GPU-enabled and Linux Arm64 runners are deployed into Google Cloud, in `us-central1`.
-  - Other GitLab.com instance runners are deployed into Google Cloud in `us-east1`.
+  - Other GitLab.com instance runners are deployed into Google Cloud in `us-east1` and `us-east5`.
   - macOS runners are hosted on AWS in the `us-east-1` region, with runner managers hosted on Google Cloud.
 
 To configure an IP-based firewall, you must allow both [AWS IP address ranges](https://docs.aws.amazon.com/vpc/latest/userguide/aws-ip-ranges.html) and [Google Cloud IP address ranges](https://cloud.google.com/compute/docs/faq#find_ip_range).

@@ -148,6 +148,53 @@ X-Gitlab-Event-Streaming-Token: <DESTINATION_TOKEN>
 X-Gitlab-Audit-Event-Type: repository_git_operation
 ```
 
+When [batched event delivery](audit_event_streaming.md#batched-event-delivery) is on,
+the `X-Gitlab-Audit-Event-Type` header is not sent.
+Use the `event_type` field of each event instead.
+
+### Batched HTTP request body
+
+When batched event delivery is on, the request body is a JSON array of audit events:
+
+```json
+[
+  {
+    "id": "1",
+    "author_id": 1,
+    "author_name": "Sidney Jones",
+    "entity_id": 29,
+    "entity_path": "example-group/example-project",
+    "entity_type": "Project",
+    "details": {
+      "author_name": "Sidney Jones"
+    },
+    "ip_address": "127.0.0.1",
+    "target_details": "example-project",
+    "target_id": 29,
+    "target_type": "Project",
+    "created_at": "2022-07-26T05:43:53.662Z",
+    "event_type": "repository_git_operation"
+  },
+  {
+    "id": "2",
+    "author_id": 5,
+    "author_name": "Zhang Wei",
+    "entity_id": 29,
+    "entity_path": "example-group/example-project",
+    "entity_type": "Project",
+    "details": {
+      "author_name": "Zhang Wei"
+    },
+    "ip_address": "127.0.0.1",
+    "target_details": "example-project",
+    "target_id": 29,
+    "target_type": "Project",
+    "created_at": "2022-07-26T05:43:54.118Z",
+    "event_type": "user_authenticated_using_job_token"
+  }
+]
+```
+
 ## Git operation events
 
 Streaming audit events can be sent when authenticated users push, pull, or clone a project's remote Git repositories:

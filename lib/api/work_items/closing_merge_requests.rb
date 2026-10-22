@@ -23,7 +23,7 @@ module API
 
           # Closing-issue rows keyed by merge request id, so the entity can expose each row's id and
           # from_mr_description. Bounded: the closing merge requests of a single work item. Group-level
-          # work items have no development widget, so this is naturally empty for them.
+          # work items have no development feature, so this is naturally empty for them.
           closing_rows_by_mr_id = parent_work_item.merge_request_closing_issues.index_by(&:merge_request_id)
 
           # Not scoped by project: MergeRequestsFinder's project_id filters on target_project_id, which

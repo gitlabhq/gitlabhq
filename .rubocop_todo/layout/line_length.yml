@@ -2412,7 +2412,6 @@ Layout/LineLength:
     - 'spec/lib/backup/manager_spec.rb'
     - 'spec/lib/banzai/commit_renderer_spec.rb'
     - 'spec/lib/banzai/filter/ascii_doc_sanitization_filter_spec.rb'
-    - 'spec/lib/banzai/filter/broadcast_message_sanitization_filter_spec.rb'
     - 'spec/lib/banzai/filter/external_link_filter_spec.rb'
     - 'spec/lib/banzai/filter/gollum_tags_filter_spec.rb'
     - 'spec/lib/banzai/filter/inline_diff_filter_spec.rb'

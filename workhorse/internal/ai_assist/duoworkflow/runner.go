@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"runtime/debug"
 	"time"
 
 	redis "github.com/redis/go-redis/v9"
@@ -17,6 +18,8 @@ import (
 )
 
 var errDuplicateStartRequest = errors.New("handleClientEvent: the workflow was already started on this connection")
+
+var errActionPanicked = errors.New("internal error while executing the action")
 
 // Stamped unconditionally: a client must not get to choose its own value here.
 func markClientInjected(tools []*pb.McpTool) {
@@ -47,6 +50,13 @@ type runner struct {
 	mcpManager          mcpManager
 	stop                stopCoordinator
 	stopWorkflowTimeout time.Duration
+
+	// maxConcurrentActions is the size of the action pool. At 1 or below,
+	// actions run one at a time on the goroutine receiving them.
+	maxConcurrentActions int
+	// actions is nil when actions run one at a time. Set by Execute before
+	// any goroutine starts.
+	actions *actionPool
 
 	// started is set once the start request has been handled. Only the
 	// goroutine reading client events touches it.
@@ -95,13 +105,14 @@ func newRunner(client clientTransport, rails *api.API, backend http.Handler, rel
 	}
 
 	rnr := &runner{
-		session:            sess,
-		httpActionHandler:  httpActionHandler,
-		client:             client,
-		lease:              newWorkflowLease(lockManager),
-		serverCapabilities: cfg.ServerCapabilities,
-		streamManager:      streamManager,
-		mcpManager:         mcpManager,
+		session:              sess,
+		httpActionHandler:    httpActionHandler,
+		client:               client,
+		lease:                newWorkflowLease(lockManager),
+		serverCapabilities:   cfg.ServerCapabilities,
+		streamManager:        streamManager,
+		mcpManager:           mcpManager,
+		maxConcurrentActions: cfg.MaxConcurrentActions,
 		stop: stopCoordinator{
 			acked:        make(chan struct{}),
 			shutdownDone: make(chan struct{}),
@@ -122,7 +133,11 @@ func (r *runner) Execute(ctx context.Context) error {
 		return fmt.Errorf("Execute: failed to start client transport: %w", err)
 	}
 
-	errCh := make(chan error, 3) // one slot per goroutine: client reader, agent reader, keepalive
+	errCh := make(chan error, 4) // one slot per sender: client reader, agent reader, keepalive, action pool
+
+	if r.maxConcurrentActions > 1 {
+		r.actions = newActionPool(ctx, r.maxConcurrentActions, errCh)
+	}
 
 	r.stop.agentDone.Add(1)
 
@@ -232,11 +247,28 @@ func (r *runner) handleAgentMessages(ctx context.Context, errCh chan<- error) {
 			return
 		}
 
-		if err := r.handleAgentAction(ctx, action); err != nil {
+		if err := r.dispatchAgentAction(ctx, action); err != nil {
 			errCh <- err
 			return
 		}
 	}
+}
+
+// dispatchAgentAction hands actions workhorse executes itself to the action
+// pool, if there is one, and handles every other action in receive order.
+func (r *runner) dispatchAgentAction(ctx context.Context, action *pb.Action) error {
+	actionType, ok := r.workhorseActionType(action)
+	if !ok || r.actions == nil {
+		return r.handleAgentAction(ctx, action)
+	}
+
+	if err := r.actions.submit(actionType, func(ctx context.Context) error {
+		return r.executeActionSafe(ctx, action)
+	}); err != nil {
+		return fmt.Errorf("handleAgentMessages: %w", err)
+	}
+
+	return nil
 }
 
 func (r *runner) logClose(name string, err error) error {
@@ -273,6 +305,12 @@ func (r *runner) Close() error {
 	if r.stop.requested.Load() && !r.stop.waitForAgent(r.stop.remaining(r.stopTimeout())) {
 		// Closing the stream below is what unblocks the pending Recv.
 		r.session.logger().Info("Close: DWS did not end the stream after a stop request, closing it")
+	}
+
+	// The run is over, so actions still in flight are canceled. They are
+	// waited for so that none sends its response on a closed stream.
+	if !r.actions.close(r.stopTimeout()) {
+		r.session.logger().Info("Close: actions still in flight after the stop timeout, closing the stream")
 	}
 
 	// When a server shutdown is in progress, wait for Shutdown to finish before
@@ -350,6 +388,50 @@ func (r *runner) handleClientEvent(response *pb.ClientEvent) error {
 	}
 
 	return nil
+}
+
+// Action types workhorse executes itself, as reported in metrics.
+const (
+	actionTypeHTTP               = "http"
+	actionTypeMCP                = "mcp"
+	actionTypeSelfHostedTracking = "self_hosted_tracking"
+)
+
+// workhorseActionType returns the type of an action workhorse executes itself.
+// It reports false for actions forwarded to the client, which must be written
+// in the order they arrive and only from the goroutine receiving them.
+func (r *runner) workhorseActionType(action *pb.Action) (string, bool) {
+	switch action.Action.(type) {
+	case *pb.Action_RunHTTPRequest:
+		return actionTypeHTTP, true
+	case *pb.Action_RunMCPTool:
+		// Tools workhorse doesn't know about come from MCP servers configured
+		// in the client, such as the IDE.
+		return actionTypeMCP, r.mcpManager.HasTool(action.GetRunMCPTool().Name)
+	case *pb.Action_TrackLlmCallForSelfHosted:
+		return actionTypeSelfHostedTracking, true
+	default:
+		return "", false
+	}
+}
+
+// executeActionSafe runs an action on an action pool worker. A worker is
+// outside net/http's recovery, so a panic would take down the whole process:
+// it is answered as a failed action instead.
+func (r *runner) executeActionSafe(ctx context.Context, action *pb.Action) (err error) {
+	defer func() {
+		if p := recover(); p != nil {
+			r.session.logger().WithFields(log.Fields{
+				"request_id": action.RequestID,
+				"panic":      fmt.Sprint(p),
+				"stack":      string(debug.Stack()),
+			}).Error("executeActionSafe: recovered from a panic while executing an action")
+
+			err = r.sendActionError(action, errActionPanicked)
+		}
+	}()
+
+	return r.handleAgentAction(ctx, action)
 }
 
 func (r *runner) handleAgentAction(ctx context.Context, action *pb.Action) error {

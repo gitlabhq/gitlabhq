@@ -12,7 +12,7 @@ title: Hosted runners on Linux
 
 {{< /details >}}
 
-Hosted runners on Linux for GitLab.com run on Google Cloud Compute Engine. Each job gets a fully isolated, ephemeral virtual machine (VM). The default region is `us-east1`.
+Hosted runners on Linux for GitLab.com run on Google Cloud Compute Engine. Each job gets a fully isolated, ephemeral virtual machine (VM). Linux x86-64 VMs run in the `us-east1` and `us-east5` regions, and Linux Arm64 VMs run in `us-central1`.
 
 Each VM uses the Google Container-Optimized OS (COS) and the latest version of Docker Engine running the `docker+machine`
 [executor](https://docs.gitlab.com/runner/executors/#docker-machine-executor).

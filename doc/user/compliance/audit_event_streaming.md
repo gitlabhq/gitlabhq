@@ -34,6 +34,70 @@ Audit events are sent using the POST request method protocol supported by HTTP.
 > Streaming destinations receive all audit event data, which could include sensitive information. Make sure you trust
 > the streaming destination.
 
+## Batched event delivery
+
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249354) in GitLab 19.3 [with a feature flag](../../administration/feature_flags/_index.md) named `audit_event_streaming_via_nats`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+By default, GitLab sends each audit event to a streaming destination in its own request.
+When the `audit_event_streaming_via_nats` feature flag is enabled for a top-level group,
+GitLab sends the audit events of the group in batches instead.
+A batch can contain events of different types, and can contain a single event.
+The batch format applies to every delivery to the destinations of the group.
+
+If a destination is briefly unavailable, GitLab retries the whole batch,
+which can duplicate every event in it.
+Deduplicate events by `id`, as described earlier on this page.
+
+The batch format depends on the destination type.
+
+### Batched HTTP requests
+
+The request body is a JSON array.
+Each element is an audit event that follows the [audit event schema](audit_event_schema.md),
+including an `event_type` field that identifies the type of that event.
+For an example, see [Batched HTTP request body](audit_event_schema.md#batched-http-request-body).
+
+Batched requests differ from single-event requests in these ways:
+
+- The request body is an array of events instead of a single event object.
+- The `X-Gitlab-Audit-Event-Type` header is not sent. Use the `event_type` field of each event instead.
+
+The `X-Gitlab-Event-Streaming-Token` header and custom HTTP headers are unchanged.
+Batched requests use the `content-type` header of the destination.
+To receive `application/json`, see [Override default content type header](#override-default-content-type-header).
+
+### Batched AWS S3 objects
+
+Each object contains a JSON array of events instead of a single event.
+Object keys have the format `YYYY/MM/DD/<timestamp>_<id>.json`, where:
+
+- `<timestamp>` is the time the object was written, in milliseconds since the Unix epoch.
+- `<id>` is the `id` of the first event in the batch.
+
+Without batched delivery, each event is written to its own object,
+with a key in the format `<entity_type>/YYYY/MM/<event_type>_<id>_<timestamp>.json`.
+Batched keys do not include the entity type or event type, because a batch can contain events of different types.
+
+### Batched Google Cloud Logging entries
+
+GitLab writes a batch as multiple log entries in a single request.
+Each log entry contains one event, in the same format as without batched delivery.
+
 ## HTTP destinations
 
 Prerequisites:

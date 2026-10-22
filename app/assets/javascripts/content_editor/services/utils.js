@@ -1,9 +1,9 @@
-import { memoize } from 'lodash-es';
 import axios from '~/lib/utils/axios_utils';
+import { memoizeAsync } from '~/lib/utils/memoize_async';
 
 export const clamp = (n, min, max) => Math.max(Math.min(n, max), min);
 
-export const memoizedGet = memoize(async (path) => {
+export const memoizedGet = memoizeAsync(async (path) => {
   const { data } = await axios(path, { responseType: 'blob' });
   return data.text();
 });

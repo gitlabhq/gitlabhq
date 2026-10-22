@@ -11,8 +11,8 @@ module API
               expose_nil: true
             expose :human_total_time_spent, as: :total_time_spent,
               documentation: { type: 'String', example: '1h 15m' },
-              expose_nil: true do |widget|
-              Gitlab::TimeTrackingFormatter.output(widget.timelogs.sum(&:time_spent))
+              expose_nil: true do |feature|
+              Gitlab::TimeTrackingFormatter.output(feature.timelogs.sum(&:time_spent))
             end
           end
 
@@ -39,14 +39,14 @@ module API
             expose_nil: true
           expose :total_time_spent,
             documentation: { type: 'Integer', example: 4500 },
-            expose_nil: true do |widget|
-            widget.timelogs.sum(&:time_spent)
+            expose_nil: true do |feature|
+            feature.timelogs.sum(&:time_spent)
           end
           expose :human_readable_attributes,
             using: ::API::Entities::WorkItems::Features::TimeTracking::HumanReadableAttributes,
             documentation: { type: 'Entities::WorkItems::Features::TimeTracking::HumanReadableAttributes' },
-            expose_nil: true do |widget|
-              widget
+            expose_nil: true do |feature|
+              feature
             end
           expose :timelogs,
             using: ::API::Entities::WorkItems::Features::TimeTracking::Timelog,

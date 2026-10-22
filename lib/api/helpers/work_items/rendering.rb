@@ -9,6 +9,7 @@ module API
         def render_work_items_collection_for(resource_parent)
           check_pagination_param!(params)
           validate_requested_keys!
+          validate_search_rate_limit! if params[:search].present?
 
           authorize! :read_work_item, resource_parent
           authorize_job_token_policies!(resource_parent) if resource_parent.is_a?(::Project)

@@ -17,14 +17,14 @@ module API
 
           validator = ::Gitlab::Auth::ScopeValidator.new(current_user, Gitlab::Auth::RequestAuthenticator.new(request))
           create_params = build_create_work_item_params(work_item_type).merge(scope_validator: validator)
-          widget_params = extract_feature_params(work_item_type, resource_parent)
-          validate_supported_features!(work_item_type, resource_parent, widget_params)
+          feature_params = extract_feature_params(work_item_type, resource_parent)
+          validate_supported_features!(work_item_type, resource_parent, feature_params)
 
           ::WorkItems::CreateService.new(
             container: resource_parent,
             current_user: current_user,
             params: create_params,
-            widget_params: widget_params
+            widget_params: feature_params
           ).execute
         rescue QuickActions::InterpretService::QuickActionsNotAllowedError => e
           forbidden!(e.message)
@@ -60,10 +60,10 @@ module API
         def extract_feature_params(work_item_type, resource_parent)
           return {} unless params.key?(:features)
 
-          feature_params = declared_params(include_missing: false)[:features].to_h.deep_symbolize_keys
+          feature_input = declared_params(include_missing: false)[:features].to_h.deep_symbolize_keys
 
-          widget_params = feature_params.each_with_object({}) do |(key, value), hash|
-            widget_key = :"#{key}_widget"
+          feature_params = feature_input.each_with_object({}) do |(key, value), hash|
+            service_key = :"#{key}_widget"
 
             if key == :hierarchy && value.key?(:parent_id)
               parent_id = value.delete(:parent_id)
@@ -72,11 +72,11 @@ module API
               value[:parent] = parent
             end
 
-            hash[widget_key] = value
+            hash[service_key] = value
           end
 
-          strip_disabled_feature_params!(widget_params, work_item_type, resource_parent)
-          widget_params
+          strip_disabled_feature_params!(feature_params, work_item_type, resource_parent)
+          feature_params
         end
       end
     end

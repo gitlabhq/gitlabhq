@@ -104,7 +104,8 @@ export default {
   methods: {
     async updateAllLines() {
       const rawPath = this.contentEditor.codeSuggestionsConfig.blobRawPath;
-      this.allLines = (await memoizedGet(rawPath)).split('\n');
+      const content = await memoizedGet(rawPath).catch(() => null);
+      if (content !== null) this.allLines = content.split('\n');
     },
     updateCodeSuggestion() {
       this.deletedLines = appendNewlines(getLines(this.absoluteLineOffset, this.allLines));

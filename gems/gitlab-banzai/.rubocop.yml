@@ -38,8 +38,13 @@ Lint/BinaryOperatorWithIdenticalOperands:
 # Debt inherited with the moved files, previously held in `.rubocop_todo/`.
 Layout/LineLength:
   Exclude:
+    - spec/banzai/filter/broadcast_message_sanitization_filter_spec.rb
     - spec/banzai/filter/suggestion_filter_spec.rb
     - spec/support/sanitization_shared_examples.rb
+
+Gitlab/StrongMemoizeAttr:
+  Exclude:
+    - lib/banzai/filter/base_sanitization_filter.rb
 
 Lint/UnusedMethodArgument:
   Exclude:
@@ -47,6 +52,7 @@ Lint/UnusedMethodArgument:
 
 RSpec/ContextWording:
   Exclude:
+    - spec/banzai/filter/broadcast_message_sanitization_filter_spec.rb
     - spec/banzai/filter/suggestion_filter_spec.rb
 
 Style/IfUnlessModifier:

@@ -39,6 +39,7 @@ SAST supports the following official analyzers:
 <!-- vale gitlab_base.OxfordComma = NO -->
 - [`spotbugs`](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs), based on SpotBugs with the Find Sec Bugs plugin (Ant, Gradle and wrapper, Grails, Maven and wrapper, SBT).
 <!-- vale gitlab_base.OxfordComma = YES -->
+- [`malicious-sources`](../malicious-sources/_index.md), detecting references to known-malicious domains.
 
 ### Supported versions
 

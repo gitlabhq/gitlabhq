@@ -1218,7 +1218,6 @@ RSpec/ContextWording:
     - 'spec/lib/banzai/filter/absolute_link_filter_spec.rb'
     - 'spec/lib/banzai/filter/asset_proxy_filter_spec.rb'
     - 'spec/lib/banzai/filter/broadcast_message_placeholders_filter_spec.rb'
-    - 'spec/lib/banzai/filter/broadcast_message_sanitization_filter_spec.rb'
     - 'spec/lib/banzai/filter/commit_trailers_filter_spec.rb'
     - 'spec/lib/banzai/filter/external_link_filter_spec.rb'
     - 'spec/lib/banzai/filter/front_matter_filter_spec.rb'

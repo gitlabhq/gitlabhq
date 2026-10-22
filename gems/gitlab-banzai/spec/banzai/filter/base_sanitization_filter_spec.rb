@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Banzai::Filter::BaseSanitizationFilter, feature_category: :markdown do
+RSpec.describe Banzai::Filter::BaseSanitizationFilter do
   include FilterSpecHelper
   using RSpec::Parameterized::TableSyntax
 

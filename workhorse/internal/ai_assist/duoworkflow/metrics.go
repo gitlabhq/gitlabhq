@@ -61,4 +61,20 @@ var (
 		Name: "gitlab_workhorse_duo_workflow_http_action_errors_total",
 		Help: "Total number of Duo Workflow HTTP actions that failed due to a transport-level error, by method and error type.",
 	}, []string{"method", "error_type"})
+
+	// actionQueueWaitSeconds measures how long an action waited for a free
+	// worker in the run's action pool, labeled by action type. It is only
+	// observed when actions run concurrently.
+	actionQueueWaitSeconds = promauto.NewHistogramVec(prometheus.HistogramOpts{
+		Name:    "gitlab_workhorse_duo_workflow_action_queue_wait_seconds",
+		Help:    "Duration in seconds a Duo Workflow action waited for a free worker before it started, by action type.",
+		Buckets: prometheus.DefBuckets,
+	}, []string{"type"})
+
+	// actionPoolSaturatedTotal counts actions that found every worker in the
+	// run's action pool busy, so receiving from Duo Workflow Service paused.
+	actionPoolSaturatedTotal = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "gitlab_workhorse_duo_workflow_action_pool_saturated_total",
+		Help: "Total number of Duo Workflow actions that had to wait because every worker in the run's action pool was busy.",
+	})
 )

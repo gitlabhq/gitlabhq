@@ -20,8 +20,47 @@ describe('content_editor/services/asset_resolver', () => {
   let assetResolver;
 
   beforeEach(() => {
-    renderMarkdown = jest.fn();
+    renderMarkdown = jest.fn().mockResolvedValue({});
     assetResolver = new AssetResolver({ renderMarkdown });
+  });
+
+  describe('when the same markdown is rendered twice', () => {
+    it('requests it once', async () => {
+      await assetResolver.resolveUrl('test-file.png');
+      await assetResolver.resolveUrl('test-file.png');
+
+      expect(renderMarkdown).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('when the request fails', () => {
+    beforeEach(() => {
+      renderMarkdown.mockRejectedValueOnce(new Error('Network Error'));
+    });
+
+    it.each`
+      resolver                | args                             | fallback
+      ${'resolveUrl'}         | ${['test-file.png']}             | ${'test-file.png'}
+      ${'resolveIframeSrc'}   | ${['https://example.com/video']} | ${{ src: 'https://example.com/video', providerId: null }}
+      ${'resolvePlaceholder'} | ${['%{project_name}']}           | ${null}
+      ${'resolveReference'}   | ${['#1']}                        | ${{}}
+      ${'explainQuickAction'} | ${['/close']}                    | ${''}
+      ${'renderDiagram'}      | ${['graph TD', 'mermaid']}       | ${''}
+    `('$resolver resolves to its fallback', async ({ resolver, args, fallback }) => {
+      expect(await assetResolver[resolver](...args)).toEqual(fallback);
+    });
+
+    it('requests it again on the next call', async () => {
+      await assetResolver.resolvePlaceholder('%{project_name}');
+      renderMarkdown.mockResolvedValueOnce({
+        body: '<p><span data-placeholder="%{project_name}">gitlab</span></p>',
+      });
+
+      expect(await assetResolver.resolvePlaceholder('%{project_name}')).toEqual({
+        placeholder: '%{project_name}',
+        value: 'gitlab',
+      });
+    });
   });
 
   describe('resolveUrl', () => {
@@ -151,28 +190,6 @@ describe('content_editor/services/asset_resolver', () => {
         renderMarkdown.mockResolvedValue({});
 
         expect(await assetResolver.resolvePlaceholder('%{foo}')).toBeNull();
-      });
-    });
-
-    describe('when the request fails', () => {
-      beforeEach(() => {
-        renderMarkdown.mockRejectedValueOnce(new Error('Network Error'));
-      });
-
-      it('returns null', async () => {
-        expect(await assetResolver.resolvePlaceholder('%{project_name}')).toBeNull();
-      });
-
-      it('requests the placeholder again on the next call', async () => {
-        await assetResolver.resolvePlaceholder('%{project_name}');
-        renderMarkdown.mockResolvedValueOnce({
-          body: '<p><span data-placeholder="%{project_name}">gitlab</span></p>',
-        });
-
-        expect(await assetResolver.resolvePlaceholder('%{project_name}')).toEqual({
-          placeholder: '%{project_name}',
-          value: 'gitlab',
-        });
       });
     });
   });
@@ -323,6 +340,21 @@ describe('content_editor/services/asset_resolver', () => {
       });
 
       expect(await assetResolver.renderDiagram('test')).toBe('url/to/some/diagram');
+    });
+
+    describe('when the same code is rendered in another language', () => {
+      it('renders it again', async () => {
+        renderMarkdown
+          .mockResolvedValueOnce({ body: '<p><img src="url/to/mermaid/diagram"></p>' })
+          .mockResolvedValueOnce({ body: '<p><img src="url/to/plantuml/diagram"></p>' });
+
+        expect(await assetResolver.renderDiagram('graph TD', 'mermaid')).toBe(
+          'url/to/mermaid/diagram',
+        );
+        expect(await assetResolver.renderDiagram('graph TD', 'plantuml')).toBe(
+          'url/to/plantuml/diagram',
+        );
+      });
     });
   });
 });

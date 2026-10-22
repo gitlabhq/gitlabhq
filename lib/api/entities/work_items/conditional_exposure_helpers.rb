@@ -15,15 +15,18 @@ module API
             # rubocop:enable API/EntityFieldType
           end
 
-          def expose_feature(feature_name, widget_name: nil, **opts, &block)
-            resolved_widget = ensure_widget_name(feature_name, widget_name)
+          # `source:` is the model widget backing the feature and defaults to the feature name: the exposure is
+          # skipped unless the work item has that widget, and the block receives the widget object instead of
+          # the work item. Pass `source: nil` for a feature with no backing widget.
+          def expose_feature(feature_name, source: feature_name, **opts, &block)
+            resolved_source = ensure_source_name(feature_name, source)
 
             guarded_opts = options_with_guards(opts,
               build_request_guard(:requested_features, feature_name, **opts),
-              resolved_widget ? build_widget_guard(feature_name, resolved_widget) : nil
+              resolved_source ? build_source_guard(feature_name, resolved_source) : nil
             )
 
-            block = widget_block(block, resolved_widget, feature_name) if resolved_widget
+            block = source_block(block, resolved_source, feature_name) if resolved_source
 
             # rubocop:disable API/EntityFieldType -- helper method wraps expose to add guards
             expose(feature_name, **guarded_opts, &block)
@@ -70,38 +73,43 @@ module API
             end
           end
 
-          def ensure_widget_name(feature_name, widget_name)
-            return if widget_name.nil?
+          def ensure_source_name(feature_name, source)
+            return if source.nil?
 
-            unless widget_name.is_a?(Symbol)
-              raise ArgumentError, "Unsupported :widget_name option #{widget_name.inspect} for feature #{feature_name}"
+            unless source.is_a?(Symbol)
+              raise ArgumentError, "Unsupported :source option #{source.inspect} for feature #{feature_name}"
             end
 
-            widget_name
+            unless ::WorkItems::TypesFramework::SystemDefined::WidgetDefinition.widget_types.include?(source.to_s)
+              raise ArgumentError, "Unknown widget #{source.inspect} for feature #{feature_name}, " \
+                "pass source: nil for a feature without a backing widget"
+            end
+
+            source
           end
 
-          def build_widget_guard(feature_name, widget_name)
+          def build_source_guard(feature_name, source)
             ->(obj, _options) do
               unless obj.respond_to?(:has_widget?)
                 raise ArgumentError, "Feature #{feature_name} requires entity object to respond to :has_widget?"
               end
 
-              obj.has_widget?(widget_name)
+              obj.has_widget?(source)
             end
           end
 
-          def widget_block(block, widget_name, feature_name)
-            original_block = block || ->(widget, _) { widget }
+          def source_block(block, source, feature_name)
+            original_block = block || ->(feature, _) { feature }
 
             ->(obj, options) do
               unless obj.respond_to?(:get_widget)
                 raise ArgumentError, "Feature #{feature_name} requires entity object to respond to :get_widget"
               end
 
-              widget = obj.get_widget(widget_name)
-              next unless widget
+              feature = obj.get_widget(source)
+              next unless feature
 
-              original_block.arity <= 1 ? original_block.call(widget) : original_block.call(widget, options)
+              original_block.arity <= 1 ? original_block.call(feature) : original_block.call(feature, options)
             end
           end
         end

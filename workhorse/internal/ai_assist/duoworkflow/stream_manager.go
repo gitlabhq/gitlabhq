@@ -52,6 +52,11 @@ type streamManager struct {
 	session            *session
 	sendMu             sync.Mutex
 
+	// cloudServiceMu pairs each send on cloudServiceStream with the receive
+	// that follows it, so concurrent actions don't take each other's
+	// acknowledgments.
+	cloudServiceMu sync.Mutex
+
 	// teardownReason reports what workhorse recorded as the cause for the
 	// stream ending. runner wires this to its own tracker; it is nil where
 	// there is no runner, in which case nothing recorded a cause.
@@ -164,13 +169,9 @@ func (sm *streamManager) HandleCloudServiceTracking(ctx context.Context, action 
 		SourceType:           trackAction.SourceType,
 	}
 
-	if err := sm.cloudServiceStream.Send(clientEvent); err != nil {
-		return fmt.Errorf("failed to send to cloud service: %v", err)
-	}
-
-	selfHostedAction, err := sm.cloudServiceStream.Recv()
+	selfHostedAction, err := sm.trackOnCloudService(clientEvent)
 	if err != nil {
-		return fmt.Errorf("failed to receive from cloud service: %v", err)
+		return err
 	}
 
 	log.WithContextFields(ctx, log.Fields{
@@ -193,6 +194,22 @@ func (sm *streamManager) HandleCloudServiceTracking(ctx context.Context, action 
 	}
 
 	return nil
+}
+
+func (sm *streamManager) trackOnCloudService(event *pb.TrackSelfHostedClientEvent) (*pb.TrackSelfHostedAction, error) {
+	sm.cloudServiceMu.Lock()
+	defer sm.cloudServiceMu.Unlock()
+
+	if err := sm.cloudServiceStream.Send(event); err != nil {
+		return nil, fmt.Errorf("failed to send to cloud service: %v", err)
+	}
+
+	selfHostedAction, err := sm.cloudServiceStream.Recv()
+	if err != nil {
+		return nil, fmt.Errorf("failed to receive from cloud service: %v", err)
+	}
+
+	return selfHostedAction, nil
 }
 
 // isUsageQuotaExceededError checks if the error is a gRPC RESOURCE_EXHAUSTED error

@@ -169,6 +169,10 @@ type DuoWorkflow struct {
 	// ServerCapabilities is a list of capability strings provided by Rails.
 	ServerCapabilities  []string
 	TimeoutHTTPRequests bool
+	// MaxConcurrentActions is how many of the actions workhorse executes
+	// itself (HTTP requests, MCP tool calls, self-hosted tracking) may run at
+	// the same time in one workflow. 0 or 1 runs them one at a time.
+	MaxConcurrentActions int
 	// WorkflowID is the workflow Rails authorized this request for. It is set
 	// only for server-side execution, where workhorse starts the workflow
 	// itself and so cannot take the ID from the caller's request body. On the

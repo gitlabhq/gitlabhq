@@ -1,24 +1,30 @@
-import { memoize } from 'lodash-es';
 import { n__ } from '~/locale';
+import { memoizeAsync } from '~/lib/utils/memoize_async';
 import { escape } from './serializer/link';
 
 const parser = new DOMParser();
 
 export default class AssetResolver {
+  #cachedRenderMarkdown;
+
   constructor({ renderMarkdown }) {
-    this.renderMarkdown = renderMarkdown;
+    this.#cachedRenderMarkdown = memoizeAsync(renderMarkdown);
   }
 
-  resolveUrl = memoize(async (canonicalSrc) => {
-    const { body: html } = (await this.renderMarkdown(`[link](${escape(canonicalSrc)})`)) || {};
+  async #render(markdown) {
+    return (await this.#cachedRenderMarkdown(markdown).catch(() => null)) || {};
+  }
+
+  async resolveUrl(canonicalSrc) {
+    const { body: html } = await this.#render(`[link](${escape(canonicalSrc)})`);
     if (!html) return canonicalSrc;
 
     const { body } = parser.parseFromString(html, 'text/html');
     return body.querySelector('a').getAttribute('href');
-  });
+  }
 
-  resolveIframeSrc = memoize(async (canonicalSrc) => {
-    const { body: html } = (await this.renderMarkdown(`![image](${escape(canonicalSrc)})`)) || {};
+  async resolveIframeSrc(canonicalSrc) {
+    const { body: html } = await this.#render(`![image](${escape(canonicalSrc)})`);
     if (!html) return { src: canonicalSrc, providerId: null };
 
     const { body } = parser.parseFromString(html, 'text/html');
@@ -26,13 +32,10 @@ export default class AssetResolver {
     if (!embed) return { src: canonicalSrc, providerId: null };
 
     return { src: embed.dataset.iframeSrc, providerId: embed.dataset.iframeProviderId };
-  });
+  }
 
-  resolvePlaceholder = memoize(async (placeholder) => {
-    const { body: html } =
-      (await this.renderMarkdown(placeholder).catch(() => {
-        this.resolvePlaceholder.cache.delete(placeholder);
-      })) || {};
+  async resolvePlaceholder(placeholder) {
+    const { body: html } = await this.#render(placeholder);
     if (!html) return null;
 
     const { body } = parser.parseFromString(html, 'text/html');
@@ -40,12 +43,12 @@ export default class AssetResolver {
     if (!span) return null;
 
     return { placeholder, value: (span.dataset.placeholder && span.textContent) || null };
-  });
+  }
 
-  resolveReference = memoize(async (originalText) => {
+  async resolveReference(originalText) {
     const text = originalText.replace(/(\+|\+s)$/, '');
     const toRender = `${text} ${text}+ ${text}+s`;
-    const { body: html } = (await this.renderMarkdown(toRender)) || {};
+    const { body: html } = await this.#render(toRender);
 
     if (!html) return {};
 
@@ -60,12 +63,10 @@ export default class AssetResolver {
       fullyExpandedText: a[2]?.textContent,
       backgroundColor: a[0]?.firstElementChild?.style.backgroundColor,
     };
-  });
+  }
 
-  explainQuickAction = memoize(async (text) => {
-    const {
-      references: { commands: html },
-    } = (await this.renderMarkdown(text)) || { references: {} };
+  async explainQuickAction(text) {
+    const { references: { commands: html } = {} } = await this.#render(text);
     if (!html) return '';
 
     const { body } = parser.parseFromString(html, 'text/html') || {};
@@ -88,18 +89,17 @@ export default class AssetResolver {
     }
 
     return p[0]?.textContent;
-  });
+  }
 
-  renderDiagram = memoize(async (code, language) => {
+  async renderDiagram(code, language) {
     const backticks = '`'.repeat(4);
-    const { body: html } = await this.renderMarkdown(
-      `${backticks}${language}\n${code}\n${backticks}`,
-    );
+    const { body: html } = await this.#render(`${backticks}${language}\n${code}\n${backticks}`);
+    if (!html) return '';
 
     const { body } = parser.parseFromString(html, 'text/html');
     const img = body.querySelector('img');
     if (!img) return '';
 
     return img.dataset.src || img.getAttribute('src');
-  });
+  }
 }

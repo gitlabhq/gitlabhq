@@ -25,6 +25,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "html-pipeline", "~> 2.14.3"
   spec.add_dependency "nokogiri", "~> 1.18"
   spec.add_dependency "re2", "~> 2.15"
+  spec.add_dependency "sanitize", "~> 7.0"
 
   spec.add_development_dependency "gitlab-styles", "~> 14.1"
   spec.add_development_dependency "rspec", "~> 3.13"

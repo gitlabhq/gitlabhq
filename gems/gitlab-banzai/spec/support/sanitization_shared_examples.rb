@@ -1,8 +1,44 @@
 # frozen_string_literal: true
 
-# Copies of the two link-sanitization shared examples in the monolith's
+# Copies of shared examples in the monolith's
 # `spec/support/shared_examples/lib/banzai/filters/sanitization_filter_shared_examples.rb`,
 # which the monolith's sanitization filter specs still use.
+
+RSpec.shared_examples 'default allowlist' do
+  it 'sanitizes tags that are not allowed' do
+    act = %q(<textarea>no inputs</textarea> and <blink>no blinks</blink>)
+    exp = 'no inputs and no blinks'
+    expect(filter(act).to_html).to eq exp
+  end
+
+  it 'sanitizes tag attributes' do
+    act = %q(<a href="http://example.com/bar.html" onclick="bar">Text</a>)
+    exp = %q(<a href="http://example.com/bar.html">Text</a>)
+    expect(filter(act).to_html).to eq exp
+  end
+
+  it 'allows allowlisted HTML tags from the user' do
+    exp = act = "<dl>\n<dt>Term</dt>\n<dd>Definition</dd>\n</dl>"
+    expect(filter(act).to_html).to eq exp
+  end
+
+  it 'sanitizes `class` attribute on any element' do
+    act = %q(<strong class="foo">Strong</strong>)
+    expect(filter(act).to_html).to eq %q(<strong>Strong</strong>)
+  end
+
+  it 'sanitizes `id` attribute on any element' do
+    act = %q(<em id="foo">Emphasis</em>)
+    expect(filter(act).to_html).to eq %q(<em>Emphasis</em>)
+  end
+
+  it 'removes `rel` attribute from `a` elements' do
+    act = %q(<a href="#" rel="nofollow">Link</a>)
+    exp = %q(<a href="#">Link</a>)
+
+    expect(filter(act).to_html).to eq exp
+  end
+end
 
 RSpec.shared_examples 'XSS prevention' do
   # Adapted from the Sanitize test suite: http://git.io/vczrM
