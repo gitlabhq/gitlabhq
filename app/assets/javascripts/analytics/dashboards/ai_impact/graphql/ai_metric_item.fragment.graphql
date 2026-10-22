@@ -20,13 +20,10 @@ fragment AiMetricItem on AiMetrics {
     shownLinesOfCode
     ideNames
   }
-  agentPlatformChats: agentPlatform(flowTypes: ["chat"])
-    @gl_introduced(version: "18.7.0-pre")
-    @skip(if: $skipAgentPlatformChats) {
+  agentPlatformChats: agentPlatform(flowTypes: ["chat"]) @skip(if: $skipAgentPlatformChats) {
     createdSessionEventCount
   }
   agentPlatformFlows: agentPlatform(not: { flowTypes: ["chat"] })
-    @gl_introduced(version: "18.7.0-pre")
     @skip(if: $skipAgentPlatformFlows) {
     createdSessionEventCount
   }

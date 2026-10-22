@@ -4,7 +4,8 @@
     "version",
     "revision",
     "kas",
-    "enterprise"
+    "enterprise",
+    "plan"
   ],
   "properties": {
     "version": {
@@ -40,6 +41,12 @@
     },
     "enterprise": {
       "type": "boolean"
+    },
+    "plan": {
+      "type": [
+        "string",
+        "null"
+      ]
     }
   },
   "additionalProperties": false

@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { parseBoolean } from '@gitlab/frontend-utils';
 import { getCookie, setCookie } from '~/lib/utils/common_utils';
+import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import {
   FILE_BROWSER_VISIBLE,
   TRACKING_CLICK_FILE_BROWSER_SETTING,
@@ -79,10 +80,14 @@ export const useFileBrowser = defineStore('fileBrowser', {
       this.fileBrowserVisible = !this.fileBrowserVisible;
       setCookie(FILE_BROWSER_VISIBLE, this.fileBrowserVisible);
     },
-    initFileBrowserVisibility() {
+    initFileBrowserVisibility({ autoHide = false } = {}) {
       const visibilityPreference = getCookie(FILE_BROWSER_VISIBLE);
+
       if (visibilityPreference) {
         this.fileBrowserVisible = parseBoolean(visibilityPreference);
+      } else if (autoHide) {
+        const shouldHide = !PanelBreakpointInstance.isDesktop() || this.flatBlobsList.length <= 1;
+        this.fileBrowserVisible = !shouldHide;
       }
     },
   },

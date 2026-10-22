@@ -7,6 +7,7 @@
   {{- /* Range over the linted files */ -}}
   {{- range $idx1, $a := .Files -}}
     {{- $path := .Path -}}
+    {{- $seen := dict -}}
 
     {{/* Range over the file's alerts */}}
     {{- range $idx2, $b := .Alerts -}}
@@ -24,12 +25,19 @@
       {{- if .Link -}}
         {{- $moreinfo = printf " See %s" .Link -}}
       {{- end -}}
+      {{- /* Leave the line out of the fingerprint, so edits elsewhere in the file do not change it. */ -}}
+      {{- /* The count separates repeats of the same match for the same rule in one file. */ -}}
+      {{- $key := printf "%s|%s|%s" $path .Check .Match -}}
+      {{- $count := add1 (get $seen $key | default 0) -}}
+      {{- $_ := set $seen $key $count -}}
       {{- if $idx2 -}},{{- end -}}
 
   {{/* Output */}}
   {
     "description": "{{ $message }}{{ $moreinfo }}",
-    "fingerprint": "{{ $path }}-{{ $loc }}",
+    "check_name": "{{ .Check }}",
+    "engine_name": "Vale",
+    "fingerprint": "{{ sha256sum (printf "%s|%d" $key $count) }}",
     "severity": "{{ $error }}",
     "location": {
       "path": "{{ $path }}",

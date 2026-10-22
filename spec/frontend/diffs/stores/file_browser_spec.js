@@ -1,6 +1,6 @@
 import { createPinia, setActivePinia } from 'pinia';
 import { useFileBrowser } from '~/diffs/stores/file_browser';
-import { getCookie, setCookie } from '~/lib/utils/common_utils';
+import { getCookie, setCookie, removeCookie } from '~/lib/utils/common_utils';
 import {
   FILE_BROWSER_VISIBLE,
   TRACKING_CLICK_FILE_BROWSER_SETTING,
@@ -11,10 +11,14 @@ import {
 import { queueRedisHllEvents } from '~/diffs/utils/queue_events';
 import { linkTreeNodes, sortTree } from '~/ide/stores/utils';
 import { generateTreeList } from '~/diffs/utils/tree_worker_utils';
+import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 
 jest.mock('~/diffs/utils/queue_events');
 jest.mock('~/diffs/utils/tree_worker_utils');
 jest.mock('~/ide/stores/utils');
+jest.mock('~/panel_breakpoint_instance', () => ({
+  PanelBreakpointInstance: { isDesktop: jest.fn(() => true) },
+}));
 
 describe('FileBrowser store', () => {
   beforeEach(() => {
@@ -272,6 +276,40 @@ describe('FileBrowser store', () => {
       setCookie(FILE_BROWSER_VISIBLE, false);
       useFileBrowser().initFileBrowserVisibility();
       expect(useFileBrowser().fileBrowserVisible).toBe(false);
+    });
+
+    describe('auto-hide with no stored preference', () => {
+      beforeEach(() => {
+        removeCookie(FILE_BROWSER_VISIBLE);
+      });
+
+      it.each`
+        isDesktop | fileCount | expected
+        ${true}   | ${3}      | ${true}
+        ${true}   | ${1}      | ${false}
+        ${false}  | ${3}      | ${false}
+      `(
+        'sets visibility to $expected when isDesktop=$isDesktop and fileCount=$fileCount',
+        ({ isDesktop, fileCount, expected }) => {
+          PanelBreakpointInstance.isDesktop.mockReturnValue(isDesktop);
+          useFileBrowser().tree = Array.from({ length: fileCount }, (_, i) => ({
+            type: 'blob',
+            path: `file${i}.js`,
+          }));
+
+          useFileBrowser().initFileBrowserVisibility({ autoHide: true });
+
+          expect(useFileBrowser().fileBrowserVisible).toBe(expected);
+        },
+      );
+
+      it('ignores the heuristic when autoHide is not requested', () => {
+        PanelBreakpointInstance.isDesktop.mockReturnValue(false);
+
+        useFileBrowser().initFileBrowserVisibility();
+
+        expect(useFileBrowser().fileBrowserVisible).toBe(true);
+      });
     });
   });
 

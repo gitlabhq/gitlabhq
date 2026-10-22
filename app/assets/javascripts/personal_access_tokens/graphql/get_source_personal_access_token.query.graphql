@@ -17,7 +17,7 @@ query getSourcePersonalAccessToken($userId: UserID, $id: PersonalAccessTokenID!)
               name
               fullPath
             }
-            group @gl_introduced(version: "19.2.0") {
+            group {
               id
               name
               fullPath

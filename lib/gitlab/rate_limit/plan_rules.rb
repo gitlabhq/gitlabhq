@@ -17,6 +17,15 @@ module Gitlab
         def for_limiter(_limiter_name)
           []
         end
+
+        # Rule name => the RateLimit-Name its responses carry instead.
+        # rubocop:disable Gitlab/NoCodeCoverageComment -- overridden and tested in EE
+        # :nocov:
+        def concealed_rules
+          {}
+        end
+        # :nocov:
+        # rubocop:enable Gitlab/NoCodeCoverageComment
       end
     end
   end

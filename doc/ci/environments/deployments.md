@@ -45,21 +45,29 @@ deploy_prod:
       when: manual
 ```
 
-The `when: manual` action:
+The `when: manual` action means the `deploy_prod` job does not run
+automatically. A user with permission to deploy must start it.
 
-- Exposes the {{< ui text="Run" >}} ({{< icon name="play" >}}) button for the job in the GitLab UI, with the text {{< ui text="Can be manually deployed to" >}} `<environment>`.
-- Means the `deploy_prod` job must be triggered manually.
+You can start a manual deployment from a merge request, an environment, or a pipeline:
 
-You can find {{< ui text="Run" >}} ({{< icon name="play" >}}) in the pipelines, environments, deployments, and jobs views.
+<!-- markdownlint-disable MD056 -->
+
+| Start from | Select | Use when |
+|------------|--------|----------|
+| Merge request | In the pipeline widget, next to {{< ui text="Can be manually deployed to" >}} `<environment>`, select {{< ui text="MrDeploymentActions|Deploy" >}}. | You are already in the merge request. |
+| Environment | On the environment page, in the deployment history, select {{< ui text="Deploy to" >}} ({{< icon name="play" >}}), then select the job. | You know which environment to deploy to. |
+| Pipeline or job | Next to the job, select {{< ui text="Run" >}} ({{< icon name="play" >}}). | You want to see the job in the context of its stage and the rest of the pipeline, or you already have the job open. |
+
+<!-- markdownlint-enable MD056 -->
 
 ## Track newly included merge requests per deployment
 
 GitLab can track newly included merge requests per deployment.
 When a deployment succeeds, the system calculates commit-diffs between the latest deployment and the previous deployment.
 You can fetch tracking information with the [Deployment API](../../api/deployments.md#list-all-merge-requests-associated-with-a-deployment)
-or view it at a post-merge pipeline in [merge request pages](../../user/project/merge_requests/_index.md).
+or view it in the post-merge pipeline on the [merge request](../../user/project/merge_requests/_index.md) page.
 
-To enable tracking configure your environment so either:
+To enable tracking, configure your environment so that either:
 
 - The [environment name](../yaml/_index.md#environmentname) doesn't use folders with `/` (long-lived or top-level environments).
 - The [environment tier](_index.md#deployment-tier-of-environments) is either `production` or `staging`.
@@ -96,7 +104,7 @@ fetch = +refs/environments/*:refs/remotes/origin/environments/*
 When a new deployment happens in your project,
 GitLab creates [a special Git-ref to the deployment](#check-out-deployments-locally).
 Because these Git-refs are populated from the remote GitLab repository,
-you could find that some Git operations, such as `git-fetch` and `git-pull`,
+you might find that some Git operations, such as `git fetch` and `git pull`,
 become slower as the number of deployments in your project increases.
 
 To maintain the efficiency of your Git operations, GitLab keeps
@@ -118,7 +126,7 @@ It points to the commit you're rolling back to.
 For the rollback to succeed, the deployment process must be defined in
 the job's `script`.
 
-Only the [deployment jobs](../jobs/_index.md#deployment-jobs) are run.
+GitLab runs only the [deployment jobs](../jobs/_index.md#deployment-jobs).
 In cases where a previous job generates artifacts that must be regenerated
 on deploy, you must manually run the necessary jobs from the pipelines page.
 For example, if you use Terraform and your `plan` and `apply` commands are separated
@@ -160,12 +168,8 @@ GitLab [deletes old deployment refs](#archive-old-deployments)
 to keep your Git repository performant.
 
 If you have to restore archived Git-refs on GitLab Self-Managed, ask an administrator
-to execute the following command on Rails console:
+to run the following command in the Rails console:
 
 ```ruby
 Project.find_by_full_path(<your-project-full-path>).deployments.where(archived: true).each(&:create_ref)
 ```
-
-GitLab might drop this support in the future for the performance concern.
-You can open an issue in [GitLab Issue Tracker](https://gitlab.com/gitlab-org/gitlab/-/work_items/new)
-to discuss the behavior of this feature.

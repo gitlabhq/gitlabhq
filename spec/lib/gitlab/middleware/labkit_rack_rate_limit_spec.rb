@@ -354,6 +354,46 @@ RSpec.describe Gitlab::Middleware::LabkitRackRateLimit, feature_category: :rate_
         expect(headers).to include('Retry-After', 'RateLimit-Name' => 'free_traffic_per_user')
         expect(body).to eq([Gitlab::Throttle.rate_limiting_response_text])
       end
+
+      context 'when the rule is concealed' do
+        before do
+          allow(plan_rules).to receive(:concealed_rules).and_return('free_traffic_per_user' => 'shared_name')
+        end
+
+        it 'renders the 429 under the shared name with only the reset headers', :aggregate_failures do
+          status, headers, = middleware.call(env)
+
+          expect(status).to eq(429)
+          expect(headers).to include('RateLimit-Name' => 'shared_name')
+          expect(headers).to include('Retry-After', 'RateLimit-Reset', 'RateLimit-ResetTime')
+          expect(headers).not_to include('RateLimit-Limit', 'RateLimit-Observed', 'RateLimit-Remaining')
+        end
+      end
+
+      context 'when the result carries no info' do
+        let(:info) { nil }
+
+        it 'renders the 429 without rate limit headers', :aggregate_failures do
+          status, headers, body = middleware.call(env)
+
+          expect(status).to eq(429)
+          expect(headers).to eq('Content-Type' => 'text/plain')
+          expect(body).to eq([Gitlab::Throttle.rate_limiting_response_text])
+        end
+
+        context 'when the rule is concealed' do
+          before do
+            allow(plan_rules).to receive(:concealed_rules).and_return('free_traffic_per_user' => 'shared_name')
+          end
+
+          it 'renders the 429 without rate limit headers', :aggregate_failures do
+            status, headers, = middleware.call(env)
+
+            expect(status).to eq(429)
+            expect(headers).to eq('Content-Type' => 'text/plain')
+          end
+        end
+      end
     end
 
     context 'when labkit allows the request' do
@@ -628,6 +668,38 @@ RSpec.describe Gitlab::Middleware::LabkitRackRateLimit, feature_category: :rate_
           'RateLimit-Limit' => '100',
           'RateLimit-Remaining' => '95'
         )
+      end
+    end
+
+    context 'when the most constraining rule is concealed' do
+      let(:concealed_rule) { instance_double(Labkit::RateLimit::Rule, name: 'free_traffic_per_user', action: :limit) }
+
+      let(:concealed_info) do
+        Labkit::RateLimit::Result::Info.new(
+          resolved_limit: 10, resolved_period: 60, count: 8.0, remaining: 2.0, reset_at: Time.current
+        )
+      end
+
+      let(:concealed_evaluation) do
+        Labkit::RateLimit::Result::Evaluation.new(rule: concealed_rule, exceeded: false, info: concealed_info)
+      end
+
+      let(:result) do
+        instance_double(
+          Labkit::RateLimit::Result, action: :allow, error?: false, rule: rule,
+          evaluations: [concealed_evaluation, evaluation]
+        )
+      end
+
+      before do
+        allow(plan_rules).to receive(:concealed_rules).and_return('free_traffic_per_user' => 'shared_name')
+      end
+
+      it 'reports the next one instead', :aggregate_failures do
+        _status, headers, = middleware.call(env)
+
+        expect(headers['RateLimit-Name']).to eq('throttle_unauthenticated_web')
+        expect(headers['RateLimit-Remaining']).to eq('95')
       end
     end
 

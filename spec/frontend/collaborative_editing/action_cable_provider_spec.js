@@ -36,6 +36,9 @@ describe('collaborative_editing/action_cable_provider', () => {
   const sentMessages = (type) =>
     subscription.send.mock.calls.map(([message]) => message).filter((m) => m.type === type);
 
+  const acknowledge = (message) =>
+    callbacks.received({ type: 'ack', messageId: message.messageId });
+
   const decodePayload = (payload) => Uint8Array.from(atob(payload), (c) => c.charCodeAt(0));
 
   const documentFromAll = (...payloads) => {
@@ -87,6 +90,18 @@ describe('collaborative_editing/action_cable_provider', () => {
   });
 
   describe('receiving the initial state', () => {
+    it('does not send local changes until the initial state arrives', () => {
+      provider.connect();
+      callbacks.connected();
+      provider.doc.getText('content').insert(0, 'before init');
+
+      expect(sentMessages('sync')).toHaveLength(0);
+
+      callbacks.received({ type: 'init', updates: [] });
+
+      expect(documentFrom(sentMessages('sync')[0].payload)).toBe('before init');
+    });
+
     it('applies existing updates to the document', () => {
       connectAndInit({ updates: [updateFrom('from a peer')] });
 
@@ -176,14 +191,26 @@ describe('collaborative_editing/action_cable_provider', () => {
 
       it('sends full state on reconnect, because the dropped delta is unrecoverable', () => {
         callbacks.connected();
+        callbacks.received({ type: 'init', updates: [] });
 
         const [resent] = sentMessages('sync');
 
         expect(documentFrom(resent.payload)).toBe('typed while offline');
       });
 
+      it('sends offline edits when init arrives before the connected callback', () => {
+        callbacks.received({ type: 'init', updates: [] });
+        expect(sentMessages('sync')).toHaveLength(0);
+
+        callbacks.connected();
+
+        expect(documentFrom(sentMessages('sync')[0].payload)).toBe('typed while offline');
+      });
+
       it('returns to sending incremental updates once reconnected', () => {
         callbacks.connected();
+        callbacks.received({ type: 'init', updates: [] });
+        acknowledge(sentMessages('sync')[0]);
         provider.doc.getText('content').insert(0, 'and ');
 
         const [, incremental] = sentMessages('sync');
@@ -193,13 +220,186 @@ describe('collaborative_editing/action_cable_provider', () => {
 
       it('re-arms when the connection drops again', () => {
         callbacks.connected();
+        callbacks.received({ type: 'init', updates: [] });
         callbacks.disconnected();
         provider.doc.getText('content').insert(0, 'and ');
         callbacks.connected();
+        callbacks.received({ type: 'init', updates: [] });
 
         const [, resent] = sentMessages('sync');
 
         expect(documentFrom(resent.payload)).toBe('and typed while offline');
+      });
+    });
+
+    describe('while awaiting server acknowledgement', () => {
+      beforeEach(() => {
+        provider.doc.getText('content').insert(0, 'first');
+      });
+
+      it('merges queued edits without sending the whole document after acknowledgement', () => {
+        provider.doc.getText('content').insert(5, ' second');
+        const [first] = sentMessages('sync');
+        expect(sentMessages('sync')).toHaveLength(1);
+
+        acknowledge(first);
+        const [, merged] = sentMessages('sync');
+        expect(documentFrom(merged.payload)).toBe('');
+        expect(documentFromAll(first.payload, merged.payload)).toBe('first second');
+
+        provider.doc.getText('content').insert(12, ' third');
+        expect(sentMessages('sync')).toHaveLength(2);
+
+        acknowledge(merged);
+        expect(documentFrom(sentMessages('sync')[2].payload)).toBe('');
+        expect(
+          documentFromAll(first.payload, merged.payload, sentMessages('sync')[2].payload),
+        ).toBe('first second third');
+      });
+
+      it('combines several queued edits into a single incremental update', () => {
+        provider.doc.getText('content').insert(5, ' second');
+        provider.doc.getText('content').insert(12, ' third');
+        const [first] = sentMessages('sync');
+
+        acknowledge(first);
+
+        const [, merged] = sentMessages('sync');
+        expect(sentMessages('sync')).toHaveLength(2);
+        expect(documentFrom(merged.payload)).toBe('');
+        expect(documentFromAll(first.payload, merged.payload)).toBe('first second third');
+      });
+
+      it('returns to incremental updates after the queued edits are acknowledged', () => {
+        provider.doc.getText('content').insert(5, ' second');
+        acknowledge(sentMessages('sync')[0]);
+        acknowledge(sentMessages('sync')[1]);
+        provider.doc.getText('content').insert(12, ' third');
+
+        expect(documentFrom(sentMessages('sync')[2].payload)).toBe('');
+      });
+
+      it('returns to incremental updates after the first update is acknowledged', () => {
+        acknowledge(sentMessages('sync')[0]);
+        provider.doc.getText('content').insert(5, ' second');
+
+        expect(documentFrom(sentMessages('sync')[1].payload)).toBe('');
+      });
+
+      it('does not accept an acknowledgement without the pending message ID', () => {
+        callbacks.received({ type: 'ack' });
+        provider.doc.getText('content').insert(5, ' second');
+
+        expect(sentMessages('sync')).toHaveLength(1);
+        acknowledge(sentMessages('sync')[0]);
+        expect(documentFrom(sentMessages('sync')[1].payload)).toBe('');
+        expect(
+          documentFromAll(sentMessages('sync')[0].payload, sentMessages('sync')[1].payload),
+        ).toBe('first second');
+      });
+
+      it('resends full state on reconnect without an acknowledgement', () => {
+        callbacks.disconnected();
+        callbacks.connected();
+        expect(sentMessages('sync')).toHaveLength(1);
+        callbacks.received({ type: 'init', updates: [] });
+
+        expect(documentFrom(sentMessages('sync')[1].payload)).toBe('first');
+      });
+
+      it('waits for init before resending edits made during reconnection', () => {
+        callbacks.disconnected();
+        callbacks.connected();
+        provider.doc.getText('content').insert(5, ' second');
+
+        expect(sentMessages('sync')).toHaveLength(1);
+
+        callbacks.received({ type: 'init', updates: [] });
+
+        expect(documentFrom(sentMessages('sync')[1].payload)).toBe('first second');
+      });
+
+      it('resends unacknowledged and queued edits when init precedes connected', () => {
+        provider.doc.getText('content').insert(5, ' second');
+        callbacks.disconnected();
+        callbacks.received({ type: 'init', updates: [] });
+        expect(sentMessages('sync')).toHaveLength(1);
+
+        callbacks.connected();
+
+        expect(documentFrom(sentMessages('sync')[1].payload)).toBe('first second');
+      });
+
+      it('retries a dropped final update without another edit', () => {
+        jest.advanceTimersByTime(5000);
+
+        expect(documentFrom(sentMessages('sync')[1].payload)).toBe('first');
+      });
+
+      it('does not send full state on every keystroke while the server is silent', () => {
+        provider.doc.getText('content').insert(5, ' second');
+        provider.doc.getText('content').insert(12, ' third');
+
+        expect(sentMessages('sync')).toHaveLength(1);
+
+        jest.advanceTimersByTime(5000);
+        expect(documentFrom(sentMessages('sync')[1].payload)).toBe('first second third');
+      });
+
+      it('does not replay the same document after an acknowledgement with no later edits', () => {
+        provider.doc.getText('content').insert(5, ' second');
+        acknowledge(sentMessages('sync')[0]);
+        acknowledge(sentMessages('sync')[1]);
+        jest.advanceTimersByTime(60000);
+
+        expect(sentMessages('sync')).toHaveLength(2);
+      });
+
+      it('keeps retrying without accepting an old acknowledgement', () => {
+        const [first] = sentMessages('sync');
+        jest.advanceTimersByTime(5000);
+        acknowledge(first);
+        jest.advanceTimersByTime(10000);
+
+        expect(sentMessages('sync')).toHaveLength(3);
+      });
+
+      it('ignores a late acknowledgement from the previous connection', () => {
+        const [first] = sentMessages('sync');
+        callbacks.disconnected();
+        callbacks.connected();
+        callbacks.received({ type: 'init', updates: [] });
+        acknowledge(first);
+        jest.advanceTimersByTime(5000);
+
+        expect(sentMessages('sync')).toHaveLength(3);
+      });
+
+      it('backs off retries while the server is silent', () => {
+        jest.advanceTimersByTime(5000);
+        jest.advanceTimersByTime(9999);
+        expect(sentMessages('sync')).toHaveLength(2);
+
+        jest.advanceTimersByTime(1);
+        expect(sentMessages('sync')).toHaveLength(3);
+      });
+
+      it('stops retrying after acknowledgement', () => {
+        acknowledge(sentMessages('sync')[0]);
+        jest.advanceTimersByTime(60000);
+
+        expect(sentMessages('sync')).toHaveLength(1);
+      });
+
+      it('stops retrying while disconnected and resends after init', () => {
+        callbacks.disconnected();
+        jest.advanceTimersByTime(60000);
+        expect(sentMessages('sync')).toHaveLength(1);
+
+        callbacks.connected();
+        callbacks.received({ type: 'init', updates: [] });
+
+        expect(documentFrom(sentMessages('sync')[1].payload)).toBe('first');
       });
     });
   });
@@ -279,6 +479,27 @@ describe('collaborative_editing/action_cable_provider', () => {
 
       expect(sentMessages('snapshot')).toHaveLength(0);
     });
+
+    it('waits for snapshot acknowledgement when it supersedes an unacknowledged sync', () => {
+      provider.doc.getText('content').insert(0, 'unsaved');
+      const [sync] = sentMessages('sync');
+
+      callbacks.received({ type: 'request_snapshot', token: 'a-compaction-token' });
+      acknowledge(sync);
+      provider.doc.getText('content').insert(7, ' changes');
+
+      expect(sentMessages('sync')).toHaveLength(1);
+      acknowledge(sentMessages('snapshot')[0]);
+      expect(documentFrom(sentMessages('sync')[1].payload)).toBe('');
+      expect(
+        documentFromAll(sentMessages('snapshot')[0].payload, sentMessages('sync')[1].payload),
+      ).toBe('unsaved changes');
+
+      acknowledge(sentMessages('sync')[1]);
+      provider.doc.getText('content').insert(15, ' more');
+
+      expect(documentFrom(sentMessages('sync')[2].payload)).toBe('');
+    });
   });
 
   describe('when the server reports the document is full', () => {
@@ -286,19 +507,73 @@ describe('collaborative_editing/action_cable_provider', () => {
       connectAndInit();
 
       provider.doc.getText('content').insert(0, 'dropped by the server');
-      callbacks.received({ type: 'document_full' });
+      callbacks.received({ type: 'document_full', messageId: sentMessages('sync')[0].messageId });
     });
 
-    it('replaces the dropped update by sending full state on the next change', () => {
+    it('replaces the dropped update on retry, including later edits', () => {
       provider.doc.getText('content').insert(0, 'and ');
+      jest.advanceTimersByTime(5000);
 
       const [, resent] = sentMessages('sync');
 
       expect(documentFrom(resent.payload)).toBe('and dropped by the server');
     });
 
+    it('retries a rejected final update even without another edit', () => {
+      jest.advanceTimersByTime(5000);
+
+      expect(documentFrom(sentMessages('sync')[1].payload)).toBe('dropped by the server');
+    });
+
+    it('waits for the armed retry when editing a full document', () => {
+      provider.doc.getText('content').insert(0, 'and ');
+
+      expect(sentMessages('sync')).toHaveLength(1);
+      jest.advanceTimersByTime(4999);
+      expect(sentMessages('sync')).toHaveLength(1);
+      jest.advanceTimersByTime(1);
+
+      expect(documentFrom(sentMessages('sync')[1].payload)).toBe('and dropped by the server');
+    });
+
+    it('backs off repeated document-full rejections and resets after acknowledgement', () => {
+      jest.advanceTimersByTime(4999);
+      expect(sentMessages('sync')).toHaveLength(1);
+      jest.advanceTimersByTime(1);
+      expect(sentMessages('sync')).toHaveLength(2);
+
+      callbacks.received({ type: 'document_full', messageId: sentMessages('sync')[1].messageId });
+      jest.advanceTimersByTime(9999);
+      expect(sentMessages('sync')).toHaveLength(2);
+      jest.advanceTimersByTime(1);
+      expect(sentMessages('sync')).toHaveLength(3);
+
+      acknowledge(sentMessages('sync')[2]);
+      provider.doc.getText('content').insert(0, 'and ');
+      jest.advanceTimersByTime(5000);
+
+      expect(sentMessages('sync')).toHaveLength(5);
+    });
+
+    it('caps repeated document-full retries at sixty seconds', () => {
+      for (const delay of [5000, 10000, 20000, 40000, 60000, 60000]) {
+        jest.advanceTimersByTime(delay);
+        callbacks.received({
+          type: 'document_full',
+          messageId: sentMessages('sync').at(-1).messageId,
+        });
+      }
+
+      jest.advanceTimersByTime(59999);
+      expect(sentMessages('sync')).toHaveLength(7);
+      jest.advanceTimersByTime(1);
+      expect(sentMessages('sync')).toHaveLength(8);
+    });
+
     it('returns to sending incremental updates once full state has landed', () => {
       provider.doc.getText('content').insert(0, 'and ');
+      jest.advanceTimersByTime(5000);
+      acknowledge(sentMessages('sync')[1]);
       provider.doc.getText('content').insert(0, 'so ');
 
       const [, fullState, incremental] = sentMessages('sync');
@@ -309,8 +584,31 @@ describe('collaborative_editing/action_cable_provider', () => {
       );
     });
 
+    it('ignores a late rejection for an earlier update after a newer one is accepted', () => {
+      const [first] = sentMessages('sync');
+      jest.advanceTimersByTime(5000);
+      const [, retry] = sentMessages('sync');
+
+      callbacks.received({ type: 'document_full', messageId: first.messageId });
+      acknowledge(retry);
+      jest.advanceTimersByTime(60000);
+
+      expect(sentMessages('sync')).toHaveLength(2);
+    });
+
+    it('does not cancel a pending retry when an old rejection arrives late', () => {
+      const [first] = sentMessages('sync');
+      jest.advanceTimersByTime(5000);
+
+      callbacks.received({ type: 'document_full', messageId: first.messageId });
+      jest.advanceTimersByTime(10000);
+
+      expect(sentMessages('sync')).toHaveLength(3);
+    });
+
     it('does not resend full state when a snapshot already carried it', () => {
       callbacks.received({ type: 'request_snapshot', token: 'a-compaction-token' });
+      acknowledge(sentMessages('snapshot')[0]);
 
       provider.doc.getText('content').insert(0, 'and ');
 
@@ -327,10 +625,28 @@ describe('collaborative_editing/action_cable_provider', () => {
       callbacks.disconnected();
       callbacks.received({ type: 'request_snapshot', token: 'a-compaction-token' });
       callbacks.connected();
+      callbacks.received({ type: 'init', updates: [] });
 
       const [, resent] = sentMessages('sync');
 
       expect(documentFrom(resent.payload)).toBe('dropped by the server');
+    });
+  });
+
+  describe('when an update is rejected with queued edits', () => {
+    beforeEach(() => {
+      connectAndInit();
+      provider.doc.getText('content').insert(0, 'dropped by the server');
+      provider.doc.getText('content').insert(0, 'and ');
+    });
+
+    it('recovers both the rejected update and queued edits as full state', () => {
+      expect(sentMessages('sync')).toHaveLength(1);
+
+      callbacks.received({ type: 'document_full', messageId: sentMessages('sync')[0].messageId });
+      jest.advanceTimersByTime(5000);
+
+      expect(documentFrom(sentMessages('sync')[1].payload)).toBe('and dropped by the server');
     });
   });
 
@@ -448,6 +764,16 @@ describe('collaborative_editing/action_cable_provider', () => {
   });
 
   describe('destroy', () => {
+    it('clears a pending retry when the editor closes', () => {
+      connectAndInit();
+      provider.doc.getText('content').insert(0, 'unsaved');
+
+      provider.destroy();
+      jest.advanceTimersByTime(60000);
+
+      expect(sentMessages('sync')).toHaveLength(1);
+    });
+
     it('announces departure before unsubscribing', () => {
       connectAndInit();
       provider.awareness.setLocalStateField('cursor', { anchor: 1 });

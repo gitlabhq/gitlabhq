@@ -2,7 +2,7 @@
 query getTypesInOrganization {
   organization {
     id
-    workItemTypes @gl_introduced(version: "19.0.0") {
+    workItemTypes {
       nodes {
         id
         iconName

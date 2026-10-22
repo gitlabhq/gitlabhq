@@ -175,4 +175,46 @@ RSpec.describe Gitlab::RateLimit::TargetNamespace, :request_store, :use_clean_ra
       expect(described_class.id_for_path('/no/such/namespace')).to be_nil
     end
   end
+
+  describe 'lookup metrics', :prometheus do
+    # Read, never register: registering here would put the spec's own docstring on
+    # the production counter.
+    def lookups(result)
+      counter = ::Gitlab::Metrics.client.get(:gitlab_rate_limit_target_namespace_lookups_total)
+
+      counter ? counter.get({ result: result }).to_i : 0
+    end
+
+    it 'counts a lookup that found no namespace and wrote a negative entry', :aggregate_failures do
+      expect { described_class.id_for_path('/no/such/namespace') }.to change { lookups(:unresolved) }.by(1)
+      expect { described_class.id_for_project(non_existing_record_id) }.to change { lookups(:unresolved) }.by(1)
+      expect { described_class.id_for_group(non_existing_record_id) }.to change { lookups(:unresolved) }.by(1)
+    end
+
+    it 'counts a lookup that found a namespace as resolved' do
+      expect { described_class.id_for_path("/#{project.full_path}") }
+        .to change { lookups(:resolved) }.by(1)
+        .and not_change { lookups(:unresolved) }
+    end
+
+    it 'counts a negative entry served from Rails.cache as a hit' do
+      described_class.id_for_path('/no/such/namespace')
+      ::Gitlab::SafeRequestStore.clear!
+
+      expect { described_class.id_for_path('/no/such/namespace') }
+        .to change { lookups(:hit) }.by(1)
+        .and not_change { lookups(:unresolved) }
+    end
+
+    it 'counts a repeat lookup served from the request store as a hit' do
+      described_class.id_for_path("/#{project.full_path}")
+
+      expect { described_class.id_for_path("/#{project.full_path}") }.to change { lookups(:hit) }.by(1)
+    end
+
+    it 'does not count a path that names no namespace' do
+      expect { described_class.id_for_path('/dashboard/issues') }
+        .not_to change { %i[hit resolved unresolved].sum { |result| lookups(result) } }
+    end
+  end
 end

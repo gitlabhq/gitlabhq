@@ -190,7 +190,6 @@ const OWNERSHIP_OVERRIDES = new Map([
   ['pages.dashboard.orbit.show', { stage: 'orbit' }],
   ['pages.explore.ai_catalog', { stage: 'agent_foundations' }],
   ['pages.gitlab_subscriptions.trials', { stage: 'growth' }],
-  ['pages.gitlab_subscriptions.trials.duo_enterprise', { stage: 'growth' }],
   ['pages.groups.projects', { stage: 'plan' }],
   ['pages.groups.settings.gitlab_duo.configuration', { stage: 'fulfillment' }],
   ['pages.groups.settings.gitlab_duo.model_selection', { stage: 'ai_platform' }],

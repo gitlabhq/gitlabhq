@@ -62,7 +62,7 @@ query getUserPersonalAccessTokens(
               webUrl
               avatarUrl
             }
-            group @gl_introduced(version: "19.2.0") {
+            group {
               id
               name
               fullName

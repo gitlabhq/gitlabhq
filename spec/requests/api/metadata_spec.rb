@@ -117,6 +117,7 @@ RSpec.describe API::Metadata, feature_category: :shared do
       aggregate_failures("testing response") do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('public_api/v4/metadata')
+        expect(json_response['plan']).to eq('free')
       end
     end
   end

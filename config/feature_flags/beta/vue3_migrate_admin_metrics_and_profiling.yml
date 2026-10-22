@@ -1,0 +1,10 @@
+---
+name: vue3_migrate_admin_metrics_and_profiling
+description: Enables Vue 3 in compatibility mode for the admin Metrics and profiling settings page
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/634224
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/263978
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/635239
+milestone: '19.6'
+group: group::development tooling
+type: beta
+default_enabled: false

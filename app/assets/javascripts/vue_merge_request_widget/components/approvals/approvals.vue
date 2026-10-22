@@ -9,6 +9,8 @@ import { HTTP_STATUS_UNAUTHORIZED } from '~/lib/utils/http_status';
 import { s__, __, n__, sprintf } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { useBatchComments } from '~/batch_comments/store';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import mergeSourceQuery from '../../queries/states/merge_source.query.graphql';
 import approvalsMixin from '../../mixins/approvals';
 import eventHub from '../../event_hub';
 import StateContainer from '../state_container.vue';
@@ -28,7 +30,7 @@ export default {
     GlForm,
   },
   csrf,
-  mixins: [approvalsMixin],
+  mixins: [approvalsMixin, glFeatureFlagsMixin()],
   props: {
     mr: {
       type: Object,
@@ -74,6 +76,7 @@ export default {
     return {
       hasApprovalAuthError: false,
       isApproving: false,
+      mergeSource: null,
     };
   },
   computed: {
@@ -199,6 +202,21 @@ export default {
     userHasApproved() {
       this.stopApproving();
     },
+  },
+  created() {
+    if (!this.glFeatures.mergeRequestWidgetMergeSource) return;
+
+    // Added imperatively: the Vue 3 compat Apollo shim registers its option merge strategy late, so an `apollo` option here can replace the mixin's
+    this.$apollo.addSmartQuery('mergeSource', {
+      query: mergeSourceQuery,
+      skip() {
+        return this.mr.state !== STATUS_MERGED;
+      },
+      variables() {
+        return { projectPath: this.mr.targetProjectFullPath, iid: `${this.mr.iid}` };
+      },
+      update: (data) => data?.project?.mergeRequest?.mergeSource,
+    });
   },
   beforeDestroy() {
     clearTimeout(this.subscriptionFallbackTimeout);
@@ -348,6 +366,7 @@ export default {
             </gl-button>
             <approvals-summary
               :optional="isOptional"
+              :merge-source="mergeSource"
               :approval-state="approvals"
               :disable-committers-approval="disableCommittersApproval"
               :multiple-approval-rules-available="mr.multipleApprovalRulesAvailable"

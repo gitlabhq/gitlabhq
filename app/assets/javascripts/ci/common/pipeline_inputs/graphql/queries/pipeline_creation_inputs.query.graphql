@@ -8,7 +8,7 @@ query ciPipelineCreationInputs($fullPath: ID!, $ref: String!, $failOnCacheMiss: 
       options
       regex
       required
-      rules @gl_introduced(version: "18.6.0") {
+      rules {
         conditionTree {
           operator
           field

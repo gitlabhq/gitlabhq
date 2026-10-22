@@ -10,5 +10,11 @@ module AppConfig
       @kas = AppConfig::KasMetadata.new
       @enterprise = enterprise
     end
+
+    def plan
+      'free' # GitLab CE edition is always free
+    end
   end
 end
+
+AppConfig::InstanceMetadata.prepend_mod_with('AppConfig::InstanceMetadata')

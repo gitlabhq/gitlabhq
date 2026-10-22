@@ -268936,6 +268936,18 @@
               "deprecationReason": null
             },
             {
+              "name": "plan",
+              "description": "Plan of the license the instance runs under, for example, `premium` or `ultimate`. An active trial license reports its plan the same way as a paid license. `free` on an instance with no license or with an expired trial. An expired paid license still reports its plan, because its licensed features remain available. Null where subscriptions are scoped for each namespace rather than for an instance, such as GitLab.com.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "revision",
               "description": "Revision.",
               "args": [],

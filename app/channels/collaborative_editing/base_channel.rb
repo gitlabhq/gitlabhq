@@ -95,9 +95,11 @@ module CollaborativeEditing
       result = store.append(data['payload'])
 
       if result.full?
-        transmit({ type: 'document_full' })
+        message_id = data['messageId']
+        transmit({ type: 'document_full', messageId: message_id.is_a?(Integer) ? message_id : nil }.compact)
       else
         broadcast(data)
+        acknowledge(data)
       end
 
       return unless result.compact?
@@ -111,6 +113,12 @@ module CollaborativeEditing
       return unless store.replace(data['payload'], token)
 
       broadcast(data.slice('payload', 'clientId').merge('type' => MESSAGE_TYPE_SYNC))
+      acknowledge(data)
+    end
+
+    def acknowledge(data)
+      message_id = data['messageId']
+      transmit({ type: 'ack', messageId: message_id }) if message_id.is_a?(Integer)
     end
 
     def broadcast(data, identity: false)

@@ -13088,6 +13088,29 @@ CREATE SEQUENCE ai_compliance_anthropic_integrations_id_seq
 
 ALTER SEQUENCE ai_compliance_anthropic_integrations_id_seq OWNED BY ai_compliance_anthropic_integrations.id;
 
+CREATE TABLE ai_compliance_anthropic_sessions (
+    id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    anthropic_integration_id bigint NOT NULL,
+    ai_governance_session_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    walk_started_at timestamp with time zone,
+    session_xid text NOT NULL,
+    message_watermark text,
+    CONSTRAINT check_007a6c7d91 CHECK ((char_length(message_watermark) <= 255)),
+    CONSTRAINT check_7179bbd21d CHECK ((char_length(session_xid) <= 255))
+);
+
+CREATE SEQUENCE ai_compliance_anthropic_sessions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ai_compliance_anthropic_sessions_id_seq OWNED BY ai_compliance_anthropic_sessions.id;
+
 CREATE TABLE ai_conversation_messages (
     id bigint NOT NULL,
     thread_id bigint NOT NULL,
@@ -37336,6 +37359,8 @@ ALTER TABLE ONLY ai_catalog_mcp_servers_users ALTER COLUMN id SET DEFAULT nextva
 
 ALTER TABLE ONLY ai_compliance_anthropic_integrations ALTER COLUMN id SET DEFAULT nextval('ai_compliance_anthropic_integrations_id_seq'::regclass);
 
+ALTER TABLE ONLY ai_compliance_anthropic_sessions ALTER COLUMN id SET DEFAULT nextval('ai_compliance_anthropic_sessions_id_seq'::regclass);
+
 ALTER TABLE ONLY ai_conversation_messages ALTER COLUMN id SET DEFAULT nextval('ai_conversation_messages_id_seq'::regclass);
 
 ALTER TABLE ONLY ai_conversation_threads ALTER COLUMN id SET DEFAULT nextval('ai_conversation_threads_id_seq'::regclass);
@@ -40254,6 +40279,9 @@ ALTER TABLE ONLY ai_catalog_mcp_servers_users
 
 ALTER TABLE ONLY ai_compliance_anthropic_integrations
     ADD CONSTRAINT ai_compliance_anthropic_integrations_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ai_compliance_anthropic_sessions
+    ADD CONSTRAINT ai_compliance_anthropic_sessions_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ai_conversation_messages
     ADD CONSTRAINT ai_conversation_messages_pkey PRIMARY KEY (id);
@@ -46060,6 +46088,12 @@ CREATE UNIQUE INDEX i_ai_governance_sessions_on_namespace_source_external_xid ON
 CREATE INDEX i_ai_governance_sessions_on_namespace_started_at_id ON ai_governance_sessions USING btree (namespace_id, session_started_at, id);
 
 CREATE UNIQUE INDEX i_ai_governance_sessions_on_namespace_workflow ON ai_governance_sessions USING btree (namespace_id, workflow_id) WHERE (workflow_id IS NOT NULL);
+
+CREATE UNIQUE INDEX i_anthropic_sessions_on_ai_governance_session_id ON ai_compliance_anthropic_sessions USING btree (ai_governance_session_id);
+
+CREATE INDEX i_anthropic_sessions_on_anthropic_integration_id ON ai_compliance_anthropic_sessions USING btree (anthropic_integration_id);
+
+CREATE INDEX i_anthropic_sessions_on_namespace_id ON ai_compliance_anthropic_sessions USING btree (namespace_id);
 
 CREATE INDEX i_batched_background_migration_job_transition_logs_on_job_id ON ONLY batched_background_migration_job_transition_logs USING btree (batched_background_migration_job_id);
 
@@ -58609,6 +58643,9 @@ ALTER TABLE ONLY approval_group_rules
 ALTER TABLE ONLY board_labels
     ADD CONSTRAINT fk_2adb910a2e FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ai_compliance_anthropic_sessions
+    ADD CONSTRAINT fk_2b8b35da36 FOREIGN KEY (anthropic_integration_id) REFERENCES ai_compliance_anthropic_integrations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY achievement_upload_states
     ADD CONSTRAINT fk_2bcbb55ad6 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -60231,6 +60268,9 @@ ALTER TABLE ONLY merge_requests
 
 ALTER TABLE ONLY bulk_import_export_upload_upload_states
     ADD CONSTRAINT fk_a6ed564b23 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ai_compliance_anthropic_sessions
+    ADD CONSTRAINT fk_a6ee74a7af FOREIGN KEY (ai_governance_session_id) REFERENCES ai_governance_sessions(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY cd_deployment_transitions
     ADD CONSTRAINT fk_a7149bdef2 FOREIGN KEY (deployment_id) REFERENCES cd_deployments(id) ON DELETE CASCADE;

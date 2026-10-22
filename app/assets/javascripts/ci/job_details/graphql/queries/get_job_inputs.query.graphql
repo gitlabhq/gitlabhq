@@ -5,11 +5,11 @@ query getJobInputs($fullPath: ID!, $id: JobID!) {
     id
     job(id: $id) {
       id
-      inputs @gl_introduced(version: "18.9.0") {
+      inputs {
         name
         value
       }
-      inputsSpec @gl_introduced(version: "18.9.0") {
+      inputsSpec {
         name
         type
         description

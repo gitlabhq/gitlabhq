@@ -50,7 +50,7 @@ query getEnvironmentDetails(
           webPath
           job {
             ...DeploymentJob
-            retryPath @gl_introduced(version: "18.3.0")
+            retryPath
             deploymentPipeline: pipeline {
               id
               path

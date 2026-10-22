@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Work Items
+group: Planning Views
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Configure an issue board with workflow labels and lists so a team can track tasks during daily stand-ups.
 title: 'Tutorial: Set up an issue board for a team stand-up'

@@ -15775,9 +15775,6 @@ msgstr ""
 msgid "BillingPlans|Increase credits"
 msgstr ""
 
-msgid "BillingPlans|Introducing GitLab Duo Enterprise"
-msgstr ""
-
 msgid "BillingPlans|Keep building with GitLab."
 msgstr ""
 
@@ -15880,13 +15877,7 @@ msgstr ""
 msgid "BillingPlans|Software Supply Chain Security"
 msgstr ""
 
-msgid "BillingPlans|Start a GitLab Duo Enterprise trial to try all end-to-end AI capabilities from GitLab. You can try it for free for %{duration} days, no credit card required."
-msgstr ""
-
 msgid "BillingPlans|Start a GitLab Ultimate trial"
-msgstr ""
-
-msgid "BillingPlans|Start a free GitLab Duo Enterprise Trial"
 msgstr ""
 
 msgid "BillingPlans|Start a free trial"
@@ -35147,36 +35138,6 @@ msgid "DuoEnterpriseDiscover|Write secure code faster with AI-native suggestions
 msgstr ""
 
 msgid "DuoEnterpriseDiscover|Your end-to-end AI partner"
-msgstr ""
-
-msgid "DuoEnterpriseTrial|Enhance security and remediate vulnerabilities efficiently"
-msgstr ""
-
-msgid "DuoEnterpriseTrial|Gain deeper insights into GitLab Duo usage patterns"
-msgstr ""
-
-msgid "DuoEnterpriseTrial|GitLab Duo Enterprise is only available for purchase for Ultimate customers."
-msgstr ""
-
-msgid "DuoEnterpriseTrial|GitLab Duo Enterprise is your end-to-end AI partner for faster, more secure software development."
-msgstr ""
-
-msgid "DuoEnterpriseTrial|Maintain control and keep your data safe"
-msgstr ""
-
-msgid "DuoEnterpriseTrial|Quickly remedy broken pipelines to deliver products faster"
-msgstr ""
-
-msgid "DuoEnterpriseTrial|Start your free GitLab Duo Enterprise trial"
-msgstr ""
-
-msgid "DuoEnterpriseTrial|Stay on top of regulatory requirements with self-hosted model deployment"
-msgstr ""
-
-msgid "DuoEnterpriseTrial|We need a few more details from you to activate your trial."
-msgstr ""
-
-msgid "DuoEnterpriseTrial|You have successfully started a Duo Enterprise trial that will expire on %{exp_date}. To give members access to new GitLab Duo Enterprise features, %{assign_link_start}assign them%{assign_link_end} to GitLab Duo Enterprise seats."
 msgstr ""
 
 msgid "DuoEnterprise|AI-assisted root cause analysis"
@@ -103091,6 +103052,15 @@ msgid_plural "mrWidget|Closes issues"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "mrWidget|Commits included in %{link}"
+msgstr ""
+
+msgid "mrWidget|Commits included in a direct push to %{branch} (%{sha})"
+msgstr ""
+
+msgid "mrWidget|Commits included in a merge request that you don't have access to"
+msgstr ""
+
 msgid "mrWidget|Delete source branch"
 msgstr ""
 
@@ -103139,6 +103109,15 @@ msgid "mrWidget|Merging immediately is not recommended. The merged changes could
 msgstr ""
 
 msgid "mrWidget|Naming convention"
+msgstr ""
+
+msgid "mrWidget|Not approved in this merge request. These commits were included in %{reference}."
+msgstr ""
+
+msgid "mrWidget|Not approved in this merge request. These commits were included in a direct push to the target branch."
+msgstr ""
+
+msgid "mrWidget|Not approved in this merge request. These commits were included in a merge request that you don't have access to."
 msgstr ""
 
 msgid "mrWidget|Please restore it or use a different %{type} branch."
@@ -103481,6 +103460,12 @@ msgid "must match %{association}.project_id"
 msgstr ""
 
 msgid "must match one of the following file types: %{extension_list}"
+msgstr ""
+
+msgid "must match the AI governance session namespace"
+msgstr ""
+
+msgid "must match the Anthropic Compliance integration namespace"
 msgstr ""
 
 msgid "must match the bulk import organization's ID"

@@ -36,6 +36,9 @@ RSpec.describe 'Database schema',
       ai_usage_events: %w[user_id],
       ai_events_counts: %w[user_id namespace_id],
       ai_flow_schedules: %w[project_id],
+      # Sharding key copied from the integration; rows are removed via the integration cascade.
+      # https://gitlab.com/gitlab-org/gitlab/-/work_items/606453
+      ai_compliance_anthropic_sessions: %w[namespace_id],
       ai_governance_sessions: %w[project_id user_id workflow_id],
       application_settings: %w[performance_bar_allowed_group_id slack_app_id snowplow_app_id eks_account_id
         eks_access_key_id],

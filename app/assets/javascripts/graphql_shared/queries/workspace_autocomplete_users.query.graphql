@@ -12,7 +12,7 @@ query workspaceAutocompleteUsersSearch(
   groupNamespace: group(fullPath: $fullPath) @skip(if: $isProject) {
     id
     users: autocompleteUsers(search: $search) {
-      compositeIdentityEnforced @gl_introduced(version: "18.7.0")
+      compositeIdentityEnforced
       ...User
       ...UserAvailability
       ...UserDisabledForDuoUsage
@@ -22,7 +22,7 @@ query workspaceAutocompleteUsersSearch(
   namespace: project(fullPath: $fullPath) {
     id
     users: autocompleteUsers(search: $search) {
-      compositeIdentityEnforced @gl_introduced(version: "18.7.0")
+      compositeIdentityEnforced
       ...User
       ...UserAvailability
       ...UserDisabledForDuoUsage

@@ -10,7 +10,8 @@ RSpec.describe AppConfig::InstanceMetadata, feature_category: :api do
       version: Gitlab::VERSION,
       revision: Gitlab.revision,
       kas: kind_of(AppConfig::KasMetadata),
-      enterprise: Gitlab.ee?
+      enterprise: Gitlab.ee?,
+      plan: 'free'
     )
   end
 end

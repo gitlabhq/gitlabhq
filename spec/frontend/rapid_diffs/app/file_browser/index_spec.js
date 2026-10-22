@@ -260,6 +260,14 @@ describe('Init file browser', () => {
     expect(diffFiles[1].href).toContain('#12dc3d87e90313d83a236a944f8a4869f1dc97e2');
   });
 
+  it('applies the auto-hide visibility heuristic after loading files', async () => {
+    const spy = jest.spyOn(useFileBrowser(), 'initFileBrowserVisibility');
+
+    await init();
+
+    expect(spy).toHaveBeenCalledWith({ autoHide: true });
+  });
+
   it('hides drawer toggle when app is hidden', async () => {
     // eslint-disable-next-line no-underscore-dangle
     useMainContainer()._setCurrentBreakpoint('sm');

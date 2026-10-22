@@ -369,6 +369,16 @@ RSpec.describe CollaborativeEditing::WikiPageChannel, :clean_gitlab_redis_shared
       expect(store_for(page).updates).to eq(['an-update'])
     end
 
+    it 'acknowledges a sync only after persisting it', :aggregate_failures do
+      expect(subscription.send(:store)).to receive(:append).with('an-update').ordered.and_call_original
+      expect(subscription).to receive(:transmit).with({ type: 'ack', messageId: 12 }).ordered.and_call_original
+
+      perform :receive, message('sync', 'an-update').merge('messageId' => 12)
+
+      expect(transmissions.last).to eq({ 'type' => 'ack', 'messageId' => 12 })
+      expect(store_for(page).updates).to eq(['an-update'])
+    end
+
     it 'broadcasts awareness without persisting it' do
       expect { perform :receive, message('awareness', 'cursor-position') }
         .to have_broadcasted_to(stream_name)
@@ -438,6 +448,12 @@ RSpec.describe CollaborativeEditing::WikiPageChannel, :clean_gitlab_redis_shared
       expect(store_for(page).updates).to be_empty
     end
 
+    it 'does not acknowledge an invalid sync payload' do
+      perform :receive, message('sync', 123).merge('messageId' => 16)
+
+      expect(transmissions).not_to include(hash_including('type' => 'ack'))
+    end
+
     describe 'compaction' do
       before do
         stub_const('Gitlab::CollaborativeEditing::DocumentStore::COMPACTION_THRESHOLD', 2)
@@ -459,6 +475,16 @@ RSpec.describe CollaborativeEditing::WikiPageChannel, :clean_gitlab_redis_shared
         perform :receive, message('snapshot', 'a-snapshot').merge('token' => token)
 
         expect(store_for(page).updates).to eq(['a-snapshot'])
+      end
+
+      it 'acknowledges an accepted snapshot' do
+        perform :receive, message('sync', 'first')
+        perform :receive, message('sync', 'second')
+        token = transmissions.last['token']
+
+        perform :receive, message('snapshot', 'a-snapshot').merge('token' => token, 'messageId' => 13)
+
+        expect(transmissions.last).to eq({ 'type' => 'ack', 'messageId' => 13 })
       end
 
       it 'relays the snapshot to peers as a sync' do
@@ -489,6 +515,12 @@ RSpec.describe CollaborativeEditing::WikiPageChannel, :clean_gitlab_redis_shared
 
         expect { perform :receive, message('snapshot', 'a-snapshot').merge('token' => 'forged') }
           .not_to have_broadcasted_to(stream_name)
+      end
+
+      it 'does not acknowledge a rejected snapshot' do
+        perform :receive, message('snapshot', 'a-snapshot').merge('token' => 'forged', 'messageId' => 13)
+
+        expect(transmissions).not_to include(hash_including('type' => 'ack'))
       end
 
       it 'ignores a snapshot from a client that was not asked to compact' do
@@ -534,6 +566,24 @@ RSpec.describe CollaborativeEditing::WikiPageChannel, :clean_gitlab_redis_shared
         perform :receive, message('sync', 'third')
 
         expect(transmissions.last).to eq({ 'type' => 'document_full' })
+      end
+
+      it 'identifies the rejected update when reporting a full document' do
+        perform :receive, message('sync', 'third').merge('messageId' => 14)
+
+        expect(transmissions.last).to eq({ 'type' => 'document_full', 'messageId' => 14 })
+      end
+
+      it 'does not echo a non-integer message ID when reporting a full document' do
+        perform :receive, message('sync', 'third').merge('messageId' => { 'untrusted' => 'value' })
+
+        expect(transmissions.last).to eq({ 'type' => 'document_full' })
+      end
+
+      it 'does not acknowledge the rejected update' do
+        perform :receive, message('sync', 'third').merge('messageId' => 14)
+
+        expect(transmissions).not_to include(hash_including('type' => 'ack'))
       end
 
       it 'does not relay the rejected update' do
@@ -593,6 +643,12 @@ RSpec.describe CollaborativeEditing::WikiPageChannel, :clean_gitlab_redis_shared
         perform :receive, message('sync', 'an-update')
 
         expect(store_for(page).updates).to be_empty
+      end
+
+      it 'does not acknowledge the dropped update' do
+        perform :receive, message('sync', 'an-update').merge('messageId' => 15)
+
+        expect(transmissions).not_to include(hash_including('type' => 'ack'))
       end
     end
 

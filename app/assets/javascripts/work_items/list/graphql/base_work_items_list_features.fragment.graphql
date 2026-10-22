@@ -43,7 +43,7 @@ fragment BaseWorkItemsListFeatures on WorkItemFeatures {
     }
   }
   development {
-    closingMergeRequestsCount @gl_introduced(version: "19.4.0")
+    closingMergeRequestsCount
   }
   hierarchy {
     parent {

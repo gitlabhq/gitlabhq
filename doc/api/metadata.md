@@ -15,6 +15,7 @@ title: Metadata API
 {{< history >}}
 
 - `kas.externalK8sProxyUrl` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172373) in GitLab 17.6.
+- `plan` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/256936) in GitLab 19.6.
 
 {{< /history >}}
 
@@ -37,6 +38,7 @@ Response body attributes:
 | `kas.externalK8sProxyUrl` | string or null | URL used by the Kubernetes tooling to communicate with the KAS Kubernetes API proxy. It's `null` if `kas.enabled` is `false`. |
 | `kas.version`             | string or null | Version of KAS. It's `null` if `kas.enabled` is `false` or when the GitLab instance failed to fetch server info from KAS.     |
 | `enterprise`              | boolean        | Indicates whether the GitLab instance is Enterprise Edition.                                                                  |
+| `plan`                    | string or null | Plan of the license the instance runs under, for example, `premium` or `ultimate`. An active trial license reports its plan the same way as a paid license. `free` on an instance with no license or with an expired trial. An expired paid license still reports its plan, because its licensed features remain available. It's `null` where subscriptions are scoped for each namespace rather than for an instance, such as GitLab.com. |
 
 Example request:
 
@@ -64,6 +66,7 @@ Example response:
     "externalK8sProxyUrl": "https://gitlab.example.com:8150/k8s-proxy",
     "version": "18.1.1"
   },
-  "enterprise": true
+  "enterprise": true,
+  "plan": "ultimate"
 }
 ```

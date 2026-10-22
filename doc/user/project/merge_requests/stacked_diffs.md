@@ -37,9 +37,8 @@ The workflow for stacked diffs is:
    merge requests. When you merge a merge request and delete its source branch, GitLab
    retargets the merge request above it.
 
-The base command for this feature in the CLI is
-[`stack`](https://docs.gitlab.com/cli/stack/), which
-you then extend with [other commands](#available-commands).
+The base command for this feature in the CLI is `glab stack`.
+For all subcommands, see the [`glab stack` commands](https://docs.gitlab.com/cli/stack/).
 
 <div class="video-fallback">
   To learn more, see: <a href="https://www.youtube.com/watch?v=TOQOV8PWYic">Stacked Diffs in the CLI overview</a>.
@@ -136,26 +135,7 @@ When you sync, the GitLab CLI:
 - Rebases the diffs after the one you changed.
 - Updates the merge requests for the changed diff and the diffs after it.
 
-## Available commands
-
-Use these commands to work with stacked diffs:
-
-| Command                                                 | Description |
-|---------------------------------------------------------|-------------|
-| [`create`](https://docs.gitlab.com/cli/stack/create/)   | Create a new stack. |
-| [`save`](https://docs.gitlab.com/cli/stack/save/)       | Save your changes as a new diff. |
-| [`amend`](https://docs.gitlab.com/cli/stack/amend/)     | Save your changes to an existing diff. |
-| [`prev`](https://docs.gitlab.com/cli/stack/prev/)       | Move to the previous diff. |
-| [`next`](https://docs.gitlab.com/cli/stack/next/)       | Move to the next diff. |
-| [`first`](https://docs.gitlab.com/cli/stack/first/)     | Move to the first diff. |
-| [`last`](https://docs.gitlab.com/cli/stack/last/)       | Move to the last diff. |
-| [`move`](https://docs.gitlab.com/cli/stack/move/)       | Move to a specific diff in the stack. |
-| [`list`](https://docs.gitlab.com/cli/stack/list/)       | List all diffs in the stack. |
-| [`switch`](https://docs.gitlab.com/cli/stack/switch/)   | Switch between stacks. |
-| [`reorder`](https://docs.gitlab.com/cli/stack/reorder/) | Reorder a stack of diffs. |
-| [`sync`](https://docs.gitlab.com/cli/stack/sync/)       | Push the stack to GitLab, and create or update its merge requests. |
-
-### Choose between save and amend
+## Choose between save and amend
 
 Use the following commands for different purposes:
 

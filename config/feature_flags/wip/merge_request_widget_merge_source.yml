@@ -1,0 +1,10 @@
+---
+name: merge_request_widget_merge_source
+description: Show in the merge request widget when a merge request was merged through another merge request or by a direct push.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/512551
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/260966
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/632991
+milestone: '19.6'
+type: wip
+group: group::code review
+default_enabled: false

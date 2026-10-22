@@ -24,7 +24,7 @@ query RecentlyViewedItems {
           title
           webUrl
         }
-        ... on WikiPage @gl_introduced(version: "18.11.0") {
+        ... on WikiPage {
           id
           title
           webUrl

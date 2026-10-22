@@ -29,6 +29,7 @@ describe('MRWidget approvals summary', () => {
     data = approvedByCurrentUser,
     optional = false,
     disableCommittersApproval = false,
+    mergeSource = null,
   } = defaultProps) => {
     wrapper = mount(ApprovalsSummary, {
       propsData: {
@@ -36,6 +37,7 @@ describe('MRWidget approvals summary', () => {
         canApprove: true,
         approvalState: data.data.project.mergeRequest,
         disableCommittersApproval,
+        mergeSource,
       },
     });
   };
@@ -51,6 +53,20 @@ describe('MRWidget approvals summary', () => {
       createComponent({ optional: true });
 
       expect(wrapper.text()).toContain('Approval is optional');
+    });
+
+    describe('when the merge request was merged by another source', () => {
+      it.each`
+        description                              | mergeSource                                               | message
+        ${'through a merge request'}             | ${{ commitSha: null, mergeRequest: { reference: '!3' } }} | ${'These commits were included in !3.'}
+        ${'by a direct push'}                    | ${{ commitSha: '8dd2c021', mergeRequest: null }}          | ${'These commits were included in a direct push to the target branch.'}
+        ${'through an unreadable merge request'} | ${{ commitSha: null, mergeRequest: null }}                | ${"These commits were included in a merge request that you don't have access to."}
+      `('explains it was not approved when merged $description', ({ mergeSource, message }) => {
+        createComponent({ optional: true, mergeSource });
+
+        expect(wrapper.text()).toContain(`Not approved in this merge request. ${message}`);
+        expect(wrapper.text()).not.toContain('Approval is optional');
+      });
     });
   });
 

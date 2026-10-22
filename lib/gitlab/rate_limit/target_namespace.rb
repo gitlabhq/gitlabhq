@@ -42,15 +42,36 @@ module Gitlab
         # skip_nil leaves an unresolved lookup to the shorter expiry below, and UNRESOLVED
         # is truthy so a cached miss short-circuits fetch instead of re-running the block.
         def cached(key)
-          ::Gitlab::SafeRequestStore.fetch(key) do
-            id = ::Rails.cache.fetch(
-              key, expires_in: CACHE_EXPIRATION, race_condition_ttl: RACE_CONDITION_TTL, skip_nil: true
-            ) { yield&.to_s }
-            next id.presence if id
+          result = :hit
 
+          id = ::Gitlab::SafeRequestStore.fetch(key) do
+            cached_id = ::Rails.cache.fetch(
+              key, expires_in: CACHE_EXPIRATION, race_condition_ttl: RACE_CONDITION_TTL, skip_nil: true
+            ) do
+              result = :resolved
+              yield&.to_s
+            end
+            next cached_id.presence if cached_id
+
+            # Anonymous requests resolve too, so a client sending random paths writes one
+            # of these per request; result: :unresolved counts them.
+            result = :unresolved
             ::Rails.cache.write(key, UNRESOLVED, expires_in: NEGATIVE_CACHE_EXPIRATION)
             nil
           end
+
+          lookups_counter.increment(result: result)
+
+          id
+        end
+
+        # Not memoized, so a registry reset cannot orphan the counter.
+        def lookups_counter
+          ::Gitlab::Metrics.counter(
+            :gitlab_rate_limit_target_namespace_lookups_total,
+            'Rate limit target namespace lookups, by result.',
+            { result: nil }
+          )
         end
       end
     end

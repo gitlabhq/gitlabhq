@@ -98708,6 +98708,9 @@ components:
               example: 15.0.0
         enterprise:
           type: boolean
+        plan:
+          type: string
+          example: ultimate
     APIEntitiesMergeRequestDiff:
       type: object
       properties:

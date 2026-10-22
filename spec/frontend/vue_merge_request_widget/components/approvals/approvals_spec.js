@@ -21,6 +21,7 @@ import {
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import approvedByQuery from 'ee_else_ce/vue_merge_request_widget/components/approvals/queries/approvals.query.graphql';
 import approvedBySubscription from 'ee_else_ce/vue_merge_request_widget/components/approvals/queries/approvals.subscription.graphql';
+import mergeSourceQuery from '~/vue_merge_request_widget/queries/states/merge_source.query.graphql';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
 import { useBatchComments } from '~/batch_comments/store';
@@ -64,6 +65,7 @@ const testApprovals = () => ({
 describe('MRWidget approvals', () => {
   let mockedSubscription;
   let approvalsQueryHandler;
+  let mergeSourceQueryHandler;
   let wrapper;
   let service;
   let mr;
@@ -76,7 +78,21 @@ describe('MRWidget approvals', () => {
     mockedSubscription = createMockApolloSubscription();
 
     approvalsQueryHandler = jest.fn().mockResolvedValue(responses.query);
-    const requestHandlers = [[approvedByQuery, approvalsQueryHandler]];
+    mergeSourceQueryHandler = jest.fn().mockResolvedValue({
+      data: {
+        project: {
+          id: 'gid://gitlab/Project/1',
+          mergeRequest: {
+            id: 'gid://gitlab/MergeRequest/1',
+            mergeSource: responses.mergeSource ?? null,
+          },
+        },
+      },
+    });
+    const requestHandlers = [
+      [approvedByQuery, approvalsQueryHandler],
+      [mergeSourceQuery, mergeSourceQueryHandler],
+    ];
     const subscriptionHandlers = [[approvedBySubscription, () => mockedSubscription]];
     const apolloProvider = createMockApollo(requestHandlers);
     const provide = {
@@ -536,6 +552,54 @@ describe('MRWidget approvals', () => {
       mockedSubscription.next(subscriptionResponse);
 
       expect(mr.setApprovals).toHaveBeenCalledWith(subscriptionApproval);
+    });
+  });
+
+  describe('merge source', () => {
+    const mergeSource = {
+      commitSha: null,
+      mergeRequest: { id: 'gid://gitlab/MergeRequest/3', reference: '!3', webPath: '/mr/3' },
+    };
+    const withFlag = { provide: { glFeatures: { mergeRequestWidgetMergeSource: true } } };
+    const responses = { query: approvedByCurrentUser, mergeSource };
+
+    it('passes the merge source to the summary when merged and the feature flag is enabled', async () => {
+      mr.state = 'merged';
+      createComponent(withFlag, responses);
+      await waitForPromises();
+
+      expect(mergeSourceQueryHandler).toHaveBeenCalledWith({
+        projectPath: 'gitlab-org/gitlab',
+        iid: '1',
+      });
+      expect(findSummary().props('mergeSource')).toMatchObject(mergeSource);
+    });
+
+    it('does not query the merge source when the merge request is not merged', async () => {
+      createComponent(withFlag, responses);
+      await waitForPromises();
+
+      expect(mergeSourceQueryHandler).not.toHaveBeenCalled();
+      expect(findSummary().props('mergeSource')).toBeNull();
+    });
+
+    it('queries the merge source when the merge request merges after mount', async () => {
+      createComponent(withFlag, responses);
+      await waitForPromises();
+
+      await wrapper.setProps({ mr: { ...mr, state: 'merged' } });
+      await waitForPromises();
+
+      expect(mergeSourceQueryHandler).toHaveBeenCalledTimes(1);
+      expect(findSummary().props('mergeSource')).toMatchObject(mergeSource);
+    });
+
+    it('does not query the merge source when the feature flag is disabled', async () => {
+      mr.state = 'merged';
+      createComponent({}, responses);
+      await waitForPromises();
+
+      expect(mergeSourceQueryHandler).not.toHaveBeenCalled();
     });
   });
 });

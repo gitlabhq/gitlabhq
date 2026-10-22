@@ -5,6 +5,7 @@ import { logError } from '~/lib/logger';
 import { bytesToBase64, base64ToBytes } from './encoding';
 
 const MESSAGE_TYPE_AWARENESS = 'awareness';
+const MESSAGE_TYPE_ACK = 'ack';
 const MESSAGE_TYPE_DOCUMENT_FULL = 'document_full';
 const MESSAGE_TYPE_INIT = 'init';
 const MESSAGE_TYPE_REQUEST_SNAPSHOT = 'request_snapshot';
@@ -13,6 +14,8 @@ const MESSAGE_TYPE_SYNC = 'sync';
 
 const SUBSCRIPTION_REJECTED_ERROR = 'Collaborative editing subscription was rejected';
 const MALFORMED_PAYLOAD_ERROR = 'Discarded a malformed collaborative editing payload';
+const RETRY_DELAY_MS = 5000;
+const MAX_RETRY_DELAY_MS = 60000;
 
 function discardingMalformed(messageType, apply) {
   try {
@@ -29,6 +32,12 @@ export default class ActionCableProvider {
   #awarenessUpdateHandler;
   #resolveSynced;
   #resendFullState = false;
+  #nextMessageId = 0;
+  #pendingMessageId = null;
+  #queuedUpdates = [];
+  #retryTimer = null;
+  #retryDelay = RETRY_DELAY_MS;
+  #initialStateReceived = false;
 
   constructor({ channel, channelParams }) {
     this.doc = new Y.Doc();
@@ -57,11 +66,17 @@ export default class ActionCableProvider {
       {
         connected: () => {
           this.connected = true;
-          this.#flushFullState();
           if (this.synced) this.awareness.setLocalState(this.awareness.getLocalState());
+          if (this.#resendFullState) this.#flushFullState();
         },
         disconnected: () => {
           this.connected = false;
+          this.#clearRetry();
+          this.#retryDelay = RETRY_DELAY_MS;
+          if (this.#pendingMessageId !== null) this.#resendFullState = true;
+          this.#pendingMessageId = null;
+          this.#queuedUpdates = [];
+          this.#initialStateReceived = false;
         },
         rejected: () => {
           logError(SUBSCRIPTION_REJECTED_ERROR);
@@ -84,6 +99,7 @@ export default class ActionCableProvider {
   }
 
   destroy() {
+    this.#clearRetry();
     this.awareness.destroy();
 
     if (this.subscription) {
@@ -116,7 +132,23 @@ export default class ActionCableProvider {
         this.#sendSnapshot(message.token);
         break;
       case MESSAGE_TYPE_DOCUMENT_FULL:
+        if (message.messageId !== this.#pendingMessageId) break;
         this.#resendFullState = true;
+        this.#pendingMessageId = null;
+        this.#queuedUpdates = [];
+        if (this.connected && this.#initialStateReceived) this.#scheduleRetry();
+        break;
+      case MESSAGE_TYPE_ACK:
+        if (this.#pendingMessageId !== null && message.messageId === this.#pendingMessageId) {
+          this.#pendingMessageId = null;
+          this.#clearRetry();
+          this.#retryDelay = RETRY_DELAY_MS;
+          if (this.#queuedUpdates.length) {
+            const update = Y.mergeUpdates(this.#queuedUpdates);
+            this.#queuedUpdates = [];
+            this.#onDocUpdate(update);
+          }
+        }
         break;
       default:
         break;
@@ -124,11 +156,13 @@ export default class ActionCableProvider {
   }
 
   #applyInitialState({ updates = [], seed = false }) {
+    this.#initialStateReceived = true;
     this.doc.transact(() => {
       updates.forEach((update) => this.#applyDocUpdate(update, MESSAGE_TYPE_INIT));
     }, this);
 
     this.#markSynced({ seed });
+    if (this.#resendFullState) this.#flushFullState();
   }
 
   #applyRemoteUpdate({ payload, clientId }) {
@@ -165,18 +199,58 @@ export default class ActionCableProvider {
   #onDocUpdate(update, origin) {
     if (origin === this) return;
 
-    if (this.#resendFullState) {
-      this.#flushFullState();
+    if (!this.#initialStateReceived) {
+      this.#resendFullState = true;
       return;
     }
 
-    this.#resendFullState = !this.#send(MESSAGE_TYPE_SYNC, update);
+    if (this.#pendingMessageId !== null) {
+      this.#queuedUpdates.push(update);
+      return;
+    }
+
+    if (this.#resendFullState) {
+      if (this.#retryTimer === null) this.#flushFullState();
+      return;
+    }
+
+    this.#nextMessageId += 1;
+    const messageId = this.#nextMessageId;
+    if (this.#send(MESSAGE_TYPE_SYNC, update, { messageId })) {
+      this.#pendingMessageId = messageId;
+      this.#scheduleRetry();
+    } else {
+      this.#resendFullState = true;
+    }
   }
 
   #flushFullState() {
-    if (!this.#resendFullState) return;
+    if (!this.#resendFullState || !this.connected || !this.#initialStateReceived) return;
 
-    this.#resendFullState = !this.#send(MESSAGE_TYPE_SYNC, Y.encodeStateAsUpdate(this.doc));
+    this.#nextMessageId += 1;
+    const messageId = this.#nextMessageId;
+    if (this.#send(MESSAGE_TYPE_SYNC, Y.encodeStateAsUpdate(this.doc), { messageId })) {
+      this.#pendingMessageId = messageId;
+      this.#resendFullState = false;
+      this.#scheduleRetry();
+    }
+  }
+
+  #scheduleRetry() {
+    this.#clearRetry();
+    this.#retryTimer = setTimeout(() => {
+      if (!this.connected) return;
+      this.#pendingMessageId = null;
+      this.#queuedUpdates = [];
+      this.#resendFullState = true;
+      this.#retryDelay = Math.min(this.#retryDelay * 2, MAX_RETRY_DELAY_MS);
+      this.#flushFullState();
+    }, this.#retryDelay);
+  }
+
+  #clearRetry() {
+    if (this.#retryTimer !== null) clearTimeout(this.#retryTimer);
+    this.#retryTimer = null;
   }
 
   #onAwarenessUpdate({ added, updated, removed }, origin) {
@@ -194,8 +268,15 @@ export default class ActionCableProvider {
   #sendSnapshot(token) {
     if (!token) return;
 
-    if (this.#send(MESSAGE_TYPE_SNAPSHOT, Y.encodeStateAsUpdate(this.doc), { token })) {
-      this.#resendFullState = false;
+    this.#nextMessageId += 1;
+    const messageId = this.#nextMessageId;
+    if (this.#send(MESSAGE_TYPE_SNAPSHOT, Y.encodeStateAsUpdate(this.doc), { token, messageId })) {
+      if (this.#pendingMessageId !== null || this.#resendFullState) {
+        this.#pendingMessageId = messageId;
+        this.#queuedUpdates = [];
+        this.#resendFullState = false;
+        this.#scheduleRetry();
+      }
     }
   }
 

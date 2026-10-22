@@ -404,6 +404,18 @@ To resolve this, specify a username string. Use one of the following methods, re
   git config --global url."https://<USERNAME>@gitlab.com/".insteadOf "https://gitlab.com/"
   ```
 
+This error can also occur if your Git credential helper stores an expired, revoked, or rotated token.
+
+To remove the stored credential, run the following command, replacing `gitlab.com` with
+the hostname of your GitLab instance:
+
+```shell
+printf "protocol=https\nhost=gitlab.com\n" | git credential reject
+```
+
+The next time you run a Git command over HTTPS, Git prompts you for credentials.
+Enter your GitLab username, and your new token as the password.
+
 ## `401` errors logged during successful `git clone`
 
 {{< details >}}

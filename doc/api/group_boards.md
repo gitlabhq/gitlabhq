@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Work Items
+group: Planning Views
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: REST API to create, manage, and delete group issue boards and their lists.
 title: Group issue boards API

@@ -13342,6 +13342,7 @@ This connection has additional fields beyond the [standard connection fields](#s
 | `enterprise` | [`Boolean!`](scalars.md#boolean) | Enterprise edition. |
 | `featureFlags` | [`[GitlabInstanceFeatureFlag!]!`](#gitlabinstancefeatureflag) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 17.4.<br/><br/>Feature flags for the GitLab instance. External API consumers should read the [feature flag guidance](https://docs.gitlab.com/development/feature_flags/#do-not-use-feature-flags-in-external-api-consumers) before using this field. <br><br> <strong>Arguments for `featureFlags`:</strong> <dl><dt>`names` ([`[String!]!`](scalars.md#string))</dt><dd>Names of the feature flags to lookup (maximum of 20).</dd></dl> |
 | `kas` | [`Kas!`](#kas) | Metadata about KAS. |
+| `plan` | [`String`](scalars.md#string) | Plan of the license the instance runs under, for example, `premium` or `ultimate`. An active trial license reports its plan the same way as a paid license. `free` on an instance with no license or with an expired trial. An expired paid license still reports its plan, because its licensed features remain available. Null where subscriptions are scoped for each namespace rather than for an instance, such as GitLab.com. |
 | `revision` | [`String!`](scalars.md#string) | Revision. |
 | `version` | [`String!`](scalars.md#string) | Version. |
 

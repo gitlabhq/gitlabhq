@@ -27,7 +27,8 @@ RSpec.describe 'getting project information', feature_category: :groups_and_proj
             'externalUrl' => expected_kas_external_url,
             'externalK8sProxyUrl' => expected_kas_external_k8s_proxy_url
           },
-          'enterprise' => Gitlab.ee?
+          'enterprise' => Gitlab.ee?,
+          'plan' => 'free'
         }
       }
     end

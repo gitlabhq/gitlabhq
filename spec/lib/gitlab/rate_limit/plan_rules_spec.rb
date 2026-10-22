@@ -22,6 +22,12 @@ RSpec.describe Gitlab::RateLimit::PlanRules, feature_category: :rate_limiting do
     end
   end
 
+  describe '.concealed_rules', unless: Gitlab.ee? do
+    it 'conceals no rule' do
+      expect(described_class.concealed_rules).to eq({})
+    end
+  end
+
   describe '.active?' do
     it 'is false when the tier-aware limits cannot apply' do
       expect(described_class.active?).to be(false)

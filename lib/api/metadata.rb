@@ -24,6 +24,7 @@ module API
             version
           }
           enterprise
+          plan
         }
       }
     GRAPHQL

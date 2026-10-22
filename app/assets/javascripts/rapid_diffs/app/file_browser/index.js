@@ -131,5 +131,6 @@ export async function initFileBrowser({ toggleTarget, browserTarget, appData }) 
   if (!keyboardShortcutsDisabled()) bindFocusShortcut();
   useFileBrowser().initTreeList();
   await loadFileBrowserData(appData.diffFilesEndpoint, appData.shouldSortMetadataFiles);
+  useFileBrowser().initFileBrowserVisibility({ autoHide: true });
   initBrowserComponent(browserTarget, appData.shouldSortMetadataFiles);
 }

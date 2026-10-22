@@ -1,6 +1,6 @@
 ---
 stage: Plan
-group: Planner Intelligence
+group: Spec-Driven Development
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: "Capture the intent, approach, and steps for a unit of work in a structured workplan that GitLab Duo flows can run."
 title: Workplan

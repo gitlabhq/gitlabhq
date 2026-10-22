@@ -19,6 +19,12 @@ module Types
         resolver: ::Resolvers::AppConfig::GitlabInstanceFeatureFlagsResolver
       field :kas, ::Types::AppConfig::KasType, null: false,
         description: 'Metadata about KAS.'
+      field :plan, GraphQL::Types::String, null: true,
+        description: 'Plan of the license the instance runs under, for example, `premium` or `ultimate`. ' \
+          'An active trial license reports its plan the same way as a paid license. ' \
+          '`free` on an instance with no license or with an expired trial. ' \
+          'An expired paid license still reports its plan, because its licensed features remain available. ' \
+          'Null where subscriptions are scoped for each namespace rather than for an instance, such as GitLab.com.'
       field :revision, GraphQL::Types::String, null: false,
         description: 'Revision.'
       field :version, GraphQL::Types::String, null: false,

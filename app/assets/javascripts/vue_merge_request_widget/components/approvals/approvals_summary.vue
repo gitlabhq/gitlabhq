@@ -53,6 +53,11 @@ export default {
       required: false,
       default: '',
     },
+    mergeSource: {
+      type: Object,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -75,7 +80,29 @@ export default {
         (this.approvalState.approvalState?.rules || []).filter((r) => !r.approved),
       );
     },
+    notApprovedMessage() {
+      const sourceMergeRequest = this.mergeSource?.mergeRequest;
+
+      if (sourceMergeRequest) {
+        return sprintf(
+          s__(
+            'mrWidget|Not approved in this merge request. These commits were included in %{reference}.',
+          ),
+          { reference: sourceMergeRequest.reference },
+        );
+      }
+      if (this.mergeSource?.commitSha) {
+        return s__(
+          'mrWidget|Not approved in this merge request. These commits were included in a direct push to the target branch.',
+        );
+      }
+
+      return s__(
+        "mrWidget|Not approved in this merge request. These commits were included in a merge request that you don't have access to.",
+      );
+    },
     approvalLeftMessage() {
+      if (this.optional && this.mergeSource) return this.notApprovedMessage;
       if (this.optional) return s__('mrWidget|Approval is optional');
 
       if (this.rulesLeft.length) {

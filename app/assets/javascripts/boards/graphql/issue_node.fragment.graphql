@@ -22,7 +22,7 @@ fragment IssueNode on Issue {
   webUrl
   relativePosition
   type
-  workItemType @gl_introduced(version: "18.10.0-pre") {
+  workItemType {
     id
     name
     iconName

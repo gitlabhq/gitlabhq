@@ -39,6 +39,7 @@ module Gitlab
     # load time.
     class LabkitRackRateLimit
       BLOCK_MESSAGE = 'Rate_Limit_Block'
+      COUNT_HEADERS = %w[RateLimit-Limit RateLimit-Observed RateLimit-Remaining].freeze
 
       def initialize(app)
         @app = app
@@ -108,14 +109,14 @@ module Gitlab
       end
 
       # The most constraining evaluation across all limiters, skipping :log rules: a
-      # :log rule never enforces, so its quota is never advertised. Ties keep the
-      # earlier evaluation, as Enumerable#min would.
+      # :log rule never enforces, so its quota is never advertised. Concealed rules
+      # are skipped too. Ties keep the earlier evaluation, as Enumerable#min would.
       def most_constraining_enforced(results)
         evaluation = nil
 
         results.each do |result|
           result.evaluations.each do |counted|
-            next if counted.rule.action == :log
+            next if counted.rule.action == :log || concealed_rules.key?(counted.rule.name)
 
             evaluation = counted if evaluation.nil? || counted < evaluation
           end
@@ -144,10 +145,16 @@ module Gitlab
       # limiter check, so reading the decision here never double-counts. Mirrors
       # Gitlab::RackAttack's throttled_responder so a promoted throttle is
       # indistinguishable from the legacy stack to clients.
+      #
+      # A concealed rule's 429 carries its shared name and only the reset headers, so
+      # it doesn't say which of the rules sharing that name blocked.
       def throttled_response(blocked)
+        concealed_name = concealed_rules[blocked.rule.name]
+
         headers = ::Gitlab::RackAttack::RequestThrottleData
-          .from_labkit_result(name: throttle_name_for(blocked.rule.name), result: blocked)
+          .from_labkit_result(name: concealed_name || throttle_name_for(blocked.rule.name), result: blocked)
           &.throttled_response_headers
+        headers = headers&.except(*COUNT_HEADERS) if concealed_name
 
         [429, { 'Content-Type' => 'text/plain' }.merge(headers || {}), [::Gitlab::Throttle.rate_limiting_response_text]]
       end
@@ -287,6 +294,10 @@ module Gitlab
 
       def plan_rules
         ::Gitlab::RateLimit::PlanRules
+      end
+
+      def concealed_rules
+        plan_rules.concealed_rules
       end
     end
   end

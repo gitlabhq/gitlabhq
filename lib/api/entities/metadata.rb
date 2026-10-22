@@ -12,6 +12,7 @@ module API
         expose :version, documentation: { type: 'String', example: '15.0.0' }
       end
       expose :enterprise, documentation: { type: 'Boolean' }
+      expose :plan, documentation: { type: 'String', example: 'ultimate', x: { nullable: true } }
     end
   end
 end

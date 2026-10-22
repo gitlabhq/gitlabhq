@@ -177,20 +177,24 @@ module Gitlab
             with_default_deparse_settings { connection.exec_query(sql, schemas).group_by { |row| row['table_name'] } }
           end
 
+          # Invalid indexes count as absent. A partitioned index (relkind 'I') stays invalid until every
+          # partition has its child, so keep it and let the missing child index be reported.
           def fetch_indexes
             # rubocop:disable Rails/SquishedSQLHeredocs
             sql = <<~SQL
               SELECT i.indexname, i.indexdef, parent_namespace.nspname, parent.relname
               FROM pg_indexes i
               LEFT JOIN pg_constraint AS c ON i.indexname = c.conname
-              LEFT JOIN pg_namespace AS index_namespace ON index_namespace.nspname = i.schemaname
-              LEFT JOIN pg_class AS index_class
+              INNER JOIN pg_namespace AS index_namespace ON index_namespace.nspname = i.schemaname
+              INNER JOIN pg_class AS index_class
                 ON index_class.relname = i.indexname AND index_class.relnamespace = index_namespace.oid
+              INNER JOIN pg_index AS index_info ON index_info.indexrelid = index_class.oid
               LEFT JOIN pg_inherits AS inheritance ON inheritance.inhrelid = index_class.oid
               LEFT JOIN pg_class AS parent ON parent.oid = inheritance.inhparent
               LEFT JOIN pg_namespace AS parent_namespace ON parent_namespace.oid = parent.relnamespace
               WHERE i.indexname NOT LIKE '%_pkey' AND i.schemaname IN ($1, $2)
-              AND c.conname IS NULL;
+              AND c.conname IS NULL
+              AND (index_info.indisvalid OR index_class.relkind = 'I');
             SQL
             # rubocop:enable Rails/SquishedSQLHeredocs
 

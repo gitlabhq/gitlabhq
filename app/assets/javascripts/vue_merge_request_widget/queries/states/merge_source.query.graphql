@@ -1,0 +1,17 @@
+# @feature_category: code_review_workflow
+query getMergeRequestMergeSource($projectPath: ID!, $iid: String!) {
+  project(fullPath: $projectPath) {
+    id
+    mergeRequest(iid: $iid) {
+      id
+      mergeSource @gl_introduced(version: "19.6.0") {
+        commitSha
+        mergeRequest {
+          id
+          reference
+          webPath
+        }
+      }
+    }
+  }
+}

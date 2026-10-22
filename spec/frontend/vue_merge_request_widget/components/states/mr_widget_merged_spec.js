@@ -1,11 +1,16 @@
 import { getAllByRole } from '@testing-library/dom';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
 import { mount } from '@vue/test-utils';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_frame';
 import { OPEN_REVERT_MODAL, OPEN_CHERRY_PICK_MODAL } from '~/projects/commit/constants';
 import modalEventHub from '~/projects/commit/event_hub';
 import MergedComponent from '~/vue_merge_request_widget/components/states/mr_widget_merged.vue';
+import mergeSourceQuery from '~/vue_merge_request_widget/queries/states/merge_source.query.graphql';
+
+Vue.use(VueApollo);
 
 describe('MRWidgetMerged', () => {
   let wrapper;
@@ -47,8 +52,21 @@ describe('MRWidgetMerged', () => {
     removeSourceBranch: () => nextTick(),
   };
 
-  const createComponent = (customMrFields = {}) => {
+  const mergeSourceResponse = (mergeSource) => ({
+    data: {
+      project: {
+        id: 'gid://gitlab/Project/1',
+        mergeRequest: { id: 'gid://gitlab/MergeRequest/1', mergeSource },
+      },
+    },
+  });
+
+  let mergeSourceHandler;
+
+  const createComponent = (customMrFields = {}, { glFeatures = {} } = {}) => {
     wrapper = mount(MergedComponent, {
+      apolloProvider: createMockApollo([[mergeSourceQuery, mergeSourceHandler]]),
+      provide: { glFeatures },
       propsData: {
         mr: {
           ...mr,
@@ -58,6 +76,10 @@ describe('MRWidgetMerged', () => {
       },
     });
   };
+
+  beforeEach(() => {
+    mergeSourceHandler = jest.fn().mockResolvedValue(mergeSourceResponse(null));
+  });
 
   beforeEach(() => {
     jest.spyOn(document, 'dispatchEvent');
@@ -152,5 +174,73 @@ describe('MRWidgetMerged', () => {
     createComponent();
 
     expect(wrapper.find('time').attributes('title')).toBe('Jan 24, 2018 1:02pm UTC');
+  });
+
+  describe('merge source', () => {
+    const findMergeSource = () => wrapper.find('[data-testid="merge-source"]');
+    const mrFields = { targetProjectFullPath: 'root/nautilus', iid: 2 };
+    const withFlag = { glFeatures: { mergeRequestWidgetMergeSource: true } };
+
+    it('does not query the merge source when the feature flag is disabled', async () => {
+      createComponent(mrFields);
+      await waitForPromises();
+
+      expect(mergeSourceHandler).not.toHaveBeenCalled();
+      expect(findMergeSource().exists()).toBe(false);
+    });
+
+    it('shows nothing when the merge request was merged in GitLab', async () => {
+      createComponent(mrFields, withFlag);
+      await waitForPromises();
+
+      expect(mergeSourceHandler).toHaveBeenCalledWith({ projectPath: 'root/nautilus', iid: '2' });
+      expect(findMergeSource().exists()).toBe(false);
+    });
+
+    it('links the merge request it was merged through', async () => {
+      mergeSourceHandler.mockResolvedValue(
+        mergeSourceResponse({
+          commitSha: null,
+          mergeRequest: {
+            id: 'gid://gitlab/MergeRequest/3',
+            reference: '!3',
+            webPath: '/root/nautilus/-/merge_requests/3',
+          },
+        }),
+      );
+      createComponent(mrFields, withFlag);
+      await waitForPromises();
+
+      expect(findMergeSource().text()).toBe('Commits included in !3');
+      expect(findMergeSource().find('a').attributes('href')).toBe(
+        '/root/nautilus/-/merge_requests/3',
+      );
+    });
+
+    it('shows the pushed commit', async () => {
+      mergeSourceHandler.mockResolvedValue(
+        mergeSourceResponse({
+          commitSha: '8dd2c02193982581ca65aafd829ece9c6084c523',
+          mergeRequest: null,
+        }),
+      );
+      createComponent(mrFields, withFlag);
+      await waitForPromises();
+
+      expect(findMergeSource().text()).toBe('Commits included in a direct push to foo (8dd2c021)');
+    });
+
+    it('does not link a merge request the user cannot read', async () => {
+      mergeSourceHandler.mockResolvedValue(
+        mergeSourceResponse({ commitSha: null, mergeRequest: null }),
+      );
+      createComponent(mrFields, withFlag);
+      await waitForPromises();
+
+      expect(findMergeSource().text()).toBe(
+        "Commits included in a merge request that you don't have access to",
+      );
+      expect(findMergeSource().find('a').exists()).toBe(false);
+    });
   });
 });

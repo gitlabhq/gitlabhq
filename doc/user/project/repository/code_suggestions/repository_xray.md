@@ -32,8 +32,10 @@ in code suggestions that integrate more seamlessly and follow best practices for
 
 {{< /history >}}
 
-When you push a new commit to your project's default branch, Repository X-Ray triggers a background job.
-This job scans and parses the applicable configuration files in your repository.
+When you push a new commit to your project's default branch, Repository X-Ray triggers a background job
+that scans and parses the applicable configuration files in your repository. To reduce load, scans are
+throttled to at most one per day for each project. If you push again within that day,
+one more scan is scheduled for when the current one-day window ends, so your changes are still picked up.
 
 Typically, only one scanning job runs at a time in each project. If a second scan is triggered while a
 scan is already in progress, that second scan waits until the first scan is complete before executing.
