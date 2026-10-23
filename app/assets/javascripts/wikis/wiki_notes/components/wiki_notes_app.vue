@@ -204,7 +204,7 @@ export default {
 };
 </script>
 <template>
-  <div class="wiki-comments gl-px-3">
+  <div class="wiki-comments gl-px-5">
     <wiki-page-award-emoji
       v-if="noteableId"
       :awards="pageAwardEmoji"

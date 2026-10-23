@@ -25,3 +25,9 @@ export const WIKI_RESTORE_VERSION_LABEL = 'wiki_restore_version_label';
 export const WIKI_ICON = 'book';
 
 export const WIKI_TEMPLATES_DIR = 'templates';
+
+export const WIKI_SIDEBAR_WIDTH_CSS_VAR = '--wiki-sidebar-width';
+
+export const WIKI_SIDEBAR_WIDTH_STORAGE_KEY = 'wiki_sidebar_width';
+
+export const WIKI_SIDEBAR_DEFAULT_WIDTH = 220;
