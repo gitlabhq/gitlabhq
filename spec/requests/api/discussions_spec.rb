@@ -116,6 +116,64 @@ RSpec.describe API::Discussions, feature_category: :team_planning do
     it_behaves_like 'diff discussions API', 'projects', 'merge_requests', 'iid'
     it_behaves_like 'resolvable discussions API', 'projects', 'merge_requests', 'iid'
 
+    describe 'replying to a discussion with many notes' do
+      let(:url) do
+        "/projects/#{project.id}/merge_requests/#{noteable['iid']}/discussions/#{note.discussion_id}/notes"
+      end
+
+      before do
+        # Reload the noteable so creating notes does not touch the frozen let_it_be record.
+        create_list(:discussion_note_on_merge_request, 5, noteable: MergeRequest.find(noteable.id),
+          project: project, author: user, in_reply_to: note)
+      end
+
+      # Regression for a CPU hotspot: the endpoint used to Markdown-render every
+      # note in the discussion just to read the first one, so cost grew with the
+      # thread size. It must not render any note now.
+      it 'does not render the discussion notes' do
+        expect(::Notes::RenderService).not_to receive(:new)
+
+        post api(url, user), params: { body: 'Hello!' }
+
+        expect(response).to have_gitlab_http_status(:created)
+      end
+    end
+
+    context 'when the discussion is not readable by the replier' do
+      # A confidential discussion is hidden from a guest. Confidentiality is
+      # uniform across a discussion, so the root note's readability decides the
+      # thread's: an unreadable root means a 404.
+      let_it_be(:guest) { create(:user) }
+
+      let!(:confidential_note) do
+        create(:discussion_note_on_merge_request, :confidential, noteable: noteable,
+          project: project, author: user)
+      end
+
+      let(:url) do
+        "/projects/#{project.id}/merge_requests/#{noteable['iid']}/discussions/#{confidential_note.discussion_id}/notes"
+      end
+
+      before_all do
+        project.add_guest(guest)
+      end
+
+      it 'returns 404' do
+        post api(url, guest), params: { body: 'Hello!' }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when the discussion does not exist' do
+      it 'returns 404' do
+        post api("/projects/#{project.id}/merge_requests/#{noteable['iid']}/discussions/#{'0' * 40}/notes", user),
+          params: { body: 'Hello!' }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
     context "when creating a note for multiple lines" do
       it "creates a new diff multiline note" do
         line_range = {

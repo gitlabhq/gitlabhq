@@ -196,11 +196,11 @@ module API
         route_setting :authorization, permissions: :"create_#{notable_type_underscore}_discussion_note", boundary_type: boundary_type
         post ":id/#{noteables_path}/:noteable_id/discussions/:discussion_id/notes", feature_category: feature_category do
           noteable = find_noteable(noteable_type, params[:noteable_id])
-          notes = readable_discussion_notes(noteable, params[:discussion_id])
-          first_note = notes.first
+          # Only the first note is needed; avoid rendering the whole thread (O(N) per reply).
+          first_note = noteable.notes.with_discussion_ids(params[:discussion_id]).order_created_at_id_asc.first
           validator = ::Gitlab::Auth::ScopeValidator.new(current_user, Gitlab::Auth::RequestAuthenticator.new(request))
 
-          break not_found!("Discussion") if notes.empty?
+          break not_found!("Discussion") unless first_note&.readable_by?(current_user)
 
           discussion = first_note.to_discussion
 
