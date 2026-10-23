@@ -11,7 +11,7 @@ RSpec.describe Banzai::Renderer, feature_category: :markdown do
     allow(object).to receive(:respond_to?).with(:cached_markdown_fields).and_return(true)
     allow(object).to receive(:cached_html_up_to_date?).with(:field).and_return(fresh)
     allow(object).to receive(:cached_html_for).with(:field).and_return('field_html')
-    allow(object).to receive(:refresh_markdown_cache!)
+    allow(object).to receive(:refresh_stale_markdown_cache)
 
     object
   end
@@ -59,14 +59,14 @@ RSpec.describe Banzai::Renderer, feature_category: :markdown do
         let(:object) { fake_object(fresh: false) }
 
         it 'caches and returns the result' do
-          expect(object).to receive(:refresh_markdown_cache!)
+          expect(object).to receive(:refresh_stale_markdown_cache)
 
           is_expected.to eq('field_html')
         end
 
         it "skips database caching on a GitLab read-only instance" do
           allow(Gitlab::Database).to receive(:read_only?).and_return(true)
-          expect(object).to receive(:refresh_markdown_cache!)
+          expect(object).to receive(:refresh_stale_markdown_cache)
 
           is_expected.to eq('field_html')
         end
@@ -76,7 +76,7 @@ RSpec.describe Banzai::Renderer, feature_category: :markdown do
         let(:object) { fake_object(fresh: true) }
 
         it 'uses the cache' do
-          expect(object).not_to receive(:refresh_markdown_cache!)
+          expect(object).not_to receive(:refresh_stale_markdown_cache)
 
           is_expected.to eq('field_html')
         end

@@ -208,6 +208,15 @@ RSpec.describe Projects::MilestonesController, feature_category: :team_planning 
       expect(response).to render_template(:edit)
     end
 
+    it "renders 404 for a guest" do
+      sign_in(create(:user, guest_of: project))
+
+      subject
+
+      expect(response).to have_gitlab_http_status(:not_found)
+      expect(milestone.reload.title).not_to eq(milestone_params[:title])
+    end
+
     context 'with format :json' do
       subject do
         patch :update,
@@ -290,6 +299,15 @@ RSpec.describe Projects::MilestonesController, feature_category: :team_planning 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['redirect_url']).to eq(project_milestones_path(project))
       expect(flash[:toast]).to eq(_('Milestone deleted.'))
+    end
+
+    it "renders 404 for a guest" do
+      sign_in(create(:user, guest_of: project))
+
+      delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: milestone.iid }
+
+      expect(response).to have_gitlab_http_status(:not_found)
+      expect(Milestone.exists?(milestone.id)).to be(true)
     end
   end
 

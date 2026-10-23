@@ -363,7 +363,7 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
     let_it_be(:merge_request) { create(:merge_request, description: 'mr description') }
     let_it_be(:user) { create(:user) }
 
-    subject(:reported_content) { report.reported_content }
+    subject(:reported_content) { Sidekiq::Testing.inline! { report.reported_content } }
 
     # `record` and `source_text` are provided by the including context.
     shared_examples 'self-healing cached HTML' do |field|

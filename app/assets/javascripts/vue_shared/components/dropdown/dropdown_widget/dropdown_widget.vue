@@ -74,7 +74,12 @@ export default {
       default: __('No options found'),
     },
   },
-  emits: ['set-option', 'set-search'],
+  emits: ['hide', 'set-option', 'set-search'],
+  data() {
+    return {
+      preventClose: false,
+    };
+  },
   computed: {
     isSearchEmpty() {
       return this.searchTerm === '' && !this.isLoading;
@@ -89,9 +94,20 @@ export default {
   methods: {
     selectOption(option) {
       this.$emit('set-option', option || null);
-      if (!this.allowMultiselect) {
+      if (this.allowMultiselect) {
+        this.preventClose = true;
+      } else {
         this.$refs.dropdown.hide();
       }
+    },
+    onDropdownHide(event) {
+      // GlDropdownItem closes the dropdown after every click
+      if (this.preventClose) {
+        this.preventClose = false;
+        event.preventDefault();
+        return;
+      }
+      this.$emit('hide', event);
     },
     isSelected(option) {
       if (this.customIsSelectedOption !== undefined) {
@@ -136,7 +152,7 @@ export default {
     lazy
     menu-class="!gl-w-full"
     class="gl-w-full"
-    v-on="glListeners()"
+    v-on="{ ...glListeners(), hide: onDropdownHide }"
     @shown="setFocus"
   >
     <template #header>
@@ -164,7 +180,7 @@ export default {
               :is-checked="isSelected(option)"
               is-check-centered
               is-check-item
-              @click.capture.native.stop="selectOption(option)"
+              @click.stop="selectOption(option)"
             >
               <slot name="preset-item" :item="option">
                 {{ option.title }}
@@ -181,7 +197,7 @@ export default {
             :avatar-url="avatarUrl(option)"
             :secondary-text="secondaryText(option)"
             data-testid="unselected-option"
-            @click.capture.native.stop="selectOption(option)"
+            @click.stop="selectOption(option)"
           >
             <slot name="item" :item="option">
               {{ option.title }}

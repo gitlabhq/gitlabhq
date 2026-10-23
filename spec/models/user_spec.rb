@@ -8365,6 +8365,37 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       end
     end
 
+    context 'when resolve_project_access_from_memberships is disabled', :request_store do
+      before do
+        stub_feature_flags(resolve_project_access_from_memberships: false)
+      end
+
+      include_examples 'max member access for projects'
+    end
+
+    context 'when project_authorizations has not been refreshed yet' do
+      let(:projects) { [owner_project.id] }
+
+      before do
+        create(:group_member, user: user, group: group)
+        ProjectAuthorization.where(user: user).delete_all
+      end
+
+      it 'sees the membership' do
+        is_expected.to eq(owner_project.id => Gitlab::Access::OWNER)
+      end
+
+      context 'when resolve_project_access_from_memberships is disabled' do
+        before do
+          stub_feature_flags(resolve_project_access_from_memberships: false)
+        end
+
+        it 'only sees project_authorizations' do
+          is_expected.to eq(owner_project.id => Gitlab::Access::NO_ACCESS)
+        end
+      end
+    end
+
     context 'with RequestStore enabled', :request_store do
       include_examples 'max member access for projects'
 
@@ -8380,24 +8411,37 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
         expect(access_levels(projects)).to eq(expected)
       end
 
-      it 'only requests the extra projects when uncached projects are passed' do
-        second_maintainer_project = create(:project, maintainers: user)
-        second_developer_project = create(:project, developers: user)
+      shared_examples 'only requests the extra projects' do |query_count|
+        it 'only requests the extra projects when uncached projects are passed' do
+          second_maintainer_project = create(:project, maintainers: user)
+          second_developer_project = create(:project, developers: user)
 
-        all_projects = projects + [second_maintainer_project.id, second_developer_project.id]
+          all_projects = projects + [second_maintainer_project.id, second_developer_project.id]
 
-        expected_all = expected.merge(
-          second_maintainer_project.id => Gitlab::Access::MAINTAINER,
-          second_developer_project.id => Gitlab::Access::DEVELOPER
-        )
+          expected_all = expected.merge(
+            second_maintainer_project.id => Gitlab::Access::MAINTAINER,
+            second_developer_project.id => Gitlab::Access::DEVELOPER
+          )
 
-        access_levels(projects)
+          access_levels(projects)
 
-        queries = ActiveRecord::QueryRecorder.new { access_levels(all_projects) }
+          queries = ActiveRecord::QueryRecorder.new { access_levels(all_projects) }
 
-        expect(queries.count).to eq(1)
-        expect(queries.log_message).to match(/\W(#{second_maintainer_project.id}, #{second_developer_project.id})\W/)
-        expect(access_levels(all_projects)).to eq(expected_all)
+          expect(queries.count).to eq(query_count)
+          expect(queries.log_message).to match(/\W(#{second_maintainer_project.id}, #{second_developer_project.id})\W/)
+          expect(access_levels(all_projects)).to eq(expected_all)
+        end
+      end
+
+      # New projects need their namespaces, project shares and the user's memberships for them.
+      it_behaves_like 'only requests the extra projects', 3
+
+      context 'when resolve_project_access_from_memberships is disabled' do
+        before do
+          stub_feature_flags(resolve_project_access_from_memberships: false)
+        end
+
+        it_behaves_like 'only requests the extra projects', 1
       end
     end
 

@@ -38,7 +38,7 @@ module WebHooks
     end
 
     def authorized?(web_hook)
-      Ability.allowed?(current_user, :admin_web_hook, web_hook)
+      Ability.allowed?(current_user, :delete_webhook, web_hook)
     end
   end
 end

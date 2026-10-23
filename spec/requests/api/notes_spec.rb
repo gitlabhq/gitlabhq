@@ -39,6 +39,11 @@ RSpec.describe API::Notes, feature_category: :team_planning do
       let(:note) { issue_note }
     end
 
+    it_behaves_like 'a GET that leaves stale markdown caches to the refresh worker' do
+      let(:stale_note) { issue_note }
+      let(:perform_get) { get api("/projects/#{project.id}/issues/#{issue.iid}/notes", user) }
+    end
+
     context 'when user does not have access to create noteable' do
       let_it_be(:private_issue) { create(:issue, project: create(:project, :private, namespace: project.namespace)) }
 
@@ -442,6 +447,11 @@ RSpec.describe API::Notes, feature_category: :team_planning do
       let(:parent) { project }
       let(:noteable) { merge_request }
       let(:note) { merge_request_note }
+    end
+
+    it_behaves_like 'a GET that leaves stale markdown caches to the refresh worker' do
+      let(:stale_note) { merge_request_note }
+      let(:perform_get) { get api(request_path, user) }
     end
 
     it_behaves_like 'enforcing job token policies', :read_merge_requests,

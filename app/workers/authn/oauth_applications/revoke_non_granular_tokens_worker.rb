@@ -14,9 +14,11 @@ module Authn
 
       def perform(application_id, user_id)
         user = User.find_by_id(user_id)
-        return unless user
+        application = Authn::OauthApplication.find_by_id(application_id)
+        return unless user && application&.granular?
+        return unless Feature.enabled?(:granular_oauth_tokens, user)
 
-        Authn::OauthApplication.revoke_non_granular_tokens_and_grants_for(application_id, user)
+        Authn::OauthApplication.revoke_non_granular_tokens_and_grants_for(application.id, user)
       end
     end
   end

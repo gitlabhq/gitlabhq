@@ -1,0 +1,10 @@
+---
+name: work_item_bulk_update_rate_limit
+description: Gates the per user rate limit on bulk updating issues and work items
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/605436
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/263775
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/635005
+milestone: '19.6'
+group: group::portfolio planning
+type: gitlab_com_derisk
+default_enabled: false

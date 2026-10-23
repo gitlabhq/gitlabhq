@@ -52,6 +52,12 @@ module Gitlab
           persist_external_payload(updates: external_updates) if external_updates.any?
           super(ar_updates) if ar_updates.any?
         end
+
+        private
+
+        def refresh_stale_markdown_cache_async?
+          false
+        end
       end
     end
   end

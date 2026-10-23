@@ -3211,6 +3211,10 @@ class MergeRequest < ApplicationRecord
     end
   end
 
+  def refresh_stale_markdown_cache_async?
+    super && !always_regenerate_cached_html?
+  end
+
   # Runs the block with `allow_broken` enabled, restoring the previous value
   # afterwards. Used to bypass the structural validations that would otherwise
   # block recovering a stuck `locked` merge request. Keep this private: a public

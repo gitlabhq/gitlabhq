@@ -60139,9 +60139,6 @@ msgstr ""
 msgid "Orbit|Close"
 msgstr ""
 
-msgid "Orbit|Close Quickstart"
-msgstr ""
-
 msgid "Orbit|Close code navigation panel"
 msgstr ""
 
@@ -60300,9 +60297,6 @@ msgstr ""
 msgid "Orbit|Definition"
 msgstr ""
 
-msgid "Orbit|Describe a query for GitLab Duo to write"
-msgstr ""
-
 msgid "Orbit|Directory"
 msgstr ""
 
@@ -60384,9 +60378,6 @@ msgid "Orbit|From"
 msgstr ""
 
 msgid "Orbit|GQL syntax"
-msgstr ""
-
-msgid "Orbit|Generate"
 msgstr ""
 
 msgid "Orbit|Get GitLab Orbit for %{groupName}"
@@ -60584,6 +60575,9 @@ msgstr ""
 msgid "Orbit|Groups"
 msgstr ""
 
+msgid "Orbit|Help me write a GitLab Orbit GQL query. Ask me what I want to find."
+msgstr ""
+
 msgid "Orbit|Hover over or select an entity to see its relationships."
 msgstr ""
 
@@ -60770,9 +60764,6 @@ msgid "Orbit|Only top-level groups can be indexed."
 msgstr ""
 
 msgid "Orbit|Open in Query editor"
-msgstr ""
-
-msgid "Orbit|Or describe what you want, and GitLab Duo writes the query"
 msgstr ""
 
 msgid "Orbit|Overview"
@@ -61306,7 +61297,7 @@ msgstr ""
 msgid "Orbit|WorkItem"
 msgstr ""
 
-msgid "Orbit|Write a GitLab Orbit GQL query that answers this question: %{question}"
+msgid "Orbit|Write it with GitLab Duo"
 msgstr ""
 
 msgid "Orbit|You and the Owners of top-level groups can turn on GitLab Orbit."
@@ -97913,6 +97904,9 @@ msgid "WorkItemDecisionLog|The question was resolved without an answer."
 msgstr ""
 
 msgid "WorkItemDecisionLog|The thread was resolved, but the decision log could not be updated. To try again, reopen the thread and resolve it."
+msgstr ""
+
+msgid "WorkItemDecisionLog|This decision could not be found. Check that the link is correct."
 msgstr ""
 
 msgid "WorkItemDecisionLog|View source"

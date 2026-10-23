@@ -67,7 +67,7 @@ RSpec.describe Gitlab::DormantProjectsDeletionWarningTracker, :freeze_time, feat
 
   describe '#scheduled_deletion_date', :clean_gitlab_redis_shared_state do
     shared_examples 'returns the expected deletion date' do
-      it do
+      it 'returns the date one month from now' do
         expect(described_class.new(project_id).scheduled_deletion_date)
           .to eq(1.month.from_now.to_date.to_s)
       end

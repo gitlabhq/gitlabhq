@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Issuable::BulkUpdateService, feature_category: :team_planning do
+RSpec.describe Issuable::BulkUpdateService, :clean_gitlab_redis_rate_limiting, feature_category: :team_planning do
   let_it_be_with_reload(:user)    { create(:user) }
   let_it_be_with_reload(:project) { create(:project, namespace: user.namespace) }
 
@@ -207,6 +207,49 @@ RSpec.describe Issuable::BulkUpdateService, feature_category: :team_planning do
         expect(result).to be_error
         expect(result.errors).to contain_exactly('update error')
         expect(result.http_status).to eq(422)
+      end
+    end
+
+    context 'with the work item bulk update rate limit' do
+      context 'when bulk updating merge requests' do
+        let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+
+        it 'does not check the rate limit' do
+          allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_call_original
+          expect(::Gitlab::ApplicationRateLimiter).not_to receive(:throttled?).with(:work_item_bulk_update, any_args)
+
+          expect(bulk_update(merge_request, state_event: 'close')).to be_success
+        end
+      end
+
+      context 'when the user is throttled' do
+        before do
+          allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_call_original
+          allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+            .with(:work_item_bulk_update, scope: { user: user }).and_return(true)
+        end
+
+        it 'raises a rate limited error and does not update the issues' do
+          expect { bulk_update(issues, state_event: 'close') }.to raise_error(
+            ::RateLimitedService::RateLimitedError,
+            'This endpoint has been requested too many times. Try again later.'
+          )
+
+          expect(issues.map(&:reload)).to all(be_opened)
+        end
+      end
+
+      context 'when the work_item_bulk_update_rate_limit feature flag is disabled' do
+        before do
+          stub_feature_flags(work_item_bulk_update_rate_limit: false)
+        end
+
+        it 'does not check the rate limit' do
+          allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_call_original
+          expect(::Gitlab::ApplicationRateLimiter).not_to receive(:throttled?).with(:work_item_bulk_update, any_args)
+
+          expect(bulk_update(issues, state_event: 'close')).to be_success
+        end
       end
     end
 

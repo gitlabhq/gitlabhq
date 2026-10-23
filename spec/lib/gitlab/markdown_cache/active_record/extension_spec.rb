@@ -50,6 +50,7 @@ RSpec.describe Gitlab::MarkdownCache::ActiveRecord::Extension, feature_category:
 
   before do
     stub_commonmark_sourcepos_disabled
+    stub_feature_flags(markdown_cache_async_refresh: false)
   end
 
   # Asserts what the version_upgrade_counter records for a given action. Call
@@ -339,6 +340,106 @@ RSpec.describe Gitlab::MarkdownCache::ActiveRecord::Extension, feature_category:
           cached_markdown_version: cache_version
         )
       end
+    end
+  end
+
+  describe '#refresh_stale_markdown_cache' do
+    let(:note) do
+      created = create(:note_on_issue, project: project)
+      created.update_columns(cached_markdown_version: nil)
+
+      Note.find(created.id)
+    end
+
+    def version_in_database
+      Note.find(note.id).cached_markdown_version
+    end
+
+    context 'when async refresh is enabled' do
+      before do
+        stub_feature_flags(markdown_cache_async_refresh: true)
+      end
+
+      it 'refreshes the HTML in memory and leaves persisting it to the worker' do
+        expect(Gitlab::MarkdownCache::RefreshWorker).to receive(:perform_async).with('Note', note.id)
+
+        note.refresh_stale_markdown_cache
+
+        expect(note.cached_markdown_version).to eq(cache_version)
+        expect(version_in_database).to be_nil
+      end
+
+      it 'persists the HTML when the worker runs' do
+        Sidekiq::Testing.inline! { note.refresh_stale_markdown_cache }
+
+        expect(version_in_database).to eq(cache_version)
+      end
+
+      it 'leaves the record without unsaved changes' do
+        note.refresh_stale_markdown_cache
+
+        expect(note).not_to be_changed
+      end
+
+      it 'does not overwrite a concurrent edit when the record is saved afterwards' do
+        note.update_columns(note_html: nil)
+        note.refresh_stale_markdown_cache
+        Note.find(note.id).update!(note: 'Tuesday')
+
+        note.update!(resolved_at: Time.current, resolved_by: note.author)
+
+        html = Nokogiri::HTML.fragment(Note.find(note.id).note_html)
+        expect(html.at_css('p').text).to eq('Tuesday')
+      end
+
+      context 'when the database is read-only' do
+        before do
+          allow(Gitlab::Database).to receive(:read_write?).and_return(false)
+        end
+
+        it 'refreshes the HTML in memory without enqueueing the worker' do
+          expect(Gitlab::MarkdownCache::RefreshWorker).not_to receive(:perform_async)
+
+          note.refresh_stale_markdown_cache
+
+          expect(note.cached_markdown_version).to eq(cache_version)
+        end
+      end
+    end
+
+    context 'when async refresh is disabled' do
+      it 'persists the HTML inline' do
+        expect(Gitlab::MarkdownCache::RefreshWorker).not_to receive(:perform_async)
+
+        note.refresh_stale_markdown_cache
+
+        expect(version_in_database).to eq(cache_version)
+      end
+    end
+  end
+
+  describe '#markdown_cache_current?' do
+    it 'is true for a row at the write version' do
+      expect(persisted_row_at_version(cache_version).markdown_cache_current?).to be(true)
+    end
+
+    it 'is true for a row past the write version' do
+      expect(persisted_row_at_version(cache_version + 1).markdown_cache_current?).to be(true)
+    end
+
+    it 'is false for a row before the write version' do
+      expect(persisted_row_at_version(cache_version - 1).markdown_cache_current?).to be(false)
+    end
+
+    it 'is false for a row without a version' do
+      expect(persisted_row_at_version(nil).markdown_cache_current?).to be(false)
+    end
+
+    it 'is false for a row at the write version with its HTML cleared' do
+      row = persisted_row_at_version(cache_version)
+      row.update_columns(title_html: nil)
+
+      expect(row.markdown_cache_current?).to be(false)
     end
   end
 

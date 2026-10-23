@@ -108,6 +108,7 @@ export default {
       participants: [],
       searchUsers: [],
       isSearching: false,
+      preventClose: false,
     };
   },
   apollo: {
@@ -281,6 +282,7 @@ export default {
       } else {
         selected.push(user);
         this.$emit('input', selected);
+        this.preventClose = true;
       }
       this.clearAndFocusSearch();
     },
@@ -291,7 +293,15 @@ export default {
     unselect(name) {
       const selected = this.value.filter((user) => user.username !== name);
       this.$emit('input', selected);
+      this.preventClose = true;
       this.clearAndFocusSearch();
+    },
+    onDropdownHide(event) {
+      // GlDropdownItem closes the dropdown after every click
+      if (this.preventClose) {
+        this.preventClose = false;
+        event.preventDefault();
+      }
     },
     focusSearch() {
       this.$refs.search.focusInput();
@@ -338,7 +348,13 @@ export default {
 </script>
 
 <template>
-  <gl-dropdown ref="dropdown" :text="text" @toggle="$emit('toggle')" @shown="focusSearch">
+  <gl-dropdown
+    ref="dropdown"
+    :text="text"
+    @toggle="$emit('toggle')"
+    @shown="focusSearch"
+    @hide="onDropdownHide"
+  >
     <template #header>
       <p class="gl-mb-4 gl-mt-2 gl-text-center gl-font-bold">{{ headerText }}</p>
       <gl-dropdown-divider />
@@ -363,7 +379,7 @@ export default {
             :is-checked="selectedIsEmpty"
             is-check-centered
             data-testid="unassign"
-            @click.capture.native.stop="unassign"
+            @click.stop="unassign"
           >
             <span :class="selectedIsEmpty ? 'gl-pl-0' : 'gl-pl-6'" class="gl-font-bold">{{
               $options.i18n.unassigned
@@ -380,16 +396,13 @@ export default {
           is-checked
           is-check-centered
           data-testid="selected-participant"
-          @click.capture.native.stop="unselect(item.username)"
+          @click.stop="unselect(item.username)"
         >
           <sidebar-participant :user="item" :issuable-type="issuableType" selected />
         </gl-dropdown-item>
         <template v-if="showCurrentUser">
           <gl-dropdown-divider />
-          <gl-dropdown-item
-            data-testid="current-user"
-            @click.capture.native.stop="selectAssignee(currentUser)"
-          >
+          <gl-dropdown-item data-testid="current-user" @click.stop="selectAssignee(currentUser)">
             <sidebar-participant
               :user="currentUser"
               :issuable-type="issuableType"
@@ -400,7 +413,7 @@ export default {
         <gl-dropdown-item
           v-if="showAuthor"
           data-testid="issuable-author"
-          @click.capture.native.stop="selectAssignee(issuableAuthor)"
+          @click.stop="selectAssignee(issuableAuthor)"
         >
           <sidebar-participant
             :user="issuableAuthor"
@@ -416,7 +429,7 @@ export default {
           boundary="viewport"
           :disabled="unselectedUser.isDisabled"
           data-testid="unselected-participant"
-          @click.capture.native.stop="!unselectedUser.isDisabled && selectAssignee(unselectedUser)"
+          @click.stop="!unselectedUser.isDisabled && selectAssignee(unselectedUser)"
         >
           <sidebar-participant
             :user="unselectedUser"

@@ -1193,6 +1193,13 @@ module Gitlab
               period: 1.minute,
               action: :limit
             ),
+            work_item_bulk_update: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_work_item_bulk_updates_by_user',
+              characteristics: %i[user],
+              limit: 30,
+              period: 1.minute,
+              action: :limit
+            ),
             work_item_delete: ::Labkit::RateLimit::Rule.new(
               name: 'limit_work_item_deletes_by_user',
               characteristics: %i[user],

@@ -57,9 +57,41 @@ RSpec.describe Gitlab::Instrumentation::Authz, :request_store, feature_category:
     end
   end
 
+  describe '.record_project_access_source' do
+    it 'keeps memberships once any lookup used it' do
+      described_class.measure { nil }
+      described_class.record_project_access_source(false)
+      described_class.record_project_access_source(true)
+      described_class.record_project_access_source(false)
+
+      expect(described_class.payload).to include(authz_project_access_source: 'memberships')
+    end
+
+    it 'records project_authorizations when no lookup used memberships' do
+      described_class.measure { nil }
+      described_class.record_project_access_source(false)
+
+      expect(described_class.payload).to include(authz_project_access_source: 'project_authorizations')
+    end
+
+    it 'records nothing without a request store' do
+      allow(Gitlab::SafeRequestStore).to receive(:active?).and_return(false)
+
+      described_class.record_project_access_source(true)
+
+      expect(RequestStore.store[described_class::PROJECT_ACCESS_SOURCE]).to be_nil
+    end
+  end
+
   describe '.payload' do
     it 'is empty when nothing was measured' do
       expect(described_class.payload).to eq({})
+    end
+
+    it 'leaves out the access source when no lookup recorded one' do
+      described_class.measure { nil }
+
+      expect(described_class.payload).not_to have_key(:authz_project_access_source)
     end
   end
 

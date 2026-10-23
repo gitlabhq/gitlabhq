@@ -1,0 +1,11 @@
+---
+name: resolve_project_access_from_memberships
+description: Resolve users' project access levels and custom roles from memberships and shares instead
+  of project_authorizations
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/632453
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/263758
+rollout_issue_url:
+milestone: '19.6'
+group: group::authorization
+type: gitlab_com_derisk
+default_enabled: false

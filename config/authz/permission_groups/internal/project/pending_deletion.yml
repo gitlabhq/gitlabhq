@@ -72,9 +72,11 @@ permissions:
   - create_wiki
   - delete_issuable_metric_image
   - delete_label
+  - delete_milestone
   - delete_note
   - delete_timelog
   - manage_trigger
+  - promote_milestone
   - push_code
   - push_code_to_protected_branches
   - push_to_delete_protected_branch

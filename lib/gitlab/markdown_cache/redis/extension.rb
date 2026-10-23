@@ -34,6 +34,10 @@ module Gitlab
           end
         end
 
+        def refresh_stale_markdown_cache
+          refresh_markdown_cache!
+        end
+
         def write_markdown_field(field_name, value)
           # The value read from redis is a string, so we're converting it back
           # to an int.

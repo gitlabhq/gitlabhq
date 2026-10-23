@@ -351,6 +351,14 @@ RSpec.describe Authn::OauthApplication, feature_category: :system_access do
       expect(other_user_token.reload).not_to be_revoked
       expect(other_application_token.reload).not_to be_revoked
     end
+
+    it 'keeps the revocation time of already revoked tokens' do
+      revoked_token = create(:oauth_access_token, resource_owner: user, application: application, scopes: 'api',
+        revoked_at: 1.day.ago)
+
+      expect { described_class.revoke_non_granular_tokens_and_grants_for(application.id, user) }
+        .not_to change { revoked_token.reload.revoked_at }
+    end
   end
 
   describe '.encode' do

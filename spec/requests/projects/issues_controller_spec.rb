@@ -116,6 +116,31 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
     end
   end
 
+  describe 'POST #bulk_update' do
+    let_it_be(:developer) { create(:user, developer_of: project) }
+    let_it_be(:other_developer) { create(:user, developer_of: project) }
+
+    let(:current_user) { developer }
+
+    def bulk_update_as(requesting_user)
+      login_as(requesting_user)
+
+      post bulk_update_project_issues_path(project),
+        params: { update: { issuable_ids: issue.id.to_s, state_event: 'reopen' } },
+        as: :json
+    end
+
+    it_behaves_like 'rate limited endpoint', rate_limit_key: :work_item_bulk_update do
+      def request
+        bulk_update_as(developer)
+      end
+
+      def request_with_second_scope
+        bulk_update_as(other_developer)
+      end
+    end
+  end
+
   describe 'GET #discussions' do
     before do
       login_as(user)

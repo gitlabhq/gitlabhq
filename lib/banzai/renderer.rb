@@ -39,7 +39,7 @@ module Banzai
         return cacheless_render_field(object, field, context)
       end
 
-      object.refresh_markdown_cache! unless object.cached_html_up_to_date?(field)
+      object.refresh_stale_markdown_cache unless object.cached_html_up_to_date?(field)
 
       object.cached_html_for(field)
     end

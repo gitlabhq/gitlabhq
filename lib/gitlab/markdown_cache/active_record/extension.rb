@@ -45,6 +45,20 @@ module Gitlab
           attribute_changed?(field_name)
         end
 
+        def refresh_stale_markdown_cache
+          return refresh_markdown_cache! unless markdown_cache_persistable? && refresh_stale_markdown_cache_async?
+
+          clear_attribute_changes(refresh_markdown_cache.keys)
+          Gitlab::MarkdownCache::RefreshWorker.perform_async(self.class.name, id)
+        end
+
+        def markdown_cache_current?
+          cached_markdown_version.to_i >= cached_markdown_version_for_write &&
+            cached_markdown_fields.markdown_fields.none? do |field|
+              read_attribute(cached_markdown_fields.html_field(field)).nil? && read_attribute(field).present?
+            end
+        end
+
         def save_markdown(updates)
           written = ::Gitlab::Database::QueryAnalyzers::PreventWritesOnGet.allow_write_on_get(
             url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/608670') do
@@ -74,6 +88,10 @@ module Gitlab
           # upgrade here.
           persisted? && Gitlab::Database.read_write? &&
             cached_markdown_fields.markdown_fields.none? { |field| markdown_field_changed?(field) }
+        end
+
+        def refresh_stale_markdown_cache_async?
+          Feature.enabled?(:markdown_cache_async_refresh, Feature.current_request)
         end
 
         def markdown_sources_in_columns

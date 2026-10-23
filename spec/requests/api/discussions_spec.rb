@@ -186,6 +186,11 @@ RSpec.describe API::Discussions, feature_category: :team_planning do
       end
     end
 
+    it_behaves_like 'a GET that leaves stale markdown caches to the refresh worker' do
+      let(:stale_note) { note }
+      let(:perform_get) { get api("/projects/#{project.id}/merge_requests/#{noteable.iid}/discussions", user) }
+    end
+
     context "when creating a note for multiple lines" do
       it "creates a new diff multiline note" do
         line_range = {

@@ -451,4 +451,18 @@ RSpec.describe 'Bulk update work items', feature_category: :team_planning do
       expect(mutation_response).to include('updatedWorkItemCount' => updatable_work_items.count)
     end
   end
+
+  context 'with the work item bulk update rate limit' do
+    it_behaves_like 'rate limited endpoint', rate_limit_key: :work_item_bulk_update, graphql: true do
+      let_it_be(:other_developer) { create(:user, developer_of: group) }
+
+      def request
+        post_graphql_mutation(mutation, current_user: current_user)
+      end
+
+      def request_with_second_scope
+        post_graphql_mutation(mutation, current_user: other_developer)
+      end
+    end
+  end
 end

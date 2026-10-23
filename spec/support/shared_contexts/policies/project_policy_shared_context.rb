@@ -70,15 +70,19 @@ RSpec.shared_context 'ProjectPolicy context' do
         admin_wiki
         admin_work_item
         create_label
+        create_milestone
         create_wiki
         delete_label
+        delete_milestone
         destroy_issue
         download_wiki_code
+        promote_milestone
         read_confidential_issues
         read_internal_note
         reopen_issue
         update_issue
         update_label
+        update_milestone
       ]
   end
 
@@ -92,13 +96,16 @@ RSpec.shared_context 'ProjectPolicy context' do
       create_incident
       create_label
       create_merge_request_in
+      create_milestone
       create_snippet
       daily_statistics
       delete_label
+      delete_milestone
       download_code
       download_wiki_code
       fork_project
       metrics_dashboard
+      promote_milestone
       read_build
       read_commit_status
       read_confidential_issues
@@ -114,6 +121,7 @@ RSpec.shared_context 'ProjectPolicy context' do
       read_sentry_issue
       update_issue
       update_label
+      update_milestone
     ]
   end
 

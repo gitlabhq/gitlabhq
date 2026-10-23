@@ -32,6 +32,7 @@ project:
   - create_iteration
   - create_label
   - create_merge_request_in
+  - create_milestone
   - create_project_secrets
   - create_requirement
   - create_requirement_test_report
@@ -45,6 +46,7 @@ project:
   - daily_statistics
   - delete_issuable_metric_image
   - delete_label
+  - delete_milestone
   - delete_project_secrets
   - destroy_design
   - download_code
@@ -56,6 +58,7 @@ project:
   - mark_note_as_internal
   - metrics_dashboard
   - move_design
+  - promote_milestone
   - read_advanced_dependency_management
   - read_build
   - read_ci_cd_analytics
@@ -106,6 +109,7 @@ project:
   - update_issuable_metric_image
   - update_issue
   - update_label
+  - update_milestone
   - update_project_secrets
   - update_requirement
   - upload_issuable_metric_image
@@ -144,6 +148,7 @@ group:
   - manage_devops_adoption_namespaces
   - mark_note_as_internal
   - promote_label
+  - promote_milestone
   - read_ci_cd_analytics
   - read_confidential_epic
   - read_confidential_issues

@@ -3250,6 +3250,8 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
         Featurable::DISABLED | ref(:anonymous)  | false
         Featurable::DISABLED | ref(:guest)      | false
         Featurable::DISABLED | ref(:owner)      | false
+        Featurable::ENABLED  | ref(:anonymous)  | true
+        Featurable::ENABLED  | ref(:non_member) | true
         Featurable::ENABLED  | ref(:guest)      | true
         Featurable::ENABLED  | ref(:planner)    | true
         Featurable::ENABLED  | ref(:reporter)   | true
@@ -3321,7 +3323,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
         Featurable::DISABLED | ref(:guest)      | false
         Featurable::DISABLED | ref(:owner)      | false
         Featurable::ENABLED  | ref(:anonymous)  | false
-        Featurable::ENABLED  | ref(:non_member) | false
+        Featurable::ENABLED  | ref(:non_member) | true
         Featurable::ENABLED  | ref(:guest)      | true
         Featurable::ENABLED  | ref(:planner)    | true
         Featurable::ENABLED  | ref(:reporter)   | true
@@ -3387,6 +3389,8 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
         Featurable::DISABLED | ref(:anonymous)  | false
         Featurable::DISABLED | ref(:guest)      | false
         Featurable::DISABLED | ref(:owner)      | false
+        Featurable::ENABLED  | ref(:anonymous)  | true
+        Featurable::ENABLED  | ref(:non_member) | true
         Featurable::ENABLED  | ref(:guest)      | true
         Featurable::ENABLED  | ref(:planner)    | true
         Featurable::ENABLED  | ref(:reporter)   | true
@@ -3458,7 +3462,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
         Featurable::DISABLED | ref(:guest)      | false
         Featurable::DISABLED | ref(:owner)      | false
         Featurable::ENABLED  | ref(:anonymous)  | false
-        Featurable::ENABLED  | ref(:non_member) | false
+        Featurable::ENABLED  | ref(:non_member) | true
         Featurable::ENABLED  | ref(:guest)      | true
         Featurable::ENABLED  | ref(:planner)    | true
         Featurable::ENABLED  | ref(:reporter)   | true

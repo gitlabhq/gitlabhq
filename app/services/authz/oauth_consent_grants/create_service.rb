@@ -18,21 +18,22 @@ module Authz
           return error(_('The application does not declare any granular scopes.'), :no_granular_scopes)
         end
 
-        previous_grant = nil
-        grant = nil
+        previous_grant = Authz::OauthConsentGrant.active_for_user_and_application(user.id, application.id)
+
+        if previous_grant && previous_grant.source == source.to_s && same_scopes?(previous_grant)
+          revoke_non_granular_tokens
+
+          return ServiceResponse.success(payload: { consent_grant: previous_grant, previous_grant: nil })
+        end
+
+        grant = build_grant
 
         Authz::OauthConsentGrant.transaction do
-          previous_grant = Authz::OauthConsentGrant.active_for_user_and_application(user.id, application.id)
-          previous_grant&.revoked!
-
-          grant = build_grant
+          previous_grant&.destroy!
           grant.save!
         end
 
-        # Granular tokens resolve the new grant on their next request, legacy ones must not outlive the consent.
-        # Revoked asynchronously since a user can hold tens of thousands of legacy tokens.
-        Authn::OauthApplications::RevokeNonGranularTokensWorker.perform_async(application.id, user.id)
-
+        revoke_non_granular_tokens
         audit(grant, previous_grant)
 
         ServiceResponse.success(payload: { consent_grant: grant, previous_grant: previous_grant })
@@ -65,6 +66,20 @@ module Authz
         end
 
         grant
+      end
+
+      def same_scopes?(grant)
+        scope_keys(grant.granular_scopes) == scope_keys(declared_scopes)
+      end
+
+      def scope_keys(granular_scopes)
+        granular_scopes.map { |scope| [scope.access, scope.namespace_id, Array(scope.permissions).sort] }.tally
+      end
+
+      # Granular tokens resolve the new grant on their next request, legacy ones must not outlive the consent.
+      # Revoked asynchronously since a user can hold tens of thousands of legacy tokens.
+      def revoke_non_granular_tokens
+        Authn::OauthApplications::RevokeNonGranularTokensWorker.perform_async(application.id, user.id)
       end
 
       def audit(grant, previous_grant)

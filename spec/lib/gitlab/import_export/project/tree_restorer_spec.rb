@@ -1280,7 +1280,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
         end
 
         with_them do
-          it do
+          it 'restores the designs, design versions, version events and version authors of the issue' do
             expect(issue.designs.pluck(:filename)).to match_array(design_filenames)
             expect(issue.design_versions.pluck(:sha)).to match_array(version_shas)
             expect(issue.design_versions.flat_map(&:actions).map(&:event)).to match_array(events)
@@ -1304,7 +1304,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
         end
 
         with_them do
-          it do
+          it 'restores the versions of the design' do
             expect(design.versions.pluck(:sha)).to match_array(version_shas)
           end
         end

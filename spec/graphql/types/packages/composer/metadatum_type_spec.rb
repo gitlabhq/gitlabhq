@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['ComposerMetadata'] do
+RSpec.describe GitlabSchema.types['ComposerMetadata'], feature_category: :package_registry do
   it 'includes composer metadatum fields' do
     expected_fields = %w[
       target_sha composer_json

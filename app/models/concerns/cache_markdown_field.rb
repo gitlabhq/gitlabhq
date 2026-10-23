@@ -125,9 +125,9 @@ module CacheMarkdownField
         # Invalidated due to stale HTML cache
         # This could happen when the Markdown cache version is bumped
         # or when a model is imported and the HTML is empty.
-        # We persist the updated HTML here so that subsequent calls
-        # to this method do not have to regenerate the HTML again.
-        refresh_markdown_cache!
+        # We persist the updated HTML (through RefreshWorker where possible)
+        # so that later reads do not have to regenerate the HTML again.
+        refresh_stale_markdown_cache
       end
     end
 

@@ -264,6 +264,7 @@ and `cng-secrets-manager-caproni`.
 It uploads the result under the `e2e-test-on-cng-caproni` run type.
 
 These jobs also extend `caproni.istanbul.yaml` when `BABEL_ENV=istanbul`.
+`export-frontend-code-paths-mapping-caproni` uploads their frontend mapping under the same run type.
 
 ## Licensing
 

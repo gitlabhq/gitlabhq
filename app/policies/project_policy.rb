@@ -593,7 +593,8 @@ class ProjectPolicy < BasePolicy
     prevent :create_milestone
     prevent :update_milestone
     prevent :admin_milestone
-    prevent :destroy_milestone
+    prevent :delete_milestone
+    prevent :promote_milestone
     prevent :read_cycle_analytics
   end
 
@@ -969,17 +970,9 @@ class ProjectPolicy < BasePolicy
     enable :read_project_metadata
   end
 
-  rule { public_project & model_registry_enabled }.policy do
-    enable :read_model_registry
-  end
-
   rule { ~model_registry_enabled }.policy do
     prevent :read_model_registry
     prevent :write_model_registry
-  end
-
-  rule { public_project & model_experiments_enabled }.policy do
-    enable :read_model_experiments
   end
 
   rule { ~model_experiments_enabled }.policy do

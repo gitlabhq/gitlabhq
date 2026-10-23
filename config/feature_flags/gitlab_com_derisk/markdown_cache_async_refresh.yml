@@ -1,0 +1,10 @@
+---
+name: markdown_cache_async_refresh
+description: Refresh Markdown cache values in a worker
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/628134
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/260213
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/632561
+milestone: '19.6'
+group: group::planner intelligence
+type: gitlab_com_derisk
+default_enabled: false

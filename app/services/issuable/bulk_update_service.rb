@@ -4,6 +4,9 @@ module Issuable
   class BulkUpdateService
     include Gitlab::Allowable
 
+    RATE_LIMIT_KEY = :work_item_bulk_update
+    RATE_LIMITED_TYPES = %w[issue epic].freeze
+
     attr_accessor :parent, :current_user, :params
 
     def initialize(parent, user = nil, params = {})
@@ -13,6 +16,8 @@ module Issuable
     end
 
     def execute(type)
+      check_rate_limit!(type)
+
       model_ids = ids_from_params(params.delete(:issuable_ids))
       set_update_params(type)
       updated_issuables = update_issuables(type, model_ids)
@@ -35,6 +40,16 @@ module Issuable
     end
 
     private
+
+    def check_rate_limit!(type)
+      return unless RATE_LIMITED_TYPES.include?(type)
+      return unless ::Feature.enabled?(:work_item_bulk_update_rate_limit, current_user)
+      return unless ::Gitlab::ApplicationRateLimiter.throttled?(RATE_LIMIT_KEY, scope: { user: current_user })
+
+      raise ::RateLimitedService::RateLimitedError.new(
+        key: RATE_LIMIT_KEY, rate_limiter: ::Gitlab::ApplicationRateLimiter
+      ), ::Gitlab::ApplicationRateLimiter.throttled_error_message
+    end
 
     def ids_from_params(issuable_ids)
       return issuable_ids if issuable_ids.is_a?(Array)

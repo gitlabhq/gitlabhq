@@ -374,6 +374,29 @@ export-code-paths-mapping-caproni:
 export-frontend-code-paths-mapping:
   extends:
     - .export-frontend-code-paths-mapping
+  # Caproni jobs upload under their own run type
+  needs:
+    - job: cng-instance
+      optional: true
+    - job: cng-registry
+      optional: true
+    - job: cng-secrets-manager
+      optional: true
+
+export-frontend-code-paths-mapping-caproni:
+  extends:
+    - .export-frontend-code-paths-mapping
+  needs:
+    - job: cng-instance-caproni
+      optional: true
+    - job: cng-registry-caproni
+      optional: true
+    - job: cng-secrets-manager-caproni
+      optional: true
+  script:
+    # The trigger job's QA_RUN_TYPE outranks job variables
+    - export QA_RUN_TYPE=e2e-test-on-cng-caproni
+    - !reference [.export-frontend-code-paths-mapping, script]
 
 process-e2e-coverage:
   extends:

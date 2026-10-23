@@ -123,6 +123,56 @@ RSpec.describe Tooling::PredictiveTests::FileBasedSelector, feature_category: :t
     end
   end
 
+  context 'when a lint settings file changes' do
+    where(:lint_file) do
+      %w[
+        .rubocop_todo/rspec/be_eq.yml
+        scripts/lint/keela_baseline.yml
+        scripts/lint/keela_excluded.yml
+      ]
+    end
+
+    with_them do
+      let(:changed_files) { ['app/models/user.rb', lint_file] }
+      let(:rows) { [{ 'source_file' => 'app/models/user.rb', 'test_file' => 'spec/models/user_spec.rb' }] }
+
+      it 'selects the specs from the map' do
+        expect(result.full_suite_reason).to be_nil
+        expect(result.specs).to eq(%w[spec/models/user_spec.rb])
+      end
+    end
+  end
+
+  context 'when a Ruby file outside app or lib changes' do
+    where(:source_file) do
+      %w[
+        rubocop/cop/gitlab/authz/condition_scope.rb
+        tooling/lib/tooling/predictive_tests/file_based_selector.rb
+        scripts/pipeline/set_pipeline_name.rb
+        danger/plugins/roulette.rb
+      ]
+    end
+
+    with_them do
+      let(:changed_files) { [source_file] }
+      let(:rows) { [{ 'source_file' => source_file, 'test_file' => 'spec/tooling/some_spec.rb' }] }
+
+      it 'selects the specs from the map' do
+        expect(result.full_suite_reason).to be_nil
+        expect(result.specs).to eq(%w[spec/tooling/some_spec.rb])
+      end
+    end
+  end
+
+  context 'when a non-Ruby file under rubocop, tooling, scripts or danger changes' do
+    let(:changed_files) { %w[danger/search_gems/Dangerfile] }
+    let(:rows) { [{ 'source_file' => 'danger/search_gems/Dangerfile', 'test_file' => 'spec/tooling/some_spec.rb' }] }
+
+    it 'asks for the full suite' do
+      expect(result.full_suite_reason).to eq("files the map can't judge: danger/search_gems/Dangerfile")
+    end
+  end
+
   context 'when a file the map cannot judge changes' do
     let(:changed_files) { %w[app/models/user.rb Gemfile.lock] }
 

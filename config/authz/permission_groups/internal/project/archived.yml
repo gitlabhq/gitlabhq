@@ -86,6 +86,7 @@ permissions:
   - delete_branch_rule
   - delete_issuable_metric_image
   - delete_label
+  - delete_milestone
   - delete_note
   - delete_timelog
   - destroy_approvers
@@ -104,7 +105,6 @@ permissions:
   - destroy_issue_link
   - destroy_iteration
   - destroy_merge_request
-  - destroy_milestone
   - destroy_package
   - destroy_pages
   - destroy_pipeline
@@ -123,6 +123,7 @@ permissions:
   - manage_trigger
   - modify_security_policy
   - move_design
+  - promote_milestone
   - push_code
   - push_code_to_protected_branches
   - push_to_delete_protected_branch

@@ -680,7 +680,7 @@ RSpec.describe Oauth::AuthorizationsController, :with_current_organization, feat
 
         post oauth_authorization_path, params: params
 
-        expect(previous_grant.reload).to be_revoked
+        expect(Authz::OauthConsentGrant.exists?(previous_grant.id)).to be(false)
         expect(active_grant).not_to eq(previous_grant)
       end
 

@@ -216,6 +216,43 @@ RSpec.describe Authz::UserProjectGrants, feature_category: :permissions do
     end
   end
 
+  describe '.enabled_for?', :request_store do
+    it 'records the source used for the request' do
+      expect(described_class.enabled_for?(user.id)).to be(true)
+      expect(Gitlab::SafeRequestStore[:authz_project_access_source]).to eq('memberships')
+    end
+
+    it 'is false for a user that is not persisted' do
+      expect(described_class.enabled_for?(nil)).to be(false)
+    end
+
+    it 'checks the flag once per user for the request' do
+      allow(Feature).to receive(:enabled?).and_call_original
+      expect(Feature).to receive(:enabled?).with(:resolve_project_access_from_memberships, anything).once
+        .and_call_original
+
+      2.times { described_class.enabled_for?(user.id) }
+    end
+
+    context 'when resolve_project_access_from_memberships is disabled' do
+      before do
+        stub_feature_flags(resolve_project_access_from_memberships: false)
+      end
+
+      it 'records project_authorizations as the source' do
+        expect(described_class.enabled_for?(user.id)).to be(false)
+        expect(Gitlab::SafeRequestStore[:authz_project_access_source]).to eq('project_authorizations')
+      end
+
+      it 'is enabled for a user the flag is enabled for' do
+        stub_feature_flags(resolve_project_access_from_memberships: user)
+
+        expect(described_class.enabled_for?(user.id)).to be(true)
+        expect(described_class.enabled_for?(create(:user).id)).to be(false)
+      end
+    end
+  end
+
   describe '.forget_memberships', :request_store do
     it 'loads the memberships again after they change in the same request' do
       expect(levels(project)).to eq(project.id => Gitlab::Access::NO_ACCESS)

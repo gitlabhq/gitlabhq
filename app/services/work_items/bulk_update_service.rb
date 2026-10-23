@@ -2,6 +2,8 @@
 
 module WorkItems
   class BulkUpdateService
+    RATE_LIMIT_KEY = ::Issuable::BulkUpdateService::RATE_LIMIT_KEY
+
     def initialize(parent:, current_user:, work_item_ids:, attributes: {})
       @parent = parent
       @work_item_ids = work_item_ids
@@ -10,6 +12,8 @@ module WorkItems
     end
 
     def execute
+      check_rate_limit!
+
       unless @current_user.can?(:"read_#{@parent.to_ability_name}", @parent)
         return ServiceResponse.error(message: "User can't read parent", reason: :authorization)
       end
@@ -42,6 +46,15 @@ module WorkItems
     end
 
     private
+
+    def check_rate_limit!
+      return unless ::Feature.enabled?(:work_item_bulk_update_rate_limit, @current_user)
+      return unless ::Gitlab::ApplicationRateLimiter.throttled?(RATE_LIMIT_KEY, scope: { user: @current_user })
+
+      raise ::RateLimitedService::RateLimitedError.new(
+        key: RATE_LIMIT_KEY, rate_limiter: ::Gitlab::ApplicationRateLimiter
+      ), ::Gitlab::ApplicationRateLimiter.throttled_error_message
+    end
 
     def scoped_work_items
       WorkItem.find_on_namespaces(ids: @work_item_ids, resource_parent: @parent)

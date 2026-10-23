@@ -23,7 +23,7 @@ module Gitlab
     # window. `nil` in steady state means "no rollout active": calls to
     # `latest_cached_markdown_version` always return the current shifted
     # version, the feature flag is ignored, and reads with stale HTML are
-    # rewritten on the spot. Writes always use the current shifted version
+    # re-rendered on the spot. Writes always use the current shifted version
     # via `cached_markdown_version_for_write`, regardless of rollout state;
     # the flag controls read-side staleness only.
     #

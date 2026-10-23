@@ -92,7 +92,7 @@ RSpec.describe Projects::Releases::EvidencesController, :with_license do
       let(:release) { create(:release, project: project, tag: tag_name, milestones: [milestone]) }
 
       shared_examples_for 'evidence not found' do
-        it do
+        it 'renders 404' do
           subject
 
           expect(response).to have_gitlab_http_status(:not_found)

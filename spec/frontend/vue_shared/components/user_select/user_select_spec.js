@@ -55,16 +55,19 @@ describe('User select dropdown', () => {
 
   const findSearchField = () => wrapper.findComponent(GlSearchBoxByType);
   const findParticipantsLoading = () => wrapper.findByTestId('loading-participants');
-  const findSelectedParticipants = () => wrapper.findAllByTestId('selected-participant');
+  const findDropdown = () => wrapper.findComponent({ ref: 'dropdown' });
+  const findSelectedParticipants = () => wrapper.findAllComponentsByTestId('selected-participant');
   const findSelectedParticipantByIndex = (index) =>
     findSelectedParticipants().at(index).findComponent(SidebarParticipant);
-  const findUnselectedParticipants = () => wrapper.findAllByTestId('unselected-participant');
+  const findUnselectedParticipants = () =>
+    wrapper.findAllComponentsByTestId('unselected-participant');
   const findUnselectedParticipantByIndex = (index) =>
     findUnselectedParticipants().at(index).findComponent(SidebarParticipant);
-  const findCurrentUser = () => wrapper.findAllByTestId('current-user');
+  const findCurrentUser = () => wrapper.findAllComponentsByTestId('current-user');
   const findIssuableAuthor = () => wrapper.findAllByTestId('issuable-author');
   const findUnassignLink = () => wrapper.findComponentByTestId('unassign');
   const findEmptySearchResults = () => wrapper.findAllByTestId('empty-results');
+  const clickItem = (item) => item.vm.$emit('click', new MouseEvent('click'));
 
   const searchQueryHandlerSuccess = jest.fn().mockResolvedValue(projectAutocompleteMembersResponse);
   const participantsQueryHandlerSuccess = jest.fn().mockResolvedValue(participantsQueryResponse);
@@ -395,7 +398,7 @@ describe('User select dropdown', () => {
         },
       });
       await waitForPromises();
-      findUnassignLink().trigger('click');
+      clickItem(findUnassignLink());
 
       expect(wrapper.emitted('input')).toEqual([[[]]]);
     });
@@ -409,7 +412,7 @@ describe('User select dropdown', () => {
 
       await waitForPromises();
 
-      findUnassignLink().trigger('click');
+      clickItem(findUnassignLink());
 
       expect(hideDropdownMock).toHaveBeenCalledTimes(1);
     });
@@ -422,7 +425,7 @@ describe('User select dropdown', () => {
       });
       await waitForPromises();
 
-      findSelectedParticipants().at(0).trigger('click');
+      clickItem(findSelectedParticipants().at(0));
       expect(wrapper.emitted('input')).toEqual([[[]]]);
     });
 
@@ -434,7 +437,7 @@ describe('User select dropdown', () => {
       });
       await waitForPromises();
 
-      findUnselectedParticipants().at(0).trigger('click');
+      clickItem(findUnselectedParticipants().at(0));
 
       expect(wrapper.emitted('input')[0][0][0]).toMatchObject({
         id: 'gid://gitlab/User/1',
@@ -453,8 +456,59 @@ describe('User select dropdown', () => {
       });
       await waitForPromises();
 
-      findUnselectedParticipants().at(0).trigger('click');
+      clickItem(findUnselectedParticipants().at(0));
       expect(wrapper.emitted('input')[0][0]).toHaveLength(2);
+    });
+  });
+
+  describe('when the dropdown hides after an item click', () => {
+    const hideEvent = { preventDefault: jest.fn() };
+
+    const hideDropdown = () => findDropdown().vm.$emit('hide', hideEvent);
+
+    afterEach(() => {
+      hideEvent.preventDefault.mockClear();
+    });
+
+    it.each`
+      action                        | allowMultipleAssignees | findItem                                    | prevented
+      ${'selecting a user'}         | ${true}                | ${() => findUnselectedParticipants().at(0)} | ${true}
+      ${'selecting the only user'}  | ${false}               | ${() => findUnselectedParticipants().at(0)} | ${false}
+      ${'unselecting a user'}       | ${false}               | ${() => findSelectedParticipants().at(0)}   | ${true}
+      ${'clicking on `Unassigned`'} | ${true}                | ${() => findUnassignLink()}                 | ${false}
+    `(
+      'keeps the dropdown open: $prevented, after $action',
+      async ({ allowMultipleAssignees, findItem, prevented }) => {
+        createComponent({ props: { value: [assignee], allowMultipleAssignees } });
+        await waitForPromises();
+
+        clickItem(findItem());
+        hideDropdown();
+
+        expect(hideEvent.preventDefault).toHaveBeenCalledTimes(prevented ? 1 : 0);
+      },
+    );
+
+    it('closes the dropdown on the next hide', async () => {
+      createComponent({ props: { value: [assignee], allowMultipleAssignees: true } });
+      await waitForPromises();
+
+      clickItem(findUnselectedParticipants().at(0));
+      hideDropdown();
+      hideDropdown();
+
+      expect(hideEvent.preventDefault).toHaveBeenCalledTimes(1);
+    });
+
+    it('stops the item click from propagating', async () => {
+      const event = new MouseEvent('click');
+      jest.spyOn(event, 'stopPropagation');
+      createComponent({ props: { allowMultipleAssignees: true } });
+      await waitForPromises();
+
+      findUnselectedParticipants().at(0).vm.$emit('click', event);
+
+      expect(event.stopPropagation).toHaveBeenCalled();
     });
   });
 
@@ -525,7 +579,7 @@ describe('User select dropdown', () => {
       findSearchField().vm.$emit('input', 'roo');
       await waitForSearch();
 
-      findUnselectedParticipants().at(0).trigger('click');
+      clickItem(findUnselectedParticipants().at(0));
       await nextTick();
 
       expect(findSearchField().props('value')).toBe('');
@@ -546,7 +600,7 @@ describe('User select dropdown', () => {
       findSearchField().vm.$emit('input', 'roo');
       await waitForSearch();
 
-      findSelectedParticipants().at(0).trigger('click');
+      clickItem(findSelectedParticipants().at(0));
       await nextTick();
 
       expect(findSearchField().props('value')).toBe('');

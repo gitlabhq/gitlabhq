@@ -647,10 +647,12 @@ Project permissions for [model registry](project/ml/model_registry/_index.md) an
 | Edit experiments and candidates                                                 |       |         |          |                  |     ✓     |     ✓      |   ✓   |
 | Delete experiments and candidates                                               |       |         |          |                  |     ✓     |     ✓      |   ✓   |
 
-[^non-members-view]: Non-members can only view models and versions in public projects with the **Everyone with access**
-    visibility level. Non-members can't view internal projects, even if they're logged in.
-[^project-model-non-members-view]: Non-members can only view model experiments in public projects with the **Everyone with access**
-    visibility level. Non-members can't view internal projects, even if they're logged in.
+[^non-members-view]: Non-members can view models and versions in public projects by default. In internal and private projects,
+    only members can view them by default. If the feature is set to **Everyone with access**, logged-in
+    users can view them in internal projects.
+[^project-model-non-members-view]: Non-members can view model experiments in public projects by default. In internal and private projects,
+    only members can view them by default. If the feature is set to **Everyone with access**, logged-in
+    users can view them in internal projects.
 [^upload-download-artifacts]: You can also upload and download artifacts with the package registry API, which uses
     a different set of permissions.
 

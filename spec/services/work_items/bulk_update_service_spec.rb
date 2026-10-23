@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::BulkUpdateService, feature_category: :team_planning do
+RSpec.describe WorkItems::BulkUpdateService, :clean_gitlab_redis_rate_limiting, feature_category: :team_planning do
   let_it_be(:developer) { create(:user) }
   let_it_be(:guest) { create(:user) }
   let_it_be(:user) { create(:user) }
@@ -232,6 +232,41 @@ RSpec.describe WorkItems::BulkUpdateService, feature_category: :team_planning do
 
       it 'returns authorization as the reason for failure' do
         expect(service_result.reason).to eq(:authorization)
+      end
+    end
+  end
+
+  context 'with the work item bulk update rate limit' do
+    let(:parent) { project }
+    let(:current_user) { developer }
+
+    context 'when the user is throttled' do
+      before do
+        allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_call_original
+        allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+          .with(:work_item_bulk_update, scope: { user: current_user }).and_return(true)
+      end
+
+      it 'raises a rate limited error and does not update the work items' do
+        expect { service_result }.to raise_error(
+          ::RateLimitedService::RateLimitedError,
+          'This endpoint has been requested too many times. Try again later.'
+        )
+
+        expect(work_item2.reload.label_ids).to contain_exactly(label1.id)
+      end
+    end
+
+    context 'when the work_item_bulk_update_rate_limit feature flag is disabled' do
+      before do
+        stub_feature_flags(work_item_bulk_update_rate_limit: false)
+      end
+
+      it 'does not check the rate limit' do
+        allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_call_original
+        expect(::Gitlab::ApplicationRateLimiter).not_to receive(:throttled?).with(:work_item_bulk_update, any_args)
+
+        expect(service_result).to be_success
       end
     end
   end

@@ -28,6 +28,23 @@ module Authz
       nil
     end
 
+    # Whether the user's project access is resolved from memberships instead of project_authorizations.
+    # Checked once per user for the request. Callers check it before the request cache, so the request log
+    # records the source even when every lookup is answered from the cache.
+    #
+    # @param user_id [Integer, nil]
+    # @return [Boolean]
+    def self.enabled_for?(user_id)
+      return false unless user_id
+
+      enabled = Gitlab::SafeRequestStore.fetch([:authz_resolve_project_access_from_memberships, user_id]) do
+        Feature.enabled?(:resolve_project_access_from_memberships, ::User.actor_from_id(user_id))
+      end
+      ::Gitlab::Instrumentation::Authz.record_project_access_source(enabled)
+
+      enabled
+    end
+
     # @param user_id [Integer, nil] nil for a user that is not persisted, who has no grants
     def initialize(user_id)
       @user_id = user_id

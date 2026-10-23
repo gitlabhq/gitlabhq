@@ -4621,6 +4621,16 @@
   :idempotent:
   :tags: []
   :queue_namespace:
+- :name: markdown_cache_refresh
+  :worker_name: Gitlab::MarkdownCache::RefreshWorker
+  :feature_category: :markdown
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :cpu
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: members_expiring_email_notification
   :worker_name: Members::ExpiringEmailNotificationWorker
   :feature_category: :system_access

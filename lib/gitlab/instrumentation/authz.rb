@@ -4,6 +4,7 @@ module Gitlab
   module Instrumentation
     class Authz
       STATS = :authz_stats
+      PROJECT_ACCESS_SOURCE = :authz_project_access_source
       PRIMARY_DURATION = ::Gitlab::Metrics::Subscribers::ActiveRecord.compose_metric_key(:duration_s, :primary)
       REPLICA_DURATION = ::Gitlab::Metrics::Subscribers::ActiveRecord.compose_metric_key(:duration_s, :replica)
 
@@ -38,6 +39,20 @@ module Gitlab
           end
         end
 
+        # Records which source project access was resolved from. Memberships wins when a request uses both.
+        #
+        # @param from_memberships [Boolean]
+        # @return [void]
+        def record_project_access_source(from_memberships)
+          return unless ::Gitlab::SafeRequestStore.active?
+
+          store = ::Gitlab::SafeRequestStore.store
+          store[PROJECT_ACCESS_SOURCE] = 'memberships' if from_memberships
+          store[PROJECT_ACCESS_SOURCE] ||= 'project_authorizations'
+
+          nil
+        end
+
         # `authz_db_count` includes cached queries, like the request's `db_count`.
         def payload
           stats = ::Gitlab::SafeRequestStore[STATS]
@@ -48,8 +63,9 @@ module Gitlab
             authz_duration_s: stats[:duration].round(6),
             authz_db_count: stats[:db_count],
             authz_db_cached_count: stats[:db_cached_count],
-            authz_db_duration_s: stats[:db_duration].round(6)
-          }
+            authz_db_duration_s: stats[:db_duration].round(6),
+            authz_project_access_source: ::Gitlab::SafeRequestStore[PROJECT_ACCESS_SOURCE]
+          }.compact
         end
       end
     end

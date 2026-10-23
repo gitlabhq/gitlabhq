@@ -23,6 +23,7 @@ project:
   - create_epic
   - create_iteration
   - create_label
+  - create_milestone
   - create_requirement
   - create_requirement_test_report
   - create_saved_view
@@ -32,6 +33,7 @@ project:
   - create_wiki
   - create_work_item_saved_view
   - delete_label
+  - delete_milestone
   - destroy_design
   - destroy_issue
   - download_code
@@ -42,6 +44,7 @@ project:
   - import_work_items
   - mark_note_as_internal
   - move_design
+  - promote_milestone
   - read_code
   - read_confidential_issues
   - read_internal_note
@@ -51,6 +54,7 @@ project:
   - update_design
   - update_issue
   - update_label
+  - update_milestone
   - update_requirement
 group:
   permissions: []
@@ -84,6 +88,7 @@ group:
   - download_wiki_code
   - mark_note_as_internal
   - promote_label
+  - promote_milestone
   - read_confidential_epic
   - read_confidential_issues
   - read_crm_contact

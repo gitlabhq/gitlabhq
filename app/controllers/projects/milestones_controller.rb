@@ -14,10 +14,9 @@ class Projects::MilestonesController < Projects::ApplicationController
   # Allow read any milestone
   before_action :authorize_read_milestone!
 
-  # Allow admin milestone
-  before_action :authorize_admin_milestone!, except: [:index, :show, :issues, :merge_requests, :participants, :labels]
-
-  # Allow to promote milestone
+  before_action :authorize_create_milestone!, only: [:new, :create]
+  before_action :authorize_update_milestone!, only: [:edit, :update]
+  before_action :authorize_delete_milestone!, only: :destroy
   before_action :authorize_promote_milestone!, only: :promote
 
   respond_to :html
@@ -138,8 +137,6 @@ class Projects::MilestonesController < Projects::ApplicationController
   end
 
   def destroy
-    return access_denied! unless can?(current_user, :admin_milestone, @project)
-
     Milestones::DestroyService.new(project, current_user).execute(milestone)
 
     flash[:toast] = _('Milestone deleted.')
@@ -183,12 +180,23 @@ class Projects::MilestonesController < Projects::ApplicationController
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
-  def authorize_admin_milestone!
-    render_404 unless can?(current_user, :admin_milestone, @project)
+  def authorize_create_milestone!
+    render_404 unless can?(current_user, :create_milestone, @project)
   end
 
+  def authorize_update_milestone!
+    render_404 unless can?(current_user, :update_milestone, @project)
+  end
+
+  def authorize_delete_milestone!
+    render_404 unless can?(current_user, :delete_milestone, @project)
+  end
+
+  # Promoting creates a group milestone, so the user also needs the permission on the group.
+  # The project check keeps promotion blocked while the project is archived.
   def authorize_promote_milestone!
-    render_404 unless can?(current_user, :admin_milestone, project_group)
+    render_404 unless can?(current_user, :promote_milestone, @project) &&
+      can?(current_user, :promote_milestone, project_group)
   end
 
   def milestone_params

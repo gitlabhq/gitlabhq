@@ -93,6 +93,8 @@ project:
   - read_merge_request_state_event
   - read_merge_request_time_statistic
   - read_milestone
+  - read_model_experiments
+  - read_model_registry
   - read_model_version
   - read_note
   - read_npm_package

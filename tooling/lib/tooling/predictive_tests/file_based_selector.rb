@@ -7,7 +7,7 @@ module Tooling
     class FileBasedSelector
       Result = Struct.new(:specs, :full_suite_reason, keyword_init: true)
 
-      SOURCE_FILE_REGEX = %r{\A(ee/)?(app|lib)/.+\.rb\z}
+      SOURCE_FILE_REGEX = %r{\A(?:(?:ee/)?(?:app|lib)|rubocop|tooling|scripts|danger)/.+\.rb\z}
       SPEC_FILE_REGEX = %r{\A(ee/)?spec/.+_spec\.rb\z}
       # Frontend code, jest specs and docs. The Vue 3 migration specs read two kinds of these files, so keep them.
       IGNORED_FILE_REGEX = %r{
@@ -21,6 +21,9 @@ module Tooling
         public/-/graphql/introspection_result_no_deprecated.json
         doc/api/openapi/openapi_v3.yaml
       ].freeze
+      # Lint settings read by RuboCop and Keela, not rspec.
+      LINT_FILE_REGEX = %r{\A(?:\.rubocop_todo/.+\.yml|scripts/lint/keela_(?:baseline|excluded)\.yml)\z}
+      SKIPPED_FILE_REGEX = Regexp.union(IGNORED_FILE_REGEX, LINT_FILE_REGEX)
       # ClickHouse rejects queries over 256 KiB, so long path lists are queried in batches.
       BATCH_SIZE = 1_000
       # Capture runs about every 2 hours, so 6 hours without a new row means it has stalled.
@@ -41,7 +44,7 @@ module Tooling
       end
 
       def execute
-        relevant = (changed_files - GENERATED_FILES).reject { |file| IGNORED_FILE_REGEX.match?(file) }
+        relevant = (changed_files - GENERATED_FILES).reject { |file| SKIPPED_FILE_REGEX.match?(file) }
         sources, others = relevant.partition { |file| SOURCE_FILE_REGEX.match?(file) }
         own_specs, others = others.partition { |file| SPEC_FILE_REGEX.match?(file) }
 
