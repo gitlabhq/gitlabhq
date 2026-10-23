@@ -732,6 +732,7 @@ module API
       end
 
       desc 'Transfer a group to an organization' do
+        detail 'Transfers a group to another organization asynchronously. Requires the Owner role.'
         success Entities::GroupDetail
         failure [
           { code: 400, message: 'Bad request' },

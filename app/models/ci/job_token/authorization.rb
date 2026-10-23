@@ -9,7 +9,6 @@
 module Ci
   module JobToken
     class Authorization < Ci::ApplicationRecord
-      extend Gitlab::InternalEventsTracking
       include EachBatch
 
       self.table_name = 'ci_job_token_authorizations'
@@ -37,15 +36,6 @@ module Ci
 
       # Record in SafeRequestStore a cross-project access attempt
       def self.capture(origin_project:, accessed_project:)
-        label = origin_project == accessed_project ? 'same-project' : 'cross-project'
-        track_internal_event(
-          'authorize_job_token_with_disabled_scope',
-          project: accessed_project,
-          additional_properties: {
-            label: label
-          }
-        )
-
         # We are tracking ci job token access to project resources, but we
         # are not yet persisting this log until a request successfully
         # completes. We will do that in a middleware. This is because the policy

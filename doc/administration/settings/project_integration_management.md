@@ -3,13 +3,13 @@ stage: none
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Integration administration
-description: "Configure and manage settings for project and group integrations on GitLab Self-Managed instances."
+description: "Configure and manage default settings for project and group integrations in an organization or GitLab instance."
 ---
 
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed, GitLab Dedicated
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -17,12 +17,50 @@ description: "Configure and manage settings for project and group integrations o
 > For user documentation, see [project integrations](../../user/project/integrations/_index.md).
 
 Project and group administrators can configure and enable integrations.
+As an organization administrator, you can [set default configuration parameters](#in-the-organization-admin-area) for integrations in your organization.
 As an instance administrator, you can:
 
 - Set default configuration parameters for an integration.
 - Configure an allowlist to control which integrations can be enabled on a GitLab instance.
 
 ## Configure default settings for an integration
+
+Default settings for an integration belong to an organization.
+Groups and projects in that organization inherit them.
+You can configure them from the **Admin** area as an instance administrator, or from the **Organization Admin** area as an organization administrator.
+
+> [!warning]
+> This might affect all or most of the groups and projects in the organization.
+> Review the following details.
+
+If this is the first time you are setting up default settings for an integration:
+
+- The integration is enabled for all groups and projects that don't already have this integration configured, if you have the **Enable integration** toggle turned on in the default settings.
+- Groups and projects that already have the integration configured are not affected, but can choose to use the inherited settings at any time.
+
+When you make further changes to the defaults:
+
+- They are immediately applied to all groups and projects that have the integration set to use default settings.
+- They are immediately applied to newer groups and projects, created after you last saved defaults for the integration. If your default setting has the **Enable integration** toggle turned on, the integration is automatically enabled for all such groups and projects.
+- Groups and projects with custom settings selected for the integration are not immediately affected and may choose to use the latest defaults at any time.
+
+Default settings are inherited in this order: organization, then group, then project.
+If [group-level settings](../../user/project/integrations/_index.md#manage-group-default-settings-for-a-project-integration) have also
+been configured for the same integration, projects in that group inherit the group-level settings instead of the organization-level settings.
+Groups and projects do not inherit defaults from other organizations.
+
+Only the entire settings for an integration can be inherited. Per-field inheritance
+is proposed in [epic 2137](https://gitlab.com/groups/gitlab-org/-/work_items/2137).
+
+### In the Admin area
+
+{{< details >}}
+
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+Defaults you set in the **Admin** area belong to the [default organization](../../user/organization/_index.md#the-default-organization), which holds all groups and projects on an instance with a single organization.
 
 Prerequisites:
 
@@ -36,34 +74,45 @@ To configure default settings for an integration:
 1. Complete the fields.
 1. Select **Save changes**.
 
-> [!warning]
-> This may affect all or most of the groups and projects on your GitLab instance. Review the details
-> below.
+### In the Organization Admin area
 
-If this is the first time you are setting up instance-level settings for an integration:
+{{< details >}}
 
-- The integration is enabled for all groups and projects that don't already have this integration configured,
-  if you have the **Enable integration** toggle turned on in the instance-level settings.
-- Groups and projects that already have the integration configured are not affected, but can choose to use the
-  inherited settings at any time.
+- Offering: GitLab.com, GitLab Self-Managed
+- Status: Beta
 
-When you make further changes to the instance defaults:
+{{< /details >}}
 
-- They are immediately applied to all groups and projects that have the integration set to use default settings.
-- They are immediately applied to newer groups and projects, created after you last saved defaults for the
-  integration. If your instance-level default setting has the **Enable integration** toggle turned
-  on, the integration is automatically enabled for all such groups and projects.
-- Groups and projects with custom settings selected for the integration are not immediately affected and may
-  choose to use the latest defaults at any time.
+Prerequisites:
 
-If [group-level settings](../../user/project/integrations/_index.md#manage-group-default-settings-for-a-project-integration) have also
-been configured for the same integration, projects in that group inherit the group-level settings
-instead of the instance-level settings.
+- You must be an [organization administrator](../../user/organization/_index.md#user-types-and-permissions).
 
-Only the entire settings for an integration can be inherited. Per-field inheritance
-is proposed in [epic 2137](https://gitlab.com/groups/gitlab-org/-/work_items/2137).
+To configure default settings for an integration in your organization:
+
+1. In the left sidebar, select **Organizations**.
+1. From the dropdown list, select the organization you want to go to.
+1. In the left sidebar, select **Manage organization**. The **Organization Admin** area opens.
+1. Select **Settings** > **Integrations**.
+1. Select an integration.
+1. Complete the fields.
+1. Select **Save changes**.
+
+The Beyond Identity and Amazon Q integrations are not available in the **Organization Admin** area.
+Only instance administrators can configure them, in the **Admin** area.
+
+From the same page, you can also:
+
+- Select **Reset** to remove default settings for an integration.
+- Select the **Projects using custom settings** tab to view projects that use custom settings.
+  The list shows only projects in that organization.
 
 ### Remove default settings for an integration
+
+{{< details >}}
+
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Prerequisites:
 
@@ -76,9 +125,15 @@ To remove default settings for an integration:
 1. Select an integration.
 1. Select **Reset** and confirm.
 
-Resetting an instance-level default setting removes the integration from all projects that have the integration set to use default settings.
+Resetting a default setting removes the integration from all projects that have the integration set to use default settings.
 
 ### View projects that use custom settings
+
+{{< details >}}
+
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 Prerequisites:
 
@@ -96,6 +151,7 @@ To view projects in your instance that [use custom settings](../../user/project/
 {{< details >}}
 
 - Tier: Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 

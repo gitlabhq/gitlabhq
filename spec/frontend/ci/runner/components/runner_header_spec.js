@@ -57,6 +57,20 @@ describe('RunnerHeader', () => {
     expect(findRunnerStatusBadge().text()).toContain(I18N_STATUS_ONLINE);
   });
 
+  it('passes the runner contact time to the status badge', () => {
+    const contactedAt = '2021-06-01T12:00:00Z';
+
+    createComponent({
+      runner: {
+        contactedAt,
+        status: STATUS_ONLINE,
+      },
+    });
+
+    expect(findRunnerStatusBadge().props('contactedAt')).toBe(contactedAt);
+    expect(findRunnerStatusBadge().props('status')).toBe(STATUS_ONLINE);
+  });
+
   it('displays the runner type', () => {
     createComponent({
       mountFn: mountExtended,

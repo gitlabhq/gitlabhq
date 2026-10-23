@@ -1,6 +1,6 @@
 import { GlDisclosureDropdownItem, GlSorting, GlFilteredSearch, GlFormCheckbox } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
-import { nextTick, markRaw } from 'vue';
+import { nextTick } from 'vue';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
@@ -60,7 +60,7 @@ jest.mock('~/filtered_search/services/recent_searches_service', () => {
 const defaultProps = {
   namespace: 'gitlab-org/gitlab-test',
   recentSearchesStorageKey: 'issues',
-  tokens: markRaw(mockAvailableTokens),
+  tokens: mockAvailableTokens,
   initialFilterValue: [],
   showCheckbox: false,
   checkboxChecked: false,

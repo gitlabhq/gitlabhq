@@ -16909,7 +16909,9 @@ paths:
   "/api/v4/vscode/settings_sync/v1/manifest":
     get:
       operationId: getApiV4VscodeSettingsSyncV1Manifest
-      summary: Get the settings manifest for Settings Sync
+      summary: Retrieve the settings manifest for Settings Sync
+      description: Retrieves the manifest of the settings stored for VS Code Settings
+        Sync.
       tags:
       - VSCode
       responses:
@@ -16928,7 +16930,9 @@ paths:
   "/api/v4/vscode/settings_sync/{settings_context_hash}/v1/manifest":
     get:
       operationId: getApiV4VscodeSettingsSyncSettingsContextHashV1Manifest
-      summary: Get the settings manifest for Settings Sync
+      summary: Retrieve the settings manifest for Settings Sync
+      description: Retrieves the manifest of the settings stored for VS Code Settings
+        Sync.
       tags:
       - VSCode
       responses:
@@ -16954,7 +16958,9 @@ paths:
   "/api/v4/vscode/settings_sync/v1/resource/{resource_name}/{id}":
     get:
       operationId: getApiV4VscodeSettingsSyncV1ResourceResourceNameId
-      summary: Get a specific setting resource
+      summary: Retrieve a specific setting resource
+      description: Retrieves a single VS Code setting resource. Returns 204 when the
+        resource does not exist.
       tags:
       - VSCode
       responses:
@@ -16998,7 +17004,9 @@ paths:
   "/api/v4/vscode/settings_sync/{settings_context_hash}/v1/resource/{resource_name}/{id}":
     get:
       operationId: getApiV4VscodeSettingsSyncSettingsContextHashV1ResourceResourceNameId
-      summary: Get a specific setting resource
+      summary: Retrieve a specific setting resource
+      description: Retrieves a single VS Code setting resource. Returns 204 when the
+        resource does not exist.
       tags:
       - VSCode
       responses:
@@ -17048,7 +17056,9 @@ paths:
   "/api/v4/vscode/settings_sync/v1/resource/{resource_name}":
     get:
       operationId: getApiV4VscodeSettingsSyncV1ResourceResourceName
-      summary: Get a list of references to one or more vscode setting resources
+      summary: List all references to a VS Code setting resource
+      description: Lists all references to the stored versions of a VS Code setting
+        resource.
       tags:
       - VSCode
       responses:
@@ -17083,7 +17093,9 @@ paths:
         in: path
     post:
       operationId: postApiV4VscodeSettingsSyncV1ResourceResourceName
-      summary: Creates or updates a specific setting
+      summary: Create or update a specific setting
+      description: Creates a VS Code setting resource, or updates it if it already
+        exists.
       tags:
       - VSCode
       responses:
@@ -17115,7 +17127,9 @@ paths:
   "/api/v4/vscode/settings_sync/{settings_context_hash}/v1/resource/{resource_name}":
     get:
       operationId: getApiV4VscodeSettingsSyncSettingsContextHashV1ResourceResourceName
-      summary: Get a list of references to one or more vscode setting resources
+      summary: List all references to a VS Code setting resource
+      description: Lists all references to the stored versions of a VS Code setting
+        resource.
       tags:
       - VSCode
       responses:
@@ -17156,7 +17170,9 @@ paths:
         in: path
     post:
       operationId: postApiV4VscodeSettingsSyncSettingsContextHashV1ResourceResourceName
-      summary: Creates or updates a specific setting
+      summary: Create or update a specific setting
+      description: Creates a VS Code setting resource, or updates it if it already
+        exists.
       tags:
       - VSCode
       responses:
@@ -17194,7 +17210,8 @@ paths:
   "/api/v4/vscode/settings_sync/v1/collection":
     delete:
       operationId: deleteApiV4VscodeSettingsSyncV1Collection
-      summary: Deletes all user vscode setting resources
+      summary: Delete all VS Code setting resources for a user
+      description: Deletes all VS Code setting resources of the current user.
       tags:
       - VSCode
       responses:
@@ -17209,7 +17226,8 @@ paths:
   "/api/v4/vscode/settings_sync/{settings_context_hash}/v1/collection":
     delete:
       operationId: deleteApiV4VscodeSettingsSyncSettingsContextHashV1Collection
-      summary: Deletes all user vscode setting resources
+      summary: Delete all VS Code setting resources for a user
+      description: Deletes all VS Code setting resources of the current user.
       tags:
       - VSCode
       responses:
@@ -29113,6 +29131,7 @@ paths:
     post:
       operationId: postApiV4UsageDataIncrementUniqueUsers
       summary: Track usage data event for the current user
+      description: Tracks a unique-user event for the current user in Service Ping.
       tags:
       - Usage data
       responses:
@@ -33848,6 +33867,8 @@ paths:
     get:
       operationId: getApiV4ProjectsIdRepositoryDivergingCommits
       summary: Retrieve diverging commit counts between two refs
+      description: Retrieves the number of commits by which the `to` ref is ahead
+        of and behind the `from` ref.
       tags:
       - Repositories
       responses:
@@ -37537,7 +37558,9 @@ paths:
   "/api/v4/projects/{id}/pages_access":
     get:
       operationId: getApiV4ProjectsIdPagesAccess
-      summary: Check pages access of this project
+      summary: Verify Pages access to a project
+      description: Verifies if the current user can access GitLab Pages in a specified
+        project.
       tags:
       - Projects
       responses:
@@ -54394,6 +54417,8 @@ paths:
     post:
       operationId: postApiV4IntegrationsSlackEvents
       summary: Receive Slack events
+      description: Receives and processes events sent by the GitLab for Slack app.
+        Requires a valid Slack signature.
       tags:
       - Integrations
       responses:
@@ -62695,7 +62720,9 @@ paths:
   "/api/v4/geo/retrieve/{replicable_name}/{replicable_id}":
     get:
       operationId: getApiV4GeoRetrieveReplicableNameReplicableId
-      summary: Returns a replicable file from store (via CDN or sendfile)
+      summary: Retrieve a replicable file
+      description: Retrieves a replicable file for a Geo secondary site. Serves the
+        file through a CDN or sendfile.
       tags:
       - Geo
       responses:
@@ -62724,7 +62751,9 @@ paths:
   "/api/v4/geo/repositories/{gl_repository}/pipeline_refs":
     get:
       operationId: getApiV4GeoRepositoriesGlRepositoryPipelineRefs
-      summary: Returns the list of pipeline refs for the project
+      summary: List all pipeline refs for a project
+      description: Lists all pipeline refs for a project. Secondary runners use them
+        to check the site is up to date.
       tags:
       - Geo
       responses:
@@ -62752,7 +62781,9 @@ paths:
   "/api/v4/geo/status":
     post:
       operationId: postApiV4GeoStatus
-      summary: Posts the current node status to the primary site
+      summary: Create a status for a secondary site
+      description: Creates a status for a secondary Geo site on the primary site,
+        including replication metrics.
       tags:
       - Geo
       responses:
@@ -62775,7 +62806,9 @@ paths:
   "/api/v4/geo/failures":
     post:
       operationId: postApiV4GeoFailures
-      summary: Reports resources that persistently fail verification on a secondary
+      summary: Create a report of persistent verification failures
+      description: Creates a report on the primary site of resources that persistently
+        fail verification on a secondary site.
       tags:
       - Geo
       responses:
@@ -62796,9 +62829,9 @@ paths:
   "/api/v4/geo/proxy_git_ssh/info_refs_upload_pack":
     post:
       operationId: postApiV4GeoProxyGitSshInfoRefsUploadPack
-      summary: |-
-        Responsible for making HTTP GET /repo.git/info/refs?service=git-upload-pack
-                          request from secondary gitlab-shell to primary
+      summary: Proxy a git-upload-pack info/refs request to the primary site
+      description: Proxies a git-upload-pack info/refs request from a secondary site
+        to the primary site.
       tags:
       - Geo
       responses:
@@ -62817,9 +62850,9 @@ paths:
   "/api/v4/geo/proxy_git_ssh/upload_pack":
     post:
       operationId: postApiV4GeoProxyGitSshUploadPack
-      summary: |-
-        Responsible for making HTTP POST /repo.git/git-upload-pack
-                          request from secondary gitlab-shell to primary
+      summary: Proxy a git-upload-pack request to the primary site
+      description: Proxies a git-upload-pack request from a secondary site to the
+        primary site.
       tags:
       - Geo
       responses:
@@ -62838,9 +62871,9 @@ paths:
   "/api/v4/geo/proxy_git_ssh/info_refs_receive_pack":
     post:
       operationId: postApiV4GeoProxyGitSshInfoRefsReceivePack
-      summary: |-
-        Responsible for making HTTP GET /repo.git/info/refs?service=git-receive-pack
-                          request from secondary gitlab-shell to primary
+      summary: Proxy a git-receive-pack info/refs request to the primary site
+      description: Proxies a git-receive-pack info/refs request from a secondary site
+        to the primary site.
       tags:
       - Geo
       responses:
@@ -62859,9 +62892,9 @@ paths:
   "/api/v4/geo/proxy_git_ssh/receive_pack":
     post:
       operationId: postApiV4GeoProxyGitSshReceivePack
-      summary: |-
-        Responsible for making HTTP POST /repo.git/info/refs?service=git-receive-pack
-                          request from secondary gitlab-shell to primary
+      summary: Proxy a git-receive-pack request to the primary site
+      description: Proxies a git-receive-pack request from a secondary site to the
+        primary site.
       tags:
       - Geo
       responses:
@@ -62880,7 +62913,8 @@ paths:
   "/api/v4/geo/node_proxy/{id}/graphql":
     post:
       operationId: postApiV4GeoNodeProxyIdGraphql
-      summary: Query the GraphQL endpoint of an existing Geo node
+      summary: Query the GraphQL endpoint of an existing Geo site
+      description: Queries the GraphQL endpoint of an existing Geo site.
       tags:
       - Geo
       responses:
@@ -76551,6 +76585,8 @@ paths:
     delete:
       operationId: deleteApiV4RunnersManagers
       summary: Delete a registered runner manager
+      description: Deletes a runner manager identified by the runner authentication
+        token and system ID.
       tags:
       - CI runners
       responses:
@@ -76685,6 +76721,8 @@ paths:
     put:
       operationId: putApiV4JobsId
       summary: Update a job
+      description: Updates the state and other attributes of a job. Used by runners
+        while executing a job.
       tags:
       - Jobs
       responses:
@@ -76755,7 +76793,9 @@ paths:
   "/api/v4/jobs/{id}/trace":
     patch:
       operationId: patchApiV4JobsIdTrace
-      summary: Append a patch to the job trace
+      summary: Update the trace of a job
+      description: Updates the trace of a job by appending a chunk of log output.
+        Used by runners while executing a job.
       tags:
       - Jobs
       responses:
@@ -79141,6 +79181,8 @@ paths:
     post:
       operationId: postApiV4GroupsIdTransferToOrganization
       summary: Transfer a group to an organization
+      description: Transfers a group to another organization asynchronously. Requires
+        the Owner role.
       tags:
       - Groups
       responses:
@@ -80671,6 +80713,8 @@ paths:
     head:
       operationId: headApiV4ProjectsIdRepositoryBranchesBranch
       summary: Check if a branch exists
+      description: Checks whether a branch exists in the repository, without returning
+        the branch.
       tags:
       - Branches
       responses:
@@ -80759,6 +80803,9 @@ paths:
     put:
       operationId: putApiV4ProjectsIdRepositoryBranchesBranchProtect
       summary: Protect a single branch
+      description: Protects a single branch, or updates its protection if it is already
+        protected. Only users with the Maintainer role can push or merge unless `developers_can_push`
+        or `developers_can_merge` is `true`.
       tags:
       - Branches
       responses:
@@ -80797,6 +80844,7 @@ paths:
     put:
       operationId: putApiV4ProjectsIdRepositoryBranchesBranchUnprotect
       summary: Unprotect a single branch
+      description: Removes the protection from a single protected branch.
       tags:
       - Branches
       responses:

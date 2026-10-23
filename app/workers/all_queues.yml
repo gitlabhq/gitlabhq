@@ -3016,7 +3016,7 @@
   :queue_namespace: :repository_check
 - :name: snowplow:analytics_snowplow_emitter
   :worker_name: Analytics::SnowplowEmitterWorker
-  :feature_category: :product_analytics
+  :feature_category: :application_instrumentation
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown

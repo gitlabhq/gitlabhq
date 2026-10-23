@@ -18,17 +18,20 @@ description: "User documentation for project and group integrations. Includes a 
 
 You can integrate with external applications to add functionality to GitLab.
 
-You can view and manage integrations for the:
+You can:
 
-- [Instance](../../../administration/settings/project_integration_management.md#configure-default-settings-for-an-integration) (GitLab Self-Managed)
-- [Group](#manage-group-default-settings-for-a-project-integration)
+- [Set default settings for an integration](#default-settings-for-an-integration) that groups and projects inherit.
+- [Choose default or custom settings](#choose-default-or-custom-settings-for-an-integration) for an integration in a project or group.
 
-You can use:
+## Default settings for an integration
 
-- [Instance or group default settings for a project integration](#use-instance-or-group-default-settings-for-a-project-integration)
-- [Custom settings for a project or group integration](#use-custom-settings-for-a-project-or-group-integration)
+Default settings for an integration are set for an organization or a group.
+Groups and projects in that organization or group inherit them.
+Default settings are inherited in this order: organization, then group, then project.
+To set default settings for an organization, see
+[integration administration](../../../administration/settings/project_integration_management.md#configure-default-settings-for-an-integration).
 
-## Manage group default settings for a project integration
+### Manage group default settings for a project integration
 
 Prerequisites:
 
@@ -62,8 +65,8 @@ When you make further changes to the group defaults:
 - Subgroups and projects with custom settings selected for the integration are not immediately affected and
   may choose to use the latest defaults at any time.
 
-If [instance settings](../../../administration/settings/project_integration_management.md#configure-default-settings-for-an-integration)
-have also been configured for the same integration, projects in the group inherit settings from the group.
+If both the organization and the group have default settings for the same integration,
+projects in the group use the group settings.
 
 Only the entire settings for an integration can be inherited. Per-field inheritance
 is proposed in [epic 2137](https://gitlab.com/groups/gitlab-org/-/work_items/2137).
@@ -83,13 +86,18 @@ To remove a group default setting:
 
 Resetting a group default setting removes integrations that use default settings and belong to a project or subgroup of the group.
 
-## Use instance or group default settings for a project integration
+## Choose default or custom settings for an integration
+
+When you open an integration in a project or group, a dropdown list shows whether the integration uses default settings or custom settings, and which level the defaults are inherited from.
+On an instance with a single organization, defaults set in the **Admin** area show as inherited from the instance level.
+
+### Use default settings
 
 Prerequisites:
 
 - You must have the Maintainer or Owner role for the project.
 
-To use instance or group default settings for a project integration:
+To use the inherited default settings for a project integration:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Settings** > **Integrations**.
@@ -99,7 +107,7 @@ To use instance or group default settings for a project integration:
 1. Complete the fields.
 1. Select **Save changes**.
 
-## Use custom settings for a project or group integration
+### Use custom settings for a project or group integration
 
 Prerequisites:
 

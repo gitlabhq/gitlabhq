@@ -410,6 +410,20 @@ Kinds of flow triggers.
 | `EVENT` | Flow trigger that runs when an event occurs. |
 | `SCHEDULED` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.6.<br/><br/>Flow trigger that runs on a schedule. |
 
+## `AiFlowTriggerLastRunStatus`
+
+Status of the last run of a flow trigger.
+
+| Value | Description |
+| ----- | ----------- |
+| `AWAITING_INPUT` | Run is paused or waiting for input or approval. |
+| `CANCELED` | Run was stopped before it finished. |
+| `FAILED` | Run failed. |
+| `NEVER` | Flow trigger has never run. |
+| `PENDING` | Run has been created and has not started. |
+| `RUNNING` | Run is in progress. |
+| `SUCCEEDED` | Run finished successfully. |
+
 ## `AiFlowTriggerRunStatus`
 
 Status of a flow trigger run.
@@ -431,8 +445,12 @@ Values for sorting AI flow triggers.
 | ----- | ----------- |
 | `CREATED_ASC` | Created at ascending order. |
 | `CREATED_DESC` | Created at descending order. |
+| `LAST_RUN_ASC` | Last run at ascending order. Flow triggers that never ran come last. |
+| `LAST_RUN_DESC` | Last run at descending order. Flow triggers that never ran come last. |
 | `NAME_ASC` | Name by ascending order. |
 | `NAME_DESC` | Name by descending order. |
+| `TOTAL_RUNS_ASC` | Number of runs in the last 30 days by ascending order. |
+| `TOTAL_RUNS_DESC` | Number of runs in the last 30 days by descending order. |
 | `UPDATED_ASC` | Updated at ascending order. |
 | `UPDATED_DESC` | Updated at descending order. |
 
@@ -6076,7 +6094,6 @@ Name of the feature that the callout is for.
 | `DUO_PANEL_REQUEST_PAINTED_DOOR` | Callout feature name for duo_panel_request_painted_door. |
 | `END_OF_TRIAL_MODAL` | Callout feature name for end_of_trial_modal. |
 | `ENFORCEMENT_AT_LIMIT_ALERT` | Callout feature name for enforcement_at_limit_alert. |
-| `EXPIRED_DUO_ENTERPRISE_TRIAL_WIDGET` | Callout feature name for expired_duo_enterprise_trial_widget. |
 | `EXPIRED_TRIAL_STATUS_WIDGET` | Callout feature name for expired_trial_status_widget. |
 | `EXPLORE_PREMIUM_REQUEST_PAINTED_DOOR` | Callout feature name for explore_premium_request_painted_door. |
 | `FREE_GROUP_LIMITED_ALERT` | Callout feature name for free_group_limited_alert. |

@@ -9,6 +9,16 @@ RSpec.describe Namespaces::StatePropagationService, feature_category: :groups_an
 
   subject(:service) { described_class.new(root_group.id, 'archived') }
 
+  shared_examples 'does not log propagation start or completion' do
+    it 'does not log propagation start or completion' do
+      allow(Gitlab::AppLogger).to receive(:info).and_call_original
+      expect(Gitlab::AppLogger).not_to receive(:info)
+        .with(hash_including(Labkit::Fields::LOG_MESSAGE => a_string_starting_with('Namespace state propagation')))
+
+      service.execute
+    end
+  end
+
   describe '#execute' do
     let!(:propagation) do
       create(:namespace_state_propagation, :ancestor_inherited_to_archived, namespace: root_group)
@@ -17,9 +27,9 @@ RSpec.describe Namespaces::StatePropagationService, feature_category: :groups_an
     it 'marks the outbox record as processing before propagating' do
       statuses = []
 
-      allow(service).to receive(:propagate).and_wrap_original do |method, *args|
+      allow(Namespace).to receive(:overwrite_state_in_batch).and_wrap_original do |method, *args, **kwargs|
         statuses << propagation.reload.status
-        method.call(*args)
+        method.call(*args, **kwargs)
       end
 
       service.execute
@@ -103,6 +113,46 @@ RSpec.describe Namespaces::StatePropagationService, feature_category: :groups_an
       expect(Gitlab::NamespaceStatePropagation::Metrics).to have_received(:increment_batches).with('archived').twice
     end
 
+    describe 'logging' do
+      before do
+        allow(Gitlab::AppLogger).to receive(:info).and_call_original
+      end
+
+      it 'logs the propagation start' do
+        expect(Gitlab::AppLogger).to receive(:info).with(hash_including(
+          Labkit::Fields::CLASS_NAME => 'Namespaces::StatePropagationService',
+          Labkit::Fields::LOG_MESSAGE => 'Namespace state propagation started',
+          Labkit::Fields::GL_NAMESPACE_ID => root_group.id,
+          'source_state' => 'ancestor_inherited',
+          'target_state' => 'archived'
+        ))
+
+        service.execute
+      end
+
+      it 'logs the propagation completion' do
+        root_group.update!(state: :archived)
+        stub_const("#{described_class}::STATE_PROPAGATION_ITERATOR_BATCH_SIZE", 1)
+        allow(Gitlab::Metrics::System).to receive(:monotonic_time).and_return(100.0)
+        allow(Namespace).to receive(:overwrite_state_in_batch).and_wrap_original do |method, *args, **kwargs|
+          allow(Gitlab::Metrics::System).to receive(:monotonic_time).and_return(101.2345678)
+          method.call(*args, **kwargs)
+        end
+
+        expect(Gitlab::AppLogger).to receive(:info).with(hash_including(
+          Labkit::Fields::CLASS_NAME => 'Namespaces::StatePropagationService',
+          Labkit::Fields::LOG_MESSAGE => 'Namespace state propagation completed',
+          Labkit::Fields::GL_NAMESPACE_ID => root_group.id,
+          'target_state' => 'archived',
+          'batch_count' => 2,
+          Labkit::Fields::DURATION_S => 1.234568,
+          'descendants_updated' => 2
+        ))
+
+        service.execute
+      end
+    end
+
     context 'when a descendant is in a non-overwritable state' do
       before do
         leaf_group.update!(state: :deletion_scheduled)
@@ -143,6 +193,8 @@ RSpec.describe Namespaces::StatePropagationService, feature_category: :groups_an
 
         service.execute
       end
+
+      it_behaves_like 'does not log propagation start or completion'
     end
 
     context 'when the outbox record does not exist' do
@@ -160,6 +212,8 @@ RSpec.describe Namespaces::StatePropagationService, feature_category: :groups_an
 
         service.execute
       end
+
+      it_behaves_like 'does not log propagation start or completion'
     end
 
     context 'when the outbox record is already processing' do
@@ -196,11 +250,21 @@ RSpec.describe Namespaces::StatePropagationService, feature_category: :groups_an
 
         service.execute
       end
+
+      it_behaves_like 'does not log propagation start or completion'
     end
 
     context 'when propagation fails partway through' do
       before do
-        allow(service).to receive(:propagate).and_raise(ActiveRecord::StatementInvalid)
+        stub_const("#{described_class}::STATE_PROPAGATION_ITERATOR_BATCH_SIZE", 1)
+        calls = 0
+
+        allow(Namespace).to receive(:overwrite_state_in_batch).and_wrap_original do |method, *args, **kwargs|
+          calls += 1
+          raise ActiveRecord::StatementInvalid, 'statement failed' if calls > 1
+
+          method.call(*args, **kwargs)
+        end
       end
 
       it 'leaves the outbox record in place as processing for CRON recovery', :aggregate_failures do
@@ -214,6 +278,24 @@ RSpec.describe Namespaces::StatePropagationService, feature_category: :groups_an
         expect(Gitlab::NamespaceStatePropagation::Metrics).not_to receive(:observe_duration)
 
         expect { service.execute }.to raise_error(ActiveRecord::StatementInvalid)
+      end
+
+      it 'logs the failure and re-raises without logging completion', :aggregate_failures do
+        allow(Gitlab::AppLogger).to receive(:info).and_call_original
+        expect(Gitlab::AppLogger).to receive(:error).with(hash_including(
+          Labkit::Fields::CLASS_NAME => 'Namespaces::StatePropagationService',
+          Labkit::Fields::LOG_MESSAGE => 'Namespace state propagation failed',
+          Labkit::Fields::GL_NAMESPACE_ID => root_group.id,
+          'target_state' => 'archived',
+          Labkit::Fields::ERROR_TYPE => 'ActiveRecord::StatementInvalid',
+          Labkit::Fields::ERROR_MESSAGE => 'statement failed'
+        ))
+        expect(Gitlab::AppLogger).not_to receive(:info)
+          .with(hash_including(Labkit::Fields::LOG_MESSAGE => 'Namespace state propagation completed'))
+
+        expect { service.execute }.to raise_error(ActiveRecord::StatementInvalid)
+
+        expect(propagation.reload).to be_status_processing
       end
     end
   end

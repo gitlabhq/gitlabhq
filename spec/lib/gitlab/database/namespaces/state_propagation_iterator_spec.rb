@@ -156,6 +156,27 @@ RSpec.describe Gitlab::Database::Namespaces::StatePropagationIterator, feature_c
       end
     end
 
+    context 'when the cursor is rewound past a boundary' do
+      it 'logs the rewind' do
+        allow(Gitlab::AppLogger).to receive(:info).and_call_original
+        # The second batch ends at project3 ([group, subgroup1, subsubgroup2, project3]) and
+        # rewinds to subgroup1's next sibling ([group, subgroup2]).
+        expect(Gitlab::AppLogger).to receive(:info).with(hash_including(
+          Labkit::Fields::CLASS_NAME => 'Gitlab::Database::Namespaces::StatePropagationIterator',
+          Labkit::Fields::LOG_MESSAGE => 'Namespace state propagation cursor rewound',
+          Labkit::Fields::GL_NAMESPACE_ID => group.id,
+          'boundary_id' => subgroup1.id,
+          'boundary_state' => 'archived',
+          'depth_before' => 4,
+          'depth_after' => 2
+        )).once
+
+        run_with_mutation do |seen|
+          subgroup1.update!(state: :archived) if seen.size == 1
+        end
+      end
+    end
+
     context 'when multiple ancestors on the cursor path become boundaries' do
       it 'rewinds to the shallowest boundary and skips its entire subtree', :aggregate_failures do
         batches = run_with_mutation do |seen|
@@ -195,6 +216,16 @@ RSpec.describe Gitlab::Database::Namespaces::StatePropagationIterator, feature_c
         end
 
         expect(on_rewind).not_to have_received(:call)
+      end
+
+      it 'does not log a cursor rewind' do
+        allow(Gitlab::AppLogger).to receive(:info).and_call_original
+        expect(Gitlab::AppLogger).not_to receive(:info)
+          .with(hash_including(Labkit::Fields::LOG_MESSAGE => 'Namespace state propagation cursor rewound'))
+
+        run_with_mutation do |seen|
+          group.update!(state: :archived) if seen.size == 1
+        end
       end
 
       context 'and the cursor was constructed with a stringified current_id' do

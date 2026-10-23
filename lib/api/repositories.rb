@@ -518,6 +518,7 @@ module API
         end
 
         desc 'Retrieve diverging commit counts between two refs' do
+          detail 'Retrieves the number of commits by which the `to` ref is ahead of and behind the `from` ref.'
           success Entities::DivergingCommitCount
           failure [{ code: 400, message: 'Bad request' }, { code: 401, message: 'Unauthorized' }, { code: 403, message: 'Forbidden' }, { code: 404, message: 'Not found' }, { code: 429, message: 'Too many requests' }]
           tags ['repositories']

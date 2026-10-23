@@ -70,10 +70,17 @@ RSpec.describe Mcp::Tools::Notes::SaveNoteService, feature_category: :mcp_server
             description: 'Internal ID of the work item. Provide with project_id or group_id. Mutually ' \
               'exclusive with merge_request_iid'
           },
+          method: {
+            type: 'string',
+            enum: %w[create_note reply_discussion resolve_discussion],
+            description: 'The write operation to perform. Defaults to create_note, or to reply_discussion ' \
+              'when discussion_id is given. Fill only the parameters listed for the chosen method; ' \
+              'other parameters are rejected.'
+          },
           body: {
             type: 'string',
-            description: 'Content of the note/comment (max 1048576 characters). Lines beginning with ' \
-              '"/" are rejected to avoid triggering quick actions such as /merge',
+            description: 'Content of the note/comment (create_note, reply_discussion; max 1048576 characters). ' \
+              'Lines beginning with "/" are rejected to avoid triggering quick actions such as /merge',
             maxLength: 1_048_576
           },
           internal: {
@@ -82,11 +89,15 @@ RSpec.describe Mcp::Tools::Notes::SaveNoteService, feature_category: :mcp_server
           },
           discussion_id: {
             type: 'string',
-            description: 'Global ID of the discussion to reply to (format: gid://gitlab/Discussion/<id>). ' \
+            description: 'Discussion to reply to (reply_discussion) or to resolve or unresolve ' \
+              '(resolve_discussion). Accepts the global ID (gid://gitlab/Discussion/<id>) or the bare <id>. ' \
               'If omitted, creates a new top-level note'
+          },
+          resolved: {
+            type: 'boolean',
+            description: 'true resolves the discussion, false unresolves it (resolve_discussion)'
           }
-        },
-        required: %w[body]
+        }
       })
     end
   end
@@ -115,6 +126,129 @@ RSpec.describe Mcp::Tools::Notes::SaveNoteService, feature_category: :mcp_server
 
         expect(result[:isError]).to be(false)
         expect(result[:structuredContent]['note']['body']).to eq('Test comment')
+      end
+    end
+
+    context 'with method resolve_discussion on a work item' do
+      let_it_be_with_reload(:discussion_note) do
+        create(:discussion_note_on_issue, project: project, noteable: work_item)
+      end
+
+      let(:identification) { { project_id: project.id.to_s, work_item_iid: work_item.iid } }
+
+      it 'resolves and unresolves the discussion', :aggregate_failures do
+        result = service.execute(
+          request: request,
+          params: { arguments: identification.merge(method: 'resolve_discussion',
+            discussion_id: discussion_note.discussion_id, resolved: true) }
+        )
+
+        expect(result[:isError]).to be(false)
+        expect(result[:structuredContent]['method']).to eq('resolve_discussion')
+        expect(result[:structuredContent]['resolved']).to be(true)
+        expect(discussion_note.reload.resolved?).to be(true)
+
+        result = service.execute(
+          request: request,
+          params: { arguments: identification.merge(method: 'resolve_discussion',
+            discussion_id: discussion_note.discussion_id, resolved: false) }
+        )
+
+        expect(result[:isError]).to be(false)
+        expect(result[:structuredContent]['resolved']).to be(false)
+        expect(discussion_note.reload.resolved?).to be(false)
+      end
+
+      it 'returns a validation error when resolved is missing' do
+        result = service.execute(
+          request: request,
+          params: { arguments: identification.merge(method: 'resolve_discussion',
+            discussion_id: discussion_note.discussion_id) }
+        )
+
+        expect(result[:isError]).to be(true)
+        expect(result[:content].first[:text])
+          .to include('Missing required parameters for resolve_discussion: resolved')
+      end
+    end
+
+    context 'when a parameter does not belong to the chosen method' do
+      let(:identification) { { project_id: project.id.to_s, work_item_iid: work_item.iid } }
+
+      it 'rejects body with resolve_discussion', :aggregate_failures do
+        result = service.execute(
+          request: request,
+          params: { arguments: identification.merge(method: 'resolve_discussion', discussion_id: 'abc',
+            resolved: true, body: 'ignored') }
+        )
+
+        expect(result[:isError]).to be(true)
+        expect(result[:content].first[:text])
+          .to include("Parameters not valid for method 'resolve_discussion': body")
+      end
+
+      it 'rejects resolved with create_note', :aggregate_failures do
+        result = service.execute(
+          request: request,
+          params: { arguments: identification.merge(method: 'create_note', body: 'Hi', resolved: true) }
+        )
+
+        expect(result[:isError]).to be(true)
+        expect(result[:content].first[:text]).to include("Parameters not valid for method 'create_note': resolved")
+      end
+
+      context 'when method is omitted and discussion_id is present' do
+        let_it_be(:discussion_note) do
+          create(:discussion_note_on_issue, project: project, noteable: work_item)
+        end
+
+        it 'defaults to reply_discussion and accepts internal: false', :aggregate_failures do
+          result = service.execute(
+            request: request,
+            params: { arguments: identification.merge(discussion_id: discussion_note.discussion_id,
+              body: 'A reply', internal: false) }
+          )
+
+          expect(result[:isError]).to be(false)
+          expect(result[:structuredContent]['note']['body']).to eq('A reply')
+          expect(result[:structuredContent]['note']['discussion']['id'])
+            .to eq(discussion_note.discussion.to_global_id.to_s)
+        end
+      end
+    end
+
+    context 'when a required parameter is missing' do
+      let(:identification) { { project_id: project.id.to_s, work_item_iid: work_item.iid } }
+
+      it 'rejects create_note without body' do
+        result = service.execute(request: request, params: { arguments: identification })
+
+        expect(result[:isError]).to be(true)
+        expect(result[:content].first[:text]).to include('Missing required parameters for create_note: body')
+      end
+
+      it 'rejects reply_discussion without discussion_id' do
+        result = service.execute(
+          request: request,
+          params: { arguments: identification.merge(method: 'reply_discussion', body: 'A reply') }
+        )
+
+        expect(result[:isError]).to be(true)
+        expect(result[:content].first[:text])
+          .to include('Missing required parameters for reply_discussion: discussion_id')
+      end
+    end
+
+    context 'when method is not in the enum' do
+      let(:params) do
+        { arguments: { project_id: project.id.to_s, work_item_iid: work_item.iid, method: 'approve', body: 'x' } }
+      end
+
+      it 'returns a validation error response' do
+        result = service.execute(request: request, params: params)
+
+        expect(result[:isError]).to be(true)
+        expect(result[:content].first[:text]).to include("Invalid method: 'approve'")
       end
     end
 

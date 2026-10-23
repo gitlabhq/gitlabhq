@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Tracking::AiContext, feature_category: :product_analytics do
+RSpec.describe Gitlab::Tracking::AiContext, feature_category: :application_instrumentation do
   describe '#to_context' do
     let(:properties) do
       {

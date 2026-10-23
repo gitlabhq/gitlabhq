@@ -169,6 +169,28 @@ As a result, after the outbox drains, a gauge can report a stale value from a pr
 `StatePropagationCronWorker` failures are not counted separately.
 Use the standard `sidekiq_jobs_failed_total` metric for the worker instead.
 
+## Logging
+
+Propagation writes structured log entries to `Gitlab::AppLogger`.
+Each event has a distinct `message` value that you can search for:
+
+| `message`                                    | Level   | Fields |
+|----------------------------------------------|---------|--------|
+| `Namespace state propagation started`        | `info`  | `class_name`, `gl_namespace_id`, `source_state`, `target_state` |
+| `Namespace state propagation completed`      | `info`  | `class_name`, `gl_namespace_id`, `target_state`, `batch_count`, `duration_s`, `descendants_updated` |
+| `Namespace state propagation cursor rewound` | `info`  | `class_name`, `gl_namespace_id`, `boundary_id`, `boundary_state`, `depth_before`, `depth_after` |
+| `Namespace state propagation failed`         | `error` | `class_name`, `gl_namespace_id`, `target_state`, `error_type`, `error_message` |
+
+In these entries:
+
+- `gl_namespace_id` is the namespace where the propagation started.
+- `descendants_updated` counts only the rows that the conditional update changed, so the value can be lower than the number of namespaces visited.
+- `duration_s` covers only the batch walk.
+- `depth_before` and `depth_after` are the cursor path lengths before and after the iterator rewinds past a boundary.
+
+No entry is logged when the outbox record does not exist, when no descendant states can be overwritten, or when another job has already claimed the record.
+After the failure is logged, the error is raised again, so retry and reconciliation behave as before.
+
 ## Walkthrough
 
 Consider this hierarchy, where each node shows its current state:

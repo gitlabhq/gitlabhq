@@ -155,6 +155,10 @@ RSpec.describe IntegrationsHelper, feature_category: :integrations do
       specify do
         expect(subject[:redirect_to]).to eq('/services')
       end
+
+      it 'links correctly to documentation on default integration settings' do
+        expect(subject[:learn_more_path]).to end_with('#choose-default-or-custom-settings-for-an-integration')
+      end
     end
 
     context 'with Jira integration' do

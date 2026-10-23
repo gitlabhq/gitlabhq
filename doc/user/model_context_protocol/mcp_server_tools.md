@@ -657,11 +657,12 @@ Show the conflicts for merge request 42 in project gitlab-org/gitlab
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241114) in GitLab 19.2.
 - [Replaced](https://gitlab.com/gitlab-org/gitlab/-/work_items/605848) `create_merge_request_note` and `create_workitem_note` tools in GitLab 19.4. Both original tool names continue to work as aliases.
+- `method` and `resolved` parameters [added](https://gitlab.com/gitlab-org/gitlab/-/work_items/617756) in GitLab 19.5. `body` is no longer required for every call.
 
 {{< /history >}}
 
-Adds a comment to a GitLab merge request or work item, or replies to an existing discussion thread,
-as the authenticated user.
+Adds a comment to a GitLab merge request or work item, replies to an existing discussion thread,
+or resolves or unresolves a discussion thread, as the authenticated user.
 
 | Parameter           | Type    | Required | Description |
 |---------------------|---------|----------|-------------|
@@ -670,9 +671,14 @@ as the authenticated user.
 | `group_id`          | string  | No       | ID or path of the group. Required with `work_item_iid` for group-level work items. |
 | `merge_request_iid` | integer | No       | Internal ID of the merge request. Provide with `project_id`. Mutually exclusive with `work_item_iid`. |
 | `work_item_iid`     | integer | No       | Internal ID of the work item. Provide with `project_id` or `group_id`. Mutually exclusive with `merge_request_iid`. |
-| `body`              | string  | Yes      | Content of the note. Lines cannot start with `/` to avoid triggering quick actions (for example, `/merge`). |
+| `method`            | string  | No       | The write operation to perform: `create_note`, `reply_discussion`, or `resolve_discussion`[^resolve-discussion]. Defaults to `create_note`, or to `reply_discussion` when `discussion_id` is given. Fill only the parameters listed for the chosen method; other parameters are rejected. |
+| `body`              | string  | No       | Content of the note. Required for `create_note` and `reply_discussion`. Lines cannot start with `/` to avoid triggering quick actions (for example, `/merge`). |
 | `internal`          | boolean | No       | Marks the note as internal (visible only to members with at least the Reporter role). Default is `false`. |
-| `discussion_id`     | string  | No       | Global ID of the discussion to reply to (in the format `gid://gitlab/Discussion/<id>`). If missing, creates a new top-level note. |
+| `discussion_id`     | string  | No       | Discussion to reply to (`reply_discussion`) or to resolve or unresolve (`resolve_discussion`). Accepts the global ID (in the format `gid://gitlab/Discussion/<id>`) or the bare `<id>`. If missing, creates a new top-level note. |
+| `resolved`          | boolean | No       | `true` resolves the discussion, `false` unresolves it. Required for `resolve_discussion`. |
+
+[^resolve-discussion]: For `resolve_discussion`, the tool returns the `method`, the `discussion_id` as a global ID,
+the new `resolved` state, and the `web_url` of the first note in the thread.
 
 Examples:
 
@@ -686,6 +692,12 @@ Examples:
 
   ```plaintext
   Add a comment "This looks good to me" to work item 42 in project gitlab-org/gitlab
+  ```
+
+- Resolve a discussion on a work item:
+
+  ```plaintext
+  Resolve the open discussion about the acceptance criteria on work item 42 in project gitlab-org/gitlab
   ```
 
 ## `get_merge_request_notes`

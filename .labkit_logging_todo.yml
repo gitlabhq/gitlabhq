@@ -2096,6 +2096,10 @@ offenses:
   standard_field: Labkit::Fields::REMOTE_IP
 - logger_class: Gitlab::AuditJsonLogger
   callsite: lib/gitlab/audit/auditor.rb
+  deprecated_field: organization_id
+  standard_field: Labkit::Fields::GL_ORGANIZATION_ID
+- logger_class: Gitlab::AuditJsonLogger
+  callsite: lib/gitlab/audit/auditor.rb
   deprecated_field: project_id
   standard_field: Labkit::Fields::GL_PROJECT_ID
 - logger_class: Gitlab::AuditJsonLogger

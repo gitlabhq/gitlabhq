@@ -1,8 +1,8 @@
 <script>
-// eslint-disable-next-line no-restricted-imports
-import { mapState, mapGetters, mapActions } from 'vuex';
+import { mapState, mapActions } from 'pinia';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import statisticsLabels from '../constants';
+import { useAdminStatistics } from '../store';
 
 export default {
   name: 'StatisticsPanelApp',
@@ -15,14 +15,13 @@ export default {
     };
   },
   computed: {
-    ...mapState(['isLoading']),
-    ...mapGetters(['getStatistics']),
+    ...mapState(useAdminStatistics, ['isLoading', 'getStatistics']),
   },
   mounted() {
     this.fetchStatistics();
   },
   methods: {
-    ...mapActions(['fetchStatistics']),
+    ...mapActions(useAdminStatistics, ['fetchStatistics']),
   },
 };
 </script>

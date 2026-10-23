@@ -51,7 +51,6 @@ AllCops:
     - 'builds/**/*'
     - 'file_hooks/**/*'
     - 'workhorse/**/*'
-    - 'cells-mailroom/**/*'
     - 'shared/packages/**/*'
     - 'spec/support/*.git/**/*'  # e.g. spec/support/gitlab-git-test.git
     # projects_controller.rb is used for testing LLM response and is very sensitive to whitespaces.

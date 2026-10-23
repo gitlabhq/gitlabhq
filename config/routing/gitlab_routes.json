@@ -16640,12 +16640,6 @@
     "dottedExample": "/groups/john.doe/bar/-/achievements/new"
   },
   {
-    "template": "/groups/*group_id/-/add_ons/discover_duo_enterprise",
-    "example": "/groups/foo/bar/-/add_ons/discover_duo_enterprise",
-    "acceptsFormat": true,
-    "dottedExample": "/groups/john.doe/bar/-/add_ons/discover_duo_enterprise"
-  },
-  {
     "template": "/groups/*group_id/-/analytics",
     "example": "/groups/foo/bar/-/analytics",
     "acceptsFormat": true,
@@ -25286,12 +25280,6 @@
     "example": "/o/foo/groups/foo/bar/-/achievements/new",
     "acceptsFormat": true,
     "dottedExample": "/o/john.doe/groups/john.doe/bar/-/achievements/new"
-  },
-  {
-    "template": "/o/:organization_path/groups/*group_id/-/add_ons/discover_duo_enterprise",
-    "example": "/o/foo/groups/foo/bar/-/add_ons/discover_duo_enterprise",
-    "acceptsFormat": true,
-    "dottedExample": "/o/john.doe/groups/john.doe/bar/-/add_ons/discover_duo_enterprise"
   },
   {
     "template": "/o/:organization_path/groups/*group_id/-/analytics",

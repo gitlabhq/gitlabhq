@@ -190,7 +190,9 @@ No dedicated Prometheus counter tracks rate limit hits (see the gaps section abo
 ## Audit events
 
 `IngestAuditEventsService` receives events from the GitLab Duo Workflow Service
-by using gRPC, batches them, and enqueues `ProcessAuditEventsWorker`. The worker:
+by using gRPC, batches them, and enqueues `ProcessAuditEventsWorker`.
+When AI audit event storage is off for the project or namespace and streaming is off
+for the organization, the service does not enqueue the worker. The worker:
 
 1. Writes to ClickHouse by using the Redis write buffer (preferred path).
 1. Falls back to PostgreSQL bulk insert when ClickHouse is unavailable.

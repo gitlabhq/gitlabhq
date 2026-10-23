@@ -34,6 +34,23 @@ RSpec.describe Gitlab::Source, feature_category: :shared do
         "#{described_class.send(:group)}/#{described_class.send(:project)}")
     end
 
+    def stub_default_url_options(protocol: 'http', host: 'example.com', port: nil, script_name: '')
+      expect(Gitlab::Application.routes).to receive(:default_url_options)
+        .and_return(protocol: protocol, host: host, port: port, script_name: script_name)
+    end
+
+    context 'when a relative_url_root is configured' do
+      before do
+        stub_version('15.0.0-ee', 'a123a123')
+        allow(Gitlab.config.gitlab).to receive(:relative_url_root).and_return('/gitlab')
+        stub_default_url_options(script_name: '/gitlab')
+      end
+
+      it 'strips the relative_url_root prefix from the path' do
+        expect(release_url).to eq("#{release_path}/-/tags/v15.0.0-ee")
+      end
+    end
+
     context 'when not on a pre-release' do
       before do
         stub_version('15.0.0-ee', 'a123a123')

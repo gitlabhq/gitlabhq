@@ -377,6 +377,7 @@ module API
       end
 
       desc 'Authorize create files upload' do
+        detail 'Authorizes an upload for creating a file with Workhorse before the request is handled by Rails.'
         success code: 200
         tags %w[files]
         failure [
@@ -423,6 +424,7 @@ module API
       end
 
       desc 'Authorize update files upload' do
+        detail 'Authorizes an upload for updating a file with Workhorse before the request is handled by Rails.'
         success code: 200
         failure [
           { code: 400, message: 'Bad Request' },

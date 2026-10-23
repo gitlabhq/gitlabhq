@@ -1,28 +1,25 @@
 import { GlSkeletonLoader } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import AxiosMockAdapter from 'axios-mock-adapter';
+import { createTestingPinia } from '@pinia/testing';
+import { PiniaVuePlugin } from 'pinia';
 import Vue from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import StatisticsPanelApp from '~/admin/statistics_panel/components/app.vue';
 import statisticsLabels from '~/admin/statistics_panel/constants';
-import createStore from '~/admin/statistics_panel/store';
-import axios from '~/lib/utils/axios_utils';
+import { useAdminStatistics } from '~/admin/statistics_panel/store';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import mockStatistics from '../mock_data';
 
-Vue.use(Vuex);
+Vue.use(PiniaVuePlugin);
 
 describe('Admin statistics app', () => {
   let wrapper;
+  let pinia;
   let store;
-  let axiosMock;
 
   const createComponent = () => {
     wrapper = shallowMount(StatisticsPanelApp, {
-      store,
+      pinia,
       stubs: {
         CrudComponent,
       },
@@ -30,17 +27,24 @@ describe('Admin statistics app', () => {
   };
 
   beforeEach(() => {
-    axiosMock = new AxiosMockAdapter(axios);
-    axiosMock.onGet(/api\/(.*)\/application\/statistics/).reply(HTTP_STATUS_OK);
-    store = createStore();
+    pinia = createTestingPinia();
+    store = useAdminStatistics();
   });
 
   const findStats = (idx) => wrapper.findAll('.js-stats').at(idx);
 
+  describe('on mount', () => {
+    it('fetches the statistics', () => {
+      createComponent();
+
+      expect(store.fetchStatistics).toHaveBeenCalledTimes(1);
+    });
+  });
+
   describe('template', () => {
     describe('when app is loading', () => {
       it('renders a skeleton loader', () => {
-        store.dispatch('requestStatistics');
+        store.isLoading = true;
         createComponent();
 
         expect(wrapper.findComponent(GlSkeletonLoader).exists()).toBe(true);
@@ -62,7 +66,7 @@ describe('Admin statistics app', () => {
         ${'activeUsers'}   | ${50}  | ${7}
       `('renders the count for the $statistic statistic', ({ statistic, count, index }) => {
         const label = statisticsLabels[statistic];
-        store.dispatch('receiveStatisticsSuccess', statistics);
+        store.statistics = statistics;
         createComponent();
 
         expect(findStats(index).text()).toContain(label);

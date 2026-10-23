@@ -13079,6 +13079,9 @@ msgstr ""
 msgid "ArtifactRegistry|A virtual repository combines other repositories behind one endpoint. It resolves artifacts from an ordered list of upstream repositories."
 msgstr ""
 
+msgid "ArtifactRegistry|Access for %{name}"
+msgstr ""
+
 msgid "ArtifactRegistry|Access is limited to members with explicit permissions only."
 msgstr ""
 
@@ -13139,6 +13142,15 @@ msgstr ""
 msgid "ArtifactRegistry|Another role change is in progress. Try again."
 msgstr ""
 
+msgid "ArtifactRegistry|Artifact Admin"
+msgstr ""
+
+msgid "ArtifactRegistry|Artifact Contributor"
+msgstr ""
+
+msgid "ArtifactRegistry|Artifact Manager"
+msgstr ""
+
 msgid "ArtifactRegistry|Artifact Registry"
 msgstr ""
 
@@ -13164,6 +13176,9 @@ msgid "ArtifactRegistry|Artifact Registry was disabled."
 msgstr ""
 
 msgid "ArtifactRegistry|Artifact Registry was enabled."
+msgstr ""
+
+msgid "ArtifactRegistry|Artifact Viewer"
 msgstr ""
 
 msgid "ArtifactRegistry|Artifact caching period"
@@ -13214,6 +13229,12 @@ msgid "ArtifactRegistry|At least one revocation is required."
 msgstr ""
 
 msgid "ArtifactRegistry|Authentication (optional)"
+msgstr ""
+
+msgid "ArtifactRegistry|Browse repositories and pull artifacts. Cannot publish or delete."
+msgstr ""
+
+msgid "ArtifactRegistry|Browse, pull, and publish artifacts (for example, from CI/CD jobs). Cannot delete artifacts or change repository settings."
 msgstr ""
 
 msgid "ArtifactRegistry|Build tool"
@@ -13530,6 +13551,9 @@ msgid_plural "ArtifactRegistry|Index · %d platforms"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "ArtifactRegistry|Inherited members"
+msgstr ""
+
 msgid "ArtifactRegistry|Install"
 msgstr ""
 
@@ -13588,6 +13612,9 @@ msgid "ArtifactRegistry|Loading versions."
 msgstr ""
 
 msgid "ArtifactRegistry|Lowercase letters, numbers, hyphens (-), and underscores (_) only. The repository name cannot be changed after creation."
+msgstr ""
+
+msgid "ArtifactRegistry|Manage access"
 msgstr ""
 
 msgid "ArtifactRegistry|Manifest %{digest}"
@@ -13761,6 +13788,9 @@ msgstr ""
 msgid "ArtifactRegistry|Packages that use the default registry now resolve through this repository. Scope-specific registry settings still apply."
 msgstr ""
 
+msgid "ArtifactRegistry|Permission"
+msgstr ""
+
 msgid "ArtifactRegistry|Platform"
 msgstr ""
 
@@ -13777,6 +13807,9 @@ msgid "ArtifactRegistry|Private"
 msgstr ""
 
 msgid "ArtifactRegistry|Publish"
+msgstr ""
+
+msgid "ArtifactRegistry|Publish and delete artifacts. Update settings for repositories and virtual repository upstreams. Cannot create or delete repositories, or manage access to the registry."
 msgstr ""
 
 msgid "ArtifactRegistry|Publish command:"
@@ -13942,6 +13975,9 @@ msgid "ArtifactRegistry|Revealed %{checksums} for %{name}."
 msgstr ""
 
 msgid "ArtifactRegistry|Revocation %{number} on resource %{resource_id}: %{message}"
+msgstr ""
+
+msgid "ArtifactRegistry|Role"
 msgstr ""
 
 msgid "ArtifactRegistry|Run the following command with %{linkStart}glab%{linkEnd} 1.115 or later:"
@@ -14203,6 +14239,9 @@ msgid "ArtifactRegistry|Versions"
 msgstr ""
 
 msgid "ArtifactRegistry|View pull command"
+msgstr ""
+
+msgid "ArtifactRegistry|View, create, and delete repositories. Manage member access to the registry."
 msgstr ""
 
 msgid "ArtifactRegistry|Virtual"
@@ -31868,9 +31907,6 @@ msgstr ""
 msgid "DiscordService|Send notifications about project events to a Discord channel."
 msgstr ""
 
-msgid "Discover Duo Enterprise"
-msgstr ""
-
 msgid "Discover Duo Pro"
 msgstr ""
 
@@ -33614,6 +33650,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Any type"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Any work item"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Approval gate"
 msgstr ""
 
@@ -34046,10 +34085,19 @@ msgstr ""
 msgid "DuoAgentsPlatform|No triggers yet"
 msgstr ""
 
+msgid "DuoAgentsPlatform|None of the available work item types support Software Factory."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Not supported by Software Factory"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Not used by any type"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Not used by the selected types"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Not used by types that support Software Factory"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Note on %{reference}"
@@ -34062,6 +34110,9 @@ msgid "DuoAgentsPlatform|On an event"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Optional. Tell the agent or flow what to do when this condition is met."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Other work items"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Path to configuration file"
@@ -34110,6 +34161,9 @@ msgid "DuoAgentsPlatform|Run command"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Run on"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Run only for Software Factory work items, or only for other work items. Leave empty to run for any work item."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Run only for work items of the selected types. Leave empty to run for any type."
@@ -34235,6 +34289,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Select work item types"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Select work items"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Service account"
 msgstr ""
 
@@ -34251,6 +34308,12 @@ msgid "DuoAgentsPlatform|Sessions"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Set work item status"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Software Factory"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Software Factory work items"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Something went wrong while fetching Agent Flows"
@@ -34431,6 +34494,9 @@ msgid "DuoAgentsPlatform|What this trigger runs."
 msgstr ""
 
 msgid "DuoAgentsPlatform|When the session finishes"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Work item types"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Write file"
@@ -35164,57 +35230,6 @@ msgid "DuoDependencyBump|Use AI to analyze and fix breaking changes in failed pi
 msgstr ""
 
 msgid "DuoDependencyBump|Would you like to turn on dependency version bumping now? You can also turn on Agentic Breaking Change Resolution without enabling the profile."
-msgstr ""
-
-msgid "DuoEnterpriseDiscover|AI Impact Dashboard measures the ROI of AI"
-msgstr ""
-
-msgid "DuoEnterpriseDiscover|AI-assisted root cause analysis for CI/CD job failures, and suggested fixes to quickly remedy broken pipelines."
-msgstr ""
-
-msgid "DuoEnterpriseDiscover|AI-native vulnerability explanation and resolution features to remediate vulnerabilities and uplevel skills."
-msgstr ""
-
-msgid "DuoEnterpriseDiscover|Advanced troubleshooting"
-msgstr ""
-
-msgid "DuoEnterpriseDiscover|Boost productivity with smart code assistance"
-msgstr ""
-
-msgid "DuoEnterpriseDiscover|Discussion, merge request, and code summaries for efficient and effective communication."
-msgstr ""
-
-msgid "DuoEnterpriseDiscover|Fortify your code"
-msgstr ""
-
-msgid "DuoEnterpriseDiscover|GitLab Duo Code Suggestions"
-msgstr ""
-
-msgid "DuoEnterpriseDiscover|GitLab Duo Code review summary"
-msgstr ""
-
-msgid "DuoEnterpriseDiscover|GitLab Duo Root cause analysis"
-msgstr ""
-
-msgid "DuoEnterpriseDiscover|GitLab Duo Vulnerability explanation"
-msgstr ""
-
-msgid "DuoEnterpriseDiscover|Granular usage data, performance improvements, and productivity metrics to evaluate the effectiveness of AI in software development."
-msgstr ""
-
-msgid "DuoEnterpriseDiscover|Measure the ROI of AI"
-msgstr ""
-
-msgid "DuoEnterpriseDiscover|Summarization and templating"
-msgstr ""
-
-msgid "DuoEnterpriseDiscover|Why GitLab Duo Enterprise?"
-msgstr ""
-
-msgid "DuoEnterpriseDiscover|Write secure code faster with AI-native suggestions in more than 20 languages, and chat with your AI companion throughout development."
-msgstr ""
-
-msgid "DuoEnterpriseDiscover|Your end-to-end AI partner"
 msgstr ""
 
 msgid "DuoEnterprise|AI-assisted root cause analysis"
@@ -90653,12 +90668,6 @@ msgstr ""
 msgid "TrialWidget|%{daysLeft} days left in trial"
 msgstr ""
 
-msgid "TrialWidget|GitLab Duo Enterprise"
-msgstr ""
-
-msgid "TrialWidget|GitLab Duo Enterprise Trial"
-msgstr ""
-
 msgid "TrialWidget|GitLab Ultimate Trial"
 msgstr ""
 
@@ -90672,9 +90681,6 @@ msgid "TrialWidget|Ultimate with GitLab Duo Agent Platform"
 msgstr ""
 
 msgid "TrialWidget|Upgrade"
-msgstr ""
-
-msgid "TrialWidget|Your trial of GitLab Duo Enterprise has ended"
 msgstr ""
 
 msgid "TrialWidget|Your trial of GitLab Ultimate has ended"

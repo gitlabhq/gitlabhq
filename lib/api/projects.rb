@@ -726,7 +726,8 @@ module API
         present_projects forks, request_scope: user_project
       end
 
-      desc 'Check pages access of this project' do
+      desc 'Verify Pages access to a project' do
+        detail 'Verifies if the current user can access GitLab Pages in a specified project.'
         success code: 200
         failure [
           { code: 403, message: 'Unauthenticated' }

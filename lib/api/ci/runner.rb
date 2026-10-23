@@ -100,6 +100,7 @@ module API
         end
 
         desc 'Delete a registered runner manager' do
+          detail 'Deletes a runner manager identified by the runner authentication token and system ID.'
           summary 'Internal endpoint that deletes a runner manager by authentication token and system ID.'
           success code: 204, message: 'Runner manager was deleted'
           failure [[400, 'Bad Request'], [403, 'Forbidden'], [404, 'Not Found']]
@@ -239,6 +240,7 @@ module API
         end
 
         desc 'Update a job' do
+          detail 'Updates the state and other attributes of a job. Used by runners while executing a job.'
           success [
             { code: 200, message: 'Job was updated' },
             { code: 202, message: 'Update accepted' }
@@ -310,7 +312,8 @@ module API
           present job, with: Entities::Ci::RuntimeEnvironmentKey
         end
 
-        desc 'Append a patch to the job trace' do
+        desc 'Update the trace of a job' do
+          detail 'Updates the trace of a job by appending a chunk of log output. Used by runners while executing a job.'
           success code: 202, message: 'Trace was patched'
           failure [[400, 'Missing Content-Range header'],
             [403, 'Forbidden'],

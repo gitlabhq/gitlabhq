@@ -115,6 +115,7 @@ module API
           requires :branch, type: String, desc: 'Name of the branch.'
         end
         desc 'Check if a branch exists' do
+          detail 'Checks whether a branch exists in the repository, without returning the branch.'
           success [{ code: 204, message: 'No Content' }]
           failure [{ code: 404, message: 'Not Found' }]
           tags %w[branches]
@@ -143,6 +144,8 @@ module API
       # in `gitlab-org/gitlab-ce!5081`. The API interface has not been changed (to maintain compatibility),
       # but it works with the changed data model to infer `developers_can_merge` and `developers_can_push`.
       desc 'Protect a single branch' do
+        detail 'Protects a single branch, or updates its protection if it is already protected. Only users with ' \
+          'the Maintainer role can push or merge unless `developers_can_push` or `developers_can_merge` is `true`.'
         success Entities::Branch
         success code: 200, model: Entities::Branch
         failure [{ code: 404, message: '404 Branch Not Found' }]
@@ -186,6 +189,7 @@ module API
 
       # Note: This API will be deprecated in favor of the protected branches API.
       desc 'Unprotect a single branch' do
+        detail 'Removes the protection from a single protected branch.'
         success Entities::Branch
         success code: 200, model: Entities::Branch
         failure [{ code: 404, message: '404 Project Not Found' }, { code: 404, message: '404 Branch Not Found' }]

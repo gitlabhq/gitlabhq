@@ -33,7 +33,8 @@ module API
             content_type :json, 'application/json'
             content_type :json, 'text/plain'
 
-            desc 'Get the settings manifest for Settings Sync' do
+            desc 'Retrieve the settings manifest for Settings Sync' do
+              detail 'Retrieves the manifest of the settings stored for VS Code Settings Sync.'
               success [Entities::VsCodeManifest]
               failure [
                 { code: 401, message: '401 Unauthorized' }
@@ -50,7 +51,8 @@ module API
               present presenter, with: Entities::VsCodeManifest
             end
 
-            desc 'Get a specific setting resource' do
+            desc 'Retrieve a specific setting resource' do
+              detail 'Retrieves a single VS Code setting resource. Returns 204 when the resource does not exist.'
               success [
                 Entities::VsCodeSetting,
                 { code: 204, message: 'No content' }
@@ -87,7 +89,8 @@ module API
               end
             end
 
-            desc 'Get a list of references to one or more vscode setting resources' do
+            desc 'List all references to a VS Code setting resource' do
+              detail 'Lists all references to the stored versions of a VS Code setting resource.'
               success [Entities::VsCodeSettingReference]
               failure [
                 { code: 400, message: '400 bad request' },
@@ -106,7 +109,8 @@ module API
                 settings_context_hash: params[:settings_context_hash]
             end
 
-            desc 'Creates or updates a specific setting' do
+            desc 'Create or update a specific setting' do
+              detail 'Creates a VS Code setting resource, or updates it if it already exists.'
               success [{ code: 200, message: 'OK' }]
               failure [
                 { code: 400, message: 'Bad request' },
@@ -137,7 +141,8 @@ module API
               end
             end
 
-            desc 'Deletes all user vscode setting resources' do
+            desc 'Delete all VS Code setting resources for a user' do
+              detail 'Deletes all VS Code setting resources of the current user.'
               success [{ code: 200, message: 'OK' }]
               failure [
                 { code: 401, message: '401 Unauthorized' }

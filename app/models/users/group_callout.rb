@@ -35,7 +35,7 @@ module Users
       namespace_over_storage_users_combined_alert: 23, # EE-only
       all_seats_used_alert: 24, # EE-only
       # 26 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/262173
-      expired_duo_enterprise_trial_widget: 27, # EE-only
+      # 27 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/261546
       expired_trial_status_widget: 28, # EE-only
       namespace_user_cap_reached_alert: 29, # EE-only,
       # 30 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202983

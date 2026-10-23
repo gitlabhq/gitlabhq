@@ -53,6 +53,10 @@ Tier availability varies by agent. For details, see each agent's page.
 
 ## Duplicate an agent
 
+> [!note]
+> You can duplicate foundational agents on GitLab.com only.
+> On GitLab Self-Managed, GitLab Dedicated, and GitLab Dedicated for Government, you cannot duplicate them.
+
 To make changes to a foundational agent, create a copy of it.
 
 Prerequisites:

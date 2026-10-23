@@ -14,7 +14,8 @@ module API
 
       namespace 'internal' do
         namespace 'coverage' do
-          desc 'Source code paths coverage mapping' do
+          desc 'Retrieve the source code paths coverage mapping' do
+            detail 'Retrieves runtime code coverage collected during end-to-end tests, by file path and line number.'
             success code: 200, message: 'Success'
             failure [
               { code: 401, message: 'Unauthorized' }

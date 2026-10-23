@@ -24193,6 +24193,59 @@
           "possibleTypes": null
         },
         {
+          "kind": "ENUM",
+          "name": "AiFlowTriggerLastRunStatus",
+          "description": "Status of the last run of a flow trigger.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "PENDING",
+              "description": "Run has been created and has not started.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "RUNNING",
+              "description": "Run is in progress.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "AWAITING_INPUT",
+              "description": "Run is paused or waiting for input or approval.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SUCCEEDED",
+              "description": "Run finished successfully.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "FAILED",
+              "description": "Run failed.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CANCELED",
+              "description": "Run was stopped before it finished.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "NEVER",
+              "description": "Flow trigger has never run.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
           "kind": "OBJECT",
           "name": "AiFlowTriggerRunStats",
           "description": "Statistics of the runs of a flow trigger created in the last 30 days.",
@@ -24391,6 +24444,30 @@
             {
               "name": "UPDATED_DESC",
               "description": "Updated at descending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "LAST_RUN_ASC",
+              "description": "Last run at ascending order. Flow triggers that never ran come last.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "LAST_RUN_DESC",
+              "description": "Last run at descending order. Flow triggers that never ran come last.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "TOTAL_RUNS_ASC",
+              "description": "Number of runs in the last 30 days by ascending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "TOTAL_RUNS_DESC",
+              "description": "Number of runs in the last 30 days by descending order.",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -335970,6 +336047,18 @@
                   "deprecationReason": "Status: Experiment. Introduced in GitLab 19.6."
                 },
                 {
+                  "name": "lastRunStatus",
+                  "description": "Filter AI flow triggers by the status of their last run. Introduced in GitLab 19.6: Status: Experiment.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "AiFlowTriggerLastRunStatus",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": true,
+                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.6."
+                },
+                {
                   "name": "sort",
                   "description": "Sort AI flow triggers by the criteria. Introduced in GitLab 19.6: Status: Experiment.",
                   "type": {
@@ -444479,12 +444568,6 @@
             {
               "name": "ALL_SEATS_USED_ALERT",
               "description": "Callout feature name for all_seats_used_alert.",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "EXPIRED_DUO_ENTERPRISE_TRIAL_WIDGET",
-              "description": "Callout feature name for expired_duo_enterprise_trial_widget.",
               "isDeprecated": false,
               "deprecationReason": null
             },

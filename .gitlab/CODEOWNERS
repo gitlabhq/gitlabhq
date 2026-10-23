@@ -50,7 +50,6 @@ config.ru @gitlab-org/maintainers/rails-backend
 /.rubocop_todo/ @gitlab-org/maintainers/rails-backend
 /app/ @gitlab-org/maintainers/rails-backend
 /bin/ @gitlab-org/maintainers/rails-backend
-/cells-mailroom/ @gitlab-org/maintainers/rails-backend
 /config/ @gitlab-org/maintainers/rails-backend
 /domains/ @gitlab-org/maintainers/rails-backend
 /ee/ @gitlab-org/maintainers/rails-backend

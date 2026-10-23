@@ -16,6 +16,7 @@ module Gitlab
                  url_helpers.namespace_project_tag_path(group, project, ref)
                end
 
+        path = path.delete_prefix(Gitlab.config.gitlab.relative_url_root)
         Gitlab::Utils.append_path(host_url, path)
       end
 

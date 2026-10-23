@@ -27,6 +27,8 @@ module Gitlab
       # See the ADR for the full design:
       # https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/group_and_project_operations_and_state_management/decisions/003_state_propagation_model/
       class StatePropagationIterator < ::Gitlab::Database::NamespaceEachBatch
+        include Gitlab::Loggable
+
         def initialize(cursor:, state_filter:, on_rewind: nil)
           super(namespace_class: Namespace, cursor: cursor)
 
@@ -50,7 +52,7 @@ module Gitlab
         #                       restart the walk from the rewound cursor (the
         #                       next safe place past the affected subtree).
         def next_iteration_action(new_cursor)
-          boundary_id = detect_boundary(new_cursor)
+          boundary_id, boundary_state = detect_boundary(new_cursor)
           return [:continue, nil] unless boundary_id
           return [:stop, nil] if boundary_id == @root_id
 
@@ -58,8 +60,20 @@ module Gitlab
           return [:stop, nil] if rewound.nil?
 
           on_rewind&.call
+          log_cursor_rewind(boundary_id, boundary_state, new_cursor, rewound)
 
           [:reseed, rewound]
+        end
+
+        def log_cursor_rewind(boundary_id, boundary_state, new_cursor, rewound)
+          Gitlab::AppLogger.info(build_structured_payload_labkit(
+            Labkit::Fields::LOG_MESSAGE => 'Namespace state propagation cursor rewound',
+            Labkit::Fields::GL_NAMESPACE_ID => @root_id,
+            boundary_id: boundary_id,
+            boundary_state: boundary_state.to_s,
+            depth_before: new_cursor[:depth].size,
+            depth_after: rewound[:depth].size
+          ))
         end
 
         def namespace_exists_query
@@ -74,7 +88,7 @@ module Gitlab
           super.with_state(state_filter)
         end
 
-        # Look at every ancestor on the path we just walked and return the
+        # Look at every ancestor on the path we just walked and return [id, state] of the
         # first one (closest to the root) whose state is no longer in our
         # allow-list. That namespace is the "boundary" -- we must not touch it
         # or anything underneath it. Picking the shallowest one means the
@@ -83,10 +97,10 @@ module Gitlab
           depth = new_cursor[:depth]
           return if depth.empty?
 
-          boundary_ids = namespace_class.where(id: depth).where.not(state: state_filter).pluck(:id)
-          return if boundary_ids.empty?
+          boundaries = namespace_class.where(id: depth).where.not(state: state_filter).pluck(:id, :state)
+          return if boundaries.empty?
 
-          boundary_ids.min_by { |id| depth.index(id) }
+          boundaries.min_by { |(id, _state)| depth.index(id) }
         end
 
         # Build a new cursor that lands just past the boundary's subtree so the

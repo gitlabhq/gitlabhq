@@ -1,7 +1,5 @@
 export { default as vueNoDeprecatedVOnNativeModifier } from './vue-no-deprecated-v-on-native-modifier.mjs';
 
-export { default as vueNoDeprecatedVBindSync } from './vue-no-deprecated-v-bind-sync.mjs';
-
 export { default as gitlabNoHardcodedUrls } from './gitlab-no-hardcoded-urls.mjs';
 
 export { default as gitlabVueNoHardcodedUrls } from './gitlab-vue-no-hardcoded-urls.mjs';

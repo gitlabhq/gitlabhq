@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Analytics::SnowplowEmitterWorker, feature_category: :product_analytics do
+RSpec.describe Analytics::SnowplowEmitterWorker, feature_category: :application_instrumentation do
   let(:worker) { described_class.new }
   let(:endpoint) { 'localhost' }
   let(:options) { {} }

@@ -10,6 +10,8 @@ module Namespaces
   #
   # See https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/group_and_project_operations_and_state_management/decisions/003_state_propagation_model/
   class StatePropagationService
+    include Gitlab::Loggable
+
     STATE_PROPAGATION_ITERATOR_BATCH_SIZE = 200
 
     # Key under which a descendant's pre-deletion state is preserved, shared with StatePreservation.
@@ -37,20 +39,28 @@ module Namespaces
 
       return unless propagation.claim
 
-      start_time = ::Gitlab::Metrics::System.monotonic_time
+      log_started(propagation)
 
       # These steps are intentionally not wrapped in a single transaction: propagation
       # can update very large descendant subtrees in batches, and one transaction would
       # hold locks for too long. If it fails mid-run the record stays `processing` and
       # StatePropagationCronWorker reclaims and re-enqueues it.
-      propagate(propagation, overwritable_states)
+      start_time = Gitlab::Metrics::System.monotonic_time
+
+      result = begin
+        propagate(propagation, overwritable_states)
+      rescue StandardError => e
+        log_failed(e)
+        raise
+      end
+
+      duration = Gitlab::Metrics::System.monotonic_time - start_time
 
       propagation.destroy!
 
-      Gitlab::NamespaceStatePropagation::Metrics.observe_duration(
-        propagation.target_state,
-        ::Gitlab::Metrics::System.monotonic_time - start_time
-      )
+      Gitlab::NamespaceStatePropagation::Metrics.observe_duration(propagation.target_state, duration)
+
+      log_completed(result, duration)
     end
 
     private
@@ -75,8 +85,12 @@ module Namespaces
         on_rewind: -> { Gitlab::NamespaceStatePropagation::Metrics.increment_boundary_rewinds }
       )
 
+      batch_count = 0
+      descendants_updated = 0
+
       iterator.each_batch(of: STATE_PROPAGATION_ITERATOR_BATCH_SIZE) do |ids|
-        Namespace.overwrite_state_in_batch(
+        batch_count += 1
+        descendants_updated += Namespace.overwrite_state_in_batch(
           ids,
           from: overwritable_states,
           to: target_state,
@@ -89,6 +103,38 @@ module Namespaces
 
         Gitlab::NamespaceStatePropagation::Metrics.increment_batches(target_state)
       end
+
+      { batch_count: batch_count, descendants_updated: descendants_updated }
+    end
+
+    def log_started(propagation)
+      Gitlab::AppLogger.info(build_structured_payload_labkit(
+        Labkit::Fields::LOG_MESSAGE => 'Namespace state propagation started',
+        Labkit::Fields::GL_NAMESPACE_ID => namespace_id,
+        source_state: propagation.source_state.to_s,
+        target_state: propagation.target_state.to_s
+      ))
+    end
+
+    def log_completed(result, duration)
+      Gitlab::AppLogger.info(build_structured_payload_labkit(
+        Labkit::Fields::LOG_MESSAGE => 'Namespace state propagation completed',
+        Labkit::Fields::GL_NAMESPACE_ID => namespace_id,
+        target_state: target_state.to_s,
+        batch_count: result[:batch_count],
+        Labkit::Fields::DURATION_S => duration.round(6),
+        descendants_updated: result[:descendants_updated]
+      ))
+    end
+
+    def log_failed(error)
+      Gitlab::AppLogger.error(build_structured_payload_labkit(
+        Labkit::Fields::LOG_MESSAGE => 'Namespace state propagation failed',
+        Labkit::Fields::GL_NAMESPACE_ID => namespace_id,
+        target_state: target_state.to_s,
+        Labkit::Fields::ERROR_TYPE => error.class.name,
+        Labkit::Fields::ERROR_MESSAGE => error.message
+      ))
     end
 
     def preservation_options(source_state, target_state)

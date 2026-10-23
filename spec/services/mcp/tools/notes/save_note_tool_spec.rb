@@ -39,6 +39,15 @@ RSpec.describe Mcp::Tools::Notes::SaveNoteTool, feature_category: :mcp_server do
       expect(operation).to include('mutation createNote')
       expect(operation).to include('createNote(input: $input)')
     end
+
+    context 'with method resolve_discussion' do
+      let(:params) { { method: 'resolve_discussion' } }
+
+      it 'selects the discussionToggleResolve operation', :aggregate_failures do
+        expect(tool.operation_name).to eq('discussionToggleResolve')
+        expect(tool.graphql_operation).to include('mutation discussionToggleResolve')
+      end
+    end
   end
 
   describe '#build_variables' do
@@ -68,6 +77,46 @@ RSpec.describe Mcp::Tools::Notes::SaveNoteTool, feature_category: :mcp_server do
             expect { tool.build_variables }.not_to raise_error
           end
         end
+      end
+    end
+
+    context 'with method reply_discussion' do
+      let(:params) do
+        {
+          method: 'reply_discussion',
+          project_id: project.id.to_s,
+          work_item_iid: work_item.iid,
+          body: 'Reply comment',
+          discussion_id: work_item_discussion.id
+        }
+      end
+
+      it 'expands a bare discussion id into a global ID' do
+        expect(tool.build_variables[:input][:discussionId]).to eq(work_item_discussion.to_global_id.to_s)
+      end
+    end
+
+    context 'with method resolve_discussion' do
+      let(:params) do
+        {
+          method: 'resolve_discussion',
+          project_id: project.id.to_s,
+          work_item_iid: work_item.iid,
+          discussion_id: 'c' * 40,
+          resolved: false
+        }
+      end
+
+      it 'builds a DiscussionToggleResolve input from a bare discussion id' do
+        expect(tool.build_variables).to eq(
+          input: { id: "gid://gitlab/Discussion/#{'c' * 40}", resolve: false }
+        )
+      end
+
+      it 'passes a global ID through unchanged' do
+        params[:discussion_id] = work_item_discussion.to_global_id.to_s
+
+        expect(tool.build_variables[:input][:id]).to eq(work_item_discussion.to_global_id.to_s)
       end
     end
 
@@ -343,6 +392,48 @@ RSpec.describe Mcp::Tools::Notes::SaveNoteTool, feature_category: :mcp_server do
 
         expect(result[:isError]).to be(false)
         expect(result[:structuredContent]['note']['discussion']['id']).to eq(mr_discussion.to_global_id.to_s)
+      end
+    end
+
+    context 'when resolving a work item discussion' do
+      let(:params) do
+        {
+          method: 'resolve_discussion',
+          project_id: project.id.to_s,
+          work_item_iid: work_item.iid,
+          discussion_id: work_item_discussion.id,
+          resolved: true
+        }
+      end
+
+      it 'resolves the discussion and returns the promised payload shape', :aggregate_failures do
+        result = tool.execute
+
+        expect(result[:isError]).to be(false)
+        expect(result[:structuredContent]).to eq(
+          'method' => 'resolve_discussion',
+          'discussion_id' => work_item_discussion.to_global_id.to_s,
+          'resolved' => true,
+          'web_url' => Gitlab::UrlBuilder.build(work_item_discussion.first_note)
+        )
+        expect(work_item.notes.find_discussion(work_item_discussion.id).resolved?).to be(true)
+      end
+
+      context 'when the user cannot resolve the discussion' do
+        let_it_be(:guest) { create(:user) }
+
+        let(:tool) { described_class.new(current_user: guest, params: params, access_token: nil) }
+
+        before_all do
+          project.add_guest(guest)
+        end
+
+        it 'returns an error response' do
+          result = tool.execute
+
+          expect(result[:isError]).to be(true)
+          expect(work_item.notes.find_discussion(work_item_discussion.id).resolved?).to be(false)
+        end
       end
     end
   end

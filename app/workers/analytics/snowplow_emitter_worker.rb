@@ -5,7 +5,7 @@ module Analytics
     include ApplicationWorker
 
     queue_namespace :snowplow
-    feature_category :product_analytics
+    feature_category :application_instrumentation
     data_consistency :sticky
     urgency :low
     defer_on_database_health_signal :gitlab_main

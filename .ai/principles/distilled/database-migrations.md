@@ -1,6 +1,6 @@
 ---
-source_checksum: 030490f3d250fc6f
-distilled_at_sha: f881cd88ec49e57cc6d320e2b57c56d80cb06564
+source_checksum: 77d46ee69d1e524c
+distilled_at_sha: 0598d6c1b5bb294276c7c644f29291505d54c4c1
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -31,6 +31,7 @@ distilled_at_sha: f881cd88ec49e57cc6d320e2b57c56d80cb06564
 ### Reversibility
 
 - Ensure every migration has a working `down` method
+- Add a comment in the migration describing how its reversibility was tested
 - When a data migration cannot be reversed, include a `down` method with a `# no-op` comment explaining why
 
 ### Transactions and Locking
@@ -41,7 +42,6 @@ distilled_at_sha: f881cd88ec49e57cc6d320e2b57c56d80cb06564
 - DO NOT use PostgreSQL subtransactions; use multiple separate transactions instead
 - When acquiring multiple table locks, lock in parent-to-child order to avoid deadlocks
 - Create only one foreign key per transaction; use separate migrations for each FK when creating a table with multiple foreign keys
-- Batch DML operations (INSERT/UPDATE/DELETE) on large datasets using `each_batch_range` or batched background migrations
 
 ### Indexes
 
@@ -75,6 +75,14 @@ distilled_at_sha: f881cd88ec49e57cc6d320e2b57c56d80cb06564
 - When a nullable column must never be written as `NULL` (for example, a `NULL` row would escape a partial unique index), assign the value in an unconditional `before_create` callback; DO NOT rely on a Rails `attribute` default, which does not override an explicit `nil`
 - When renaming or changing the type of a column referenced by a database view, recreate the view as part of the migration to point to the new column
 
+### Integer to Bigint Conversion
+
+- Convert `integer` primary keys to `bigint` across releases: N regular migration (`initialize_conversion_of_integer_to_bigint`, ignore the new `*_convert_to_bigint` columns, queue `backfill_conversion_of_integer_to_bigint`), N+1 post-deployment swap (after `ensure_backfill_conversion_of_integer_to_bigint_is_finished`), N+2 `cleanup_conversion_of_integer_to_bigint`, N+3 remove the ignore rules
+- DO NOT edit `db/integer_ids_not_yet_initialized_to_bigint.yml` manually, and DO NOT push `db/structure.sql` changes for these conversions
+- Run `swap_columns` inside a transaction (a transactional migration or `with_lock_retries`); it recreates triggers that depend on the swapped columns
+- DO NOT use `CASCADE` to drop old `*_convert_to_bigint` columns when a trigger still depends on them; recreate the trigger so it refers to the current column names
+- Remove temporary foreign keys before temporary indexes, each foreign key removal in its own migration
+
 ### Dropping Tables
 
 - Remove all application code referencing a table before dropping it
@@ -107,14 +115,14 @@ distilled_at_sha: f881cd88ec49e57cc6d320e2b57c56d80cb06564
 
 - Prefer Arel or plain SQL over ActiveRecord syntax in data migrations
 - Quote all plain SQL inputs with `quote_string`
-- Migrate data in batches using `update_column_in_batches` or `each_batch_range`
+- Migrate data in batches using `update_column_in_batches` or `each_batch_range`; use batched background migrations for reasonably large workloads
 - Use `Arel.sql` to wrap computed SQL values passed to `update_column_in_batches`
 
 ### Naming Conventions
 
 - Use lowercase names for all database objects (tables, indexes, views)
 - Follow [constraint naming convention guidelines](https://docs.gitlab.com/development/database/constraint_naming_convention/) for custom index and constraint names
-- Keep migration timestamps within three weeks of the anticipated merge date; use `scripts/refresh-migrations-timestamps` when rebasing old branches
+- Keep a new migration's timestamp no more than three weeks (21 days) old; the `db:check-migrations` job enforces this and measures the age when the job runs, not when the migration merges. Refresh old timestamps with `scripts/refresh-migrations-timestamps` (it compares against `origin/master` by default; set `TARGET`, for example `TARGET=upstream/master`, to compare against another branch)
 - Use the current UTC timestamp from `date -u +%Y%m%d%H%M%S` as the migration version; DO NOT hand-type one (the `Migration/RoundTimestamp` cop rejects versions ending in `0000`)
 - DO NOT set a migration timestamp earlier than the previous required upgrade stop
 
@@ -124,11 +132,10 @@ distilled_at_sha: f881cd88ec49e57cc6d320e2b57c56d80cb06564
 - DO NOT reorder columns in `db/structure.sql` for existing tables
 - Include the `db/schema_migrations/<timestamp>` checksum file in the MR that adds the migration
 - Remove the checksum file when deleting a migration; regenerate it when changing a migration's timestamp
-- Add new tables to the database dictionary after creation; add dropped tables to `db/docs/deleted_tables`
+- Add new tables to the database dictionary after creation
 
 ### High-Traffic Tables
 
-- Use `with_lock_retries` for any DDL on [high-traffic tables](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml)
 - Create triggers on high-traffic tables in post-deployment migrations using `with_lock_retries` with idempotent `replace: true` / `if_exists: true` guards
 - DO NOT add analytics-only columns to high-traffic tables that provide no direct feature value to self-managed instances
 - Include the full table name in the post-deployment migration class name so the PDM pipeline can detect and pause for autovacuum wraparound protection on that table; omit the table name only when the migration has no conflicting locks
@@ -155,8 +162,8 @@ distilled_at_sha: f881cd88ec49e57cc6d320e2b57c56d80cb06564
 - Match job arguments and `gitlab_schema` exactly in `ensure_batched_background_migration_is_finished` — even if the schema label changed since enqueueing
 - Update `finalized_by` in the corresponding `db/docs/batched_background_migrations/<name>.yml` when adding the finalization migration
 - Delete BBM code (class file, specs, YAML, enqueue/finalize migrations, schema_migrations entries) only after the next required stop following finalization
-- When re-queueing a BBM, no-op the original migration's `up`/`down` and call `delete_batched_background_migration` at the start of the new migration's `up`
-- When stopping and removing an in-progress BBM, no-op the scheduling migration and add a separate regular migration that calls `delete_batched_background_migration`
+- No-op the original migration's `up`/`down` and call `delete_batched_background_migration` at the start of the new migration's `up` when re-queueing a BBM; update the original `db/docs/batched_background_migrations/*.yml` with the requeue information, and if the original was already finalized, clear `finalized_by` (keep the key) and no-op the finalizing migration
+- No-op the scheduling migration's `up`/`down` and add a separate post-deployment migration that calls `delete_batched_background_migration` when stopping and removing an in-progress BBM; also delete the class file and its specs
 - Add upgrade notes for significant BBMs to help self-managed and Dedicated customers plan upgrades
 - DO NOT use per-partition or view-based parallelization patterns for self-managed instances; consult the Database team before using them on GitLab.com
 

@@ -1,6 +1,5 @@
 import { GlSorting, GlFilteredSearch } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { markRaw } from 'vue';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 import component from '~/vue_shared/components/registry/registry_search.vue';
 
@@ -13,7 +12,7 @@ describe('Registry Search', () => {
   const defaultProps = {
     filters: [],
     sorting: { sort: 'asc', orderBy: 'name' },
-    tokens: [{ type: 'foo', token: markRaw({}) }],
+    tokens: [{ type: 'foo', token: {} }],
     sortableFields: [
       { label: 'name', orderBy: 'name' },
       { label: 'baz', orderBy: 'bar' },

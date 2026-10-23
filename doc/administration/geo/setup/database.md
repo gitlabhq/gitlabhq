@@ -737,10 +737,9 @@ To set up database replication with Patroni on a secondary site, you must
 configure a permanent replication slot on the primary site's Patroni cluster,
 and ensure password authentication is used.
 
-On each node running a Patroni instance on the primary site, starting on the Patroni
-Leader instance:
+On each Patroni node on the primary site, starting on the Patroni leader node:
 
-1. SSH into your Patroni instance and sign in as root:
+1. SSH into your Patroni node and sign in as root:
 
    ```shell
    sudo -i
@@ -967,10 +966,10 @@ On each node running a PgBouncer instance on the secondary site:
 ##### Step 4. Configure a Standby cluster on the secondary site
 
 > [!note]
-> If you are converting a secondary site with a single PostgreSQL instance to a Patroni Cluster, you must start on the PostgreSQL instance. It becomes the Patroni Standby Leader instance,
+> If you are converting a secondary site with a single PostgreSQL instance to a Patroni Cluster, you must start on the PostgreSQL instance. It becomes the Patroni standby leader node,
 > and then you can switch over to another replica if you need to.
 
-For each node running a Patroni instance on the secondary site:
+For each Patroni node on the secondary site:
 
 1. SSH into your Patroni node and sign in as root:
 

@@ -225391,12 +225391,6 @@
               "deprecationReason": null
             },
             {
-              "name": "EXPIRED_DUO_ENTERPRISE_TRIAL_WIDGET",
-              "description": "Callout feature name for expired_duo_enterprise_trial_widget.",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "EXPIRED_TRIAL_STATUS_WIDGET",
               "description": "Callout feature name for expired_trial_status_widget.",
               "isDeprecated": false,

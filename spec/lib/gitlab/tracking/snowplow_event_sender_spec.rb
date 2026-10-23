@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Tracking::SnowplowEventSender, feature_category: :product_analytics do
+RSpec.describe Gitlab::Tracking::SnowplowEventSender, feature_category: :application_instrumentation do
   let(:endpoint) { 'localhost' }
   let(:options) { { 'buffer_size' => 1 } }
   let(:service) { described_class.new(options, endpoint) }

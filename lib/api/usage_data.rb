@@ -36,6 +36,7 @@ module API
       end
 
       desc 'Track usage data event for the current user' do
+        detail 'Tracks a unique-user event for the current user in Service Ping.'
         success code: 200
         failure [
           { code: 401, message: 'Unauthorized' },

@@ -18,6 +18,7 @@ module API
 
         namespace 'integrations/slack' do
           desc 'Receive Slack events' do
+            detail 'Receives and processes events sent by the GitLab for Slack app. Requires a valid Slack signature.'
             success [
               { code: 200, message: 'Successfully processed event' },
               { code: 204, message: 'Failed to process event' }

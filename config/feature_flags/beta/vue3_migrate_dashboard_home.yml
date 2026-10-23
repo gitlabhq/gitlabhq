@@ -3,7 +3,7 @@ name: vue3_migrate_dashboard_home
 description: Enables Vue 3 in compatibility mode for the dashboard home page
 feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/608106
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/263494
-rollout_issue_url:
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/634991
 milestone: '19.6'
 group: group::work items
 type: beta

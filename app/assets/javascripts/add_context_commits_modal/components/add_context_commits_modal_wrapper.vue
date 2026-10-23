@@ -2,7 +2,6 @@
 import { GlModal, GlTabs, GlTab, GlSprintf, GlBadge, GlFilteredSearch } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions } from 'vuex';
-import { markRaw } from 'vue';
 import ReviewTabContainer from '~/add_context_commits_modal/components/review_tab_container.vue';
 import { createAlert } from '~/alert';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
@@ -53,7 +52,7 @@ export default {
   },
   data() {
     return {
-      availableTokens: markRaw([
+      availableTokens: [
         {
           icon: 'pencil',
           title: __('Author'),
@@ -93,7 +92,7 @@ export default {
           unique: true,
           optionComponent: DateOption,
         },
-      ]),
+      ],
     };
   },
   computed: {

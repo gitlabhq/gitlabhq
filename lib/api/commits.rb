@@ -325,6 +325,7 @@ module API
 
       # POST /:id/repository/commits/authorize'
       desc 'Authorize commits upload' do
+        detail 'Authorizes a commit upload with Workhorse before the request is handled by Rails.'
         success code: 200
         failure [
           { code: 400, message: 'Bad Request' },
