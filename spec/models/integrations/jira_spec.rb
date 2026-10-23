@@ -956,6 +956,7 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
         let(:remote_link) do
           double(
             'remote link',
+            attrs: {},
             object: {
               url: "#{Gitlab.config.gitlab.url}/#{project.full_path}/-/commit/#{commit_id}"
             }.with_indifferent_access
@@ -1512,6 +1513,206 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
         let(:resource_human_name) { 'Snippet' }
         let(:plural_resource_human_name) { 'project snippets' }
         let(:comment_body) { /mentioned this issue in \[a snippet\|/ }
+      end
+    end
+  end
+
+  describe 'nested requests when Jira reports a different self URL' do
+    let(:user) { build_stubbed(:user) }
+    let(:api_url) { 'https://jira-api.example.com' }
+    let(:api_path) { '' }
+    let(:reported_base) { 'https://jira.example.com/jira' }
+    let(:reported_host) { URI(reported_base).host }
+    let(:reported_host_requests) { %r{//#{Regexp.escape(reported_host)}} }
+    let(:issue_api_url) { "#{api_url}#{api_path}/rest/api/2/issue/10001" }
+    let(:transitions) { nil }
+    let(:external_issue) { ExternalIssue.new('JIRA-123', project) }
+    let(:resource) { project.commit('master') }
+    let(:resource_url) { jira_integration.send(:build_entity_url, :commit, resource.id) }
+    let(:json_headers) { { 'Content-Type' => 'application/json' } }
+    let(:jira_integration) do
+      described_class.new(
+        project: project, url: url, api_url: "#{api_url}#{api_path}",
+        username: username, password: password, project_keys: project_keys
+      )
+    end
+
+    let(:issue_body) do
+      {
+        id: '10001',
+        key: 'JIRA-123',
+        self: "#{reported_base}/rest/api/2/issue/10001",
+        fields: { comment: { comments: [] } },
+        transitions: transitions
+      }.compact.to_json
+    end
+
+    def stub_jira_remote_links(links = [])
+      stub_request(:get, "#{issue_api_url}/remotelink")
+        .to_return(status: 200, headers: json_headers, body: links.to_json)
+    end
+
+    before do
+      stub_request(:get, %r{\A#{Regexp.escape("#{api_url}#{api_path}/rest/api/2/issue/JIRA-123")}(\?.*)?\z})
+        .to_return(status: 200, headers: json_headers, body: issue_body)
+      stub_request(:post, "#{issue_api_url}/comment").to_return(status: 201, body: '{}')
+      stub_request(:post, "#{issue_api_url}/remotelink").to_return(status: 201, body: '{}')
+      stub_jira_remote_links
+    end
+
+    shared_examples 'sends nested requests to the configured API URL' do
+      it 'reads and writes the remote link and comment through api_url only', :aggregate_failures do
+        expect(jira_integration.create_cross_reference_note(external_issue, resource, user))
+          .to start_with('SUCCESS')
+
+        expect(WebMock).to have_requested(:get, "#{issue_api_url}/remotelink").once
+        expect(WebMock).to have_requested(:post, "#{issue_api_url}/comment").once
+        expect(WebMock).to have_requested(:post, "#{issue_api_url}/remotelink").once
+        expect(WebMock).not_to have_requested(:any, reported_host_requests)
+      end
+
+      context 'when the remote link already exists with a Jira-reported URL' do
+        let(:link) do
+          {
+            id: 77,
+            self: "#{reported_base}/rest/api/2/issue/10001/remotelink/77",
+            object: { url: resource_url }
+          }
+        end
+
+        before do
+          stub_jira_remote_links([link])
+          stub_request(:put, "#{issue_api_url}/remotelink/77").to_return(status: 204, body: '')
+        end
+
+        it 'updates it through api_url', :aggregate_failures do
+          issue = jira_integration.find_issue('JIRA-123')
+          props = jira_integration.send(:build_remote_link_props, url: resource_url, title: 'title')
+
+          jira_integration.send(:send_message, issue, 'message', props, update_existing_remote_link: true)
+
+          expect(WebMock).to have_requested(:put, "#{issue_api_url}/remotelink/77").once
+          expect(WebMock).not_to have_requested(:any, reported_host_requests)
+        end
+      end
+
+      context 'when closing the issue and Jira then reports it resolved' do
+        let(:resolved_issue_body) do
+          {
+            id: '10001', key: 'JIRA-123', self: "#{reported_base}/rest/api/2/issue/10001",
+            fields: { resolution: { name: 'Done' }, comment: { comments: [] } }
+          }.to_json
+        end
+
+        let(:unresolved_issue_body) do
+          {
+            id: '10001', key: 'JIRA-123', self: "#{reported_base}/rest/api/2/issue/10001",
+            fields: { resolution: nil, comment: { comments: [] } },
+            transitions: [{ id: '31', to: { statusCategory: { key: 'done' } } }]
+          }.to_json
+        end
+
+        before do
+          allow(jira_integration).to receive(:issue_transition_enabled?).and_return(true)
+          stub_request(:get, %r{\A#{Regexp.escape("#{api_url}#{api_path}/rest/api/2/issue/JIRA-123")}(\?.*)?\z})
+            .to_return(
+              { status: 200, headers: json_headers, body: unresolved_issue_body },
+              { status: 200, headers: json_headers, body: resolved_issue_body }
+            )
+          stub_request(:post, "#{issue_api_url}/transitions").to_return(status: 204, body: '')
+        end
+
+        shared_examples 'sends the solved comment and remote link through api_url' do
+          it 'does not contact the reported host', :aggregate_failures do
+            jira_integration.close_issue(resource, external_issue, user)
+
+            expect(WebMock).to have_requested(:post, "#{issue_api_url}/transitions").once
+            expect(WebMock).to have_requested(:post, "#{issue_api_url}/comment").once
+            expect(WebMock).to have_requested(:post, "#{issue_api_url}/remotelink").once
+            expect(WebMock).not_to have_requested(:any, reported_host_requests)
+          end
+        end
+
+        context 'with automatic transitions' do
+          before do
+            jira_integration.jira_issue_transition_automatic = true
+          end
+
+          it_behaves_like 'sends the solved comment and remote link through api_url'
+        end
+
+        context 'with a transition id' do
+          before do
+            jira_integration.jira_issue_transition_automatic = false
+            jira_integration.jira_issue_transition_id = '31'
+          end
+
+          it_behaves_like 'sends the solved comment and remote link through api_url'
+        end
+      end
+    end
+
+    it_behaves_like 'sends nested requests to the configured API URL'
+
+    context 'when api_url has its own context path' do
+      let(:api_path) { '/gateway' }
+
+      it_behaves_like 'sends nested requests to the configured API URL'
+    end
+
+    context 'when Jira Cloud is reached through a customer proxy' do
+      let(:url) { 'https://example.atlassian.net' }
+      let(:api_url) { 'https://jira-proxy.example.com' }
+      let(:reported_base) { 'https://api.atlassian.com/ex/jira/8be4df61-93ca-11d2-aa0d-00e098032b8c' }
+
+      it_behaves_like 'sends nested requests to the configured API URL'
+    end
+
+    context 'when an issue is reloaded after #find_issue' do
+      before do
+        stub_request(:get, %r{\A#{Regexp.escape(issue_api_url)}(\?.*)?\z}).to_return(
+          status: 200, headers: json_headers, body: { id: '10001', self: "#{reported_base}/rest/api/2/issue/10001" }.to_json
+        )
+      end
+
+      it 'refuses nested requests to the reported URL' do
+        issue = jira_integration.find_issue('JIRA-123')
+        issue.fetch(true)
+
+        expect { issue.remotelink.all }.to raise_error(Gitlab::Jira::HttpClient::UnexpectedHostError)
+      end
+    end
+
+    context 'with different URL shapes' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:site_url, :configured_api_url, :base) do
+        'https://jira.example.com' | 'https://jira-api.example.com/' | 'https://jira-api.example.com'
+        'https://jira.example.com' | 'https://jira-api.example.com/ctx/' | 'https://jira-api.example.com/ctx'
+        'https://jira-dc.example.com/jira' | nil | 'https://jira-dc.example.com/jira'
+        'https://jira-dc.example.com/jira/' | nil | 'https://jira-dc.example.com/jira'
+      end
+
+      with_them do
+        let(:jira_integration) do
+          described_class.new(
+            project: project, url: site_url, api_url: configured_api_url,
+            username: username, password: password, project_keys: project_keys
+          )
+        end
+
+        it 'builds the issue self once from the configured base', :aggregate_failures do
+          stub_request(:get, "#{base}/rest/api/2/issue/JIRA-123")
+            .to_return(status: 200, headers: json_headers, body: issue_body)
+          stub_request(:get, "#{base}/rest/api/2/issue/10001/remotelink")
+            .to_return(status: 200, headers: json_headers, body: '[]')
+
+          issue = jira_integration.find_issue('JIRA-123')
+
+          expect(issue.attrs['self']).to eq("#{URI(base).path}/rest/api/2/issue/10001")
+          expect(issue.remotelink.all).to eq([])
+          expect(WebMock).to have_requested(:get, "#{base}/rest/api/2/issue/10001/remotelink").once
+        end
       end
     end
   end
