@@ -156,7 +156,7 @@ RSpec.describe ClustersHelper, feature_category: :deployment_management do
       context 'feature flag is enabled' do
         let(:flag_enabled) { true }
 
-        it do
+        it 'sets certificate_based_clusters_enabled to true' do
           expect(subject[:certificate_based_clusters_enabled]).to eq('true')
         end
       end
@@ -164,7 +164,7 @@ RSpec.describe ClustersHelper, feature_category: :deployment_management do
       context 'feature flag is disabled' do
         let(:flag_enabled) { false }
 
-        it do
+        it 'sets certificate_based_clusters_enabled to false' do
           expect(subject[:certificate_based_clusters_enabled]).to eq('false')
         end
       end

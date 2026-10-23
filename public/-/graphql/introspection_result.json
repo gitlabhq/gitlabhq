@@ -425352,6 +425352,22 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.5."
             },
             {
+              "name": "flowStatus",
+              "description": "Whether the AI flow behind the capability is enabled, based on Duo configuration. Introduced in GitLab 19.6: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "TriageAndRemediationFlowStatus",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.6."
+            },
+            {
               "name": "runMode",
               "description": "Run mode for the capability. Introduced in GitLab 19.5: Status: Experiment.",
               "args": [],
@@ -425461,6 +425477,47 @@
           "inputFields": null,
           "interfaces": [],
           "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "TriageAndRemediationFlowStatus",
+          "description": "Whether the AI flow behind a triage and remediation capability is enabled",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "AVAILABLE",
+              "description": "Flow is enabled. Introduced in GitLab 19.6: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.6."
+            },
+            {
+              "name": "FLOW_NOT_ENABLED",
+              "description": "Flow is available but not enabled. Introduced in GitLab 19.6: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.6."
+            },
+            {
+              "name": "FLOW_UNAVAILABLE",
+              "description": "Flow is not available. Introduced in GitLab 19.6: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.6."
+            },
+            {
+              "name": "FOUNDATIONAL_FLOWS_DISABLED",
+              "description": "Foundational flows are disabled. Introduced in GitLab 19.6: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.6."
+            },
+            {
+              "name": "NOT_APPLICABLE",
+              "description": "Capability has no AI flow, so nothing needs to be configured. Introduced in GitLab 19.6: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.6."
+            }
+          ],
           "possibleTypes": null
         },
         {

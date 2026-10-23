@@ -194,6 +194,8 @@ module EventsHelper
       design_url(event.design)
     elsif event.project?
       project_url(event.project)
+    elsif event.transferred_group_action?
+      group_url(event.group)
     else
       polymorphic_url(event.target_link_options)
     end

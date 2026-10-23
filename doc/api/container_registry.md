@@ -224,19 +224,22 @@ curl --request DELETE \
   --url "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2"
 ```
 
-## List all registry repository tags
+## List all registry repository tags in a project
 
-### Within a project
+{{< history >}}
 
-> [!note]
-> Keyset pagination is available for GitLab.com only.
+- Keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163857) for GitLab Self-Managed in GitLab 17.4.
+- `order_by` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/573326) in GitLab 19.5.
 
-Lists all tags for a specified registry repository.
+{{< /history >}}
+
+Lists all tags for a specified registry repository in a project.
 
 Responses are [paginated](rest/_index.md#pagination) and return 20 results by default.
 
-> [!note]
-> Offset pagination is deprecated and keyset pagination is now the preferred pagination method.
+Use keyset pagination instead of offset pagination, which is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/432470).
+On GitLab Self-Managed, keyset pagination requires the
+[container registry metadata database](../administration/packages/container_registry_metadata_database.md).
 
 ```plaintext
 GET /projects/:id/registry/repositories/:repository_id/tags
@@ -246,6 +249,8 @@ GET /projects/:id/registry/repositories/:repository_id/tags
 |-----------------|----------------|----------|-------------|
 | `id`            | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project accessible by the authenticated user. |
 | `repository_id` | integer        | yes      | The ID of registry repository. |
+| `order_by`      | string         | no       | Field to order tags by. Possible values: `name` (default) or `published_at`. `published_at` requires [keyset pagination](rest/_index.md#keyset-based-pagination). |
+| `sort`          | string         | no       | Return tags sorted in `asc` (default) or `desc` order. Only applies to keyset pagination. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \

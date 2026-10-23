@@ -2,7 +2,7 @@ import { nextTick } from 'vue';
 import { GlButton } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import TwoDimensionsBarList from '~/glql/components/presenters/bar_list/two_dimensions_bar_list.vue';
-import BarListChart from '~/analytics/analytics_dashboards/components/visualizations/bar_list_chart.vue';
+import BarListChart from '~/explore/analytics_dashboards/components/visualizations/bar_list_chart.vue';
 
 const USER = { key: 'user', label: 'User', name: 'user', type: 'dimension' };
 const LANGUAGE = { key: 'language', label: 'Language', name: 'language', type: 'dimension' };

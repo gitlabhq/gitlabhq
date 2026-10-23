@@ -1,6 +1,6 @@
 <script>
 import { GlSkeletonLoader } from '@gitlab/ui';
-import DivergingBarChart from '~/analytics/analytics_dashboards/components/visualizations/diverging_bar_chart.vue';
+import DivergingBarChart from '~/explore/analytics_dashboards/components/visualizations/diverging_bar_chart.vue';
 import { __ } from '~/locale';
 import {
   dimensionsOf,

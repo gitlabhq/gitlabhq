@@ -4,9 +4,7 @@ const crypto = require('./helpers/patched_crypto');
 // eslint-disable-next-line import-x/order
 const vueVersion = require('./vue3migration/version');
 
-const { VUE_VERSION, USE_VUE3, USE_VUE3_COMPILER, VUE_LOADER_MODULE, logVueVersion } = vueVersion;
-
-logVueVersion('[V]');
+const { VUE_VERSION, USE_VUE3, USE_VUE3_COMPILER, VUE_LOADER_MODULE } = vueVersion;
 
 const fs = require('fs');
 const path = require('path');

@@ -1,5 +1,5 @@
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import HeatMapChart from '~/analytics/analytics_dashboards/components/visualizations/heat_map_chart.vue';
+import HeatMapChart from '~/explore/analytics_dashboards/components/visualizations/heat_map_chart.vue';
 import HeatMapPresenter from '~/glql/components/presenters/heat_map.vue';
 import DimensionRoutedChart from '~/glql/components/presenters/chart/dimension_routed_chart.vue';
 import {

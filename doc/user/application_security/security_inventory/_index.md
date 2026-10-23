@@ -30,7 +30,7 @@ The security inventory shows:
   - Static application security testing (SAST)
   - Dependency scanning
   - Container scanning
-  - Secret detection
+  - Secret detection, including secret push protection
   - Dynamic application security testing (DAST)
   - Infrastructure-as-code (IaC) scanning
 - The number of vulnerabilities in each group or project, sorted by severity level. The count excludes vulnerabilities that are no longer detected.
@@ -67,6 +67,13 @@ Each security scanner shows one of the following coverage statuses for every pro
 - **Failed**: The scanner ran but did not complete successfully.
 - **Stale**: A previously enabled scanner has not run in the last three consecutive pipelines.
 
+For a project, each scanner shows a badge for its status. To view the last scan date and the
+pipeline job, hover over the badge. Secret push protection has no last scan date because it runs
+during each `git push`, not in a pipeline.
+
+For a group, each scanner shows a bar with the share of projects in each status.
+To view the number of projects in each status, hover over the bar.
+
 ## Filter projects in the security inventory
 
 {{< history >}}
@@ -83,6 +90,7 @@ The following filters are available:
 - **Vulnerability count**: Filter projects based on the number of identified vulnerabilities. For example, show projects with `critical vulnerabilities ≥ 10`.
 - **Tool coverage**: Filter projects by the status of security analyzers (like **enabled**, **not enabled**, or **failed**). For example, show projects where `Advanced SAST = enabled`.
 - **Project name**: Search for specific projects by name.
+- **Security attributes**: Filter projects by the [security attributes](../attributes/_index.md) applied to them.
 
 These filters help you narrow down results in large inventories and make it easier to identify projects that require immediate attention.
 

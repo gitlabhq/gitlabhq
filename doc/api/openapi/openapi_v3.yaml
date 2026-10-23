@@ -41701,6 +41701,20 @@ paths:
         schema:
           type: integer
         in: path
+      - name: order_by
+        required: false
+        description: Field to order tags by. `published_at` requires keyset pagination.
+        schema:
+          type: string
+          default: name
+        in: query
+      - name: sort
+        required: false
+        description: Direction to sort tags in. Only applies to keyset pagination.
+        schema:
+          type: string
+          default: asc
+        in: query
       - name: page
         required: false
         description: Page number of results to retrieve.

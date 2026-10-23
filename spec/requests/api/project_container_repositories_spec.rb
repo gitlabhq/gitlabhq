@@ -263,6 +263,28 @@ RSpec.describe API::ProjectContainerRepositories, :with_current_organization, fe
           it_behaves_like 'a package tracking event', described_class.name, 'list_tags'
           it_behaves_like 'returning values correctly'
 
+          context 'when ordered by published_at without keyset pagination' do
+            let(:url) { "/projects/#{project.id}/registry/repositories/#{root_repository.id}/tags?order_by=published_at" }
+
+            it 'returns bad request' do
+              subject
+
+              expect(response).to have_gitlab_http_status(:bad_request)
+            end
+          end
+
+          context 'with unknown order values without keyset pagination' do
+            where(:order_params) do
+              ['sort=DESC', 'sort=foo', 'order_by=created_at', 'order_by=created_at&sort=foo']
+            end
+
+            with_them do
+              let(:url) { "/projects/#{project.id}/registry/repositories/#{root_repository.id}/tags?#{order_params}" }
+
+              it_behaves_like 'returning values correctly'
+            end
+          end
+
           context 'when pagination is set to keyset' do
             let(:url) { "/projects/#{project.id}/registry/repositories/#{root_repository.id}/tags?pagination=keyset" }
 
@@ -307,12 +329,34 @@ RSpec.describe API::ProjectContainerRepositories, :with_current_organization, fe
               end
 
               using RSpec::Parameterized::TableSyntax
+
+              context 'with unknown order values' do
+                where(:order_params, :message) do
+                  'sort=DESC'           | 'sort must be one of: asc, desc'
+                  'sort=foo'            | 'sort must be one of: asc, desc'
+                  'order_by=created_at' | 'order_by must be one of: name, published_at'
+                end
+
+                with_them do
+                  let(:url) { "/projects/#{project.id}/registry/repositories/#{root_repository.id}/tags?pagination=keyset&#{order_params}" }
+
+                  it 'returns bad request' do
+                    subject
+
+                    expect(response).to have_gitlab_http_status(:bad_request)
+                    expect(json_response['message']).to eq("400 Bad request - #{message}")
+                  end
+                end
+              end
+
               where(:parameter, :per_page, :sort, :last_param) do
                 "per_page=5" | 5  | 'name' | nil
                 "last=abc"   | 20 | 'name' | 'abc'
                 "sort=asc"   | 20 | 'name' | nil
                 "sort=desc"  | 20 | '-name' | nil
                 "sort=desc&last=a&per_page=10" | 10 | '-name' | 'a'
+                "order_by=published_at" | 20 | 'published_at' | nil
+                "order_by=published_at&sort=desc" | 20 | '-published_at' | nil
               end
 
               with_them do
@@ -353,8 +397,28 @@ RSpec.describe API::ProjectContainerRepositories, :with_current_organization, fe
 
                   expect(response.header['Link']).to include('pagination=keyset')
                   expect(response.header['Link']).to include('per_page=10')
-                  expect(response.header['Link']).to include('sort=desc')
+                  expect(response.header['Link']).to include('sort=asc')
                   expect(response.header['Link']).to include('last=last-item')
+                end
+
+                context 'when the request sets the order' do
+                  where(:order_params, :order_by, :sort) do
+                    'order_by=published_at&sort=desc' | 'published_at' | 'desc'
+                    'order_by=published_at'           | 'published_at' | 'asc'
+                    'sort=desc'                       | 'name'         | 'desc'
+                  end
+
+                  with_them do
+                    let(:url) { "/projects/#{project.id}/registry/repositories/#{root_repository.id}/tags?pagination=keyset&#{order_params}" }
+                    let(:pagination) { { next: { uri: URI('/test?n=10&last=last-item') } } }
+
+                    it 'keeps the order in the link to the next page' do
+                      subject
+
+                      expect(response.header['Link']).to include("order_by=#{order_by}")
+                      expect(response.header['Link']).to include("sort=#{sort}")
+                    end
+                  end
                 end
 
                 context 'when there is no pagination link returned' do

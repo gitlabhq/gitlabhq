@@ -33,7 +33,6 @@ API/EntityFieldType:
     - 'ee/lib/api/entities/virtual_registries/container/registry.rb'
     - 'ee/lib/api/entities/virtual_registries/container/registry_upstream.rb'
     - 'ee/lib/api/entities/virtual_registries/container/upstream.rb'
-    - 'ee/lib/api/entities/virtual_registries/packages/maven/cache/entry.rb'
     - 'ee/lib/api/entities/virtual_registries/packages/maven/registry.rb'
     - 'ee/lib/api/entities/virtual_registries/packages/maven/registry_upstream.rb'
     - 'ee/lib/api/entities/virtual_registries/packages/maven/upstream.rb'

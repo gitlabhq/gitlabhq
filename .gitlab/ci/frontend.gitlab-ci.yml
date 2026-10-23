@@ -371,6 +371,7 @@ jest-build-cache:
 .vue3:
   variables:
     VUE_VERSION: 3
+    VUE_COMPILER_VERSION: 3
 
 .with-jest-build-cache-vue3-ensure-compilable-sfcs-needs:
   needs:

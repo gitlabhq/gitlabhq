@@ -4,7 +4,7 @@ const {
 const baseConfig = require('./jest.config.base');
 const IS_JH = require('./config/helpers/is_jh_env');
 
-const USE_VUE_3 = process.env.VUE_VERSION === '3';
+const { USE_VUE3: USE_VUE_3 } = require('./config/vue3migration/version');
 
 const INTEGRATION_SETUP = '<rootDir>/ee/spec/frontend/integration/test_setup.js';
 

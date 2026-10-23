@@ -10027,7 +10027,7 @@ msgstr ""
 msgid "AiPowered|Store AI audit events"
 msgstr ""
 
-msgid "AiPowered|Stream AI audit events to configured external audit event streaming destinations. AI audit events are still saved to the database when this setting is off."
+msgid "AiPowered|Stream AI audit events to configured external audit event streaming destinations. A separate group or project setting controls whether GitLab stores AI audit events."
 msgstr ""
 
 msgid "AiPowered|Talk to Sales"
@@ -10201,7 +10201,7 @@ msgstr ""
 msgid "AiPowered|When you save, GitLab Duo will be turned off for all groups, subgroups, and projects."
 msgstr ""
 
-msgid "AiPowered|When you turn on this setting, GitLab stores new AI audit events to the database or ClickHouse. Real-time streaming of AI audit events is not affected."
+msgid "AiPowered|When you turn on this setting, GitLab stores new AI audit events to the database or ClickHouse and to the audit log file (audit_json.log). Real-time streaming of AI audit events is not affected."
 msgstr ""
 
 msgid "AiPowered|Yes"
@@ -32305,9 +32305,6 @@ msgid_plural "DuoAgentPlatform|%{count} Duo agent sessions. Activate to view."
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "DuoAgentPlatform|%{count} of %{total} available to projects in this group."
-msgstr ""
-
 msgid "DuoAgentPlatform|%{count} session"
 msgid_plural "DuoAgentPlatform|%{count} sessions"
 msgstr[0] ""
@@ -32401,19 +32398,16 @@ msgstr ""
 msgid "DuoAgentPlatform|A runner is available and picking up jobs."
 msgstr ""
 
-msgid "DuoAgentPlatform|AI-native features are available to every project in this group. Subgroups and projects can opt out individually."
-msgstr ""
-
-msgid "DuoAgentPlatform|AI-native features are available to every project in this group. Subgroups and projects cannot opt out."
+msgid "DuoAgentPlatform|AI-native features are off for every project in this group. Subgroups and projects can opt in individually."
 msgstr ""
 
 msgid "DuoAgentPlatform|AI-native features are off for every project in this group. Subgroups and projects cannot opt in."
 msgstr ""
 
-msgid "DuoAgentPlatform|AI-native features are off for projects in this group. Subgroups and projects can opt in individually."
+msgid "DuoAgentPlatform|AI-native features are on for every project in this group. Subgroups and projects can opt out individually."
 msgstr ""
 
-msgid "DuoAgentPlatform|Accomplish specific tasks and answer complex questions."
+msgid "DuoAgentPlatform|AI-native features are on for every project in this group. Subgroups and projects cannot opt out."
 msgstr ""
 
 msgid "DuoAgentPlatform|Action"
@@ -32776,9 +32770,6 @@ msgstr ""
 msgid "DuoAgentPlatform|No agent sessions yet"
 msgstr ""
 
-msgid "DuoAgentPlatform|None of the %{total} are available to projects in this group."
-msgstr ""
-
 msgid "DuoAgentPlatform|Not connected. Flows run as CI/CD jobs and require a runner."
 msgstr ""
 
@@ -32793,16 +32784,10 @@ msgstr[1] ""
 msgid "DuoAgentPlatform|Nothing needs you right now"
 msgstr ""
 
-msgid "DuoAgentPlatform|Off for %{group}. Only a top-level Group Owner can turn it on."
-msgstr ""
-
 msgid "DuoAgentPlatform|Off for this group. Only a Group Owner can turn it on."
 msgstr ""
 
 msgid "DuoAgentPlatform|Off for this instance. Only an administrator can turn it on."
-msgstr ""
-
-msgid "DuoAgentPlatform|On for %{group}. Only a top-level Group Owner can change it."
 msgstr ""
 
 msgid "DuoAgentPlatform|On for this group by default. Group Owners control availability."
@@ -32811,16 +32796,10 @@ msgstr ""
 msgid "DuoAgentPlatform|On for this instance by default. Administrators control availability."
 msgstr ""
 
-msgid "DuoAgentPlatform|On for this instance. Only an administrator can change it."
-msgstr ""
-
 msgid "DuoAgentPlatform|Other GitLab Duo settings"
 msgstr ""
 
 msgid "DuoAgentPlatform|Paused"
-msgstr ""
-
-msgid "DuoAgentPlatform|Production-ready agents built and maintained by GitLab."
 msgstr ""
 
 msgid "DuoAgentPlatform|Production-ready flows built and maintained by GitLab."
@@ -32830,6 +32809,18 @@ msgid "DuoAgentPlatform|Projects can use third-party agents."
 msgstr ""
 
 msgid "DuoAgentPlatform|Projects in this group can run agents and flows."
+msgstr ""
+
+msgid "DuoAgentPlatform|Projects in this group can use agents built and maintained by GitLab."
+msgstr ""
+
+msgid "DuoAgentPlatform|Projects in this group can use agents built and maintained by GitLab. %{count} of %{total} are available."
+msgstr ""
+
+msgid "DuoAgentPlatform|Projects in this group can use agents built and maintained by GitLab. None of the %{total} are available."
+msgstr ""
+
+msgid "DuoAgentPlatform|Projects in this group can use agents for tasks and complex questions."
 msgstr ""
 
 msgid "DuoAgentPlatform|Projects in this group can use flows built and maintained by GitLab."
@@ -32964,6 +32955,12 @@ msgstr ""
 msgid "DuoAgentPlatform|Turn on AI-native features for this project."
 msgstr ""
 
+msgid "DuoAgentPlatform|Turn on Agent Platform to change the settings below."
+msgstr ""
+
+msgid "DuoAgentPlatform|Turn on Agents to change the settings below."
+msgstr ""
+
 msgid "DuoAgentPlatform|Turn on GitLab Duo and the Agent Platform to get started."
 msgstr ""
 
@@ -32977,9 +32974,6 @@ msgid "DuoAgentPlatform|Turn on the Agent Platform to get started."
 msgstr ""
 
 msgid "DuoAgentPlatform|Turning off a setting here turns it off for every project in this group. Projects can't turn it back on."
-msgstr ""
-
-msgid "DuoAgentPlatform|Turning this off disables everything below until it's back on."
 msgstr ""
 
 msgid "DuoAgentPlatform|Turning this off disables the flow settings below until it's back on."
@@ -32997,10 +32991,13 @@ msgstr ""
 msgid "DuoAgentPlatform|User permissions"
 msgstr ""
 
+msgid "DuoAgentPlatform|Users can approve tools for a whole session in their IDE or CLI."
+msgstr ""
+
 msgid "DuoAgentPlatform|Users with the Maintainer or Owner role for a project can create new agents."
 msgstr ""
 
-msgid "DuoAgentPlatform|Users without a Duo Pro or Enterprise seat can use Agent Platform features."
+msgid "DuoAgentPlatform|Users without a GitLab Duo Pro or Enterprise seat can use Agent Platform features."
 msgstr ""
 
 msgid "DuoAgentPlatform|VS Code · JetBrains · Visual Studio"
@@ -33037,9 +33034,6 @@ msgid "DuoAgentPlatform|View session for this change"
 msgstr ""
 
 msgid "DuoAgentPlatform|When an agent needs a decision from you, it shows up here."
-msgstr ""
-
-msgid "DuoAgentPlatform|Whether users can approve tools for a whole session in the IDE and CLI."
 msgstr ""
 
 msgid "DuoAgentPlatform|Who can use GitLab Duo in this group."
@@ -34371,9 +34365,6 @@ msgid "DuoAgentsPlatform|Turn automation on or off: %{description}"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Turn trigger on or off: %{description}"
-msgstr ""
-
-msgid "DuoAgentsPlatform|Type"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Unknown"
@@ -65655,6 +65646,9 @@ msgstr ""
 msgid "PolicyStore|Hide configuration details"
 msgstr ""
 
+msgid "PolicyStore|In enforce mode, write the required value onto the project on arrival, and again whenever the daily settings check finds it changed"
+msgstr ""
+
 msgid "PolicyStore|Internal"
 msgstr ""
 
@@ -65982,7 +65976,7 @@ msgstr ""
 msgid "PolicyStore|What happens when rules are matched?"
 msgstr ""
 
-msgid "PolicyStore|When a change to a project setting is requested, before it is saved"
+msgid "PolicyStore|When a change to a project setting is requested, before it is saved. Settings policies are also checked daily."
 msgstr ""
 
 msgid "PolicyStore|When a deployment advances to the next environment"
@@ -65994,10 +65988,10 @@ msgstr ""
 msgid "PolicyStore|When a deployment to a gated environment is requested"
 msgstr ""
 
-msgid "PolicyStore|When a new project has been created"
+msgid "PolicyStore|When a new project has been created. Settings policies are also checked daily."
 msgstr ""
 
-msgid "PolicyStore|When a project moves to a different namespace"
+msgid "PolicyStore|When a project moves to a different namespace. Settings policies are also checked daily."
 msgstr ""
 
 msgid "PolicyStore|When a project setting does not match the required value"
@@ -66016,9 +66010,6 @@ msgid "PolicyStore|Which projects should this policy govern?"
 msgstr ""
 
 msgid "PolicyStore|Window name"
-msgstr ""
-
-msgid "PolicyStore|Write the required value onto the project on arrival"
 msgstr ""
 
 msgid "PolicyStore|You"

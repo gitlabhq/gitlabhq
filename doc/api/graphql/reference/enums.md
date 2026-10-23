@@ -5938,6 +5938,18 @@ Status of the request to the training provider. The URL of a TrainingUrl is calc
 | `COMPLETED` | Completed request. |
 | `PENDING` | Pending request. |
 
+## `TriageAndRemediationFlowStatus`
+
+Whether the AI flow behind a triage and remediation capability is enabled.
+
+| Value | Description |
+| ----- | ----------- |
+| `AVAILABLE` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.6.<br/><br/>Flow is enabled. |
+| `FLOW_NOT_ENABLED` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.6.<br/><br/>Flow is available but not enabled. |
+| `FLOW_UNAVAILABLE` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.6.<br/><br/>Flow is not available. |
+| `FOUNDATIONAL_FLOWS_DISABLED` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.6.<br/><br/>Foundational flows are disabled. |
+| `NOT_APPLICABLE` | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.6.<br/><br/>Capability has no AI flow, so nothing needs to be configured. |
+
 ## `TypeEnum`
 
 | Value | Description |

@@ -56,6 +56,12 @@ describe('pipeline graph action component', () => {
       expect(wrapper.find('.ci-action-icon-wrapper').exists()).toBe(true);
       expect(wrapper.find('svg').exists()).toBe(true);
     });
+
+    it('emits `focus` when the button is focused', () => {
+      findButton().element.dispatchEvent(new FocusEvent('focus'));
+
+      expect(wrapper.emitted('focus')).toHaveLength(1);
+    });
   });
 
   describe('on click', () => {

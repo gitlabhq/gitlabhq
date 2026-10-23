@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Types::IssuableSeverityEnum do
+RSpec.describe Types::IssuableSeverityEnum, feature_category: :incident_management do
   specify { expect(described_class.graphql_name).to eq('IssuableSeverity') }
 
   it 'exposes all the existing issuable severity values' do

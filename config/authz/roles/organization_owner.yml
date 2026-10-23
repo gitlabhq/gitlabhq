@@ -17,6 +17,8 @@ organization:
   - read_user_access_level
   - read_user_groups
   - read_webhook
+  - read_webhook_event
+  - resend_webhook_event
   - test_webhook
   - transfer_group
   - update_integration

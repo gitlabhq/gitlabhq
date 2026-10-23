@@ -1,14 +1,37 @@
-const { resolveCompiler } = require('vue-loader/lib/compiler');
+const { USE_VUE3_COMPILER, VUE_LOADER_MODULE } = require('../vue3migration/version');
 
 const NS = 'vue-loader';
 const ID = 'vue-loader-plugin';
 
-const PITCHER_PATH = require.resolve('vue-loader/lib/loaders/pitcher');
-const TEMPLATE_LOADER_PATH = require.resolve('vue-loader/lib/loaders/templateLoader');
-const VUE_LOADER_INDEX = require.resolve('vue-loader/lib/index');
+// What differs between vue-loader 15 (Vue 2 compiler) and 17 (Vue 3 compiler).
+const VUE_LOADER = USE_VUE3_COMPILER
+  ? {
+      paths: { pitcher: 'dist/pitcher', template: 'dist/templateLoader', index: 'dist/index' },
+      needsTemplateRule: () => true,
+    }
+  : {
+      paths: {
+        pitcher: 'lib/loaders/pitcher',
+        template: 'lib/loaders/templateLoader',
+        index: 'lib/index',
+      },
+      // Its pitcher inlines the template loader, except with the Vue 2.7 compiler.
+      needsTemplateRule: (context) => {
+        // eslint-disable-next-line global-require -- vue-loader 15 only
+        const { resolveCompiler } = require('vue-loader/lib/compiler');
+        return resolveCompiler(context).is27;
+      },
+    };
+const resolveLoader = (file) => require.resolve(`${VUE_LOADER_MODULE}/${file}`);
 
+const PITCHER_PATH = resolveLoader(VUE_LOADER.paths.pitcher);
+const TEMPLATE_LOADER_PATH = resolveLoader(VUE_LOADER.paths.template);
+const VUE_LOADER_INDEX = resolveLoader(VUE_LOADER.paths.index);
+
+// config/rspack/vue.js names the loader bare, and `vue-loader-vue3` has no prefix for the regex.
 const useEntryIsVueLoader = (loader) =>
-  typeof loader === 'string' && (/(\/|\\|@)vue-loader/.test(loader) || loader === 'vue-loader');
+  typeof loader === 'string' &&
+  (/(\/|\\|@)vue-loader/.test(loader) || loader === 'vue-loader' || loader === VUE_LOADER_MODULE);
 
 function normaliseUse(rule) {
   if (Array.isArray(rule.use)) {
@@ -80,8 +103,6 @@ class VueLoaderPlugin {
     delete rawVueRule.options;
     rawVueRule.use = vueUse;
 
-    const { is27 } = resolveCompiler(compiler.options.context);
-
     const pitcher = {
       loader: PITCHER_PATH,
       resourceQuery: (query) => {
@@ -116,7 +137,7 @@ class VueLoaderPlugin {
     compiler.options.module.rules = [
       pitcher,
       ...rules.filter((rule) => !vueLoaderRules.includes(rule)),
-      ...(is27 ? [templateCompilerRule] : []),
+      ...(VUE_LOADER.needsTemplateRule(compiler.options.context) ? [templateCompilerRule] : []),
       ...vueLoaderRules,
     ];
   }

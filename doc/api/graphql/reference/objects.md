@@ -19985,6 +19985,7 @@ A triage and remediation capability and its coverage state for a project.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | `enabled` | [`Boolean!`](scalars.md#boolean) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Indicates the capability is attached to the project. |
+| `flowStatus` | [`TriageAndRemediationFlowStatus!`](enums.md#triageandremediationflowstatus) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.6.<br/><br/>Whether the AI flow behind the capability is enabled, based on Duo configuration. |
 | `runMode` | [`SecurityScanProfileRunMode`](enums.md#securityscanprofilerunmode) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Run mode for the capability. |
 | `triggerType` | [`ScanProfileTriggerType!`](enums.md#scanprofiletriggertype) | Introduced as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.5.<br/><br/>Trigger type the capability applies to. |
 

@@ -559,7 +559,7 @@ export default {
         class="gl-mt-5"
         :help-text="
           s__(
-            'AiPowered|When you turn on this setting, GitLab stores new AI audit events to the database or ClickHouse. Real-time streaming of AI audit events is not affected.',
+            'AiPowered|When you turn on this setting, GitLab stores new AI audit events to the database or ClickHouse and to the audit log file (audit_json.log). Real-time streaming of AI audit events is not affected.',
           )
         "
         :locked="showAuditEventsStorageCascadingLock"

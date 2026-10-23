@@ -181,7 +181,7 @@ export default {
           :link="action.path"
           :with-confirmation-modal="withConfirmationModal"
           class="js-stage-action"
-          @click.native="actionClicked"
+          @show-action-confirmation-modal="actionClicked"
           @pipeline-action-request-complete="$emit('refresh-pipeline-graph')"
         />
       </div>

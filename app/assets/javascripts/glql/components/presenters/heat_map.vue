@@ -1,7 +1,7 @@
 <script>
 import { maxBy } from 'lodash-es';
 import { __, sprintf } from '~/locale';
-import HeatMapChart from '~/analytics/analytics_dashboards/components/visualizations/heat_map_chart.vue';
+import HeatMapChart from '~/explore/analytics_dashboards/components/visualizations/heat_map_chart.vue';
 import {
   baseFieldKeyOf,
   buildStackedByDimension,

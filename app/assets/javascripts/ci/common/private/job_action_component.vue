@@ -53,6 +53,7 @@ export default {
   },
   emits: [
     'action-button-clicked',
+    'focus',
     'show-action-confirmation-modal',
     'pipeline-action-request-complete',
   ],
@@ -131,6 +132,7 @@ export default {
     class="js-ci-action gl-ci-action-icon-container ci-action-icon-container ci-action-icon-wrapper gl-flex gl-items-center gl-justify-center"
     data-testid="ci-action-button"
     @click.stop="onClickAction"
+    @focus="$emit('focus', $event)"
   >
     <div class="gl-flex gl-h-full gl-items-center gl-justify-center">
       <gl-loading-icon

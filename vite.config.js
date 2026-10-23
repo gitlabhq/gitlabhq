@@ -27,22 +27,9 @@ import { CrossOriginWorkerPlugin } from './config/helpers/vite_plugin_cross_orig
 import { Vue3InfectionPlugin } from './config/vue3migration/plugins/vite.mjs';
 import * as vue3SfcCompiler from './config/vue3migration/compilers/vue3_sfc.mjs';
 import vue2Compiler from './config/vue3migration/compilers/vue2_template';
+import vueVersion from './config/vue3migration/version';
 
-const { VUE_VERSION = '2', VUE_COMPILER_VERSION = '2' } = process.env;
-
-if (!['2', '3'].includes(VUE_VERSION)) {
-  throw new Error(`Invalid VUE_VERSION value: ${VUE_VERSION}. Only '2' or '3' are supported`);
-}
-if (!['2', '3'].includes(VUE_COMPILER_VERSION)) {
-  throw new Error(
-    `Invalid VUE_COMPILER_VERSION value: ${VUE_COMPILER_VERSION}. Only '2' or '3' are supported`,
-  );
-}
-
-const USE_VUE3 = VUE_VERSION === '3';
-const USE_VUE3_COMPILER = USE_VUE3 && VUE_COMPILER_VERSION === '3';
-
-console.log(`[V] Using Vue.js ${VUE_VERSION} (compiler ${VUE_COMPILER_VERSION})`);
+const { VUE_VERSION, VUE_COMPILER_VERSION, USE_VUE3, USE_VUE3_COMPILER } = vueVersion;
 
 const vue = USE_VUE3_COMPILER ? vue3 : vue2;
 

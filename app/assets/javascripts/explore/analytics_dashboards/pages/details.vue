@@ -4,9 +4,9 @@ import { GlButton, GlDashboardLayout, GlEmptyState, GlTabs, GlTab } from '@gitla
 import { s__ } from '~/locale';
 import { getParameterByName, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import { createAlert } from '~/alert';
-import AnalyticsDashboardPanel from '~/analytics/shared/components/analytics_dashboard_panel.vue';
+import AnalyticsDashboardPanel from '~/explore/analytics_dashboards/components/analytics_dashboard_panel.vue';
 import { TYPENAME_GROUP, TYPENAME_PROJECT } from '~/graphql_shared/constants';
-import SectionHeader from '~/analytics/analytics_dashboards/components/section_header.vue';
+import SectionHeader from '~/explore/analytics_dashboards/components/section_header.vue';
 import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import {
   EXPLORE_DASHBOARD_MARK_PANELS_IN_VIEW_LOADED,
@@ -113,14 +113,13 @@ export default {
       return dateRangeFilterToUtc(this.filters);
     },
     // A selected namespace always counts. The date range always has a value,
-    // so it only counts when it differs from the configured default.
+    // so it only counts when it differs from the default the picker was seeded with.
     hasActiveFilters() {
       const { dateRangeOption } = this.filters;
-      const defaultDateRange =
-        this.dashboardFilterConfig?.dateRange?.defaultOption ?? DATE_RANGE_OPTION_LAST_30_DAYS;
+      const { dateRangeOption: defaultDateRangeOption } = this.defaultDateRangeFilter();
 
       return Boolean(
-        this.hasNamespace || (dateRangeOption && dateRangeOption !== defaultDateRange),
+        this.hasNamespace || (dateRangeOption && dateRangeOption !== defaultDateRangeOption),
       );
     },
   },

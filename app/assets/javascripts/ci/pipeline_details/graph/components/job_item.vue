@@ -398,7 +398,7 @@ export default {
       @action-button-clicked="handleConfirmationModalPreferences"
       @pipeline-action-request-complete="pipelineActionRequestComplete"
       @show-action-confirmation-modal="showActionConfirmationModal"
-      @focus.native="hideTooltips"
+      @focus="hideTooltips"
     />
     <action-component
       v-if="hasUnauthorizedManualAction"

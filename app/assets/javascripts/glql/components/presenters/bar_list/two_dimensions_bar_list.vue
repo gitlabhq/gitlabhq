@@ -1,7 +1,7 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
-import BarListChart from '~/analytics/analytics_dashboards/components/visualizations/bar_list_chart.vue';
+import BarListChart from '~/explore/analytics_dashboards/components/visualizations/bar_list_chart.vue';
 import { buildStackedByDimension, dimensionLabelFormatter } from '../../../utils/chart_data';
 import { foldSeries, pageOf } from './fold_tail';
 

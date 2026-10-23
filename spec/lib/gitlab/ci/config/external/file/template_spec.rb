@@ -118,7 +118,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Template, feature_category: :
   describe '#metadata' do
     subject(:metadata) { template_file.metadata }
 
-    it do
+    it 'returns the context, template location and raw template URL, with no blob' do
       is_expected.to eq(
         context_project: project.full_path,
         context_sha: '12345',

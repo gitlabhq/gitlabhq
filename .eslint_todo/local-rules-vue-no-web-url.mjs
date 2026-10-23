@@ -5,7 +5,6 @@ export default {
   files: [
     'app/assets/javascripts/admin/users/components/solo_owned_organizations_message.vue',
     'app/assets/javascripts/alert_management/components/alert_management_table.vue',
-    'app/assets/javascripts/analytics/analytics_dashboards/components/visualizations/data_table/assignee_avatars.vue',
     'app/assets/javascripts/analytics/cycle_analytics/components/stage_table.vue',
     'app/assets/javascripts/boards/components/board_card.vue',
     'app/assets/javascripts/boards/components/board_card_inner.vue',
@@ -23,6 +22,7 @@ export default {
     'app/assets/javascripts/contribution_events/components/contribution_event/contribution_event_commented.vue',
     'app/assets/javascripts/contribution_events/components/resource_parent_link.vue',
     'app/assets/javascripts/environments/environment_details/components/deployment_triggerer.vue',
+    'app/assets/javascripts/explore/analytics_dashboards/components/visualizations/data_table/assignee_avatars.vue',
     'app/assets/javascripts/glql/components/presenters/issuable.vue',
     'app/assets/javascripts/glql/components/presenters/link.vue',
     'app/assets/javascripts/glql/components/presenters/user.vue',

@@ -1,4 +1,4 @@
-import { defaultClient } from '../analytics_dashboards/graphql/client';
+import { defaultClient } from '~/explore/analytics_dashboards/graphql/client';
 import { extractQueryResponseFromNamespace } from '../shared/utils';
 import getThroughputChartData from './graphql/queries/throughput_chart.query.graphql';
 import { computeMonthRangeData } from './utils';

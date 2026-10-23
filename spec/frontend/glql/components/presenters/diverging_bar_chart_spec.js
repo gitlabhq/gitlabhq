@@ -1,7 +1,7 @@
 import { GlSkeletonLoader } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import DivergingBarChartPresenter from '~/glql/components/presenters/diverging_bar_chart.vue';
-import DivergingBarChart from '~/analytics/analytics_dashboards/components/visualizations/diverging_bar_chart.vue';
+import DivergingBarChart from '~/explore/analytics_dashboards/components/visualizations/diverging_bar_chart.vue';
 import {
   MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC,
   MOCK_AGGREGATED_FIELDS_ONE_DIM_TWO_METRICS,

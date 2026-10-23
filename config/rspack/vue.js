@@ -8,27 +8,15 @@ const EXACT_VUE_VERSION = require('vue/package.json').version;
 const { isCustomElement } = require('../vue3migration/compilers/vue3_template');
 const { INFECTION_LOADER_PATH } = require('../vue3migration/plugins/rspack_loader');
 const vendorDllHash = require('../helpers/vendor_dll_hash');
+const {
+  VUE_VERSION,
+  USE_VUE3,
+  USE_VUE3_COMPILER,
+  VUE_LOADER_MODULE,
+} = require('../vue3migration/version');
+// vue-loader's own plugin needs webpack internals that rspack does not have.
+const VueLoaderPlugin = require('./vue_loader_plugin');
 
-const { VUE_VERSION = '2', VUE_COMPILER_VERSION = '2' } = process.env;
-
-if (!['2', '3'].includes(VUE_VERSION)) {
-  throw new Error(`Invalid VUE_VERSION value: ${VUE_VERSION}. Only '2' or '3' are supported`);
-}
-if (!['2', '3'].includes(VUE_COMPILER_VERSION)) {
-  throw new Error(
-    `Invalid VUE_COMPILER_VERSION value: ${VUE_COMPILER_VERSION}. Only '2' or '3' are supported`,
-  );
-}
-
-const USE_VUE3 = VUE_VERSION === '3';
-const USE_VUE3_COMPILER = USE_VUE3 && VUE_COMPILER_VERSION === '3';
-
-const VUE_LOADER_MODULE = USE_VUE3_COMPILER ? 'vue-loader-vue3' : 'vue-loader';
-
-const VueLoaderPlugin = USE_VUE3_COMPILER
-  ? // eslint-disable-next-line import-x/no-dynamic-require
-    require(VUE_LOADER_MODULE).VueLoaderPlugin
-  : require('./vue_loader_plugin');
 // eslint-disable-next-line import-x/no-dynamic-require
 const VUE_LOADER_VERSION = require(`${VUE_LOADER_MODULE}/package.json`).version;
 

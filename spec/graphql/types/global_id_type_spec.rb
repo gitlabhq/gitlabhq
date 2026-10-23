@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Types::GlobalIDType do
+RSpec.describe Types::GlobalIDType, feature_category: :api do
   include GraphqlHelpers
   include GlobalIDDeprecationHelpers
 

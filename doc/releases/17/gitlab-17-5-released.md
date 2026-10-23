@@ -469,7 +469,7 @@ working properly before selecting the **Enable SAML authentication for this grou
 
 - Tier: Free, Premium, Ultimate
 - Offering: GitLab Self-Managed
-- Links: [Documentation](../../api/container_registry.md#list-all-registry-repository-tags) | [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/482399)
+- Links: [Documentation](../../api/container_registry.md#list-all-registry-repository-tags-in-a-project) | [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/482399)
 
 {{< /details >}}
 

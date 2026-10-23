@@ -68,7 +68,7 @@ RSpec.describe Gitlab::Ci::Build::Artifacts::Metadata::Entry do
 
       it { is_expected.to all(be_an_instance_of(described_class)) }
 
-      it do
+      it 'returns the files and subdirectory directly inside dir_1' do
         is_expected.to contain_exactly(
           entry('path/dir_1/file_1'),
           entry('path/dir_1/file_b'),
@@ -83,7 +83,7 @@ RSpec.describe Gitlab::Ci::Build::Artifacts::Metadata::Entry do
       it { is_expected.to all(be_file) }
       it { is_expected.to all(be_an_instance_of(described_class)) }
 
-      it do
+      it 'returns only the files directly inside dir_1' do
         is_expected.to contain_exactly(
           entry('path/dir_1/file_1'),
           entry('path/dir_1/file_b')
@@ -106,7 +106,7 @@ RSpec.describe Gitlab::Ci::Build::Artifacts::Metadata::Entry do
         it { is_expected.to all(be_directory) }
         it { is_expected.to all(be_an_instance_of(described_class)) }
 
-        it do
+        it 'returns the subdirectory and the parent directory' do
           is_expected.to contain_exactly(
             entry('path/dir_1/subdir/'),
             entry('path/')

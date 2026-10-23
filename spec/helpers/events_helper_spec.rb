@@ -431,6 +431,25 @@ RSpec.describe EventsHelper, factory_default: :keep, feature_category: :user_pro
 
       expect(helper.event_feed_url(event)).to eq(project_url(event.project))
     end
+
+    context 'for group transfer' do
+      let_it_be(:group) { create(:group) }
+      let(:event) do
+        build_stubbed(
+          :event,
+          :transferred,
+          target: group,
+          target_type: 'Group',
+          group: group,
+          project: nil,
+          author: user
+        ).present
+      end
+
+      it 'returns the transferred group url' do
+        expect(helper.event_feed_url(event)).to eq(group_url(group))
+      end
+    end
   end
 
   describe '#event_preposition' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Types::Kas::AgentMetadataType do
+RSpec.describe Types::Kas::AgentMetadataType, feature_category: :deployment_management do
   include GraphqlHelpers
 
   let(:fields) { %i[version commit pod_namespace pod_name] }

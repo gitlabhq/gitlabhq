@@ -10,6 +10,8 @@ module API
     REPOSITORY_ENDPOINT_REQUIREMENTS = ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(
       tag_name: ::API::NO_SLASH_URL_PART_REGEX)
     DEFAULT_PAGE_COUNT = 20
+    TAGS_ORDER_BY_VALUES = %w[name published_at].freeze
+    TAGS_SORT_VALUES = %w[asc desc].freeze
 
     before do
       authorize_read_container_images!
@@ -101,6 +103,10 @@ module API
       end
       params do
         requires :repository_id, type: Integer, desc: 'ID of the container registry repository.'
+        optional :order_by, type: String, default: 'name',
+          desc: 'Field to order tags by. `published_at` requires keyset pagination.'
+        optional :sort, type: String, default: 'asc',
+          desc: 'Direction to sort tags in. Only applies to keyset pagination.'
         use :pagination
       end
       route_setting :authorization, permissions: :read_container_repository_tag, boundary_type: :project, skip_job_token_policies: true
@@ -111,14 +117,25 @@ module API
           if params[:pagination] == 'keyset'
             not_allowed! unless repository.gitlab_api_client.supports_gitlab_api?
 
+            # Validated only here: offset pagination ignored unknown values, so rejecting them would break clients.
+            unless TAGS_ORDER_BY_VALUES.include?(params[:order_by])
+              bad_request!("order_by must be one of: #{TAGS_ORDER_BY_VALUES.join(', ')}")
+            end
+
+            unless TAGS_SORT_VALUES.include?(params[:sort])
+              bad_request!("sort must be one of: #{TAGS_SORT_VALUES.join(', ')}")
+            end
+
             per_page_param = params[:per_page] || DEFAULT_PAGE_COUNT
-            sort_param = params[:sort] == 'desc' ? '-name' : 'name'
+            sort_param = params[:sort] == 'desc' ? "-#{params[:order_by]}" : params[:order_by]
 
             response = repository.tags_page(page_size: per_page_param, sort: sort_param, last: params[:last])
             add_next_link_if_next_page_exists(response)
 
             response[:tags]
           else
+            bad_request!('order_by published_at requires keyset pagination') if params[:order_by] == 'published_at'
+
             tags = Kaminari.paginate_array(repository.tags)
             paginate(tags)
           end
@@ -253,7 +270,8 @@ module API
         next_params = {
           per_page: parsed_params['n'],
           last: parsed_params['last'],
-          sort: parsed_params['sort'] == '-name' ? 'desc' : 'asc'
+          order_by: params[:order_by],
+          sort: params[:sort]
         }.compact
 
         Gitlab::Pagination::Keyset::HeaderBuilder

@@ -290,6 +290,14 @@ describe('stage column component', () => {
           );
         });
 
+        it('renders modal when the action requests confirmation', () => {
+          createComponent({ props: { ...stageWithConfirmationMessage } });
+
+          findActionComponent().vm.$emit('show-action-confirmation-modal');
+
+          expect(confirmAction).toHaveBeenCalled();
+        });
+
         it('escapes HTML in the confirmation message instead of rendering it', () => {
           const stageWithHtmlConfirmationMessage = JSON.parse(
             JSON.stringify(stageWithConfirmationMessage),

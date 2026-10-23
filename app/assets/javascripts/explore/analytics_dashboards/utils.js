@@ -2,7 +2,7 @@ import { uniqueId } from 'lodash-es';
 import { isNumeric } from '~/lib/utils/number_utils';
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_ANALYTICS_CUSTOM_DASHBOARD } from '~/graphql_shared/constants';
-import { byReadingOrder } from '~/vue_shared/components/dashboards_list/dashboard_preview_layout';
+import { byReadingOrder } from '~/explore/analytics_dashboards/components/dashboards_list/dashboard_preview_layout';
 
 export const getUniquePanelId = () => uniqueId('panel-');
 

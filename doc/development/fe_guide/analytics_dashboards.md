@@ -238,7 +238,7 @@ To create a built-in analytics dashboard:
 
    `titleIcon` adds an icon next to the panel title. When the panel is in an error state, an alert icon replaces the title icon.
 
-   `tooltip` adds a help icon next to the panel title that displays contextual help on hover, using `description` text and an optional `descriptionLink` to embed a link between the `%{linkStart}` and `%{linkEnd}` placeholders. You can also define a `tooltip` at the visualization level in `visualization.options` or dynamically using the [`setVisualizationOverrides`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/assets/javascripts/analytics/analytics_dashboards/components/analytics_dashboard_panel.vue#L261) callback function from a data source. Note that panel-level tooltips take precedence over visualization-level tooltips.
+   `tooltip` adds a help icon next to the panel title that displays contextual help on hover, using `description` text and an optional `descriptionLink` to embed a link between the `%{linkStart}` and `%{linkEnd}` placeholders. You can also define a `tooltip` at the visualization level in `visualization.options` or dynamically using the [`setVisualizationOverrides`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/explore/analytics_dashboards/components/analytics_dashboard_panel.vue) callback function from a data source. Note that panel-level tooltips take precedence over visualization-level tooltips.
 1. Optional. Add `views` to a panel to let users switch between multiple visualizations. A panel must define between 2 and 5 views (see [Pajamas segmented control](https://design.gitlab.com/components/segmented-control)). Each view requires a `text` label and a `visualization` (inline visualization or visualization template). The first view is selected by default. The panel-level `visualization` property is still required by the schema when `views` is set. Set it to the same visualization as the first view.
 
    ```yaml
@@ -269,8 +269,8 @@ For a complete example, refer to the GitLab Duo and SDLC trends [dashboard confi
 
 To add a new data source:
 
-1. Create a new JavaScript module that exports a `fetch` method. See [analytics_dashboards/data_sources/index.js](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/assets/javascripts/analytics/analytics_dashboards/data_sources/index.js) for the full documentation of the `fetch` API. You can also take a look at[`cube_analytics.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/assets/javascripts/analytics/analytics_dashboards/data_sources/cube_analytics.js) as an example
-1. Add your module to the list exports in [`data_sources/index.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/assets/javascripts/analytics/analytics_dashboards/data_sources/index.js).
+1. Create a new JavaScript module that exports a `fetch` method. See [analytics_dashboards/data_sources/index.js](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/assets/javascripts/explore/analytics_dashboards/data_sources/index.js) for the full documentation of the `fetch` API. You can also take a look at[`dora_metrics.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/assets/javascripts/explore/analytics_dashboards/data_sources/dora_metrics.js) as an example
+1. Add your module to the list exports in [`data_sources/index.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/assets/javascripts/explore/analytics_dashboards/data_sources/index.js).
 1. Add your data source to the schema's list of `Data` types in [`analytics_visualization_legacy.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_visualization_legacy.json) for group and project dashboards. If the data source should also be available to explore dashboards, add it to [`analytics_visualization.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_visualization.json) too.
 
 > [!note]
@@ -281,27 +281,27 @@ To add a new data source:
 To add a new visualization render type:
 
 1. Create a new Vue component that accepts `data` and `options` properties.
-   See [`line_chart.vue`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/assets/javascripts/analytics/analytics_dashboards/components/visualizations/line_chart.vue) as an example.
+   See [`line_chart.vue`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/explore/analytics_dashboards/components/visualizations/line_chart.vue) as an example.
 1. Add relevant storybook stories for the different states of the visualization
-   See [`line_chart.stories.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/assets/javascripts/analytics/analytics_dashboards/components/visualizations/line_chart.stories.js) as an example.
-1. Add your component to the list of conditional components imports in [`analytics_dashboard_panel.vue`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/assets/javascripts/analytics/analytics_dashboards/components/analytics_dashboard_panel.vue).
+   See [`line_chart.stories.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/explore/analytics_dashboards/components/visualizations/line_chart.stories.js) as an example.
+1. Add your component to the visualization registry in [`visualizations/index.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/explore/analytics_dashboards/components/visualizations/index.js).
 1. Add your component to the schema's `AnalyticsVisualization` enum type in [`analytics_visualization_legacy.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_visualization_legacy.json) for group and project dashboards. If the render type should also be available to explore dashboards, add it to [`analytics_visualization.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_visualization.json) too.
 
 #### Migrating existing components to visualizations
 
 You can migrate existing components to dashboard visualizations. To do this,
 wrap your existing component in a new visualization that provides the component with the
-required context and data. See [`dora_performers_score.vue`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/assets/javascripts/analytics/analytics_dashboards/components/visualizations/dora_performers_score.vue) as an example.
+required context and data. See [`dora_performers_score.vue`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/assets/javascripts/explore/analytics_dashboards/components/visualizations/dora_performers_score.vue) as an example.
 
 As an upgrade path, your component might fetch its own data internally.
 But you should ensure to plan how to migrate your visualization to use the shared analytics data sources method.
-See [`value_stream.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/assets/javascripts/analytics/analytics_dashboards/data_sources/value_stream.js) as an example.
+See [`value_stream.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/assets/javascripts/explore/analytics_dashboards/data_sources/value_stream.js) as an example.
 
 #### Introducing visualizations behind a feature flag
 
 While developing new visualizations we can use [feature flags](../feature_flags/_index.md#create-a-new-feature-flag) to mitigate risks of disruptions or incorrect data for users.
 
-The [`from_data`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/analytics/panel.rb) method builds the panel objects for a dashboard. Using the `filter_map` method, we can add a condition to skip rendering panels that include the visualization we are developing.
+The [`from_data`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/analytics/dashboards/panel.rb) method builds the panel objects for a dashboard. Using the `filter_map` method, we can add a condition to skip rendering panels that include the visualization we are developing.
 
 For example, here we have added the `enable_usage_overview_visualization` feature flag and can check its current state to determine whether panels using the `usage_overview` visualization should be rendered:
 

@@ -1,7 +1,6 @@
 ---
 table_name: virtual_registries_packages_maven_cache_entries
-classes:
-  - VirtualRegistries::Packages::Maven::Cache::Entry
+classes: []
 feature_categories:
   - virtual_registry
 description: Cache entry for the Maven virtual packages registry. Mainly the body

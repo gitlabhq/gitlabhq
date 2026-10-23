@@ -4,7 +4,7 @@ def next?
   File.basename(__FILE__) == "Gemfile.next"
 end
 
-source 'https://rubygems.org'
+source 'https://rubygems.org', cooldown: 7
 
 # Please see https://docs.gitlab.com/ee/development/feature_categorization/#gemfile
 ignore_feature_category = Module.new do

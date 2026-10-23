@@ -1,6 +1,6 @@
 import { queryThroughputData } from '~/analytics/merge_request_analytics/api';
 import { getThroughputChartData } from '~/analytics/merge_request_analytics/graphql/queries/throughput_chart.query.graphql';
-import { defaultClient } from '~/analytics/analytics_dashboards/graphql/client';
+import { defaultClient } from '~/explore/analytics_dashboards/graphql/client';
 
 const mockMergeRequestsCountsResponseData = {
   mergeRequests: {

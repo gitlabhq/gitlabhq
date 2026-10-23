@@ -1,12 +1,14 @@
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import { GlModal } from '@gitlab/ui';
+import { createWrapper as createRootWrapper } from '@vue/test-utils';
 import JobItem from '~/ci/pipeline_details/graph/components/job_item.vue';
 import JobSourceBadge from '~/ci/job_details/components/job_source_badge.vue';
 import axios from '~/lib/utils/axios_utils';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import ActionComponent from '~/ci/common/private/job_action_component.vue';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
+import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
@@ -196,6 +198,15 @@ describe('pipeline graph job item', () => {
       createWrapper({ props: { job: mockFailedJob } });
 
       expect(findActionComponent().props('tooltipText')).toBe('Retry');
+    });
+
+    it(`emits ${BV_HIDE_TOOLTIP} when the action is focused`, async () => {
+      createWrapper();
+      const root = createRootWrapper(wrapper.vm.$root);
+
+      await wrapper.findComponent(ActionComponent).vm.$emit('focus');
+
+      expect(root.emitted(BV_HIDE_TOOLTIP)).toHaveLength(1);
     });
 
     describe('spacing', () => {

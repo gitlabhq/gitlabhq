@@ -12,7 +12,7 @@ import { buildOutput } from './helpers/output.js';
 import { aliases } from './helpers/aliases.js';
 import { supportedBrowsersHash } from './helpers/supported_browsers.js';
 import vendorDllHash from './helpers/vendor_dll_hash.js';
-import { VUE_VERSION, VUE_COMPILER_VERSION, logVueVersion } from './vue3migration/version.js';
+import { VUE_VERSION, VUE_COMPILER_VERSION } from './vue3migration/version.js';
 import { cacheGroups } from './rspack/cache_groups.js';
 import { define } from './rspack/define.js';
 import { entries } from './rspack/entries.js';
@@ -51,8 +51,6 @@ import {
 const configPath = fileURLToPath(import.meta.url);
 const require = createRequire(import.meta.url);
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
-
-logVueVersion('[Rspack]');
 
 gqlTag.disableFragmentWarnings();
 

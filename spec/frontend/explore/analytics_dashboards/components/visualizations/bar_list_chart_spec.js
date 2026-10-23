@@ -1,0 +1,667 @@
+import { markRaw, nextTick } from 'vue';
+import * as echarts from 'echarts';
+import { GlChart, GlChartLegend } from '@gitlab/ui/src/charts';
+import {
+  GL_COLOR_DATA_BLUE_500,
+  GL_COLOR_NEUTRAL_400,
+  GL_COLOR_ORANGE_400,
+} from '@gitlab/ui/src/tokens/build/js/tokens';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import BarListChart from '~/explore/analytics_dashboards/components/visualizations/bar_list_chart.vue';
+
+describe('BarListChart', () => {
+  /** @type {import('helpers/vue_test_utils_helper').ExtendedWrapper} */
+  let wrapper;
+
+  const rows = [
+    { name: 'Chat', value: 2570000, share: 90 },
+    { name: 'Software Dev', value: 138300, share: 5 },
+    { name: 'Other (6)', value: 23600, share: 0.8 },
+  ];
+
+  const findChart = () => wrapper.findComponent(GlChart);
+  const findLegend = () => wrapper.findComponent(GlChartLegend);
+  const chartHeight = () => wrapper.findByTestId('chart-container').element.style.height;
+  const chartOptions = () => findChart().props('options');
+  const firstSeries = () => chartOptions().series[0];
+  const labelAt = (dataIndex) => firstSeries().label.formatter({ dataIndex });
+  const labelFor = (name) => labelAt(chartOptions().yAxis.data.indexOf(name));
+
+  const createWrapper = (props = {}) => {
+    wrapper = shallowMountExtended(BarListChart, { propsData: { data: rows, ...props } });
+  };
+
+  describe('rows', () => {
+    beforeEach(() => createWrapper());
+
+    // ECharts draws a category axis bottom-up, so the component reverses to
+    // keep the caller's order reading top-down.
+    it('reverses the categories so the given order reads top-down', () => {
+      expect(chartOptions().yAxis.data).toEqual(['Other (6)', 'Software Dev', 'Chat']);
+    });
+
+    // The bar length is the share of the whole, not the value scaled against
+    // the largest row, so the track reads as 100%.
+    it('plots the shares rather than the values', () => {
+      expect(firstSeries().data).toEqual([0.8, 5, 90]);
+    });
+
+    it('fixes the value axis to a full 100%', () => {
+      expect(chartOptions().xAxis).toMatchObject({ type: 'value', min: 0, max: 100 });
+    });
+  });
+
+  describe('category labels', () => {
+    const categoryTooltip = () => chartOptions().yAxis.tooltip;
+    const tooltipFor = (value, { truncated }) =>
+      categoryTooltip().formatter({ value, isTruncated: () => truncated });
+
+    beforeEach(() => createWrapper());
+
+    it('enables axis label tooltips without series tooltips', () => {
+      expect(chartOptions().tooltip).toEqual({ show: true, trigger: 'none' });
+      expect(categoryTooltip().show).toBe(true);
+    });
+
+    it('shows the full label when it is truncated', () => {
+      expect(tooltipFor('<b>name</b>', { truncated: true })).toBe('&lt;b&gt;name&lt;/b&gt;');
+    });
+
+    it('shows nothing when the label fits', () => {
+      expect(tooltipFor('Chat', { truncated: false })).toBe('');
+    });
+  });
+
+  describe('height', () => {
+    // The chart has to size itself: the wrappers between it and a dashboard
+    // panel body are all auto-height, so a percentage height collapses.
+    it('sizes itself from the row count rather than filling its container', () => {
+      createWrapper();
+
+      expect(chartHeight()).toBe('100px');
+
+      createWrapper({ data: [...rows, ...rows] });
+
+      expect(chartHeight()).toBe('184px');
+    });
+  });
+
+  describe('value labels', () => {
+    beforeEach(() => createWrapper());
+
+    it.each`
+      name              | expected
+      ${'Chat'}         | ${'90% · 2.6M'}
+      ${'Software Dev'} | ${'5% · 138.3k'}
+      ${'Other (6)'}    | ${'0.8% · 23.6k'}
+    `('renders $expected for $name', ({ name, expected }) => {
+      expect(labelFor(name)).toBe(expected);
+    });
+
+    it('positions the label past the end of the bar', () => {
+      expect(firstSeries().label).toMatchObject({ show: true, position: 'right' });
+    });
+
+    it('reserves room to the right of the plot area for the label', () => {
+      expect(chartOptions().grid.right).toBeGreaterThan(0);
+    });
+
+    it('rounds a long share rather than printing it raw', () => {
+      createWrapper({ data: [{ name: 'Chat', value: 1000, share: 0.83333 }] });
+
+      expect(labelFor('Chat')).toBe('0.8% · 1k');
+    });
+
+    it('renders an empty label for an unknown category', () => {
+      expect(labelFor('Nope')).toBe('');
+    });
+
+    describe('when a row carries its own label', () => {
+      const durations = [
+        { name: 'Median', value: 33840000, share: 29, label: '9h 24m' },
+        { name: 'p75', value: 82800000, share: 71, label: '23h' },
+      ];
+
+      it('shows the label in place of the compact value', () => {
+        createWrapper({ data: durations });
+
+        expect(labelFor('Median')).toBe('29% · 9h 24m');
+      });
+
+      it('shows the label alone with value-only labels', () => {
+        createWrapper({ data: durations, valueLabels: 'value' });
+
+        expect(labelFor('p75')).toBe('23h');
+      });
+    });
+  });
+
+  describe('scaled to the largest row', () => {
+    beforeEach(() =>
+      createWrapper({
+        scale: 'max',
+        data: [
+          { name: 'Chat', value: 200, share: 50 },
+          { name: 'Software Dev', value: 100, share: 25 },
+          { name: 'Other (6)', value: 100, share: 25 },
+        ],
+      }),
+    );
+
+    it('fills the track with the largest row and sizes the rest against it', () => {
+      expect(firstSeries().data).toEqual([50, 50, 100]);
+    });
+
+    it('keeps labelling each row with its share of the total', () => {
+      expect(labelFor('Chat')).toBe('50% · 200');
+    });
+
+    it('draws every bar at zero length when all values are zero', () => {
+      createWrapper({
+        scale: 'max',
+        data: [
+          { name: 'Chat', value: 0, share: 0 },
+          { name: 'Other (6)', value: 0, share: 0 },
+        ],
+      });
+
+      expect(firstSeries().data).toEqual([0, 0]);
+    });
+  });
+
+  describe('on a log scale', () => {
+    beforeEach(() =>
+      createWrapper({
+        scale: 'log',
+        data: [
+          { name: 'Chat', value: 900, share: 96.5 },
+          { name: 'Software Dev', value: 30, share: 3.2 },
+          { name: 'Other (6)', value: 3, share: 0.3 },
+        ],
+      }),
+    );
+
+    // Every other scale plots a percentage of the track; a log axis needs the values
+    // themselves, and lets the axis do the compressing. Each is shifted by one, so
+    // 900/30/3 plot as 901/31/4.
+    it('plots the values rather than a percentage of the track', () => {
+      expect(firstSeries().data).toEqual([4, 31, 901]);
+    });
+
+    it('switches the value axis to a base-10 log scale', () => {
+      expect(chartOptions().xAxis).toMatchObject({ type: 'log', logBase: 10, show: false });
+    });
+
+    // The track starts at the bar baseline and ends at the next whole power of ten above
+    // the largest row.
+    it('spans one to the next power of ten above the largest value', () => {
+      expect(chartOptions().xAxis).toMatchObject({ min: 1, max: 1000 });
+    });
+
+    it('keeps labelling each row with its share and value', () => {
+      expect(labelFor('Chat')).toBe('96.5% · 900');
+    });
+
+    describe('when the largest value is itself a power of ten', () => {
+      beforeEach(() =>
+        createWrapper({ scale: 'log', data: [{ name: 'Chat', value: 1000, share: 100 }] }),
+      );
+
+      // The ceiling sits strictly above the largest value, so the longest bar stops
+      // short of the value column rather than running into it.
+      it('raises the ceiling by a further decade', () => {
+        expect(chartOptions().xAxis.max).toBe(10000);
+      });
+    });
+
+    describe('when a row has no sessions', () => {
+      beforeEach(() =>
+        createWrapper({
+          scale: 'log',
+          data: [
+            { name: 'Chat', value: 50, share: 100 },
+            { name: 'Other (6)', value: 0, share: 0 },
+          ],
+        }),
+      );
+
+      // The shift puts a zero on the bar baseline, so it draws no bar at all.
+      it('plots the value at the axis minimum', () => {
+        expect(firstSeries().data).toEqual([1, 51]);
+      });
+    });
+
+    describe('when a row has a single session', () => {
+      beforeEach(() =>
+        createWrapper({
+          scale: 'log',
+          data: [
+            { name: 'Chat', value: 1, share: 100 },
+            { name: 'Other (6)', value: 0, share: 0 },
+          ],
+        }),
+      );
+
+      // The smallest real count clears the baseline, so it draws a bar rather than
+      // reading as an empty row.
+      it('plots it above the zero row', () => {
+        expect(firstSeries().data).toEqual([1, 2]);
+      });
+    });
+
+    describe('when every value is zero', () => {
+      beforeEach(() =>
+        createWrapper({
+          scale: 'log',
+          data: [
+            { name: 'Chat', value: 0, share: 0 },
+            { name: 'Other (6)', value: 0, share: 0 },
+          ],
+        }),
+      );
+
+      it('keeps the axis to a single decade', () => {
+        expect(chartOptions().xAxis).toMatchObject({ min: 1, max: 10 });
+      });
+    });
+  });
+
+  describe('with blue bars', () => {
+    beforeEach(() => createWrapper({ color: 'blue' }));
+
+    // The palette's first colour, so the list matches the other charts' first series.
+    it('fills the bars with the chart palette blue', () => {
+      expect(firstSeries().itemStyle.color).toBe(GL_COLOR_DATA_BLUE_500);
+    });
+  });
+
+  describe('with gray bars', () => {
+    beforeEach(() => createWrapper({ color: 'gray' }));
+
+    it('fills the bars with the neutral gray', () => {
+      expect(firstSeries().itemStyle.color).toBe(GL_COLOR_NEUTRAL_400);
+    });
+  });
+
+  describe('with value-only labels', () => {
+    beforeEach(() => createWrapper({ valueLabels: 'value' }));
+
+    it.each`
+      name              | expected
+      ${'Chat'}         | ${'2,570,000'}
+      ${'Software Dev'} | ${'138,300'}
+      ${'Other (6)'}    | ${'23,600'}
+    `('labels $name with its full value, $expected', ({ name, expected }) => {
+      expect(labelFor(name)).toBe(expected);
+    });
+
+    // The value is the headline here rather than a footnote to the share.
+    it('emphasises the value', () => {
+      expect(firstSeries().label).toMatchObject({
+        fontWeight: 'bold',
+        color: 'var(--gl-text-color-default)',
+      });
+    });
+  });
+
+  describe('trends', () => {
+    const rowsWithTrends = [
+      { name: 'Chat', value: 1071, share: 60, trend: { text: '+7%', variant: 'success' } },
+      { name: 'Duo Planner', value: 69, share: 30, trend: { text: '-4%', variant: 'danger' } },
+      { name: 'Developer', value: 17, share: 10 },
+    ];
+
+    beforeEach(() => createWrapper({ data: rowsWithTrends, valueLabels: 'value' }));
+
+    // ECharts rich text: a `{style|text}` segment takes its style from `label.rich`.
+    it('appends each trend to its value label as a rich text pill, after a gap', () => {
+      expect(labelFor('Chat')).toBe('1,071{trendGap|}{trendSuccess|+7%}');
+      expect(labelFor('Duo Planner')).toBe('69{trendGap|}{trendDanger|-4%}');
+    });
+
+    it('sizes the gap with padding, since rich text has no margin', () => {
+      expect(firstSeries().label.rich.trendGap).toEqual({ padding: [0, 4] });
+    });
+
+    it('leaves a row without a trend as its value alone', () => {
+      expect(labelFor('Developer')).toBe('17');
+    });
+
+    it('colours each pill from the matching badge tokens', () => {
+      expect(firstSeries().label.rich).toMatchObject({
+        trendSuccess: {
+          color: 'var(--gl-badge-success-text-color-default)',
+          backgroundColor: 'var(--gl-badge-success-background-color-default)',
+        },
+        trendDanger: {
+          color: 'var(--gl-badge-danger-text-color-default)',
+          backgroundColor: 'var(--gl-badge-danger-background-color-default)',
+        },
+        trendNeutral: {
+          color: 'var(--gl-badge-neutral-text-color-default)',
+          backgroundColor: 'var(--gl-badge-neutral-background-color-default)',
+        },
+      });
+    });
+
+    it('widens the value column to make room for the pill', () => {
+      const withTrends = chartOptions().grid.right;
+
+      createWrapper({ data: rows });
+
+      expect(withTrends).toBeGreaterThan(chartOptions().grid.right);
+    });
+
+    describe('with a variant the pill has no style for', () => {
+      beforeEach(() =>
+        createWrapper({
+          data: [{ name: 'Chat', value: 10, share: 100, trend: { text: 'New', variant: 'info' } }],
+        }),
+      );
+
+      it('falls back to the neutral pill', () => {
+        expect(labelFor('Chat')).toBe('100% · 10{trendGap|}{trendNeutral|New}');
+      });
+    });
+  });
+
+  describe('chrome', () => {
+    beforeEach(() => createWrapper());
+
+    it('hides the value axis', () => {
+      expect(chartOptions().xAxis.show).toBe(false);
+    });
+
+    it('hides the category axis ticks', () => {
+      expect(chartOptions().yAxis.axisTick).toEqual({ show: false });
+    });
+
+    it('left-aligns the category labels at the label column edge', () => {
+      // The margin is what puts the label at the column's edge; align alone
+      // would anchor it against the axis line.
+      expect(chartOptions().yAxis.axisLabel).toMatchObject({ align: 'left', margin: 152 });
+    });
+
+    it('draws each bar against a track', () => {
+      expect(firstSeries().showBackground).toBe(true);
+    });
+
+    it('fills the bars orange by default', () => {
+      expect(firstSeries().itemStyle.color).toBe(GL_COLOR_ORANGE_400);
+    });
+  });
+
+  describe('when two rows share a name', () => {
+    beforeEach(() =>
+      createWrapper({
+        data: [
+          { name: 'Chat', value: 1000, share: 10 },
+          { name: 'Chat', value: 2000, share: 20 },
+        ],
+      }),
+    );
+
+    // Index 0 is the last row, since the axis is drawn bottom-up.
+    it('labels each bar from its own row', () => {
+      expect(labelAt(0)).toBe('20% · 2k');
+      expect(labelAt(1)).toBe('10% · 1k');
+    });
+  });
+
+  describe('without data', () => {
+    it('renders an empty chart rather than erroring', () => {
+      createWrapper({ data: undefined });
+
+      expect(chartOptions().yAxis.data).toEqual([]);
+      expect(firstSeries().data).toEqual([]);
+    });
+  });
+
+  describe('options passthrough', () => {
+    beforeEach(() => createWrapper({ options: { grid: { right: 200 } } }));
+
+    it('merges caller options over the defaults', () => {
+      expect(chartOptions().grid.right).toBe(200);
+    });
+
+    it('keeps the defaults it does not override', () => {
+      expect(chartOptions().xAxis.show).toBe(false);
+    });
+  });
+
+  describe('stacked rows', () => {
+    const stackedRows = [
+      {
+        name: 'Sonnet',
+        value: 80,
+        share: (80 / 120) * 100,
+        segments: [
+          { name: 'Chat', value: 60, share: 50 },
+          { name: 'Dev', value: 20, share: (20 / 120) * 100 },
+        ],
+      },
+      {
+        name: 'Haiku',
+        value: 40,
+        share: (40 / 120) * 100,
+        segments: [
+          { name: 'Chat', value: 30, share: 25 },
+          { name: 'Dev', value: 10, share: (10 / 120) * 100 },
+        ],
+      },
+    ];
+
+    const seriesByName = (name) => chartOptions().series.find((series) => series.name === name);
+    const lastSeries = () => chartOptions().series[chartOptions().series.length - 1];
+
+    beforeEach(() => createWrapper({ data: stackedRows }));
+
+    it('renders one stacked bar series per segment name', () => {
+      expect(chartOptions().series.map(({ name, stack }) => ({ name, stack }))).toEqual([
+        { name: 'Chat', stack: 'row' },
+        { name: 'Dev', stack: 'row' },
+      ]);
+    });
+
+    it('plots each segment as its share of the grand total', () => {
+      // Rows render bottom-up, so Haiku comes first.
+      expect(seriesByName('Chat').data).toEqual([25, 50]);
+      expect(seriesByName('Dev').data).toEqual([(10 / 120) * 100, (20 / 120) * 100]);
+    });
+
+    it('labels only the stack end, with the compact row total', () => {
+      expect(seriesByName('Chat').label.show).toBe(false);
+      expect(lastSeries().label.show).toBe(true);
+      expect(lastSeries().label.formatter({ dataIndex: 1 })).toBe('80');
+    });
+
+    // The legend is DOM below the chart, so the canvas keeps its own height
+    // and the legend grows the component instead.
+    it('renders the legend below the chart rather than inside it', () => {
+      expect(chartOptions().legend.show).toBe(false);
+      expect(chartHeight()).toBe(`${2 * 28 + 16}px`);
+    });
+
+    it('shows no legend for single-dimension rows', () => {
+      createWrapper();
+
+      expect(chartOptions().legend).toBeUndefined();
+    });
+
+    // One dimension has no segments, so it has no series to hide and paging
+    // to another window of rows leaves nothing behind.
+    it('keeps single-dimension rows out of the hidden-series bookkeeping', async () => {
+      createWrapper();
+      await wrapper.setProps({ data: [rows[1], rows[2]] });
+
+      expect(chartOptions().legend).toBeUndefined();
+      expect(chartOptions().yAxis.data).toEqual(['Other (6)', 'Software Dev']);
+    });
+
+    describe('legend interaction', () => {
+      let onLegendChange;
+
+      beforeEach(() => {
+        const dom = document.createElement('div');
+        // GlChart emits its instance marked raw, so Vue 3 does not proxy it
+        const chart = markRaw({
+          getDom: () => dom,
+          on: (event, handler) => {
+            onLegendChange = handler;
+          },
+          off: () => {},
+        });
+        jest.spyOn(echarts, 'getInstanceByDom').mockReturnValue(chart);
+        findChart().vm.$emit('created', chart);
+      });
+
+      const hide = async (selected) => {
+        onLegendChange({ selected });
+        await nextTick();
+      };
+
+      // Merge mode keeps series the new option no longer lists, so the
+      // component replaces the series component outright on every draw.
+      it('replaces the series rather than merging them', () => {
+        const setOption = jest.fn();
+        findChart().vm.$emit('updated', { setOption });
+
+        expect(setOption).toHaveBeenCalledWith(
+          { series: chartOptions().series },
+          { replaceMerge: ['series'] },
+        );
+      });
+
+      // The legend tracks hidden entries by position, so it has to be rebuilt
+      // whenever the series list changes, in step with hiddenSeries clearing.
+      it('rebuilds the legend only when the series list changes', async () => {
+        const before = findLegend().vm;
+
+        await wrapper.setProps({ data: [...stackedRows] });
+        expect(findLegend().vm).toBe(before);
+
+        await wrapper.setProps({
+          data: [
+            {
+              name: 'Sonnet',
+              value: 20,
+              share: 100,
+              segments: [{ name: 'Ops', value: 20, share: 100 }],
+            },
+          ],
+        });
+        expect(findLegend().vm).not.toBe(before);
+      });
+
+      // One series named "A,B" and two named "A" and "B" join to the same
+      // string, so the key has to survive a dimension value containing a comma.
+      it('rebuilds the legend when series names differ only by where a comma falls', async () => {
+        const rowWith = (names) => [
+          {
+            name: 'Sonnet',
+            value: 10,
+            share: 100,
+            segments: names.map((n) => ({ name: n, value: 10, share: 100 })),
+          },
+        ];
+
+        await wrapper.setProps({ data: rowWith(['A,B']) });
+        const before = findLegend().vm;
+
+        await wrapper.setProps({ data: rowWith(['A', 'B']) });
+
+        expect(findLegend().vm).not.toBe(before);
+      });
+
+      it('hands the legend one entry per series, coloured to match the bars', () => {
+        const colors = chartOptions().series.map(({ itemStyle }) => itemStyle.color);
+
+        expect(findLegend().props('seriesInfo')).toEqual([
+          { name: 'Chat', type: 'bar', color: colors[0] },
+          { name: 'Dev', type: 'bar', color: colors[1] },
+        ]);
+      });
+
+      it('rescales the remaining segments to the visible total', async () => {
+        await hide({ Chat: false, Dev: true });
+
+        expect(seriesByName('Chat').data).toEqual([0, 0]);
+        expect(seriesByName('Dev').data).toEqual([(10 / 30) * 100, (20 / 30) * 100]);
+      });
+
+      it('relabels rows with their visible totals', async () => {
+        await hide({ Chat: false, Dev: true });
+
+        expect(seriesByName('Dev').label.formatter({ dataIndex: 1 })).toBe('20');
+      });
+
+      it('pins every series into the legend options, hidden ones deselected', async () => {
+        await hide({ Chat: false, Dev: true });
+
+        expect(chartOptions().legend.selected).toEqual({ Chat: false, Dev: true });
+      });
+
+      // Folding or unfolding a segment replaces the data without changing which
+      // series exist, so a reader's hidden series have to survive it.
+      it('keeps a series hidden when the data still has it', async () => {
+        await hide({ Chat: false, Dev: true });
+        await wrapper.setProps({ data: [...stackedRows] });
+
+        expect(chartOptions().legend.selected).toEqual({ Chat: false, Dev: true });
+      });
+
+      // setOption merges, so without an explicit true ECharts would keep the
+      // series deselected while the component recomputes as if it were visible.
+      it('drops a hidden series the new data no longer has', async () => {
+        await hide({ Chat: false, Dev: true });
+        await wrapper.setProps({
+          data: [
+            {
+              name: 'Sonnet',
+              value: 20,
+              share: 100,
+              segments: [{ name: 'Dev', value: 20, share: 100 }],
+            },
+          ],
+        });
+
+        expect(chartOptions().legend.selected).toEqual({ Dev: true });
+      });
+
+      it('moves the row labels to the last visible series when the last one hides', async () => {
+        await hide({ Chat: true, Dev: false });
+
+        expect(seriesByName('Dev').label.show).toBe(false);
+        expect(seriesByName('Chat').label.show).toBe(true);
+        expect(seriesByName('Chat').label.formatter({ dataIndex: 1 })).toBe('60');
+      });
+
+      it('keeps the track background on every series', () => {
+        expect(chartOptions().series.every((series) => series.showBackground)).toBe(true);
+      });
+
+      it('restores the full totals when the series is shown again', async () => {
+        await hide({ Chat: false, Dev: true });
+        await hide({ Chat: true, Dev: true });
+
+        expect(seriesByName('Chat').data).toEqual([25, 50]);
+        expect(lastSeries().label.formatter({ dataIndex: 1 })).toBe('80');
+        expect(chartOptions().legend.selected).toEqual({ Chat: true, Dev: true });
+      });
+    });
+  });
+
+  describe('accessible title', () => {
+    it('passes it to the chart, which names itself for screen readers', () => {
+      createWrapper({ accessibleTitle: 'Panel title' });
+
+      expect(findChart().props('accessibleTitle')).toBe('Panel title');
+    });
+
+    it('passes no title by default', () => {
+      createWrapper();
+
+      expect(findChart().props('accessibleTitle')).toBe('');
+    });
+  });
+});

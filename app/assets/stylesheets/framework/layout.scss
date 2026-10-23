@@ -269,21 +269,6 @@ html {
     float: right;
   }
 
-  .flex-alert {
-    @include gl-container-width-up(lg, panel) {
-      display: flex;
-
-      .alert-message {
-        flex: 1;
-        padding-right: 40px;
-      }
-    }
-
-    .alert-link-group {
-      float: none;
-    }
-  }
-
   @include gl-container-width-down(md, panel) {
     .alert-link-group {
       float: none;

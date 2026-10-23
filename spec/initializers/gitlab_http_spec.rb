@@ -68,7 +68,7 @@ RSpec.describe Gitlab::HTTP_V2, feature_category: :shared do
       described_class.configuration.allowed_internal_uris = original
     end
 
-    it do
+    it 'contains only the localhost HTTP and SSH URIs' do
       is_expected.to contain_exactly(
         URI::HTTP.build(host: 'localhost', port: 80),
         URI::Generic.build(scheme: 'ssh', host: 'localhost', port: 22)

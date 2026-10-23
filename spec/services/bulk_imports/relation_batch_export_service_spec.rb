@@ -34,12 +34,16 @@ RSpec.describe BulkImports::RelationBatchExportService, feature_category: :impor
     end
 
     it 'removes exported contents after export' do
-      allow(subject).to receive(:export_path).and_return('foo')
+      # A real directory, since remove_entry is stubbed and a relative path would leak into Rails.root
+      export_path = Dir.mktmpdir
+      allow(subject).to receive(:export_path).and_return(export_path)
       allow(FileUtils).to receive(:remove_entry)
 
-      expect(FileUtils).to receive(:remove_entry).with('foo')
+      expect(FileUtils).to receive(:remove_entry).with(export_path)
 
       service.execute
+    ensure
+      FileUtils.rm_rf(export_path)
     end
 
     it 'updates export updated_at so the timeout resets' do

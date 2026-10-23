@@ -134,7 +134,7 @@ RSpec.describe Gitaly::Server do
     end
 
     with_them do
-      it do
+      it 'returns whether the server version matches the expected version' do
         allow(Gitlab::GitalyClient).to receive(:expected_server_version).and_return(expected_version)
         allow(server).to receive(:server_version).and_return(server_version)
 
@@ -219,7 +219,7 @@ RSpec.describe Gitaly::Server do
         end
       end
 
-      it do
+      it 'returns the replication factor of the server storage' do
         allow(storage_status).to receive(:replication_factor).and_return(2)
         expect(server.replication_factor).to eq(2)
       end

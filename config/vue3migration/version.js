@@ -13,15 +13,10 @@ const USE_VUE3 = VUE_VERSION === '3';
 const USE_VUE3_COMPILER = USE_VUE3 && VUE_COMPILER_VERSION === '3';
 const VUE_LOADER_MODULE = USE_VUE3_COMPILER ? 'vue-loader-vue3' : 'vue-loader';
 
-function logVueVersion(label) {
-  console.log(`${label} Using Vue.js ${VUE_VERSION} (compiler ${VUE_COMPILER_VERSION})`);
-}
-
 module.exports = {
   VUE_VERSION,
   VUE_COMPILER_VERSION,
   USE_VUE3,
   USE_VUE3_COMPILER,
   VUE_LOADER_MODULE,
-  logVueVersion,
 };

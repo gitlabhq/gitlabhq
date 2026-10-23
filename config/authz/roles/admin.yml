@@ -44,7 +44,9 @@ organization:
   - read_user_access_level
   - read_user_groups
   - read_webhook
+  - read_webhook_event
   - read_work_item_type
+  - resend_webhook_event
   - restore_organization
   - test_webhook
   - transfer_group

@@ -4,7 +4,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import BarListPresenter from '~/glql/components/presenters/bar_list.vue';
 import TwoDimensionsBarList from '~/glql/components/presenters/bar_list/two_dimensions_bar_list.vue';
 import DimensionRoutedChart from '~/glql/components/presenters/chart/dimension_routed_chart.vue';
-import BarListChart from '~/analytics/analytics_dashboards/components/visualizations/bar_list_chart.vue';
+import BarListChart from '~/explore/analytics_dashboards/components/visualizations/bar_list_chart.vue';
 import {
   MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC,
   MOCK_AGGREGATED_FIELDS_ONE_DIM_TWO_METRICS,

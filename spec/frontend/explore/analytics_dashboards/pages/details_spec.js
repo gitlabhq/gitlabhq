@@ -10,8 +10,8 @@ import { TEST_HOST } from 'helpers/test_constants';
 import ExploreAnalyticsDashboard from '~/explore/analytics_dashboards/pages/details.vue';
 import DashboardFilters from '~/explore/analytics_dashboards/components/dashboard_filters.vue';
 import DashboardLoader from '~/explore/analytics_dashboards/components/dashboard_loader.vue';
-import SectionHeader from '~/analytics/analytics_dashboards/components/section_header.vue';
-import AnalyticsDashboardPanel from '~/analytics/shared/components/analytics_dashboard_panel.vue';
+import SectionHeader from '~/explore/analytics_dashboards/components/section_header.vue';
+import AnalyticsDashboardPanel from '~/explore/analytics_dashboards/components/analytics_dashboard_panel.vue';
 import { createAlert } from '~/alert';
 import {
   EXPLORE_DASHBOARD_MARK_PANELS_IN_VIEW_LOADED,
@@ -390,6 +390,16 @@ describe('ExploreAnalyticsDashboardDetails', () => {
       );
 
       expect(findDashboardLayout().props('filters')).toMatchObject({ dateRangeOption: '30d' });
+    });
+
+    it('keeps the reset button disabled for an unknown option', async () => {
+      await createWithFilters(
+        filtersLoaderStubFor(
+          configWithDateRange({ enabled: true, defaultOption: 'last-fortnight' }),
+        ),
+      );
+
+      expect(findResetButton().props('disabled')).toBe(true);
     });
 
     it('seeds nothing when the dashboard turns the filter off', async () => {

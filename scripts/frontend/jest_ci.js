@@ -132,7 +132,7 @@ function parseArgumentsAndEnvironment() {
 }
 
 function loggedSpawnSync(command, args, options) {
-  const env = ['JEST_FIXTURE_JOBS_ONLY', 'VUE_VERSION']
+  const env = ['JEST_FIXTURE_JOBS_ONLY', 'VUE_VERSION', 'VUE_COMPILER_VERSION']
     .map((name) => `${name}=${options.env[name] ?? ''}`)
     .join(' ');
   const fullCommand = `${env} ${command} ${args.join(' ')}`;

@@ -230,15 +230,6 @@
     display: $svg-display;
     top: $svg-top;
   }
-
-  .controllers-buttons {
-    @apply gl-text-default;
-    margin: 0 $grid-size;
-
-    &:last-child {
-      margin-right: 0;
-    }
-  }
 }
 
 @mixin build-loader-animation {

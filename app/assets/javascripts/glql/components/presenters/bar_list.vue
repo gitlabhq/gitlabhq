@@ -1,7 +1,7 @@
 <script>
 import { GlKeysetPagination, GlSkeletonLoader } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
-import BarListChart from '~/analytics/analytics_dashboards/components/visualizations/bar_list_chart.vue';
+import BarListChart from '~/explore/analytics_dashboards/components/visualizations/bar_list_chart.vue';
 import {
   BAR_COLOR_DEFAULT,
   BAR_COLOR_OPTIONS,
@@ -9,7 +9,7 @@ import {
   SCALE_OPTIONS,
   VALUE_LABELS_DEFAULT,
   VALUE_LABELS_OPTIONS,
-} from '~/analytics/analytics_dashboards/components/visualizations/bar_list_chart_options';
+} from '~/explore/analytics_dashboards/components/visualizations/bar_list_chart_options';
 import {
   buildStackedByDimension,
   dimensionValue,
