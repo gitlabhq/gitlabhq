@@ -2,11 +2,8 @@
 import produce from 'immer';
 import { debounce, isEmpty, isNull } from 'lodash-es';
 import { GlAvatarLabeled, GlButton, GlCollapsibleListbox, GlModal, GlToastMixin } from '@gitlab/ui';
-import {
-  getFirstPropertyValue,
-  normalizeHeaders,
-  parseIntPagination,
-} from '~/lib/utils/common_utils';
+import { normalizeHeaders } from '@gitlab/frontend-utils';
+import { getFirstPropertyValue, parseIntPagination } from '~/lib/utils/common_utils';
 import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import searchUsersQuery from '~/graphql_shared/queries/users_search_all_paginated.query.graphql';

@@ -1,8 +1,9 @@
 import { defineStore } from 'pinia';
+import { normalizeHeaders } from '@gitlab/frontend-utils';
 import Api from '~/api';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
-import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
+import { parseIntPagination } from '~/lib/utils/common_utils';
 import { DELETE_PACKAGE_ERROR_MESSAGE } from '~/packages_and_registries/shared/constants';
 import { beautifyPath } from '~/packages_and_registries/shared/utils';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';

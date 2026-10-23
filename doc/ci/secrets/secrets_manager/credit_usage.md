@@ -160,10 +160,10 @@ Prerequisites:
 
 To start a trial:
 
-1. In the top bar, select **Search or go to**, and find your top-level group.
-1. In the left sidebar, select **Secure** > **Secrets manager**.
-1. Select **Start 30-day trial**.
-1. In the confirmation dialog, select **Start 30-day trial**.
+1. In the top bar, select {{< ui text="Search or go to" >}}, and find your top-level group.
+1. In the left sidebar, select {{< ui text="Navigation|Secure" >}} > {{< ui text="Secrets manager" >}}.
+1. Select {{< ui text="Start 30-day trial" >}}.
+1. In the confirmation dialog, select {{< ui text="Start 30-day trial" >}}.
 
 ### On GitLab Self-Managed
 
@@ -179,8 +179,8 @@ Prerequisites:
 
 To start a trial:
 
-1. In the upper-right corner, select **Admin**.
-1. In the left sidebar, select **Settings** > **General**.
-1. Expand **GitLab Secrets Manager**.
-1. Select **Start 30-day trial**.
-1. In the confirmation dialog, select **Start 30-day trial**.
+1. In the upper-right corner, select {{< ui text="Navigation|Admin" >}}.
+1. In the left sidebar, select {{< ui text="Admin|Settings" >}} > {{< ui text="General" >}}.
+1. Expand {{< ui text="SecretsManager|GitLab Secrets Manager" >}}.
+1. Select {{< ui text="Start 30-day trial" >}}.
+1. In the confirmation dialog, select {{< ui text="Start 30-day trial" >}}.

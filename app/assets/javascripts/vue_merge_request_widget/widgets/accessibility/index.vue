@@ -1,7 +1,7 @@
 <script>
+import { normalizeHeaders } from '@gitlab/frontend-utils';
 import { s__ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
-import { normalizeHeaders } from '~/lib/utils/common_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 import {
   ACCESSIBILITY_ROUTE,

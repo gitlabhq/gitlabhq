@@ -1,8 +1,9 @@
 <script>
 import { GlEmptyState, GlIcon, GlLink, GlLoadingIcon, GlTable } from '@gitlab/ui';
+import { normalizeHeaders } from '@gitlab/frontend-utils';
 import { s__ } from '~/locale';
 import { createAlert } from '~/alert';
-import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
+import { parseIntPagination } from '~/lib/utils/common_utils';
 import { getParameterValues } from '~/lib/utils/url_utility';
 
 import PaginationBar from '~/vue_shared/components/pagination_bar/pagination_bar.vue';

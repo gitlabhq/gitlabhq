@@ -23,7 +23,7 @@ module WebHooks
         when 'ServiceHook'
           current_user.can?(:admin_integrations, web_hook_log.web_hook.integration)
         else
-          current_user.can?(:admin_web_hook, web_hook_log.web_hook)
+          current_user.can?(:resend_webhook_event, web_hook_log.web_hook)
         end
       end
 

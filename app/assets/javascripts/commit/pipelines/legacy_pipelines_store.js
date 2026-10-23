@@ -1,4 +1,5 @@
-import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
+import { normalizeHeaders } from '@gitlab/frontend-utils';
+import { parseIntPagination } from '~/lib/utils/common_utils';
 
 export default class PipelinesStore {
   constructor() {

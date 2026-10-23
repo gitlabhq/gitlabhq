@@ -1,10 +1,11 @@
 <script>
 import { GlLink, GlLoadingIcon, GlPagination, GlTable, GlAlert } from '@gitlab/ui';
+import { normalizeHeaders } from '@gitlab/frontend-utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 import { DEFAULT_PER_PAGE } from '~/api';
 import { fetchOverrides } from '~/integrations/overrides/api';
-import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
+import { parseIntPagination } from '~/lib/utils/common_utils';
 import { truncateNamespace } from '~/lib/utils/text_utility';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';

@@ -439,12 +439,14 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
 
   describe 'GET /commits/:id/signatures' do
     let_it_be_with_reload(:project) { create(:project, :repository) }
+    let_it_be(:public_project) { create(:project, :repository, :public) }
     let_it_be(:user) { create(:user, maintainer_of: project) }
 
     let(:repository) { project.repository }
+    let(:current_user) { user }
 
     before do
-      sign_in(user)
+      sign_in(current_user) if current_user
     end
 
     def send_request
@@ -460,20 +462,140 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
     context 'valid branch' do
       let(:id) { 'master' }
 
-      it 'returns a successful response' do
-        send_request
+      context 'when signed in' do
+        it 'returns a successful response' do
+          send_request
 
-        expect(response).to be_successful
+          expect(response).to be_successful
+        end
+      end
+
+      context 'when signed out of a public project' do
+        let(:project) { public_project }
+        let(:current_user) { nil }
+
+        it 'returns a successful response' do
+          send_request
+
+          expect(response).to be_successful
+        end
+      end
+    end
+
+    context 'valid branch, valid file' do
+      let(:id) { 'master/README.md' }
+
+      context 'when private project' do
+        context 'when signed in' do
+          it 'returns a successful response' do
+            send_request
+
+            expect(response).to be_successful
+          end
+        end
+
+        context 'when signed out' do
+          let(:current_user) { nil }
+
+          it 'redirects to sign in' do
+            # Project lookup redirects before the action runs, so skip send_request's Gitaly expectation.
+            get project_signatures_path(project, id: id, format: :json)
+
+            expect(response).to redirect_to(new_user_session_path)
+          end
+        end
+      end
+
+      context 'when public project' do
+        let(:project) { public_project }
+
+        context 'when signed in' do
+          it 'returns a successful response' do
+            send_request
+
+            expect(response).to be_successful
+          end
+        end
+
+        context 'when signed out' do
+          let(:current_user) { nil }
+
+          it 'returns unauthorized' do
+            send_request
+
+            expect(response).to have_gitlab_http_status(:unauthorized)
+          end
+        end
+
+        context 'when "require_login_for_commit_tree" FF is disabled' do
+          before do
+            stub_feature_flags(require_login_for_commit_tree: false)
+          end
+
+          context 'when signed in' do
+            it 'returns a successful response' do
+              send_request
+
+              expect(response).to be_successful
+            end
+          end
+
+          context 'when signed out' do
+            let(:current_user) { nil }
+
+            it 'returns a successful response' do
+              send_request
+
+              expect(response).to be_successful
+            end
+          end
+        end
+      end
+    end
+
+    context 'valid branch, invalid file' do
+      let(:id) { 'master/invalid-path.rb' }
+
+      context 'when signed in' do
+        it 'redirects to the tree root' do
+          send_request
+
+          expect(response).to redirect_to project_tree_path(project, 'master', '/')
+        end
+      end
+
+      context 'when signed out of a public project' do
+        let(:project) { public_project }
+        let(:current_user) { nil }
+
+        it 'redirects to the tree root' do
+          send_request
+
+          expect(response).to redirect_to project_tree_path(project, 'master', '/')
+        end
       end
     end
 
     context 'invalid branch format' do
       let(:id) { 'some branch' }
 
-      it 'returns a not found response' do
-        send_request
+      context 'when signed in' do
+        it 'returns a not found response' do
+          send_request
 
-        expect(response).to have_gitlab_http_status(:not_found)
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when signed out of a public project' do
+        let(:project) { public_project }
+        let(:current_user) { nil }
+
+        it 'returns a not found response' do
+          send_request
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
       end
     end
 

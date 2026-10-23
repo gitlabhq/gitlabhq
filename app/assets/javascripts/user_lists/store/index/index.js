@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
+import { normalizeHeaders } from '@gitlab/frontend-utils';
 import Api from '~/api';
-import { normalizeHeaders, parseIntPagination } from '~/lib/utils/common_utils';
+import { parseIntPagination } from '~/lib/utils/common_utils';
 
 export const useUserLists = defineStore('userLists', {
   state: () => ({

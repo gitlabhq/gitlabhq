@@ -137,6 +137,165 @@ RSpec.describe TagsFinder, feature_category: :source_code_management do
       end
     end
 
+    context 'with bounded offset retrieval' do
+      let(:params) do
+        { sort: 'name_asc', page: 2, per_page: 1, bounded_tag_offset: true }
+      end
+
+      it 'fetches the prefix needed to reach page two' do
+        expect(repository).to receive(:tags_sorted_by)
+          .with('name_asc', { limit: 2 }).and_call_original
+
+        tags_finder.execute
+      end
+
+      it 'returns only the second tag for page two' do
+        expect(tags_finder.execute.map(&:name)).to eq(['v1.1.0'])
+      end
+
+      context 'with a cursor on page two' do
+        let(:params) { super().merge(page_token: 'v1.1.0') }
+
+        it 'ignores the cursor and returns the second tag for page two' do
+          expect(tags_finder.execute.map(&:name)).to eq(['v1.1.0'])
+        end
+      end
+
+      context 'when the last page is shorter than the page size' do
+        let(:params) { super().merge(per_page: 2) }
+
+        it 'returns only the remaining tag' do
+          expect(tags_finder.execute.map(&:name)).to eq(['v1.1.1'])
+        end
+      end
+
+      context 'with a nonpositive page and a cursor' do
+        let(:params) { super().merge(page: page, page_token: 'v1.1.0') }
+
+        where(:page) { [0, -1] }
+
+        with_them do
+          it 'returns the first page and ignores the cursor' do
+            expect(tags_finder.execute.map(&:name)).to eq(['v1.0.0'])
+          end
+        end
+      end
+
+      context 'when the requested page is beyond the last page' do
+        let(:params) { super().merge(page: 4) }
+
+        it 'returns an empty array' do
+          expect(tags_finder.execute).to eq([])
+        end
+      end
+
+      context 'on page one with Gitaly pagination' do
+        let(:params) { super().merge(page: 1) }
+
+        it 'returns the first tag' do
+          expect(tags_finder.execute(gitaly_pagination: true).map(&:name)).to eq(['v1.0.0'])
+        end
+
+        context 'with a cursor' do
+          let(:params) { super().merge(page_token: 'v1.1.0') }
+
+          it 'returns the tag after the cursor' do
+            expect(tags_finder.execute(gitaly_pagination: true).map(&:name)).to eq(['v1.1.1'])
+          end
+        end
+      end
+
+      context 'with Gitaly pagination and a later numeric page' do
+        it 'returns only the requested offset page' do
+          expect(tags_finder.execute(gitaly_pagination: true).map(&:name)).to eq(['v1.1.0'])
+        end
+      end
+
+      context 'with explicit keyset pagination and a later numeric page' do
+        let(:params) { super().merge(pagination: 'keyset') }
+
+        it 'uses the page-size limit rather than the offset prefix limit' do
+          expect(tags_finder.execute(gitaly_pagination: true).map(&:name)).to eq(['v1.0.0'])
+        end
+      end
+
+      context 'without the opt-in' do
+        let(:params) { super().merge(bounded_tag_offset: false) }
+
+        it 'returns all tags' do
+          expect(tags_finder.execute.map(&:name)).to eq(%w[v1.0.0 v1.1.0 v1.1.1])
+        end
+      end
+
+      shared_examples 'using the default offset page size' do
+        it 'uses the default page size to calculate the prefix' do
+          expect(repository).to receive(:tags_sorted_by)
+            .with('name_asc', { limit: 2 * Kaminari.config.default_per_page }).and_call_original
+
+          tags_finder.execute
+        end
+
+        it 'returns an empty second page when all three tags fit on the first page' do
+          expect(tags_finder.execute).to eq([])
+        end
+      end
+
+      context 'with per_page omitted' do
+        let(:params) { super().except(:per_page) }
+
+        it_behaves_like 'using the default offset page size'
+      end
+
+      context 'with nil per_page' do
+        let(:params) { super().merge(per_page: nil) }
+
+        it_behaves_like 'using the default offset page size'
+      end
+
+      context 'with blank per_page' do
+        let(:params) { super().merge(per_page: '') }
+
+        it_behaves_like 'using the default offset page size'
+      end
+
+      context 'with an oversized page size' do
+        let(:params) { super().merge(per_page: 1_000) }
+
+        it 'caps the page size before calculating the prefix' do
+          expect(repository).to receive(:tags_sorted_by).with('name_asc', { limit: 200 }).and_call_original
+
+          tags_finder.execute
+        end
+
+        it 'returns an empty second page when all three tags fit on the first page' do
+          expect(tags_finder.execute).to eq([])
+        end
+      end
+
+      context 'with a huge page number' do
+        let(:params) { super().merge(page: 1_000_000_000_000) }
+
+        it 'keeps the retrieval limit within the Gitaly integer range' do
+          expect(repository).to receive(:tags_sorted_by)
+            .with('name_asc', { limit: described_class::MAX_GITALY_PAGINATION_LIMIT }).and_call_original
+
+          tags_finder.execute
+        end
+
+        it 'returns an empty array for the requested page' do
+          expect(tags_finder.execute).to eq([])
+        end
+      end
+
+      context 'with search' do
+        let(:params) { super().merge(search: 'v1.1.1') }
+
+        it 'finds a tag beyond the first two tags' do
+          expect(tags_finder.execute.map(&:name)).to eq(['v1.1.1'])
+        end
+      end
+    end
+
     context 'with Gitaly pagination' do
       subject { load_tags(params, gitaly_pagination: true) }
 

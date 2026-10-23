@@ -8,6 +8,7 @@ const loadMarkdownTable = memoize(
 
 const APPLIED_ATTRIBUTE = 'data-markdown-table-applied';
 const MAX_SORTABLE_ROWS = 1000;
+const SECTION_TAGS = ['THEAD', 'TBODY', 'TFOOT'];
 
 const mountedApps = new Set();
 let removalObserver;
@@ -38,12 +39,20 @@ function observeRemoval(table, app) {
   removalObserver.observe(document.body, { childList: true, subtree: true });
 }
 
-const cellsOf = (row) => Array.from(row.cells);
-const rowsOf = (section) => Array.from(section.rows);
-const isHeaderRow = (row) =>
-  row.cells.length > 0 && cellsOf(row).every((cell) => cell.tagName === 'TH');
-const hasSpan = (row) => cellsOf(row).some((cell) => cell.colSpan !== 1 || cell.rowSpan !== 1);
-const toItems = (rows) => rows.map((row, rowIndex) => ({ cells: cellsOf(row), rowIndex }));
+const attributesOf = (el) =>
+  Object.fromEntries(Array.from(el.attributes, ({ name, value }) => [name, value]));
+const toRow = (row, rowIndex) => ({
+  rowIndex,
+  attributes: attributesOf(row),
+  cells: Array.from(row.cells),
+});
+const toSection = (section) => ({
+  tagName: section.tagName.toLowerCase(),
+  attributes: attributesOf(section),
+  rows: Array.from(section.rows, toRow),
+});
+const isHeaderRow = ({ cells }) => cells.length > 0 && cells.every((cell) => cell.tagName === 'TH');
+const hasSpan = ({ cells }) => cells.some((cell) => cell.colSpan !== 1 || cell.rowSpan !== 1);
 const isNested = (table) => table.parentElement.closest('table, .md').tagName === 'TABLE';
 
 function isClaimable(table) {
@@ -56,51 +65,64 @@ function isClaimable(table) {
 }
 
 function parseTable(table) {
-  const sections = Array.from(table.children);
-  const rowsIn = (tagName) => sections.filter((el) => el.tagName === tagName).flatMap(rowsOf);
-
-  const headRows = rowsIn('THEAD');
-  const bodies = sections.filter((el) => el.tagName === 'TBODY').map(rowsOf);
-  const footRows = rowsIn('TFOOT');
-  const [firstBody = []] = bodies;
-  const firstNonHeaderIndex = firstBody.findIndex((row) => !isHeaderRow(row));
-  const leadingHeaderRows = firstBody.slice(
+  const { dir = null, ...tableAttributes } = attributesOf(table);
+  const sections = Array.from(table.children)
+    .filter(({ tagName }) => SECTION_TAGS.includes(tagName))
+    .map(toSection);
+  const heads = sections.filter(({ tagName }) => tagName === 'thead');
+  const bodies = sections.filter(({ tagName }) => tagName === 'tbody');
+  const [firstBody] = bodies;
+  const firstBodyRows = firstBody?.rows ?? [];
+  const firstNonHeaderIndex = firstBodyRows.findIndex((row) => !isHeaderRow(row));
+  const leadingHeaderRows = firstBodyRows.slice(
     0,
-    firstNonHeaderIndex === -1 ? firstBody.length : firstNonHeaderIndex,
+    firstNonHeaderIndex === -1 ? firstBodyRows.length : firstNonHeaderIndex,
   );
-  const headerRows = [...headRows, ...leadingHeaderRows];
-  const bodyRowCount = bodies.flat().length - leadingHeaderRows.length;
+  const headerRows = [...heads.flatMap(({ rows }) => rows), ...leadingHeaderRows];
+  const bodyRowCount = bodies.flatMap(({ rows }) => rows).length - leadingHeaderRows.length;
 
   const sortable =
     headerRows.length === 1 &&
     bodies.length === 1 &&
     bodyRowCount >= 2 &&
     bodyRowCount <= MAX_SORTABLE_ROWS &&
-    ![...headRows, ...firstBody, ...footRows].some(hasSpan);
+    !sections.flatMap(({ rows }) => rows).some(hasSpan);
 
-  const { dir = null, ...tableAttributes } = Object.fromEntries(
-    Array.from(table.attributes, ({ name, value }) => [name, value]),
-  );
-  const common = {
-    footerRows: footRows.map(cellsOf),
-    caption: table.caption,
-    dir,
-    tableAttributes,
-  };
+  const common = { caption: table.caption, dir, tableAttributes };
 
   if (!sortable) {
-    return { ...common, fields: [], headRows: headRows.map(cellsOf), bodies: bodies.map(toItems) };
+    return { ...common, fields: [], sections };
   }
 
-  const fields = cellsOf(headerRows[0]).map((cell, index) => ({ key: `col_${index}`, cell }));
-  const items = toItems(firstBody.slice(leadingHeaderRows.length)).map((item) => ({
-    ...item,
+  const [headerRow] = headerRows;
+  const fields = headerRow.cells.map((cell, index) => ({
+    key: `col_${index}`,
+    cell,
+    attributes: attributesOf(cell),
+  }));
+  const items = firstBodyRows.slice(leadingHeaderRows.length).map((row) => ({
+    ...row,
     ...Object.fromEntries(
-      fields.map(({ key }, index) => [key, { text: item.cells[index]?.textContent.trim() ?? '' }]),
+      fields.map(({ key }, index) => [key, { text: row.cells[index]?.textContent.trim() ?? '' }]),
     ),
   }));
+  const head = {
+    tagName: 'thead',
+    attributes: leadingHeaderRows.length ? firstBody.attributes : heads[0].attributes,
+    rows: [],
+  };
 
-  return { ...common, fields, headRows: [], bodies: [items] };
+  return {
+    ...common,
+    fields,
+    headerRowAttributes: headerRow.attributes,
+    sections: [
+      head,
+      ...sections
+        .filter(({ tagName }) => tagName !== 'thead')
+        .map((section) => (section === firstBody ? { ...section, rows: items } : section)),
+    ],
+  };
 }
 
 /**

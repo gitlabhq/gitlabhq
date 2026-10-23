@@ -357,13 +357,14 @@ Available dashboard filters include:
 
 On the group security dashboard, you can also filter by:
 
-- **Security attributes**: Filter by the security attributes applied to your projects, which include categories for business impact, application, business unit, internet exposure, and location. These filters can be inclusive (using the **is one of** operator) or exclusive (using the **is not one of** operator). To configure your security attributes and apply them to projects, see [security attributes](../attributes/_index.md).
+- **Security attributes**: Filter by the security attributes applied to your projects. Each security category that has at least one attribute appears as its own filter. These filters can be inclusive (using the **is one of** operator) or exclusive (using the **is not one of** operator). To configure your security attributes and apply them to projects, see [security attributes](../attributes/_index.md).
 
 Dashboard filter behavior:
 
 - Filters apply immediately across all dashboard charts and panels.
 - Filters that you apply continue to apply throughout your session unless you remove them.
 - When you open a vulnerability report from the dashboard, active filters are automatically applied to the vulnerability report.
+  Security attribute filters carry over only when the [security attribute filter](../vulnerability_report/_index.md#security-attribute-filter) is available.
 
 To apply a filter to the whole dashboard:
 

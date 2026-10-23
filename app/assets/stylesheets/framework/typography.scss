@@ -269,19 +269,35 @@
     timeline-scope: --gl-table-scroll-x, --gl-table-scroll-y;
 
     table:not(.code) {
-      > thead > tr > th,
-      > tbody > tr > td,
-      > tbody > tr > th {
-        &:first-child {
-          border-inline-start: 0;
-        }
+      &:dir(ltr) {
+        > thead > tr > th,
+        > tbody > tr > td,
+        > tbody > tr > th {
+          &:first-child {
+            border-left-width: 0;
+          }
 
-        &:last-child {
-          border-inline-end: 0;
+          &:last-child {
+            border-right-width: 0;
+          }
         }
       }
 
-      > thead > tr:first-child > th {
+      &:dir(rtl) {
+        > thead > tr > th,
+        > tbody > tr > td,
+        > tbody > tr > th {
+          &:first-child {
+            border-right-width: 0;
+          }
+
+          &:last-child {
+            border-left-width: 0;
+          }
+        }
+      }
+
+      > thead:first-of-type > tr:first-child > th {
         border-top: 0;
       }
 
@@ -523,8 +539,8 @@
     }
   }
 
-  [data-sticky-header] > table:not(.code) > thead > tr:first-child > th,
-  [data-sticky-header] > table:not(.code) > tbody > tr:first-child > th {
+  [data-sticky-header] > table:not(.code) > thead:first-of-type > tr:first-child > th,
+  [data-sticky-header] > table:not(.code) > tbody:first-of-type > tr:first-child > th {
     @apply gl-sticky;
     @apply gl-top-0;
     @apply gl-bg-default;

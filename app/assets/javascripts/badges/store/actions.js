@@ -1,9 +1,6 @@
+import { normalizeHeaders } from '@gitlab/frontend-utils';
 import axios from '~/lib/utils/axios_utils';
-import {
-  convertObjectPropsToCamelCase,
-  normalizeHeaders,
-  parseIntPagination,
-} from '~/lib/utils/common_utils';
+import { convertObjectPropsToCamelCase, parseIntPagination } from '~/lib/utils/common_utils';
 import { isValidURL } from '~/lib/utils/url_utility';
 import { PAGE_SIZE } from '../constants';
 import types from './mutation_types';

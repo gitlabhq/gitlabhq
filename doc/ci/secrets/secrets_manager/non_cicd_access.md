@@ -44,16 +44,33 @@ construct namespace, mount, or authentication paths yourself.
 
 - GitLab Secrets Manager is enabled.
 - The Secrets Manager was provisioned in GitLab 19.2 or later.
-- You authenticate with a personal access token, project or group access token, or service account
-  token that has the `api` scope.
+- You authenticate with a personal access token, project or group access token, or
+  [service account](#authenticate-with-a-service-account) token that has the `api` scope.
 - Your role is at least Reporter.
-- To read a secret value, you are granted the read value permission for that secret.
-  The Reporter role alone does not expose secret values.
+- You have the read value permission.
+  A project Owner (or a group Owner, for group secrets) can grant this permission.
+  See [Manage secrets permissions](_index.md#manage-secrets-permissions).
 
 > [!note]
 > Secrets Managers provisioned before GitLab 19.2 do not support access from external requests or
 > services.
 > To enable external access, see [Enable secrets access from external requests](../../../administration/secrets_manager/maintenance.md#enable-secrets-access-from-external-requests).
+
+## Authenticate with a service account
+
+Prerequisites:
+
+- Permission to create [service accounts](../../../user/profile/service_accounts.md#types-of-service-accounts).
+- The Owner role for the project or group, to grant secrets permissions.
+
+To authenticate with a service account:
+
+1. [Create a service account](../../../user/profile/service_accounts.md#create-a-service-account).
+1. [Create a personal access token](../../../user/profile/service_accounts.md#create-a-personal-access-token-for-a-service-account)
+   for the service account with the `api` scope.
+1. [Add the service account](../../../user/profile/service_accounts.md#add-a-service-account-to-a-group-or-project)
+   to the project or group with at least the Reporter role.
+1. [Grant the service account the read value permission](_index.md#manage-secrets-permissions).
 
 ## Read a secret
 

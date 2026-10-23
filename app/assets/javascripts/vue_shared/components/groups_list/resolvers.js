@@ -1,5 +1,6 @@
+import { normalizeHeaders } from '@gitlab/frontend-utils';
 import axios from '~/lib/utils/axios_utils';
-import { normalizeHeaders, parseCursorPagination } from '~/lib/utils/common_utils';
+import { parseCursorPagination } from '~/lib/utils/common_utils';
 import { formatGroupForGraphQLResolver } from '~/vue_shared/components/groups_list/formatter';
 
 export const resolvers = (endpoint) => ({

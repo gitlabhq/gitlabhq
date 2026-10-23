@@ -189343,7 +189343,7 @@
             },
             {
               "name": "duoMcpServerNames",
-              "description": "Names of the distinct MCP servers used by the group's configured agents, sorted alphabetically. Servers blocked for the group are not listed. Null for a subgroup, because agents are configured on top-level groups and projects only. Resolved on request only, because it reads the configured agents and their versions. Introduced in GitLab 19.6: Status: Experiment.",
+              "description": "Names of the distinct MCP servers used by the group's configured agents, sorted alphabetically. Servers blocked for the group are not listed. Null for a subgroup, because agents are configured on top-level groups and projects only. Resolved on request only, because it reads the configured agents and their versions. This field can be resolved for at most 10 groups in any single request. Introduced in GitLab 19.6: Status: Experiment.",
               "args": [],
               "type": {
                 "kind": "LIST",
@@ -189375,7 +189375,7 @@
             },
             {
               "name": "duoWorkflowRunnerAvailable",
-              "description": "Indicates whether the group has a runner that can pick up GitLab Duo Agent Platform workloads. Resolved on request only, because it scans the runners the group can use and their managers. Introduced in GitLab 19.6: Status: Experiment.",
+              "description": "Indicates whether the group has a runner that can pick up GitLab Duo Agent Platform workloads. Resolved on request only, because it scans the runners the group can use and their managers. This field can be resolved for at most 10 groups in any single request. Introduced in GitLab 19.6: Status: Experiment.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -189544,7 +189544,7 @@
             },
             {
               "name": "duoWorkflowUsableRunnerType",
-              "description": "Runner type (instance_type, group_type, or project_type) of the runner that can pick up GitLab Duo Agent Platform workloads, or null when none can. Shares its runner scan with duoWorkflowRunnerAvailable when both are requested. Introduced in GitLab 19.6: Status: Experiment.",
+              "description": "Runner type (instance_type, group_type, or project_type) of the runner that can pick up GitLab Duo Agent Platform workloads, or null when none can. Shares its runner scan with duoWorkflowRunnerAvailable when both are requested. This field can be resolved for at most 10 groups in any single request. Introduced in GitLab 19.6: Status: Experiment.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -340520,7 +340520,7 @@
             },
             {
               "name": "duoMcpServerNames",
-              "description": "Names of the distinct MCP servers used by the project's configured agents, sorted alphabetically. Servers blocked for the project's namespace are not listed. Resolved on request only, because it reads the configured agents and their versions. Shares its lookup with duoMcpServersCount when both are requested. Introduced in GitLab 19.6: Status: Experiment.",
+              "description": "Names of the distinct MCP servers used by the project's configured agents, sorted alphabetically. Servers blocked for the project's namespace are not listed. Resolved on request only, because it reads the configured agents and their versions. Shares its lookup with duoMcpServersCount when both are requested. This field can be resolved for at most 10 projects in any single request. Introduced in GitLab 19.6: Status: Experiment.",
               "args": [],
               "type": {
                 "kind": "LIST",
@@ -340540,7 +340540,7 @@
             },
             {
               "name": "duoMcpServersCount",
-              "description": "Number of distinct MCP servers used by the project's configured agents. Servers blocked for the project's namespace are not counted. Resolved on request only, because it reads the configured agents and their versions. Introduced in GitLab 19.4: Status: Experiment.",
+              "description": "Number of distinct MCP servers used by the project's configured agents. Servers blocked for the project's namespace are not counted. Resolved on request only, because it reads the configured agents and their versions. This field can be resolved for at most 10 projects in any single request. Introduced in GitLab 19.4: Status: Experiment.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -340629,7 +340629,7 @@
             },
             {
               "name": "duoWorkflowRunnerAvailable",
-              "description": "Indicates whether the project has a runner that can pick up GitLab Duo Agent Platform workloads. Resolved on request only, because it queries the project's runners and their managers. Introduced in GitLab 19.3: Status: Experiment.",
+              "description": "Indicates whether the project has a runner that can pick up GitLab Duo Agent Platform workloads. Resolved on request only, because it queries the project's runners and their managers. This field can be resolved for at most 10 projects in any single request. Introduced in GitLab 19.3: Status: Experiment.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -340798,7 +340798,7 @@
             },
             {
               "name": "duoWorkflowUsableRunnerType",
-              "description": "Runner type (instance_type, group_type, or project_type) of the runner that can pick up GitLab Duo Agent Platform workloads, or null when none can. Shares its runner scan with duoWorkflowRunnerAvailable when both are requested. Introduced in GitLab 19.3: Status: Experiment.",
+              "description": "Runner type (instance_type, group_type, or project_type) of the runner that can pick up GitLab Duo Agent Platform workloads, or null when none can. Shares its runner scan with duoWorkflowRunnerAvailable when both are requested. This field can be resolved for at most 10 projects in any single request. Introduced in GitLab 19.3: Status: Experiment.",
               "args": [],
               "type": {
                 "kind": "SCALAR",

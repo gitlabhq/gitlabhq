@@ -1,10 +1,7 @@
 import { gql } from '@apollo/client/core';
+import { normalizeHeaders } from '@gitlab/frontend-utils';
 import axios from '~/lib/utils/axios_utils';
-import {
-  convertObjectPropsToCamelCase,
-  parseIntPagination,
-  normalizeHeaders,
-} from '~/lib/utils/common_utils';
+import { convertObjectPropsToCamelCase, parseIntPagination } from '~/lib/utils/common_utils';
 import pageInfoQuery from '~/graphql_shared/client/page_info.query.graphql';
 import currentPageQuery from './queries/current_page.query.graphql';
 import currentScopeQuery from './queries/current_scope.query.graphql';

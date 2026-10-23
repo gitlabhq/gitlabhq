@@ -177,7 +177,7 @@ environment the flow needs when a workload starts.
 | Value | Description |
 |-------|-------------|
 | `full` | Default when not provided. A repository clone, setup scripts, Git hooks, and the dependency cache. Use this for flows that read or write repository files. |
-| `none` | No repository clone. Setup scripts and the dependency cache are skipped. The Duo session Git hook is still installed, so a flow that clones the repository itself keeps its commits attributed to Duo. Use this for API-only flows that interact only with GitLab APIs and need no local repository. Agent tools that read or write repository files have nothing to act on. The `none` value does not block repository access. A flow that has the `run_command` tool can still clone the repository itself. The property controls only what GitLab prepares before the flow starts. |
+| `none` | No repository clone. Setup scripts and the dependency cache are skipped. The flow still runs in the project's configured `image`, so that image must include `curl` or `duo` itself. The Duo session Git hook is still installed, so a flow that clones the repository itself keeps its commits attributed to Duo. Use this for API-only flows that interact only with GitLab APIs and need no local repository. Agent tools that read or write repository files have nothing to act on. The `none` value does not block repository access. A flow that has the `run_command` tool can still clone the repository itself. The property controls only what GitLab prepares before the flow starts. |
 
 Use the `full` value when the flow needs a checkout, so
 that the clone happens once, up front, instead of during the run.

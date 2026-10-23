@@ -7,6 +7,7 @@ import {
   GlSearchBoxByType,
   GlFormCheckbox,
 } from '@gitlab/ui';
+import { normalizeHeaders } from '@gitlab/frontend-utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { fetchGroups } from '~/jira_connect/subscriptions/api';
 import {
@@ -15,7 +16,7 @@ import {
 } from '~/jira_connect/subscriptions/constants';
 import { useJiraConnectSubscriptions } from '~/jira_connect/subscriptions/store';
 import { ACCESS_LEVEL_MAINTAINER_INTEGER } from '~/access_level/constants';
-import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
+import { parseIntPagination } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
 import GroupsListItem from './groups_list_item.vue';
 

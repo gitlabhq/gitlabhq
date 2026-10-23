@@ -1,6 +1,6 @@
+import { normalizeHeaders } from '@gitlab/frontend-utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import axios from '~/lib/utils/axios_utils';
-import { normalizeHeaders } from '~/lib/utils/common_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 import {
   SET_INITIAL_DATA,

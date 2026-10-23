@@ -1,10 +1,11 @@
 import { createTestingPinia } from '@pinia/testing';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
+import { normalizeHeaders } from '@gitlab/frontend-utils';
 import { TEST_HOST } from 'spec/test_constants';
 import { useFeatureFlags } from '~/feature_flags/store/index';
 import axios from '~/lib/utils/axios_utils';
-import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
+import { parseIntPagination } from '~/lib/utils/common_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { getRequestData, rotateData, featureFlag } from '../../mock_data';
 

@@ -1,7 +1,8 @@
+import { normalizeHeaders } from '@gitlab/frontend-utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
-import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
+import { parseIntPagination } from '~/lib/utils/common_utils';
 import Poll from '~/lib/utils/poll';
 import { s__ } from '~/locale';
 import { MAX_REQUESTS } from '../constants';

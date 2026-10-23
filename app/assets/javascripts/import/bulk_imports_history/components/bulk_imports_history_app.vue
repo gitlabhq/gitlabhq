@@ -10,9 +10,10 @@ import {
 import EMPTY_STATE_SVG_URL from '@gitlab/svgs/dist/illustrations/status/status-nothing-md.svg';
 import { isEmpty, isEqual } from 'lodash-es';
 
+import { normalizeHeaders } from '@gitlab/frontend-utils';
 import { s__, __ } from '~/locale';
 import { createAlert } from '~/alert';
-import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
+import { parseIntPagination } from '~/lib/utils/common_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { getBulkImportHistory, getBulkImportsHistory } from '~/rest_api';
 import { BULK_IMPORT_STATIC_ITEMS } from '~/import/constants';

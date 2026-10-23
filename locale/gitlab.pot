@@ -2961,7 +2961,13 @@ msgstr ""
 msgid "AICatalog|Enabled by top level group"
 msgstr ""
 
+msgid "AICatalog|Enabled for all projects"
+msgstr ""
+
 msgid "AICatalog|Enabled in all projects."
+msgstr ""
+
+msgid "AICatalog|Enabled in projects"
 msgstr ""
 
 msgid "AICatalog|Enabled in selected project(s)."
@@ -8472,7 +8478,7 @@ msgstr ""
 msgid "AgentPlan|High"
 msgstr ""
 
-msgid "AgentPlan|How to improve readiness?"
+msgid "AgentPlan|How to improve readiness"
 msgstr ""
 
 msgid "AgentPlan|Low"
@@ -72556,6 +72562,9 @@ msgstr ""
 msgid "Root Moved Permanently redirection response"
 msgstr ""
 
+msgid "Rows under %{name}"
+msgstr ""
+
 msgid "Ruby"
 msgstr ""
 
@@ -91326,6 +91335,9 @@ msgid "Uncategorized"
 msgstr ""
 
 msgid "Uncommitted changes will be lost if you change branches. Do you want to continue?"
+msgstr ""
+
+msgid "Under %{name}"
 msgstr ""
 
 msgid "Undo"

@@ -27,32 +27,32 @@ RSpec.describe Gitlab::UrlBlockers::DomainAllowlistEntry do
       port = 8080
       domain_allowlist_entry = described_class.new(domain, port: port)
 
-      expect(domain_allowlist_entry).to be_match(domain, port)
+      expect(domain_allowlist_entry.match?(domain, port)).to be(true)
     end
 
     it 'matches any port when port is nil' do
       domain_allowlist_entry = described_class.new(domain)
 
-      expect(domain_allowlist_entry).to be_match(domain, 8080)
-      expect(domain_allowlist_entry).to be_match(domain, 9090)
+      expect(domain_allowlist_entry.match?(domain, 8080)).to be(true)
+      expect(domain_allowlist_entry.match?(domain, 9090)).to be(true)
     end
 
     it 'does not match when port is present but requested_port is nil' do
       domain_allowlist_entry = described_class.new(domain, port: 8080)
 
-      expect(domain_allowlist_entry).not_to be_match(domain, nil)
+      expect(domain_allowlist_entry.match?(domain, nil)).to be(false)
     end
 
     it 'matches when port and requested_port are nil' do
       domain_allowlist_entry = described_class.new(domain)
 
-      expect(domain_allowlist_entry).to be_match(domain)
+      expect(domain_allowlist_entry.match?(domain)).to be(true)
     end
 
     it 'does not match if domain is not equal' do
       domain_allowlist_entry = described_class.new(domain)
 
-      expect(domain_allowlist_entry).not_to be_match('www.gitlab.com', 8080)
+      expect(domain_allowlist_entry.match?('www.gitlab.com', 8080)).to be(false)
     end
   end
 end

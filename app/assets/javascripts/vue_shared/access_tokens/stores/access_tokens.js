@@ -1,12 +1,9 @@
 import { defineStore } from 'pinia';
+import { normalizeHeaders } from '@gitlab/frontend-utils';
 import { createAlert } from '~/alert';
 import { smoothScrollTop } from '~/lib/utils/scroll_utils';
 import axios from '~/lib/utils/axios_utils';
-import {
-  convertObjectPropsToCamelCase,
-  normalizeHeaders,
-  parseIntPagination,
-} from '~/lib/utils/common_utils';
+import { convertObjectPropsToCamelCase, parseIntPagination } from '~/lib/utils/common_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import { DEFAULT_FILTER, DEFAULT_SORT, SORT_OPTIONS } from '~/access_tokens/constants';

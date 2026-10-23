@@ -1,6 +1,7 @@
 import { createTestingPinia } from '@pinia/testing';
+import { normalizeHeaders } from '@gitlab/frontend-utils';
 import Api from '~/api';
-import { normalizeHeaders, parseIntPagination } from '~/lib/utils/common_utils';
+import { parseIntPagination } from '~/lib/utils/common_utils';
 import { useUserLists } from '~/user_lists/store/index';
 import { userList } from 'jest/feature_flags/mock_data';
 

@@ -1,4 +1,4 @@
-import { normalizeHeaders } from '~/lib/utils/common_utils';
+import { normalizeHeaders } from '@gitlab/frontend-utils';
 import axios from '~/lib/utils/axios_utils';
 
 let inFlightInitialData = null;

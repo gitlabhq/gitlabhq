@@ -1,9 +1,8 @@
 <script>
 import { times, constant, chunk } from 'lodash-es';
 import { GlAlert, GlButton, GlLink, GlEmptyState, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
-import { parseBoolean } from '@gitlab/frontend-utils';
+import { parseBoolean, normalizeHeaders } from '@gitlab/frontend-utils';
 import { __, n__, s__, sprintf } from '~/locale';
-import { normalizeHeaders } from '~/lib/utils/common_utils';
 import { getMonthNames } from '~/lib/utils/datetime/date_format_utility';
 import { CONTRIB_LEGENDS, FIRST_DAY_OF_WEEK_CHOICES } from '~/contribution_events/constants';
 import AjaxCache from '~/lib/utils/ajax_cache';

@@ -1,6 +1,0 @@
----
-# Cop supports --autocorrect.
-RSpec/RedundantPredicateMatcher:
-  Exclude:
-    - 'spec/lib/gitlab/url_blockers/domain_allowlist_entry_spec.rb'
-    - 'spec/lib/gitlab/url_blockers/ip_allowlist_entry_spec.rb'

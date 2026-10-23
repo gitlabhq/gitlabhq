@@ -11,8 +11,9 @@ import {
   GlLoadingIcon,
 } from '@gitlab/ui';
 import { debounce } from 'lodash-es';
+import { normalizeHeaders } from '@gitlab/frontend-utils';
 import { s__, __ } from '~/locale';
-import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
+import { parseIntPagination } from '~/lib/utils/common_utils';
 import { DEBOUNCE_DELAY } from '~/vue_shared/components/filtered_search_bar/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import currentUserNamespace from '~/projects/settings/graphql/queries/current_user_namespace.query.graphql';

@@ -313,20 +313,6 @@ export const insertText = (target, text) => {
 };
 
 /**
-   this will take in the headers from an API response and normalize them
-   this way we don't run into production issues when nginx gives us lowercased header keys
-*/
-export const normalizeHeaders = (headers) => {
-  const upperCaseHeaders = {};
-
-  Object.keys(headers || {}).forEach((e) => {
-    upperCaseHeaders[e.toUpperCase()] = headers[e];
-  });
-
-  return upperCaseHeaders;
-};
-
-/**
  * Parses pagination object string values into numbers.
  *
  * @param {Object} paginationInformation

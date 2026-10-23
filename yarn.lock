@@ -1515,10 +1515,10 @@
   dependencies:
     "@whatwg-node/fetch" "^0.10.11"
 
-"@gitlab/frontend-utils@0.4.1":
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/frontend-utils/-/frontend-utils-0.4.1.tgz#1b3c406b0d8aad44fc02721147f8c57db17ad53d"
-  integrity sha512-KeJbIWKwo81dk0jk54lO6zdgKRK5IJt/ePr9LzjfCIq4S2kz+xRt2OP5HdokGbjGuL27WxM+Ck0+Z0XQ592rYg==
+"@gitlab/frontend-utils@0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/frontend-utils/-/frontend-utils-0.5.0.tgz#40f0fbc65a974d5c9cde3a8dae8d48f120acab31"
+  integrity sha512-lz36ExOOJiBfNsDcWvYrl4LSQ204V75I1pyu+cA8Sx5WpeOF68ZJXaYT7XhIBrdigph1b9LQim1r4E4DiVVjyg==
   dependencies:
     ipaddr.js "^2.4.0"
     jed "^1.1.1"

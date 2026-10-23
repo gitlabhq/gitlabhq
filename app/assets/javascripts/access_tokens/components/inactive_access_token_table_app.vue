@@ -1,12 +1,9 @@
 <script>
 import { GlLink, GlPagination, GlTable, GlTooltipDirective } from '@gitlab/ui';
+import { normalizeHeaders } from '@gitlab/frontend-utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import axios from '~/lib/utils/axios_utils';
-import {
-  convertObjectPropsToCamelCase,
-  normalizeHeaders,
-  parseIntPagination,
-} from '~/lib/utils/common_utils';
+import { convertObjectPropsToCamelCase, parseIntPagination } from '~/lib/utils/common_utils';
 import { s__, __ } from '~/locale';
 import { resetCreatedTime, utcExpiredDate } from '~/vue_shared/access_tokens/utils';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';

@@ -237,23 +237,6 @@ describe('common_utils', () => {
     });
   });
 
-  describe('normalizedHeaders', () => {
-    it('should upperCase all the header keys to keep them consistent', () => {
-      const apiHeaders = {
-        'X-Something-Workhorse': { workhorse: 'ok' },
-        'x-something-nginx': { nginx: 'ok' },
-      };
-
-      const normalized = commonUtils.normalizeHeaders(apiHeaders);
-
-      const WORKHORSE = 'X-SOMETHING-WORKHORSE';
-      const NGINX = 'X-SOMETHING-NGINX';
-
-      expect(normalized[WORKHORSE].workhorse).toBe('ok');
-      expect(normalized[NGINX].nginx).toBe('ok');
-    });
-  });
-
   describe('parseIntPagination', () => {
     it('should parse to integers all string values and return pagination object', () => {
       const pagination = {

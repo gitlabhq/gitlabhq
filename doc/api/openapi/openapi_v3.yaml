@@ -104807,6 +104807,12 @@ components:
           example: claude_sonnet_4_5
           nullable: true
           maxLength: 255
+        detached:
+          type: boolean
+          description: When true, asks Workhorse to answer once the run has started
+            and keep it going after the request ends.
+          example: true
+          nullable: true
     postApiV4AiDuoWorkflowsWorkflowsWorkflowIdResumeRequest:
       type: object
       properties:

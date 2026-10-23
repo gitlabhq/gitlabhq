@@ -1,6 +1,6 @@
 ---
-source_checksum: 52e7c32e4021869b
-distilled_at_sha: f881cd88ec49e57cc6d320e2b57c56d80cb06564
+source_checksum: eda425296a91f5c4
+distilled_at_sha: 0598d6c1b5bb294276c7c644f29291505d54c4c1
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -27,9 +27,10 @@ distilled_at_sha: f881cd88ec49e57cc6d320e2b57c56d80cb06564
 - Place a feature's handlers in a per-feature subdirectory module
   (e.g. `work_items/handlers.js`) and register them in the top-level
   `handlers.js` via `featureHandlers`/`restEndpoints`.
-- Export new test helpers from `test_helpers.js` so they are available
-  globally in all frontend integration tests (auto-imported via
-  `Object.assign(global, testHelpers)` in `test_setup.js`).
+- Export new shared test helpers from `helpers/test_helpers.js`, and import
+  the helpers a spec uses explicitly (e.g.
+  `import { waitForElement } from 'ee_jest/integration/helpers/test_helpers';`).
+  DO NOT rely on helpers being available as globals.
 
 ### Mounting
 
@@ -142,7 +143,7 @@ distilled_at_sha: f881cd88ec49e57cc6d320e2b57c56d80cb06564
 
 - Create a router with `assignRouter` from `test_helpers.js` instead of calling the router factory directly, so `test_setup.js` can reset it between tests; DO NOT push routes manually.
 - Mount the root component with `fullMount` from `test_helpers.js` and the real `apolloProvider`; DO NOT use `shallowMountExtended` or `mountExtended` in frontend integration tests.
-- Use `waitFor` from `@testing-library/dom` after actions that trigger API calls.
+- Use `waitFor` from `@testing-library/dom` after actions that trigger API calls; boot the app in `beforeEach` with `waitForSetup` (longer timeout than test bodies). Keep waits in test bodies under two seconds — a longer wait is logged as `[integration] slow wait` and is close to the three second ceiling.
 - Reset the Apollo cache in `beforeEach` with `apolloProvider.defaultClient.cache.reset()` to prevent state leaking between tests; `test_setup.js` calls `clearMountedApolloStores()` in `beforeEach` to cancel in-flight fetches before each test, so spec files do not need to do anything extra beyond the usual `cache.reset()`.
 - Set feature flags before mounting with `setFeatureFlags({ flagName: true })` imported from `ee_jest/integration/helpers/setup_utils`; DO NOT pass `glFeatures` through `provide` — nested components do not receive it. The harness resets `window.gon` before each test, so no cleanup is needed.
 - Set licensed features before mounting with `setLicensedFeatures({ featureName: true })` imported from `ee_jest/integration/helpers/setup_utils`; DO NOT pass `glLicensedFeatures` through `provide` and DO NOT assign `window.gon.licensed_features` directly. The harness resets `window.gon` before each test, so no cleanup is needed. This only controls what the frontend reads from `gon`; use a recorded fixture variant for responses that drop fields for an unlicensed namespace (see Test Unlicensed Feature States).

@@ -1,9 +1,10 @@
 import { isFinite } from 'lodash-es';
+import { normalizeHeaders } from '@gitlab/frontend-utils';
 import {
   SORT_FIELD_MAPPING,
   TOKEN_TYPE_TAG_NAME,
 } from '~/packages_and_registries/harbor_registry/constants';
-import { normalizeHeaders, parseIntPagination } from '~/lib/utils/common_utils';
+import { parseIntPagination } from '~/lib/utils/common_utils';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 
 export const extractSortingDetail = (parsedSorting = '') => {

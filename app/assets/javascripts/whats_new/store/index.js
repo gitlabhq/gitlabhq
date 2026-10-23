@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia';
+import { normalizeHeaders } from '@gitlab/frontend-utils';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
-import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
+import { parseIntPagination } from '~/lib/utils/common_utils';
 import { whatsNewPath } from '~/lib/utils/path_helpers/routes';
 import { __ } from '~/locale';
 

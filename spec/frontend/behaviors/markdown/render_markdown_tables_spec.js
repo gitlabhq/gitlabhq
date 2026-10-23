@@ -338,6 +338,27 @@ describe('renderMarkdownTables', () => {
       ]);
     });
 
+    it('keeps only the first of several captions', async () => {
+      const table = buildTable();
+      ['Team members', 'Second caption'].forEach((text) => {
+        const caption = document.createElement('caption');
+        caption.textContent = text;
+        table.appendChild(caption);
+      });
+      const container = appendTable(table);
+
+      await renderMarkdownTables([table]);
+
+      const renderedTable = findRendered(container);
+      expect(renderedTable.caption.textContent).toBe('Team members');
+      expect(Array.from(renderedTable.children, (el) => el.tagName)).toEqual([
+        'CAPTION',
+        'THEAD',
+        'TBODY',
+      ]);
+      expect(findSortButtons(container)).toHaveLength(2);
+    });
+
     describe('cell content', () => {
       it('adopts the original cell elements', async () => {
         const link = document.createElement('a');
@@ -370,9 +391,12 @@ describe('renderMarkdownTables', () => {
         expect(rendered.getAttribute('align')).toBe('right');
       });
 
-      it('carries header cell alignment over to the header we render', async () => {
+      it('carries header cell attributes over to the header we render', async () => {
         const table = buildTable();
-        table.querySelectorAll('thead th')[1].setAttribute('align', 'right');
+        const [, header] = table.querySelectorAll('thead th');
+        header.setAttribute('align', 'right');
+        header.className = 'task-table-item';
+        header.dataset.sourcepos = '1:8-1:12';
         const container = appendTable(table);
 
         await renderMarkdownTables([table]);
@@ -380,6 +404,9 @@ describe('renderMarkdownTables', () => {
         const headers = container.querySelectorAll('thead th');
         expect(headers[0].getAttribute('align')).toBeNull();
         expect(headers[1].getAttribute('align')).toBe('right');
+        expect(headers[1].classList.contains('task-table-item')).toBe(true);
+        expect(headers[1].dataset.sourcepos).toBe('1:8-1:12');
+        expect(headers[1].getAttribute('aria-sort')).toBe('none');
       });
 
       it('keeps work done on the cells before mounting', async () => {
@@ -518,6 +545,51 @@ describe('renderMarkdownTables', () => {
     });
   });
 
+  describe('with two table heads', () => {
+    it('renders both heads in place without sort controls', async () => {
+      const table = buildTableFrom({ bodies: [bodyRows()] });
+      const heads = [createSection('thead', [headerRow()]), createSection('thead', [headerRow()])];
+      heads.forEach((head) => table.insertBefore(head, table.tBodies[0]));
+      const container = appendTable(table);
+
+      await renderMarkdownTables([table]);
+
+      const rendered = findRendered(container);
+      expect(Array.from(rendered.children, (el) => el.tagName)).toEqual([
+        'THEAD',
+        'THEAD',
+        'TBODY',
+      ]);
+      expect(findSortButtons(container)).toHaveLength(0);
+    });
+  });
+
+  describe('with the footer before the body', () => {
+    it('keeps it there and still sorts the body', async () => {
+      const table = buildTableFrom({ head: [headerRow()], bodies: [bodyRows()] });
+      table.insertBefore(
+        createSection('tfoot', [createRow('td', ['Average', '30'])]),
+        table.tBodies[0],
+      );
+      const container = appendTable(table);
+
+      await renderMarkdownTables([table]);
+      findSortButtons(container)[0].click();
+      await waitForPromises();
+
+      const rendered = findRendered(container);
+      expect(Array.from(rendered.children, (el) => el.tagName)).toEqual([
+        'THEAD',
+        'TFOOT',
+        'TBODY',
+      ]);
+      expect(cellTexts(rendered.tBodies[0].rows)).toEqual([
+        ['Alice', '25'],
+        ['Bob', '35'],
+      ]);
+    });
+  });
+
   describe('with multiple bodies', () => {
     it('renders every body in order without sort controls', async () => {
       const table = buildTableFrom({
@@ -635,6 +707,72 @@ describe('renderMarkdownTables', () => {
       expect(Array.from(findRendered(container).classList)).toEqual(
         expect.arrayContaining(['tableblock', 'stripes-even', 'gl-min-w-full']),
       );
+    });
+  });
+
+  describe('with section attributes', () => {
+    it('keeps them on the rendered sections', async () => {
+      const table = buildTableFrom({ head: [headerRow()], bodies: [bodyRows()] });
+      table.tHead.dataset.sourcepos = '1:1-1:9';
+      table.tBodies[0].dir = 'rtl';
+      table.tBodies[0].lang = 'ar';
+      const container = appendTable(table);
+
+      await renderMarkdownTables([table]);
+
+      const rendered = findRendered(container);
+      expect(rendered.tHead.dataset.sourcepos).toBe('1:1-1:9');
+      expect(rendered.tBodies[0].dir).toBe('rtl');
+      expect(rendered.tBodies[0].lang).toBe('ar');
+      expect(findSortButtons(container)).toHaveLength(2);
+    });
+
+    it("gives a header row lifted out of the body that body's attributes", async () => {
+      const table = buildTableFrom({ bodies: [[headerRow(), ...bodyRows()]] });
+      table.tBodies[0].dir = 'rtl';
+      table.tBodies[0].lang = 'ar';
+      const container = appendTable(table);
+
+      await renderMarkdownTables([table]);
+
+      const rendered = findRendered(container);
+      expect(rendered.tHead.dir).toBe('rtl');
+      expect(rendered.tHead.lang).toBe('ar');
+      expect(rendered.tBodies[0].dir).toBe('rtl');
+      expect(findSortButtons(container)).toHaveLength(2);
+    });
+  });
+
+  describe('with row attributes', () => {
+    let container;
+
+    beforeEach(async () => {
+      const [bob, alice] = bodyRows();
+      bob.dataset.sourcepos = '3:1-3:9';
+      alice.dataset.sourcepos = '4:1-4:9';
+      [bob, alice].forEach((row) => row.setAttribute('align', 'right'));
+      const table = buildTableFrom({ head: [headerRow()], bodies: [[bob, alice]] });
+      table.tHead.rows[0].setAttribute('align', 'center');
+      container = appendTable(table);
+
+      await renderMarkdownTables([table]);
+    });
+
+    it('keeps them on the header row we render', () => {
+      expect(findRendered(container).tHead.rows[0].getAttribute('align')).toBe('center');
+    });
+
+    it('keeps them with their rows across a sort', async () => {
+      findSortButtons(container)[0].click();
+      await waitForPromises();
+
+      const rows = Array.from(findRendered(container).tBodies[0].rows);
+      expect(cellTexts(rows)).toEqual([
+        ['Alice', '25'],
+        ['Bob', '35'],
+      ]);
+      expect(rows.map((row) => row.dataset.sourcepos)).toEqual(['4:1-4:9', '3:1-3:9']);
+      expect(rows.map((row) => row.getAttribute('align'))).toEqual(['right', 'right']);
     });
   });
 

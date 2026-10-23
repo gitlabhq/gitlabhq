@@ -1,3 +1,4 @@
+import { normalizeHeaders } from '@gitlab/frontend-utils';
 import {
   getProjectValueStreamStages,
   getProjectValueStreams,
@@ -5,7 +6,7 @@ import {
   getValueStreamStageRecords,
   getValueStreamStageCounts,
 } from '~/api/analytics_api';
-import { normalizeHeaders, parseIntPagination } from '~/lib/utils/common_utils';
+import { parseIntPagination } from '~/lib/utils/common_utils';
 import { createAlert } from '~/alert';
 import { projectLabelsPath, projectMilestonesPath } from '~/lib/utils/path_helpers/project';
 import { __ } from '~/locale';

@@ -7,8 +7,8 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import { markRaw } from 'vue';
+import { normalizeHeaders } from '@gitlab/frontend-utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { normalizeHeaders } from '~/lib/utils/common_utils';
 import { logError } from '~/lib/logger';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { __ } from '~/locale';

@@ -31,9 +31,10 @@ For the decision of *which* test type to write, see
 - Place a feature's handlers in a per-feature subdirectory module
   (e.g. `work_items/handlers.js`) and register them in the top-level
   `handlers.js` via `featureHandlers`/`restEndpoints`.
-- Export new test helpers from `test_helpers.js` so they are available
-  globally in all frontend integration tests (auto-imported via
-  `Object.assign(global, testHelpers)` in `test_setup.js`).
+- Export new shared test helpers from `helpers/test_helpers.js`, and import
+  the helpers a spec uses explicitly (e.g.
+  `import { waitForElement } from 'ee_jest/integration/helpers/test_helpers';`).
+  DO NOT rely on helpers being available as globals.
 
 ### Mounting
 

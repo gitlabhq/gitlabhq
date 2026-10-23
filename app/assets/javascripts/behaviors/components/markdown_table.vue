@@ -68,17 +68,12 @@ export default {
       required: false,
       default: () => [],
     },
-    headRows: {
-      type: Array,
+    headerRowAttributes: {
+      type: Object,
       required: false,
-      default: () => [],
+      default: () => ({}),
     },
-    bodies: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
-    footerRows: {
+    sections: {
       type: Array,
       required: false,
       default: () => [],
@@ -147,15 +142,14 @@ export default {
         false,
       );
     },
-    sortedBodies() {
+    sortedSections() {
       if (!this.sortKey) {
-        return this.bodies;
+        return this.sections;
       }
       const key = this.sortKey;
       const ascending = this.sortDirection === ASCENDING;
-      const [items] = this.bodies;
 
-      const sorted = [...items].sort((rowA, rowB) => {
+      const compare = (rowA, rowB) => {
         const a = rowA[key]?.text ?? '';
         const b = rowB[key]?.text ?? '';
 
@@ -166,9 +160,13 @@ export default {
 
         const comparison = a.toLowerCase().localeCompare(b.toLowerCase());
         return ascending ? comparison : -comparison;
-      });
+      };
 
-      return [sorted];
+      return this.sections.map((section) =>
+        section.tagName === 'tbody'
+          ? { ...section, rows: [...section.rows].sort(compare) }
+          : section,
+      );
     },
   },
   mounted() {
@@ -213,12 +211,6 @@ export default {
     updateClipped() {
       this.isClipped =
         this.$refs.table.offsetHeight > (window.innerHeight * STICKY_HEADER_MAX_HEIGHT_VH) / 100;
-    },
-    headerAlign({ cell }) {
-      return cell.getAttribute('align');
-    },
-    headerStyle({ cell }) {
-      return cell.getAttribute('style');
     },
     ariaSort(key) {
       if (this.sortKey !== key) return 'none';
@@ -283,13 +275,17 @@ export default {
           class="gl-min-w-full gl-overflow-y-hidden"
         >
           <caption v-if="caption" v-adopt-content="caption"></caption>
-          <thead v-if="canSort || headRows.length">
-            <tr v-if="canSort">
+          <component
+            :is="section.tagName"
+            v-for="(section, index) in sortedSections"
+            :key="index"
+            v-bind="section.attributes"
+          >
+            <tr v-if="canSort && index === 0" v-bind="headerRowAttributes">
               <th
                 v-for="field in fields"
                 :key="field.key"
-                :align="headerAlign(field)"
-                :style="headerStyle(field)"
+                v-bind="field.attributes"
                 :aria-sort="ariaSort(field.key)"
                 :aria-labelledby="
                   interactiveHeaderKeys.includes(field.key) ? `${tableId}-${field.key}` : null
@@ -343,14 +339,13 @@ export default {
                 </div>
               </th>
             </tr>
-            <tr v-for="(cells, index) in headRows" :key="index" v-adopt-cells="cells"></tr>
-          </thead>
-          <tbody v-for="(items, index) in sortedBodies" :key="index">
-            <tr v-for="item in items" :key="item.rowIndex" v-adopt-cells="item.cells"></tr>
-          </tbody>
-          <tfoot v-if="footerRows.length">
-            <tr v-for="(cells, index) in footerRows" :key="index" v-adopt-cells="cells"></tr>
-          </tfoot>
+            <tr
+              v-for="row in section.rows"
+              :key="row.rowIndex"
+              v-adopt-cells="row.cells"
+              v-bind="row.attributes"
+            ></tr>
+          </component>
         </table>
       </div>
     </div>

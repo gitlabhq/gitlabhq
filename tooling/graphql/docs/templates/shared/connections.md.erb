@@ -13,7 +13,7 @@ Every connection type has the following fields:
 | ----- | ---- | ----------- |
 | `nodes` | `[Item]` | The items in the current page. The item type depends on the connection. |
 | `edges` | `[Edge]` | The edges. Each edge wraps a `node` and a `cursor`. |
-| `pageInfo` | [`PageInfo!`](objects.md#pageinfo) | Pagination information. |
+| `pageInfo` | [`PageInfo!`](#pageinfo) | Pagination information. |
 
 Every edge type has the following fields:
 
@@ -39,7 +39,7 @@ All connection fields accept the following optional pagination arguments:
 ### Querying a connection
 
 The following example queries the `projects` field, which returns a
-[`ProjectConnection`](objects.md#projectconnection). It shows the pagination arguments in use
+[`ProjectConnection`](#projectconnection). It shows the pagination arguments in use
 and annotates each part of the response with its type:
 
 ```graphql

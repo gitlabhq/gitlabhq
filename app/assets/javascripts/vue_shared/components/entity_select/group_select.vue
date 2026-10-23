@@ -1,8 +1,9 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
+import { normalizeHeaders } from '@gitlab/frontend-utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import axios from '~/lib/utils/axios_utils';
-import { normalizeHeaders, parseIntPagination } from '~/lib/utils/common_utils';
+import { parseIntPagination } from '~/lib/utils/common_utils';
 import Api, { DEFAULT_PER_PAGE } from '~/api';
 import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import { groupsPath, initialSelectionPropValidator } from './utils';

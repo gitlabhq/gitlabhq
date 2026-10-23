@@ -13,9 +13,6 @@ import AccessorUtilities from '~/lib/utils/accessor';
 describe('MarkdownTable', () => {
   let wrapper;
 
-  // Build the `fields`/`items` props the component expects, as
-  // ~/behaviors/markdown/render_markdown_tables would: cells are elements, which
-  // the component adopts, and `text` is the sorting comparison key.
   const createCell = (tagName, content) => {
     const cell = document.createElement(tagName);
 
@@ -28,19 +25,30 @@ describe('MarkdownTable', () => {
     return cell;
   };
 
+  const createRow = (tagName, contents, rowIndex = 0) => ({
+    rowIndex,
+    attributes: {},
+    cells: contents.map((content) => createCell(tagName, content)),
+  });
+
+  const createRows = (tagName, rows) =>
+    rows.map((contents, rowIndex) => createRow(tagName, contents, rowIndex));
+
+  const createSection = (tagName, rows, attributes = {}) => ({ tagName, attributes, rows });
+
   const buildFields = (headers) =>
     headers.map((content, index) => ({
       key: `col_${index}`,
       cell: createCell('th', content),
+      attributes: {},
     }));
 
   const buildItems = (fields, rows) =>
     rows.map((contents, rowIndex) => {
-      const cells = contents.map((content) => createCell('td', content));
-      const item = { cells, rowIndex };
+      const item = createRow('td', contents, rowIndex);
 
       fields.forEach((field, index) => {
-        item[field.key] = { text: cells[index] ? cells[index].textContent.trim() : '' };
+        item[field.key] = { text: item.cells[index] ? item.cells[index].textContent.trim() : '' };
       });
 
       return item;
@@ -59,10 +67,7 @@ describe('MarkdownTable', () => {
     expect(wrapper.find('table').element.firstElementChild).toBe(renderedCaption.element);
   };
 
-  const createRows = (tagName, rows) =>
-    rows.map((contents) => contents.map((content) => createCell(tagName, content)));
-
-  const createFooterRows = (rows) => createRows('td', rows);
+  const createFoot = (rows) => createSection('tfoot', createRows('td', rows));
 
   const expectFooter = (text) => {
     const renderedFoot = wrapper.find('table tfoot');
@@ -73,10 +78,22 @@ describe('MarkdownTable', () => {
 
   const createWrapper = (
     rows,
-    { headers = ['Name', 'Age'], stubTooltip = true, attachTo = document.body, ...props } = {},
+    {
+      headers = ['Name', 'Age'],
+      stubTooltip = true,
+      attachTo = document.body,
+      head,
+      foot,
+      ...props
+    } = {},
   ) => {
     const fields = buildFields(headers);
-    const items = buildItems(fields, rows);
+    const defaultHead = fields.length ? [createSection('thead', [])] : [];
+    const sections = [
+      ...(head ? [head] : defaultHead),
+      createSection('tbody', buildItems(fields, rows)),
+      ...(foot ? [foot] : []),
+    ];
 
     wrapper = mountExtended(MarkdownTable, {
       attachTo,
@@ -90,7 +107,7 @@ describe('MarkdownTable', () => {
             }
           : jest.requireActual('@gitlab/ui/src/components/base/tooltip/tooltip.vue').default,
       },
-      propsData: { fields, bodies: [items], ...props },
+      propsData: { fields, sections, ...props },
     });
   };
 
@@ -134,30 +151,54 @@ describe('MarkdownTable', () => {
       expect(wrapper.find('tbody tr a').element).toBe(link);
     });
 
-    it('adopts header cell content and keeps its alignment', () => {
+    it('adopts header cell content and attributes', () => {
       const label = document.createElement('code');
       label.textContent = 'Name';
 
       const fields = buildFields([label, 'Age', 'Height']);
-      fields[1].cell.setAttribute('align', 'right');
-      fields[2].cell.setAttribute('style', 'text-align: center');
+      fields[1].attributes = { align: 'right' };
+      fields[2].attributes = { style: 'text-align: center', class: 'task-table-item' };
 
       wrapper = mountExtended(MarkdownTable, {
         propsData: {
           fields,
-          bodies: [buildItems(fields, [['Alice', '25', '160cm']])],
+          sections: [
+            createSection('thead', []),
+            createSection('tbody', buildItems(fields, [['Alice', '25', '160cm']])),
+          ],
         },
       });
 
       expect(findHeaders().at(0).find('code').element).toBe(label);
       expect(findHeaders().at(1).attributes('align')).toBe('right');
       expect(findHeaders().at(2).attributes('style')).toBe('text-align: center;');
+      expect(findHeaders().at(2).classes()).toEqual(
+        expect.arrayContaining(['task-table-item', 'gl-group/markdown-table-header']),
+      );
+    });
+
+    it('keeps its own header cell attributes over adopted ones', () => {
+      const fields = buildFields(['Name', 'Age']);
+      fields[0].attributes = { 'aria-sort': 'descending', scope: 'row' };
+
+      wrapper = mountExtended(MarkdownTable, {
+        propsData: {
+          fields,
+          sections: [
+            createSection('thead', []),
+            createSection('tbody', buildItems(fields, [['Alice', '25']])),
+          ],
+        },
+      });
+
+      expect(findHeaders().at(0).attributes('aria-sort')).toBe('none');
+      expect(findHeaders().at(0).attributes('scope')).toBe('col');
     });
 
     it('renders the caption and footer, caption first and footer last', () => {
       createWrapper([['Alice', '25']], {
         caption: createCaption('Team members'),
-        footerRows: createFooterRows([['Average', '25']]),
+        foot: createFoot([['Average', '25']]),
       });
 
       expectCaption('Team members');
@@ -233,7 +274,7 @@ describe('MarkdownTable', () => {
       it('does not fire sort_markdown_table_column when a header is clicked', async () => {
         createWrapper([['Alice', '25']], {
           headers: [],
-          headRows: createRows('th', [['Name', 'Age']]),
+          head: createSection('thead', createRows('th', [['Name', 'Age']])),
         });
 
         const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
@@ -266,7 +307,7 @@ describe('MarkdownTable', () => {
         ],
         {
           caption: createCaption('Team members'),
-          footerRows: createFooterRows([['Average', '30']]),
+          foot: createFoot([['Average', '30']]),
         },
       );
 
@@ -528,26 +569,30 @@ describe('MarkdownTable', () => {
   });
 
   describe('when not sortable', () => {
-    let headRows;
+    let head;
 
     beforeEach(() => {
-      headRows = createRows('th', [
-        ['Name', 'Age'],
-        ['First', 'Years'],
-      ]);
+      head = createSection(
+        'thead',
+        createRows('th', [
+          ['Name', 'Age'],
+          ['First', 'Years'],
+        ]),
+      );
       createWrapper(
         [
           ['Bob', '35'],
           ['Alice', '25'],
         ],
-        { headers: [], headRows },
+        { headers: [], head },
       );
     });
 
     it('adopts the header rows without sort affordances', () => {
       const headers = findHeaders().wrappers.map((th) => th.element);
+      const headCells = head.rows.flatMap((row) => row.cells);
       expect(headers).toHaveLength(4);
-      headers.forEach((header, index) => expect(header).toBe(headRows.flat()[index]));
+      headers.forEach((header, index) => expect(header).toBe(headCells[index]));
       expect(findHeaders().at(0).attributes('aria-sort')).toBeUndefined();
       expect(wrapper.find('thead button').exists()).toBe(false);
       expect(wrapper.find('[data-sort-icon]').exists()).toBe(false);
@@ -576,7 +621,10 @@ describe('MarkdownTable', () => {
     beforeEach(() => {
       createWrapper([], {
         headers: [],
-        bodies: [buildItems([], [['Bob']]), buildItems([], [['Alice']])],
+        sections: [
+          createSection('tbody', buildItems([], [['Bob']])),
+          createSection('tbody', buildItems([], [['Alice']])),
+        ],
       });
     });
 
@@ -585,6 +633,91 @@ describe('MarkdownTable', () => {
       expect(bodies).toHaveLength(2);
       expect(bodies.at(0).text()).toBe('Bob');
       expect(bodies.at(1).text()).toBe('Alice');
+    });
+  });
+
+  describe('with the footer before the body', () => {
+    beforeEach(() => {
+      const fields = buildFields(['Name', 'Age']);
+      createWrapper([], {
+        sections: [
+          createSection('thead', []),
+          createFoot([['Average', '30']]),
+          createSection(
+            'tbody',
+            buildItems(fields, [
+              ['Bob', '35'],
+              ['Alice', '25'],
+            ]),
+          ),
+        ],
+      });
+    });
+
+    it('keeps the sections in that order', () => {
+      expect(Array.from(wrapper.find('table').element.children, (el) => el.tagName)).toEqual([
+        'THEAD',
+        'TFOOT',
+        'TBODY',
+      ]);
+    });
+
+    it('still sorts the body', async () => {
+      await clickHeader(0);
+
+      expect(getRowTexts(0)).toEqual(['Alice', 'Bob']);
+      expect(wrapper.find('tfoot').text()).toContain('Average');
+    });
+  });
+
+  describe('with section attributes', () => {
+    beforeEach(() => {
+      createWrapper([['Alice', '25']], {
+        sections: [
+          createSection('thead', [], { 'data-sourcepos': '1:1-1:9' }),
+          createSection('tbody', buildItems(buildFields(['Name', 'Age']), [['Alice', '25']]), {
+            dir: 'rtl',
+            lang: 'ar',
+          }),
+        ],
+      });
+    });
+
+    it('sets them on the rendered sections', () => {
+      expect(wrapper.find('thead').attributes('data-sourcepos')).toBe('1:1-1:9');
+      expect(wrapper.find('tbody').attributes()).toMatchObject({ dir: 'rtl', lang: 'ar' });
+    });
+  });
+
+  describe('with row attributes', () => {
+    beforeEach(() => {
+      const items = buildItems(buildFields(['Name', 'Age']), [
+        ['Bob', '35'],
+        ['Alice', '25'],
+      ]);
+      items[0].attributes = { align: 'right', lang: 'ar', 'data-sourcepos': '3:1-3:9' };
+      createWrapper([], {
+        headerRowAttributes: { align: 'center' },
+        sections: [createSection('thead', []), createSection('tbody', items)],
+      });
+    });
+
+    it('sets them on the rendered rows', () => {
+      expect(wrapper.find('thead tr').attributes('align')).toBe('center');
+      expect(wrapper.findAll('tbody tr').at(0).attributes()).toMatchObject({
+        align: 'right',
+        lang: 'ar',
+        'data-sourcepos': '3:1-3:9',
+      });
+      expect(wrapper.findAll('tbody tr').at(1).attributes('lang')).toBeUndefined();
+    });
+
+    it('keeps them with their row across a sort', async () => {
+      await clickHeader(0);
+
+      expect(getRowTexts(0)).toEqual(['Alice', 'Bob']);
+      expect(wrapper.findAll('tbody tr').at(0).attributes('lang')).toBeUndefined();
+      expect(wrapper.findAll('tbody tr').at(1).attributes('lang')).toBe('ar');
     });
   });
 

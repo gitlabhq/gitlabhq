@@ -1,4 +1,4 @@
-import { normalizeHeaders } from './common_utils';
+import { normalizeHeaders } from '@gitlab/frontend-utils';
 import { HTTP_STATUS_ABORTED, successCodes } from './http_status';
 
 /**

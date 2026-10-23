@@ -1,6 +1,6 @@
 ---
-source_checksum: c13eacb208236ea5
-distilled_at_sha: f881cd88ec49e57cc6d320e2b57c56d80cb06564
+source_checksum: 313c4c3276ae124d
+distilled_at_sha: 0598d6c1b5bb294276c7c644f29291505d54c4c1
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -104,6 +104,7 @@ distilled_at_sha: f881cd88ec49e57cc6d320e2b57c56d80cb06564
 
 - Default to frontend integration tests (`ee/spec/frontend/integration/`, EE-only) over Capybara feature tests, including for rendering recorded unlicensed payloads; use Capybara when real backend state, navigation across server-rendered pages, server-side validations, multi-Vue-app behavior on the same page, or backend license enforcement are required. DO NOT place integration test files under `spec/frontend/integration/` — ESLint enforces EE-only placement and fails CI on violations.
 - Use `fullMount` from `test_helpers.js` (wraps `mount` and attaches to `document.body`) to mount the root component with the real `apolloProvider`.
+- Use `waitFor` from `@testing-library/dom` after actions that trigger API calls; boot the app in `beforeEach` with `waitForSetup` (longer timeout than test bodies), and keep waits in test bodies under two seconds (slower waits are logged as `[integration] slow wait`).
 - Use native DOM APIs for all interactions and assertions in integration tests; DO NOT use VTU wrapper methods (`wrapper.find()`, `wrapper.trigger()`, `wrapper.text()`, etc.).
 - Use `screen.queryByTestId` / `screen.queryAllByTestId` (re-exported by `test_helpers.js`) instead of `document.querySelector` for `data-testid` lookups; reserve raw `querySelector` for scoping inside an already-found element or selectors Testing Library cannot express.
 - Scope polled queries (`waitFor`/`waitForElement` finders) with `within` on a container found by test ID, and null-guard the container; DO NOT poll unscoped `ByRole` queries in a `fullMount`. Use role queries for one-shot assertions, and query portaled content (`GlModal`, dropdowns, tooltips) from `screen`.
@@ -119,7 +120,7 @@ distilled_at_sha: f881cd88ec49e57cc6d320e2b57c56d80cb06564
 - Use `assignRouter` from `test_helpers.js` to create a router; DO NOT call router factory functions directly or push routes manually.
 - Use `loadFixturesMap` from `fixture_utils.js` to auto-load fixtures from a directory and map them to operation names by `camelCase` conversion.
 - Add EE-suffixed or otherwise mismatched operation names to `OPERATION_NAME_OVERRIDES` in the handler file.
-- Export new test helpers from `test_helpers.js` to make them available globally in all integration tests (auto-imported via `Object.assign(global, testHelpers)` in `test_setup.js`).
+- Export new shared test helpers from `helpers/test_helpers.js` and import them explicitly in each spec that uses them (e.g. `import { waitForElement } from 'ee_jest/integration/helpers/test_helpers';`); DO NOT rely on helpers being available as globals.
 - Name fixture files so that the `camelCase`-converted filename matches the GraphQL operation name (for example, `get_work_item_state_counts.query.graphql.json` maps to `getWorkItemStateCounts`).
 - Place integration fixture generators in `ee/spec/frontend/fixtures/`; generate their JSON output to `tmp/tests/frontend/fixtures-ee/graphql/` by running the fixture spec (`bundle exec rspec ee/spec/frontend/fixtures/<file>.rb`).
 - Use `snapshotRequests` and `expectGraphQLCalls` from `operation_helpers.js` to assert Apollo cache integrity and verify that mutations do not trigger unwanted network calls.

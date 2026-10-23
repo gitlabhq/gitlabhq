@@ -1,10 +1,11 @@
 <script>
 import { GlAvatarLabeled, GlCollapsibleListbox } from '@gitlab/ui';
 import { debounce } from 'lodash-es';
+import { normalizeHeaders } from '@gitlab/frontend-utils';
 import axios from '~/lib/utils/axios_utils';
 import { s__ } from '~/locale';
 import { getGroups, getDescendentGroups, getProjectShareLocations } from '~/rest_api';
-import { normalizeHeaders, parseIntPagination } from '~/lib/utils/common_utils';
+import { parseIntPagination } from '~/lib/utils/common_utils';
 import { SEARCH_DELAY, GROUP_FILTERS } from '../constants';
 
 export default {
